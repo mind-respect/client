@@ -25,13 +25,15 @@ export default {
                 en: {
                     translation: {
                         login: 'Login',
-                        register: 'Register'
+                        register: 'Register',
+                        search: 'Search'
                     }
                 },
                 fr: {
                     translation: {
                         login: 'Connexion',
-                        register: "S'inscrire"
+                        register: "S'inscrire",
+                        search: 'Chercher'
                     }
                 }
             }

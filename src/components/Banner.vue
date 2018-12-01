@@ -10,11 +10,11 @@
                 column
                 justify-center
         >
-            <h1 class="display-2 font-weight-thin mt-4 mb-3 white--text font-weight-bold mr-title"
+            <h1 class="display-2 font-weight-thin mt-4 mb-3 white--text font-weight-bold mr-title text-xs-center"
                 style="font-size: 55px !important;">
                 {{$t('banner:slogan')}}
             </h1>
-            <h4 class="subheading white--text font-weight-bold">
+            <h4 class="subheading white--text font-weight-bold text-xs-center">
                 {{$t('banner:desc')}}
             </h4>
         </v-layout>
@@ -29,11 +29,11 @@
         data: function () {
             I18n.i18next.addResources("en", "banner", {
                 'slogan': 'The best place for your ideas',
-                'desc': 'A note-taking application that makes them constantly evolve'
+                'desc': 'Constantly evolve your thoughts and ideas with the MindRespect note-taking application!'
             });
             I18n.i18next.addResources("fr", "banner", {
                 'slogan': 'Le meilleur endroit pour vos idées',
-                'desc': "Une application de prise de note qui les fait évoluer constamment"
+                'desc': "Faites constamment évoluer vos pensées et idées grâce à l'application de prise de note MindRespect !"
             });
             return {};
         }
