@@ -19,33 +19,27 @@
             </v-flex>
         </v-layout>
         <!--<v-toolbar-->
-                <!--color="secondary"-->
-                <!--dark-->
-                <!--class="pa-0 mt-4 mb-5"-->
-                <!--extended-->
+        <!--color="secondary"-->
+        <!--dark-->
+        <!--class="pa-0 mt-4 mb-5"-->
+        <!--extended-->
         <!--&gt;-->
-            <!--<v-spacer></v-spacer>-->
-            <!--<v-toolbar-title>-->
-                <!--<v-icon class="mr-2">-->
-                    <!--notifications_active-->
-                <!--</v-icon>-->
-                <!--{{$t('about:whatYouDo')}}-->
-            <!--</v-toolbar-title>-->
-            <!--<v-spacer></v-spacer>-->
-            <!--&lt;!&ndash;<v-btn flat>&ndash;&gt;-->
-            <!--&lt;!&ndash;<v-icon class="mr-2">play_circle_outline</v-icon>&ndash;&gt;-->
-            <!--&lt;!&ndash;Voir vidéo&ndash;&gt;-->
+        <!--<v-spacer></v-spacer>-->
+        <!--<v-toolbar-title>-->
+        <!--<v-icon class="mr-2">-->
+        <!--notifications_active-->
+        <!--</v-icon>-->
+        <!--{{$t('about:whatYouDo')}}-->
+        <!--</v-toolbar-title>-->
+        <!--<v-spacer></v-spacer>-->
+        <!--&lt;!&ndash;<v-btn flat>&ndash;&gt;-->
+        <!--&lt;!&ndash;<v-icon class="mr-2">play_circle_outline</v-icon>&ndash;&gt;-->
+        <!--&lt;!&ndash;Voir vidéo&ndash;&gt;-->
 
-            <!--&lt;!&ndash;</v-btn>&ndash;&gt;-->
+        <!--&lt;!&ndash;</v-btn>&ndash;&gt;-->
         <!--</v-toolbar>-->
-        <h3 class="text-xs-center mb-5">
-            <v-badge color="secondary" left :class="{
-                'ml-4': $vuetify.breakpoint.smAndDown
-            }">
-                <span slot="badge">1</span>
-                <span class="headline">{{$t('about:level1Title')}}</span>
-            </v-badge>
-            <div class="text-xs-center subheading mt-3 mb-3">
+        <Level :title="$t('about:level1Title')" :level="1">
+            <div slot="description">
                 <p class="title">
                     {{$t('about:level1Desc1')}}
                 </p>
@@ -53,23 +47,28 @@
                     {{$t('about:level1Desc2')}}
                 </p>
             </div>
-        </h3>
-        <v-parallax :src="require('../assets/levels/swamp-2248571_1280.jpg')"
+        </Level>
+        <v-parallax :src="require('@/assets/levels/swamp-2248571_1280.jpg')"
                     :height="stepsParallaxHeight"></v-parallax>
         <!--https://pixabay.com/fr/marais-floride-terres-humides-2248571/-->
-        <h3 class="text-xs-center mb-5 mt-5">
-            <v-badge color="secondary" left :class="{
-                'ml-4': $vuetify.breakpoint.smAndDown
-            }">
-                <span slot="badge">2</span>
-                <span class="headline">{{$t('about:level2Title')}}</span>
-            </v-badge>
-            <v-layout row wrap class="text-xs-center vh-center subheading mt-3">
-                <v-flex xs12>
-                    <p class="title">
-                        {{$t('about:level2Desc1')}}
-                    </p>
-                </v-flex>
+        <Level :title="$t('about:level2Title')" :level="2">
+            <div slot="description">
+                <p class="title">
+                    {{$t('about:level2Desc1')}}
+                </p>
+            </div>
+        </Level>
+        <!--<h3 class="text-xs-center mb-5 mt-5">-->
+            <!--<v-badge color="secondary" left :class="{-->
+                <!--'ml-4': $vuetify.breakpoint.smAndDown-->
+            <!--}">-->
+                <!--<span slot="badge">2</span>-->
+                <!--<span class="headline">{{$t('about:level2Title')}}</span>-->
+            <!--</v-badge>-->
+            <!--<v-layout row wrap class="text-xs-center vh-center subheading mt-3">-->
+                <!--<v-flex xs12>-->
+
+                <!--</v-flex>-->
                 <!--<v-flex xs12 class="vh-center">-->
                 <!--<ul class="text-xs-left ml-5">-->
                 <!--<li style="max-width: 400px;">-->
@@ -83,54 +82,42 @@
                 <!--</li>-->
                 <!--</ul>-->
                 <!--</v-flex>-->
-            </v-layout>
-        </h3>
+            <!--</v-layout>-->
+        <!--</h3>-->
         <v-parallax :src="require('../assets/levels/ape-1000270_1280.jpg')" :height="stepsParallaxHeight"></v-parallax>
         <!--https://pixabay.com/fr/singe-dschelada-primates-1000270/-->
-        <h3 class="text-xs-center mb-5 mt-5">
-            <v-badge color="secondary" left :class="{
-                'ml-4': $vuetify.breakpoint.smAndDown
-            }">
-                <span slot="badge">3</span>
-                <span class="headline">{{$t('about:level3Title')}}</span>
-            </v-badge>
-            <div class="text-xs-center vh-center subheading mt-3">
-                <ul class="text-xs-left ml-5 title">
-                    <li>
-                        {{$t('about:level3Desc1')}}
-                    </li>
-                    <li>
-                        {{$t('about:level3Desc2')}}
-                    </li>
-                </ul>
+        <Level :title="$t('about:level3Title')" :level="3">
+            <div slot="description">
+                <v-list color="black" class="white--text" style="background-color: transparent">
+                    <v-list-tile>
+                        <v-list-tile-title class="title">
+                            <v-icon class="white--text mr-2">search</v-icon>
+                            {{$t('about:level3Desc1')}}
+                        </v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile>
+                        <v-list-tile-title class="title">
+                            <v-icon class="white--text mr-2">star</v-icon>
+                            {{$t('about:level3Desc2')}}
+                        </v-list-tile-title>
+                    </v-list-tile>
+                </v-list>
             </div>
-        </h3>
-        <v-img :src="require('../assets/levels/featured_organize_chaos-1068x445.jpg')"
-               :height="stepsParallaxHeight"></v-img>
+        </Level>
+        <v-parallax :src="require('../assets/levels/featured_organize_chaos-1068x445.jpg')"
+                    :height="stepsParallaxHeight"></v-parallax>
         <!--https://pixabay.com/fr/intelligence-artificielle-cerveau-3382507/-->
-        <h3 class="text-xs-center mb-5 mt-5">
-            <v-badge color="secondary" left :class="{
-                'ml-4': $vuetify.breakpoint.smAndDown
-            }">
-                <span slot="badge">4</span>
-                <span class="headline">{{$t('about:level4Title')}}</span>
-            </v-badge>
-            <div class="text-xs-center vh-center mt-3 title">
+        <Level :title="$t('about:level4Title')" :level="4">
+            <div slot="description" class="title">
                 {{$t('about:level4Desc1')}}
             </div>
-        </h3>
+        </Level>
         <!--<v-parallax :src="require('../assets/levels/pipes-refactored.jpg')" height="600"></v-parallax>-->
-        <v-img :src="require('../assets/levels/mindmap-2123973_1280.jpg')" :height="stepsParallaxHeight"
-               id="mrLevel"></v-img>
+        <v-parallax :src="require('../assets/levels/mindmap-2123973_1280.jpg')"
+                    :height="stepsParallaxHeight"></v-parallax>
         <!--https://www.flickr.com/photos/jjorquera/15433132769-->
-        <h3 class="text-xs-center mb-5 mt-5">
-            <v-badge color="secondary" left :class="{
-                'ml-4': $vuetify.breakpoint.smAndDown
-            }">
-                <span slot="badge">5</span>
-                <span class="headline">{{$t('about:level5Title')}}</span>
-            </v-badge>
-            <div class="text-xs-center vh-center subheading mt-3">
+        <Level :title="$t('about:level5Title')" :level="5">
+            <div slot="description">
                 <ul class="text-xs-left ml-5 title">
                     <li>
                         {{$t('about:level5Desc1')}}
@@ -143,16 +130,15 @@
                     </li>
                 </ul>
             </div>
-        </h3>
+        </Level>
         <v-parallax :src="require('../assets/levels/neurons-440660.jpg')" :height="stepsParallaxHeight"></v-parallax>
-        <h3 class="text-xs-center mb-5 mt-5">
-            <v-badge color="secondary" left :class="{
-                'ml-4': $vuetify.breakpoint.smAndDown
-            }">
-                <span slot="badge">6</span>
-                <span class="headline">{{$t('about:level6Title')}}</span>
-            </v-badge>
-        </h3>
+        <Level :title="$t('about:level6Title')" :level="6">
+            <!--<div slot="description">-->
+                <!--<p class="title">-->
+                    <!--À l'image de votre esprit, vous agissez de façon cohérente et consciente.-->
+                <!--</p>-->
+            <!--</div>-->
+        </Level>
         <!--https://pixabay.com/fr/singe-dschelada-primates-1000270/-->
         <!--<v-container fluid>-->
         <!--<v-layout row wrap>-->
@@ -391,10 +377,11 @@
 
 <script>
     import I18n from '@/i18n'
-    import Banner from "../components/Banner";
+    import Banner from "../components/home/Banner";
+    import Level from "../components/home/Level"
 
     export default {
-        components: {Banner},
+        components: {Banner, Level},
         data: function () {
             I18n.i18next.addResources("en", "about", {
                 whatYouDo: 'What are you doing with your thoughts and ideas?',
@@ -422,16 +409,16 @@
                 level2Desc1: "Vous augmentez les chances que cette nouvelle idée prenne la place dont elle a besoin",
                 level2Desc2: "Vous aide à mémoriser vos idées",
                 level2Desc3: "Facilite votre réflexion",
-                level3Title: "Vous noté votre idée dans un logiciel",
+                level3Title: "Vous notez votre idée dans un logiciel",
                 level3Desc1: "Vous retrouvez rapidement votre idée",
                 level3Desc2: "Vous êtes plus organisé",
-                level4Title: "Vous la noté dans un logiciel de carte mentale",
+                level4Title: "Vous la notez dans un logiciel de carte mentale",
                 level4Desc1: "Vos notes sont plus structurées et votre idée plus claire",
-                level5Title: "Vous la noté dans MindRespect.com !",
-                level5Desc1: "Vous êtes plus cohérent → votre idée est davantage liés avec vos autres idées",
+                level5Title: "Vous la notez dans MindRespect.com !",
+                level5Desc1: "Vous êtes plus cohérent → votre idée est davantage liée et intégrée",
                 level5Desc2: "Vous êtes plus conscient → vous découvrez le chemin entre votre idée et la réalité",
                 level5Desc3: "Vous avez tous les avantages des niveaux précédents",
-                level6Title: "Ayez une meilleure vie, ayez un meilleur monde !",
+                level6Title: "À l'image de votre esprit, vous agissez de façon cohérente et consciente",
                 level6Desc1: "Lorem ipsum"
             });
             return {

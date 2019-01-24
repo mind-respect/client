@@ -2,7 +2,7 @@
 
     <v-parallax
             dark
-            :src="require('../assets/levels/personal-3286016_1280.jpg')"
+            :src="require('@/assets/levels/personal-3286016_1280.png')"
             height="459"
     >
         <!--https://pixabay.com/fr/personnels-collective-groupe-savoir-3286016/-->
@@ -21,7 +21,7 @@
                 <v-card-title class="vh-center">
                     <h4 class="subheading white--text font-weight-bold text-xs-center">
                         {{$t('banner:desc')}}
-                        <a href="#mrLevel" class="white--text">
+                        <a href="#" @click.prevent="Scroll.goToSection('mrLevel')" class="white--text">
                             {{$t('banner:desc2')}}
                         </a>
                         {{$t('banner:desc3')}}
@@ -34,6 +34,7 @@
 
 <script>
     import I18n from '@/i18n'
+    import Scroll from '@/Scroll'
 
     export default {
         name: 'banner',
@@ -47,9 +48,11 @@
                 'slogan': 'Structure vos notes, fait évoluer votre pensée',
                 desc: "Mindrespect.com est une",
                 desc2: "façon unique",
-                desc3: "de prendre ses notes."
+                desc3: "de prendre ses notes"
             });
-            return {};
+            return {
+                Scroll: Scroll
+            };
         }
     }
 </script>
