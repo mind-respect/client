@@ -413,7 +413,7 @@
                 level5Desc2: "Same benefits as mind mapping and note-taking software",
             });
             I18n.i18next.addResources("fr", "about", {
-                whatYouDo: 'Que faites vous lorsque vous avez une pensée nouvelle ?',
+                whatYouDo: 'Que faites vous lorsque vous avez une nouvelle idée ?',
                 level1Title: "Vous ne notez pas votre idée",
                 level1Desc1: "Une nouvelle idée est telle un petit canal dans votre cerveau.",
                 level1Desc2: "Elle s'assèche rapidement si vous ne la revisitez pas de temps en temps.",
@@ -425,12 +425,12 @@
                 level3Title: "Vous noté votre idée dans un logiciel",
                 level3Desc1: "Vous retrouvez rapidement votre idée",
                 level3Desc2: "Vous êtes plus organisé",
-                level4Title: "Vous utilisez un logiciel de carte mentale",
-                level4Desc1: "Rend vos notes plus structurées et vôtre idée plus claire",
-                level5Title: "Vous utilisez MindRespect.com !",
-                level5Desc1: "Vous êtes plus cohérent → vos idées sont davantages liées entre elles",
-                level5Desc2: "Vous êtes plus conscient → vous découvrez le chemin entre vôtre idée et la réalité",
-                level5Desc3: "Et, vous avez tous les avantages des niveaux précédents",
+                level4Title: "Vous la noté dans un logiciel de carte mentale",
+                level4Desc1: "Vos notes sont plus structurées et votre idée plus claire",
+                level5Title: "Vous la noté dans MindRespect.com !",
+                level5Desc1: "Vous êtes plus cohérent → votre idée est davantage liés avec vos autres idées",
+                level5Desc2: "Vous êtes plus conscient → vous découvrez le chemin entre votre idée et la réalité",
+                level5Desc3: "Vous avez tous les avantages des niveaux précédents",
                 level6Title: "Ayez une meilleure vie, ayez un meilleur monde !",
                 level6Desc1: "Lorem ipsum"
             });

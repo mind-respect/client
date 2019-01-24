@@ -44,7 +44,7 @@
             });
             // 'slogan': 'Le meilleur endroit pour vos idées',
             I18n.i18next.addResources("fr", "banner", {
-                'slogan': 'Structures vos notes, fait évoluer votre pensée',
+                'slogan': 'Structure vos notes, fait évoluer votre pensée',
                 desc: "Mindrespect.com est une",
                 desc2: "façon unique",
                 desc3: "de prendre ses notes."
