@@ -24,7 +24,7 @@
                                 height="35"
                                 width="51"
                                 alt="MR"
-                                class="mt-1"
+                                class="mt-1 ml-3"
                                 v-if="$vuetify.breakpoint.smAndDown"
                         ></v-img>
                     </router-link>
@@ -37,17 +37,17 @@
                 <!--v-if="$vuetify.breakpoint.mdAndUp"-->
                 <!--&gt;</v-text-field>-->
                 <v-btn flat light :class="{
-                    'ma-0 pa-0' : $vuetify.breakpoint.smAndDown
+                    'ma-1 pa-1' : $vuetify.breakpoint.smAndDown
                 }">
                     {{$t('login')}}
                 </v-btn>
                 <v-btn flat light :class="{
-                    'ma-0 pa-0' : $vuetify.breakpoint.smAndDown
+                    'ma-1 pa-1' : $vuetify.breakpoint.smAndDown
                 }">
                     {{$t('register')}}
                 </v-btn>
                 <v-btn light flat @click="switchLanguage()" :class="{
-                    'ma-0 pa-0' : $vuetify.breakpoint.smAndDown
+                    'ma-1 pa-1' : $vuetify.breakpoint.smAndDown
                 }">
                     <v-icon class="mr-2 pa-0">public</v-icon>
                     <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.smAndDown">

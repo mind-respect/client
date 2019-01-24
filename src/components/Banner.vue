@@ -2,21 +2,32 @@
 
     <v-parallax
             dark
-            :src="require('../assets/neurons-dark.jpg')"
+            :src="require('../assets/levels/personal-3286016_1280.jpg')"
             height="459"
     >
+        <!--https://pixabay.com/fr/personnels-collective-groupe-savoir-3286016/-->
         <v-layout
                 align-center
                 column
                 justify-center
         >
-            <h1 class="display-2 font-weight-thin mt-4 mb-3 white--text font-weight-bold mr-title text-xs-center"
-                style="font-size: 55px !important;">
-                {{$t('banner:slogan')}}
-            </h1>
-            <h4 class="subheading white--text font-weight-bold text-xs-center">
-                {{$t('banner:desc')}}
-            </h4>
+            <v-card style="background-color:black;">
+                <v-card-title class="pt-0 pb-0 vh-center">
+                    <h1 class="display-2 white--text font-weight-light mt-4 text-xs-center"
+                        style="font-size: 40px !important; ">
+                        {{$t('banner:slogan')}}
+                    </h1>
+                </v-card-title>
+                <v-card-title class="vh-center">
+                    <h4 class="subheading white--text font-weight-bold text-xs-center">
+                        {{$t('banner:desc')}}
+                        <a href="#mrLevel" class="white--text">
+                            {{$t('banner:desc2')}}
+                        </a>
+                        {{$t('banner:desc3')}}
+                    </h4>
+                </v-card-title>
+            </v-card>
         </v-layout>
     </v-parallax>
 </template>
@@ -31,9 +42,12 @@
                 'slogan': 'The best place for your ideas',
                 'desc': 'Constantly evolve your thoughts and ideas with the MindRespect note-taking application!'
             });
+            // 'slogan': 'Le meilleur endroit pour vos idées',
             I18n.i18next.addResources("fr", "banner", {
-                'slogan': 'Le meilleur endroit pour vos idées',
-                'desc': "Faites constamment évoluer vos pensées et idées grâce à l'application de prise de note MindRespect !"
+                'slogan': 'Structures vos notes, fait évoluer votre pensée',
+                desc: "Mindrespect.com est une",
+                desc2: "façon unique",
+                desc3: "de prendre ses notes."
             });
             return {};
         }
