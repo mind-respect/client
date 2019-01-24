@@ -59,36 +59,36 @@
             </div>
         </Level>
         <!--<h3 class="text-xs-center mb-5 mt-5">-->
-            <!--<v-badge color="secondary" left :class="{-->
-                <!--'ml-4': $vuetify.breakpoint.smAndDown-->
-            <!--}">-->
-                <!--<span slot="badge">2</span>-->
-                <!--<span class="headline">{{$t('about:level2Title')}}</span>-->
-            <!--</v-badge>-->
-            <!--<v-layout row wrap class="text-xs-center vh-center subheading mt-3">-->
-                <!--<v-flex xs12>-->
+        <!--<v-badge color="secondary" left :class="{-->
+        <!--'ml-4': $vuetify.breakpoint.smAndDown-->
+        <!--}">-->
+        <!--<span slot="badge">2</span>-->
+        <!--<span class="headline">{{$t('about:level2Title')}}</span>-->
+        <!--</v-badge>-->
+        <!--<v-layout row wrap class="text-xs-center vh-center subheading mt-3">-->
+        <!--<v-flex xs12>-->
 
-                <!--</v-flex>-->
-                <!--<v-flex xs12 class="vh-center">-->
-                <!--<ul class="text-xs-left ml-5">-->
-                <!--<li style="max-width: 400px;">-->
-                <!--{{$t('about:level2Desc1')}}-->
-                <!--</li>-->
-                <!--<li>-->
-                <!--{{$t('about:level2Desc2')}}-->
-                <!--</li>-->
-                <!--<li>-->
-                <!--{{$t('about:level2Desc3')}}-->
-                <!--</li>-->
-                <!--</ul>-->
-                <!--</v-flex>-->
-            <!--</v-layout>-->
+        <!--</v-flex>-->
+        <!--<v-flex xs12 class="vh-center">-->
+        <!--<ul class="text-xs-left ml-5">-->
+        <!--<li style="max-width: 400px;">-->
+        <!--{{$t('about:level2Desc1')}}-->
+        <!--</li>-->
+        <!--<li>-->
+        <!--{{$t('about:level2Desc2')}}-->
+        <!--</li>-->
+        <!--<li>-->
+        <!--{{$t('about:level2Desc3')}}-->
+        <!--</li>-->
+        <!--</ul>-->
+        <!--</v-flex>-->
+        <!--</v-layout>-->
         <!--</h3>-->
         <v-parallax :src="require('../assets/levels/ape-1000270_1280.jpg')" :height="stepsParallaxHeight"></v-parallax>
         <!--https://pixabay.com/fr/singe-dschelada-primates-1000270/-->
         <Level :title="$t('about:level3Title')" :level="3">
             <div slot="description">
-                <v-list color="black" class="white--text" style="background-color: transparent">
+                <v-list class="white--text" style="background-color: transparent">
                     <v-list-tile>
                         <v-list-tile-title class="title">
                             <v-icon class="white--text mr-2">search</v-icon>
@@ -109,7 +109,14 @@
         <!--https://pixabay.com/fr/intelligence-artificielle-cerveau-3382507/-->
         <Level :title="$t('about:level4Title')" :level="4">
             <div slot="description" class="title">
-                {{$t('about:level4Desc1')}}
+                <v-list class="white--text" style="background-color: transparent">
+                    <v-list-tile>
+                        <v-list-tile-title class="title">
+                            <v-icon class="white--text mr-2">fa-sitemap</v-icon>
+                            {{$t('about:level4Desc1')}}
+                        </v-list-tile-title>
+                    </v-list-tile>
+                </v-list>
             </div>
         </Level>
         <!--<v-parallax :src="require('../assets/levels/pipes-refactored.jpg')" height="600"></v-parallax>-->
@@ -118,25 +125,63 @@
         <!--https://www.flickr.com/photos/jjorquera/15433132769-->
         <Level :title="$t('about:level5Title')" :level="5">
             <div slot="description">
-                <ul class="text-xs-left ml-5 title">
-                    <li>
-                        {{$t('about:level5Desc1')}}
-                    </li>
-                    <li>
-                        {{$t('about:level5Desc2')}}
-                    </li>
-                    <li>
-                        {{$t('about:level5Desc3')}}
-                    </li>
-                </ul>
+                <v-list style="background-color:transparent;" class="white--text">
+                    <v-list-tile>
+                        <v-list-tile-title class="title">
+                            <v-icon dark class="mr-2">
+                                fa-balance-scale
+                            </v-icon>
+                            {{$t('about:level5Desc1')}}
+                        </v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile>
+                        <v-list-tile-action>
+                            <v-icon dark>
+                                arrow_right_alt
+                            </v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-title class="title">
+                            {{$t('about:level5Desc11')}}
+                        </v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile>
+                        <v-list-tile-title class="title">
+                            <v-icon dark class="mr-2">
+                                public
+                            </v-icon>
+                            {{$t('about:level5Desc2')}}
+                        </v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile>
+                        <v-list-tile-action>
+                            <v-icon dark>
+                                arrow_right_alt
+                            </v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-title class="title">
+                            {{$t('about:level5Desc21')}}
+                        </v-list-tile-title>
+                    </v-list-tile>
+                </v-list>
+                <!--<ul class="text-xs-left ml-5 title">-->
+                <!--<li>-->
+                <!--{{$t('about:level5Desc1')}}-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--{{$t('about:level5Desc2')}}-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--{{$t('about:level5Desc3')}}-->
+                <!--</li>-->
+                <!--</ul>-->
             </div>
         </Level>
         <v-parallax :src="require('../assets/levels/neurons-440660.jpg')" :height="stepsParallaxHeight"></v-parallax>
         <Level :title="$t('about:level6Title')" :level="6">
             <!--<div slot="description">-->
-                <!--<p class="title">-->
-                    <!--À l'image de votre esprit, vous agissez de façon cohérente et consciente.-->
-                <!--</p>-->
+            <!--<p class="title">-->
+            <!--À l'image de votre esprit, vous agissez de façon cohérente et consciente.-->
+            <!--</p>-->
             <!--</div>-->
         </Level>
         <!--https://pixabay.com/fr/singe-dschelada-primates-1000270/-->
@@ -415,8 +460,10 @@
                 level4Title: "Vous la notez dans un logiciel de carte mentale",
                 level4Desc1: "Vos notes sont plus structurées et votre idée plus claire",
                 level5Title: "Vous la notez dans MindRespect.com !",
-                level5Desc1: "Vous êtes plus cohérent → votre idée est davantage liée et intégrée",
-                level5Desc2: "Vous êtes plus conscient → vous découvrez le chemin entre votre idée et la réalité",
+                level5Desc1: "Vous êtes plus cohérent",
+                level5Desc11: "votre idée est davantage liée et intégrée",
+                level5Desc2: "Vous êtes plus conscient",
+                level5Desc21: "vous découvrez le chemin entre votre idée et la réalité",
                 level5Desc3: "Vous avez tous les avantages des niveaux précédents",
                 level6Title: "À l'image de votre esprit, vous agissez de façon cohérente et consciente",
                 level6Desc1: "Lorem ipsum"
