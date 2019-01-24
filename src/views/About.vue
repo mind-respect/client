@@ -136,8 +136,8 @@
                     </v-list-tile>
                     <v-list-tile>
                         <v-list-tile-action>
-                            <v-icon dark>
-                                arrow_right_alt
+                            <v-icon dark class="fa-flip-horizontal">
+                                keyboard_return
                             </v-icon>
                         </v-list-tile-action>
                         <v-list-tile-title class="title">
@@ -154,8 +154,8 @@
                     </v-list-tile>
                     <v-list-tile>
                         <v-list-tile-action>
-                            <v-icon dark>
-                                arrow_right_alt
+                            <v-icon dark class="fa-flip-horizontal">
+                                keyboard_return
                             </v-icon>
                         </v-list-tile-action>
                         <v-list-tile-title class="title">
