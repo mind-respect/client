@@ -3,15 +3,15 @@
         <v-card-text>
         <form>
             <v-text-field
-                    v-model="user.username"
-                    :error-messages="usernameErrors"
-                    :label="$t('register:username')"
+                    v-model="newUser.newUsername"
+                    :error-messages="newUsernameErrors"
+                    :label="$t('register:newUsername')"
                     required
                     @input="$v.name.$touch()"
                     @blur="$v.name.$touch()"
             ></v-text-field>
             <v-text-field
-                    v-model="user.email"
+                    v-model="newUser.email"
                     :error-messages="emailErrors"
                     :label="$t('register:email')"
                     required
@@ -19,7 +19,7 @@
                     @blur="$v.name.$touch()"
             ></v-text-field>
             <v-text-field
-                    v-model="user.password"
+                    v-model="newUser.password"
                     :error-messages="passwordErrors"
                     :label="$t('register:password')"
                     required
@@ -41,35 +41,38 @@
 
 <script>
     import I18n from '@/i18n'
+    import AuthenticateService from '@/service/AuthenticateService'
 
     export default {
         name: "RegisterForm",
         methods: {
             register: function () {
+                AuthenticateService.register(this.newUser).then(function(){
 
+                });
             }
         },
         data: function () {
             I18n.i18next.addResources("en", "register", {
-                username: 'User name (public name)',
+                newUsername: 'newUser name (public name)',
                 email: 'Email',
                 password: 'Password',
                 registerBtn: "Register for free"
             });
             I18n.i18next.addResources("fr", "register", {
-                username: "Nom d'usager (nom public)",
+                newUsername: "Nom d'usager (nom public)",
                 email: 'Courriel',
                 password: 'Mot de passe',
                 registerBtn: "Inscrivez-vous gratuitement"
             });
             return {
                 valid: true,
-                user: {
-                    username: "",
+                newUser: {
+                    newUsername: "",
                     email: "",
                     password: ""
                 },
-                usernameErrors: null,
+                newUsernameErrors: null,
                 emailErrors: null,
                 passwordErrors: null
             };
