@@ -5,6 +5,7 @@ import Service from '@/service'
 
 export default {
     register: function (user) {
+        user.user_name = user.username;
         return Service.api().post("/users/", user);
     },
     login: function (user) {

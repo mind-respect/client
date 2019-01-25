@@ -3,20 +3,16 @@
         <v-card-text>
         <form>
             <v-text-field
-                    v-model="newUser.newUsername"
+                    v-model="newUser.username"
                     :error-messages="newUsernameErrors"
                     :label="$t('register:newUsername')"
                     required
-                    @input="$v.name.$touch()"
-                    @blur="$v.name.$touch()"
             ></v-text-field>
             <v-text-field
                     v-model="newUser.email"
                     :error-messages="emailErrors"
                     :label="$t('register:email')"
                     required
-                    @input="$v.name.$touch()"
-                    @blur="$v.name.$touch()"
             ></v-text-field>
             <v-text-field
                     v-model="newUser.password"
@@ -24,8 +20,6 @@
                     :label="$t('register:password')"
                     required
                     type="password"
-                    @input="$v.name.$touch()"
-                    @blur="$v.name.$touch()"
             ></v-text-field>
             <v-btn
                     :disabled="!valid"
@@ -68,7 +62,7 @@
             return {
                 valid: true,
                 newUser: {
-                    newUsername: "",
+                    username: "",
                     email: "",
                     password: ""
                 },
