@@ -1,7 +1,5 @@
 <template>
     <div>
-        <v-parallax :src="require('@/assets/about/levels/' + image)" v-if="image"
-                    :height="stepsParallaxHeight"></v-parallax>
         <v-card color="black" class="white--text">
             <v-card-title class="vh-center">
                 <h3 class="text-xs-center mb-5 mt-5">
@@ -20,6 +18,8 @@
                 </h3>
             </v-card-title>
         </v-card>
+        <v-parallax :src="require('@/assets/about/levels/' + image)" v-if="image"
+                    :height="stepsParallaxHeight"></v-parallax>
     </div>
 </template>
 

@@ -29,8 +29,8 @@
                 </p>
             </div>
         </Level>
-        <Level image="ape-1000270_1280.jpg" :title="$t('about:level2Title')" :level="2">
-            <!--https://pixabay.com/fr/singe-dschelada-primates-1000270/-->
+        <Level :title="$t('about:level2Title')" :level="2" image="plants-2564038_1280.jpg">
+            <!--https://pixabay.com/fr/plantes-nature-vert-feuilles-2564038/-->
             <div slot="description">
                 <p class="title">
                     {{$t('about:level2Desc1')}}
@@ -175,7 +175,7 @@
                 level1Desc1: "A new idea is like a small stream in your brain.",
                 level1Desc2: "It dries quickly if you don't revisit it from time to time.",
                 level2Title: 'You write your idea',
-                level2Desc1: "You increase the chances that this new idea will take the place it needs",
+                level2Desc1: "You increase the chances that this new idea will become a reality.",
                 level2Desc2: "Helps you to memorize your ideas",
                 level2Desc3: "Facilitates your thinking",
                 level3Title: "You record your idea in a software program",
@@ -198,7 +198,7 @@
                 level1Desc1: "Une nouvelle idée est telle un petit canal dans votre cerveau.",
                 level1Desc2: "Elle s'assèche rapidement si vous ne la revisitez pas de temps en temps.",
                 level2Title: 'Vous écrivez votre idée',
-                level2Desc1: "Vous augmentez les chances que cette nouvelle idée prenne la place dont elle a besoin",
+                level2Desc1: "Vous augmentez les chances que cette nouvelle idée devienne une réalité.",
                 level2Desc2: "Vous aide à mémoriser vos idées",
                 level2Desc3: "Facilite votre réflexion",
                 level3Title: "Vous notez votre idée dans un logiciel",

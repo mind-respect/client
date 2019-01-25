@@ -1,34 +1,38 @@
+<!--
+  - Copyright Vincent Blouin under the GPL License version 3
+  -->
+
 <template>
     <v-card class="mt-5 mb-5" flat color="transparent">
         <v-card-text>
-        <form>
-            <v-text-field
-                    v-model="newUser.username"
-                    :error-messages="newUsernameErrors"
-                    :label="$t('register:newUsername')"
-                    required
-            ></v-text-field>
-            <v-text-field
-                    v-model="newUser.email"
-                    :error-messages="emailErrors"
-                    :label="$t('register:email')"
-                    required
-            ></v-text-field>
-            <v-text-field
-                    v-model="newUser.password"
-                    :error-messages="passwordErrors"
-                    :label="$t('register:password')"
-                    required
-                    type="password"
-            ></v-text-field>
-            <v-btn
-                    :disabled="!valid"
-                    color="secondary"
-                    @click="register"
-            >
-                {{$t('register:registerBtn')}}
-            </v-btn>
-        </form>
+            <form>
+                <v-text-field
+                        v-model="newUser.username"
+                        :error-messages="newUsernameErrors"
+                        :label="$t('register:newUsername')"
+                        required
+                ></v-text-field>
+                <v-text-field
+                        v-model="newUser.email"
+                        :error-messages="emailErrors"
+                        :label="$t('register:email')"
+                        required
+                ></v-text-field>
+                <v-text-field
+                        v-model="newUser.password"
+                        :error-messages="passwordErrors"
+                        :label="$t('register:password')"
+                        required
+                        type="password"
+                ></v-text-field>
+                <v-btn
+                        :disabled="!valid"
+                        color="secondary"
+                        @click="register"
+                >
+                    {{$t('register:registerBtn')}}
+                </v-btn>
+            </form>
         </v-card-text>
     </v-card>
 </template>
@@ -41,9 +45,14 @@
         name: "RegisterForm",
         methods: {
             register: function () {
-                AuthenticateService.register(this.newUser).then(function(){
-
-                });
+                AuthenticateService.register(this.newUser).then(function (newUser) {
+                    this.$router.push({
+                        name: 'UserHome',
+                        params: {
+                            username: newUser.username
+                        }
+                    })
+                }.bind(this));
             }
         },
         data: function () {
