@@ -13,14 +13,14 @@
                 <v-toolbar-title>
                     <router-link to="/welcome" class="no-style-link vh-center">
                         <v-img
-                                :src="require('./assets/logo-horizontal-black-small.png')"
+                                :src="require('@/assets/logo-horizontal-black-small.png')"
                                 height="44"
                                 width="223"
                                 alt="mindrespect.com"
                                 v-if="$vuetify.breakpoint.mdAndUp"
                         ></v-img>
                         <v-img
-                                :src="require('./assets/MR.png')"
+                                :src="require('@/assets/MR.png')"
                                 height="35"
                                 width="51"
                                 alt="MR"

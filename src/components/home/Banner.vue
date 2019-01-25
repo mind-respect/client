@@ -2,7 +2,7 @@
 
     <v-parallax
             dark
-            :src="require('@/assets/levels/personal-3286016_1280.png')"
+            :src="require('@/assets/about/levels/personal-3286016_1280.png')"
             height="459"
     >
         <!--https://pixabay.com/fr/personnels-collective-groupe-savoir-3286016/-->
