@@ -56,7 +56,7 @@
                 username: "Nom d'usager (nom public)",
                 email: 'Courriel',
                 password: 'Mot de passe',
-                registerBtn: "Inscrivez vous gratuitement"
+                registerBtn: "Inscrivez-vous gratuitement"
             });
             return {
                 valid: true,

@@ -127,15 +127,15 @@
         <!--</v-flex>-->
         <!--</v-layout>-->
         <!--</v-parallax>-->
-        <v-layout row wrap>
+        <v-layout row wrap class="mt-5 mb-5">
             <v-flex xs12 md6 class="vh-center">
                 <v-card flat color="transparent">
                     <v-card-title class="text-xs-center vh-center">
                         <h3 class="display-2 text-xs-center">
-                            Inscrivez vous à MindRespect.com
+                            {{$t('about:registerTitle')}}
                         </h3>
                         <div class="title grey--text">
-                            Prenez vos notes d'une façon unique et laissez vos idées modeler votre vie.
+                            {{$t('about:registerSubTitle')}}
                         </div>
                     </v-card-title>
                 </v-card>
@@ -170,27 +170,33 @@
         components: {Banner, Level, RegisterForm},
         data: function () {
             I18n.i18next.addResources("en", "about", {
-                whatYouDo: 'What are you doing with your thoughts and ideas?',
-                level1Title: "You don't write them down",
-                level1Desc: "You give yourself up to life to remember or not things that are important to you.",
-                level2Title: 'You write them down',
-                level2Desc1: "Helps you to memorize your ideas",
-                level2Desc2: "Facilitates your thinking",
-                level3Title: "You write them down on software",
-                level3Desc1: "You quickly find your ideas",
-                level3Desc2: "You are better organized",
-                level4Title: "You use a mind mapping software",
-                level4Desc1: "Makes your thoughts clearer and your notes more structured",
-                level5Title: "You use MindRespect.com!",
-                level5Desc1: "Evolves your perspectives by creating more links between your current and past reflections",
-                level5Desc2: "Same benefits as mind mapping and note-taking software",
+                whatYouDo: 'What do you do when you have a new idea?',
+                level1Title: "You don't write down your idea",
+                level1Desc1: "A new idea is like a small stream in your brain.",
+                level1Desc2: "It dries quickly if you don't revisit it from time to time.",
+                level2Title: 'You write your idea',
+                level2Desc1: "You increase the chances that this new idea will take the place it needs",
+                level2Desc2: "Helps you to memorize your ideas",
+                level2Desc3: "Facilitates your thinking",
+                level3Title: "You record your idea in a software program",
+                level3Desc1: "You quickly find your idea",
+                level3Desc2: "You are more organized",
+                level4Title: "You write it down in a mind map software",
+                level4Desc1: "Your notes are more structured and your idea clearer",
+                level5Title: "You write it down in MindRespect.com !",
+                level5Desc1: "You are more coherent",
+                level5Desc11: "your idea is more linked and integrated",
+                level5Desc2: "You are more aware",
+                level5Desc21: "you discover the path between your idea and reality",
+                level6Title: "Like your mind, you act in a coherent and conscious way",
+                registerTitle: "Use MindRespect.com",
+                registerSubTitle: "Take your notes in a unique way and let your ideas shape your life."
             });
             I18n.i18next.addResources("fr", "about", {
                 whatYouDo: 'Que faites vous lorsque vous avez une nouvelle idée ?',
                 level1Title: "Vous ne notez pas votre idée",
                 level1Desc1: "Une nouvelle idée est telle un petit canal dans votre cerveau.",
                 level1Desc2: "Elle s'assèche rapidement si vous ne la revisitez pas de temps en temps.",
-                level1DescOld: "Vous vous abandonnez à la vie pour vous rappeller ou pas des choses importantes pour vous.",
                 level2Title: 'Vous écrivez votre idée',
                 level2Desc1: "Vous augmentez les chances que cette nouvelle idée prenne la place dont elle a besoin",
                 level2Desc2: "Vous aide à mémoriser vos idées",
@@ -205,9 +211,9 @@
                 level5Desc11: "votre idée est davantage liée et intégrée",
                 level5Desc2: "Vous êtes plus conscient",
                 level5Desc21: "vous découvrez le chemin entre votre idée et la réalité",
-                level5Desc3: "Vous avez tous les avantages des niveaux précédents",
                 level6Title: "À l'image de votre esprit, vous agissez de façon cohérente et consciente",
-                level6Desc1: "Lorem ipsum"
+                registerTitle: "Utilisez MindRespect.com",
+                registerSubTitle: "Prenez vos notes de façon unique et laissez vos idées modeler votre vie."
             });
             return {
                 noteTakingLevels: [
