@@ -127,14 +127,14 @@
         <!--</v-flex>-->
         <!--</v-layout>-->
         <!--</v-parallax>-->
-        <v-layout row wrap class="mt-5 mb-5">
+        <v-layout row wrap class="">
             <v-flex xs12 md6 class="vh-center">
-                <v-card flat color="transparent">
-                    <v-card-title class="text-xs-center vh-center">
+                <v-card flat color="secondary" height="100%" class="vh-center">
+                    <v-card-title class="text-xs-center white--text vh-center">
                         <h3 class="display-2 text-xs-center">
                             {{$t('about:registerTitle')}}
                         </h3>
-                        <div class="title grey--text">
+                        <div class="title">
                             {{$t('about:registerSubTitle')}}
                         </div>
                     </v-card-title>
