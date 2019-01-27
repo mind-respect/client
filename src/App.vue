@@ -1,5 +1,5 @@
 <template>
-    <v-app id="app">
+    <v-app id="app" v-if="dataLoaded">
         <div id="nav" class="pa-0">
             <v-toolbar
                     app
@@ -72,15 +72,26 @@
 </template>
 
 <script>
+    import UserService from '@/service/UserService'
+
     export default {
         data: () => ({
-            clipped: false
+            clipped: false,
+            dataLoaded: false
         }),
         methods: {
             switchLanguage: function () {
                 let newLocale = this.$store.state.locale === "en" ? "fr" : "en";
                 this.$store.dispatch('setLocale', newLocale);
             }
+        },
+        mounted: function () {
+            UserService.authenticatedUser().then(function (response) {
+                this.$store.dispatch('setUser', response.data)
+                this.dataLoaded = true;
+            }.bind(this)).catch(function () {
+                this.dataLoaded = true;
+            }.bind(this))
         }
     }
 </script>

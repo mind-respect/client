@@ -1,3 +1,7 @@
+/*
+ * Copyright Vincent Blouin under the GPL License version 3
+ */
+
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
@@ -9,26 +13,15 @@ const Store = new Vuex.Store({
     plugins: [
         createPersistedState({
             paths: [
-                "token",
                 "user",
                 "locale"
             ]
         })
     ],
     state: {
-        token: null,
         user: null
     },
     mutations: {
-        setToken: function (state, token) {
-            state.token = token;
-            if (token) {
-                state.isUserLoggedIn = true;
-            } else {
-                state.isUserLoggedIn = false;
-                state.user = null;
-            }
-        },
         setUser: function (state, user) {
             if (user) {
                 state.user = {
@@ -39,7 +32,6 @@ const Store = new Vuex.Store({
                 };
             } else {
                 state.user = null;
-                state.token = null;
             }
         },
         setLocale: function (state, locale) {
@@ -51,9 +43,6 @@ const Store = new Vuex.Store({
         }
     },
     actions: {
-        setToken: function (action, token) {
-            action.commit('setToken', token);
-        },
         setUser: function (action, user) {
             action.commit('setUser', user);
         },

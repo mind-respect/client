@@ -14,16 +14,14 @@ const Service = {
         const loginPages = [
             '/',
             '/login'
-        ]
+        ];
         const axiosInstance = axios.create({
             baseURL: Service.baseUrl(),
-            headers: {
-                Authorization: 'Bearer ' + Store.state.token
-            }
-        })
+            credentials: true,
+            withCredentials: true
+        });
         axiosInstance.interceptors.response.use(null, function (error) {
             if (error.response && error.response.status === 401) {
-                Store.dispatch('setToken', null)
                 Store.dispatch('setUser', null)
                 if (loginPages.indexOf(window.location.pathname) === -1) {
                     window.location.href = '/'

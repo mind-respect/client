@@ -45,11 +45,11 @@
         name: "RegisterForm",
         methods: {
             register: function () {
-                AuthenticateService.register(this.newUser).then(function (newUser) {
+                AuthenticateService.register(this.newUser).then(function (response) {
                     this.$router.push({
                         name: 'UserHome',
                         params: {
-                            username: newUser.username
+                            username: response.data.user_name
                         }
                     })
                 }.bind(this));
