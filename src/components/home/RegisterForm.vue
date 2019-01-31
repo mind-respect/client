@@ -46,6 +46,7 @@
         methods: {
             register: function () {
                 AuthenticateService.register(this.newUser).then(function (response) {
+                    this.$store.dispatch('setUser', response.data)
                     this.$router.push({
                         name: 'UserHome',
                         params: {

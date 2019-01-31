@@ -2,6 +2,7 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import Image from '@/image/Image'
+import IdUri from '@/IdUri'
 
 const FriendlyResource = {
     fromServerFormat: function (serverFormat) {
@@ -78,6 +79,9 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
     if (friendlyResourceServerFormat.label === undefined) {
         this.friendlyResourceServerFormat.label = "";
     }
+    this.uriFacade = new IdUri.IdUri(
+        this.getUri()
+    );
     return this;
 };
 
@@ -117,6 +121,9 @@ FriendlyResource.FriendlyResource.prototype.getUri = function () {
         this.friendlyResourceServerFormat.uri
     );
 };
+FriendlyResource.FriendlyResource.prototype.uri = function () {
+    return this.uriFacade
+};
 FriendlyResource.FriendlyResource.prototype.getJsonFormat = function () {
     var serverFormat = this.getServerFormat();
     serverFormat.images = this.getImagesServerFormat();
@@ -142,6 +149,7 @@ FriendlyResource.FriendlyResource.prototype.getCreationDate = function () {
 FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {
     return undefined;
 };
+
 FriendlyResource.FriendlyResource.prototype._buildImages = function () {
     return undefined === this.friendlyResourceServerFormat.images ?
         [] :

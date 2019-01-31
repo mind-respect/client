@@ -185,4 +185,12 @@ const IdUri = {
     }
 };
 
+IdUri.IdUri = function (uri) {
+    this.uri = uri;
+};
+
+IdUri.IdUri.prototype.url = function () {
+    return IdUri.htmlUrlForBubbleUri(this.uri);
+};
+
 export default IdUri;
