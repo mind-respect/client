@@ -33,7 +33,7 @@
 </template>
 
 <script>
-    import I18n from '@/i18n'
+    import I18n from '@/I18n'
     import Scroll from '@/Scroll'
 
     export default {

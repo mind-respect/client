@@ -161,7 +161,7 @@
 </template>
 
 <script>
-    import I18n from '@/i18n'
+    import I18n from '@/I18n'
     import Banner from "@/components/home/Banner";
     import Level from "@/components/home/Level"
     import RegisterForm from "@/components/home/RegisterForm"

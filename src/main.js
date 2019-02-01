@@ -3,7 +3,7 @@ import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import I18n from '@/i18n'
+import I18n from '@/I18n'
 
 Vue.config.productionTip = false
 
