@@ -27,12 +27,33 @@
             <v-tab-item>
                 <v-card>
                     <v-card-title>
+                        <v-toolbar-title>Title</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-toolbar-items class="hidden-sm-and-down">
+                            <v-tooltip v-if="!isListView">
+                                <v-btn flat icon slot="activator" @click="isListView = !isListView">
+                                    <v-icon>
+                                        view_list
+                                    </v-icon>
+                                </v-btn>
+                                {{$t('userhome:toList')}}
+                            </v-tooltip>
+                            <v-tooltip v-if="isListView">
+                                <v-btn flat icon slot="activator" @click="isListView = !isListView">
+                                    <v-icon>
+                                        view_module
+                                    </v-icon>
+                                </v-btn>
+                                {{$t('userhome:toGrid')}}
+                            </v-tooltip>
+                        </v-toolbar-items>
                     </v-card-title>
                     <v-card-text>
-                        <v-layout row wrap>
+                        <v-layout row wrap v-if="!isListView">
                             <v-flex xs12 md4 lg2 v-for="center in centers">
                                 <v-hover>
-                                    <v-card height="200" class="ma-2" slot-scope="{hover}" :class="`elevation-${hover ? 12 : 2}`"
+                                    <v-card height="200" class="ma-2" slot-scope="{hover}"
+                                            :class="`elevation-${hover ? 12 : 2}`"
                                             :href="center.uri().url()">
                                         <v-card-title class="subheading">
                                             <v-icon>
@@ -51,7 +72,7 @@
                                 </v-hover>
                             </v-flex>
                         </v-layout>
-                        <v-layout row wrap>
+                        <v-layout row wrap v-if="isListView">
                             <v-flex xs12>
                                 <v-data-table
                                         :headers="headers"
@@ -145,6 +166,7 @@
                 "toList": "Vue en liste"
             });
             return {
+                isListView: false,
                 centers: null,
                 IdUri: IdUri,
                 pagination: {
