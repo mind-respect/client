@@ -3,6 +3,7 @@
  */
 
 import GraphElement from '@/graph-element/GraphElement'
+import Moment from 'moment'
 
 export default {
     fromServerFormat: function (centersServerFormat) {
@@ -57,3 +58,7 @@ CenterGraphElement.prototype.getNumberOfVisitsRank = function () {
 CenterGraphElement.prototype.getNbReferences = function () {
     return this.centerGraphElementServerFormat.nbReferences;
 };
+CenterGraphElement.prototype.lastVisit = function () {
+    return new Moment(this.getLastCenterDate()).fromNow();
+};
+

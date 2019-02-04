@@ -5,6 +5,7 @@ import $ from 'jquery'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Identification from '@/identifier/Identification'
 import IdUri from '@/IdUri'
+import Color from '@/Color'
 import WikidataUri from '@/WikidataUri'
 import Wikidata from '@/Wikidata'
 
@@ -306,6 +307,11 @@ GraphElement.GraphElement.prototype.getIndex = function (parentChildrenIndex) {
 
 GraphElement.GraphElement.prototype.getColors = function () {
     return this.graphElementServerFormat.colors || {};
+};
+
+GraphElement.GraphElement.prototype.getBackgroundColor = function () {
+    let mapColor = this.getColors().background || Color.DEFAULT_BACKGROUND_COLOR;
+    return Color.getBackgroundColorForColor(mapColor);
 };
 
 GraphElement.GraphElement.prototype.setFont = function (font) {

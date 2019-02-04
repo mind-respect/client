@@ -27,66 +27,139 @@
             <v-tab-item>
                 <v-card>
                     <v-card-title>
-                        <v-toolbar-title>Title</v-toolbar-title>
+                        <v-text-field
+                                v-model="search"
+                                append-icon="search"
+                                :label="$t('search')"
+                                single-line
+                                small
+                                hide-details
+                                class="ml-3"
+                        ></v-text-field>
+                        <v-tooltip v-if="!isListView && $vuetify.breakpoint.mdAndUp" left>
+                            <v-btn flat icon slot="activator" @click="isListView = !isListView" class="mt-3">
+                                <v-icon large>
+                                    view_list
+                                </v-icon>
+                            </v-btn>
+                            {{$t('userhome:toList')}}
+                        </v-tooltip>
+                        <v-tooltip v-if="isListView && $vuetify.breakpoint.mdAndUp" left>
+                            <v-btn flat icon slot="activator" @click="isListView = !isListView"  class="mt-3">
+                                <v-icon large>
+                                    view_module
+                                </v-icon>
+                            </v-btn>
+                            {{$t('userhome:toGrid')}}
+                        </v-tooltip>
                         <v-spacer></v-spacer>
-                        <v-toolbar-items class="hidden-sm-and-down">
-                            <v-tooltip v-if="!isListView">
-                                <v-btn flat icon slot="activator" @click="isListView = !isListView">
-                                    <v-icon>
-                                        view_list
-                                    </v-icon>
-                                </v-btn>
-                                {{$t('userhome:toList')}}
-                            </v-tooltip>
-                            <v-tooltip v-if="isListView">
-                                <v-btn flat icon slot="activator" @click="isListView = !isListView">
-                                    <v-icon>
-                                        view_module
-                                    </v-icon>
-                                </v-btn>
-                                {{$t('userhome:toGrid')}}
-                            </v-tooltip>
-                        </v-toolbar-items>
+                        <v-btn icon float color="secondary" fab>
+                            <v-icon large>add</v-icon>
+                        </v-btn>
                     </v-card-title>
-                    <v-card-text>
-                        <v-layout row wrap v-if="!isListView">
-                            <v-flex xs12 md4 lg2 v-for="center in centers">
-                                <v-hover>
-                                    <v-card height="200" class="ma-2" slot-scope="{hover}"
-                                            :class="`elevation-${hover ? 12 : 2}`"
-                                            :href="center.uri().url()">
-                                        <v-card-title class="subheading">
-                                            <v-icon>
-                                                {{getIcon(center)}}
-                                            </v-icon>
-                                            <v-spacer></v-spacer>
-                                            {{center.getLabel()}}
-                                            <v-spacer></v-spacer>
-                                        </v-card-title>
-                                        <v-card-text class="text-xs-center">
-                                            <div v-for="(value, key) in center.getContext()">
-                                                {{value}}
-                                            </div>
-                                        </v-card-text>
-                                    </v-card>
-                                </v-hover>
-                            </v-flex>
-                        </v-layout>
-                        <v-layout row wrap v-if="isListView">
-                            <v-flex xs12>
-                                <v-data-table
-                                        :headers="headers"
-                                        :items="centers"
-                                        :pagination.sync="pagination"
-                                        select-all
-                                        item-key="name"
-                                        class="elevation-1"
-                                >
+                    <v-card flat class="ma-0 pa-0">
+                        <v-card-text class="pt-0">
+                            <v-layout row wrap v-if="false">
+                                <v-flex xs12 md4 lg2 v-for="center in centersFiltered">
+                                    <v-hover>
+                                        <v-card height="200" class="ma-2" slot-scope="{hover}"
+                                                :class="`elevation-${hover ? 12 : 2}`"
+                                                :href="center.uri().url()">
+                                            <v-card-title class="subheading">
+                                                <v-icon>
+                                                    {{getIcon(center)}}
+                                                </v-icon>
+                                                <v-spacer></v-spacer>
+                                                {{center.getLabel()}}
+                                                <v-spacer></v-spacer>
+                                            </v-card-title>
+                                            <v-divider></v-divider>
+                                            <v-card-text class="text-xs-center">
+                                                <!--<v-list dense>-->
+                                                <!--<v-list-tile v-for="(value, key) in center.getContext()">-->
+                                                <!--<v-list-tile-tile class="body-1">-->
+                                                <!--{{value}}-->
+                                                <!--</v-list-tile-tile>-->
+                                                <!--</v-list-tile>-->
+                                                <!--</v-list>-->
+                                                <div v-for="(value, key) in center.getContext()" class="subheading">
+                                                    {{value}}
+                                                </div>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-hover>
+                                </v-flex>
+                            </v-layout>
+                            <v-layout row wrap>
+                                <v-flex xs12 :md3="!isListView" v-for="center in centersFiltered">
+                                    <v-list two-line id="bubbles-as-list">
+                                        <v-list-tile :href="center.uri().url()">
+                                            <v-list-tile-content>
+                                                <v-list-tile-title class="subheading font-weight-bold">
+                                                    <v-icon class="mr-2">
+                                                        {{getIcon(center)}}
+                                                    </v-icon>
+                                                    {{center.getLabel()}}
+                                                    <small class="grey--text font-weight-normal font-italic mr-1 right" v-if="$vuetify.breakpoint.mdAndUp">
+                                                        {{center.lastVisit()}}
+                                                    </small>
+                                                </v-list-tile-title>
+                                                <v-list-tile-sub-title>
+                                                    <div v-for="(value, key) in center.getContext()"
+                                                         v-if="center.contextSearch !== ''"
+                                                         class="around-list-item">
+                                                        {{value}}
+                                                    </div>
+                                                </v-list-tile-sub-title>
+                                                <!--<v-list-tile-sub-title class="text-xs-right">-->
+                                                <!--{{center.lastVisit()}}-->
+                                                <!--</v-list-tile-sub-title>-->
+                                            </v-list-tile-content>
+                                            <v-list-tile-action>
+                                                <v-btn icon small>
+                                                    <v-icon color="grey">
+                                                        delete
+                                                    </v-icon>
+                                                </v-btn>
+                                            </v-list-tile-action>
+                                        </v-list-tile>
+                                    </v-list>
+                                    <v-data-table
+                                            :headers="headers"
+                                            :items="centers"
+                                            :pagination.sync="pagination"
+                                            :search="search"
+                                            select-all
+                                            v-if="false"
+                                            item-key="name"
+                                            class="elevation-1"
+                                    >
+                                        <template slot="items" slot-scope="props">
+                                            <td class="select-checkbox">
 
-                                </v-data-table>
-                            </v-flex>
-                        </v-layout>
-                    </v-card-text>
+                                            </td>
+                                            <td class="bubble-label subheading font-weight-bold">
+                                                {{props.item.getLabel()}}
+                                            </td>
+                                            <td class="context around-list subheading">
+                                                <div v-for="(value, key) in props.item.getContext()"
+                                                     v-if="props.item.contextSearch !== ''"
+                                                     class="around-list-item">
+                                                    {{value}}
+                                                </div>
+                                            </td>
+                                            <td class="px-0 last-visit subheading">
+                                                {{props.item.lastVisit()}}
+                                            </td>
+                                        </template>
+                                        <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                                            Your search for "{{ search }}" found no results.
+                                        </v-alert>
+                                    </v-data-table>
+                                </v-flex>
+                            </v-layout>
+                        </v-card-text>
+                    </v-card>
                 </v-card>
             </v-tab-item>
             <v-tab-item>
@@ -166,7 +239,8 @@
                 "toList": "Vue en liste"
             });
             return {
-                isListView: false,
+                search: '',
+                isListView: true,
                 centers: null,
                 IdUri: IdUri,
                 pagination: {
@@ -176,10 +250,19 @@
                     {
                         text: this.$t('userhome:center'),
                         align: 'left',
-                        value: 'name'
+                        value: 'labelSearch',
+                        'class': 'subheading'
                     },
-                    {text: this.$t('userhome:context'), value: 'calories'},
-                    {text: this.$t('userhome:lastVisit'), value: 'fat'}
+                    {
+                        text: this.$t('userhome:context'),
+                        value: 'contextSearch',
+                        'class': 'subheading'
+                    },
+                    {
+                        text: this.$t('userhome:lastVisit'),
+                        value: '',
+                        'class': 'subheading'
+                    }
                 ],
                 loaded: false,
                 tabMenu: null
@@ -197,22 +280,77 @@
                     default :
                         return "panorama_fish_eye";
                 }
-            },
-            link: function (center) {
-                return IdUri.htmlUrlForBubbleUri(
-                    center.getUri()
-                )
             }
         },
         mounted: function () {
             CenterGraphElementService.getPublicAndPrivate().then(function (response) {
-                this.centers = CenterGraphElement.fromServerFormat(response.data);
+                this.centers = CenterGraphElement.fromServerFormat(response.data).map(function (center) {
+                    center.labelSearch = center.getLabel();
+                    center.contextSearch = Object.values(center.getContext()).join(' ');
+                    return center;
+                });
                 this.loaded = true;
             }.bind(this))
+        },
+        computed: {
+            centersFiltered: function () {
+                return this.centers.filter(function (center) {
+                    let searchContent = center.labelSearch + ' ' + center.contextSearch;
+                    return searchContent.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+                }.bind(this));
+            }
         }
     }
 </script>
 
 <style scoped>
+    #bubbles-as-list .v-list__tile__title, .v-list__tile__sub-title {
+
+    }
+
+    .last-visit {
+        width: 10%;
+        white-space: normal;
+    }
+
+    .bubble-label, .context {
+        text-overflow: ellipsis;
+    }
+
+    .bubble-label {
+        width: 30%;
+        white-space: normal;
+        /*border-left: 1px solid $red;*/
+    }
+
+    .context {
+        width: 60%;
+    }
+
+    .around-list {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .around-list-item {
+        overflow: hidden;
+        float: left;
+        max-width: 50%;
+    / / 200 % / 4 items (2 lines / 4 items) but reserve some extra space for padding etc overflow: hidden;
+        padding-left: 5px;
+        text-overflow: ellipsis;
+    }
+
+    .around-list-item::after {
+        content: " ● "
+    }
+
+    .around-list-item:last-of-type {
+        content: " ● "
+    }
+
+    .around-list-item:not(empty):last-of-type::after {
+        content: " ..."
+    }
 
 </style>
