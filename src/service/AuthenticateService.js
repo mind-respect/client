@@ -9,7 +9,7 @@ export default {
         return Service.api().post("/users/", user);
     },
     login: function (user) {
-        return Service.api().post("/login", user);
+        return Service.api().post("/users/session", user);
     },
     logout: function(){
         return Service.api().delete("/users/session");

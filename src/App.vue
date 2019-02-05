@@ -38,6 +38,7 @@
                 <!--&gt;</v-text-field>-->
                 <v-btn flat light
                        v-if="$store.state.user === undefined"
+                       @click="loginDialog = true"
                        :class="{
                     'ma-1 pa-1' : $vuetify.breakpoint.smAndDown
                 }"
@@ -46,6 +47,7 @@
                 </v-btn>
                 <v-btn flat light
                        v-if="$store.state.user === undefined"
+                       @click="registerDialog = true"
                        :class="{
                     'ma-1 pa-1' : $vuetify.breakpoint.smAndDown
                 }">
@@ -124,17 +126,56 @@
             <!--<router-link to="/about">About</router-link>-->
         </div>
         <router-view></router-view>
+        <v-dialog v-model="registerDialog" width="900">
+            <v-card>
+                <v-card-title class="pb-0">
+                    <h3 class="title">
+                        {{$t('register:title')}}
+                        <div class="grey--text">
+                            {{$t('register:subtitle')}}
+                        </div>
+                    </h3>
+                    <v-spacer></v-spacer>
+                    <v-icon @click="registerDialog=false">close</v-icon>
+                </v-card-title>
+                <v-card-text class="pa-0">
+                    <RegisterForm @flow-is-done="registerDialog = false"></RegisterForm>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="loginDialog" width="900">
+            <v-card>
+                <v-card-title class="pb-0">
+                    <h3 class="title">
+                        {{$t('login:title')}}
+                    </h3>
+                    <v-spacer></v-spacer>
+                    <v-icon @click="loginDialog=false">close</v-icon>
+                </v-card-title>
+                <v-card-text class="pa-0">
+                    <LoginForm @flow-is-done="loginDialog = false"></LoginForm>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
     </v-app>
 </template>
 
 <script>
     import UserService from '@/service/UserService'
     import AuthenticateService from "./service/AuthenticateService";
+    import RegisterForm from "./components/home/RegisterForm";
+    import LoginForm from "./components/home/LoginForm";
 
     export default {
+        components: {
+            RegisterForm,
+            LoginForm
+        },
         data: () => ({
             clipped: false,
-            dataLoaded: false
+            dataLoaded: false,
+            registerDialog: false,
+            loginDialog: false
         }),
         methods: {
             switchLanguage: function () {

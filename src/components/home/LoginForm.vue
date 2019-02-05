@@ -7,31 +7,27 @@
         <v-card-text>
             <form>
                 <v-text-field
-                        v-model="newUser.username"
-                        :error-messages="newUsernameErrors"
-                        :label="$t('register:newUsername')"
-                        required
-                ></v-text-field>
-                <v-text-field
-                        v-model="newUser.email"
+                        v-model="user.email"
                         :error-messages="emailErrors"
-                        :label="$t('register:email')"
+                        required
+                        :label="$t('login:email')"
                         required
                 ></v-text-field>
                 <v-text-field
-                        v-model="newUser.password"
+                        v-model="user.password"
+                        required
                         :error-messages="passwordErrors"
-                        :label="$t('register:password')"
+                        :label="$t('login:password')"
                         required
                         type="password"
                 ></v-text-field>
                 <v-btn
                         :disabled="!valid"
                         color="secondary"
-                        @click="register"
+                        @click="login"
                         class="ml-0"
                 >
-                    {{$t('register:registerBtn')}}
+                    {{$t('login:loginBtn')}}
                 </v-btn>
             </form>
         </v-card-text>
@@ -43,10 +39,10 @@
     import AuthenticateService from '@/service/AuthenticateService'
 
     export default {
-        name: "RegisterForm",
+        name: "LoginForm",
         methods: {
-            register: function () {
-                AuthenticateService.register(this.newUser).then(function (response) {
+            login: function () {
+                AuthenticateService.login(this.user).then(function (response) {
                     this.$store.dispatch('setUser', response.data)
                     this.$router.push({
                         name: 'UserHome',
@@ -59,30 +55,26 @@
             }
         },
         data: function () {
-            I18n.i18next.addResources("en", "register", {
-                title: "Use MindRespect.com",
-                subtitle: "Take your notes in a unique way and let your ideas shape your life.",
-                newUsername: 'newUser name (public name)',
+            I18n.i18next.addResources("en", "login", {
+                title: "Mindrespect.com",
                 email: 'Email',
                 password: 'Password',
-                registerBtn: "Register for free",
+                loginBtn: "Login",
             });
-            I18n.i18next.addResources("fr", "register", {
-                title: "Utilisez MindRespect.com",
-                subtitle: "Prenez vos notes de façon unique et laissez vos idées modeler votre vie.",
-                newUsername: "Nom d'usager (nom public)",
+            I18n.i18next.addResources("fr", "login", {
+                title: "Mindrespect.com",
                 email: 'Courriel',
                 password: 'Mot de passe',
-                registerBtn: "Inscrivez-vous gratuitement"
+                loginBtn: "Connecter"
             });
             return {
                 valid: true,
-                newUser: {
+                user: {
                     username: "",
                     email: "",
                     password: ""
                 },
-                newUsernameErrors: null,
+                usernameErrors: null,
                 emailErrors: null,
                 passwordErrors: null
             };

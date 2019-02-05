@@ -132,16 +132,16 @@
                 <v-card flat color="secondary" height="100%" class="vh-center">
                     <v-card-title class="text-xs-center white--text vh-center">
                         <h3 class="display-2 text-xs-center">
-                            {{$t('about:registerTitle')}}
+                            {{$t('register:title')}}
                         </h3>
                         <div class="title">
-                            {{$t('about:registerSubTitle')}}
+                            {{$t('register:subtitle')}}
                         </div>
                     </v-card-title>
                 </v-card>
             </v-flex>
-            <v-flex xs12 md6>
-                <RegisterForm class="mt-2 mb-2"></RegisterForm>
+            <v-flex xs12 md6 class="mt-5 mb-5">
+                <RegisterForm></RegisterForm>
             </v-flex>
         </v-layout>
         <v-footer class="pa-3" dark>
@@ -188,9 +188,7 @@
                 level5Desc11: "your idea is more linked and integrated",
                 level5Desc2: "You are more aware",
                 level5Desc21: "you discover the path between your idea and reality",
-                level6Title: "Like your mind, you act in a coherent and conscious way",
-                registerTitle: "Use MindRespect.com",
-                registerSubTitle: "Take your notes in a unique way and let your ideas shape your life."
+                level6Title: "Like your mind, you act in a coherent and conscious way"
             });
             I18n.i18next.addResources("fr", "about", {
                 whatYouDo: 'Que faites vous lorsque vous avez une nouvelle idée ?',
@@ -211,9 +209,7 @@
                 level5Desc11: "votre idée est davantage liée et intégrée",
                 level5Desc2: "Vous êtes plus conscient",
                 level5Desc21: "vous découvrez le chemin entre votre idée et la réalité",
-                level6Title: "À l'image de votre esprit, vous agissez de façon cohérente et consciente",
-                registerTitle: "Utilisez MindRespect.com",
-                registerSubTitle: "Prenez vos notes de façon unique et laissez vos idées modeler votre vie."
+                level6Title: "À l'image de votre esprit, vous agissez de façon cohérente et consciente"
             });
             return {
                 noteTakingLevels: [
