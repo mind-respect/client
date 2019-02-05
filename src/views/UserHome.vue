@@ -7,7 +7,7 @@
         <v-tabs
                 style="margin-top:65px;"
                 v-model="tabMenu"
-                color="cyan"
+                color="secondary"
                 dark
                 slider-color="yellow"
                 grow
@@ -45,7 +45,7 @@
                             {{$t('userhome:toList')}}
                         </v-tooltip>
                         <v-tooltip v-if="isListView && $vuetify.breakpoint.mdAndUp" left>
-                            <v-btn flat icon slot="activator" @click="isListView = !isListView"  class="mt-3">
+                            <v-btn flat icon slot="activator" @click="isListView = !isListView" class="mt-3">
                                 <v-icon large>
                                     view_module
                                 </v-icon>
@@ -91,7 +91,7 @@
                                 </v-flex>
                             </v-layout>
                             <v-layout row wrap>
-                                <v-flex xs12 :md3="!isListView" v-for="center in centersFiltered">
+                                <v-flex xs12 :md3="!isListView" v-for="(center, index) in centersFiltered">
                                     <v-list two-line id="bubbles-as-list">
                                         <v-list-tile :href="center.uri().url()">
                                             <v-list-tile-content>
@@ -100,7 +100,8 @@
                                                         {{getIcon(center)}}
                                                     </v-icon>
                                                     {{center.getLabel()}}
-                                                    <small class="grey--text font-weight-normal font-italic mr-1 right" v-if="$vuetify.breakpoint.mdAndUp">
+                                                    <small class="grey--text font-weight-normal font-italic mr-1 right"
+                                                           v-if="$vuetify.breakpoint.mdAndUp">
                                                         {{center.lastVisit()}}
                                                     </small>
                                                 </v-list-tile-title>
@@ -111,12 +112,12 @@
                                                         {{value}}
                                                     </div>
                                                 </v-list-tile-sub-title>
-                                                <!--<v-list-tile-sub-title class="text-xs-right">-->
+                                                <!--<v-list-tile-sub-title class="text-xs-right" >-->
                                                 <!--{{center.lastVisit()}}-->
                                                 <!--</v-list-tile-sub-title>-->
                                             </v-list-tile-content>
                                             <v-list-tile-action>
-                                                <v-btn icon small>
+                                                <v-btn icon small @click.prevent="removeCenter(center, index)">
                                                     <v-icon color="grey">
                                                         delete
                                                     </v-icon>
@@ -163,11 +164,7 @@
                 </v-card>
             </v-tab-item>
             <v-tab-item>
-                <v-card flat>
-                    <v-card-text>
-                        cholo
-                    </v-card-text>
-                </v-card>
+                <Friends></Friends>
             </v-tab-item>
         </v-tabs>
     </div>
@@ -179,9 +176,13 @@
     import IdUri from '@/IdUri'
     import GraphElementType from '@/graph-element/GraphElementType'
     import I18n from '@/I18n'
+    import Friends from '@/components/home/Friends.vue'
 
     export default {
         name: "CentersList",
+        components: {
+            Friends
+        },
         data: function () {
             I18n.i18next.addResources("en", "userhome", {
                 "center": "Center",
@@ -269,6 +270,18 @@
             }
         },
         methods: {
+            removeCenter: function (centerToRemove, index) {
+                CenterGraphElementService.removeCentersWithUri(
+                    [centerToRemove.getUri()]
+                );
+                let l = this.centers.length;
+                while (l--) {
+                    let center = this.centers[l];
+                    if (center.getUri() === centerToRemove.getUri()) {
+                        this.centers.splice(l, 1);
+                    }
+                }
+            },
             getIcon: function (center) {
                 let uri = center.getUri();
                 let graphElementType = IdUri.getGraphElementTypeFromUri(uri);
@@ -282,7 +295,11 @@
                 }
             }
         },
+
         mounted: function () {
+            if (this.$route.name === "FriendsUserHome") {
+                this.tabMenu = 1;
+            }
             CenterGraphElementService.getPublicAndPrivate().then(function (response) {
                 this.centers = CenterGraphElement.fromServerFormat(response.data).map(function (center) {
                     center.labelSearch = center.getLabel();
@@ -298,6 +315,17 @@
                     let searchContent = center.labelSearch + ' ' + center.contextSearch;
                     return searchContent.toLowerCase().indexOf(this.search.toLowerCase()) > -1
                 }.bind(this));
+            }
+        },
+        watch: {
+            tabMenu: function () {
+                let pathName = this.tabMenu === 0 ? "UserHome" : "FriendsUserHome";
+                this.$router.push({
+                    name: pathName,
+                    params: {
+                        username: this.$route.params.username
+                    }
+                });
             }
         }
     }

@@ -20,12 +20,9 @@ export default {
         });
     },
     removeCentersWithUri: function (centersUri) {
-        return $.ajax({
-            method: 'DELETE',
-            url: UserService.currentUserUri() + "/center-elements",
-            data: JSON.stringify(centersUri),
-            dataType: 'json',
-            contentType: 'application/json;charset=utf-8'
-        });
+        return Service.api().delete(
+            UserService.currentUserUri() + "/center-elements",
+            {data: centersUri}
+        );
     }
 }

@@ -36,17 +36,24 @@
                 <!--append-icon="search"-->
                 <!--v-if="$vuetify.breakpoint.mdAndUp"-->
                 <!--&gt;</v-text-field>-->
-                <v-btn flat light :class="{
+                <v-btn flat light
+                       v-if="$store.state.user === undefined"
+                       :class="{
                     'ma-1 pa-1' : $vuetify.breakpoint.smAndDown
-                }">
+                }"
+                >
                     {{$t('login')}}
                 </v-btn>
-                <v-btn flat light :class="{
+                <v-btn flat light
+                       v-if="$store.state.user === undefined"
+                       :class="{
                     'ma-1 pa-1' : $vuetify.breakpoint.smAndDown
                 }">
                     {{$t('register')}}
                 </v-btn>
-                <v-btn light flat @click="switchLanguage()" :class="{
+                <v-btn light flat @click="switchLanguage()"
+                       v-if="$store.state.user === undefined"
+                       :class="{
                     'ma-1 pa-1' : $vuetify.breakpoint.smAndDown
                 }">
                     <v-icon class="mr-2 pa-0">public</v-icon>
@@ -63,6 +70,55 @@
                         Français
                     </span>
                 </v-btn>
+                <v-menu
+                        :close-on-content-click="false"
+                        :nudge-width="250"
+                        offset-x
+                        offset-y
+                        v-if="$store.state.user !== undefined"
+                >
+                    <v-btn icon light slot="activator">
+                        <v-icon>
+                            settings
+                        </v-icon>
+                    </v-btn>
+                    <v-card>
+                        <v-list>
+                            <v-list-tile @click="switchLanguage()">
+                                <v-list-tile-action>
+                                    <v-icon class="">public</v-icon>
+                                </v-list-tile-action>
+                                <v-list-tile-content>
+                                    <v-list-tile-title>
+                                        <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.smAndDown">
+                                            EN
+                                        </span>
+                                        <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.mdAndUp">
+                                            English
+                                        </span>
+                                        <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.smAndDown">
+                                            FR
+                                        </span>
+                                        <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.mdAndUp">
+                                            Français
+                                        </span>
+                                    </v-list-tile-title>
+                                </v-list-tile-content>
+                            </v-list-tile>
+                            <v-list-tile @click="logout()">
+                                <v-list-tile-action>
+                                    <v-icon>exit_to_app</v-icon>
+                                </v-list-tile-action>
+                                <v-list-tile-content>
+                                    <v-list-tile-title>
+                                        {{$t('logout')}}
+                                    </v-list-tile-title>
+                                </v-list-tile-content>
+                            </v-list-tile>
+                        </v-list>
+                    </v-card>
+                </v-menu>
+
             </v-toolbar>
             <!--<router-link to="/">Home</router-link>-->
             <!--<router-link to="/about">About</router-link>-->
@@ -73,7 +129,7 @@
 
 <script>
     import UserService from '@/service/UserService'
-
+    import AuthenticateService from "./service/AuthenticateService";
     export default {
         data: () => ({
             clipped: false,
@@ -83,6 +139,14 @@
             switchLanguage: function () {
                 let newLocale = this.$store.state.locale === "en" ? "fr" : "en";
                 this.$store.dispatch('setLocale', newLocale);
+            },
+            logout: function () {
+                Promise.all([
+                    AuthenticateService.logout(),
+                    this.$store.dispatch('setUser', undefined)
+                ]).then(function () {
+                    this.$router.push("/")
+                }.bind(this));
             }
         },
         mounted: function () {
@@ -90,6 +154,7 @@
                 this.$store.dispatch('setUser', response.data)
                 this.dataLoaded = true;
             }.bind(this)).catch(function () {
+                this.$router.push("/");
                 this.dataLoaded = true;
             }.bind(this))
         }

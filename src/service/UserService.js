@@ -105,14 +105,12 @@ const UserService = {
         }).done(callback).fail(errorCallback);
     },
     search: function (searchText) {
-        return $.ajax({
-            type: 'POST',
-            data: JSON.stringify({
+        return Service.api().post(
+            UserService.currentUserUri() + "/search-users",
+            {
                 "searchText": searchText
-            }),
-            contentType: 'application/json;charset=utf-8',
-            url: UserService.currentUserUri() + "/search-users"
-        });
+            }
+        )
     }
 };
 export default UserService

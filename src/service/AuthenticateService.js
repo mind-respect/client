@@ -10,5 +10,8 @@ export default {
     },
     login: function (user) {
         return Service.api().post("/login", user);
+    },
+    logout: function(){
+        return Service.api().delete("/users/session");
     }
 };

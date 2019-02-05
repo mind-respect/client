@@ -33,7 +33,7 @@ const Store = new Vuex.Store({
                     locale: user.locale
                 };
             } else {
-                state.user = null;
+                state.user = undefined;
             }
             UserService.setAuthenticatedUserInCache(state.user);
         },

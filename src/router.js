@@ -31,6 +31,11 @@ export default new Router({
             path: '/user/:username',
             name: 'UserHome',
             component: UserHome
-        }
+        },
+        {
+            path: '/user/:username/friends',
+            name: 'FriendsUserHome',
+            component: UserHome
+        },
     ]
 })

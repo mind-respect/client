@@ -26,14 +26,16 @@ export default {
                     translation: {
                         login: 'Login',
                         register: 'Register',
-                        search: 'Search'
+                        search: 'Search',
+                        logout: "Logout"
                     }
                 },
                 fr: {
                     translation: {
                         login: 'Connexion',
                         register: "S'inscrire",
-                        search: 'Chercher'
+                        search: 'Chercher',
+                        logout: "Déconnexion"
                     }
                 }
             }
