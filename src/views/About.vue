@@ -237,6 +237,16 @@
                     }
                 ]
             }
+        },
+        mounted: function () {
+            if (this.$store.state.user && this.$route.name === 'home') {
+                this.$router.push({
+                    name: 'UserHome',
+                    params: {
+                        username: this.$store.state.user.username
+                    }
+                })
+            }
         }
     }
 </script>

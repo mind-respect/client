@@ -30,6 +30,7 @@ const Store = new Vuex.Store({
                     email: user.email,
                     status: user.status,
                     user_name: user.user_name,
+                    username: user.user_name,
                     locale: user.locale
                 };
             } else {

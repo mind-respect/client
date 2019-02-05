@@ -18,6 +18,7 @@
                     item-value="username"
                     :placeholder="$t('friends:search')"
                     prepend-icon="people"
+                    @change="visitUser()"
                     return-object
             ></v-autocomplete>
         </v-card-text>
@@ -75,6 +76,18 @@
                     }.bind(this)).finally(() => (
                         this.isLoading = false
                     ))
+                }.bind(this))
+            }
+        },
+        methods: {
+            visitUser: function () {
+                Vue.nextTick(function () {
+                    this.$router.push({
+                        name: "UserHome",
+                        params: {
+                            username: this.searchValue.username
+                        }
+                    })
                 }.bind(this))
             }
         }

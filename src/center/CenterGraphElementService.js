@@ -13,11 +13,9 @@ export default {
         );
     },
     getPublicOnlyForUsername: function (username) {
-        return $.ajax({
-            method: 'GET',
-            url: UserService.getUsersResourceUrl() + username + "/center-elements/public",
-            dataType: 'json'
-        });
+        return Service.api().get(
+            UserService.getUsersResourceUrl() + username + "/center-elements/public"
+        );
     },
     removeCentersWithUri: function (centersUri) {
         return Service.api().delete(

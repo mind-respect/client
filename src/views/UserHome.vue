@@ -90,7 +90,10 @@
                                     </v-hover>
                                 </v-flex>
                             </v-layout>
-                            <v-layout row wrap>
+                            <v-layout row wrap class="vh-center">
+                                <h3 class="subheading">
+                                    {{$t('userhome:noBubbles')}}
+                                </h3>
                                 <v-flex xs12 :md3="!isListView" v-for="(center, index) in centersFiltered">
                                     <v-list two-line id="bubbles-as-list">
                                         <v-list-tile :href="center.uri().url()">
@@ -210,7 +213,8 @@
                     "friends": "FRIENDS"
                 },
                 "toGrid": "Grid view",
-                "toList": "List view"
+                "toList": "List view",
+                "noBubbles": "No centers"
             });
             I18n.i18next.addResources("fr", "userhome", {
                 "center": "Centre",
@@ -237,7 +241,8 @@
                     "friends": "AMIS"
                 },
                 "toGrid": "Vue en grille",
-                "toList": "Vue en liste"
+                "toList": "Vue en liste",
+                "noBubbles": "Pas de centres"
             });
             return {
                 search: '',
@@ -293,21 +298,30 @@
                     default :
                         return "panorama_fish_eye";
                 }
+            },
+            changeUser: function () {
+                this.loaded = false;
+                let isOwner = this.$store.state.user.username === this.$route.params.username;
+                let centersRequest = isOwner ? CenterGraphElementService.getPublicAndPrivate() : CenterGraphElementService.getPublicOnlyForUsername(
+                    this.$route.params.username
+                );
+                if (this.$route.name === "FriendsUserHome") {
+                    this.tabMenu = 1;
+                } else {
+                    this.tabMenu = 0;
+                }
+                centersRequest.then(function (response) {
+                    this.centers = CenterGraphElement.fromServerFormat(response.data).map(function (center) {
+                        center.labelSearch = center.getLabel();
+                        center.contextSearch = Object.values(center.getContext()).join(' ');
+                        return center;
+                    });
+                    this.loaded = true;
+                }.bind(this))
             }
         },
-
         mounted: function () {
-            if (this.$route.name === "FriendsUserHome") {
-                this.tabMenu = 1;
-            }
-            CenterGraphElementService.getPublicAndPrivate().then(function (response) {
-                this.centers = CenterGraphElement.fromServerFormat(response.data).map(function (center) {
-                    center.labelSearch = center.getLabel();
-                    center.contextSearch = Object.values(center.getContext()).join(' ');
-                    return center;
-                });
-                this.loaded = true;
-            }.bind(this))
+            this.changeUser();
         },
         computed: {
             centersFiltered: function () {
@@ -326,6 +340,14 @@
                         username: this.$route.params.username
                     }
                 });
+                this.changeUser();
+            },
+            '$route.name': function () {
+                if(this.$route.name === 'UserHome'){
+                    this.tabMenu = 0;
+                }else if(this.$route.name === 'FriendsUserHome'){
+                    this.tabMenu = 1;
+                }
             }
         }
     }
