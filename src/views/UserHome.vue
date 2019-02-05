@@ -91,8 +91,11 @@
                                 </v-flex>
                             </v-layout>
                             <v-layout row wrap class="vh-center">
-                                <h3 class="subheading">
+                                <h3 class="subheading" v-if="centers.length === 0">
                                     {{$t('userhome:noBubbles')}}
+                                </h3>
+                                <h3 class="subheading" v-if="centers.length !== 0 && centersFiltered.length === 0">
+                                    {{$t('userhome:noSearchResults')}}
                                 </h3>
                                 <v-flex xs12 :md3="!isListView" v-for="(center, index) in centersFiltered">
                                     <v-list two-line id="bubbles-as-list">
@@ -214,7 +217,8 @@
                 },
                 "toGrid": "Grid view",
                 "toList": "List view",
-                "noBubbles": "No centers"
+                "noBubbles": "No centers",
+                "noSearchResults": "No search results"
             });
             I18n.i18next.addResources("fr", "userhome", {
                 "center": "Centre",
@@ -242,7 +246,8 @@
                 },
                 "toGrid": "Vue en grille",
                 "toList": "Vue en liste",
-                "noBubbles": "Pas de centres"
+                "noBubbles": "Pas de centres",
+                "noSearchResults": "Pas de résultats de recherche"
             });
             return {
                 search: '',

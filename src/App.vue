@@ -130,6 +130,7 @@
 <script>
     import UserService from '@/service/UserService'
     import AuthenticateService from "./service/AuthenticateService";
+
     export default {
         data: () => ({
             clipped: false,
@@ -154,6 +155,7 @@
                 this.$store.dispatch('setUser', response.data)
                 this.dataLoaded = true;
             }.bind(this)).catch(function () {
+                this.$store.dispatch('setUser', undefined)
                 this.$router.push("/");
                 this.dataLoaded = true;
             }.bind(this))
