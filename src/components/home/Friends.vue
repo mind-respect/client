@@ -20,6 +20,7 @@
                     prepend-icon="people"
                     @change="visitUser()"
                     return-object
+                    :no-data-text="$t('noSearchResults')"
             ></v-autocomplete>
         </v-card-text>
     </v-card>

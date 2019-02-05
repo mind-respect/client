@@ -90,13 +90,19 @@
                                     </v-hover>
                                 </v-flex>
                             </v-layout>
-                            <v-layout row wrap class="vh-center">
-                                <h3 class="subheading" v-if="centers.length === 0">
+                            <v-layout row wrap class="">
+                                <h3 class="subheading vh-center font-italic" v-if="centers.length === 0">
                                     {{$t('userhome:noBubbles')}}
                                 </h3>
-                                <h3 class="subheading" v-if="centers.length !== 0 && centersFiltered.length === 0">
-                                    {{$t('userhome:noSearchResults')}}
-                                </h3>
+                                <div class="ml-3" v-if="centers.length !== 0 && centersFiltered.length === 0">
+                                    <h3 class="subheading font-italic">
+                                        {{$t('noSearchResults')}}
+                                    </h3>
+                                    <v-btn class="ml-0" color="secondary">
+                                        <v-icon class="mr-2">add</v-icon>
+                                        {{search}}
+                                    </v-btn>
+                                </div>
                                 <v-flex xs12 :md3="!isListView" v-for="(center, index) in centersFiltered">
                                     <v-list two-line id="bubbles-as-list">
                                         <v-list-tile :href="center.uri().url()">
@@ -217,8 +223,7 @@
                 },
                 "toGrid": "Grid view",
                 "toList": "List view",
-                "noBubbles": "No centers",
-                "noSearchResults": "No search results"
+                "noBubbles": "No centers"
             });
             I18n.i18next.addResources("fr", "userhome", {
                 "center": "Centre",
@@ -246,8 +251,7 @@
                 },
                 "toGrid": "Vue en grille",
                 "toList": "Vue en liste",
-                "noBubbles": "Pas de centres",
-                "noSearchResults": "Pas de résultats de recherche"
+                "noBubbles": "Pas de centres"
             });
             return {
                 search: '',

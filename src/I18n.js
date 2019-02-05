@@ -27,7 +27,10 @@ export default {
                         login: 'Login',
                         register: 'Register',
                         search: 'Search',
-                        logout: "Logout"
+                        logout: "Logout",
+                        add: "Add",
+                        create: "Create",
+                        "noSearchResults": "No search results"
                     }
                 },
                 fr: {
@@ -35,7 +38,10 @@ export default {
                         login: 'Connexion',
                         register: "S'inscrire",
                         search: 'Chercher',
-                        logout: "Déconnexion"
+                        logout: "Déconnexion",
+                        add: "Ajouter",
+                        create: "Créer",
+                        "noSearchResults": "Pas de résultats de recherche"
                     }
                 }
             }
