@@ -30,7 +30,10 @@ export default {
                         logout: "Logout",
                         add: "Add",
                         create: "Create",
-                        "noSearchResults": "No search results"
+                        noSearchResults: "No search results",
+                        'required': "Required",
+                        invalidEmail: 'invalid email',
+                        min8Char: "Minimum of 8 characters"
                     }
                 },
                 fr: {
@@ -41,7 +44,10 @@ export default {
                         logout: "Déconnexion",
                         add: "Ajouter",
                         create: "Créer",
-                        "noSearchResults": "Pas de résultats de recherche"
+                        noSearchResults: "Pas de résultats de recherche",
+                        'required': "Requis",
+                        invalidEmail: 'courriel invalide',
+                        min8Char: "Minimum de 8 charactères"
                     }
                 }
             }

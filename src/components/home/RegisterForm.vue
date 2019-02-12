@@ -5,23 +5,37 @@
 <template>
     <v-card class="" flat color="transparent">
         <v-card-text>
-            <form>
+            <v-form ref="registerForm">
+                <v-alert
+                        :value="createConflict"
+                        type="error"
+                >
+                    <div v-if="emailAlreadyRegistered">
+                        {{$t('register:emailAlreadyRegistered')}}
+                    </div>
+                    <div v-if="usernameAlreadyRegistered">
+                        {{$t('register:usernameAlreadyRegistered')}}
+                    </div>
+                </v-alert>
                 <v-text-field
                         v-model="newUser.username"
                         :error-messages="newUsernameErrors"
                         :label="$t('register:newUsername')"
+                        :rules="[Rules.required]"
                         required
                 ></v-text-field>
                 <v-text-field
                         v-model="newUser.email"
                         :error-messages="emailErrors"
                         :label="$t('register:email')"
+                        :rules="[Rules.required, Rules.email]"
                         required
                 ></v-text-field>
                 <v-text-field
                         v-model="newUser.password"
                         :error-messages="passwordErrors"
                         :label="$t('register:password')"
+                        :rules="[Rules.min8Char]"
                         required
                         type="password"
                 ></v-text-field>
@@ -33,7 +47,7 @@
                 >
                     {{$t('register:registerBtn')}}
                 </v-btn>
-            </form>
+            </v-form>
         </v-card-text>
     </v-card>
 </template>
@@ -41,11 +55,20 @@
 <script>
     import I18n from '@/I18n'
     import AuthenticateService from '@/service/AuthenticateService'
+    import Rules from '@/Rules'
+    import LoadingFlow from '@/LoadingFlow'
 
     export default {
         name: "RegisterForm",
         methods: {
             register: function () {
+                this.createConflict = false;
+                this.emailAlreadyRegistered = false;
+                this.usernameAlreadyRegistered = false;
+                if (!this.$refs.registerForm.validate()) {
+                    return;
+                }
+                LoadingFlow.enter();
                 AuthenticateService.register(this.newUser).then(function (response) {
                     this.$store.dispatch('setUser', response.data)
                     this.$router.push({
@@ -54,8 +77,31 @@
                             username: response.data.user_name
                         }
                     });
-                    this.$emit('flow-is-done')
+                    this.$emit('flow-is-done');
+                    LoadingFlow.leave();
+                }.bind(this)).catch(function (response) {
+                    response.response.data.forEach(function (error) {
+                        if ("already_registered_email" === error.reason) {
+                            this.emailAlreadyRegistered = true;
+                        }
+                        if ("user_name_already_registered" === error.reason) {
+                            this.usernameAlreadyRegistered = true;
+                        }
+                    }.bind(this));
+                    this.createConflict = true;
+                    LoadingFlow.leave();
                 }.bind(this));
+            },
+            enter: function () {
+                this.newUser = {
+                    username: "",
+                    email: "",
+                    password: ""
+                };
+                this.createConflict = false;
+                this.emailAlreadyRegistered = false;
+                this.usernameAlreadyRegistered = false;
+                this.$refs.registerForm.reset();
             }
         },
         data: function () {
@@ -66,6 +112,8 @@
                 email: 'Email',
                 password: 'Password',
                 registerBtn: "Register for free",
+                emailAlreadyRegistered: "Email already registered",
+                usernameAlreadyRegistered: "Username already taken"
             });
             I18n.i18next.addResources("fr", "register", {
                 title: "Utilisez MindRespect.com",
@@ -73,9 +121,12 @@
                 newUsername: "Nom d'usager (nom public)",
                 email: 'Courriel',
                 password: 'Mot de passe',
-                registerBtn: "Inscrivez-vous gratuitement"
+                registerBtn: "Inscrivez-vous gratuitement",
+                emailAlreadyRegistered: "Courriel déjà enregistré",
+                usernameAlreadyRegistered: "Usager est déjà pris"
             });
             return {
+                Rules: Rules,
                 valid: true,
                 newUser: {
                     username: "",
@@ -84,7 +135,10 @@
                 },
                 newUsernameErrors: null,
                 emailErrors: null,
-                passwordErrors: null
+                passwordErrors: null,
+                createConflict: false,
+                usernameAlreadyRegistered: false,
+                emailAlreadyRegistered: false
             };
         }
     }

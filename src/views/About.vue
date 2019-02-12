@@ -39,98 +39,123 @@
         </Level>
         <Level image="featured_organize_chaos-1068x445.jpg" :title="$t('about:level3Title')" :level="3">
             <!--https://pixabay.com/fr/intelligence-artificielle-cerveau-3382507/-->
-            <div slot="description">
-                <v-list class="white--text" style="background-color: transparent">
-                    <v-list-tile>
-                        <v-list-tile-title class="title">
-                            <v-icon class="white--text mr-2">search</v-icon>
-                            {{$t('about:level3Desc1')}}
-                        </v-list-tile-title>
-                    </v-list-tile>
-                    <v-list-tile>
-                        <v-list-tile-title class="title">
-                            <v-icon class="white--text mr-2">star</v-icon>
-                            {{$t('about:level3Desc2')}}
-                        </v-list-tile-title>
-                    </v-list-tile>
-                </v-list>
+            <div slot="description" class="vh-center">
+                <v-layout row>
+                    <v-flex xs0 md2></v-flex>
+                    <v-flex xs12 md8>
+                        <v-layout row wrap class="white--text title" style="background-color: transparent">
+                            <v-flex xs1>
+                                <v-icon class="white--text mr-2">search</v-icon>
+                            </v-flex>
+                            <v-flex xs11 class="mb-4 text-xs-center">
+                                {{$t('about:level3Desc1')}}
+                            </v-flex>
+                            <v-flex xs1>
+                                <v-icon class="white--text mr-2">star</v-icon>
+                            </v-flex>
+                            <v-flex xs11 class="text-xs-center">
+                                {{$t('about:level3Desc2')}}
+                            </v-flex>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex xs0 md2></v-flex>
+                </v-layout>
+                <!--<v-card class="white&#45;&#45;text title" style="background-color: transparent">-->
+                <!--<v-card-text>-->
+                <!--<v-icon class="white&#45;&#45;text mr-2">search</v-icon>-->
+                <!--{{$t('about:level3Desc1')}}-->
+                <!--</v-card-text>-->
+                <!--<v-card-text>-->
+                <!--<v-icon class="white&#45;&#45;text mr-2">star</v-icon>-->
+                <!--{{$t('about:level3Desc2')}}-->
+                <!--</v-card-text>-->
+                <!--</v-card>-->
+                <!--<v-list class="white&#45;&#45;text" style="background-color: transparent" two-line dense>-->
+                <!--<v-list-tile>-->
+                <!--<v-list-tile-content>-->
+                <!--<v-list-tile-sub-title class="title white&#45;&#45;text">-->
+                <!--<v-icon class="white&#45;&#45;text mr-2">search</v-icon>-->
+                <!--{{$t('about:level3Desc1')}}-->
+                <!--</v-list-tile-sub-title>-->
+                <!--</v-list-tile-content>-->
+                <!--</v-list-tile>-->
+                <!--<v-list-tile>-->
+                <!--<v-list-content-content>-->
+                <!--<v-list-tile-sub-title class="title">-->
+                <!--<v-icon class="white&#45;&#45;text mr-2">star</v-icon>-->
+                <!--{{$t('about:level3Desc2')}}-->
+                <!--</v-list-tile-sub-title>-->
+                <!--</v-list-content-content>-->
+                <!--</v-list-tile>-->
+                <!--</v-list>-->
             </div>
         </Level>
         <Level image="mindmap-2123973_1280.jpg" :title="$t('about:level4Title')" :level="4">
             <div slot="description" class="title">
-                <v-list class="white--text" style="background-color: transparent">
-                    <v-list-tile>
-                        <v-list-tile-title class="title">
-                            <v-icon class="white--text mr-2">fa-sitemap</v-icon>
-                            {{$t('about:level4Desc1')}}
-                        </v-list-tile-title>
-                    </v-list-tile>
-                </v-list>
+                <v-layout row>
+                    <v-flex xs0 sm2 md2></v-flex>
+                    <v-flex xs12 sm8 md8>
+                        <v-layout row wrap class="white--text title" style="background-color: transparent">
+                            <v-flex xs1>
+                                <v-icon class="white--text mr-2">fa-sitemap</v-icon>
+                            </v-flex>
+                            <v-flex xs11 class="mb-4 text-xs-center">
+                                {{$t('about:level4Desc1')}}
+                            </v-flex>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex xs0 sm2 md2></v-flex>
+                </v-layout>
             </div>
         </Level>
         <Level image="neurons-440660.jpg" :title="$t('about:level5Title')" :level="5">
             <!--https://www.flickr.com/photos/jjorquera/15433132769-->
             <div slot="description">
-                <v-list style="background-color:transparent;" class="white--text">
-                    <v-list-tile>
-                        <v-list-tile-title class="title">
-                            <v-icon dark class="mr-2">
-                                fa-balance-scale
-                            </v-icon>
-                            {{$t('about:level5Desc1')}}
-                        </v-list-tile-title>
-                    </v-list-tile>
-                    <v-list-tile>
-                        <v-list-tile-action>
-                            <v-icon dark class="fa-flip-horizontal">
-                                keyboard_return
-                            </v-icon>
-                        </v-list-tile-action>
-                        <v-list-tile-title class="title">
-                            {{$t('about:level5Desc11')}}
-                        </v-list-tile-title>
-                    </v-list-tile>
-                    <v-list-tile>
-                        <v-list-tile-title class="title">
-                            <v-icon dark class="mr-2">
-                                public
-                            </v-icon>
-                            {{$t('about:level5Desc2')}}
-                        </v-list-tile-title>
-                    </v-list-tile>
-                    <v-list-tile>
-                        <v-list-tile-action>
-                            <v-icon dark class="fa-flip-horizontal">
-                                keyboard_return
-                            </v-icon>
-                        </v-list-tile-action>
-                        <v-list-tile-title class="title">
-                            {{$t('about:level5Desc21')}}
-                        </v-list-tile-title>
-                    </v-list-tile>
-                </v-list>
+                <v-layout row>
+                    <v-flex xs0 sm2 md2 lg3 xl4></v-flex>
+                    <v-flex xs12 sm8 md8 lg6 xl4>
+                        <v-layout row wrap class="white--text title ml-4" style="background-color: transparent">
+                            <v-flex xs1 class="">
+                                <v-icon class="white--text mr-2">fa-balance-scale</v-icon>
+                            </v-flex>
+                            <v-flex xs11 class="mb-4 text-xs-left pl-4">
+                                {{$t('about:level5Desc1')}}
+                            </v-flex>
+                            <v-flex xs1>
+                                <v-icon class="white--text mr-2 fa-flip-horizontal">keyboard_return</v-icon>
+                            </v-flex>
+                            <v-flex xs11 class="mb-4 text-xs-left pl-4">
+                                {{$t('about:level5Desc11')}}
+                            </v-flex>
+                            <v-flex xs1>
+                                <v-icon class="white--text mr-2 fa-flip-horizontal">
+                                    public
+                                </v-icon>
+                            </v-flex>
+                            <v-flex xs11 class="mb-4 text-xs-left pl-4">
+                                {{$t('about:level5Desc2')}}
+                            </v-flex>
+                            <v-flex xs1>
+                                <v-icon class="white--text mr-2 fa-flip-horizontal">
+                                    keyboard_return
+                                </v-icon>
+                            </v-flex>
+                            <v-flex xs11 class="mb-4 text-xs-left pl-4">
+                                {{$t('about:level5Desc21')}}
+                            </v-flex>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex xs0 sm2 md2 l3 xl4></v-flex>
+                </v-layout>
             </div>
         </Level>
         <Level image="dawn-3804124_1280.jpg" :title="$t('about:level6Title')" :level="6">
             <!--https://pixabay.com/fr/dawn-arbres-l-%C3%A9cart-brouillard-3804124/-->
         </Level>
-        <!--<v-parallax-->
-        <!--dark-->
-        <!--src="@/assets/levels/dawn-3804124_1280.jpg"-->
-        <!--&gt;-->
-        <!--<v-layout row wrap>-->
-        <!--<v-flex xs12 md6>-->
-        <!--asf-->
-        <!--</v-flex>-->
-        <!--<v-flex xs12 md6>-->
-        <!--<RegisterForm></RegisterForm>-->
-        <!--</v-flex>-->
-        <!--</v-layout>-->
-        <!--</v-parallax>-->
         <v-layout row wrap class="">
             <v-flex xs12 md6 class="vh-center">
                 <v-card flat color="secondary" height="100%" class="vh-center">
-                    <v-card-title class="text-xs-center white--text vh-center">
+                    <v-card-title class="text-xs-center white--text vh-center pr-0">
                         <h3 class="display-2 text-xs-center">
                             {{$t('register:title')}}
                         </h3>

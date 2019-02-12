@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/views/About.vue'
+import About from '@/views/About.vue'
 import UserHome from '@/views/UserHome.vue'
 
 Vue.use(Router)
@@ -12,12 +12,27 @@ export default new Router({
         {
             path: '/',
             name: 'home',
-            component: Home
+            component: About
         },
         {
             path: '/welcome',
             name: 'welcome',
-            component: Home
+            component: About
+        },
+        {
+            path: '/register',
+            name: 'register',
+            component: About
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: About
+        },
+        {
+            path: '/forgot-password',
+            name: 'forgotPassword',
+            component: About
         },
         {
             path: '/about',
