@@ -38,22 +38,11 @@
                     {{$t('login:loginBtn')}}
                 </v-btn>
                 <v-spacer></v-spacer>
-                <a href="#" @click.prevent="forgotPasswordDialog = false" class="mr-1">
+                <a href="#" @click.prevent="goToForgotPassword()" class="mr-1">
                     {{$t('login:forgotPassword')}}
                 </a>
             </v-card-actions>
         </v-card>
-        <v-dialog v-model="forgotPasswordDialog" width="900">
-            <v-card>
-                <v-card-title class="pb-0">
-                    <h3 class="title">
-                        {{$t('forgot:title')}}
-                    </h3>
-                    <v-spacer></v-spacer>
-                    <v-icon @click="leaveDialog('forgotPasswordDialog')">close</v-icon>
-                </v-card-title>
-            </v-card>
-        </v-dialog>
     </div>
 </template>
 
@@ -62,10 +51,19 @@
     import AuthenticateService from '@/service/AuthenticateService'
     import Rules from '@/Rules'
     import LoadingFlow from '@/LoadingFlow'
+    import Vue from 'vue'
 
     export default {
         name: "LoginForm",
         methods: {
+            goToForgotPassword: function () {
+                this.$emit('flow-is-done');
+                Vue.nextTick(function () {
+                    this.$router.push(
+                        "/forgot-password"
+                    );
+                }.bind(this))
+            },
             login: function () {
                 this.wrongLogin = false;
                 if (!this.$refs.loginForm.validate()) {
@@ -74,14 +72,16 @@
                 LoadingFlow.enter();
                 AuthenticateService.login(this.user).then(function (response) {
                     this.$store.dispatch('setUser', response.data)
-                    this.$router.push({
-                        name: 'UserHome',
-                        params: {
-                            username: response.data.user_name
-                        }
-                    });
                     this.$emit('flow-is-done');
-                    LoadingFlow.leave();
+                    Vue.nextTick(function () {
+                        this.$router.push({
+                            name: 'UserHome',
+                            params: {
+                                username: response.data.user_name
+                            }
+                        });
+                        LoadingFlow.leave();
+                    }.bind(this))
                 }.bind(this)).catch(function () {
                     this.wrongLogin = true;
                     LoadingFlow.leave();
@@ -111,7 +111,7 @@
                 password: 'Mot de passe',
                 loginBtn: "Connecter",
                 wrongLogin: "Pas le bon courriel ou mot de passe, essayez de nouveau.",
-                forgotPassword: "Mot de passe oublié"
+                forgotPassword: "Mot de passe oublié",
             });
             return {
                 valid: true,
@@ -125,11 +125,6 @@
             };
         },
         mounted: function () {
-            this.isWrongLogin = false;
-            this.user = {
-                email: "",
-                password: ""
-            }
         }
     }
 </script>

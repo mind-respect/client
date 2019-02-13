@@ -33,7 +33,9 @@ export default {
                         noSearchResults: "No search results",
                         'required': "Required",
                         invalidEmail: 'invalid email',
-                        min8Char: "Minimum of 8 characters"
+                        min8Char: "Minimum of 8 characters",
+                        send: "Send",
+                        change: "Change"
                     }
                 },
                 fr: {
@@ -47,7 +49,9 @@ export default {
                         noSearchResults: "Pas de résultats de recherche",
                         'required': "Requis",
                         invalidEmail: 'courriel invalide',
-                        min8Char: "Minimum de 8 charactères"
+                        min8Char: "Minimum de 8 charactères",
+                        send: "Envoyer",
+                        change: "Modifier"
                     }
                 }
             }

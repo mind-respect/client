@@ -35,6 +35,11 @@ export default new Router({
             component: About
         },
         {
+            path: '/email/:email/token/:changePasswordToken',
+            name: 'changePassword',
+            component: About
+        },
+        {
             path: '/about',
             name: 'about',
             // route level code-splitting
@@ -51,6 +56,6 @@ export default new Router({
             path: '/user/:username/friends',
             name: 'FriendsUserHome',
             component: UserHome
-        },
+        }
     ]
 })

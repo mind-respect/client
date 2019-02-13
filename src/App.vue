@@ -43,7 +43,7 @@
                 <!--&gt;</v-text-field>-->
                 <v-btn flat light
                        v-if="$store.state.user === undefined"
-                       @click="loginFlow()"
+                       @click="loginDialog = true"
                        :class="{
                     'ma-1 pa-1' : $vuetify.breakpoint.smAndDown
                 }"
@@ -52,7 +52,7 @@
                 </v-btn>
                 <v-btn flat light
                        v-if="$store.state.user === undefined"
-                       @click="registerFlow()"
+                       @click="registerDialog = true"
                        :class="{
                     'ma-1 pa-1' : $vuetify.breakpoint.smAndDown
                 }">
@@ -140,24 +140,54 @@
                         </div>
                     </h3>
                     <v-spacer></v-spacer>
-                    <v-icon @click="leaveDialog('registerDialog')">close</v-icon>
+                    <v-icon @click="registerDialog = false">close</v-icon>
                 </v-card-title>
                 <v-card-text class="pa-0">
-                    <RegisterForm @flow-is-done="leaveDialog('registerDialog')" ref="registerForm"></RegisterForm>
+                    <RegisterForm @flow-is-done="registerDialog = false" ref="registerForm"></RegisterForm>
                 </v-card-text>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="loginDialog"  width="500">
+        <v-dialog v-model="loginDialog" width="900">
             <v-card>
                 <v-card-title class="pb-0">
                     <h3 class="title">
                         {{$t('login:title')}}
                     </h3>
                     <v-spacer></v-spacer>
-                    <v-icon @click="leaveDialog('loginDialog')">close</v-icon>
+                    <v-icon @click="loginDialog = false">close</v-icon>
                 </v-card-title>
                 <v-card-text class="pa-0">
-                    <LoginForm @flow-is-done="leaveDialog('loginDialog')" ref="loginForm"></LoginForm>
+                    <LoginForm @flow-is-done="loginDialog = false" ref="loginForm"></LoginForm>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="forgotPasswordDialog" width="900">
+            <v-card>
+                <v-card-title class="pb-0">
+                    <h3 class="title">
+                        {{$t('forgot:title')}}
+                    </h3>
+                    <v-spacer></v-spacer>
+                    <v-icon @click="forgotPasswordDialog = false">close</v-icon>
+                </v-card-title>
+                <v-card-text>
+                    <ForgotPasswordForm @flow-is-done="forgotPasswordDialog = false"
+                                        ref="forgotPasswordForm"></ForgotPasswordForm>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="changePasswordDialog" width="900">
+            <v-card>
+                <v-card-title class="pb-0">
+                    <h3 class="title">
+                        {{$t('password:title')}}
+                    </h3>
+                    <v-spacer></v-spacer>
+                    <v-icon @click="changePasswordDialog = false">close</v-icon>
+                </v-card-title>
+                <v-card-text>
+                    <ChangePasswordForm @flow-is-done="changePasswordDialog = false"
+                                        ref="changePasswordForm"></ChangePasswordForm>
                 </v-card-text>
             </v-card>
         </v-dialog>
@@ -168,15 +198,21 @@
     import UserService from '@/service/UserService'
     import AuthenticateService from "./service/AuthenticateService";
     import RegisterForm from "./components/home/RegisterForm";
+    import ForgotPasswordForm from '@/components/home/ForgotPasswordForm'
+    import ChangePasswordForm from '@/components/home/ChangePasswordForm'
     import LoginForm from "./components/home/LoginForm";
     import LoadingFlow from '@/LoadingFlow'
+    import Vue from 'vue'
 
-    const aboutPages = ['register', 'login'];
+
+    const aboutPages = ['register', 'login', 'forgotPassword', 'changePassword'];
 
     export default {
         components: {
             RegisterForm,
-            LoginForm
+            LoginForm,
+            ForgotPasswordForm,
+            ChangePasswordForm
         },
         data: () => ({
             clipped: false,
@@ -184,7 +220,9 @@
             registerDialog: false,
             loginDialog: false,
             loadingFlows: LoadingFlow.loadingFlows,
-            isLoading: false
+            isLoading: false,
+            forgotPasswordDialog: false,
+            changePasswordDialog: false
         }),
         methods: {
             switchLanguage: function () {
@@ -198,37 +236,11 @@
                 ]).then(function () {
                     this.$router.push("/")
                 }.bind(this));
-            },
-            leaveDialog: function (dialog) {
-                this[dialog] = false;
-                this.$router.push({
-                    name: "home"
-                });
-            },
-            registerFlow: function () {
-                this.registerDialog = true;
-                this.$router.push({
-                    name: "register"
-                });
-                this.$refs.registerForm.enter();
-            },
-            loginFlow: function () {
-                this.loginDialog = true;
-                this.$router.push({
-                    name: "login"
-                });
-                this.$refs.loginForm.enter();
-            },
-            forgotPasswordFlow: function () {
-
-            },
-            changePasswordFlow: function () {
-
             }
         },
         mounted: function () {
             UserService.authenticatedUser().then(function (response) {
-                this.$store.dispatch('setUser', response.data)
+                this.$store.dispatch('setUser', response.data);
                 this.dataLoaded = true;
             }.bind(this)).catch(function () {
                 this.$store.dispatch('setUser', undefined);
@@ -237,17 +249,77 @@
                     this.$router.push("/");
                 }
                 this.dataLoaded = true;
-            }.bind(this))
+            }.bind(this));
             if (this.$route.name === 'register') {
                 this.registerDialog = true;
             }
             if (this.$route.name === 'login') {
                 this.loginDialog = true;
             }
+            if (this.$route.name === 'forgotPassword') {
+                this.forgotPasswordDialog = true;
+            }
+            if (this.$route.name === 'changePassword') {
+                this.changePasswordDialog = true;
+            }
         },
         watch: {
             loadingFlows: function () {
                 this.isLoading = this.loadingFlows.length > 0;
+            },
+            '$route.name': function () {
+                if (this.$route.name === 'forgotPassword') {
+                    this.forgotPasswordDialog = true;
+                }
+            },
+            loginDialog: function () {
+                if (this.loginDialog) {
+                    this.$router.push({
+                        name: "login"
+                    });
+                    this.$refs.loginForm.enter();
+                    return;
+                }
+                this.$router.push({
+                    name: "home"
+                });
+            },
+            registerDialog: function () {
+                if (this.registerDialog) {
+                    this.$router.push({
+                        name: "register"
+                    });
+                    this.$refs.registerForm.enter();
+                    return;
+                }
+                this.$router.push({
+                    name: "home"
+                });
+            },
+            forgotPasswordDialog: function () {
+                if (this.forgotPasswordDialog) {
+                    this.$router.push({
+                        name: "forgot-password"
+                    });
+                    this.$refs.forgotPasswordForm.enter();
+                    return;
+                }
+                this.$router.push({
+                    name: "home"
+                });
+            },
+            changePasswordDialog: function () {
+                if (this.changePasswordDialog) {
+                    // Vue.nextTick(function () {
+                    //     console.log(this.$refs)
+                    //     debugger;
+                    //     // this.$refs.changePasswordForm.enter();
+                    // }.bind(this))
+                    return;
+                }
+                this.$router.push({
+                    name: "home"
+                });
             }
         }
     }

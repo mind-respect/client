@@ -84,25 +84,21 @@ const UserService = {
             url: sessionResourceUrl
         }).done(successCallBack);
     },
-    resetPassword: function (email, callback, errorCallback) {
-        return $.ajax({
-            type: 'POST',
-            url: "/service/reset-password",
-            contentType: 'application/json',
-            data: JSON.stringify({email: email})
-        }).done(callback).fail(errorCallback);
+    resetPassword: function (email) {
+        return Service.api().post(
+            "reset-password",
+            {email: email}
+        );
     },
-    changePassword: function (password, email, token, callback, errorCallback) {
-        return $.ajax({
-            type: 'POST',
-            url: "/service/users/password",
-            contentType: 'application/json',
-            data: JSON.stringify({
-                email: email,
+    changePassword: function (password, email, token) {
+        return Service.api().post(
+            "/users/password",
+            {
                 password: password,
+                email: email,
                 token: token
-            })
-        }).done(callback).fail(errorCallback);
+            }
+        );
     },
     search: function (searchText) {
         return Service.api().post(

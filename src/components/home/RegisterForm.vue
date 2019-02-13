@@ -57,6 +57,7 @@
     import AuthenticateService from '@/service/AuthenticateService'
     import Rules from '@/Rules'
     import LoadingFlow from '@/LoadingFlow'
+    import Vue from 'vue'
 
     export default {
         name: "RegisterForm",
@@ -71,14 +72,16 @@
                 LoadingFlow.enter();
                 AuthenticateService.register(this.newUser).then(function (response) {
                     this.$store.dispatch('setUser', response.data)
-                    this.$router.push({
-                        name: 'UserHome',
-                        params: {
-                            username: response.data.user_name
-                        }
-                    });
                     this.$emit('flow-is-done');
-                    LoadingFlow.leave();
+                    Vue.nextTick(function () {
+                        this.$router.push({
+                            name: 'UserHome',
+                            params: {
+                                username: response.data.user_name
+                            }
+                        });
+                        LoadingFlow.leave();
+                    }.bind(this))
                 }.bind(this)).catch(function (response) {
                     response.response.data.forEach(function (error) {
                         if ("already_registered_email" === error.reason) {
