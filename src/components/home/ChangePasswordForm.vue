@@ -92,7 +92,6 @@
                     this.changePasswordSuccess = true;
                 }.bind(this)).catch(function () {
                     this.changePasswordError = true;
-                    this.waiting = false;
                 }.bind(this))
             }
         }
