@@ -17,13 +17,13 @@ export default {
             }
         );
     },
-    confirmFriendshipUsingUrlToken: function (url) {
+    confirmFriendshipUsingUrlToken: function (requestUsename, destinationUsername, confirmToken) {
         return Service.api().post(
             UserService.getUsersResourceUrl() + "confirm-friendship-with-token",
             {
-                requestUsername: url.searchParams.get("requestUser"),
-                destinationUsername: url.searchParams.get("destinationUser"),
-                confirmToken: url.searchParams.get("confirm-token")
+                requestUsername: requestUsename,
+                destinationUsername: destinationUsername,
+                confirmToken: confirmToken
             }
         );
     },

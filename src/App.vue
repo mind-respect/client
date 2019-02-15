@@ -236,12 +236,29 @@
                 ]).then(function () {
                     this.$router.push("/")
                 }.bind(this));
+            },
+            showDialogFromRoute: function () {
+                if (this.$route.name === 'register') {
+                    this.registerDialog = true;
+                }
+                if (this.$route.name === 'login') {
+                    this.loginDialog = true;
+                }
+                if (this.$route.name === 'forgotPassword') {
+                    this.forgotPasswordDialog = true;
+                }
+                if (this.$route.name === 'changePassword') {
+                    this.changePasswordDialog = true;
+                }
             }
         },
         mounted: function () {
             UserService.authenticatedUser().then(function (response) {
                 this.$store.dispatch('setUser', response.data);
                 this.dataLoaded = true;
+                Vue.nextTick(function(){
+                    this.showDialogFromRoute();
+                }.bind(this))
             }.bind(this)).catch(function () {
                 this.$store.dispatch('setUser', undefined);
                 let isOnAboutPage = aboutPages.indexOf(this.$route.name) > -1;
@@ -249,19 +266,10 @@
                     this.$router.push("/");
                 }
                 this.dataLoaded = true;
+                Vue.nextTick(function(){
+                    this.showDialogFromRoute();
+                }.bind(this))
             }.bind(this));
-            if (this.$route.name === 'register') {
-                this.registerDialog = true;
-            }
-            if (this.$route.name === 'login') {
-                this.loginDialog = true;
-            }
-            if (this.$route.name === 'forgotPassword') {
-                this.forgotPasswordDialog = true;
-            }
-            if (this.$route.name === 'changePassword') {
-                this.changePasswordDialog = true;
-            }
         },
         watch: {
             loadingFlows: function () {
@@ -289,7 +297,7 @@
                     this.$router.push({
                         name: "register"
                     });
-                    this.$refs.registerForm.enter();
+                    this.$refs.registerForm.enter()
                     return;
                 }
                 this.$router.push({

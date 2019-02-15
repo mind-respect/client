@@ -12,7 +12,7 @@
                 slider-color="yellow"
                 grow
         >
-            <v-tab ripple>
+            <v-tab>
                 <v-icon small class="mr-2">
                     fa-bullseye
                 </v-icon>
@@ -53,9 +53,27 @@
                             {{$t('userhome:toGrid')}}
                         </v-tooltip>
                         <v-spacer></v-spacer>
-                        <v-btn icon float color="secondary" fab>
+                        <v-btn icon float color="secondary" fab v-if="isOwner">
                             <v-icon large>add</v-icon>
                         </v-btn>
+                        <v-btn color="secondary" v-if="!isOwner && !isWaitingFriendship && !isConfirmedFriend" float @click="addFriend()">
+                            <v-icon class="mr-2">
+                                person_add
+                            </v-icon>
+                            {{$t('userhome:addFriend')}}
+                        </v-btn>
+                        <v-btn color="secondary" v-if="!isOwner && isWaitingForYourAnswer" float @click="addFriend()">
+                            <v-icon class="mr-2">
+                                person_add
+                            </v-icon>
+                            {{$t('userhome:confirmFriend')}}
+                        </v-btn>
+                        <v-chip v-if="!isOwner && isWaitingFriendship" color="secondary" dark class="subheading">
+                            {{$t('userhome:waitingFriend')}}
+                        </v-chip>
+                        <v-chip v-if="!isOwner && isConfirmedFriend" color="secondary" dark class="subheading">
+                            {{$t('userhome:confirmedFriend')}}
+                        </v-chip>
                     </v-card-title>
                     <v-card flat class="ma-0 pa-0">
                         <v-card-text class="pt-0">
@@ -189,6 +207,8 @@
     import GraphElementType from '@/graph-element/GraphElementType'
     import I18n from '@/I18n'
     import Friends from '@/components/home/Friends.vue'
+    import FriendService from '@/friend/FriendService'
+    import UserService from '@/service/UserService'
 
     export default {
         name: "CentersList",
@@ -223,7 +243,15 @@
                 },
                 "toGrid": "Grid view",
                 "toList": "List view",
-                "noBubbles": "No centers"
+                "noBubbles": "No centers",
+                "addFriend": "Add as friend",
+                "waitingFriend": "Friendship request pending",
+                "confirmFriend": "Confirm friendship request",
+                "confirmedFriend": "Friend",
+                "friends": {
+                    "search": "Users of Mind Respect",
+                    "friends": "Friends"
+                }
             });
             I18n.i18next.addResources("fr", "userhome", {
                 "center": "Centre",
@@ -251,7 +279,15 @@
                 },
                 "toGrid": "Vue en grille",
                 "toList": "Vue en liste",
-                "noBubbles": "Pas de centres"
+                "noBubbles": "Pas de centres",
+                "addFriend": "Ajouter comme ami",
+                "waitingFriend": "Requête d'amitié en attente",
+                "confirmFriend": "Confirmer la demande d'amitié",
+                "confirmedFriend": "Ami",
+                "friends": {
+                    "search": "Usagers de Mind Respect",
+                    "friends": "Amis"
+                }
             });
             return {
                 search: '',
@@ -280,7 +316,10 @@
                     }
                 ],
                 loaded: false,
-                tabMenu: null
+                tabMenu: null,
+                isWaitingFriendship: false,
+                isConfirmedFriend: false,
+                isWaitingForYourAnswer: false
             }
         },
         methods: {
@@ -308,8 +347,7 @@
                         return "panorama_fish_eye";
                 }
             },
-            changeUser: function () {
-                this.loaded = false;
+            setupCenters: function () {
                 let isOwner = this.$store.state.user.username === this.$route.params.username;
                 let centersRequest = isOwner ? CenterGraphElementService.getPublicAndPrivate() : CenterGraphElementService.getPublicOnlyForUsername(
                     this.$route.params.username
@@ -319,18 +357,71 @@
                 } else {
                     this.tabMenu = 0;
                 }
-                centersRequest.then(function (response) {
+                return centersRequest.then(function (response) {
                     this.centers = CenterGraphElement.fromServerFormat(response.data).map(function (center) {
                         center.labelSearch = center.getLabel();
                         center.contextSearch = Object.values(center.getContext()).join(' ');
                         return center;
                     });
-                    this.loaded = true;
                 }.bind(this))
+            },
+            setupFriendFlow: function () {
+                let promise = Promise.resolve();
+                if (!this.isOwner && this.$route.params.confirmToken) {
+                    promise = FriendService.confirmFriendshipUsingUrlToken(
+                        this.$route.params.requestUsername,
+                        this.$route.params.destinationUsername,
+                        this.$route.params.confirmToken
+                    ).then(function (newlyConnectedUser) {
+                        // if (!newlyConnectedUser) {
+                        //     window.location.href = url.href.replace(url.search, "") + "?flow=confirmFriendError";
+                        //     return Promise.reject;
+                        // }
+                        // if (!UserService.hasCurrentUser()) {
+                        //     window.location.href = url.href.replace(url.search, "") + "?flow=newConfirmFriend";
+                        //     return $.Deferred().reject();
+                        // }
+                    });
+                }
+                if (this.isOwner || !UserService.hasCurrentUser()) {
+                    return promise;
+                }
+                return promise.then(function () {
+                    return FriendService.getStatusWithUser(this.$route.params.username).then(function (response) {
+                        switch (response.data.status) {
+                            case "waiting": {
+                                return this.isWaitingFriendship = true;
+                            }
+                            case "waitingForYourAnswer": {
+                                return this.isWaitingForYourAnswer = true;
+                            }
+                            case "confirmed": {
+                                return this.isConfirmedFriend = true;
+                            }
+                        }
+                    }.bind(this));
+                }.bind(this));
+            },
+            addFriend: function () {
+                FriendService.addFriend(
+                    this.$route.params.username
+                ).then(function () {
+                    if (this.isWaitingForYourAnswer) {
+                        this.isWaitingForYourAnswer = false;
+                        this.isConfirmedFriend = true;
+                    } else {
+                        this.isWaitingFriendship = true;
+                    }
+                }.bind(this));
             }
         },
         mounted: function () {
-            this.changeUser();
+            Promise.all([
+                this.setupCenters(),
+                this.setupFriendFlow()
+            ]).then(function () {
+                this.loaded = true;
+            }.bind(this))
         },
         computed: {
             centersFiltered: function () {
@@ -338,6 +429,9 @@
                     let searchContent = center.labelSearch + ' ' + center.contextSearch;
                     return searchContent.toLowerCase().indexOf(this.search.toLowerCase()) > -1
                 }.bind(this));
+            },
+            isOwner: function () {
+                return this.$route.params.username === this.$store.state.user.username
             }
         },
         watch: {
@@ -349,12 +443,15 @@
                         username: this.$route.params.username
                     }
                 });
-                this.changeUser();
+                this.loaded = false;
+                this.setupCenters().then(function(){
+                    this.loaded = true;
+                }.bind(this))
             },
             '$route.name': function () {
-                if(this.$route.name === 'UserHome'){
+                if (this.$route.name === 'UserHome') {
                     this.tabMenu = 0;
-                }else if(this.$route.name === 'FriendsUserHome'){
+                } else if (this.$route.name === 'FriendsUserHome') {
                     this.tabMenu = 1;
                 }
             }

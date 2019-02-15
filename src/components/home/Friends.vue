@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <v-card flat>
+    <v-card flat v-if="loaded">
         <v-card-text>
             <!--<v-icon>-->
             <!--people-->
@@ -22,6 +22,24 @@
                     return-object
                     :no-data-text="$t('noSearchResults')"
             ></v-autocomplete>
+            <v-list>
+                <v-subheader inset>
+                    {{$t('friends:friends')}}
+                </v-subheader>
+                <v-list-tile v-for="friend in friends" :to="'/user/' + friend.username">
+                    <v-list-tile-action>
+                        <v-avatar class="text-uppercase teal white--text">{{friend.username.substring(0,2)}}</v-avatar>
+                    </v-list-tile-action>
+                    <v-list-tile-content>
+                        <v-list-tile-title>
+                            {{friend.username}}
+                        </v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+            </v-list>
+        </v-card-text>
+        <v-card-text>
+
         </v-card-text>
     </v-card>
 </template>
@@ -30,6 +48,7 @@
     import UserService from '@/service/UserService'
     import Vue from 'vue'
     import I18n from '@/I18n'
+    import FriendService from "../../friend/FriendService";
 
     export default {
         name: "Friends",
@@ -53,15 +72,16 @@
             return {
                 searchValue: null,
                 friendSearch: null,
+                friends: null,
                 isLoading: false,
-                users: []
+                users: [],
+                loaded: false
             }
         },
         watch: {
             friendSearch: function () {
                 // // Items have already been loaded
                 // if (this.items.length > 0) return
-
                 Vue.nextTick(function () {
                     if (this.isLoading) return;
                     if (!this.friendSearch) {
@@ -91,6 +111,12 @@
                     })
                 }.bind(this))
             }
+        },
+        mounted: function () {
+            FriendService.list().then(function (response) {
+                this.friends = response.data;
+                this.loaded = true;
+            }.bind(this))
         }
     }
 </script>

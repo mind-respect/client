@@ -56,6 +56,11 @@ export default new Router({
             path: '/user/:username/friends',
             name: 'FriendsUserHome',
             component: UserHome
+        },
+        {
+            path: '/user/:username/requestUser/:requestUsername/destinationUser/:destinationUsername/confirmToken/:confirmToken',
+            name: "ConfirmFriendshipHome",
+            component: UserHome
         }
     ]
 })
