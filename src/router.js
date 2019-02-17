@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import About from '@/views/About.vue'
 import UserHome from '@/views/UserHome.vue'
+import Center from '@/views/Center.vue'
 
 Vue.use(Router)
 
@@ -61,6 +62,11 @@ export default new Router({
             path: '/user/:username/requestUser/:requestUsername/destinationUser/:destinationUsername/confirmToken/:confirmToken',
             name: "ConfirmFriendshipHome",
             component: UserHome
+        },
+        {
+            path: '/user/:username/graph/vertex/:centerUri',
+            name: "Center",
+            component: Center
         }
     ]
 })

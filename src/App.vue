@@ -10,7 +10,6 @@
                     app
                     dark
                     color="white"
-                    :clipped-left="clipped"
                     :class="{
                         'no-padding' : $vuetify.breakpoint.smAndDown
                     }"
@@ -77,6 +76,12 @@
                         Français
                     </span>
                 </v-btn>
+                <v-btn :to="'/user/' + $store.state.user.username" v-if="$store.state.user" flat light>
+                    <v-icon class="mr-2">
+                        fa-bullseye
+                    </v-icon>
+                    {{$t('centers')}}
+                </v-btn>
                 <v-menu
                         :close-on-content-click="false"
                         :nudge-width="250"
@@ -129,7 +134,9 @@
             <!--<router-link to="/">Home</router-link>-->
             <!--<router-link to="/about">About</router-link>-->
         </div>
-        <router-view></router-view>
+        <v-content>
+            <router-view></router-view>
+        </v-content>
         <v-dialog v-model="registerDialog" width="900">
             <v-card>
                 <v-card-title class="pb-0">
@@ -214,16 +221,18 @@
             ForgotPasswordForm,
             ChangePasswordForm
         },
-        data: () => ({
-            clipped: false,
-            dataLoaded: false,
-            registerDialog: false,
-            loginDialog: false,
-            loadingFlows: LoadingFlow.loadingFlows,
-            isLoading: false,
-            forgotPasswordDialog: false,
-            changePasswordDialog: false
-        }),
+        data: function () {
+            return {
+                clipped: false,
+                dataLoaded: false,
+                registerDialog: false,
+                loginDialog: false,
+                loadingFlows: LoadingFlow.loadingFlows,
+                isLoading: false,
+                forgotPasswordDialog: false,
+                changePasswordDialog: false
+            };
+        },
         methods: {
             switchLanguage: function () {
                 let newLocale = this.$store.state.locale === "en" ? "fr" : "en";
@@ -256,7 +265,7 @@
             UserService.authenticatedUser().then(function (response) {
                 this.$store.dispatch('setUser', response.data);
                 this.dataLoaded = true;
-                Vue.nextTick(function(){
+                Vue.nextTick(function () {
                     this.showDialogFromRoute();
                 }.bind(this))
             }.bind(this)).catch(function () {
@@ -266,7 +275,7 @@
                     this.$router.push("/");
                 }
                 this.dataLoaded = true;
-                Vue.nextTick(function(){
+                Vue.nextTick(function () {
                     this.showDialogFromRoute();
                 }.bind(this))
             }.bind(this));
@@ -297,7 +306,7 @@
                     this.$router.push({
                         name: "register"
                     });
-                    this.$refs.registerForm.enter()
+                    this.$refs.registerForm.enter();
                     return;
                 }
                 this.$router.push({

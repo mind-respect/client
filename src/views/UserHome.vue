@@ -5,7 +5,6 @@
 <template>
     <div v-if="loaded" class="">
         <v-tabs
-                style="margin-top:65px;"
                 v-model="tabMenu"
                 color="secondary"
                 dark
@@ -16,13 +15,13 @@
                 <v-icon small class="mr-2">
                     fa-bullseye
                 </v-icon>
-                Centres
+                {{$t('userhome:centerTab')}}
             </v-tab>
             <v-tab>
                 <v-icon small class="mr-2">
                     people
                 </v-icon>
-                Amis
+                {{$t('userhome:friendTab')}}
             </v-tab>
             <v-tab-item>
                 <v-card>
@@ -238,9 +237,8 @@
                     "addAll": "Add All",
                     "removeAll": "Remove All"
                 },
-                "tabs": {
-                    "friends": "FRIENDS"
-                },
+                "centerTab": "Centers",
+                "friendTab": "Friends",
                 "toGrid": "Grid view",
                 "toList": "List view",
                 "noBubbles": "No centers",
@@ -274,9 +272,8 @@
                     "addAll": "Ajouter tout",
                     "removeAll": "Enlever tout"
                 },
-                "tabs": {
-                    "friends": "AMIS"
-                },
+                "centerTab": "Centres",
+                "friendTab": "Amis",
                 "toGrid": "Vue en grille",
                 "toList": "Vue en liste",
                 "noBubbles": "Pas de centres",

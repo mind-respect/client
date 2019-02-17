@@ -35,7 +35,8 @@ export default {
                         invalidEmail: 'invalid email',
                         min8Char: "Minimum of 8 characters",
                         send: "Send",
-                        change: "Change"
+                        change: "Change",
+                        centers: "Centers"
                     }
                 },
                 fr: {
@@ -51,7 +52,8 @@ export default {
                         invalidEmail: 'courriel invalide',
                         min8Char: "Minimum de 8 charactères",
                         send: "Envoyer",
-                        change: "Modifier"
+                        change: "Modifier",
+                        centers: "Centres"
                     }
                 }
             }
