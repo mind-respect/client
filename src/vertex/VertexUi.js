@@ -4,23 +4,19 @@
 
 import $ from 'jquery'
 import GraphUiBuilder from '@/graph/GraphUiBuilder'
-import VerteService from '@/vertex/VertexService'
+import VertexService from '@/vertex/VertexService'
 import Point from '@/Point'
 import Error from '@/Error'
 import VertexSegments from '@/vertex/VertexSegments'
 import GraphElementUi from '@/graph-element/GraphElementUi'
 import GraphElementMainMenu from '@/graph-element/GraphElementMainMenu'
 import Bubble from '@/bubble/Bubble'
+import SuggestionService from '@/suggestion/SuggestionService'
+import IdUri from '@/IdUri'
+import GraphUi from '@/graph/GraphUi'
+import JqueryCenterOnScreen from '@/jquery/jquery.center-on-screen'
 
-    "triple_brain.bubble",
-    "triple_brain.center_bubble",
-    "triple_brain.bubble_factory",
-    "triple_brain.suggestion_service",
-    "triple_brain.id_uri",
-    "triple_brain.graph_ui",
-    "jquery.center-on-screen"
-]
-var api = {};
+const api = {};
 api.getWhenEmptyLabel = function () {
     return $.t("vertex.default");
 };
@@ -470,7 +466,5 @@ api.VertexUi.prototype.removeSingleSelected = function () {
 };
 
 api.buildCommonConstructors(api);
-return api;
-}
-)
-;
+
+export default api;

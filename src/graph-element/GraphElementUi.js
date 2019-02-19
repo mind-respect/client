@@ -1005,5 +1005,3 @@ function initSelectors() {
     selectors[api.Types.MetaRelation] = GraphDisplayer.getMetaUiRelationSelector;
     selectors[GraphElementType.GroupVertexUnderMeta] = GraphDisplayer.getGroupVertexUnderMetaUiSelector;
 }
-})
-;

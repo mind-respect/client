@@ -5,21 +5,22 @@
 import $ from 'jquery'
 import GraphService from '@/graph/GraphService'
 import GraphDisplayerAsTreeCommon from '@/graph/GraphDisplayerAsTreeCommon'
-import VertexUiBuilder from '@vertex/VertexUiBuilder'
-    "mr.vertex-ui-builder-view-only",
-    "triple_brain.graph_ui",
-    "triple_brain.relative_tree_displayer_templates",
-    "triple_brain.edge_ui",
-    "triple_brain.event_bus",
-    "triple_brain.id_uri",
-    "triple_brain.relative_tree_vertex",
-    "mr.edge-ui-builder",
-    "mr.edge-ui-builder-view-only",
-    "triple_brain.tree_edge",
-    "triple_brain.point",
-    "triple_brain.vertex_controller",
-    "triple_brain.group_relation_controller",
-    "triple_brain.edge_controller",
+import VertexUiBuilder from '@/vertex/VertexUiBuilder'
+import VertexUiBuilderViewOnly from '@/vertex/VertexUiBuilderViewOnly'
+import GraphUi from '@/graph/GraphUi'
+import RelativeTreeDisplayerTemplates from '@/graph/RelativeTreeDisplayerTemplates'
+import EdgeUi from '@/edge/EdgeUi'
+import EventBus from '@/EventBus'
+import IdUri from '@/IdUri'
+import RelativeTreeVertex from '@/vertex/RelativeTreeVertex'
+import EdgeUiBuilder from '@/edge/EdgeUiBuilder'
+import EdgeUiBuilderViewOnly from '@/edge/EdgeUiBuilderViewOnly'
+import TreeEdge from '@/edge/TreeEdge'
+import Point from '@/Point'
+import VertexController from '@/vertex/VertexController'
+import GroupRelationController from '@/group-relation/GroupRelationController'
+import EdgeController from '@/edge/EdgeController'
+import GraphController from '@/graph/GraphController'
     "triple_brain.graph_controller",
     "mr.app_controller",
     "mr.meta_controller",

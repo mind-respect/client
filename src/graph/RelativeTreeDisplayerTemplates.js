@@ -1,10 +1,9 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-
 import Template from '@/Template'
 
-var api = {};
+const api = {};
 var t = Template.withTemplateGroup(api);
 t.add(
     'root_vertex_super_container',

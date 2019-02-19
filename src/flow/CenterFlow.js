@@ -12,17 +12,13 @@ import MindMapInfo from '@/MindMapInfo'
 import GraphElementMainMenu from '@/graph-element/GraphElementMainMenu'
 import GraphUi from '@/graph/GraphUi'
 import IdUri from '@/IdUri'
+import BubbleFactory from '@/bubble/BubbleFactory'
+import IdentificationMenu from '@/identifier/IdentificationMenu'
+import ImageMenu from '@/identifier/ImageMenu'
+import GraphElementUi from '@/graph-element/GraphElementUi'
+import AppController from '@/AppController'
 
-"mr.connected-home-flow",
-    "triple_brain.flow",
-    "triple_brain.bubble_factory",
-    "triple_brain.identification_menu",
-    "triple_brain.image_menu",
-    "triple_brain.graph_element_ui",
-    "mr.app_controller",
-    "triple_brain.other_user_flow"
-]
-var api = {};
+const api = {};
 api.enterConnectedHomeFlow = function () {
     setupMindMap(false, true);
 };
@@ -126,7 +122,6 @@ EventBus.subscribe(
         //}
     }
 );
-return api;
 
 function setupMindMap(isAnonymous, isTagCloudFlow) {
     // $("body").addClass("no-scroll");
@@ -144,10 +139,10 @@ function setupMindMap(isAnonymous, isTagCloudFlow) {
 
     function loadGraph() {
         if (isTagCloudFlow) {
-            ConnectedHomeFlow.enter();
+            // ConnectedHomeFlow.enter();
             return;
         }
-        Flow.showOnlyFlow("mindMap");
+        // Flow.showOnlyFlow("mindMap");
         GraphDisplayer.displayForBubbleWithUri(
             MindMapInfo.getCenterBubbleUri()
         );
