@@ -3,7 +3,7 @@
  */
 
 import $ from 'jquery'
-import SearchService from '@/seach/SearchService'
+import SearchService from '@/search/SearchService'
 import GraphElementType from '@/graph-element/GraphElementType'
 import IdentificationContext from '@/identifier/IdentificationContext'
 import IdUri from '@/IdUri'

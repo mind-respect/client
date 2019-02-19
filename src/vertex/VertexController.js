@@ -19,7 +19,7 @@ import SchemaSuggestion from '@/schema/SchemaSuggestion'
 import GraphElementUi from '@/graph-element/GraphElementUi'
 import EventBus from '@/EventBus'
 import IdUri from '@/IdUri'
-import GraphElementType from '@/GraphElementType'
+import GraphElementType from '@/graph-element/GraphElementType'
 import ShareLevel from '@/vertex/ShareLevel'
 import GraphUi from '@/graph/GraphUi'
 

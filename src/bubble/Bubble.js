@@ -11,7 +11,7 @@ import SelectionHandler from '@/SelectionHandler'
 import CenterBubble from '@/bubble/CenterBubble'
 import VertexChildrenNotice from '@/vertex/VertexChildrenNotice'
 import MindMapInfo from '@/MindMapInfo'
-import GraphUi from '@/graph/Graphui'
+import GraphUi from '@/graph/GraphUi'
 
 const api = {};
 api.MoveRelation = {

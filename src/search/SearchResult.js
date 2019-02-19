@@ -5,7 +5,7 @@
 import $ from 'jquery'
 import GraphElement from '@/graph-element/GraphElement'
 import Schema from '@/schema/Schema'
-import Property from '@/schema/Property'
+import Property from '@/property/Property'
 import GraphElementType from '@/graph-element/GraphElementType'
 import EventBus from '@/EventBus'
 

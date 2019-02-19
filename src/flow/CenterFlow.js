@@ -1,20 +1,17 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import jquery from 'jquery'
-import UiUtils from '@/UiUtils'
+import $ from 'jquery'
 import UserService from '@/service/UserService'
 import EventBus from '@/EventBus'
 import SelectionHandler from '@/SelectionHandler'
 import GraphDisplayer from '@/graph/GraphDisplayer'
-import GraphDisplayerFactory from '@/graph/GraphDisplayerFactory'
 import MindMapInfo from '@/MindMapInfo'
 import GraphElementMainMenu from '@/graph-element/GraphElementMainMenu'
 import GraphUi from '@/graph/GraphUi'
-import IdUri from '@/IdUri'
 import BubbleFactory from '@/bubble/BubbleFactory'
 import IdentificationMenu from '@/identifier/IdentificationMenu'
-import ImageMenu from '@/identifier/ImageMenu'
+import ImageMenu from '@/image/ImageMenu'
 import GraphElementUi from '@/graph-element/GraphElementUi'
 import AppController from '@/AppController'
 

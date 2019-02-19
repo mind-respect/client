@@ -3,7 +3,7 @@
  */
 import $ from 'jquery'
 import GraphDisplayer from '@/graph/GraphDisplayer'
-import GraphElementUi from '@/graph/GraphElementUi'
+import GraphElementUi from '@/graph-element/GraphElementUi'
 import TreeEdge from '@/edge/TreeEdge'
 
 const api = {};

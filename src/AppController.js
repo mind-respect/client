@@ -14,7 +14,7 @@ import IdUri from '@/IdUri'
 import ToList from '@/ToList'
 import GraphElementUi from '@/graph-element/GraphElementUi'
 
-var api = {};
+const api = {};
 api.undoCanDo = function () {
     return Command.canUndo();
 };

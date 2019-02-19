@@ -2,7 +2,7 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import $ from 'jquery'
-import VertexUi from '@/VertexUi'
+import VertexUi from '@/vertex/VertexUi'
 import EventBus from '@/EventBus'
 import ObjectUtils from '@/ObjectUtils'
 import TripleUiBuilder from '@/triple/TripleUiBuilder'

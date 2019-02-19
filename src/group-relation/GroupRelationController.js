@@ -6,7 +6,7 @@ import $ from 'jquery'
 import VertexService from '@/vertex/VertexService'
 import EdgeService from '@/edge/EdgeService'
 import GraphElementController from '@/graph-element/GraphElementController'
-import GraphElementType from '@/GraphElementType'
+import GraphElementType from '@/graph-element/GraphElementType'
 import GraphElementService from '@/graph-element/GraphElementService'
 
 const api = {};

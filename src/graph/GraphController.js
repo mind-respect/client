@@ -1,60 +1,54 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import $ from 'jquery'
 import SelectionHandler from '@/SelectionHandler'
-import GraphUi from '@/graph/GraphUi'
 import VertexUi from '@/vertex/VertexUi'
 import GraphElementUi from '@/graph-element/GraphElementUi'
-import GroupRelationUi from '@/group-relation/GroupRelationUi'
-import CompareFlow from '@/'
-    "triple_brain.compare_flow",
-    "triple_brain.mind_map_info"
-], function ($, SelectionHandler, GraphUi, VertexUi, GraphElementUi, GroupRelationUi, CompareFlow, MindMapInfo) {
-    "use strict";
-    var api = {};
-    api.expandAllCanDo = function () {
-        var canDo = false;
-        GraphElementUi.visitAll(function(graphElementUi){
-            if(graphElementUi.getController().expandCanDo()){
-                canDo = true;
-                return false;
-            }
-        });
-        return canDo;
-    };
+import CompareFlow from '@/compare/CompareFlow'
+import MindMapInfo from '@/MindMapInfo'
 
-    api.expandAll = function () {
-        GraphElementUi.getCenterBubble().getController().expand();
-    };
+const api = {};
+api.expandAllCanDo = function () {
+    var canDo = false;
+    GraphElementUi.visitAll(function (graphElementUi) {
+        if (graphElementUi.getController().expandCanDo()) {
+            canDo = true;
+            return false;
+        }
+    });
+    return canDo;
+};
 
-    api.compareCanDo = function(){
-        return !MindMapInfo.isViewOnly();
-    };
+api.expandAll = function () {
+    GraphElementUi.getCenterBubble().getController().expand();
+};
 
-    api.compare = function () {
-        CompareFlow.enter();
-    };
+api.compareCanDo = function () {
+    return !MindMapInfo.isViewOnly();
+};
 
-    api.selectAllBubbles = function () {
-        GraphElementUi.getCenterBubble().selectTree();
-    };
+api.compare = function () {
+    CompareFlow.enter();
+};
 
-    api.selectTreeCanDo = function () {
-        return VertexUi.getNumber() > SelectionHandler.getNbSelectedVertices();
-    };
+api.selectAllBubbles = function () {
+    GraphElementUi.getCenterBubble().selectTree();
+};
 
-    api.getUi = function () {
-        return [];
-    };
+api.selectTreeCanDo = function () {
+    return VertexUi.getNumber() > SelectionHandler.getNbSelectedVertices();
+};
 
-    api.isMultiple = function(){
-        return false;
-    };
+api.getUi = function () {
+    return [];
+};
 
-    api.isSingle = function () {
-        return false;
-    };
+api.isMultiple = function () {
+    return false;
+};
 
-    return api;
-});
+api.isSingle = function () {
+    return false;
+};
+
+export default api;

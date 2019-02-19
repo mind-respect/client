@@ -8,7 +8,7 @@ import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import MindMapInfo from '@/MindMapInfo'
 import EventBus from '@/EventBus'
-import GraphUi from '@/graph/Graphui'
+import GraphUi from '@/graph/GraphUi'
 import IdentificationMenu from '@/identifier/IdentificationMenu'
 import Command from '@/Command'
 import SelectionHandler from '@/SelectionHandler'

@@ -7,7 +7,7 @@ import GraphElementController from '@/graph-element/GraphElementController'
 import EdgeService from '@/edge/EdgeService'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import BubbleDeleteMenu from '@/bubble/BubbleDeleteMenu'
-import GraphElementType from '@/GraphElementType'
+import GraphElementType from '@/graph-element/GraphElementType'
 import SelectionHandler from '@/SelectionHandler'
 
 const api = {};
