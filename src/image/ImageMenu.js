@@ -49,6 +49,9 @@ api.setup = function () {
     });
     if (tests.dnd) {
         var holder = $holder[0];
+        if (!holder) {
+            return;
+        }
         holder.ondragover = function () {
             $(this).addClass('hover');
             return false;

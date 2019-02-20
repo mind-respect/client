@@ -2,7 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import $ from 'jquery'
-import GraphElementMainMenu from '@/graph-element/GraphElementMainMenu'
 /*
  inspired by http://blog.overnetcity.com/2014/11/18/undo-redo-angularjs-command-pattern/
  */
@@ -76,6 +75,7 @@ api.Command.prototype.redo = function () {
 };
 
 api._reviewButtonsVisibility = function () {
+    let GraphElementMainMenu = require('@/graph-element/GraphElementMainMenu');
     GraphElementMainMenu.reviewButtonsVisibility();
 };
 

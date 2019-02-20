@@ -12,10 +12,19 @@
 
 <script>
     import CenterFlow from '@/flow/CenterFlow'
+    import GraphDisplayer from '@/graph/GraphDisplayer'
+    import GraphDisplayerFactory from '@/graph/GraphDisplayerFactory'
+    import JqueryUniqueId from '@/jquery/jquery.unique-id'
+
     export default {
         name: "Center",
-        mounted:function(){
-            CenterFlow
+        mounted: function () {
+            GraphDisplayer.setImplementation(
+                GraphDisplayerFactory.getByName(
+                    "relative_tree"
+                )
+            );
+            CenterFlow.enterMindMapForAuthenticatedUser();
         }
     }
 </script>

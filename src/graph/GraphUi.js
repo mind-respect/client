@@ -9,8 +9,7 @@ import Color from '@/Color'
 const DEFAULT_BACKGROUND_COLOR = "#1E87AF";
 const GraphUi = {};
 
-let api = {},
-    _drawnGraph,
+let _drawnGraph,
     _topLayer,
     _bubbleIdCounter = 0,
     _isDragScrollEnabled = false,
@@ -156,7 +155,7 @@ GraphUi.removePopovers = function () {
     $(".popover").remove();
 };
 
-export default api;
+export default GraphUi;
 
 function getSchemaInstructions() {
     return $("#schema-instructions");

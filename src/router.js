@@ -64,7 +64,7 @@ export default new Router({
             component: UserHome
         },
         {
-            path: '/user/:username/graph/vertex/:centerUri',
+            path: '/user/:username/graph/:graphElementType/:centerUri',
             name: "Center",
             component: Center
         }

@@ -7,7 +7,7 @@ import Bubble from '@/bubble/Bubble'
 import ObjectUtils from '@/ObjectUtils'
 import GraphElementUi from '@/graph-element/GraphElementUi'
 
-const api = {};
+let api = {};
 
 EdgeUi.buildCommonConstructors(api);
 

@@ -3,7 +3,6 @@
  */
 
 import $ from 'jquery'
-import GraphUiBuilder from '@/graph/GraphUiBuilder'
 import VertexService from '@/vertex/VertexService'
 import Point from '@/Point'
 import Error from '@/Error'
@@ -15,10 +14,10 @@ import SuggestionService from '@/suggestion/SuggestionService'
 import IdUri from '@/IdUri'
 import GraphUi from '@/graph/GraphUi'
 import JqueryCenterOnScreen from '@/jquery/jquery.center-on-screen'
-
+import I18n from '@/I18n'
 const api = {};
 api.getWhenEmptyLabel = function () {
-    return $.t("vertex.default");
+    return I18n.i18next.t("vertex", "default");
 };
 api.buildCommonConstructors = function (api) {
     GraphElementUi.buildCommonConstructors(api);
@@ -224,6 +223,7 @@ api.VertexUi.prototype.addSuggestions = function (suggestions) {
         existingSuggestions;
     var mergedSuggestions = existingSuggestions.concat(suggestions);
     this.getModel().setSuggestions(mergedSuggestions);
+    let GraphUiBuilder = require('@/graph/GraphUiBuilder')
     GraphUiBuilder.addSuggestionsToVertex(
         this.getModel().getSuggestions(),
         this

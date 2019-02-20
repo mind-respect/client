@@ -2,16 +2,17 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import $ from 'jquery'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import EdgeService from '@/edge/EdgeService'
 import GraphElementUi from '@/graph-element/GraphElementUi'
 import Bubble from '@/bubble/Bubble'
 import MindMapInfo from '@/MindMapInfo'
+import EventBus from '@/EventBus'
+import I18n from '@/I18n'
 
 const api = {};
 api.getWhenEmptyLabel = function () {
-    return $.t("edge.default");
+    return I18n.i18next.t("edge", "default");
 };
 api.buildCommonConstructors = function (api) {
     GraphElementUi.buildCommonConstructors(api);
@@ -159,6 +160,6 @@ EventBus.subscribe(
         });
     }
 );
-api.buildCommonConstructors(api);
+GraphElementUi.buildCommonConstructors(api);
 
 export default api;

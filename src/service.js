@@ -22,7 +22,7 @@ const Service = {
         });
         axiosInstance.interceptors.response.use(null, function (error) {
             if (error.response && error.response.status === 401) {
-                Store.dispatch('setUser', null)
+                Store.dispatch('setUser', undefined)
                 if (loginPages.indexOf(window.location.pathname) === -1) {
                     window.location.href = '/'
                 }

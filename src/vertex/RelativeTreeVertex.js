@@ -13,7 +13,6 @@ import Clipboard from 'clipboard'
 import Bubble from '@/bubble/Bubble'
 import GraphElementUi from '@/graph-element/GraphElementUi'
 import IdUri from '@/IdUri'
-
 let api = {};
 var _shareMenuBuilt = false;
 VertexUi.buildCommonConstructors(api);

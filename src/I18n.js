@@ -58,6 +58,18 @@ export default {
                 }
             }
         });
+        i18next.addResources("en", "vertex", {
+            "default": "write it"
+        });
+        i18next.addResources("fr", "vertex", {
+            "default": "écris le"
+        });
+        i18next.addResources("en", "edge", {
+            "default": "relate"
+        });
+        i18next.addResources("fr", "edge", {
+            "default": "relie"
+        });
         return new VueI18Next(i18next);
     },
     i18next: i18next,

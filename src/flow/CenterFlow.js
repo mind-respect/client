@@ -128,10 +128,8 @@ function setupMindMap(isAnonymous, isTagCloudFlow) {
     if (isAnonymous) {
         loadGraph();
     } else {
-        UserService.authenticatedUser(function () {
-            MindMapInfo.defineIsViewOnly();
-            MindMapInfo.defineIsFriend().then(loadGraph);
-        });
+        MindMapInfo.defineIsViewOnly();
+        MindMapInfo.defineIsFriend().then(loadGraph);
     }
 
     function loadGraph() {
@@ -158,4 +156,5 @@ function handleHistoryBrowse() {
         );
     });
 }
+
 export default api;

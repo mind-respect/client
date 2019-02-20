@@ -1,7 +1,8 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-
+import $ from 'jquery'
+import MindMapTemplate from '@/MindMapTemplate'
 const api = {};
 api.ofBubble = function (bubble) {
     return new ImageMenu(bubble);

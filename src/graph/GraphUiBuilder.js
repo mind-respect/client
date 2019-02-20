@@ -14,6 +14,7 @@ import SuggestionUiBuilder from '@/suggestion/SuggestionUiBuilder'
 import SuggestionRelationUiBuilder from '@/suggestion/SuggestionRelationUiBuilder'
 import TripleUi from '@/triple/TripleUi'
 import GroupRelation from '@/group-relation/GroupRelation'
+import RelativeTreeTemplates from '@/graph/RelativeTreeDisplayerTemplates'
 
 const api = {};
 api.withDefaultHtmlBuilders = function () {

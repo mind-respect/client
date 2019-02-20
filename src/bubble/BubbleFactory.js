@@ -16,7 +16,8 @@ api.fromHtml = function (html) {
          should review the cache system
          also the builder *html_builder system
          */
-        uiFacade = uiObjectClass.createFromHtmlAndUri(html, html.data("uri"));
+
+        uiFacade = uiObjectClass.createFromHtml(html, html.data("uri"));
     }
     return uiFacade;
 };

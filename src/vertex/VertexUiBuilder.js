@@ -13,8 +13,10 @@ import GraphUi from '@/graph/GraphUi'
 import MindMapInfo from '@/MindMapInfo'
 import JqueryIsFullyOnScreen from '@/jquery/jquery.is-fully-on-screen'
 import JqueryCenterOnScreen from '@/jquery/jquery.center-on-screen'
-import linkifyjs from 'linkifyjs'
-
+let linkifyjs = require('linkifyjs')
+window.jQuery = $;
+window.linkify = linkifyjs;
+require('linkifyjs/dist/linkify-jquery')
 const api = {};
 api.withOptions = function (options) {
     return new api.VertexUiBuilder(

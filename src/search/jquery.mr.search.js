@@ -18,6 +18,7 @@ let enterKeyCode = 13,
     referencesText;
 $.fn.mrAutocomplete = function (options) {
     var textInput = $(this);
+    return textInput;
     textInput.data("mrAutocomplete", true);
     textInput.on("keydown", function (event) {
         var input = $(this);

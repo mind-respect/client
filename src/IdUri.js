@@ -5,6 +5,8 @@
 import $ from 'jquery'
 import UserService from '@/service/UserService'
 import GraphElementType from '@/graph-element/GraphElementType'
+import Router from '@/router';
+
 // "jquery.url"
 const IdUri = {
     encodeUri: function (uri) {
@@ -22,9 +24,7 @@ const IdUri = {
         return segments[2];
     },
     currentUsernameInUrl: function () {
-        return $.url(
-            window.location.href
-        ).segment()[1];
+        return Router.history.current.params.username;
     },
     allCentralUrlForUsername: function (username) {
         return "/user/" + username;
@@ -159,7 +159,7 @@ const IdUri = {
             return undefined;
         }
         return "/service/users/" + IdUri._getUsernameInUrl() +
-            "/graph/" + window.graphElementTypeForBublGuru + "/" + IdUri._getGraphElementShortIdFromUrl();
+            "/graph/" + Router.history.current.params.graphElementType + "/" + IdUri._getGraphElementShortIdFromUrl();
     },
     absoluteUrlForBubbleUri: function (graphElementUri) {
         return window.location.protocol + "//" + window.location.host + IdUri.htmlUrlForBubbleUri(graphElementUri);

@@ -2,7 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import GraphElementUi from '@/graph-element/GraphElementUi'
 import GraphUi from '@/graph/GraphUi'
 import UiUtils from '@/UiUtils'
 import GraphDisplayer from '@/graph/GraphDisplayer'
@@ -175,6 +174,7 @@ api._reviewMenu = function () {
         api.getSelectedBubbles(),
         api.getControllerFromCurrentSelection()
     );
+    let GraphElementUi = require('@/graph-element/GraphElementUi').default;
     GraphElementUi.resetOtherInstancesDisplay();
 };
 
