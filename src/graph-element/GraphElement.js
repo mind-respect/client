@@ -6,6 +6,8 @@ import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Identification from '@/identifier/Identification'
 import IdUri from '@/IdUri'
 import Color from '@/Color'
+import GraphElementType from '@/graph-element/GraphElementType'
+
 import WikidataUri from '@/WikidataUri'
 import Wikidata from '@/Wikidata'
 
@@ -337,6 +339,10 @@ GraphElement.GraphElement.prototype.getMoveDate = function () {
 
 GraphElement.GraphElement.prototype.isPristine = function () {
     return this.isLabelEmpty() && !this.hasIdentifications();
+};
+
+GraphElement.GraphElement.prototype.isVertex = function () {
+    return this.getGraphElementType() === GraphElementType.Vertex;
 };
 
 GraphElement.GraphElement.prototype.isToTheLeft = function () {

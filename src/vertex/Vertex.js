@@ -7,6 +7,7 @@ import GraphElement from '@/graph-element/GraphElement'
 import Edge from '@/edge/Edge'
 import Suggestion from '@/suggestion/Suggestion'
 import ShareLevel from '@/vertex/ShareLevel'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -148,6 +149,10 @@ Vertex.prototype.makePublic = function () {
 
 Vertex.prototype.setShareLevel = function (shareLevel) {
     this.vertexServerFormat.vertex.shareLevel = shareLevel;
+};
+
+Vertex.prototype.getGraphElementType = function () {
+    return GraphElementType.Vertex;
 };
 
 Vertex.prototype._buildIncludedEdges = function () {

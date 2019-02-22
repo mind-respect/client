@@ -4,7 +4,7 @@
 
 import $ from 'jquery'
 import EventBus from '@/EventBus'
-import Service from '@/service'
+import Service from '@/Service'
 
 const usersResourceUrl = "/users/";
 const sessionResourceUrl = usersResourceUrl + "session/";

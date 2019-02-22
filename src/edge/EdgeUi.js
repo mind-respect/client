@@ -5,7 +5,7 @@
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import EdgeService from '@/edge/EdgeService'
 import GraphElementUi from '@/graph-element/GraphElementUi'
-import Bubble from '@/bubble/Bubble'
+import BubbleUi from '@/bubble/BubbleUi'
 import MindMapInfo from '@/MindMapInfo'
 import EventBus from '@/EventBus'
 import I18n from '@/I18n'
@@ -27,14 +27,14 @@ api.buildCommonConstructors = function (api) {
 
 api.EdgeUi = function (html) {
     this.html = html;
-    Bubble.Bubble.apply(this, [html]);
+    BubbleUi.Bubble.apply(this, [html]);
 };
 
-api.EdgeUi.prototype = new Bubble.Bubble();
+api.EdgeUi.prototype = new BubbleUi.Bubble();
 
 api.EdgeUi.prototype.focus = function () {
     this.setAsNotSameAsGroupRelation();
-    Bubble.Bubble.prototype.focus.call(
+    BubbleUi.Bubble.prototype.focus.call(
         this
     );
 };

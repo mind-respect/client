@@ -7,6 +7,7 @@ import MindMapTemplate from '@/MindMapTemplate'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import BubbleFactory from '@/bubble/BubbleFactory'
 import UiUtils from '@/UiUtils'
+import I18n from '@/I18n'
 
 const api = {};
 api.withBubble = function (bubble) {
@@ -31,8 +32,11 @@ HiddenNeighborPropertiesIndicator.prototype.build = function () {
             'hidden_property_container'
             ].merge()
     ).data("vertex", this.bubble);
-    var title = $.i18n.translate(
-        UiUtils.isMacintosh() ? "hidden_properties_tooltip_forMac" : "hidden_properties_tooltip"
+    var title = I18n.i18next.t(
+        "childNotice",
+        (
+            UiUtils.isMacintosh() ? "tooltipForMac" : "tooltip"
+        )
     );
     var div = $("<div class='hidden-properties-content'>").append(
         this.buildContent()

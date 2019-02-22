@@ -2,6 +2,7 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import GraphElement from '@/graph-element/GraphElement'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -20,6 +21,10 @@ function Property(propertyServerFormat) {
 }
 
 Property.prototype = new GraphElement.GraphElement();
+
+Property.prototype.getGraphElementType = function () {
+    return GraphElementType.Property;
+};
 
 Property.prototype.setSchema = function (schema) {
     this.schema = schema;

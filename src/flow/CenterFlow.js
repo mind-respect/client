@@ -2,7 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import $ from 'jquery'
-import UserService from '@/service/UserService'
 import EventBus from '@/EventBus'
 import SelectionHandler from '@/SelectionHandler'
 import GraphDisplayer from '@/graph/GraphDisplayer'

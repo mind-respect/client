@@ -7,16 +7,22 @@ import Store from '@/store'
 import RequestErrors from '@/requestError'
 
 const Service = {
-    baseUrl: function () {
-        return location.protocol + '//' + location.hostname + ':' + location.port + '/service'
+    baseUrl: function (isForGraphElement) {
+        let url = location.protocol + '//' + location.hostname + ':' + location.port;
+        if (!isForGraphElement) {
+            return url + '/service'
+        }
     },
-    api: function () {
+    geApi: function () {
+        return Service.api(true);
+    },
+    api: function (isForGraphElement) {
         const loginPages = [
             '/',
             '/login'
         ];
         const axiosInstance = axios.create({
-            baseURL: Service.baseUrl(),
+            baseURL: Service.baseUrl(isForGraphElement),
             credentials: true,
             withCredentials: true
         });
@@ -31,8 +37,8 @@ const Service = {
                 RequestErrors.addRequestError(error)
             }
             return Promise.reject(error)
-        })
+        });
         return axiosInstance
     }
-}
+};
 export default Service

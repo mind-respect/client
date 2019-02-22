@@ -3,7 +3,7 @@
  */
 
 import EdgeUi from '@/edge/EdgeUi'
-import Bubble from '@/bubble/Bubble'
+import BubbleUi from '@/bubble/BubbleUi'
 import ObjectUtils from '@/ObjectUtils'
 import GraphElementUi from '@/graph-element/GraphElementUi'
 
@@ -107,7 +107,7 @@ api.TreeEdge.prototype.reviewIsSameAsGroupRelation = function () {
 };
 
 api.TreeEdge.prototype.removeIdentifier = function (identifier) {
-    Bubble.Bubble.prototype.removeIdentifier.call(
+    BubbleUi.Bubble.prototype.removeIdentifier.call(
         this,
         identifier
     );
@@ -115,7 +115,7 @@ api.TreeEdge.prototype.removeIdentifier = function (identifier) {
 };
 
 api.TreeEdge.prototype.setText = function (text) {
-    Bubble.Bubble.prototype.setText.call(
+    BubbleUi.Bubble.prototype.setText.call(
         this,
         text
     );
@@ -124,7 +124,7 @@ api.TreeEdge.prototype.setText = function (text) {
 
 api.TreeEdge.prototype.remove = function () {
     var parentBubble = this.getParentBubble();
-    Bubble.Bubble.prototype.remove.call(
+    BubbleUi.Bubble.prototype.remove.call(
         this,
         parentBubble
     );
@@ -133,7 +133,7 @@ api.TreeEdge.prototype.remove = function () {
 
 api.TreeEdge.prototype.collateralRemove = function () {
     var parentBubble = this.getParentBubble();
-    Bubble.Bubble.prototype.remove.call(
+    BubbleUi.Bubble.prototype.remove.call(
         this
     );
     this._removeParentGroupRelationIfItsALeaf(parentBubble);
@@ -147,7 +147,7 @@ api.TreeEdge.prototype._removeParentGroupRelationIfItsALeaf = function (parentBu
 
 api.TreeEdge.prototype.moveTo = function (otherBubble, relation) {
     var previousParentBubble = this.getParentBubble();
-    Bubble.Bubble.prototype.moveTo.call(
+    BubbleUi.Bubble.prototype.moveTo.call(
         this,
         otherBubble,
         relation

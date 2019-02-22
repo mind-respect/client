@@ -4,6 +4,7 @@
 
 import $ from 'jquery'
 import GraphElement from '@/graph-element/GraphElement'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -40,6 +41,11 @@ function Schema(schemaServerFormat) {
 }
 
 Schema.prototype = new GraphElement.GraphElement();
+
+Schema.prototype.getGraphElementType = function () {
+    return GraphElementType.Schema;
+};
+
 Schema.prototype.getProperties = function () {
     return this._properties;
 };

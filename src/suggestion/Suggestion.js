@@ -7,6 +7,7 @@ import Identification from '@/identifier/Identification'
 import IdUri from '@/IdUri'
 import UserService from '@/service/UserService'
 import SuggestionOrigin from '@/suggestion/SuggestionOrigin'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -115,6 +116,10 @@ function Suggestion(serverFormat) {
 }
 
 Suggestion.prototype = new FriendlyResource.FriendlyResource();
+
+Suggestion.prototype.getGraphElementType = function () {
+    return GraphElementType.VertexSuggestion;
+};
 
 Suggestion.prototype.getSameAs = function () {
     return this.sameAs;

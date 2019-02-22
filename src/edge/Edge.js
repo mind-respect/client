@@ -5,6 +5,7 @@
 import GraphElement from '@/graph-element/GraphElement'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import VertexServerFormatBuilder from '@/vertex/VertexServerFormatBuilder'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -72,6 +73,10 @@ api.Edge.prototype.init = function (edgeServerFormat) {
     );
     this.edgeServerFormat = edgeServerFormat;
     return this;
+};
+
+api.Edge.prototype.getGraphElementType = function () {
+    return GraphElementType.Relation;
 };
 
 api.Edge.prototype.setSourceVertex = function (sourceVertex) {

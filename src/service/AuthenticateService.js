@@ -1,7 +1,7 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import Service from '@/service'
+import Service from '@/Service'
 
 export default {
     register: function (user) {

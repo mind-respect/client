@@ -5,6 +5,7 @@ import $ from 'jquery'
 import GraphUi from '@/graph/GraphUi'
 import GraphElement from '@/graph-element/GraphElement'
 import Identification from '@/identifier/Identification'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 const api = {};
 api.withoutAnIdentification = function () {
@@ -45,6 +46,10 @@ function GroupRelation(identifiers) {
 }
 
 GroupRelation.prototype = new Identification.Identification();
+
+GroupRelation.prototype.getGraphElementType = function () {
+    return GraphElementType.GroupRelation;
+};
 
 GroupRelation.prototype.getIdentification = function () {
     return this.identifiers[0];

@@ -4,13 +4,15 @@
 import $ from 'jquery'
 import IdUri from '@/IdUri'
 import MindMapInfo from '@/MindMapInfo'
+import Service from '@/Service'
 
 const api = {};
-api.getForCentralBubbleUri = function (centralBubbleUri, callback, errorCallback) {
-    return $.ajax({
-        type: 'GET',
-        url: api.graphUriForCentralBubbleUri(centralBubbleUri)
-    }).done(callback).fail(errorCallback);
+api.getForCentralBubbleUri = function (centralBubbleUri) {
+    return Service.geApi().get(
+        api.graphUriForCentralBubbleUri(
+            centralBubbleUri
+        )
+    );
 };
 api.getForCentralVertexUriAtDepth = function (centralVertexUri, depth) {
     return $.ajax({

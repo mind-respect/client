@@ -4,9 +4,7 @@
 
 <template>
     <div id="mind_map">
-        <div id="drawn_graph">
-
-        </div>
+        <Graph></Graph>
     </div>
 </template>
 
@@ -15,16 +13,19 @@
     import GraphDisplayer from '@/graph/GraphDisplayer'
     import GraphDisplayerFactory from '@/graph/GraphDisplayerFactory'
     import JqueryUniqueId from '@/jquery/jquery.unique-id'
+    import Graph from '@/components/graph/Graph'
 
     export default {
         name: "Center",
+        components: {
+            Graph
+        },
         mounted: function () {
             GraphDisplayer.setImplementation(
                 GraphDisplayerFactory.getByName(
                     "relative_tree"
                 )
             );
-            CenterFlow.enterMindMapForAuthenticatedUser();
         }
     }
 </script>

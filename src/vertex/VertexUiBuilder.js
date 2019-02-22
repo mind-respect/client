@@ -29,7 +29,7 @@ api.completeBuild = function (vertexUi) {
             vertexUi
         );
     }
-    vertexUi.refreshImages();
+    vertexUi.refreshImages()
     VertexUiBuilderCommon.moveInLabelButtonsContainerIfIsToTheLeft(
         vertexUi
     );

@@ -10,7 +10,7 @@ import SelectionHandler from '@/SelectionHandler'
 import BubbleFactory from '@/bubble/BubbleFactory'
 import MindMapInfo from '@/MindMapInfo'
 import Clipboard from 'clipboard'
-import Bubble from '@/bubble/Bubble'
+import BubbleUi from '@/bubble/BubbleUi'
 import GraphElementUi from '@/graph-element/GraphElementUi'
 import IdUri from '@/IdUri'
 let api = {};
@@ -39,7 +39,7 @@ api.VerticesToHtmlLists = function (vertices) {
     vertices.forEach(function (vertex) {
         verticesInListById[vertex.getId()] = {};
     });
-    Bubble.sortBubblesByNumberOfParentVerticesAscending(vertices).forEach(function (vertex) {
+    BubbleUi.sortBubblesByNumberOfParentVerticesAscending(vertices).forEach(function (vertex) {
         if (!shouldIntegrateVertex(vertex)) {
             return;
         }
@@ -231,7 +231,7 @@ api.RelativeTreeVertex.prototype.getNumberOfHiddenRelations = function () {
 };
 
 api.RelativeTreeVertex.prototype.tripleAdded = function (triple) {
-    Bubble.Bubble.prototype.tripleAdded.call(
+    BubbleUi.Bubble.prototype.tripleAdded.call(
         this,
         triple
     );

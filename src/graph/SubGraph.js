@@ -29,13 +29,31 @@ api.buildServerFormat = function () {
 };
 api.fromServerFormat = function (serverFormat) {
     return new api.SubGraph(
-        serverFormat
+        serverFormat,
+        undefined,
+        true
     );
 };
-api.SubGraph = function (serverFormat) {
-    this.serverFormat = serverFormat;
-    this._buildEdges();
-    this._buildVertices();
+
+api.withFacadeAndCenterUri = function (serverFacade, centerUri) {
+    return new api.SubGraph(
+        serverFacade,
+        centerUri,
+        false
+    );
+};
+
+api.SubGraph = function (graph, centerUri, buildFacade) {
+    this.centerUri = centerUri;
+    if (buildFacade) {
+        this.serverFormat = graph;
+        this._buildEdges();
+        this._buildVertices();
+    } else {
+        this.edges = graph.edges;
+        this.vertices = graph.vertices;
+    }
+
 };
 
 api.SubGraph.prototype.getEdgeRelatedToIdentification = function (identification) {
@@ -94,6 +112,10 @@ api.SubGraph.prototype.visitGraphElements = function (visitor) {
 
 api.SubGraph.prototype.getVertexWithUri = function (uri) {
     return this.vertices[uri];
+};
+
+api.SubGraph.prototype.getCenter = function () {
+    return this.getVertexWithUri(this.centerUri)
 };
 
 api.SubGraph.prototype._buildVertices = function () {

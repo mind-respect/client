@@ -3,7 +3,7 @@
  */
 
 import $ from 'jquery'
-import Service from '@/service'
+import Service from '@/Service'
 import UserService from '@/service/UserService'
 
 export default {

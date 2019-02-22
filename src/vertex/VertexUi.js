@@ -9,7 +9,7 @@ import Error from '@/Error'
 import VertexSegments from '@/vertex/VertexSegments'
 import GraphElementUi from '@/graph-element/GraphElementUi'
 import GraphElementMainMenu from '@/graph-element/GraphElementMainMenu'
-import Bubble from '@/bubble/Bubble'
+import BubbleUi from '@/bubble/BubbleUi'
 import SuggestionService from '@/suggestion/SuggestionService'
 import IdUri from '@/IdUri'
 import GraphUi from '@/graph/GraphUi'
@@ -40,9 +40,9 @@ api.VertexUi = function (html) {
     this.html = html;
 };
 
-api.VertexUi.prototype = new Bubble.Bubble();
+api.VertexUi.prototype = new BubbleUi.Bubble();
 api.VertexUi.prototype.init = function () {
-    Bubble.Bubble.apply(this, [this.html]);
+    BubbleUi.BubbleUi.apply(this, [this.html]);
     return this;
 };
 
@@ -55,7 +55,7 @@ api.VertexUi.prototype.remove = function (bubbleAbove, bubbleUnder) {
         bubbleToSelect = bubbleAbove;
     }
     this.removeConnectedEdges();
-    Bubble.Bubble.prototype.remove.call(
+    BubbleUi.Bubble.prototype.remove.call(
         this,
         parentBubble,
         bubbleToSelect
@@ -241,7 +241,7 @@ api.VertexUi.prototype.serverFacade = function () {
 };
 
 api.VertexUi.prototype.removeIdentifier = function (identification) {
-    Bubble.Bubble.prototype.removeIdentifier.call(
+    BubbleUi.Bubble.prototype.removeIdentifier.call(
         this,
         identification
     );
