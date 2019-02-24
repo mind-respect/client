@@ -1,0 +1,190 @@
+/*
+ * Copyright Vincent Blouin under the GPL License version 3
+ */
+
+#drag-bubble-text-for-chrome {
+  //position: absolute;
+  //max-width: 500px;
+  //text-align: center;
+  //font-size: calc(1em + 0.5vw);
+}
+
+#drag-bubble-text-for-chrome-container {
+  position: absolute;
+  display: table;
+}
+
+#drag-bubble-text-for-chrome {
+  font-size: calc(0.9em + 0.5vw);
+  padding: 10px;
+  width: auto;
+  max-width: 500px;
+  text-align: center;
+  display: table-cell;
+  border-radius: 50px;
+  position: relative;
+  margin: 0 auto;
+}
+
+.cboxPhoto {
+  max-width: 600px;
+  height: auto !important;
+}
+
+.bubble {
+  z-index: 5;
+  cursor: default;
+  display: table;
+
+  &.drag-over {
+    .in-bubble-content {
+      border: 3px dashed red;
+      border-radius: 50px;
+    }
+  }
+
+  &.dragged {
+    background-color: transparent;
+  }
+  /*.label to override bootstrap*/
+  > *, .label {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  &.view-only {
+    .arrow {
+      &:before {
+        left: 0;
+      }
+    }
+  }
+  .in-bubble-content {
+    position: relative;
+    z-index: 3;
+    .in-label-buttons {
+      display: inline-block;
+      white-space: nowrap;
+      button {
+        width: 37px;
+        height: 37px;
+        height: auto;
+        display: inline-block;
+        background: none;
+        border: none;
+        box-shadow: none;
+        font-size: 20px;
+        margin: -6px;
+        &[data-action=makePublic] {
+          i:before {
+            content: "\f023";
+          }
+        }
+        &[data-action=makePrivate] {
+          i:before {
+            content: "\f09c";
+          }
+        }
+      }
+    }
+  }
+  &.edit {
+    user-select: text;
+    cursor: text;
+    .bubble-label {
+      &:after {
+        content: "";
+      }
+    }
+  }
+  white-space: nowrap;
+  .bubble-label {
+    text-align: center;
+    color: black;
+    &:empty:not(:focus) {
+      color: grey;
+      max-width: 100%;
+      transition: all 0.3s;
+      &:after {
+        content: attr(data-placeholder);
+        font-style: italic;
+        font-size: calc(1em);
+      }
+    }
+    del {
+      text-decoration: none;
+    }
+    &[contenteditable='true']:before {
+      content: "\feff "; //to prevent small height when edit in firefox http://stackoverflow.com/a/23530317
+    }
+    outline: 0 solid transparent;
+    border: none;
+    font-size: 14px;
+    width: auto;
+    display: table-cell;
+    white-space: pre;
+  }
+  position: relative;
+  min-width: 0;
+  margin: 0 0 0 0;
+  &.selected {
+    .in-bubble-content {
+      //background-color: attr(data-background-selected) !important;
+    }
+  }
+  &.selected:not(.not-editable) {
+    .bubble-label {
+      &:empty:not(:focus):after {
+        content: attr(data-placeholder);
+        color: grey;
+        font-style: italic;
+      }
+    }
+    z-index: 11;
+    .in-bubble-content {
+      z-index: 5;
+    }
+
+  }
+  .image_container {
+    z-index: 3;
+    position: relative;
+    min-width: 60px;
+    text-align: right;
+    &:empty {
+      min-width: 0;
+    }
+  }
+  .edge-label {
+    display: inline;
+  }
+  .connector {
+    position: absolute;
+    height: $relationConnectorHeight;
+    border-top: $edgeStyle;
+    top: calc(50% - 2px);
+    width: 32px;
+    left: -22px;
+    z-index: -1;
+    //border-image: url("images/rope.svg.thumb.png") 30 round;
+  }
+  .arrow {
+    position: absolute;
+    height: 1px;
+    width: 52px;
+    top: 50%;
+    border-top: $edgeStyle;
+    z-index: -1;
+    ~ {
+      background-color: yellow;
+    }
+    ~ .in-bubble-note-button:not(hidden) {
+      width: 100%;
+    }
+    &:before {
+      content: url('images/icons/vertex/arrowhead_right.svg');
+      position: relative;
+      top: $arrowTop;
+      left: $arrowLeft;
+    }
+  }
+}

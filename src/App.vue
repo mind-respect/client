@@ -386,4 +386,20 @@
     .no-padding > .v-toolbar__content {
         padding: 0 !important;
     }
+
+
+    .grab-bing {
+        cursor : -webkit-grab;
+        cursor : -moz-grab;
+        cursor : -o-grab;
+        cursor : grab;
+    }
+
+
+    .grab-bing:active {
+        cursor : -webkit-grabbing;
+        cursor : -moz-grabbing;
+        cursor : -o-grabbing;
+        cursor : grabbing;
+    }
 </style>

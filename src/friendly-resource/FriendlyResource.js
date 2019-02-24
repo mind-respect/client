@@ -3,6 +3,7 @@
  */
 import Image from '@/image/Image'
 import IdUri from '@/IdUri'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 const FriendlyResource = {
     fromServerFormat: function (serverFormat) {
@@ -148,6 +149,10 @@ FriendlyResource.FriendlyResource.prototype.getCreationDate = function () {
 };
 FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {
     return undefined;
+};
+
+FriendlyResource.FriendlyResource.prototype.isVertex = function () {
+    return this.getGraphElementType() === GraphElementType.Vertex;
 };
 
 FriendlyResource.FriendlyResource.prototype._buildImages = function () {

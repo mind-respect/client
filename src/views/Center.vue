@@ -14,6 +14,7 @@
     import GraphDisplayerFactory from '@/graph/GraphDisplayerFactory'
     import JqueryUniqueId from '@/jquery/jquery.unique-id'
     import Graph from '@/components/graph/Graph'
+    import GraphUi from '@/graph/GraphUi'
 
     export default {
         name: "Center",
@@ -26,10 +27,15 @@
                     "relative_tree"
                 )
             );
+            GraphUi.initDragScroll();
+            GraphUi.enableDragScroll();
         }
     }
 </script>
 
 <style scoped>
-
+    #mind_map{
+        width:100%;
+        height:100%;
+    }
 </style>

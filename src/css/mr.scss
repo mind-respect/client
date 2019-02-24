@@ -1,0 +1,13 @@
+/*!
+ * Copyright Vincent Blouin under the GPL License version 3
+ */
+@import "variables",
+"bubble",
+"relation",
+"vertex",
+"graph-structure";
+
+[draggable] {
+  cursor: move;
+  -khtml-user-drag: element; //for safari http://stackoverflow.com/a/3977637
+}
