@@ -99,7 +99,7 @@ api.buildInLabelButtons = function (graphElementUi) {
                 button
             );
             if (!graphElementUi.isSelected()) {
-                SelectionHandler.addGraphElement(graphElementUi);
+                SelectionHandler.add(graphElementUi);
             }
             var inLabelButtonClickMethodName = button.data("action") + "InLabelClick";
             var controller = graphElementUi.getController();

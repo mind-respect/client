@@ -7,6 +7,7 @@ import UiUtils from '@/UiUtils'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphElementMainMenu from '@/graph-element/GraphElementMainMenu'
 import EventBus from '@/EventBus'
+import Scroll from '@/Scroll'
 
 const api = {};
 var selectedRelations = [];
@@ -32,7 +33,7 @@ api.selectAllRelationsOnly = function () {
     GraphUi.getDrawnGraph().reattach();
 };
 
-api.setToSingleGraphElement = function (graphElement) {
+api.setToSingle = function (graphElement) {
     api._getSetterFromGraphElement(
         graphElement
     )(graphElement);
@@ -46,7 +47,7 @@ api._getSetterFromGraphElement = function (graphElement) {
 };
 
 api.setToSingleVertex = function (vertex) {
-    if (api.getNbSelectedElements() === 1 && api.getSingleElement().getId() === vertex.getId()) {
+    if (api.getNbSelectedElements() === 1 && api.getSingleElement().uiId === vertex.uiId) {
         return;
     }
     deselectAll();
@@ -63,7 +64,7 @@ api.setToSingleRelation = function (relation) {
     relation.makeSingleSelected();
 };
 
-api.addGraphElement = function (graphElement, onlyPrepare) {
+api.add = function (graphElement, onlyPrepare) {
     onlyPrepare = onlyPrepare || false;
     api._getAdderFromGraphElement(graphElement)(
         graphElement, onlyPrepare
@@ -94,7 +95,7 @@ api.addVertex = function (vertex) {
     selectedVertices.push(vertex);
     api._reviewMenu();
 };
-api.removeVertex = function (vertex) {
+api.remove = api.removeVertex = function (vertex) {
     deselectGraphElement(vertex, selectedVertices);
 };
 api.removeRelation = function (relation) {
@@ -170,6 +171,7 @@ api.getControllerFromCurrentSelection = function () {
 };
 
 api._reviewMenu = function () {
+    return;
     GraphElementMainMenu.reviewOutOfBubbleButtonsDisplay(
         api.getSelectedBubbles(),
         api.getControllerFromCurrentSelection()
@@ -183,9 +185,9 @@ EventBus.subscribe("/event/ui/graph/reset", deselectAll);
 export default api;
 
 function centerBubbleIfApplicable(bubble) {
-    var html = bubble.getHtml();
+    let html = document.getElementById(bubble.uiId);
     if (!UiUtils.isElementFullyOnScreen(html)) {
-        html.centerOnScreenWithAnimation();
+        Scroll.goToGraphElement(html)
     }
 }
 

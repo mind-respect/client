@@ -104,7 +104,7 @@ VertexController.prototype.convertToRelation = function () {
         toSelect = this.getUi();
     }
     return $.when.apply($, promises).then(function () {
-        SelectionHandler.setToSingleGraphElement(toSelect);
+        SelectionHandler.setToSingle(toSelect);
     });
 };
 
@@ -155,7 +155,7 @@ VertexController.prototype.convertToGroupRelation = function () {
         return this.remove(true);
     }.bind(this));
     return promise.then(function () {
-        SelectionHandler.setToSingleGraphElement(parentRelation);
+        SelectionHandler.setToSingle(parentRelation);
     });
 };
 

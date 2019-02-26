@@ -36,7 +36,7 @@ SchemaController.prototype.addChild = function () {
                 ),
                 self.schemasUi
             );
-            SelectionHandler.setToSingleGraphElement(
+            SelectionHandler.setToSingle(
                 propertyUi
             );
         }

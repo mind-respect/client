@@ -500,7 +500,7 @@ api.GraphElementUi.prototype.pasteBubble = api.GraphElementUi.prototype.paste = 
 api.GraphElementUi.prototype.selectTree = function () {
     var onlyPrepare = true;
     SelectionHandler.removeAll();
-    SelectionHandler.addGraphElement(
+    SelectionHandler.add(
         this,
         onlyPrepare
     );
@@ -514,7 +514,7 @@ api.GraphElementUi.prototype.selectTree = function () {
     }
     this.visitDescendants(function (bubble) {
         if (bubble.isInTypes(typesToSelect)) {
-            SelectionHandler.addGraphElement(
+            SelectionHandler.add(
                 bubble, onlyPrepare
             );
         }
@@ -807,7 +807,7 @@ api.GraphElementUi.prototype.labelUpdateHandle = function () {
         this._updateLabelsOfElementsWithSameUri();
     }
     if (SelectionHandler.isEmpty()) {
-        SelectionHandler.setToSingleGraphElement(this);
+        SelectionHandler.setToSingle(this);
     }
     GraphElementMainMenu.reviewButtonsVisibility(
         this,

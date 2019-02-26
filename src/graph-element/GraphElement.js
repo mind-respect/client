@@ -9,6 +9,7 @@ import Color from '@/Color'
 
 import WikidataUri from '@/WikidataUri'
 import Wikidata from '@/Wikidata'
+import api from "./GraphElementUi";
 
 const GraphElement = {
     DEFAULT_FONT: {
@@ -342,6 +343,13 @@ GraphElement.GraphElement.prototype.isPristine = function () {
 
 GraphElement.GraphElement.prototype.isToTheLeft = function () {
     return undefined;
+};
+
+GraphElement.GraphElement.prototype.getTextOrDefault = function () {
+    var text = this.getLabel();
+    return "" === text.trim() ?
+        this.getWhenEmptyLabel() :
+        text;
 };
 
 // GraphElement.GraphElement.prototype._buildWikidataLinks = function () {

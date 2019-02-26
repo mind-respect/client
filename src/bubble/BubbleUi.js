@@ -583,7 +583,7 @@ api.Bubble.prototype.remove = function (ancestor, bubbleToSelect) {
     }
     // GraphUi.refreshWidth();
     if (bubbleToSelect) {
-        SelectionHandler.setToSingleGraphElement(
+        SelectionHandler.setToSingle(
             bubbleToSelect
         );
     }
@@ -910,7 +910,7 @@ api.Bubble.prototype.expand = function (avoidScreenCenter, isChildExpand) {
     // GraphUi.refreshWidth();
     if (!avoidScreenCenter && !isChildExpand && !this.getChildrenContainer().isFullyOnScreen()) {
         this.sideCenterOnScreenWithAnimation();
-        SelectionHandler.setToSingleGraphElement(this);
+        SelectionHandler.setToSingle(this);
     }
     this.reviewMenuButtonsVisibility();
 };
@@ -993,7 +993,7 @@ api.Bubble.prototype.tripleAdded = function (triple) {
     if (!UiUtils.isElementFullyOnScreen(destinationHtml)) {
         destinationHtml.centerOnScreenWithAnimation();
     }
-    SelectionHandler.setToSingleGraphElement(triple.destinationVertex());
+    SelectionHandler.setToSingle(triple.destinationVertex());
     if (MindMapInfo.isInCompareMode()) {
         triple.edge().setAsComparisonSuggestionToRemove();
         triple.destinationVertex().setAsComparisonSuggestionToRemove();
@@ -1001,7 +1001,7 @@ api.Bubble.prototype.tripleAdded = function (triple) {
 };
 
 function selectNew(newSelectedElement) {
-    SelectionHandler.setToSingleGraphElement(
+    SelectionHandler.setToSingle(
         newSelectedElement
     );
 }

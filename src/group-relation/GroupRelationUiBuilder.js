@@ -118,7 +118,7 @@ api.GroupRelationUiBuilder.prototype._addLabel = function () {
         this.serverFacade.getIdentification().getLabel()
     ).on("mousedown", function (event) {
             event.stopPropagation();
-            SelectionHandler.setToSingleGraphElement(
+            SelectionHandler.setToSingle(
                 GroupRelationUi.withHtml(
                     $(this).closest(".group-relation")
                 )

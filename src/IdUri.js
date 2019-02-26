@@ -6,9 +6,14 @@ import $ from 'jquery'
 import UserService from '@/service/UserService'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Router from '@/router';
-
-// "jquery.url"
+import api from "./UiUtils";
 const IdUri = {
+    uuid: function () {
+        // https://stackoverflow.com/a/2117523
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        )
+    },
     encodeUri: function (uri) {
         return encodeURIComponent(
             uri

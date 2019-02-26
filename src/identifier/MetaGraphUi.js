@@ -161,7 +161,7 @@ api._setupMetaEdgeUi = function (metaEdgeUi) {
         metaEdgeUi.getController()
     );
     edgeHtml.click(function () {
-        SelectionHandler.setToSingleGraphElement(
+        SelectionHandler.setToSingle(
             BubbleFactory.fromHtml(
                 $(this)
             )

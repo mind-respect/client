@@ -44,7 +44,6 @@ api.withFacadeAndCenterUri = function (serverFacade, centerUri) {
 };
 
 api.SubGraph = function (graph, centerUri, buildFacade) {
-    this.centerUri = centerUri;
     if (buildFacade) {
         this.serverFormat = graph;
         this._buildEdges();
@@ -53,7 +52,9 @@ api.SubGraph = function (graph, centerUri, buildFacade) {
         this.edges = graph.edges;
         this.vertices = graph.vertices;
     }
-
+    if (centerUri) {
+        this.center = this.getVertexWithUri(centerUri)
+    }
 };
 
 api.SubGraph.prototype.getEdgeRelatedToIdentification = function (identification) {

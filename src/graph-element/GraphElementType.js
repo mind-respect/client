@@ -39,6 +39,9 @@ api.getEdgeTypes = function () {
         api.MetaRelation
     ];
 };
+api.isEdgeType = function (type) {
+    return api.getEdgeTypes().indexOf(type) > -1;
+};
 api.getAll = function () {
     return api.getVertexTypes().concat(
         api.getEdgeTypes()

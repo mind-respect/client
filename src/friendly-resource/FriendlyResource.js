@@ -80,9 +80,11 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
     if (friendlyResourceServerFormat.label === undefined) {
         this.friendlyResourceServerFormat.label = "";
     }
+    this.uiId = IdUri.uuid();
     this.uriFacade = new IdUri.IdUri(
         this.getUri()
     );
+    this.isSingleSelected = false;
     return this;
 };
 
@@ -125,6 +127,35 @@ FriendlyResource.FriendlyResource.prototype.getUri = function () {
 FriendlyResource.FriendlyResource.prototype.uri = function () {
     return this.uriFacade
 };
+FriendlyResource.FriendlyResource.prototype.isSame = function (friendlyResource) {
+    return this.getUri() === friendlyResource.getUri();
+};
+
+FriendlyResource.FriendlyResource.prototype.isVertex = function () {
+    return this.getGraphElementType() === GraphElementType.Vertex;
+};
+
+FriendlyResource.FriendlyResource.prototype.isEdge = function () {
+    return GraphElementType.isEdgeType(this.getGraphElementType())
+};
+
+FriendlyResource.FriendlyResource.prototype.select = function () {
+    this.isSelected = true;
+};
+
+FriendlyResource.FriendlyResource.prototype.deselect = function () {
+    this.isSelected = false;
+    this.isSingleSelected = false;
+};
+
+FriendlyResource.FriendlyResource.prototype.makeSingleSelected = function () {
+    this.isSingleSelected = true;
+};
+
+// FriendlyResource.FriendlyResource.prototype.isSingleSelected = function () {
+//     return this.isSingleSelected;
+// };
+
 FriendlyResource.FriendlyResource.prototype.getJsonFormat = function () {
     var serverFormat = this.getServerFormat();
     serverFormat.images = this.getImagesServerFormat();
@@ -149,10 +180,6 @@ FriendlyResource.FriendlyResource.prototype.getCreationDate = function () {
 };
 FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {
     return undefined;
-};
-
-FriendlyResource.FriendlyResource.prototype.isVertex = function () {
-    return this.getGraphElementType() === GraphElementType.Vertex;
 };
 
 FriendlyResource.FriendlyResource.prototype._buildImages = function () {

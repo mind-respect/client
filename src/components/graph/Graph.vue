@@ -3,14 +3,18 @@
   -->
 
 <template>
-    <div id="drawn_graph" v-if="loaded" v-dragscroll>
-        <div class="vertices-children-container left-oriented"></div>
+    <div id="drawn_graph" v-if="loaded" v-dragscroll @click="click">
+        <div class="vertices-children-container left-oriented">
+            <div v-for="leftBubble in graph.center.leftBubbles">
+                <Bubble :bubble="leftBubble"></Bubble>
+            </div>
+        </div>
         <div class='root-vertex-super-container' data-zoom='1' id="center">
-            {{center.getLabel()}}
+            {{graph.center.getLabel()}}
         </div>
         <div class="vertices-children-container right-oriented">
-            <div v-for="groupRelationRoot in center.groupRelationRoots">
-                <Bubble :bubble="groupRelationRoot"></Bubble>
+            <div v-for="rightBubble in graph.center.rightBubbles">
+                <Bubble :bubble="rightBubble"></Bubble>
             </div>
         </div>
     </div>
@@ -24,6 +28,8 @@
     import Bubble from '@/components/graph/Bubble'
     import Scroll from '@/Scroll'
     import Vue from 'vue'
+    import GraphUi from '@/graph/GraphUi'
+    import SelectionHandler from '@/SelectionHandler'
 
     export default {
         name: "Graph",
@@ -33,8 +39,8 @@
         data: function () {
             return {
                 graph: null,
-                center: null,
-                loaded: false
+                loaded: false,
+                centerServerFormat:null
             }
         },
         mounted: function () {
@@ -47,23 +53,33 @@
                     serverGraph,
                     centerUri
                 );
-                this.graph = new SubGraph.SubGraph(
+                this.graph = SubGraph.withFacadeAndCenterUri(
                     serverGraph,
                     centerUri
                 );
-                this.center = this.graph.getCenter();
+                let center = this.graph.center;
+                this.centerServerFormat = center.getServerFormat();
+                center.makeCenter();
+                center.groupRelationRoots.forEach(function (groupRelationRoot) {
+                    center.addChild(groupRelationRoot)
+                }.bind(this));
                 this.loaded = true;
                 Vue.nextTick(function () {
                     Scroll.goToGraphElement(
                         document.getElementById("center")
-                    )
-                })
+                    );
+                    GraphUi.resetBackGroundColor();
+                }.bind(this))
             }.bind(this));
         },
         methods: {
-            go: function (mu) {
-                console.log(mu);
-                // debugger;
+            click: function(){
+                SelectionHandler.removeAll();
+            }
+        },
+        watch: {
+            "centerServerFormat.label": function () {
+                document.title = this.graph.center.getTextOrDefault() + " | MindRespect";
             }
         }
     }
@@ -78,6 +94,10 @@
         justify-content: center;
         align-items: center;
         overflow: scroll;
+        z-index: 1;
+        cursor: move;
+        -khtml-user-drag: element;
+    / / for safari http: / / stackoverflow . com /a/ 397763
     }
 
     .root-vertex-super-container {

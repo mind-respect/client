@@ -8,6 +8,7 @@ import Edge from '@/edge/Edge'
 import Suggestion from '@/suggestion/Suggestion'
 import ShareLevel from '@/vertex/ShareLevel'
 import GraphElementType from '@/graph-element/GraphElementType'
+import I18n from '@/I18n'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -54,6 +55,8 @@ function Vertex(vertexServerFormat) {
     this._includedVertices = this._buildIncludedVertices();
     this._includedEdges = this._buildIncludedEdges();
     this._suggestions = this._buildSuggestions();
+    this.leftBubbles = [];
+    this.rightBubbles = [];
     GraphElement.GraphElement.apply(
         this
     );
@@ -153,6 +156,29 @@ Vertex.prototype.setShareLevel = function (shareLevel) {
 
 Vertex.prototype.getGraphElementType = function () {
     return GraphElementType.Vertex;
+};
+
+Vertex.prototype.makeCenter = function () {
+    this.isCenter = true;
+};
+
+Vertex.prototype.addChild = function (child) {
+    if (this.isCenter) {
+        if (this._shouldAddLeft()) {
+            this.leftBubbles.push(child)
+        } else {
+            this.rightBubbles.push(child)
+        }
+    }
+};
+
+api.getWhenEmptyLabel = function () {
+    return I18n.i18next.t("vertex", "default");
+};
+
+Vertex.prototype._shouldAddLeft = function () {
+    return this.leftBubbles.length <
+        this.rightBubbles.length;
 };
 
 Vertex.prototype._buildIncludedEdges = function () {

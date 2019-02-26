@@ -42,7 +42,7 @@ EdgeController.prototype.addChild = function () {
 
 EdgeController.prototype.addSibling = function () {
     return this.getUi().getTopMostChildBubble().getController().addSibling().then(function (triple) {
-        SelectionHandler.setToSingleGraphElement(
+        SelectionHandler.setToSingle(
             triple.edge()
         );
     });

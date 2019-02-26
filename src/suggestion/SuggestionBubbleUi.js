@@ -127,7 +127,7 @@ api.SuggestionBubbleUi.prototype.integrate = function (newVertexUri) {
         vertexUi.setAsComparisonSuggestionToRemove();
     }
     SelectionHandler.removeAll();
-    SelectionHandler.setToSingleGraphElement(vertexUi);
+    SelectionHandler.setToSingle(vertexUi);
     EventBus.publish(
         '/event/ui/html/vertex/created/',
         vertexUi

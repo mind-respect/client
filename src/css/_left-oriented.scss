@@ -1,0 +1,116 @@
+/*
+ * Copyright Vincent Blouin under the GPL License version 3
+ */
+.left-oriented {
+  [data-action=addChild] .fa-arrow-right {
+    transform: rotate(180deg);
+  }
+  .vertex {
+    &.edit {
+      .in-bubble-content {
+        .bubble-label {
+          padding-left: 0;
+        }
+      }
+    }
+    &.selected {
+      .in-bubble-content {
+        box-shadow: $bubble-box-shadow
+      }
+    }
+    .in-bubble-content {
+      .in-label-buttons {
+        margin-right: $margin-buttons;
+        margin-left: auto;
+        padding-left: $buttons-next-to-label-padding;
+      }
+    }
+  }
+  .relation.bubble:not(.same-as-group-relation) {
+    &:not(.edit) {
+      .label {
+        .bubble-label:not(:empty) {
+          padding: 5px 10px 5px 10px;
+        }
+      }
+    }
+    .hidden-properties-content {
+      margin-left: 0;
+      margin-right: $marginOfHiddenPropertiesToRelation;
+    }
+    &.public {
+      .label-container {
+        &:after {;
+          right: auto;
+          left: 4px;
+        }
+      }
+    }
+    .in-bubble-content {
+      .in-label-buttons {
+        left: auto;
+        right: -32px;
+        margin-left: -7px;
+        margin-right: 7px;
+      }
+    }
+    .label-container {
+      padding-left: 0;
+      padding-right: 6px;
+    }
+  }
+  .property {
+    &.public {
+      .label-container {
+        &:after {
+          right: auto;
+          left: -16px;
+        }
+      }
+    }
+  }
+  .group-relation .label {
+    margin-right: 0;
+  }
+  .bubble {
+    &.relation.inverse {
+      .connector {
+        &:before {
+          content: url('images/icons/vertex/arrowhead_right.svg');
+        }
+      }
+    }
+    .connector {
+      left: auto;
+      right: -22px;
+    }
+  }
+  .vertex-tree-container .vertical-border {
+    border-left: none;
+    border-right: $edgeStyle;
+  }
+  .arrow {
+    left: auto;
+    width: 57px;
+    margin-left: -3px;
+    &:before {
+      content: url('images/icons/vertex/arrowhead_left.svg');
+    }
+    &.inverse {
+      left: auto;
+    }
+  }
+  //.arrow {
+  //  left:auto;
+  //  &:before {
+  //    content: "";
+  //  }
+  //}
+  //&.view-only {
+  //  .arrow:before {
+  //    left: 8px;
+  //  }
+  //}
+}
+
+
