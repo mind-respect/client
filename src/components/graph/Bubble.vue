@@ -4,22 +4,22 @@
 
 <template>
     <div class="vertex-tree-container">
-        <div class='vertex-container' @click="click" :id="bubble.uiId">
+        <div class='vertex-container draggable' @click="click" @dblclick="dblclick" :id="bubble.uiId">
             <div class="bubble graph-element" :class="{
-                'selected' : bubble.isSingleSelected,
+                'selected' : bubble.isSelected,
                 'vertex': bubble.isVertex(),
                 'relation': bubble.isEdge()
             }">
                 <div class="hidden-properties-container"></div>
                 <div class="image_container"></div>
-                <div class="in-bubble-content">
+                <div class="in-bubble-content ">
                     <div class="label-container">
                         <div class="label label-info label-and-buttons">
-                            <div class="bubble-label ui-autocomplete-input" data-placeholder="relate"
-                                 autocomplete="off">
-                                {{bubble.getLabel()}}
-                            </div>
-                            <div class="in-label-buttons hidden"></div>
+                            <div class="bubble-label ui-autocomplete-input" :contenteditable="bubble.editFlow"
+                                 @blur="leaveEditFlow"
+                                 data-placeholder="relate"
+                                 autocomplete="off" v-text="bubble.getServerFormat().label"></div>
+                            <div class="in-label-buttons" v-if="false"></div>
                         </div>
                     </div>
                     <!--<v-text-field v-model="vertex.getServerFormat().label"></v-text-field>-->
@@ -48,11 +48,14 @@
 <script>
     import SelectionHandler from '@/SelectionHandler'
     import UiUtils from '@/UiUtils'
+    import Vue from 'vue'
+    import Focus from '@/Focus'
 
     export default {
         name: "Bubble",
         props: ['bubble'],
         mounted: function () {
+            this.bubble.editFlow = false;
             // console.log(this.bubble);
             // debugger;
             // this.bubble =
@@ -61,7 +64,7 @@
             click: function (event) {
                 event.stopPropagation();
                 if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
-                    if (this.bubble.isSelected()) {
+                    if (this.bubble.isSelected) {
                         SelectionHandler.remove(this.bubble);
                     } else {
                         SelectionHandler.add(this.bubble);
@@ -71,6 +74,19 @@
                         this.bubble
                     );
                 }
+            },
+            dblclick: function (event) {
+                console.log("aaaaaa")
+                this.bubble.editFlow = true;
+                Vue.nextTick(function () {
+                    let labelHtml = this.bubble.getLabelHtml();
+                    labelHtml.contentEditable = "true";
+                    Focus.focusAtPosition(event, labelHtml);
+                }.bind(this));
+            },
+            leaveEditFlow: function () {
+                console.log("bbbbb")
+                this.bubble.editFlow = false;
             }
         }
     }

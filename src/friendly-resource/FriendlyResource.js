@@ -84,8 +84,18 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
     this.uriFacade = new IdUri.IdUri(
         this.getUri()
     );
+    this.isSelected = false;
     this.isSingleSelected = false;
     return this;
+};
+
+FriendlyResource.FriendlyResource.prototype.getHtml = function () {
+    return document.getElementById(this.uiId);
+};
+
+FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
+    let html = this.getHtml();
+    return html.querySelectorAll('.bubble-label')[0];
 };
 
 FriendlyResource.FriendlyResource.prototype.setLabel = function (label) {
@@ -150,6 +160,10 @@ FriendlyResource.FriendlyResource.prototype.deselect = function () {
 
 FriendlyResource.FriendlyResource.prototype.makeSingleSelected = function () {
     this.isSingleSelected = true;
+};
+
+FriendlyResource.FriendlyResource.prototype.removeSingleSelected = function () {
+    this.isSingleSelected = false;
 };
 
 // FriendlyResource.FriendlyResource.prototype.isSingleSelected = function () {

@@ -3,14 +3,14 @@
   -->
 
 <template>
-    <div id="drawn_graph" v-if="loaded" v-dragscroll @click="click">
+    <div id="drawn_graph" v-if="loaded" v-dragscroll @click="click" class="draggable">
         <div class="vertices-children-container left-oriented">
             <div v-for="leftBubble in graph.center.leftBubbles">
                 <Bubble :bubble="leftBubble"></Bubble>
             </div>
         </div>
         <div class='root-vertex-super-container' data-zoom='1' id="center">
-            {{graph.center.getLabel()}}
+            <Bubble :bubble="graph.center"></Bubble>
         </div>
         <div class="vertices-children-container right-oriented">
             <div v-for="rightBubble in graph.center.rightBubbles">
@@ -95,11 +95,12 @@
         align-items: center;
         overflow: scroll;
         z-index: 1;
-        cursor: move;
-        -khtml-user-drag: element;
     / / for safari http: / / stackoverflow . com /a/ 397763
     }
-
+    .draggable{
+        cursor: move;
+        -khtml-user-drag: element;
+    }
     .root-vertex-super-container {
         width: 100%;
         height: 100%;
