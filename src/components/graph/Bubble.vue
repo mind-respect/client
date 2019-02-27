@@ -15,10 +15,10 @@
                 <div class="in-bubble-content ">
                     <div class="label-container">
                         <div class="label label-info label-and-buttons">
-                            <div class="bubble-label ui-autocomplete-input" :contenteditable="bubble.editFlow"
+                            <div class="bubble-label ui-autocomplete-input"
                                  @blur="leaveEditFlow"
                                  data-placeholder="relate"
-                                 autocomplete="off" v-text="bubble.getServerFormat().label"></div>
+                                 autocomplete="off" v-text="bubble.getServerFormat().label" @keydown="keydown"></div>
                             <div class="in-label-buttons" v-if="false"></div>
                         </div>
                     </div>
@@ -50,12 +50,13 @@
     import UiUtils from '@/UiUtils'
     import Vue from 'vue'
     import Focus from '@/Focus'
+    import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
+    import KeyCode from 'keycode-js';
 
     export default {
         name: "Bubble",
         props: ['bubble'],
         mounted: function () {
-            this.bubble.editFlow = false;
             // console.log(this.bubble);
             // debugger;
             // this.bubble =
@@ -76,8 +77,6 @@
                 }
             },
             dblclick: function (event) {
-                console.log("aaaaaa")
-                this.bubble.editFlow = true;
                 Vue.nextTick(function () {
                     let labelHtml = this.bubble.getLabelHtml();
                     labelHtml.contentEditable = "true";
@@ -85,8 +84,16 @@
                 }.bind(this));
             },
             leaveEditFlow: function () {
-                console.log("bbbbb")
-                this.bubble.editFlow = false;
+                let labelHtml = this.bubble.getLabelHtml();
+                labelHtml.contentEditable = "false";
+                this.bubble.setLabel(labelHtml.innerHTML);
+                FriendlyResourceService.updateLabel(this.bubble)
+            },
+            keydown: function (event) {
+                if ([KeyCode.KEY_RETURN, KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {
+                    event.preventDefault();
+                    this.bubble.getLabelHtml().blur();
+                }
             }
         }
     }

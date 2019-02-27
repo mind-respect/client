@@ -1,0 +1,137 @@
+/*
+ * Copyright Vincent Blouin under the GPL License version 3
+ */
+
+//$editWidth: 200; //vm;
+//$editWidth: 1500; //px;
+//$editWidth: 60; //rem;
+$editWidth: 70;
+//vw;
+$horizontalPaddingHighest: 3.5;
+
+@mixin zoom {
+  @for $i from 0 through 10 {
+    $horizontalPadding: max(1, $horizontalPaddingHighest - ($i * 1.1));
+    [data-zoom="#{$i}"] {
+      .vertex {
+        .in-bubble-content {
+          max-width: 500px;
+          .bubble-label {
+            white-space: pre-wrap;
+          }
+        }
+
+        .in-bubble-content {
+          padding: 1em;
+          padding-bottom: 0.5em;
+          padding-top: 0.5em;
+          $buttonExtraSize: max(0, 1.5 - $i * 0.3);
+          $buttonSize: calc(30px + #{$buttonExtraSize}vw);
+          $fontSizeExtra: max(0, 0.5 - $i * 0.1);
+          //button {
+          //  width: $buttonSize;
+          //  height: $buttonSize;
+          //  font-size: calc(1em + #{$fontSizeExtra}vw);
+          //  i {
+          //    $top: 0.25 + max(0, 0.25 - ($i * 0.02));
+          //    top: percentage($top);
+          //  }
+          //}
+          //.menu {
+          //  $menuWidthExtra: $buttonExtraSize * 5;
+          //  width: calc(260px + #{$menuWidthExtra}vw);
+          //}
+        }
+      }
+
+      .in-bubble-note-button {
+        $fontSizeExtra: max(0, 8 - $i) / 1.5;
+        font-size: calc(1.5em + #{$fontSizeExtra}vw);
+        &:before {
+          font-family: FontAwesome;
+          content: "\f02d";
+        }
+      }
+      .bubble-label {
+        $fontSizeExtra: max(0, 8 - $i / 1.20);
+        font-size: calc(1em + #{$fontSizeExtra}vw);
+      }
+    }
+  }
+}
+
+@include zoom;
+
+//[data-zoom="1"] {
+//  .vertex {
+//    &.edit {
+//      .in-bubble-content {
+//        width: $editWidth + px;
+//        max-width: $editWidth + px;
+//      }
+//    }
+//    .in-bubble-content {
+//      $verticalPadding: $horizontalPadding * $verticalPaddingRatio;
+//      padding: $horizontalPadding + em;
+//      padding-bottom: $verticalPadding + em;
+//      padding-top: $verticalPadding + em;
+//      button, .in-bubble-note-button {
+//        width: 60px;
+//        height: 60px;
+//        font-size: 2em;
+//      }
+//      .menu {
+//        width: 260px;
+//      }
+//    }
+//  }
+//  .bubble-label {
+//    font-size: $fontSize + em;
+//  }
+//}
+//
+//[data-zoom="2"] {
+//  .bubble {
+//    .in-bubble-content {
+//      border-radius: 100px;
+//    }
+//  }
+//  .vertex {
+//    &.edit {
+//      .in-bubble-content {
+//        width: 1500px;
+//        max-width: 1500px;
+//      }
+//    }
+//    .in-bubble-content {
+//      $horizontal-padding: 5;
+//      $verticalPadding: $horizontal-padding * $verticalPaddingRatio;
+//      padding: $horizontal-padding + em;
+//      padding-bottom: $verticalPadding + em;
+//      padding-top: $verticalPadding + em;
+//    }
+//  }
+//  .bubble-label {
+//    font-size: 10em;
+//  }
+//}
+
+.zoom-scale {
+  .menu {
+    zoom: 30%;
+    -moz-transform: scale(0.3);
+  }
+}
+
+.zoom-scale-1 {
+  .in-bubble-content {
+    zoom: 500%;
+    -moz-transform: scale(5);
+    .bubble-label {
+      //zoom:2000%;
+    }
+  }
+  .bubble-content {
+    //zoom:500%;
+  }
+}

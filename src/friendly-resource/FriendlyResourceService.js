@@ -3,15 +3,16 @@
  */
 
 import $ from 'jquery'
+import Service from '@/Service'
 
 const api = {};
-api.updateLabel = function (friendlyResource, label) {
-    return $.ajax({
-        type: 'POST',
-        url: friendlyResource.getUri() + '/label',
-        data: JSON.stringify({content: label}),
-        contentType: 'application/json;charset=utf-8'
-    });
+api.updateLabel = function (friendlyResource) {
+    Service.geApi().post(
+        friendlyResource.getUri() + '/label',
+        {
+            content: friendlyResource.getLabel()
+        }
+    );
 };
 api.remove = function (friendlyResource, callback) {
     return $.ajax({

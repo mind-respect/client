@@ -3,13 +3,13 @@
   -->
 
 <template>
-    <div id="drawn_graph" v-if="loaded" v-dragscroll @click="click" class="draggable">
+    <div id="drawn_graph" v-if="loaded" v-dragscroll @click="click" class="draggable" data-zoom="9">
         <div class="vertices-children-container left-oriented">
             <div v-for="leftBubble in graph.center.leftBubbles">
                 <Bubble :bubble="leftBubble"></Bubble>
             </div>
         </div>
-        <div class='root-vertex-super-container' data-zoom='1' id="center">
+        <div class='root-vertex-super-container' id="center">
             <Bubble :bubble="graph.center"></Bubble>
         </div>
         <div class="vertices-children-container right-oriented">

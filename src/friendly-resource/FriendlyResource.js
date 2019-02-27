@@ -156,6 +156,7 @@ FriendlyResource.FriendlyResource.prototype.select = function () {
 FriendlyResource.FriendlyResource.prototype.deselect = function () {
     this.isSelected = false;
     this.isSingleSelected = false;
+    this.getLabelHtml().blur();
 };
 
 FriendlyResource.FriendlyResource.prototype.makeSingleSelected = function () {
