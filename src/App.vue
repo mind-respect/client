@@ -383,23 +383,42 @@
         justify-content: center;
     }
 
+    /*
+    vertical-center
+    */
+    .v-center {
+        display: flex;
+        align-items: center;
+    }
+
+    /*
+    horizontal-center
+    */
+    .h-center {
+        display: flex;
+        justify-content: center;
+    }
+
+    .h-right {
+        display: flex;
+        justify-content: right;
+    }
+
     .no-padding > .v-toolbar__content {
         padding: 0 !important;
     }
 
-
     .grab-bing {
-        cursor : -webkit-grab;
-        cursor : -moz-grab;
-        cursor : -o-grab;
-        cursor : grab;
+        cursor: -webkit-grab;
+        cursor: -moz-grab;
+        cursor: -o-grab;
+        cursor: grab;
     }
 
-
     .grab-bing:active {
-        cursor : -webkit-grabbing;
-        cursor : -moz-grabbing;
-        cursor : -o-grabbing;
-        cursor : grabbing;
+        cursor: -webkit-grabbing;
+        cursor: -moz-grabbing;
+        cursor: -o-grabbing;
+        cursor: grabbing;
     }
 </style>

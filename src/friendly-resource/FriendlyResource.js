@@ -149,6 +149,10 @@ FriendlyResource.FriendlyResource.prototype.isEdge = function () {
     return GraphElementType.isEdgeType(this.getGraphElementType())
 };
 
+FriendlyResource.FriendlyResource.prototype.isGroupRelation = function () {
+    return GraphElementType.GroupRelation === this.getGraphElementType();
+};
+
 FriendlyResource.FriendlyResource.prototype.select = function () {
     this.isSelected = true;
 };

@@ -2,14 +2,24 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 @import "variables",
-"bubble",
+//"graph-structure",
+//"left-oriented",
 "relation",
+"bubble",
 "vertex",
-"graph-structure",
-"left-oriented",
 "zoom";
-
+body{
+  overflow-x: scroll;
+}
 [draggable] {
   cursor: move;
   -khtml-user-drag: element; //for safari http://stackoverflow.com/a/3977637
+}
+
+.not-editable .bubble.single-selected .bubble-label {
+  &:after {
+    content: "";
+    color: grey;
+    font-style: italic;
+  }
 }

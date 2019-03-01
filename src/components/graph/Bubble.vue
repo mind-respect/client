@@ -3,46 +3,90 @@
   -->
 
 <template>
-    <div class="vertex-tree-container">
-        <div class='vertex-container draggable' @click="click" @dblclick="dblclick" :id="bubble.uiId">
-            <div class="bubble graph-element" :class="{
+    <v-layout row :class="{
+        'vertex-tree-container': !isCenter,
+        'vertex-container': isCenter
+    }" :id="containerId">
+        <v-flex xs12>
+            <div class='vertex-container draggable' :class="{
+                'right': orientation === 'left',
+                'vh-center':orientation === 'center',
+                'left':orientation === 'right'
+            }" @click="click" @dblclick="dblclick" :id="bubble.uiId">
+                <div class="bubble graph-element relative" v-if="bubble.isVertex()" :class="{
+                'selected' : bubble.isSelected,
+                'vertex': bubble.isVertex(),
+                'relation': bubble.isEdge(),
+                'center-vertex': isCenter
+            }">
+                    <div class="hidden-properties-container hidden-sm-and-up">
+                        <div class="hidden-properties-content hidden" title="" data-original-title="Expand (ctrl+E)">0
+                            ...
+                        </div>
+                        <i class="loading hidden fa fa-refresh fa-spin fa-4x fa-fw"></i></div>
+                    <div class="image_container"></div>
+                    <div class="in-bubble-content-wrapper">
+                        <div class="in-bubble-content">
+                            <div class="bubble-label ui-autocomplete-input"
+                                 @blur="leaveEditFlow"
+                                 data-placeholder="relate"
+                                 autocomplete="off" v-text="bubble.getServerFormat().label"
+                                 @keydown="keydown"></div>
+                            <div class="in-label-buttons"></div>
+                            <!--<v-text-field v-model="vertex.getServerFormat().label"></v-text-field>-->
+                        </div>
+                    </div>
+                    <!--<span class="connector"></span>-->
+                </div>
+                <div class="bubble graph-element relative" v-if="bubble.isEdge()" :class="{
                 'selected' : bubble.isSelected,
                 'vertex': bubble.isVertex(),
                 'relation': bubble.isEdge()
             }">
-                <div class="hidden-properties-container"></div>
-                <div class="image_container"></div>
-                <div class="in-bubble-content ">
-                    <div class="label-container">
-                        <div class="label label-info label-and-buttons">
-                            <div class="bubble-label ui-autocomplete-input"
-                                 @blur="leaveEditFlow"
-                                 data-placeholder="relate"
-                                 autocomplete="off" v-text="bubble.getServerFormat().label" @keydown="keydown"></div>
-                            <div class="in-label-buttons" v-if="false"></div>
+                    <div class="hidden-properties-container hidden-sm-and-up">
+                        <div class="hidden-properties-content hidden" title="" data-original-title="Expand (ctrl+E)">0
+                            ...
                         </div>
+                        <i class="loading hidden fa fa-refresh fa-spin fa-4x fa-fw"></i></div>
+                    <div class="image_container"></div>
+                    <div class="in-bubble-content">
+                        <div class="label-container">
+                            <div class="label label-info label-and-buttons">
+                                <div class="bubble-label ui-autocomplete-input"
+                                     @blur="leaveEditFlow"
+                                     data-placeholder="relate"
+                                     autocomplete="off" v-text="bubble.getServerFormat().label"
+                                     @keydown="keydown"></div>
+                            </div>
+                        </div>
+                        <!--<v-text-field v-model="vertex.getServerFormat().label"></v-text-field>-->
                     </div>
-                    <!--<v-text-field v-model="vertex.getServerFormat().label"></v-text-field>-->
+                    <!--<span class="connector"></span>-->
                 </div>
-                <!--<span class="connector"></span>-->
             </div>
-        </div>
-        <div class="vertices-children-container" v-if="bubble.getVerticesAsArray">
-            <div v-for="vertex in bubble.getVerticesAsArray()">
-                <Bubble :bubble="vertex"></Bubble>
+            <div class="vertices-children-container" v-if="bubble.isGroupRelation()">
+                <div v-for="child in bubble.sortedImmediateChild(parentVertex)">
+                    <div v-for="(triple, uiId) in child">
+                        <Bubble :bubble="triple.edge" :childVertex="triple.vertex" :orientation="orientation"></Bubble>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="vertical-border vertical-border-first small">
-            <div class="vertical-border-filling"></div>
-        </div>
-        <div class="vertical-border vertical-border-second small">
-            <div class="vertical-border-filling"></div>
-        </div>
-        <div class="vertical-border vertical-border-third small">
-            <div class="vertical-border-filling"></div>
-        </div>
-        <span class="clear-fix"></span>
-    </div>
+            <div class="vertices-children-container" v-if="bubble.isEdge()">
+                <Bubble :bubble="childVertex" :orientation="orientation"></Bubble>
+            </div>
+            <!--<div class="vertical-border vertical-border-first small">-->
+            <!--<div class="vertical-border-filling"></div>-->
+            <!--</div>-->
+            <!--<span class="arrow vertex"></span>-->
+            <!--<div class="vertical-border vertical-border-second small">-->
+            <!--<div class="vertical-border-filling"></div>-->
+            <!--</div>-->
+            <!--<div class="vertical-border vertical-border-third small">-->
+            <!--<div class="vertical-border-filling"></div>-->
+            <!--</div>-->
+            <span class="clear-fix"></span>
+        </v-flex>
+    </v-layout>
 </template>
 
 <script>
@@ -55,11 +99,24 @@
 
     export default {
         name: "Bubble",
-        props: ['bubble'],
+        props: ['bubble', 'isCenter', 'parentVertex', 'childVertex', 'orientation'],
+        data: function () {
+            return {
+                containerId: ""
+            }
+        },
         mounted: function () {
-            // console.log(this.bubble);
             // debugger;
             // this.bubble =
+            if (this.isCenter) {
+                this.containerId = "center";
+            }
+            if (this.bubble.isGroupRelation()) {
+                this.bubble.sortedImmediateChild(this.parentVertex).forEach(function (child) {
+                    console.log(child);
+                });
+
+            }
         },
         methods: {
             click: function (event) {
@@ -101,4 +158,12 @@
 
 <style scoped>
 
+    .hidden-properties-container {
+        z-index: 3;
+        min-width: 25px;
+        cursor: pointer;
+        font-size: 22px;
+        font-weight: bold;
+        color: red;
+    }
 </style>

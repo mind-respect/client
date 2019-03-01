@@ -78,7 +78,6 @@ api.Edge.prototype.init = function (edgeServerFormat) {
 api.Edge.prototype.getGraphElementType = function () {
     return GraphElementType.Relation;
 };
-
 api.Edge.prototype.setSourceVertex = function (sourceVertex) {
     return this.sourceVertex = sourceVertex;
 };

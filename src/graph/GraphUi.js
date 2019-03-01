@@ -22,22 +22,22 @@ GraphUi.refreshWidth = function () {
     let $rightContainer = $(".vertices-children-container.right-oriented");
     let leftWidth = $leftContainer.find(".bubble").length * 750 + 2225;
     let rightWidth = $rightContainer.find(".bubble").length * 750 + 2225;
-    $("#drawn_graph").css(
+    $("#graph-width").css(
         "width",
         ((leftWidth + rightWidth) * 2) + "px"
     );
-    $(".root-vertex-super-container").css(
-        "width",
-        (leftWidth + rightWidth + 800) + "px"
-    );
-    $leftContainer.css(
-        "width",
-        leftWidth
-    );
-    $rightContainer.css(
-        "width",
-        rightWidth
-    );
+    // $(".root-vertex-super-container").css(
+    //     "width",
+    //     (leftWidth + rightWidth + 800) + "px"
+    // );
+    // $leftContainer.css(
+    //     "width",
+    //     leftWidth
+    // );
+    // $rightContainer.css(
+    //     "width",
+    //     rightWidth
+    // );
 };
 
 GraphUi.initDragScroll = function () {
