@@ -8,6 +8,7 @@ import SelectionHandler from '@/SelectionHandler'
 import MindMapInfo from '@/MindMapInfo'
 import UiUtils from '@/UiUtils'
 import GraphDisplayer from '@/graph/GraphDisplayer'
+import Focus from '@/Focus'
 
 const api = {};
 let tabKeyNumber = 9,
@@ -83,6 +84,7 @@ api._handleKeyboardActions = function () {
 export default api;
 
 function pasteHandler(event) {
+
     if (!SelectionHandler.isOnlyASingleElementSelected()) {
         return;
     }
@@ -99,9 +101,9 @@ function pasteHandler(event) {
 
 function keyDownHandler(event) {
     // console.log(event.which);
-    var target = $(event.target),
+    let target = $(event.target),
         isWorkingOnSomething = !target.is("body") && !target.is("button") && !target.is("a");
-    var isCombineKeyPressed = UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey;
+    let isCombineKeyPressed = UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey;
     if (isWorkingOnSomething) {
         if (event.keyCode === escapeKeyNumber) {
             target.blur();
@@ -111,16 +113,18 @@ function keyDownHandler(event) {
     if (isThereASpecialKeyPressed()) {
         return;
     }
-    var actionSet = isCombineKeyPressed ?
+    let actionSet = isCombineKeyPressed ?
         ctrlPlusActions :
         nonCtrlPlusActions;
-    var feature = actionSet[event.which];
+    let feature = actionSet[event.which];
     if (feature === undefined) {
-        var isPasting = isCombineKeyPressed && vKeyNumber && event.which;
+        let isPasting = isCombineKeyPressed && vKeyNumber && event.which;
         if (!isPasting && event.which !== api._ctrlKeyNumber && !MindMapInfo.isViewOnly() && SelectionHandler.isOnlyASingleElementSelected()) {
-            var selectedElement = SelectionHandler.getSingleElement();
-            if (selectedElement.isLabelEditable()) {
-                selectedElement.focus();
+            let selectedElement = SelectionHandler.getSingleElement();
+            if (!MindMapInfo.isViewOnly()) {
+                let labelHtml = selectedElement.getLabelHtml();
+                labelHtml.contentEditable = "true";
+                Focus.focusEnd(labelHtml);
             }
         }
         return;

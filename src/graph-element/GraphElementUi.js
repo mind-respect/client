@@ -404,31 +404,6 @@ api.GraphElementUi.prototype.leaveDragOver = function () {
     this.getHtml().removeClass("drag-over");
 };
 
-api.GraphElementUi.prototype.getController = function () {
-    return this.getControllerWithElements(this);
-};
-
-api.GraphElementUi.prototype.getControllerWithElements = function (elements) {
-    var controller = this._getControllerClass();
-    return new controller[
-        this._getControllerName()
-        ](elements);
-};
-
-api.GraphElementUi.prototype._getControllerName = function () {
-    var controllerName = "";
-    var nameParts = this.getGraphElementType().split("_");
-    nameParts.forEach(function (namePart) {
-        controllerName += namePart.capitalizeFirstLetter();
-    });
-    return controllerName + "Controller";
-};
-
-api.GraphElementUi.prototype._getControllerClass = function () {
-    return controllerGetters[
-        this.getGraphElementType()
-        ]();
-};
 
 api.GraphElementUi.prototype.getTextOrDefault = function () {
     var text = this.text();

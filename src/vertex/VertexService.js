@@ -3,12 +3,15 @@
  */
 import $ from 'jquery'
 import EventBus from '@/EventBus'
-import TripleUiBuilder from '@/triple/TripleUiBuilder'
+import Triple from '@/triple/Triple'
 import Suggestion from '@/suggestion/Suggestion'
 import UserService from '@/service/UserService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import IdUri from '@/IdUri'
 import GraphElementUi from '@/graph-element/GraphElementUi'
+import Service from '@/Service'
+import Edge from '@/edge/Edge'
+import Vertex from '@/vertex/Vertex'
 
 const api = {};
 api.getByUri = function (uri, callback) {
@@ -26,17 +29,14 @@ api.createVertex = function () {
     });
 };
 api.addRelationAndVertexToVertex = function (vertex, sourceBubble, relationOver) {
-    return $.ajax({
-        type: 'POST',
-        url: vertex.getUri(),
-        data: JSON.stringify({}),
-        dataType: 'json',
-        contentType: 'application/json;charset=utf-8'
-    }).then(function (tripleJson) {
-        return TripleUiBuilder.createIntoSourceBubble(
+    return Service.geApi().post(
+        vertex.getUri(),
+        {}
+    ).then(function (response) {
+        return Triple.fromEdgeAndSourceAndDestinationVertex(
+            Edge.fromServerFormat(response.data.edge),
             sourceBubble,
-            tripleJson,
-            relationOver
+            Vertex.fromServerFormat(response.data.end_vertex)
         );
     });
 };

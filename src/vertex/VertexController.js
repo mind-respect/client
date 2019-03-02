@@ -680,36 +680,36 @@ VertexController.prototype._addChildToRealAndUiParent = function (realParent, ui
     if (uiParent === undefined) {
         uiParent = realParent;
     }
-    return uiParent.isExpanded() ?
+    return uiParent.isExpanded ?
         doIt() :
         uiParent.getController().expand().then(doIt);
 
     function doIt() {
-        var triple;
+        let triple;
         return VertexService.addRelationAndVertexToVertex(
             realParent,
             uiParent,
             edgeOver
         ).then(function (_triple) {
                 triple = _triple;
-                triple.destinationVertex().getModel().incrementNumberOfConnectedEdges();
-                triple.sourceVertex().getModel().incrementNumberOfConnectedEdges();
-                if (ShareLevel.PRIVATE === realParent.getModel().getShareLevel()) {
-                    triple.destinationVertex().getModel().setShareLevel(ShareLevel.PRIVATE);
-                    triple.destinationVertex().reviewInLabelButtonsVisibility();
-                    return;
-                }
-                // GraphUi.refreshWidth();
-                return triple.destinationVertex().getController().setShareLevel(
-                    realParent.getModel().getShareLevel()
-                );
+                realParent.addChild(triple);
+                // triple.destinationVertex().getModel().incrementNumberOfConnectedEdges();
+                // triple.sourceVertex().getModel().incrementNumberOfConnectedEdges();
+                // if (ShareLevel.PRIVATE === realParent.getModel().getShareLevel()) {
+                //     triple.destinationVertex().getModel().setShareLevel(ShareLevel.PRIVATE);
+                //     triple.destinationVertex().reviewInLabelButtonsVisibility();
+                //     return;
+                // }
+                // GraphUi.refreshWidth(true);
+                // return triple.destinationVertex().getController().setShareLevel(
+                //     realParent.getModel().getShareLevel()
+                // );
             }
         ).then(function () {
-            triple.sourceVertex().tripleAdded(triple);
-            return GraphElementService.changeChildrenIndex(
-                triple.sourceVertex()
-            );
-        }).then(function () {
+            // realParent.tripleAdded(triple);
+            // return GraphElementService.changeChildrenIndex(
+            //     triple.sourceVertex()
+            // );
             return triple;
         });
     }

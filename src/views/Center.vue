@@ -9,12 +9,11 @@
 </template>
 
 <script>
-    import CenterFlow from '@/flow/CenterFlow'
     import GraphDisplayer from '@/graph/GraphDisplayer'
     import GraphDisplayerFactory from '@/graph/GraphDisplayerFactory'
-    import JqueryUniqueId from '@/jquery/jquery.unique-id'
     import Graph from '@/components/graph/Graph'
     import GraphUi from '@/graph/GraphUi'
+    import KeyboardActionsHandler from '@/KeyboardActionsHandler'
 
     export default {
         name: "Center",
@@ -29,13 +28,14 @@
             );
             GraphUi.initDragScroll();
             GraphUi.enableDragScroll();
+            KeyboardActionsHandler.enable();
         }
     }
 </script>
 
 <style scoped>
-    #mind_map{
-        width:100%;
-        height:100%;
+    #mind_map {
+        width: 100%;
+        height: 100%;
     }
 </style>

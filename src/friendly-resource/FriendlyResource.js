@@ -4,6 +4,7 @@
 import Image from '@/image/Image'
 import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
+import Focus from '@/Focus'
 
 const FriendlyResource = {
     fromServerFormat: function (serverFormat) {
@@ -89,6 +90,10 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
     return this;
 };
 
+FriendlyResource.FriendlyResource.prototype.getId = function () {
+    return this.uiId;
+};
+
 FriendlyResource.FriendlyResource.prototype.getHtml = function () {
     return document.getElementById(this.uiId);
 };
@@ -96,6 +101,16 @@ FriendlyResource.FriendlyResource.prototype.getHtml = function () {
 FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
     let html = this.getHtml();
     return html.querySelectorAll('.bubble-label')[0];
+};
+
+FriendlyResource.FriendlyResource.prototype.focus = function (event) {
+    let labelHtml = this.getLabelHtml();
+    labelHtml.contentEditable = "true";
+    if (event) {
+        Focus.focusAtPosition(event, labelHtml);
+    } else {
+        Focus.focusEnd(labelHtml);
+    }
 };
 
 FriendlyResource.FriendlyResource.prototype.setLabel = function (label) {
@@ -208,4 +223,10 @@ FriendlyResource.FriendlyResource.prototype._buildImages = function () {
             this.friendlyResourceServerFormat.images
         );
 };
+
+FriendlyResource.FriendlyResource.prototype.getModel = function () {
+    return this;
+};
+
+
 export default FriendlyResource;

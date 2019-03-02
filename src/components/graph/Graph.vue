@@ -3,17 +3,16 @@
   -->
 
 <template>
-    <div id="drawn_graph" v-if="loaded" v-dragscroll @click="click" class="draggable" data-zoom="9"
-    >
+    <div id="drawn_graph" v-if="loaded" v-dragscroll @click="click" class="draggable" data-zoom="9">
         <div id="graph-width">
-            <v-layout row class='root-vertex-super-container' data-zoom='1'>
+            <v-layout row class='root-vertex-super-container v-center' data-zoom='1'>
                 <v-flex xs6 class="vertices-children-container left-oriented">
                     <div v-for="leftBubble in graph.center.leftBubbles">
-                        <Bubble :bubble="leftBubble" :parentVertex="graph.center" class="clear-fix"
+                        <Bubble :bubble="leftBubble" :parentVertex="graph.center"
                                 orientation="left"></Bubble>
                     </div>
                 </v-flex>
-                <v-flex xs0 class="vh-center ml-5 mr-5" style="display:inline-flex">
+                <v-flex xs0 class="vh-center pl-5 pr-5" style="display:inline-flex">
                     <Bubble :bubble="graph.center" :isCenter="true" orientation="center"></Bubble>
                 </v-flex>
                 <v-flex xs6 class="vertices-children-container right-oriented">

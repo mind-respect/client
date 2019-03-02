@@ -7,18 +7,28 @@
         'vertex-tree-container': !isCenter,
         'vertex-container': isCenter
     }" :id="containerId">
-        <v-flex xs12>
+        <v-flex xs12 class="v-center">
+            <v-spacer v-if="orientation === 'left'"></v-spacer>
+            <Children :bubble="bubble"
+                      :parentVertex="parentVertex"
+                      :orientation="orientation"
+                      :isCenter="isCenter"
+                      :childVertex="childVertex"
+                      v-if="orientation === 'left'"
+            >
+            </Children>
             <div class='vertex-container draggable' :class="{
-                'right': orientation === 'left',
                 'vh-center':orientation === 'center',
                 'left':orientation === 'right'
-            }" @click="click" @dblclick="dblclick" :id="bubble.uiId">
+            }" @click="click" @dblclick="dblclick"
+                 :id="bubble.uiId"
+            >
                 <div class="bubble graph-element relative" v-if="bubble.isVertex()" :class="{
-                'selected' : bubble.isSelected,
-                'vertex': bubble.isVertex(),
-                'relation': bubble.isEdge(),
-                'center-vertex': isCenter
-            }">
+                    'selected' : bubble.isSelected,
+                    'vertex': bubble.isVertex(),
+                    'relation': bubble.isEdge(),
+                    'center-vertex': isCenter
+                }">
                     <div class="hidden-properties-container hidden-sm-and-up">
                         <div class="hidden-properties-content hidden" title="" data-original-title="Expand (ctrl+E)">0
                             ...
@@ -27,7 +37,7 @@
                     <div class="image_container"></div>
                     <div class="in-bubble-content-wrapper">
                         <div class="in-bubble-content">
-                            <div class="bubble-label ui-autocomplete-input"
+                            <div class="bubble-label ui-autocomplete-input "
                                  @blur="leaveEditFlow"
                                  data-placeholder="relate"
                                  autocomplete="off" v-text="bubble.getServerFormat().label"
@@ -39,10 +49,10 @@
                     <!--<span class="connector"></span>-->
                 </div>
                 <div class="bubble graph-element relative" v-if="bubble.isEdge()" :class="{
-                'selected' : bubble.isSelected,
-                'vertex': bubble.isVertex(),
-                'relation': bubble.isEdge()
-            }">
+                    'selected' : bubble.isSelected,
+                    'vertex': bubble.isVertex(),
+                    'relation': bubble.isEdge()
+                }">
                     <div class="hidden-properties-container hidden-sm-and-up">
                         <div class="hidden-properties-content hidden" title="" data-original-title="Expand (ctrl+E)">0
                             ...
@@ -64,16 +74,14 @@
                     <!--<span class="connector"></span>-->
                 </div>
             </div>
-            <div class="vertices-children-container" v-if="bubble.isGroupRelation()">
-                <div v-for="child in bubble.sortedImmediateChild(parentVertex)">
-                    <div v-for="(triple, uiId) in child">
-                        <Bubble :bubble="triple.edge" :childVertex="triple.vertex" :orientation="orientation"></Bubble>
-                    </div>
-                </div>
-            </div>
-            <div class="vertices-children-container" v-if="bubble.isEdge()">
-                <Bubble :bubble="childVertex" :orientation="orientation"></Bubble>
-            </div>
+            <Children :bubble="bubble"
+                      :parentVertex="parentVertex"
+                      :orientation="orientation"
+                      :isCenter="isCenter"
+                      :childVertex="childVertex"
+                      v-if="orientation === 'right'"
+            >
+            </Children>
             <!--<div class="vertical-border vertical-border-first small">-->
             <!--<div class="vertical-border-filling"></div>-->
             <!--</div>-->
@@ -84,7 +92,6 @@
             <!--<div class="vertical-border vertical-border-third small">-->
             <!--<div class="vertical-border-filling"></div>-->
             <!--</div>-->
-            <span class="clear-fix"></span>
         </v-flex>
     </v-layout>
 </template>
@@ -92,14 +99,16 @@
 <script>
     import SelectionHandler from '@/SelectionHandler'
     import UiUtils from '@/UiUtils'
-    import Vue from 'vue'
-    import Focus from '@/Focus'
     import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
     import KeyCode from 'keycode-js';
+    import Children from '@/components/graph/Children'
 
     export default {
         name: "Bubble",
         props: ['bubble', 'isCenter', 'parentVertex', 'childVertex', 'orientation'],
+        components: {
+            Children
+        },
         data: function () {
             return {
                 containerId: ""
@@ -111,12 +120,14 @@
             if (this.isCenter) {
                 this.containerId = "center";
             }
-            if (this.bubble.isGroupRelation()) {
-                this.bubble.sortedImmediateChild(this.parentVertex).forEach(function (child) {
-                    console.log(child);
-                });
-
-            }
+            // if (this.bubble.isVertex() && !this.isCenter) {
+            //     console.log(this.bubble.rightBubbles);
+            // }
+            // if (this.bubble.isGroupRelation()) {
+            //     this.bubble.sortedImmediateChild(this.parentVertex).forEach(function (child) {
+            //         console.log(child);
+            //     });
+            // }
         },
         methods: {
             click: function (event) {
@@ -134,11 +145,7 @@
                 }
             },
             dblclick: function (event) {
-                Vue.nextTick(function () {
-                    let labelHtml = this.bubble.getLabelHtml();
-                    labelHtml.contentEditable = "true";
-                    Focus.focusAtPosition(event, labelHtml);
-                }.bind(this));
+                this.bubble.focus(event);
             },
             leaveEditFlow: function () {
                 let labelHtml = this.bubble.getLabelHtml();
@@ -149,7 +156,7 @@
             keydown: function (event) {
                 if ([KeyCode.KEY_RETURN, KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {
                     event.preventDefault();
-                    this.bubble.getLabelHtml().blur();
+                    return this.bubble.getLabelHtml().blur();
                 }
             }
         }

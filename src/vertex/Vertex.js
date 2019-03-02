@@ -57,6 +57,7 @@ function Vertex(vertexServerFormat) {
     this._suggestions = this._buildSuggestions();
     this.leftBubbles = [];
     this.rightBubbles = [];
+    this.isExpanded = true;
     GraphElement.GraphElement.apply(
         this
     );
@@ -163,12 +164,10 @@ Vertex.prototype.makeCenter = function () {
 };
 
 Vertex.prototype.addChild = function (child) {
-    if (this.isCenter) {
-        if (this._shouldAddLeft()) {
-            this.leftBubbles.push(child)
-        } else {
-            this.rightBubbles.push(child)
-        }
+    if (this.isCenter && this._shouldAddLeft()) {
+        this.leftBubbles.push(child)
+    } else {
+        this.rightBubbles.push(child)
     }
 };
 

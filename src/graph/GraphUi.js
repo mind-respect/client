@@ -5,6 +5,7 @@
 import $ from 'jquery'
 import DragScroll from '@/dragscroll'
 import Color from '@/Color'
+import Vue from 'vue'
 
 const DEFAULT_BACKGROUND_COLOR = "#1E87AF";
 const GraphUi = {};
@@ -17,15 +18,25 @@ let _drawnGraph,
     _backgroundColor = DEFAULT_BACKGROUND_COLOR,
     _selectedBackgroundColor;
 
-GraphUi.refreshWidth = function () {
-    let $leftContainer = $(".vertices-children-container.left-oriented");
-    let $rightContainer = $(".vertices-children-container.right-oriented");
-    let leftWidth = $leftContainer.find(".bubble").length * 750 + 2225;
-    let rightWidth = $rightContainer.find(".bubble").length * 750 + 2225;
-    $("#graph-width").css(
-        "width",
-        ((leftWidth + rightWidth) * 2) + "px"
-    );
+GraphUi.refreshWidth = function (nextTick) {
+    if (nextTick){
+        Vue.nextTick(function () {
+            doIt()
+        });
+    }else{
+        doIt()
+    }
+    function doIt() {
+        let $leftContainer = $(".vertices-children-container.left-oriented");
+        let $rightContainer = $(".vertices-children-container.right-oriented");
+        let leftWidth = $leftContainer.find(".bubble").length * 750 + 2225;
+        let rightWidth = $rightContainer.find(".bubble").length * 750 + 2225;
+        $("#graph-width").css(
+            "width",
+            ((leftWidth + rightWidth) * 2) + "px"
+        );
+    }
+
     // $(".root-vertex-super-container").css(
     //     "width",
     //     (leftWidth + rightWidth + 800) + "px"

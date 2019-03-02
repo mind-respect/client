@@ -6,10 +6,14 @@ import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Identification from '@/identifier/Identification'
 import IdUri from '@/IdUri'
 import Color from '@/Color'
+import GraphDisplayer from '@/graph/GraphDisplayer'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 import WikidataUri from '@/WikidataUri'
 import Wikidata from '@/Wikidata'
 import api from "./GraphElementUi";
+
+const controllerGetters = {};
 
 const GraphElement = {
     DEFAULT_FONT: {
@@ -88,6 +92,8 @@ const GraphElement = {
 };
 GraphElement.GraphElement = function () {
 };
+
+initMenuHandlerGetters();
 
 GraphElement.GraphElement.prototype = new FriendlyResource.FriendlyResource();
 
@@ -352,6 +358,32 @@ GraphElement.GraphElement.prototype.getTextOrDefault = function () {
         text;
 };
 
+GraphElement.GraphElement.prototype.getController = function () {
+    return this.getControllerWithElements(this);
+};
+
+GraphElement.GraphElement.prototype.getControllerWithElements = function (elements) {
+    var controller = this._getControllerClass();
+    return new controller[
+        this._getControllerName()
+        ](elements);
+};
+
+GraphElement.GraphElement.prototype._getControllerName = function () {
+    var controllerName = "";
+    var nameParts = this.getGraphElementType().split("_");
+    nameParts.forEach(function (namePart) {
+        controllerName += namePart.capitalizeFirstLetter();
+    });
+    return controllerName + "Controller";
+};
+
+GraphElement.GraphElement.prototype._getControllerClass = function () {
+    return controllerGetters[
+        this.getGraphElementType()
+        ]();
+};
+
 // GraphElement.GraphElement.prototype._buildWikidataLinks = function () {
 //     var promises = [];
 //     this.getIdentifiers().forEach(function (identifier) {
@@ -371,3 +403,17 @@ GraphElement.GraphElement.prototype.getTextOrDefault = function () {
 // };
 
 export default GraphElement;
+
+
+function initMenuHandlerGetters() {
+    controllerGetters[api.Types.Vertex] = GraphDisplayer.getVertexMenuHandler;
+    controllerGetters[api.Types.Relation] = GraphDisplayer.getRelationMenuHandler;
+    controllerGetters[api.Types.GroupRelation] = GraphDisplayer.getGroupRelationMenuHandler;
+    controllerGetters[api.Types.Schema] = GraphDisplayer.getSchemaMenuHandler;
+    controllerGetters[api.Types.Property] = GraphDisplayer.getPropertyMenuHandler;
+    controllerGetters[api.Types.VertexSuggestion] = GraphDisplayer.getVertexSuggestionController;
+    controllerGetters[api.Types.RelationSuggestion] = GraphDisplayer.getRelationSuggestionMenuHandler;
+    controllerGetters[api.Types.Meta] = GraphDisplayer.getMetaController;
+    controllerGetters[api.Types.MetaRelation] = GraphDisplayer.getMetaRelationController;
+    controllerGetters[GraphElementType.GroupVertexUnderMeta] = GraphDisplayer.getGroupVertexUnderMetaController;
+}
