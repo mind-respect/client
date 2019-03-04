@@ -5,18 +5,18 @@
 <template>
     <div>
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()">
-            <div v-for="child in bubble.sortedImmediateChild(parentVertex)">
+            <div v-for="child in bubble.sortedImmediateChild(bubble.parentVertex)" :key="child.uiId">
                 <div v-for="(triple, uiId) in child">
-                    <Bubble :bubble="triple.edge" :childVertex="triple.vertex" :orientation="orientation"></Bubble>
+                    <Bubble :bubble="addEdgeContext(triple.edge, triple.vertex, bubble.parentVertex)"></Bubble>
                 </div>
             </div>
         </div>
         <div class="vertices-children-container" v-if="bubble.isEdge()">
-            <Bubble :bubble="childVertex" :orientation="orientation"></Bubble>
+            <Bubble :bubble="addVertexContext(bubble.destinationVertex, bubble.parentVertex)"></Bubble>
         </div>
-        <div class="vertices-children-container" v-if="!isCenter && bubble.isVertex()">
-            <div v-for="triple in bubble.rightBubbles">
-                <Bubble :bubble="triple.edge" :childVertex="triple.destination" :orientation="orientation"></Bubble>
+        <div class="vertices-children-container" v-if="!bubble.isCenter && bubble.isVertex()">
+            <div v-for="triple in bubble.rightBubbles" :key="triple.edge.uiId">
+                <Bubble :bubble="addEdgeContext(triple.edge, triple.destination, bubble)"></Bubble>
             </div>
         </div>
     </div>
@@ -25,13 +25,29 @@
 <script>
     export default {
         name: "Children",
-        components:{
+        components: {
             Bubble: () => import('@/components/graph/Bubble')
         },
-        mounted:function(){
+        mounted: function () {
             // console.log(Bubble);
         },
-        props: ['bubble', 'childVertex', 'isCenter', 'parentVertex', 'orientation']
+        methods: {
+            addVertexContext: function (vertex, parentVertex) {
+                vertex.parentVertex = parentVertex;
+                return this.addCommonContext(vertex);
+            },
+            addEdgeContext: function (edge, destinationVertex, parentVertex) {
+                edge.destinationVertex = destinationVertex;
+                edge.parentVertex = parentVertex;
+                return this.addCommonContext(edge);
+            },
+            addCommonContext: function (bubble) {
+                bubble.parentBubble = this.bubble;
+                bubble.orientation = this.bubble.orientation;
+                return bubble;
+            }
+        },
+        props: ['bubble', 'childVertex', 'parentVertex', 'orientation']
     }
 </script>
 

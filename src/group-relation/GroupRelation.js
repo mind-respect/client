@@ -6,6 +6,7 @@ import GraphUi from '@/graph/GraphUi'
 import GraphElement from '@/graph-element/GraphElement'
 import Identification from '@/identifier/Identification'
 import GraphElementType from '@/graph-element/GraphElementType'
+import GroupRelationController from '@/group-relation/GroupRelationController'
 
 const api = {};
 api.withoutAnIdentification = function () {
@@ -46,6 +47,24 @@ function GroupRelation(identifiers) {
 }
 
 GroupRelation.prototype = new Identification.Identification();
+
+GroupRelation.prototype.getLeftBubble = function(){
+    return this.getFirstEdge(0);
+};
+
+GroupRelation.prototype.getRightBubble = function(){
+    return this.getFirstEdge(0);
+};
+
+GroupRelation.prototype.getController = function () {
+    return new GroupRelationController.GroupRelationController(this);
+};
+
+GroupRelation.prototype.getControllerWithElements = function (elements) {
+    return new GroupRelationController.GroupRelationController(
+        elements
+    );
+};
 
 GroupRelation.prototype.getGraphElementType = function () {
     return GraphElementType.GroupRelation;
@@ -115,10 +134,18 @@ GroupRelation.prototype._getSortedVerticesAtAnyDepthOrNot = function (atAnyDepth
 };
 
 GroupRelation.prototype.getFirstVertex = function (childrenIndex) {
+    return this.getFirstTuple(childrenIndex).vertex;
+};
+
+GroupRelation.prototype.getFirstEdge = function (childrenIndex) {
+    return this.getFirstTuple(childrenIndex).edge;
+};
+
+GroupRelation.prototype.getFirstTuple = function (childrenIndex) {
     var sortedTuples = this.getSortedVerticesAtAnyDepth(childrenIndex);
     var firstTupleByVertexUid = sortedTuples[Object.keys(sortedTuples)[0]];
     var firstTuple = firstTupleByVertexUid[Object.keys(firstTupleByVertexUid)[0]];
-    return firstTuple.vertex;
+    return firstTuple;
 };
 
 GroupRelation.prototype.getLastVertex = function (childrenIndex) {

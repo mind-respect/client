@@ -119,12 +119,20 @@ api.Edge.prototype.getOtherVertex = function (vertex) {
     return this.getSourceVertex().getUri() === vertex.getUri() ?
         this.getDestinationVertex() : this.getSourceVertex();
 };
-api.Edge.prototype.isToTheLeft = function (centerVertex) {
-    var childVertex = this.getOtherVertex(centerVertex);
-    var childVertexIndex = centerVertex.getChildrenIndex()[childVertex.getUri()];
-    if (childVertexIndex === undefined) {
-        return undefined;
-    }
-    return childVertexIndex.toTheLeft;
+// api.Edge.prototype.isToTheLeft = function (centerVertex) {
+//     let childVertex = this.getOtherVertex(centerVertex);
+//     let childVertexIndex = centerVertex.getChildrenIndex()[childVertex.getUri()];
+//     if (childVertexIndex === undefined) {
+//         return undefined;
+//     }
+//     return childVertexIndex.toTheLeft;
+// };
+
+api.Edge.prototype.getRightBubble = function () {
+    return this.isToTheLeft() ? this.sourceVertex : this.destinationVertex;
+};
+
+api.Edge.prototype.getLeftBubble = function () {
+    return this.isToTheLeft() ? this.destinationVertex : this.sourceVertex;
 };
 export default api;

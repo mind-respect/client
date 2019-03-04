@@ -7,17 +7,16 @@
         <div id="graph-width">
             <v-layout row class='root-vertex-super-container v-center' data-zoom='1'>
                 <v-flex xs6 class="vertices-children-container left-oriented">
-                    <div v-for="leftBubble in graph.center.leftBubbles">
-                        <Bubble :bubble="leftBubble" :parentVertex="graph.center"
-                                orientation="left"></Bubble>
+                    <div v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
+                        <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
                     </div>
                 </v-flex>
                 <v-flex xs0 class="vh-center pl-5 pr-5" style="display:inline-flex">
-                    <Bubble :bubble="graph.center" :isCenter="true" orientation="center"></Bubble>
+                    <Bubble :bubble="graph.center"></Bubble>
                 </v-flex>
                 <v-flex xs6 class="vertices-children-container right-oriented">
-                    <div v-for="rightBubble in graph.center.rightBubbles">
-                        <Bubble :bubble="rightBubble" :parentVertex="graph.center" orientation="right"></Bubble>
+                    <div v-for="rightBubble in graph.center.rightBubbles" :key="rightBubble.uiId">
+                        <Bubble :bubble="addBubbleContext(rightBubble, graph.center, 'right')"></Bubble>
                     </div>
                 </v-flex>
             </v-layout>
@@ -81,6 +80,11 @@
         methods: {
             click: function () {
                 SelectionHandler.removeAll();
+            },
+            addBubbleContext: function (bubble, parentVertex, orientation) {
+                bubble.parentBubble = bubble.parentVertex = parentVertex;
+                bubble.orientation = orientation;
+                return bubble;
             }
         },
         watch: {

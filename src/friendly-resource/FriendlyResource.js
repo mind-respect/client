@@ -5,6 +5,7 @@ import Image from '@/image/Image'
 import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Focus from '@/Focus'
+import SelectionHandler from '@/SelectionHandler'
 
 const FriendlyResource = {
     fromServerFormat: function (serverFormat) {
@@ -179,11 +180,35 @@ FriendlyResource.FriendlyResource.prototype.deselect = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.makeSingleSelected = function () {
+    this.isSelected = true;
     this.isSingleSelected = true;
 };
 
 FriendlyResource.FriendlyResource.prototype.removeSingleSelected = function () {
     this.isSingleSelected = false;
+};
+
+FriendlyResource.FriendlyResource.prototype.travelLeft = function () {
+    SelectionHandler.setToSingle(this.getLeftBubble())
+};
+
+FriendlyResource.FriendlyResource.prototype.travelRight = function () {
+    SelectionHandler.setToSingle(this.getRightBubble())
+
+
+    // if (this.isCenter) {
+    //     if (!centerVertex.hasChildToRight()) {
+    //         return;
+    //     }
+    //     return selectNew(
+    //         centerVertex.getToTheRightTopMostChild()
+    //     );
+    // }
+    // return selectNew(
+    //     this.isToTheLeft() ?
+    //         this.getParentBubble() :
+    //         this.getTopMostChildBubble()
+    // );
 };
 
 // FriendlyResource.FriendlyResource.prototype.isSingleSelected = function () {
@@ -213,7 +238,7 @@ FriendlyResource.FriendlyResource.prototype.getCreationDate = function () {
         );
 };
 FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {
-    return undefined;
+    return this.orientation === "left";
 };
 
 FriendlyResource.FriendlyResource.prototype._buildImages = function () {

@@ -161,6 +161,7 @@ Vertex.prototype.getGraphElementType = function () {
 
 Vertex.prototype.makeCenter = function () {
     this.isCenter = true;
+    this.orientation = "center"
 };
 
 Vertex.prototype.addChild = function (child) {
@@ -169,6 +170,28 @@ Vertex.prototype.addChild = function (child) {
     } else {
         this.rightBubbles.push(child)
     }
+};
+
+Vertex.prototype.getRightBubble = function () {
+    if (this.isCenter) {
+        let groupRelation = this.rightBubbles[0];
+        return groupRelation.isTrulyAGroupRelation() ? groupRelation : groupRelation.getFirstEdge();
+    }
+    if (this.isToTheLeft()) {
+        return this.parentBubble;
+    }
+    return this.rightBubbles[0];
+};
+
+Vertex.prototype.getLeftBubble = function () {
+    if (this.isCenter) {
+        let groupRelation = this.leftBubbles[0];
+        return groupRelation.isTrulyAGroupRelation() ? groupRelation : groupRelation.getFirstEdge(0);
+    }
+    if (this.isToTheLeft()) {
+        return this.rightBubbles[0];
+    }
+    return this.parentBubble;
 };
 
 api.getWhenEmptyLabel = function () {

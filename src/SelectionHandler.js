@@ -9,9 +9,10 @@ import GraphElementMainMenu from '@/graph-element/GraphElementMainMenu'
 import EventBus from '@/EventBus'
 import Scroll from '@/Scroll'
 
-const api = {};
-var selectedRelations = [];
-var selectedVertices = [];
+const api = {
+    selectedRelations: [],
+    selectedVertices: []
+};
 
 api.selectAllVerticesOnly = function () {
     GraphUi.getDrawnGraph().detachTemp();
@@ -34,6 +35,11 @@ api.selectAllRelationsOnly = function () {
 };
 
 api.setToSingle = function (graphElement) {
+    if (!graphElement) {
+        return;
+    }
+    api.removeAll();
+    api.add(graphElement);
     api._getSetterFromGraphElement(
         graphElement
     )(graphElement);
@@ -83,7 +89,7 @@ api.addRelation = function (relation) {
         api.getSingleElement().removeSingleSelected();
     }
     relation.select();
-    selectedRelations.push(relation);
+    api.selectedRelations.push(relation);
     api._reviewMenu();
 };
 
@@ -92,14 +98,14 @@ api.addVertex = function (vertex) {
         api.getSingleElement().removeSingleSelected();
     }
     vertex.select();
-    selectedVertices.push(vertex);
+    api.selectedVertices.push(vertex);
     api._reviewMenu();
 };
 api.remove = api.removeVertex = function (vertex) {
-    deselectGraphElement(vertex, selectedVertices);
+    deselectGraphElement(vertex, api.selectedVertices);
 };
 api.removeRelation = function (relation) {
-    deselectGraphElement(relation, selectedRelations);
+    deselectGraphElement(relation, api.selectedRelations);
 };
 
 api.removeAll = function () {
@@ -108,7 +114,7 @@ api.removeAll = function () {
 };
 
 api.getSelectedVertices = function () {
-    return selectedVertices;
+    return api.selectedVertices;
 };
 
 api.handleSelectionManagementClick = function (event) {
@@ -116,10 +122,10 @@ api.handleSelectionManagementClick = function (event) {
 };
 
 api.getNbSelectedVertices = function () {
-    return selectedVertices.length;
+    return api.selectedVertices.length;
 };
 api.getNbSelectedRelations = function () {
-    return selectedRelations.length;
+    return api.selectedRelations.length;
 };
 api.getOneOrArrayOfSelected = function () {
     return 1 === api.getNbSelected() ?
@@ -129,12 +135,12 @@ api.getSingleElement = function () {
     return api.getSelectedBubbles()[0];
 };
 api.getSelectedElements = api.getSelectedBubbles = function () {
-    return selectedRelations.concat(
-        selectedVertices
+    return api.selectedRelations.concat(
+        api.selectedVertices
     );
 };
 api.getNbSelected = api.getNbSelectedElements = function () {
-    return selectedVertices.length + selectedRelations.length;
+    return api.selectedVertices.length + api.selectedRelations.length;
 };
 api.isOnlyASingleBubbleSelected = api.isOnlyASingleElementSelected = function () {
     return 1 === api.getNbSelectedElements();
@@ -195,8 +201,12 @@ function deselectAll() {
     api.getSelectedElements().forEach(function (graphElement) {
         graphElement.deselect();
     });
-    selectedVertices = [];
-    selectedRelations = [];
+    for (var i = api.selectedVertices.length; i > 0; i--) {
+        api.selectedVertices.pop();
+    }
+    for (var i = api.selectedRelations.length; i > 0; i--) {
+        api.selectedRelations.pop();
+    }
     api._reviewMenu();
 }
 

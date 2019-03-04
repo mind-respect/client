@@ -4,30 +4,24 @@
 
 <template>
     <v-layout row :class="{
-        'vertex-tree-container': !isCenter,
-        'vertex-container': isCenter
+        'vertex-tree-container': !bubble.isCenter,
+        'vertex-container': bubble.isCenter
     }" :id="containerId">
         <v-flex xs12 class="v-center">
-            <v-spacer v-if="orientation === 'left'"></v-spacer>
+            <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
             <Children :bubble="bubble"
-                      :parentVertex="parentVertex"
-                      :orientation="orientation"
-                      :isCenter="isCenter"
-                      :childVertex="childVertex"
-                      v-if="orientation === 'left'"
+                      v-if="bubble.orientation === 'left'"
             >
             </Children>
             <div class='vertex-container draggable' :class="{
-                'vh-center':orientation === 'center',
-                'left':orientation === 'right'
+                'vh-center':bubble.orientation === 'center',
+                'left':bubble.orientation === 'right'
             }" @click="click" @dblclick="dblclick"
                  :id="bubble.uiId"
             >
-                <div class="bubble graph-element relative" v-if="bubble.isVertex()" :class="{
-                    'selected' : bubble.isSelected,
-                    'vertex': bubble.isVertex(),
-                    'relation': bubble.isEdge(),
-                    'center-vertex': isCenter
+                <div class="bubble vertex graph-element relative" v-if="bubble.isVertex()" :class="{
+                    'selected' : isSelected,
+                    'center-vertex': bubble.isCenter
                 }">
                     <div class="hidden-properties-container hidden-sm-and-up">
                         <div class="hidden-properties-content hidden" title="" data-original-title="Expand (ctrl+E)">0
@@ -48,10 +42,9 @@
                     </div>
                     <!--<span class="connector"></span>-->
                 </div>
-                <div class="bubble graph-element relative" v-if="bubble.isEdge()" :class="{
-                    'selected' : bubble.isSelected,
-                    'vertex': bubble.isVertex(),
-                    'relation': bubble.isEdge()
+                <div class="bubble relation graph-element relative"
+                     v-if="bubble.isEdge() || (bubble.isGroupRelation() && bubble.isTrulyAGroupRelation())" :class="{
+                    'selected' : isSelected
                 }">
                     <div class="hidden-properties-container hidden-sm-and-up">
                         <div class="hidden-properties-content hidden" title="" data-original-title="Expand (ctrl+E)">0
@@ -75,11 +68,7 @@
                 </div>
             </div>
             <Children :bubble="bubble"
-                      :parentVertex="parentVertex"
-                      :orientation="orientation"
-                      :isCenter="isCenter"
-                      :childVertex="childVertex"
-                      v-if="orientation === 'right'"
+                      v-if="bubble.orientation === 'right'"
             >
             </Children>
             <!--<div class="vertical-border vertical-border-first small">-->
@@ -105,29 +94,25 @@
 
     export default {
         name: "Bubble",
-        props: ['bubble', 'isCenter', 'parentVertex', 'childVertex', 'orientation'],
+        props: ['bubble'],
         components: {
             Children
         },
         data: function () {
             return {
-                containerId: ""
+                containerId: "",
+                isSelected: false,
+                SelectionHandler: SelectionHandler
             }
         },
         mounted: function () {
             // debugger;
-            // this.bubble =
-            if (this.isCenter) {
+            if (this.bubble.isCenter) {
                 this.containerId = "center";
             }
-            // if (this.bubble.isVertex() && !this.isCenter) {
-            //     console.log(this.bubble.rightBubbles);
-            // }
-            // if (this.bubble.isGroupRelation()) {
-            //     this.bubble.sortedImmediateChild(this.parentVertex).forEach(function (child) {
-            //         console.log(child);
-            //     });
-            // }
+            if (this.bubble.isEdge()) {
+                this.bubble.setSourceVertex(this.bubble.parentVertex);
+            }
         },
         methods: {
             click: function (event) {
@@ -157,6 +142,23 @@
                 if ([KeyCode.KEY_RETURN, KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {
                     event.preventDefault();
                     return this.bubble.getLabelHtml().blur();
+                }
+            },
+            checkIsSelected: function () {
+                let found = false;
+                this.SelectionHandler.getSelectedBubbles().forEach(function (selected) {
+                    if (selected.getId() === this.bubble.getId()) {
+                        found = true;
+                    }
+                }.bind(this));
+                this.isSelected = found;
+            }
+        },
+        watch: {
+            SelectionHandler: {
+                deep: true,
+                handler() {
+                    this.checkIsSelected()
                 }
             }
         }

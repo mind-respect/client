@@ -14,6 +14,10 @@
     import Graph from '@/components/graph/Graph'
     import GraphUi from '@/graph/GraphUi'
     import KeyboardActionsHandler from '@/KeyboardActionsHandler'
+    import VueShortkey from 'vue-shortkey';
+    import Vue from 'vue';
+
+    Vue.use(VueShortkey);
 
     export default {
         name: "Center",
