@@ -164,6 +164,14 @@ Vertex.prototype.makeCenter = function () {
     this.orientation = "center"
 };
 
+Vertex.prototype.getParentVertex = function () {
+    return this.parentBubble.getOtherVertex(this);
+};
+
+Vertex.prototype.getRelationWithUiParent = function () {
+    return this.parentBubble;
+};
+
 Vertex.prototype.addChild = function (child) {
     if (this.isCenter && this._shouldAddLeft()) {
         this.leftBubbles.push(child)
@@ -174,8 +182,7 @@ Vertex.prototype.addChild = function (child) {
 
 Vertex.prototype.getRightBubble = function () {
     if (this.isCenter) {
-        let groupRelation = this.rightBubbles[0];
-        return groupRelation.isTrulyAGroupRelation() ? groupRelation : groupRelation.getFirstEdge();
+        return this._uiChild(this.rightBubbles[0]);
     }
     if (this.isToTheLeft()) {
         return this.parentBubble;
@@ -185,14 +192,33 @@ Vertex.prototype.getRightBubble = function () {
 
 Vertex.prototype.getLeftBubble = function () {
     if (this.isCenter) {
-        let groupRelation = this.leftBubbles[0];
-        return groupRelation.isTrulyAGroupRelation() ? groupRelation : groupRelation.getFirstEdge(0);
+        return this._uiChild(this.leftBubbles[0]);
     }
     if (this.isToTheLeft()) {
         return this.rightBubbles[0];
     }
     return this.parentBubble;
 };
+
+Vertex.prototype.getImmediateChild = function () {
+    let children;
+    if (this.isCenter) {
+        children = this.leftBubbles.concat(this.rightBubbles);
+    } else {
+        children = this.rightBubbles;
+    }
+    return children.map(function (child) {
+        return this._uiChild(child);
+    }.bind(this))
+};
+
+Vertex.prototype._uiChild = function (child) {
+    if (child.isGroupRelation()) {
+        return child.isTrulyAGroupRelation() ? child : child.getFirstEdge(0);
+    }
+    return child;
+};
+
 
 api.getWhenEmptyLabel = function () {
     return I18n.i18next.t("vertex", "default");

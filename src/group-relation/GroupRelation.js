@@ -56,6 +56,10 @@ GroupRelation.prototype.getRightBubble = function(){
     return this.getFirstEdge(0);
 };
 
+GroupRelation.prototype.getImmediateChild = function(){
+    return this.getFirstEdge(0);
+};
+
 GroupRelation.prototype.getController = function () {
     return new GroupRelationController.GroupRelationController(this);
 };

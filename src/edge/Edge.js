@@ -79,10 +79,10 @@ api.Edge.prototype.getGraphElementType = function () {
     return GraphElementType.Relation;
 };
 api.Edge.prototype.setSourceVertex = function (sourceVertex) {
-    return this.sourceVertex = sourceVertex;
+    this.sourceVertex = sourceVertex;
 };
 api.Edge.prototype.setDestinationVertex = function (destinationVertex) {
-    return this.destinationVertex = destinationVertex;
+    this.destinationVertex = destinationVertex;
 };
 
 api.Edge.prototype.getSourceVertex = function () {
@@ -134,5 +134,9 @@ api.Edge.prototype.getRightBubble = function () {
 
 api.Edge.prototype.getLeftBubble = function () {
     return this.isToTheLeft() ? this.destinationVertex : this.sourceVertex;
+};
+
+api.Edge.prototype.getImmediateChild = function(){
+    return [this.destinationVertex];
 };
 export default api;

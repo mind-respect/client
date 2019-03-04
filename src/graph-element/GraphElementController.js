@@ -269,22 +269,22 @@ GraphElementController.prototype.expand = function (avoidCenter, avoidExpandChil
 };
 
 GraphElementController.prototype.expandDescendantsIfApplicable = function () {
-    var deferred = $.Deferred().resolve();
-    if (this.getUi().isCollapsed()) {
-        return deferred;
+    let promise = Promise.resolve();
+    if (this.getUi().isCollapsed) {
+        return promise;
     }
     if (!this.getUi().hasDescendantsWithHiddenRelations()) {
-        return deferred;
+        return promise;
     }
-    var addChildTreeActions = [];
-    var avoidCenter = true;
+    let addChildTreeActions = [];
+    let avoidCenter = true;
     this.getUi().visitExpandableDescendants(function (expandableLeaf) {
         addChildTreeActions.push(
             expandableLeaf.getController().expand(avoidCenter)
         );
     });
-    deferred = $.when.apply($, addChildTreeActions);
-    return deferred;
+    promise = Promise.all(addChildTreeActions);
+    return promise;
 };
 
 GraphElementController.prototype.collapseCanDo = function () {

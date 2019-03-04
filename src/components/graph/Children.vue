@@ -15,8 +15,9 @@
             <Bubble :bubble="addVertexContext(bubble.destinationVertex, bubble.parentVertex)"></Bubble>
         </div>
         <div class="vertices-children-container" v-if="!bubble.isCenter && bubble.isVertex()">
-            <div v-for="triple in bubble.rightBubbles" :key="triple.edge.uiId">
-                <Bubble :bubble="addEdgeContext(triple.edge, triple.destination, bubble)"></Bubble>
+            <div v-for="child in bubble.rightBubbles">
+                <Bubble v-if="child.isGroupRelation()" :bubble="addGroupRelationContext(child, bubble)"></Bubble>
+                <Bubble v-else :bubble="addEdgeContext(child.edge, child.destination, bubble)"></Bubble>
             </div>
         </div>
     </div>
@@ -40,6 +41,10 @@
                 edge.destinationVertex = destinationVertex;
                 edge.parentVertex = parentVertex;
                 return this.addCommonContext(edge);
+            },
+            addGroupRelationContext: function (groupRelation, parentVertex) {
+                groupRelation.parentVertex = parentVertex;
+                return this.addCommonContext(groupRelation);
             },
             addCommonContext: function (bubble) {
                 bubble.parentBubble = this.bubble;

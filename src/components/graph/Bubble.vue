@@ -21,13 +21,9 @@
             >
                 <div class="bubble vertex graph-element relative" v-if="bubble.isVertex()" :class="{
                     'selected' : isSelected,
-                    'center-vertex': bubble.isCenter
+                    'center-vertex': bubble.isCenter,
+                    'reverse': bubble.orientation === 'left'
                 }">
-                    <div class="hidden-properties-container hidden-sm-and-up">
-                        <div class="hidden-properties-content hidden" title="" data-original-title="Expand (ctrl+E)">0
-                            ...
-                        </div>
-                        <i class="loading hidden fa fa-refresh fa-spin fa-4x fa-fw"></i></div>
                     <div class="image_container"></div>
                     <div class="in-bubble-content-wrapper">
                         <div class="in-bubble-content">
@@ -40,6 +36,8 @@
                             <!--<v-text-field v-model="vertex.getServerFormat().label"></v-text-field>-->
                         </div>
                     </div>
+                    <ChildNotice :bubble="bubble"
+                                 v-if="!bubble.isCenter && !bubble.isExpanded && bubble.getNumberOfChild() > 0"></ChildNotice>
                     <!--<span class="connector"></span>-->
                 </div>
                 <div class="bubble relation graph-element relative"
@@ -91,12 +89,14 @@
     import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
     import KeyCode from 'keycode-js';
     import Children from '@/components/graph/Children'
+    import ChildNotice from '@/components/graph/ChildNotice'
 
     export default {
         name: "Bubble",
         props: ['bubble'],
         components: {
-            Children
+            Children,
+            ChildNotice
         },
         data: function () {
             return {
@@ -110,9 +110,10 @@
             if (this.bubble.isCenter) {
                 this.containerId = "center";
             }
-            if (this.bubble.isEdge()) {
-                this.bubble.setSourceVertex(this.bubble.parentVertex);
-            }
+            // if (this.bubble.isEdge()) {
+            //     this.bubble.setSourceVertex(this.bubble.parentVertex);
+            //     this.bubble.setDestinationVertex(this.bubble.destinationVertex);
+            // }
         },
         methods: {
             click: function (event) {

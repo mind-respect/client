@@ -66,7 +66,7 @@
                 center.makeCenter();
                 center.groupRelationRoots.forEach(function (groupRelationRoot) {
                     center.addChild(groupRelationRoot)
-                }.bind(this));
+                });
                 this.loaded = true;
                 Vue.nextTick(function () {
                     GraphUi.resetBackGroundColor();

@@ -599,13 +599,13 @@ VertexController.prototype.group = function () {
     );
 };
 VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isChildExpand) {
-    var deferred = $.Deferred().resolve();
+    let promise = Promise.resolve();
     avoidExpandChild = avoidExpandChild || false;
     isChildExpand = isChildExpand || false;
-    this.getUi().beforeExpand();
-    if (this.getUi().hasVisibleHiddenRelationsContainer()) {
-        if (!this.getUi().isCollapsed()) {
-            deferred = GraphDisplayer.addChildTree(
+    this.getModel().beforeExpand();
+    if (!this.getModel().isExpanded) {
+        if (!this.getModel().isCollapsed) {
+            promise = GraphDisplayer.addChildTree(
                 this.getUi()
             ).then(function () {
                 if (avoidExpandChild) {
@@ -619,13 +619,13 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
                         );
                     }
                 });
-                return $.when.apply($, expandChildCalls);
+                return Promise.all(expandChildCalls);
             }.bind(this));
         }
     } else {
-        deferred = this.expandDescendantsIfApplicable();
+        promise = this.expandDescendantsIfApplicable();
     }
-    return deferred.then(function () {
+    return promise.then(function () {
         this.getUi().expand(avoidCenter, isChildExpand);
     }.bind(this));
 };

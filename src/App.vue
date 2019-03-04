@@ -421,4 +421,9 @@
         cursor: -o-grabbing;
         cursor: grabbing;
     }
+
+    .reverse {
+        display: flex;
+        flex-direction: row-reverse;
+    }
 </style>

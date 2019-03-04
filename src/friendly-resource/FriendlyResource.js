@@ -88,6 +88,9 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
     );
     this.isSelected = false;
     this.isSingleSelected = false;
+    this.loading = false;
+    this.isExpanded = false;
+    this.isCollapsed = false;
     return this;
 };
 
@@ -188,6 +191,14 @@ FriendlyResource.FriendlyResource.prototype.removeSingleSelected = function () {
     this.isSingleSelected = false;
 };
 
+FriendlyResource.FriendlyResource.prototype.beforeExpand = function () {
+    this.loading = true;
+};
+
+FriendlyResource.FriendlyResource.prototype.isInTypes = function(types){
+    return types.indexOf(this.getGraphElementType()) > -1;
+};
+
 FriendlyResource.FriendlyResource.prototype.travelLeft = function () {
     SelectionHandler.setToSingle(this.getLeftBubble())
 };
@@ -214,6 +225,81 @@ FriendlyResource.FriendlyResource.prototype.travelRight = function () {
 // FriendlyResource.FriendlyResource.prototype.isSingleSelected = function () {
 //     return this.isSingleSelected;
 // };
+
+FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isChildExpand) {
+    this.isExpanded = true;
+};
+
+FriendlyResource.FriendlyResource.prototype.hasDescendantsWithHiddenRelations = function () {
+    let hasHiddenRelations = false;
+    this.visitChildrenDeep(function (child) {
+        if (child.getNumberOfChild() > 0 && !child.isExpanded) {
+            hasHiddenRelations = true;
+        }
+    });
+    return hasHiddenRelations;
+};
+
+FriendlyResource.FriendlyResource.prototype.visitExpandableDescendants = function (visitor) {
+    this.visitChildrenDeep(function (child) {
+        if (child.getNumberOfChild() > 0 && !child.isExpanded) {
+            visitor(child);
+        }
+    });
+};
+
+FriendlyResource.FriendlyResource.prototype.visitChildrenDeep = function (visitor) {
+    this.visitAllImmediateChild(function (child) {
+        if (child.isLeaf()) {
+            return visitor(child);
+        } else {
+            return child.visitChildrenDeep(
+                visitor
+            );
+        }
+    });
+};
+
+FriendlyResource.FriendlyResource.prototype.isLeaf = function () {
+    return this.getNumberOfChild() === 0;
+};
+
+FriendlyResource.FriendlyResource.prototype.visitClosestChildVertices = function (visitor) {
+    this.visitClosestChildOfType(
+        GraphElementType.Vertex,
+        visitor
+    );
+};
+FriendlyResource.FriendlyResource.prototype.visitClosestChildRelations = function (visitor) {
+    this.visitClosestChildOfType(
+        GraphElementType.Relation,
+        visitor
+    );
+};
+FriendlyResource.FriendlyResource.prototype.visitClosestChildOfType = function (type, visitor) {
+    return this.visitClosestChildInTypes(
+        [type],
+        visitor
+    );
+};
+FriendlyResource.FriendlyResource.prototype.visitClosestChildInTypes = function (types, visitor) {
+    this.visitAllImmediateChild(function (child) {
+        if (child.isInTypes(types)) {
+            return visitor(child);
+        } else {
+            return child.visitClosestChildInTypes(
+                types,
+                visitor
+            );
+        }
+    });
+};
+
+FriendlyResource.FriendlyResource.prototype.visitAllImmediateChild = function (visitor) {
+    this.getImmediateChild().forEach(function (child) {
+        visitor(child);
+    });
+};
 
 FriendlyResource.FriendlyResource.prototype.getJsonFormat = function () {
     var serverFormat = this.getServerFormat();

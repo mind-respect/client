@@ -9,7 +9,6 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import BubbleFactory from '@/bubble/BubbleFactory'
 import SelectionHandler from '@/SelectionHandler'
 import CenterBubble from '@/bubble/CenterBubble'
-import VertexChildrenNotice from '@/vertex/VertexChildrenNotice'
 import MindMapInfo from '@/MindMapInfo'
 import GraphUi from '@/graph/GraphUi'
 

@@ -55,6 +55,7 @@ import GraphElementMainMenu from '@/graph-element/GraphElementMainMenu'
 import GraphUiBuilder from '@/graph/GraphUiBuilder'
 import MetaGraphUi from '@/identifier/MetaGraphUi'
 import MetaGraph from '@/identifier/MetaGraph'
+import SubGraph from '@/graph/SubGraph'
 
 KeyboardActionsHandler.init();
 const api = {};
@@ -110,19 +111,41 @@ api.canAddChildTree = function () {
     return true;
 };
 api.addChildTree = function (parentVertex) {
-    var deferred = $.Deferred();
-    GraphService.getForCentralBubbleUri(
-        parentVertex.getUri(),
-        function (serverGraph) {
-            api.addChildTreeUsingGraph(
-                parentVertex,
-                serverGraph
-            );
-            deferred.resolve(parentVertex);
-            return parentVertex;
-        }
-    );
-    return deferred.promise();
+    return GraphService.getForCentralBubbleUri(
+        parentVertex.getUri()
+    ).then(function (response) {
+        let serverGraph = response.data;
+        TreeDisplayerCommon.setUiTreeInfoToVertices(
+            serverGraph,
+            parentVertex.getUri()
+        );
+        let graph = SubGraph.withFacadeAndCenterUri(
+            serverGraph,
+            parentVertex.getUri()
+        );
+        let parentAsCenter = graph.center;
+        parentAsCenter.groupRelationRoots.forEach(function (groupRelationRoot) {
+            groupRelationRoot.sortedImmediateChild(parentAsCenter).forEach(function (child) {
+                Object.keys(child).forEach(function (uId) {
+                    let triple = child[uId];
+                    triple.edge.setSourceVertex(parentVertex);
+                    triple.edge.setDestinationVertex(triple.vertex);
+                    triple.edge.uiId = uId;
+                    // parentVertex.addChild(triple.edge)
+                });
+            });
+            parentVertex.addChild(groupRelationRoot);
+        })
+        // let subGraph = SubGraph.fromServerFormat(serverGraph);
+        // subGraph.visitEdges(function (edge) {
+        //     parentVertex.addChild(edge);
+        // });
+        // api.addChildTreeUsingGraph(
+        //     parentVertex,
+        //     serverGraph
+        // );
+        return parentAsCenter;
+    });
 };
 api.addChildTreeUsingGraph = function (parentVertex, serverGraph) {
     var parentUri = parentVertex.getUri();
