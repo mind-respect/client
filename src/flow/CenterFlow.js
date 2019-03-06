@@ -98,7 +98,6 @@ EventBus.subscribe(
                 });
             }
         );
-        GraphUi.refreshWidth();
         $("body").removeClass(
             "hidden"
         ).addClass("mind-map-flow");

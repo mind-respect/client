@@ -4,23 +4,21 @@
 
 <template>
     <div id="drawn_graph" v-if="loaded" v-dragscroll @click="click" class="draggable" data-zoom="9">
-        <div id="graph-width">
-            <v-layout row class='root-vertex-super-container v-center' data-zoom='1'>
-                <v-flex xs6 class="vertices-children-container left-oriented">
-                    <div v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
-                        <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
-                    </div>
-                </v-flex>
-                <v-flex xs0 class="vh-center pl-5 pr-5" style="display:inline-flex">
-                    <Bubble :bubble="graph.center"></Bubble>
-                </v-flex>
-                <v-flex xs6 class="vertices-children-container right-oriented">
-                    <div v-for="rightBubble in graph.center.rightBubbles" :key="rightBubble.uiId">
-                        <Bubble :bubble="addBubbleContext(rightBubble, graph.center, 'right')"></Bubble>
-                    </div>
-                </v-flex>
-            </v-layout>
-        </div>
+        <v-layout row class='root-vertex-super-container v-center' data-zoom='1'>
+            <v-flex grow class="vertices-children-container left-oriented">
+                <div v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
+                    <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
+                </div>
+            </v-flex>
+            <v-flex grow class="vh-center pl-5 pr-5">
+                <Bubble :bubble="graph.center"></Bubble>
+            </v-flex>
+            <v-flex grow class="vertices-children-container right-oriented">
+                <div v-for="rightBubble in graph.center.rightBubbles" :key="rightBubble.uiId">
+                    <Bubble :bubble="addBubbleContext(rightBubble, graph.center, 'right')"></Bubble>
+                </div>
+            </v-flex>
+        </v-layout>
     </div>
 </template>
 
@@ -70,7 +68,6 @@
                 this.loaded = true;
                 Vue.nextTick(function () {
                     GraphUi.resetBackGroundColor();
-                    GraphUi.refreshWidth();
                     Scroll.goToGraphElement(
                         document.getElementById("center")
                     );

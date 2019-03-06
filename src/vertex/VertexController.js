@@ -21,7 +21,6 @@ import EventBus from '@/EventBus'
 import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
 import ShareLevel from '@/vertex/ShareLevel'
-import GraphUi from '@/graph/GraphUi'
 import SubGraphController from '@/graph/SubGraphController'
 
 const api = {};
@@ -702,7 +701,6 @@ VertexController.prototype._addChildToRealAndUiParent = function (realParent, ui
                 //     triple.destinationVertex().reviewInLabelButtonsVisibility();
                 //     return;
                 // }
-                // GraphUi.refreshWidth(true);
                 // return triple.destinationVertex().getController().setShareLevel(
                 //     realParent.getModel().getShareLevel()
                 // );

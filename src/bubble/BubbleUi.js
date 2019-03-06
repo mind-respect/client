@@ -10,7 +10,6 @@ import BubbleFactory from '@/bubble/BubbleFactory'
 import SelectionHandler from '@/SelectionHandler'
 import CenterBubble from '@/bubble/CenterBubble'
 import MindMapInfo from '@/MindMapInfo'
-import GraphUi from '@/graph/GraphUi'
 
 const api = {};
 api.MoveRelation = {
@@ -580,7 +579,6 @@ api.Bubble.prototype.remove = function (ancestor, bubbleToSelect) {
     if (!sharesSameAncestor) {
         bubbleToSelect = ancestor;
     }
-    // GraphUi.refreshWidth();
     if (bubbleToSelect) {
         SelectionHandler.setToSingle(
             bubbleToSelect
@@ -869,7 +867,6 @@ api.Bubble.prototype.collapse = function () {
             child.collapse();
         }
     });
-    // GraphUi.refreshWidth();
     this.centerOnScreenWithAnimation();
 };
 
@@ -906,7 +903,6 @@ api.Bubble.prototype.expand = function (avoidScreenCenter, isChildExpand) {
     this.visitDescendants(function (descendant) {
         descendant.reviewInLabelButtonsVisibility(true);
     });
-    // GraphUi.refreshWidth();
     if (!avoidScreenCenter && !isChildExpand && !this.getChildrenContainer().isFullyOnScreen()) {
         this.sideCenterOnScreenWithAnimation();
         SelectionHandler.setToSingle(this);
@@ -988,7 +984,6 @@ api.Bubble.prototype.mergeTo = function (distantUri) {
 api.Bubble.prototype.tripleAdded = function (triple) {
     triple.sourceVertex().hideHiddenRelationsContainer();
     var destinationHtml = triple.destinationVertex().getHtml();
-    // GraphUi.refreshWidth();
     if (!UiUtils.isElementFullyOnScreen(destinationHtml)) {
         destinationHtml.centerOnScreenWithAnimation();
     }
