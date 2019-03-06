@@ -42,6 +42,9 @@ function GraphElementController(graphElements) {
 }
 
 GraphElementController.prototype.init = function (graphElements) {
+    if(graphElements instanceof Array && graphElements.length === 1){
+        graphElements = graphElements[0];
+    }
     this.graphElements = graphElements;
 };
 GraphElementController.prototype.getUi = function () {

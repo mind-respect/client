@@ -110,10 +110,10 @@
             if (this.bubble.isCenter) {
                 this.containerId = "center";
             }
-            // if (this.bubble.isEdge()) {
-            //     this.bubble.setSourceVertex(this.bubble.parentVertex);
-            //     this.bubble.setDestinationVertex(this.bubble.destinationVertex);
-            // }
+            if (this.bubble.isEdge()) {
+                this.bubble.setSourceVertex(this.bubble.parentVertex);
+                this.bubble.setDestinationVertex(this.bubble.destinationVertex);
+            }
         },
         methods: {
             click: function (event) {
@@ -156,11 +156,8 @@
             }
         },
         watch: {
-            SelectionHandler: {
-                deep: true,
-                handler() {
-                    this.checkIsSelected()
-                }
+            "SelectionHandler.selected": function () {
+                this.checkIsSelected()
             }
         }
     }

@@ -10,8 +10,7 @@ import EventBus from '@/EventBus'
 import Scroll from '@/Scroll'
 
 const api = {
-    selectedRelations: [],
-    selectedVertices: []
+    selected: []
 };
 
 api.selectAllVerticesOnly = function () {
@@ -89,7 +88,7 @@ api.addRelation = function (relation) {
         api.getSingleElement().removeSingleSelected();
     }
     relation.select();
-    api.selectedRelations.push(relation);
+    api.selected.push(relation);
     api._reviewMenu();
 };
 
@@ -98,14 +97,14 @@ api.addVertex = function (vertex) {
         api.getSingleElement().removeSingleSelected();
     }
     vertex.select();
-    api.selectedVertices.push(vertex);
+    api.selected.push(vertex);
     api._reviewMenu();
 };
 api.remove = api.removeVertex = function (vertex) {
-    deselectGraphElement(vertex, api.selectedVertices);
+    deselectGraphElement(vertex, api.selected);
 };
 api.removeRelation = function (relation) {
-    deselectGraphElement(relation, api.selectedRelations);
+    deselectGraphElement(relation, api.selected);
 };
 
 api.removeAll = function () {
@@ -114,7 +113,7 @@ api.removeAll = function () {
 };
 
 api.getSelectedVertices = function () {
-    return api.selectedVertices;
+    return api.selected;
 };
 
 api.handleSelectionManagementClick = function (event) {
@@ -122,10 +121,10 @@ api.handleSelectionManagementClick = function (event) {
 };
 
 api.getNbSelectedVertices = function () {
-    return api.selectedVertices.length;
+    return api.selected.length;
 };
 api.getNbSelectedRelations = function () {
-    return api.selectedRelations.length;
+    return api.selected.length;
 };
 api.getOneOrArrayOfSelected = function () {
     return 1 === api.getNbSelected() ?
@@ -135,12 +134,10 @@ api.getSingleElement = function () {
     return api.getSelectedBubbles()[0];
 };
 api.getSelectedElements = api.getSelectedBubbles = function () {
-    return api.selectedRelations.concat(
-        api.selectedVertices
-    );
+    return api.selected;
 };
 api.getNbSelected = api.getNbSelectedElements = function () {
-    return api.selectedVertices.length + api.selectedRelations.length;
+    return api.selected.length + api.selected.length;
 };
 api.isOnlyASingleBubbleSelected = api.isOnlyASingleElementSelected = function () {
     return 1 === api.getNbSelectedElements();
@@ -201,11 +198,8 @@ function deselectAll() {
     api.getSelectedElements().forEach(function (graphElement) {
         graphElement.deselect();
     });
-    for (var i = api.selectedVertices.length; i > 0; i--) {
-        api.selectedVertices.pop();
-    }
-    for (var i = api.selectedRelations.length; i > 0; i--) {
-        api.selectedRelations.pop();
+    for (let i = api.selected.length; i > 0; i--) {
+        api.selected.pop();
     }
     api._reviewMenu();
 }
