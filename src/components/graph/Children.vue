@@ -16,7 +16,7 @@
         </div>
         <div class="vertices-children-container" v-if="!bubble.isCenter && bubble.isVertex()">
             <div v-for="child in bubble.rightBubbles">
-                <Bubble v-if="child.isGroupRelation()" :bubble="addGroupRelationContext(child, bubble)"></Bubble>
+                <Bubble v-if="child.isGroupRelation && child.isGroupRelation()" :bubble="addGroupRelationContext(child, bubble)"></Bubble>
                 <Bubble v-else :bubble="addEdgeContext(child.edge, child.destination, bubble)"></Bubble>
             </div>
         </div>

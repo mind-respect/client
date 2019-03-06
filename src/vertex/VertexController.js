@@ -22,6 +22,7 @@ import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
 import ShareLevel from '@/vertex/ShareLevel'
 import GraphUi from '@/graph/GraphUi'
+import SubGraphController from '@/graph/SubGraphController'
 
 const api = {};
 
@@ -29,6 +30,9 @@ function VertexController(vertices) {
     this.vertices = vertices;
     GraphElementController.GraphElementController.prototype.init.call(
         this,
+        this.vertices
+    );
+    this.subGraphController = SubGraphController.withVertices(
         this.vertices
     );
 }
@@ -605,9 +609,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
     this.getModel().beforeExpand();
     if (!this.getModel().isExpanded) {
         if (!this.getModel().isCollapsed) {
-            promise = GraphDisplayer.addChildTree(
-                this.getUi()
-            ).then(function () {
+            promise = this.subGraphController.load().then(function () {
                 if (avoidExpandChild) {
                     return true;
                 }
@@ -658,7 +660,7 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
     this.getUi().beforeConvertToDistantBubbleWithUri();
     return VertexService.mergeTo(this.getModel(), distantVertexUri).then(function () {
         this.getUi().mergeTo(distantVertexUri);
-        return GraphDisplayer.addChildTree(this.getUi());
+        return this.subGraphController.load();
     }.bind(this)).then(function () {
         this.getUi().afterConvertToDistantBubbleWithUri();
     }.bind(this));
