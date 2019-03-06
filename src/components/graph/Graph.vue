@@ -4,7 +4,7 @@
 
 <template>
     <div id="drawn_graph" v-if="loaded" v-dragscroll @click="click" class="draggable" data-zoom="9">
-        <v-layout row class='root-vertex-super-container v-center' data-zoom='1'>
+        <v-layout row class='root-vertex-super-container vh-center' data-zoom='1'>
             <v-flex grow class="vertices-children-container left-oriented">
                 <div v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
                     <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
