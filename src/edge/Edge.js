@@ -133,10 +133,22 @@ api.Edge.prototype.getRightBubble = function () {
 };
 
 api.Edge.prototype.getLeftBubble = function () {
-    return this.isToTheLeft() ? this.destinationVertex : this.sourceVertex;
+    if (this.isToTheLeft()) {
+        return this.destinationVertex;
+    } else {
+        if (this.parentBubble.isGroupRelation() && this.parentBubble.isTrulyAGroupRelation()) {
+            return this.parentBubble
+        }
+        return this.sourceVertex;
+    }
 };
 
-api.Edge.prototype.getImmediateChild = function(){
+api.Edge.prototype.getImmediateChild = function () {
     return [this.destinationVertex];
 };
+
+api.Edge.prototype.getNumberOfChild = function () {
+    return 1;
+};
+
 export default api;

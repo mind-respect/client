@@ -18,7 +18,7 @@ const FriendlyResource = {
             comment: friendlyResource.getComment()
         });
     },
-    buildObjectWithUri: function () {
+    buildObjectWithUri: function (uri) {
         return {
             uri: uri,
             label: ""
@@ -182,6 +182,10 @@ FriendlyResource.FriendlyResource.prototype.deselect = function () {
     this.getLabelHtml().blur();
 };
 
+FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {
+    return this.orientation === "left";
+};
+
 FriendlyResource.FriendlyResource.prototype.makeSingleSelected = function () {
     this.isSelected = true;
     this.isSingleSelected = true;
@@ -195,7 +199,7 @@ FriendlyResource.FriendlyResource.prototype.beforeExpand = function () {
     this.loading = true;
 };
 
-FriendlyResource.FriendlyResource.prototype.isInTypes = function(types){
+FriendlyResource.FriendlyResource.prototype.isInTypes = function (types) {
     return types.indexOf(this.getGraphElementType()) > -1;
 };
 
@@ -205,26 +209,122 @@ FriendlyResource.FriendlyResource.prototype.travelLeft = function () {
 
 FriendlyResource.FriendlyResource.prototype.travelRight = function () {
     SelectionHandler.setToSingle(this.getRightBubble())
-
-
-    // if (this.isCenter) {
-    //     if (!centerVertex.hasChildToRight()) {
-    //         return;
-    //     }
-    //     return selectNew(
-    //         centerVertex.getToTheRightTopMostChild()
-    //     );
-    // }
-    // return selectNew(
-    //     this.isToTheLeft() ?
-    //         this.getParentBubble() :
-    //         this.getTopMostChildBubble()
-    // );
 };
 
 // FriendlyResource.FriendlyResource.prototype.isSingleSelected = function () {
 //     return this.isSingleSelected;
 // };
+
+FriendlyResource.FriendlyResource.prototype.travelDown = function () {
+    SelectionHandler.setToSingle(this.getDownBubble())
+};
+
+FriendlyResource.FriendlyResource.prototype.travelUp = function () {
+    SelectionHandler.setToSingle(this.getUpBubble())
+};
+
+FriendlyResource.FriendlyResource.prototype.getUpBubble = function () {
+    return this._getUpOrDownBubble(false);
+};
+FriendlyResource.FriendlyResource.prototype.getDownBubble = function () {
+    return this._getUpOrDownBubble(true);
+};
+FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDown) {
+    if (this.isCenter) {
+        return this;
+    }
+    let indexAdjust = isDown ? 1 : -1;
+    let forkBubble = this.parentBubble;
+    let childBubble = this;
+    let distance = 0;
+    let forkBubbleNbChild = forkBubble.getImmediateChild(this.isToTheLeft()).length;
+    let childBubbleIndex = forkBubble.getChildIndex(childBubble);
+    while (!forkBubble.isCenter && (forkBubbleNbChild < 2 || (isDown && (childBubbleIndex + 1) === forkBubbleNbChild) || (!isDown && childBubbleIndex === 0))) {
+        distance++;
+        childBubble = forkBubble;
+        forkBubble = forkBubble.parentBubble;
+        forkBubbleNbChild = forkBubble.getImmediateChild(this.isToTheLeft()).length;
+        childBubbleIndex = Math.max(
+            forkBubble.getChildIndex(childBubble),
+            0
+        );
+        if (forkBubble.isGroupRelation()) {
+            distance++;
+        }
+    }
+    let indexInForkBubble = forkBubble.getChildIndex(childBubble);
+    if (indexInForkBubble + indexAdjust >= forkBubbleNbChild) {
+        return this;
+    }
+    let bubbleAround = forkBubble.getChildAtIndex(
+        Math.max(indexInForkBubble + indexAdjust, 0),
+        this.isToTheLeft()
+    );
+    distance--;
+    while (distance > 0) {
+        distance--;
+        bubbleAround = isDown ? bubbleAround.getNextBubble() : bubbleAround.getNextBottomBubble();
+    }
+    if (this.isVertex()) {
+        if (bubbleAround.isEdge()) {
+            bubbleAround = bubbleAround.getNextBubble();
+        }
+        if (bubbleAround.isGroupRelation()) {
+            bubbleAround = isDown ? bubbleAround.getFirstVertex(0) : bubbleAround.getLastVertex(0);
+        }
+    }
+
+    if (this.isEdge()) {
+        if (bubbleAround.isVertex()) {
+            bubbleAround = isDown ? bubbleAround.getNextBubble() : bubbleAround.getNextBottomBubble();
+        }
+        if (bubbleAround.isGroupRelation()) {
+            bubbleAround = isDown ? bubbleAround.getFirstEdge(0) : bubbleAround.getLastEdge(0);
+        }
+    }
+
+    return bubbleAround;
+};
+
+FriendlyResource.FriendlyResource.prototype.getChildIndex = function (child) {
+    let foundIndex = -1;
+    let children = this.getImmediateChild(child.isToTheLeft());
+    for (let i = 0; i < children.length; i++) {
+        let childAtIndex = children[i];
+        if (childAtIndex.getId() === child.getId()) {
+            foundIndex = i;
+        }
+    }
+    return foundIndex;
+};
+
+FriendlyResource.FriendlyResource.prototype.getChildAtIndex = function (index, isToTheLeft) {
+    let foundChild;
+    let children = this.getImmediateChild(isToTheLeft);
+    for (let i = 0; i < children.length; i++) {
+        if (index === i) {
+            foundChild = children[i];
+        }
+    }
+    return foundChild;
+};
+
+
+FriendlyResource.FriendlyResource.prototype.getNextBottomBubble = function () {
+    return this._getNextBubble(true);
+};
+
+FriendlyResource.FriendlyResource.prototype.getNextBubble = function () {
+    return this._getNextBubble(false);
+};
+
+FriendlyResource.FriendlyResource.prototype._getNextBubble = function (bottom) {
+    let nextBubble = this.isToTheLeft() ? this.getLeftBubble(bottom) : this.getRightBubble(bottom);
+    if (!nextBubble) {
+        return this;
+    }
+    return nextBubble;
+};
 
 FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isChildExpand) {
     this.isExpanded = true;

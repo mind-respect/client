@@ -693,22 +693,20 @@ VertexController.prototype._addChildToRealAndUiParent = function (realParent, ui
             edgeOver
         ).then(function (_triple) {
                 triple = _triple;
-                realParent.addChild(triple);
-                // triple.destinationVertex().getModel().incrementNumberOfConnectedEdges();
-                // triple.sourceVertex().getModel().incrementNumberOfConnectedEdges();
-                // if (ShareLevel.PRIVATE === realParent.getModel().getShareLevel()) {
-                //     triple.destinationVertex().getModel().setShareLevel(ShareLevel.PRIVATE);
-                //     triple.destinationVertex().reviewInLabelButtonsVisibility();
-                //     return;
-                // }
-                // return triple.destinationVertex().getController().setShareLevel(
-                //     realParent.getModel().getShareLevel()
-                // );
+                realParent.addChild(triple.edge);
+                if (ShareLevel.PRIVATE === realParent.getModel().getShareLevel()) {
+                    triple.destination.setShareLevel(ShareLevel.PRIVATE);
+                    // triple.destinationVertex().reviewInLabelButtonsVisibility();
+                    return;
+                }
+                return triple.destination.getController().setShareLevel(
+                    realParent.getShareLevel()
+                );
             }
         ).then(function () {
             // realParent.tripleAdded(triple);
             // return GraphElementService.changeChildrenIndex(
-            //     triple.sourceVertex()
+            //     triple.sourceVertex
             // );
             return triple;
         });

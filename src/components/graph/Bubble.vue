@@ -106,7 +106,6 @@
             }
         },
         mounted: function () {
-            // debugger;
             if (this.bubble.isCenter) {
                 this.containerId = "center";
             }

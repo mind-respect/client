@@ -10,6 +10,10 @@ import Edge from '@/edge/Edge'
 
 const api = {};
 
+api.withVertex = function (vertex) {
+    return new api.SubGraphController(vertex);
+};
+
 api.withVertices = function (vertices) {
     return new api.SubGraphController(vertices);
 };
@@ -41,31 +45,36 @@ SubGraphController.prototype.load = function () {
             this.getModel().getUri()
         );
         let parentAsCenter = graph.center;
+        let modelToAddChild;
+        if (this.getModel().isCenter) {
+            parentAsCenter.makeCenter();
+            modelToAddChild = parentAsCenter;
+        } else {
+            modelToAddChild = this.getModel();
+        }
         parentAsCenter.groupRelationRoots.forEach(function (groupRelationRoot) {
+            if (groupRelationRoot.isGroupRelation() && groupRelationRoot.isTrulyAGroupRelation()) {
+                modelToAddChild.addChild(groupRelationRoot);
+                return;
+            }
             groupRelationRoot.sortedImmediateChild(parentAsCenter).forEach(function (child) {
                 Object.keys(child).forEach(function (uId) {
                     let triple = child[uId];
-                    triple.edge.setSourceVertex(this.getModel());
+                    triple.edge.setSourceVertex(modelToAddChild);
                     triple.edge.setDestinationVertex(triple.vertex);
                     triple.edge.uiId = uId;
-                    // this.getModel().addChild(triple.edge)
+                    modelToAddChild.addChild(triple.edge)
                 }.bind(this));
             }.bind(this));
-            this.getModel().addChild(groupRelationRoot);
         }.bind(this));
-        // let subGraph = SubGraph.fromServerFormat(serverGraph);
-        // subGraph.visitEdges(function (edge) {
-        //     this.getModel().addChild(edge);
-        // });
-        // api.addChildTreeUsingGraph(
-        //     this.getModel(),
-        //     serverGraph
-        // );
-        return parentAsCenter;
+        return graph;
     }.bind(this));
 };
 
 SubGraphController.prototype._removeRelationWithGrandParentAndChildFromServerGraph = function (serverGraph) {
+    if (this.getModel().isCenter) {
+        return 0;
+    }
     let parentRelation = this.getModel().getRelationWithUiParent();
     let relationWithGrandParentUri = parentRelation.getUri();
     let grandParent = this.getModel().getParentVertex();

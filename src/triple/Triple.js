@@ -16,6 +16,8 @@ api.fromEdgeAndSourceAndDestinationVertex = function (edge,
 function Triple(edge, source, destination) {
     this.source = source;
     this.destination = destination;
+    edge.setSourceVertex(source);
+    edge.setDestinationVertex(destination);
     this.edge = edge;
 }
 

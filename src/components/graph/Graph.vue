@@ -23,15 +23,14 @@
 </template>
 
 <script>
-    import GraphService from '@/graph/GraphService'
     import MindMapInfo from '@/MindMapInfo'
-    import TreeDisplayerCommon from '@/graph/TreeDisplayerCommon'
-    import SubGraph from '@/graph/SubGraph'
     import Bubble from '@/components/graph/Bubble'
     import Scroll from '@/Scroll'
     import Vue from 'vue'
     import GraphUi from '@/graph/GraphUi'
     import SelectionHandler from '@/SelectionHandler'
+    import SubGraphController from '@/graph/SubGraphController'
+    import Vertex from '@/vertex/Vertex'
 
     export default {
         name: "Graph",
@@ -47,24 +46,15 @@
         },
         mounted: function () {
             let centerUri = MindMapInfo.getCenterBubbleUri();
-            GraphService.getForCentralBubbleUri(
-                centerUri
-            ).then(function (response) {
-                let serverGraph = response.data;
-                TreeDisplayerCommon.setUiTreeInfoToVertices(
-                    serverGraph,
-                    centerUri
-                );
-                this.graph = SubGraph.withFacadeAndCenterUri(
-                    serverGraph,
-                    centerUri
-                );
+            let centerVertex = Vertex.withUri(centerUri);
+            centerVertex.makeCenter();
+            SubGraphController.withVertex(
+                centerVertex
+            ).load().then(function (graph) {
+                this.graph = graph;
                 let center = this.graph.center;
                 this.centerServerFormat = center.getServerFormat();
                 center.makeCenter();
-                center.groupRelationRoots.forEach(function (groupRelationRoot) {
-                    center.addChild(groupRelationRoot)
-                });
                 this.loaded = true;
                 Vue.nextTick(function () {
                     GraphUi.resetBackGroundColor();
@@ -116,6 +106,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        z-index: 1;
     / / display: flex !important;
     / / justify-items: center !important;;
     / / align-items: center !important;;

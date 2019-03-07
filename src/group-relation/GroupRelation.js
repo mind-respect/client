@@ -48,16 +48,25 @@ function GroupRelation(identifiers) {
 
 GroupRelation.prototype = new Identification.Identification();
 
-GroupRelation.prototype.getLeftBubble = function(){
-    return this.getFirstEdge(0);
+GroupRelation.prototype.getLeftBubble = function () {
+    return this.isToTheLeft() ? this.getFirstEdge(0) : this.parentBubble;
 };
 
-GroupRelation.prototype.getRightBubble = function(){
-    return this.getFirstEdge(0);
+GroupRelation.prototype.getRightBubble = function (bottom) {
+    if (this.isToTheLeft()) {
+        return this.parentBubble;
+    }
+    return bottom ? this.getLastEdge(0) : this.getFirstEdge(0);
 };
 
-GroupRelation.prototype.getImmediateChild = function(){
-    return this.getFirstEdge(0);
+GroupRelation.prototype.getImmediateChild = function () {
+    let edges = [];
+    this.sortedImmediateChild(this.parentVertex).map(function (child) {
+        Object.keys(child).forEach(function (id) {
+            edges.push(child[id].edge);
+        }.bind(this));
+    });
+    return edges;
 };
 
 GroupRelation.prototype.getController = function () {
@@ -141,23 +150,32 @@ GroupRelation.prototype.getFirstVertex = function (childrenIndex) {
     return this.getFirstTuple(childrenIndex).vertex;
 };
 
+GroupRelation.prototype.getLastVertex = function (childrenIndex) {
+    return this.getLastTuple(childrenIndex).vertex;
+};
+
 GroupRelation.prototype.getFirstEdge = function (childrenIndex) {
     return this.getFirstTuple(childrenIndex).edge;
 };
 
+GroupRelation.prototype.getLastEdge = function (childrenIndex) {
+    return this.getLastTuple(childrenIndex).edge;
+};
+
 GroupRelation.prototype.getFirstTuple = function (childrenIndex) {
-    var sortedTuples = this.getSortedVerticesAtAnyDepth(childrenIndex);
-    var firstTupleByVertexUid = sortedTuples[Object.keys(sortedTuples)[0]];
-    var firstTuple = firstTupleByVertexUid[Object.keys(firstTupleByVertexUid)[0]];
+    let sortedTuples = this.getSortedVerticesAtAnyDepth(childrenIndex);
+    let firstTupleByVertexUid = sortedTuples[Object.keys(sortedTuples)[0]];
+    let firstTuple = firstTupleByVertexUid[Object.keys(firstTupleByVertexUid)[0]];
     return firstTuple;
 };
 
-GroupRelation.prototype.getLastVertex = function (childrenIndex) {
-    var sortedTuples = this.getSortedVerticesAtAnyDepth(childrenIndex);
-    var firstTupleByVertexUid = sortedTuples[Object.keys(sortedTuples)[Object.keys(sortedTuples).length - 1]];
-    var firstTuple = firstTupleByVertexUid[Object.keys(firstTupleByVertexUid)[Object.keys(firstTupleByVertexUid).length - 1]];
-    return firstTuple.vertex;
+GroupRelation.prototype.getLastTuple = function (childrenIndex) {
+    let sortedTuples = this.getSortedVerticesAtAnyDepth(childrenIndex);
+    let firstTupleByVertexUid = sortedTuples[Object.keys(sortedTuples)[Object.keys(sortedTuples).length - 1]];
+    let firstTuple = firstTupleByVertexUid[Object.keys(firstTupleByVertexUid)[Object.keys(firstTupleByVertexUid).length - 1]];
+    return firstTuple;
 };
+
 
 GroupRelation.prototype.getSortDate = function () {
     return new Date(0);
@@ -289,6 +307,9 @@ GroupRelation.prototype.getChildGroupRelations = function () {
 };
 GroupRelation.prototype.hasGroupRelationsChild = function () {
     return this.childGroupRelations.length > 0;
+};
+GroupRelation.prototype.getNumberOfChild = function () {
+    return this.childGroupRelations.length + this.getNumberOfVertices();
 };
 GroupRelation.prototype.addChildGroupRelation = function (groupRelation) {
     return this.childGroupRelations.push(

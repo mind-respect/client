@@ -9,6 +9,7 @@ import Suggestion from '@/suggestion/Suggestion'
 import ShareLevel from '@/vertex/ShareLevel'
 import GraphElementType from '@/graph-element/GraphElementType'
 import I18n from '@/I18n'
+import FriendlyResource from "../friendly-resource/FriendlyResource";
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -161,6 +162,7 @@ Vertex.prototype.getGraphElementType = function () {
 
 Vertex.prototype.makeCenter = function () {
     this.isCenter = true;
+    this.parentBubble = this;
     this.orientation = "center"
 };
 
@@ -180,45 +182,40 @@ Vertex.prototype.addChild = function (child) {
     }
 };
 
-Vertex.prototype.getRightBubble = function () {
+Vertex.prototype.getRightBubble = function (bottom) {
+    let index = bottom ? this.rightBubbles.length - 1 : 0;
     if (this.isCenter) {
-        return this._uiChild(this.rightBubbles[0]);
+        return this.rightBubbles[index];
     }
     if (this.isToTheLeft()) {
         return this.parentBubble;
     }
-    return this.rightBubbles[0];
+    return this.rightBubbles[index];
 };
 
-Vertex.prototype.getLeftBubble = function () {
+Vertex.prototype.getLeftBubble = function (bottom) {
     if (this.isCenter) {
-        return this._uiChild(this.leftBubbles[0]);
+        let index = bottom ? this.leftBubbles.length - 1 : 0;
+        return this.leftBubbles[index];
     }
     if (this.isToTheLeft()) {
-        return this.rightBubbles[0];
+        let index = bottom ? this.rightBubbles.length - 1 : 0;
+        return this.rightBubbles[index];
     }
     return this.parentBubble;
 };
 
-Vertex.prototype.getImmediateChild = function () {
-    let children;
+Vertex.prototype.getImmediateChild = function (isToTheLeft) {
     if (this.isCenter) {
-        children = this.leftBubbles.concat(this.rightBubbles);
+        if (isToTheLeft === undefined) {
+            return this.leftBubbles.concat(this.rightBubbles);
+        } else {
+            return isToTheLeft ? this.leftBubbles : this.rightBubbles;
+        }
     } else {
-        children = this.rightBubbles;
+        return this.rightBubbles;
     }
-    return children.map(function (child) {
-        return this._uiChild(child);
-    }.bind(this))
 };
-
-Vertex.prototype._uiChild = function (child) {
-    if (child.isGroupRelation()) {
-        return child.isTrulyAGroupRelation() ? child : child.getFirstEdge(0);
-    }
-    return child;
-};
-
 
 api.getWhenEmptyLabel = function () {
     return I18n.i18next.t("vertex", "default");

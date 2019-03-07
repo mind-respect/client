@@ -347,9 +347,6 @@ GraphElement.GraphElement.prototype.isPristine = function () {
     return this.isLabelEmpty() && !this.hasIdentifications();
 };
 
-GraphElement.GraphElement.prototype.isToTheLeft = function () {
-    return this.orientation === "left";
-};
 
 GraphElement.GraphElement.prototype.getTextOrDefault = function () {
     var text = this.getLabel();
