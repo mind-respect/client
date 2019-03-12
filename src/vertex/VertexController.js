@@ -22,6 +22,7 @@ import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
 import ShareLevel from '@/vertex/ShareLevel'
 import SubGraphController from '@/graph/SubGraphController'
+import Vue from 'vue'
 
 const api = {};
 
@@ -697,11 +698,14 @@ VertexController.prototype._addChildToRealAndUiParent = function (realParent, ui
                 if (ShareLevel.PRIVATE === realParent.getModel().getShareLevel()) {
                     triple.destination.setShareLevel(ShareLevel.PRIVATE);
                     // triple.destinationVertex().reviewInLabelButtonsVisibility();
-                    return;
+                } else {
+                    return triple.destination.getController().setShareLevel(
+                        realParent.getShareLevel()
+                    );
                 }
-                return triple.destination.getController().setShareLevel(
-                    realParent.getShareLevel()
-                );
+                Vue.nextTick(function(){
+                    SelectionHandler.setToSingle(triple.destination);
+                })
             }
         ).then(function () {
             // realParent.tripleAdded(triple);

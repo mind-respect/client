@@ -23,29 +23,34 @@ export default {
     goToGraphElement: function(element){
         var options = {
             container: 'body',
-            easing: 'ease-in',
-            offset: -200,
+            easing: 'ease',
+            offset: -550,
             force: true,
             cancelable: true,
             onStart: function(element) {
                 // scrolling started
             },
             onDone: function(element) {
-                // scrolling is done
+                options.x = false;
+                options.y = true;
+                options.offset = -200;
+                VueScrollTo.scrollTo(
+                    element,
+                    250,
+                    options
+                )
             },
             onCancel: function() {
                 // scrolling has been interrupted
             },
             x: true,
-            y: true
+            y: false
         }
-
-        var cancelScroll = VueScrollTo.scrollTo(
+        VueScrollTo.scrollTo(
             element,
-            300,
+            150,
             options
         )
-
 // or alternatively inside your components you can use
 //         cancelScroll = Vue.$scrollTo(element, duration, options);
     }

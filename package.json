@@ -29,9 +29,9 @@
     "vue": "^2.6.8",
     "vue-dragscroll": "^1.8.3",
     "vue-router": "^3.0.1",
-    "vue-scrollto": "^2.13.0",
+    "vue-scrollto": "^2.14.0",
     "vue-template-compiler": "^2.6.8",
-    "vuetify": "1.5.4",
+    "vuetify": "1.5.6",
     "vuex": "^3.0.1",
     "vue-shortkey": "^3.1.6",
     "vuex-persistedstate": "^2.5.4"

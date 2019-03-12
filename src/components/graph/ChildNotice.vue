@@ -20,6 +20,8 @@
 </template>
 
 <script>
+    import Vue from 'vue'
+    import Scroll from '@/Scroll'
 
     export default {
         name: "ChildNotice",
@@ -27,12 +29,17 @@
         methods: {
             click: function () {
                 this.bubble.loading = true;
-                this.bubble.getController().expand().then(function(){
+                this.bubble.getController().expand().then(function () {
                     this.bubble.loading = false;
+                    Vue.nextTick(function () {
+                        Scroll.goToGraphElement(
+                            this.bubble.getHtml()
+                        );
+                    }.bind(this))
                 }.bind(this));
             }
         },
-        mounted: function(){
+        mounted: function () {
 
         }
     }

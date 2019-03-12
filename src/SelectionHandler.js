@@ -8,9 +8,14 @@ import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphElementMainMenu from '@/graph-element/GraphElementMainMenu'
 import EventBus from '@/EventBus'
 import Scroll from '@/Scroll'
+import Vue from 'vue'
 
 const api = {
     selected: []
+};
+
+api.reset = function () {
+    api.selected = [];
 };
 
 api.selectAllVerticesOnly = function () {
@@ -39,9 +44,7 @@ api.setToSingle = function (graphElement) {
     }
     api.removeAll();
     api.add(graphElement);
-    api._getSetterFromGraphElement(
-        graphElement
-    )(graphElement);
+    graphElement.makeSingleSelected();
     centerBubbleIfApplicable(graphElement);
 };
 
@@ -49,15 +52,6 @@ api._getSetterFromGraphElement = function (graphElement) {
     return graphElement.isEdge() ?
         api.setToSingleRelation :
         api.setToSingleVertex;
-};
-
-api.setToSingleVertex = function (vertex) {
-    if (api.getNbSelectedElements() === 1 && api.getSingleElement().uiId === vertex.uiId) {
-        return;
-    }
-    deselectAll();
-    api.addVertex(vertex);
-    vertex.makeSingleSelected();
 };
 
 api.setToSingleRelation = function (relation) {
@@ -84,18 +78,17 @@ api._getAdderFromGraphElement = function (graphElement) {
 };
 
 api.addRelation = function (relation) {
-    if (api.isOnlyASingleBubbleSelected()) {
-        api.getSingleElement().removeSingleSelected();
-    }
-    relation.select();
-    api.selected.push(relation);
-    api._reviewMenu();
+    api.addVertex(relation);
 };
 
 api.addVertex = function (vertex) {
     if (api.isOnlyASingleBubbleSelected()) {
         api.getSingleElement().removeSingleSelected();
     }
+    if (vertex.isSelected) {
+        return;
+    }
+    // debugger;
     vertex.select();
     api.selected.push(vertex);
     api._reviewMenu();
@@ -137,7 +130,7 @@ api.getSelectedElements = api.getSelectedBubbles = function () {
     return api.selected;
 };
 api.getNbSelected = api.getNbSelectedElements = function () {
-    return api.selected.length + api.selected.length;
+    return api.selected.length;
 };
 api.isOnlyASingleBubbleSelected = api.isOnlyASingleElementSelected = function () {
     return 1 === api.getNbSelectedElements();
@@ -188,9 +181,11 @@ EventBus.subscribe("/event/ui/graph/reset", deselectAll);
 export default api;
 
 function centerBubbleIfApplicable(bubble) {
-    let html = document.getElementById(bubble.uiId);
+    let html = bubble.getHtml();
     if (!UiUtils.isElementFullyOnScreen(html)) {
-        Scroll.goToGraphElement(html)
+        Vue.nextTick(function () {
+            Scroll.goToGraphElement(html)
+        })
     }
 }
 

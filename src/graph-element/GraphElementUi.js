@@ -147,9 +147,7 @@ api.GraphElementUi.prototype.setModel = function (serverJson) {
 api.GraphElementUi.prototype.getModel = function () {
     return this.model;
 };
-api.GraphElementUi.prototype.getId = function () {
-    return this.getHtml().attr("id");
-};
+
 api.GraphElementUi.prototype.hasTheDuplicateButton = function () {
     return !this.getOtherInstanceButton().hasClass(
         "hidden"
