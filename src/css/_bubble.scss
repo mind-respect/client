@@ -130,7 +130,7 @@
       //background-color: attr(data-background-selected) !important;
     }
   }
-  &.selected:not(.not-editable) {
+  &.selected{
     .bubble-label {
       &:empty:not(:focus):after {
         content: attr(data-placeholder);

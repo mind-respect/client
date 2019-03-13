@@ -414,6 +414,10 @@ GroupRelation.prototype.isToTheLeft = function (centerBubble) {
     return nbLeft > nbRight;
 };
 
+GroupRelation.prototype.isShrinked = function () {
+    return false;
+};
+
 api.GroupRelation = GroupRelation;
 
 export default api;

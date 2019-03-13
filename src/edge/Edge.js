@@ -151,4 +151,21 @@ api.Edge.prototype.getNumberOfChild = function () {
     return 1;
 };
 
+api.Edge.prototype.isShrinked = function () {
+    if (this.isSelected) {
+        return false;
+    }
+    if (this.isLabelEmpty()) {
+        return true;
+    }
+    let parentBubble = this.getParentBubble();
+    if (!parentBubble.isGroupRelation()) {
+        return false;
+    }
+    if (parentBubble.getLabel().trim() !== this.getLabel().trim() && "" !== this.getLabel().trim()) {
+        return false;
+    }
+    return true;
+};
+
 export default api;

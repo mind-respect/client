@@ -3,7 +3,10 @@
   -->
 
 <template>
-    <v-layout row :class="{
+    <v-layout
+            v-if="loaded"
+            draggable="true"
+            row :class="{
         'vertex-tree-container': !bubble.isCenter,
         'vertex-container': bubble.isCenter
     }" :id="containerId">
@@ -18,18 +21,21 @@
                 'left':bubble.orientation === 'right'
             }" @click="click" @dblclick="dblclick"
                  :id="bubble.uiId"
+                 draggable="true"
             >
-                <div class="bubble vertex graph-element relative" v-if="bubble.isVertex()" :class="{
-                    'selected' : isSelected,
-                    'center-vertex': bubble.isCenter,
-                    'reverse': bubble.orientation === 'left'
+                <div
+                        v-if="bubble.isVertex()"
+                        class="bubble vertex graph-element relative" :class="{
+                        'selected' : isSelected,
+                        'center-vertex': bubble.isCenter,
+                        'reverse': bubble.orientation === 'left'
                 }">
                     <div class="image_container"></div>
                     <div class="in-bubble-content-wrapper">
                         <div class="in-bubble-content">
                             <div class="bubble-label ui-autocomplete-input bubble-size font-weight-regular"
                                  @blur="leaveEditFlow"
-                                 data-placeholder="relate"
+                                 :data-placeholder="$t('vertex:default')"
                                  autocomplete="off" v-text="bubble.getServerFormat().label"
                                  @keydown="keydown"></div>
                             <div class="in-label-buttons"></div>
@@ -40,25 +46,32 @@
                                  v-if="bubble.canExpand()"></ChildNotice>
                     <!--<span class="connector"></span>-->
                 </div>
-                <div class="bubble relation graph-element relative"
-                     v-if="bubble.isEdge() || (bubble.isGroupRelation() && bubble.isTrulyAGroupRelation())" :class="{
-                    'selected' : isSelected
-                }">
-                    <div class="hidden-properties-container hidden-sm-and-up">
-                        <div class="hidden-properties-content hidden" title="" data-original-title="Expand (ctrl+E)">0
-                            ...
-                        </div>
-                        <i class="loading hidden fa fa-refresh fa-spin fa-4x fa-fw"></i></div>
+                <div
+                        v-if="bubble.isEdge() || bubble.isGroupRelation()"
+                        class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0"
+                        :class="{
+                            'selected' : isSelected
+                 }">
                     <div class="image_container"></div>
                     <div class="in-bubble-content">
                         <div class="label-container">
-                            <div class="label label-info label-and-buttons">
-                                <div class="bubble-label ui-autocomplete-input"
+                            <v-chip color="edgeColor"
+                                    small
+                                    :selected="isSelected"
+                                    class="pt-0 pb-0 mt-0 mb-0"
+                                    dark
+                                    :class="{
+                                        'is-shrinked' : bubble.isShrinked()
+                                    }"
+                            >
+                                <div class="bubble-label white--text"
                                      @blur="leaveEditFlow"
-                                     data-placeholder="relate"
-                                     autocomplete="off" v-text="bubble.getServerFormat().label"
+                                     :data-placeholder="relationPlaceholder"
+                                     autocomplete="off"
+                                     v-show="!bubble.isShrinked()"
+                                     v-text="bubble.getServerFormat().label"
                                      @keydown="keydown"></div>
-                            </div>
+                            </v-chip>
                         </div>
                         <!--<v-text-field v-model="vertex.getServerFormat().label"></v-text-field>-->
                     </div>
@@ -90,6 +103,7 @@
     import KeyCode from 'keycode-js';
     import Children from '@/components/graph/Children'
     import ChildNotice from '@/components/graph/ChildNotice'
+    import I18n from '@/I18n'
 
     export default {
         name: "Bubble",
@@ -99,10 +113,12 @@
             ChildNotice
         },
         data: function () {
+
             return {
                 containerId: "",
                 isSelected: false,
-                SelectionHandler: SelectionHandler
+                SelectionHandler: SelectionHandler,
+                loaded: false
             }
         },
         mounted: function () {
@@ -112,6 +128,18 @@
             if (this.bubble.isEdge()) {
                 this.bubble.setSourceVertex(this.bubble.parentVertex);
                 this.bubble.setDestinationVertex(this.bubble.destinationVertex);
+            }
+            document.addEventListener("dragstart", function (event) {
+                // Stocke une référence sur l'objet glissable
+                // dragged = event.target;
+                // transparence 50%
+                event.target.style.opacity = .5;
+            }, false);
+            this.loaded = true;
+        },
+        computed: {
+            relationPlaceholder: function () {
+                return this.isSelected ? this.$t('edge:default') : "";
             }
         },
         methods: {
@@ -167,4 +195,10 @@
     .bubble-size {
         font-size: 18px !important;
     }
+
+    .is-shrinked {
+        height: 10px !important;
+        width: 10px !important;
+    }
+
 </style>
