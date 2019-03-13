@@ -3,12 +3,10 @@
  */
 
 import GraphUi from '@/graph/GraphUi'
-import UiUtils from '@/UiUtils'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphElementMainMenu from '@/graph-element/GraphElementMainMenu'
 import EventBus from '@/EventBus'
 import Scroll from '@/Scroll'
-import Vue from 'vue'
 
 const api = {
     selected: []
@@ -181,12 +179,7 @@ EventBus.subscribe("/event/ui/graph/reset", deselectAll);
 export default api;
 
 function centerBubbleIfApplicable(bubble) {
-    let html = bubble.getHtml();
-    if (!UiUtils.isElementFullyOnScreen(html)) {
-        Vue.nextTick(function () {
-            Scroll.goToGraphElement(html)
-        })
-    }
+    Scroll.centerBubbleIfApplicable(bubble);
 }
 
 function deselectAll() {

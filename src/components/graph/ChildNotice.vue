@@ -31,11 +31,9 @@
                 this.bubble.loading = true;
                 this.bubble.getController().expand().then(function () {
                     this.bubble.loading = false;
-                    Vue.nextTick(function () {
-                        Scroll.goToGraphElement(
-                            this.bubble.getHtml()
-                        );
-                    }.bind(this))
+                    Scroll.centerBubbleIfApplicable(
+                        this.bubble
+                    );
                 }.bind(this));
             }
         },
@@ -46,5 +44,14 @@
 </script>
 
 <style scoped>
+
+    .hidden-properties-container {
+        z-index: 3;
+        min-width: 25px;
+        cursor: pointer;
+        font-size: 22px;
+        font-weight: bold;
+        color: red;
+    }
 
 </style>

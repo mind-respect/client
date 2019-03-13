@@ -27,7 +27,7 @@
                     <div class="image_container"></div>
                     <div class="in-bubble-content-wrapper">
                         <div class="in-bubble-content">
-                            <div class="bubble-label ui-autocomplete-input "
+                            <div class="bubble-label ui-autocomplete-input bubble-size font-weight-regular"
                                  @blur="leaveEditFlow"
                                  data-placeholder="relate"
                                  autocomplete="off" v-text="bubble.getServerFormat().label"
@@ -164,12 +164,7 @@
 
 <style scoped>
 
-    .hidden-properties-container {
-        z-index: 3;
-        min-width: 25px;
-        cursor: pointer;
-        font-size: 22px;
-        font-weight: bold;
-        color: red;
+    .bubble-size {
+        font-size: 18px !important;
     }
 </style>

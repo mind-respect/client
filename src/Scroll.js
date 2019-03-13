@@ -5,10 +5,12 @@ import VueScrollTo from 'vue-scrollto'
 import router from '@/router'
 import Vue from 'vue'
 import VueDragscroll from 'vue-dragscroll'
+import UiUtils from '@/UiUtils'
+
 Vue.use(VueDragscroll)
 Vue.use(VueScrollTo);
 
-export default {
+const Scroll = {
     goToSection: function (elementId, route) {
         VueScrollTo.scrollTo(
             document.getElementById(elementId), 500, {
@@ -20,17 +22,17 @@ export default {
             router.push(route);
         }
     },
-    goToGraphElement: function(element){
+    goToGraphElement: function (element) {
         var options = {
             container: 'body',
             easing: 'ease',
             offset: -550,
             force: true,
             cancelable: true,
-            onStart: function(element) {
+            onStart: function (element) {
                 // scrolling started
             },
-            onDone: function(element) {
+            onDone: function (element) {
                 options.x = false;
                 options.y = true;
                 options.offset = -200;
@@ -40,7 +42,7 @@ export default {
                     options
                 )
             },
-            onCancel: function() {
+            onCancel: function () {
                 // scrolling has been interrupted
             },
             x: true,
@@ -53,5 +55,14 @@ export default {
         )
 // or alternatively inside your components you can use
 //         cancelScroll = Vue.$scrollTo(element, duration, options);
+    },
+    centerBubbleIfApplicable: function (bubble) {
+        let html = bubble.getHtml();
+        if (!UiUtils.isElementFullyOnScreen(html)) {
+            Vue.nextTick(function () {
+                Scroll.goToGraphElement(html)
+            })
+        }
     }
-}
+};
+export default Scroll;

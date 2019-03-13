@@ -223,7 +223,7 @@ $withoutTextPadding: 1px 7px 1px 7px;
     .label-info {
       background-color: $edgeColor;
       height: auto;
-      font-size: $fontSize;
+      //font-size: $fontSize;
     }
     max-width: 250px;
     .bubble-label {
@@ -231,7 +231,7 @@ $withoutTextPadding: 1px 7px 1px 7px;
       white-space: pre-wrap;
       color: white;
       display: inline-block;
-      font-size: $fontSize;
+      //font-size: $fontSize;
       &:not(:focus):after {
         color: white;
       }
@@ -295,7 +295,7 @@ $withoutTextPadding: 1px 7px 1px 7px;
   margin-bottom: 1em;
   input.edge-label {
     background-color: #f5f5f5;
-    font-size: 13px;
+    //font-size: 13px;
   }
   .relation-menu {
     left: 0;
