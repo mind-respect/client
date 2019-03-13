@@ -74,7 +74,7 @@ SuggestionVertexController.prototype.centerCanDo = function () {
 };
 SuggestionVertexController.prototype.expand = function () {
     var deferred = $.Deferred();
-    if (this.getUi().isCollapsed()) {
+    if (this.getUi().isCollapsed) {
         this.getUi().expand();
         return deferred.resolve();
     }

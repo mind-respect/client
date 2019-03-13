@@ -42,7 +42,7 @@ function GraphElementController(graphElements) {
 }
 
 GraphElementController.prototype.init = function (graphElements) {
-    if(graphElements instanceof Array && graphElements.length === 1){
+    if (graphElements instanceof Array && graphElements.length === 1) {
         graphElements = graphElements[0];
     }
     this.graphElements = graphElements;
@@ -249,15 +249,15 @@ GraphElementController.prototype.accept = function () {
 
 GraphElementController.prototype.expandCanDo = function () {
     return this.isSingle() && (
-        this.getUi().hasVisibleHiddenRelationsContainer() ||
-        this.getUi().hasDescendantsWithHiddenRelations() ||
-        this.getUi().isCollapsed()
+        this.getUi().canExpand() ||
+        this.getUi().canExpandDescendants() ||
+        this.getUi().isCollapsed
     );
 };
 
 GraphElementController.prototype.expand = function (avoidCenter, avoidExpandChild, isChildExpand) {
-    var deferred = this.expandDescendantsIfApplicable();
-    return deferred.done(function () {
+    let promise = this.expandDescendantsIfApplicable();
+    return promise.then(function () {
         this.getUi().expand(avoidCenter);
         var expandChildCalls = [];
         this.getUi().visitClosestChildVertices(function (childVertex) {
@@ -267,7 +267,7 @@ GraphElementController.prototype.expand = function (avoidCenter, avoidExpandChil
                 );
             }
         });
-        return $.when.apply($, expandChildCalls);
+        return Promise.all(expandChildCalls);
     }.bind(this));
 };
 
@@ -276,7 +276,7 @@ GraphElementController.prototype.expandDescendantsIfApplicable = function () {
     if (this.getUi().isCollapsed) {
         return promise;
     }
-    if (!this.getUi().hasDescendantsWithHiddenRelations()) {
+    if (!this.getUi().canExpandDescendants()) {
         return promise;
     }
     let addChildTreeActions = [];
@@ -292,7 +292,7 @@ GraphElementController.prototype.expandDescendantsIfApplicable = function () {
 
 GraphElementController.prototype.collapseCanDo = function () {
     return this.isSingle() && (
-        (!this.getUi().isCenterBubble() && !this.getUi().isALeaf() && !this.getUi().isCollapsed()) ||
+        (!this.getUi().isCenterBubble() && !this.getUi().isALeaf() && !this.getUi().isCollapsed) ||
         (this.getUi().isCenterBubble() && this.getUi().hasAnExpandedChild())
     );
 };

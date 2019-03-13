@@ -238,6 +238,11 @@ FriendlyResource.FriendlyResource.prototype.getUpBubble = function () {
 FriendlyResource.FriendlyResource.prototype.getDownBubble = function () {
     return this._getUpOrDownBubble(true);
 };
+
+FriendlyResource.FriendlyResource.prototype.canExpand = function () {
+    return !this.isCenter && !this.isExpanded && this.getNumberOfChild() > 0;
+};
+
 FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDown) {
     if (this.isCenter) {
         return this;
@@ -339,10 +344,10 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isCh
     this.isExpanded = true;
 };
 
-FriendlyResource.FriendlyResource.prototype.hasDescendantsWithHiddenRelations = function () {
+FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {
     let hasHiddenRelations = false;
     this.visitChildrenDeep(function (child) {
-        if (child.getNumberOfChild() > 0 && !child.isExpanded) {
+        if (child.canExpand()) {
             hasHiddenRelations = true;
         }
     });
@@ -370,7 +375,7 @@ FriendlyResource.FriendlyResource.prototype.visitChildrenDeep = function (visito
 };
 
 FriendlyResource.FriendlyResource.prototype.isLeaf = function () {
-    return this.getNumberOfChild() === 0;
+    return this.getNumberOfChild() === 0 || this.canExpand();
 };
 
 FriendlyResource.FriendlyResource.prototype.visitClosestChildVertices = function (visitor) {

@@ -531,7 +531,7 @@ api.Bubble.prototype.getSelectorFromContainer = function (container) {
 };
 
 api.Bubble.prototype.isExpanded = function () {
-    return !this.hasVisibleHiddenRelationsContainer();
+    return !this.canExpand();
 };
 
 api.Bubble.prototype.hasAnExpandedChild = function () {
@@ -622,7 +622,7 @@ api.Bubble.prototype._removeHideOrShow = function (action, argument) {
 };
 
 api.Bubble.prototype.showHiddenRelationsContainer = function () {
-    if (this.hasHiddenRelationsContainer() && this.isCollapsed() && this.getNumberOfHiddenRelations() > 0) {
+    if (this.hasHiddenRelationsContainer() && this.isCollapsed && this.getNumberOfHiddenRelations() > 0) {
         this.getHiddenRelationsContainer().show();
     }
 };
@@ -877,7 +877,7 @@ api.Bubble.prototype.isCollapsed = function () {
 };
 
 api.Bubble.prototype.beforeExpand = function () {
-    if (!this.hasVisibleHiddenRelationsContainer()) {
+    if (!this.canExpand()) {
         return;
     }
     this.getHiddenRelationsContainer().showLoading();

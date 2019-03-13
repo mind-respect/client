@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <ChildNotice :bubble="bubble"
-                                 v-if="!bubble.isCenter && !bubble.isExpanded && bubble.getNumberOfChild() > 0"></ChildNotice>
+                                 v-if="bubble.canExpand()"></ChildNotice>
                     <!--<span class="connector"></span>-->
                 </div>
                 <div class="bubble relation graph-element relative"

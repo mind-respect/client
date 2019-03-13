@@ -4,7 +4,7 @@
 
 <template>
     <div class="hidden-properties-container" @click="click">
-        <div class="hidden-properties-content"
+        <div class="hidden-properties-content bubble-size"
              :class="{
                 'reverse' : bubble.orientation === 'left'
              }"

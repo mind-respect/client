@@ -37,7 +37,7 @@ GroupRelationController.prototype.centerCanDo = function () {
 GroupRelationController.prototype.addChild = function (edgeOver) {
     var parentVertex = this.getUi().getParentVertex();
     var triple;
-    if (this.getUi().hasVisibleHiddenRelationsContainer()) {
+    if (this.getUi().canExpand()) {
         this.expand();
     }
     return VertexService.addRelationAndVertexToVertex(
