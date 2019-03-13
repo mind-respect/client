@@ -127,6 +127,15 @@ FriendlyResource.FriendlyResource.prototype.getLabel = function () {
 FriendlyResource.FriendlyResource.prototype.isLabelEmpty = function () {
     return this.getLabel().trim() === "";
 };
+
+FriendlyResource.FriendlyResource.prototype.isCenterBubble = function () {
+    return this.isCenter;
+};
+
+FriendlyResource.FriendlyResource.prototype.getParentBubble = function () {
+    return this.parentBubble;
+};
+
 FriendlyResource.FriendlyResource.prototype.getComment = function () {
     return this.friendlyResourceServerFormat.comment;
 };

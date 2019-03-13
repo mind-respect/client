@@ -267,4 +267,12 @@ Vertex.prototype.addSuggestions = function (suggestions) {
     );
 };
 
+Vertex.prototype.isMeta = function () {
+    return this.getGraphElementType() === GraphElementType.Meta;
+};
+
+Vertex.prototype.isImmediateChildOfGroupRelation = function () {
+    return this.parentBubble.parentBubble.isGroupRelation();
+};
+
 export default api;
