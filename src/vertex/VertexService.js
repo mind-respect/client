@@ -42,10 +42,9 @@ api.addRelationAndVertexToVertex = function (vertex, sourceBubble, relationOver)
 };
 
 api.remove = function (vertex) {
-    return $.ajax({
-        type: 'DELETE',
-        url: vertex.getUri()
-    });
+    return Service.geApi().delete(
+        vertex.getUri()
+    );
 };
 api.removeCollection = function (vertices) {
     return $.ajax({

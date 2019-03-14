@@ -61,6 +61,9 @@ GroupRelation.prototype.getRightBubble = function (bottom) {
 
 GroupRelation.prototype.getImmediateChild = function () {
     let edges = [];
+    if(!this.parentVertex){
+        return edges;
+    }
     this.sortedImmediateChild(this.parentVertex).map(function (child) {
         Object.keys(child).forEach(function (id) {
             edges.push(child[id].edge);

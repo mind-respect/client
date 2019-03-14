@@ -22,11 +22,25 @@ const Scroll = {
             router.push(route);
         }
     },
-    goToGraphElement: function (element) {
-        var options = {
+    goToGraphElement: function (bubble) {
+        let element = bubble.getHtml();
+        let options = {
             container: 'body',
             easing: 'ease',
-            offset: -550,
+            offset: function () {
+                // let elementWidth = element.offsetWidth + (element.offsetWidth / 2)
+                // let screenCenter = screen.width / 2;
+                let offset;
+                if (bubble.isCenter) {
+                    offset = 650;
+                } else if (bubble.isToTheLeft()) {
+                    offset = 1200 - element.offsetWidth;
+                } else {
+                    offset = 200;
+                }
+                let position = Math.abs(offset * screen.width / 1366);
+                return position * -1;
+            },
             force: true,
             cancelable: true,
             onStart: function (element) {
@@ -35,7 +49,10 @@ const Scroll = {
             onDone: function (element) {
                 options.x = false;
                 options.y = true;
-                options.offset = -200;
+                options.offset = function () {
+                    let position = Math.abs(200 * screen.height / 768);
+                    return position * -1;
+                };
                 VueScrollTo.scrollTo(
                     element,
                     250,
@@ -57,12 +74,18 @@ const Scroll = {
 //         cancelScroll = Vue.$scrollTo(element, duration, options);
     },
     centerBubbleIfApplicable: function (bubble) {
-        let html = bubble.getHtml();
-        if (!UiUtils.isElementFullyOnScreen(html)) {
-            Vue.nextTick(function () {
-                Scroll.goToGraphElement(html)
-            })
-        }
+        Vue.nextTick(function () {
+            setTimeout(function () {
+                let element = bubble.getHtml();
+                if (!bubble.isCenter && bubble.getNumberOfChild() > 0) {
+                    element = element.parentElement;
+                }
+                if (!UiUtils.isElementFullyOnScreen(element)) {
+                    Scroll.goToGraphElement(bubble)
+                }
+            }, 100)
+        })
+        // }
     }
 };
 export default Scroll;

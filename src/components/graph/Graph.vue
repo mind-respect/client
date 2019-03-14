@@ -3,23 +3,31 @@
   -->
 
 <template>
-    <div id="drawn_graph" v-if="loaded" v-dragscroll @click="click" class="draggable" data-zoom="9">
-        <v-layout row class='root-vertex-super-container vh-center' data-zoom='1'>
+    <div id="drawn_graph" v-if="loaded" @click="click" data-zoom="9" class="vh-center">
+        <!--<div :style="'width:' + leftWidth() + 'px'"></div>-->
+        <div style="width:5000px;"></div>
+        <v-layout row class='root-vertex-super-container vh-center ma-5 pa-5' data-zoom='1'>
             <v-flex grow class="vertices-children-container left-oriented">
-                <div v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
-                    <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
-                </div>
+                <v-layout row v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
+                    <v-flex grow>
+                        <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
+                    </v-flex>
+                </v-layout>
             </v-flex>
             <v-flex grow class="vh-center pl-5 pr-5">
                 <Bubble :bubble="graph.center"></Bubble>
             </v-flex>
-            <v-flex grow class="vertices-children-container right-oriented">
-                <div v-for="rightBubble in graph.center.rightBubbles" :key="rightBubble.uiId">
-                    <Bubble :bubble="addBubbleContext(rightBubble, graph.center, 'right')"></Bubble>
-                </div>
+            <v-flex grow class="vertices-children-container right-oriented" style="flex-basis: 100%;">
+                <v-layout v-for="rightBubble in graph.center.rightBubbles" :key="rightBubble.uiId">
+                    <v-flex grow>
+                        <Bubble :bubble="addBubbleContext(rightBubble, graph.center, 'right')"></Bubble>
+                    </v-flex>
+                </v-layout>
             </v-flex>
         </v-layout>
+        <div style="width:5000px;"></div>
     </div>
+    <!--<div :style="'width:' + rightWidth() + 'px'"></div>-->
 </template>
 
 <script>
@@ -59,8 +67,8 @@
                 this.loaded = true;
                 Vue.nextTick(function () {
                     GraphUi.resetBackGroundColor();
-                    Scroll.goToGraphElement(
-                        document.getElementById("center")
+                    Scroll.centerBubbleIfApplicable(
+                        this.graph.center
                     );
                 }.bind(this))
             }.bind(this));
@@ -73,6 +81,34 @@
                 bubble.parentBubble = bubble.parentVertex = parentVertex;
                 bubble.orientation = orientation;
                 return bubble;
+            },
+            rightWidth: function () {
+                return Math.max(
+                    this.nbBubblesLeft() - this.nbBubblesRight(),
+                    0
+                ) * 100;
+            },
+            leftWidth: function () {
+                return Math.max(
+                    this.nbBubblesRight() - this.nbBubblesLeft(),
+                    0
+                ) * 100;
+            },
+            nbBubblesLeft: function () {
+                let nbBubbles = 0;
+                this.graph.center.leftBubbles.forEach(function (leftBubble) {
+                    nbBubbles += leftBubble.getNumberOfChildDeep();
+                });
+                console.log("nbBubbles left " + nbBubbles)
+                return nbBubbles;
+            },
+            nbBubblesRight: function () {
+                let nbBubbles = 0;
+                this.graph.center.rightBubbles.forEach(function (leftBubble) {
+                    nbBubbles += leftBubble.getNumberOfChildDeep();
+                });
+                console.log("nbBubbles right " + nbBubbles)
+                return nbBubbles;
             }
         },
         watch: {
@@ -84,41 +120,53 @@
 </script>
 
 <style scoped>
-    /*#drawn_graph {*/
-    /*position: absolute;*/
-    /*padding: 100%;*/
-    /*top: 0;*/
-    /*display: flex;*/
-    /*justify-content: center;*/
-    /*align-items: center;*/
-    /*overflow: scroll;*/
-    /*z-index: 1;*/
-    /*}*/
-
-    .draggable {
-        cursor: move;
-        -khtml-user-drag: element;
-    }
-
     #drawn_graph {
         position: absolute;
-        padding: 100%;
+        padding: 50%;
         top: 0;
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 1;
-    / / display: flex !important;
-    / / justify-items: center !important;;
-    / / align-items: center !important;;
-    / / background: radial-gradient(rgba(0, 0, 255, 0) 5 %, #0b46ff 100 %);
-    / / background: radial-gradient(rgba(0, 0, 255, 0) 5 %, #084A62 100 %);
-    / / background: radial-gradient(rgba(0, 0, 255, 0) 5 %, #44C9FB 100 %);
-    / / background: radial-gradient(rgba(0, 0, 255, 0) 5 %, #623300 100 %);
-    / / background: radial-gradient(at 4250 px, rgba(0, 0, 255, 0) 5 %, #1E87AF 100 %);
-    / / background: -webkit-radial-gradient(4250 px, rgba(0, 0, 255, 0) 5 %, #1E87AF 100 %);
-    / / background: radial-gradient(rgba(0, 0, 255, 0) 5 %, #AF6A1E 100 %);
+    }
 
+    [draggable=true] {
+        cursor: move;
+        -khtml-user-drag: element;
+    }
+
+    body {
+        overflow-x: scroll;
+        margin: 0 !important;
+    }
+
+    #drawn_graph {
+        top: 0;
+        left: 0;
+        min-width: 100%;
+        /*display: flex;*/
+        /*width:100%;*/
+        /*height:100%;*/
+        /*min-width: 2000px;*/
+        /*min-height: 2000px;*/
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+    }
+
+    .root-vertex-super-container > .vertices-children-container {
+        /*max-width:inherit;*/
+    }
+
+    .root-vertex-super-container > .vertices-children-container.left-oriented {
+        /*display: flex;*/
+        max-width: inherit;
+    }
+
+    .root-vertex-super-container > .vertices-children-container.right-oriented {
+        /*display: flex;*/
+        max-width: inherit;
+        /*padding-right:100%;*/
     }
 
 </style>

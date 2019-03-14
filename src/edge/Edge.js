@@ -19,6 +19,7 @@ api.withLabelSelfSourceAndDestinationUri = function (label, uri, sourceUri, dest
             destinationUri
         )
     );
+    this.isExpanded = true;
     edge.setLabel(label);
     return edge;
 };

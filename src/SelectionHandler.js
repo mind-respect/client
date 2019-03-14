@@ -86,7 +86,6 @@ api.addVertex = function (vertex) {
     if (vertex.isSelected) {
         return;
     }
-    // debugger;
     vertex.select();
     api.selected.push(vertex);
     api._reviewMenu();

@@ -217,6 +217,19 @@ Vertex.prototype.getImmediateChild = function (isToTheLeft) {
     }
 };
 
+Vertex.prototype.remove = function () {
+    let edgeId = this.parentBubble.getId();
+    let immediateChild = this.parentVertex.getImmediateChild(
+        this.isToTheLeft()
+    );
+    let l = immediateChild.length;
+    while (l--) {
+        if (immediateChild[l].getId() === edgeId) {
+            immediateChild.splice(l, 1);
+        }
+    }
+};
+
 api.getWhenEmptyLabel = function () {
     return I18n.i18next.t("vertex", "default");
 };

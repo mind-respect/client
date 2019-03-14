@@ -9,12 +9,12 @@ $.fn.centerOnScreen = function (options) {
     if (options === undefined) {
         options = {};
     }
-    var container = containerFromOptions(options);
-    var visibleSize = visibleSizeFromOptions(options);
-    var element = this;
-    var elementOffset = element.offset();
-    var containerOffset = container.offset();
-    var position = {
+    let container = containerFromOptions(options);
+    let visibleSize = visibleSizeFromOptions(options);
+    let element = this;
+    let elementOffset = element.offset();
+    let containerOffset = container.offset();
+    let position = {
         top: elementOffset.top - containerOffset.top,
         left: elementOffset.left - containerOffset.left
     };

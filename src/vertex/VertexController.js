@@ -217,6 +217,9 @@ VertexController.prototype.remove = function (skipConfirmation) {
                 this.getUi()
             );
         return removePromise.then(function () {
+            SelectionHandler.remove(
+                this.getModel()
+            );
             this.getUiArray().forEach(function (ui) {
                 ui.remove();
             });
@@ -703,7 +706,7 @@ VertexController.prototype._addChildToRealAndUiParent = function (realParent, ui
                         realParent.getShareLevel()
                     );
                 }
-                Vue.nextTick(function(){
+                Vue.nextTick(function () {
                     SelectionHandler.setToSingle(triple.destination);
                 })
             }

@@ -5,18 +5,17 @@
 <template>
     <v-layout
             v-if="loaded"
-            draggable="true"
             row :class="{
         'vertex-tree-container': !bubble.isCenter,
         'vertex-container': bubble.isCenter
     }" :id="containerId">
-        <v-flex xs12 class="v-center">
+        <v-flex class="v-center">
             <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
             <Children :bubble="bubble"
                       v-if="bubble.orientation === 'left'"
             >
             </Children>
-            <div class='vertex-container draggable' :class="{
+            <div class='vertex-container' :class="{
                 'vh-center':bubble.orientation === 'center',
                 'left':bubble.orientation === 'right'
             }" @click="click" @dblclick="dblclick"
@@ -201,4 +200,10 @@
         width: 10px !important;
     }
 
+    .left-oriented .leaf {
+        padding-left: 500px;
+    }
+    .right-oriented .leaf {
+        padding-right: 500px;
+    }
 </style>

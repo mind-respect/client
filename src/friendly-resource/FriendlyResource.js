@@ -374,6 +374,15 @@ FriendlyResource.FriendlyResource.prototype.visitChildrenDeep = function (visito
     });
 };
 
+FriendlyResource.FriendlyResource.prototype.getNumberOfChildDeep = function () {
+    let nbChild = 0;
+    this.visitChildrenDeep(function () {
+        nbChild++
+    });
+    return nbChild;
+};
+
+
 FriendlyResource.FriendlyResource.prototype.isLeaf = function () {
     return this.getNumberOfChild() === 0 || this.canExpand();
 };
