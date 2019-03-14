@@ -73,19 +73,30 @@ const Scroll = {
 // or alternatively inside your components you can use
 //         cancelScroll = Vue.$scrollTo(element, duration, options);
     },
+    centerBubbleForTreeIfApplicable: function (bubble) {
+        return Scroll.centerBubbleForTreeOrNotIfApplicable(
+            bubble,
+            true
+        );
+    },
     centerBubbleIfApplicable: function (bubble) {
+        return Scroll.centerBubbleForTreeOrNotIfApplicable(
+            bubble,
+            false
+        );
+    },
+    centerBubbleForTreeOrNotIfApplicable: function (bubble, isForTree) {
         Vue.nextTick(function () {
             setTimeout(function () {
                 let element = bubble.getHtml();
-                if (!bubble.isCenter && bubble.getNumberOfChild() > 0) {
+                if (isForTree && !bubble.isCenter && bubble.getNumberOfChild() > 0) {
                     element = element.parentElement;
                 }
                 if (!UiUtils.isElementFullyOnScreen(element)) {
                     Scroll.goToGraphElement(bubble)
                 }
             }, 100)
-        })
-        // }
+        });
     }
 };
 export default Scroll;

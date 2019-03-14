@@ -31,8 +31,9 @@
                 this.bubble.loading = true;
                 this.bubble.getController().expand().then(function () {
                     this.bubble.loading = false;
-                    Scroll.centerBubbleIfApplicable(
-                        this.bubble
+                    Scroll.centerBubbleForTreeIfApplicable(
+                        this.bubble,
+                        true
                     );
                 }.bind(this));
             }

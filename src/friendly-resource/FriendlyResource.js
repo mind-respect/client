@@ -6,6 +6,7 @@ import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Focus from '@/Focus'
 import SelectionHandler from '@/SelectionHandler'
+import Scroll from '@/Scroll'
 
 const FriendlyResource = {
     fromServerFormat: function (serverFormat) {
@@ -342,6 +343,9 @@ FriendlyResource.FriendlyResource.prototype._getNextBubble = function (bottom) {
 
 FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isChildExpand) {
     this.isExpanded = true;
+    // if (!avoidCenter && !isChildExpand) {
+        Scroll.centerBubbleForTreeOrNotIfApplicable(this);
+    // }
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {
