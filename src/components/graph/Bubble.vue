@@ -27,7 +27,8 @@
                         class="bubble vertex graph-element relative" :class="{
                         'selected' : isSelected,
                         'center-vertex': bubble.isCenter,
-                        'reverse': bubble.orientation === 'left'
+                        'reverse': bubble.orientation === 'left',
+                        'drag-over': isDragOver
                 }">
                     <div class="image_container"></div>
                     <div class="in-bubble-content-wrapper">
@@ -102,7 +103,8 @@
     import KeyCode from 'keycode-js';
     import Children from '@/components/graph/Children'
     import ChildNotice from '@/components/graph/ChildNotice'
-    import I18n from '@/I18n'
+    import Vue from 'vue'
+    import GraphUi from '@/graph/GraphUi'
 
     export default {
         name: "Bubble",
@@ -112,12 +114,12 @@
             ChildNotice
         },
         data: function () {
-
             return {
                 containerId: "",
                 isSelected: false,
                 SelectionHandler: SelectionHandler,
-                loaded: false
+                loaded: false,
+                isDragOver: false
             }
         },
         mounted: function () {
@@ -128,13 +130,10 @@
                 this.bubble.setSourceVertex(this.bubble.parentVertex);
                 this.bubble.setDestinationVertex(this.bubble.destinationVertex);
             }
-            document.addEventListener("dragstart", function (event) {
-                // Stocke une référence sur l'objet glissable
-                // dragged = event.target;
-                // transparence 50%
-                event.target.style.opacity = .5;
-            }, false);
             this.loaded = true;
+            Vue.nextTick(function () {
+                this.setupDrag();
+            }.bind(this));
         },
         computed: {
             relationPlaceholder: function () {
@@ -179,6 +178,72 @@
                     }
                 }.bind(this));
                 this.isSelected = found;
+            },
+            setupDrag: function () {
+                let html = this.bubble.getHtml();
+                html.addEventListener("dragstart", function (event) {
+                    event.target.style.opacity = .5;
+                    //event.originalEvent is undefined when using jasmine and v8 :S
+                    if (event.dataTransfer) {
+                        event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
+                    }
+                    this.dragged = true;
+                    this.$store.dragged = this.bubble;
+                    GraphUi.setIsDraggingBubble(true);
+                    GraphUi.disableDragScroll();
+                    // var ghostImage = graphElementUi.getLabel().get(0);
+                    // $("#drag-bubble-text-for-chrome").text(
+                    //     graphElementUi.getTextOrDefault()
+                    // );
+                    // if (event.originalEvent) {
+                    //     event.originalEvent.dataTransfer.setDragImage(ghostImage, 0, 0);
+                    // }
+                }.bind(this), false);
+                html.addEventListener("dragend", function (event) {
+                    event.preventDefault();
+                    event.target.style.opacity = 1;
+                    GraphUi.setIsDraggingBubble(false);
+                    GraphUi.enableDragScroll();
+                });
+                let labelHtml = this.bubble.getLabelHtml();
+
+                labelHtml.addEventListener("dragover", function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    // this.bubble.getHtml().parents(".vertex-tree-container").removeClass("drag-over");
+                    this.isDragOver = false;
+                    let dragged = this.$store.dragged;
+                    let shouldSetToDragOver = dragged !== undefined &&
+                        dragged.getUri() !== this.bubble.getUri();
+                    if (!shouldSetToDragOver) {
+                        return;
+                    }
+                    this.isDragOver = true;
+                }.bind(this));
+                labelHtml.addEventListener("dragleave", function (event) {
+                    event.preventDefault();
+                    this.isDragOver = false;
+                }.bind(this));
+                labelHtml.addEventListener("drop", function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    GraphUi.enableDragScroll();
+                    GraphUi.setIsDraggingBubble(false);
+                    let parent = this.bubble;
+                    this.isDragOver = false;
+                    // parent.getHtml().parents(
+                    //     ".vertex-tree-container"
+                    // ).removeClass(
+                    //     "drag-over"
+                    // );
+                    let dragged = this.$store.dragged;
+                    if (dragged === undefined) {
+                        return;
+                    }
+                    dragged.getController().moveUnderParent(
+                        parent
+                    );
+                }.bind(this));
             }
         },
         watch: {
@@ -203,7 +268,13 @@
     .left-oriented .leaf {
         padding-left: 500px;
     }
+
     .right-oriented .leaf {
         padding-right: 500px;
+    }
+
+    .drag-over .in-bubble-content {
+        border: 3px dashed red;
+        border-radius: 50px;
     }
 </style>

@@ -133,6 +133,10 @@ api.Edge.prototype.getRightBubble = function () {
     return this.isToTheLeft() ? this.sourceVertex : this.destinationVertex;
 };
 
+api.Edge.prototype.isInverse = function () {
+    return this.getSourceVertex().getUri() !== this.parentVertex.getUri();
+};
+
 api.Edge.prototype.getLeftBubble = function () {
     if (this.isToTheLeft()) {
         return this.destinationVertex;

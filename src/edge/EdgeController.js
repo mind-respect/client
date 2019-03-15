@@ -204,8 +204,8 @@ EdgeController.prototype.sourceVertex = function (sourceVertex) {
     }
 };
 EdgeController.prototype.changeEndVertex = function (endVertex) {
-    var self = this;
-    if (!endVertex.isExpanded()) {
+    let self = this;
+    if (endVertex.canExpand()) {
         return endVertex.getController().expand().then(doIt);
     } else {
         return doIt();

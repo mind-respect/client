@@ -85,8 +85,8 @@ GroupRelationController.prototype.addChild = function (edgeOver) {
 };
 
 GroupRelationController.prototype.becomeParent = function (graphElementUi) {
-    var uiChild;
-    var promises = [];
+    let uiChild;
+    let promises = [];
     if (graphElementUi.isGroupRelation()) {
         graphElementUi.expand();
         graphElementUi.visitClosestChildOfType(
@@ -101,7 +101,7 @@ GroupRelationController.prototype.becomeParent = function (graphElementUi) {
         );
     }
     uiChild.moveToParent(this.getUi());
-    return $.when.apply($, promises);
+    return Promise.all(promises);
 
     function moveEdge(movedEdge) {
         var parentGroupRelation = this.getUi();

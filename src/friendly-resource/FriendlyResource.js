@@ -8,6 +8,12 @@ import Focus from '@/Focus'
 import SelectionHandler from '@/SelectionHandler'
 import Scroll from '@/Scroll'
 
+const MoveRelation = {
+    "Parent": "parent",
+    "After": "after",
+    "Before": "before"
+};
+
 const FriendlyResource = {
     fromServerFormat: function (serverFormat) {
         return new FriendlyResource.FriendlyResource().init(serverFormat);
@@ -99,6 +105,20 @@ FriendlyResource.FriendlyResource.prototype.getId = function () {
     return this.uiId;
 };
 
+FriendlyResource.FriendlyResource.prototype.isSameBubble = function (bubble) {
+    return this.getId() === bubble.getId();
+};
+
+FriendlyResource.FriendlyResource.prototype.isBubbleAChild = function (bubble) {
+    let isAChild = false;
+    this.visitDescendants(function (child) {
+        if (child.getId() === bubble.getId()) {
+            isAChild = true;
+        }
+    });
+    return isAChild;
+};
+
 FriendlyResource.FriendlyResource.prototype.getHtml = function () {
     return document.getElementById(this.uiId);
 };
@@ -178,6 +198,10 @@ FriendlyResource.FriendlyResource.prototype.isEdge = function () {
     return GraphElementType.isEdgeType(this.getGraphElementType())
 };
 
+FriendlyResource.FriendlyResource.prototype.isRelation = function () {
+    return this.getGraphElementType() === GraphElementType.Relation;
+};
+
 FriendlyResource.FriendlyResource.prototype.isGroupRelation = function () {
     return GraphElementType.GroupRelation === this.getGraphElementType();
 };
@@ -242,6 +266,85 @@ FriendlyResource.FriendlyResource.prototype.getDownBubble = function () {
 
 FriendlyResource.FriendlyResource.prototype.canExpand = function () {
     return !this.isCenter && !this.isExpanded && this.getNumberOfChild() > 0;
+};
+
+FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, relation) {
+    // if(this.isGroupRelation()){
+    //     this.visitClosestChildOfType(GraphElementType.Relation, function(childRelation){
+    //         childRelation.moveTo(
+    //             otherBubble,
+    //             relation
+    //         );
+    //     });
+    //     return;
+    // }
+    if (this.isGroupRelation()) {
+        this.expand();
+    }
+    if (this.isVertex()) {
+        return this.getParentBubble().moveTo(
+            otherBubble,
+            relation
+        );
+    }
+    let isOriginalToTheLeft = this.isToTheLeft();
+    if (MoveRelation.Parent === relation) {
+        if (otherBubble.isGroupRelation()) {
+            if (!otherBubble.isExpanded()) {
+                otherBubble.getController().expand();
+            }
+            let identification = otherBubble.getGroupRelation().getIdentification();
+            if (this.getModel().hasIdentification(identification)) {
+                this.revertIdentificationIntegration(identification);
+            }
+        }
+    }
+    if (MoveRelation.Parent === relation) {
+        this.getParentBubble().removeChild(this);
+        otherBubble.addChild(this);
+        otherBubble.isExpanded = true;
+    } else {
+        if (MoveRelation.Before === relation) {
+            otherBubble.getTreeContainer().before(
+                toMove
+            );
+        } else {
+            otherBubble.getTreeContainer().next(".clear-fix").after(
+                toMove
+            );
+        }
+    }
+    // this._resetIsToTheLeft();
+    // if (isOriginalToTheLeft === this.isToTheLeft()) {
+    //     return;
+    // }
+    // if (this.isToTheLeft()) {
+    //     this.convertToLeft();
+    // } else {
+    //     this.visitDescendants(function (descendant) {
+    //         descendant.convertToRight();
+    //     });
+    //     this.convertToRight();
+    // }
+};
+
+FriendlyResource.FriendlyResource.prototype.moveToParent = function (parent) {
+    return this.moveTo(
+        parent,
+        MoveRelation.Parent
+    );
+};
+FriendlyResource.FriendlyResource.prototype.moveAbove = function (newSibling) {
+    return this.moveTo(
+        newSibling,
+        MoveRelation.Before
+    );
+};
+FriendlyResource.FriendlyResource.prototype.moveBelow = function (newSibling) {
+    return this.moveTo(
+        newSibling,
+        MoveRelation.After
+    );
 };
 
 FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDown) {
@@ -344,13 +447,13 @@ FriendlyResource.FriendlyResource.prototype._getNextBubble = function (bottom) {
 FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isChildExpand) {
     this.isExpanded = true;
     // if (!avoidCenter && !isChildExpand) {
-        Scroll.centerBubbleForTreeOrNotIfApplicable(this);
+    Scroll.centerBubbleForTreeOrNotIfApplicable(this);
     // }
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {
     let hasHiddenRelations = false;
-    this.visitChildrenDeep(function (child) {
+    this.visitDescendants(function (child) {
         if (child.canExpand()) {
             hasHiddenRelations = true;
         }
@@ -359,19 +462,19 @@ FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.visitExpandableDescendants = function (visitor) {
-    this.visitChildrenDeep(function (child) {
+    this.visitDescendants(function (child) {
         if (child.getNumberOfChild() > 0 && !child.isExpanded) {
             visitor(child);
         }
     });
 };
 
-FriendlyResource.FriendlyResource.prototype.visitChildrenDeep = function (visitor) {
+FriendlyResource.FriendlyResource.prototype.visitDescendants = function (visitor) {
     this.visitAllImmediateChild(function (child) {
         if (child.isLeaf()) {
             return visitor(child);
         } else {
-            return child.visitChildrenDeep(
+            return child.visitDescendants(
                 visitor
             );
         }
@@ -380,7 +483,7 @@ FriendlyResource.FriendlyResource.prototype.visitChildrenDeep = function (visito
 
 FriendlyResource.FriendlyResource.prototype.getNumberOfChildDeep = function () {
     let nbChild = 0;
-    this.visitChildrenDeep(function () {
+    this.visitDescendants(function () {
         nbChild++
     });
     return nbChild;

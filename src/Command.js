@@ -1,22 +1,21 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import $ from 'jquery'
 /*
  inspired by http://blog.overnetcity.com/2014/11/18/undo-redo-angularjs-command-pattern/
  */
 const api = {};
-var undos = [],
+let undos = [],
     redos = [];
 
 api.undo = function () {
     if (!api.canUndo()) {
-        return $.Deferred().resolve('nothing to do');
+        return Promise.resolve('nothing to do');
     }
-    var command = undos.pop();
+    let command = undos.pop();
     return command.undo().then(function (data) {
         redos.push(command);
-        api._reviewButtonsVisibility();
+        // api._reviewButtonsVisibility();
         return data;
     });
 };
@@ -25,12 +24,12 @@ api.canUndo = function () {
 };
 api.redo = function () {
     if (!api.canRedo()) {
-        return $.Deferred().resolve();
+        return Promise.resolve();
     }
-    var command = redos.pop();
+    let command = redos.pop();
     return command.redo().then(function (data) {
         undos.push(command);
-        api._reviewButtonsVisibility();
+        // api._reviewButtonsVisibility();
         return data;
     });
 };
@@ -42,7 +41,7 @@ api.canRedo = function () {
 api.executeCommand = function (command) {
     return command.execute().then(function (data) {
         undos.push(command);
-        api._reviewButtonsVisibility();
+        // api._reviewButtonsVisibility();
         return data;
     });
 };
@@ -72,11 +71,6 @@ api.Command.prototype.redo = function () {
         return this.execute();
     }
     return this.redoFctn();
-};
-
-api._reviewButtonsVisibility = function () {
-    let GraphElementMainMenu = require('@/graph-element/GraphElementMainMenu');
-    GraphElementMainMenu.reviewButtonsVisibility();
 };
 
 api._reset = function () {

@@ -230,6 +230,16 @@ Vertex.prototype.remove = function () {
     }
 };
 
+Vertex.prototype.removeChild = function (child) {
+    let immediateChild = this.getImmediateChild();
+    let l = immediateChild.length;
+    while (l--) {
+        if (immediateChild[l].getId() === child.getId()) {
+            immediateChild.splice(l, 1);
+        }
+    }
+};
+
 api.getWhenEmptyLabel = function () {
     return I18n.i18next.t("vertex", "default");
 };

@@ -20,7 +20,8 @@ const Store = new Vuex.Store({
         })
     ],
     state: {
-        user: null
+        user: null,
+        dragged: null
     },
     mutations: {
         setUser: function (state, user) {
@@ -44,6 +45,9 @@ const Store = new Vuex.Store({
             }
             state.locale = locale;
             location.reload();
+        },
+        setDragged: function (state, dragged) {
+            state.dragged = dragged;
         }
     },
     actions: {
@@ -52,6 +56,9 @@ const Store = new Vuex.Store({
         },
         setLocale: function (action, locale) {
             action.commit('setLocale', locale);
+        },
+        setDragged: function (action, dragged) {
+            action.commit('setDragged', dragged);
         }
     }
 });

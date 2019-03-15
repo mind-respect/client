@@ -5,7 +5,7 @@
 <template>
     <div id="drawn_graph" v-if="loaded" @click="click" data-zoom="9" class="vh-center">
         <!--<div :style="'width:' + leftWidth() + 'px'"></div>-->
-        <div style="width:5000px;"></div>
+        <div style="width:8000px;"></div>
         <v-layout row class='root-vertex-super-container vh-center ma-5 pa-5' data-zoom='1'>
             <v-flex grow class="vertices-children-container left-oriented">
                 <v-layout row v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
@@ -25,7 +25,7 @@
                 </v-layout>
             </v-flex>
         </v-layout>
-        <div style="width:5000px;"></div>
+        <div style="width:8000px;"></div>
     </div>
     <!--<div :style="'width:' + rightWidth() + 'px'"></div>-->
 </template>
