@@ -7,6 +7,7 @@ import TreeDisplayerCommon from '@/graph/TreeDisplayerCommon'
 import SubGraph from '@/graph/SubGraph'
 import $ from "jquery";
 import Edge from '@/edge/Edge'
+import GraphElement from '@/graph-element/GraphElement'
 
 const api = {};
 
@@ -52,7 +53,11 @@ SubGraphController.prototype.load = function () {
         } else {
             modelToAddChild = this.getModel();
         }
-        parentAsCenter.groupRelationRoots.forEach(function (groupRelationRoot) {
+        let childrenIndex = parentAsCenter.getChildrenIndex();
+        sortGroupRelationRootsByIsGroupRelationOrCreationDate(
+            parentAsCenter.groupRelationRoots,
+            childrenIndex
+        ).forEach(function (groupRelationRoot) {
             if (groupRelationRoot.isGroupRelation() && groupRelationRoot.isTrulyAGroupRelation()) {
                 modelToAddChild.addChild(groupRelationRoot);
                 return;
@@ -63,7 +68,13 @@ SubGraphController.prototype.load = function () {
                     triple.edge.setSourceVertex(modelToAddChild);
                     triple.edge.setDestinationVertex(triple.vertex);
                     triple.edge.uiId = uId;
-                    modelToAddChild.addChild(triple.edge)
+                    // if(triple.vertex.getLabel() === "communication"){
+                    //     debugger;
+                    // }
+                    modelToAddChild.addChild(
+                        triple.edge,
+                        childrenIndex[triple.vertex.getUri()].toTheLeft
+                    )
                 }.bind(this));
             }.bind(this));
         }.bind(this));
@@ -119,5 +130,18 @@ SubGraphController.prototype._removeRelationWithGrandParentAndChildFromServerGra
         return filteredEdges;
     }
 };
+
+function sortGroupRelationRootsByIsGroupRelationOrCreationDate(groupRelationRoots, childrenIndex) {
+    return groupRelationRoots.sort(function (groupRelationA, groupRelationB) {
+            var vertexA = groupRelationA.getFirstVertex(childrenIndex);
+            var vertexB = groupRelationB.getFirstVertex(childrenIndex);
+            return GraphElement.sortCompare(
+                vertexA,
+                vertexB,
+                childrenIndex
+            );
+        }
+    );
+}
 
 export default api;

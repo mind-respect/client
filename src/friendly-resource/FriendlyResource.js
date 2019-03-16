@@ -105,6 +105,10 @@ FriendlyResource.FriendlyResource.prototype.getId = function () {
     return this.uiId;
 };
 
+FriendlyResource.FriendlyResource.prototype.isSameUri = function (bubble) {
+    return this.getUri() === bubble.getUri();
+};
+
 FriendlyResource.FriendlyResource.prototype.isSameBubble = function (bubble) {
     return this.getId() === bubble.getId();
 };
@@ -287,7 +291,6 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
             relation
         );
     }
-    let isOriginalToTheLeft = this.isToTheLeft();
     if (MoveRelation.Parent === relation) {
         if (otherBubble.isGroupRelation()) {
             if (!otherBubble.isExpanded()) {
@@ -304,16 +307,26 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
         otherBubble.addChild(this);
         otherBubble.isExpanded = true;
     } else {
+        this.getParentBubble().removeChild(this);
+
+        let otherParentBubble = otherBubble.getParentBubble();
+        let index = otherParentBubble.getChildIndex(otherBubble);
         if (MoveRelation.Before === relation) {
-            otherBubble.getTreeContainer().before(
-                toMove
+            otherParentBubble.addChild(this, otherBubble.isToTheLeft(),
+                index
             );
         } else {
-            otherBubble.getTreeContainer().next(".clear-fix").after(
-                toMove
+            otherParentBubble.addChild(
+                this,
+                otherBubble.isToTheLeft(),
+                index + 1
             );
+            // otherBubble.getTreeContainer().next(".clear-fix").after(
+            //     toMove
+            // );
         }
     }
+    this.orientation = otherBubble.orientation;
     // this._resetIsToTheLeft();
     // if (isOriginalToTheLeft === this.isToTheLeft()) {
     //     return;
@@ -494,6 +507,27 @@ FriendlyResource.FriendlyResource.prototype.isLeaf = function () {
     return this.getNumberOfChild() === 0 || this.canExpand();
 };
 
+FriendlyResource.FriendlyResource.prototype.getIndexInTree = function () {
+    return this._getIndexInTreeInTypes(
+        [this.getGraphElementType()]
+    );
+};
+
+FriendlyResource.FriendlyResource.prototype._getIndexInTreeInTypes = function (graphElementTypes) {
+    let index = -1;
+    let currentIndex = -1;
+    this.getParentVertex().visitClosestChildInTypes(
+        graphElementTypes,
+        function (bubble) {
+            currentIndex++;
+            if (bubble.isSameBubble(this)) {
+                index = currentIndex;
+            }
+        }.bind(this)
+    );
+    return index;
+};
+
 FriendlyResource.FriendlyResource.prototype.visitClosestChildVertices = function (visitor) {
     this.visitClosestChildOfType(
         GraphElementType.Vertex,
@@ -567,6 +601,10 @@ FriendlyResource.FriendlyResource.prototype._buildImages = function () {
 
 FriendlyResource.FriendlyResource.prototype.getModel = function () {
     return this;
+};
+
+FriendlyResource.FriendlyResource.prototype.getParentVertex = function () {
+    return this.parentVertex;
 };
 
 

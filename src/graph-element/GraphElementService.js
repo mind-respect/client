@@ -5,6 +5,7 @@
 import $ from 'jquery'
 import Identification from '@/identifier/Identification'
 import EventBus from '@/EventBus'
+import Service from '@/Service'
 
 const api = {};
 api.addIdentification = function (graphElement, identification) {
@@ -67,11 +68,9 @@ api.changeSortDate = function (graphElement) {
     });
 };
 api.changeChildrenIndex = function (graphElement) {
-    return $.ajax({
-        type: 'POST',
-        url: graphElement.getUri() + "/childrenIndex",
-        data: JSON.stringify(graphElement.buildChildrenIndex()),
-        contentType: 'application/json;charset=utf-8'
-    });
+    return Service.geApi().post(
+        graphElement.getUri() + "/childrenIndex",
+        graphElement.buildChildrenIndex()
+    );
 };
 export default api;

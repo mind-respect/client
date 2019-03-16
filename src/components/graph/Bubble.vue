@@ -7,7 +7,8 @@
             v-if="loaded"
             row :class="{
         'vertex-tree-container': !bubble.isCenter,
-        'vertex-container': bubble.isCenter
+        'vertex-container': bubble.isCenter,
+        'drag-over' : isContainerDragOver
     }" :id="containerId">
         <v-flex class="v-center">
             <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
@@ -105,6 +106,7 @@
     import ChildNotice from '@/components/graph/ChildNotice'
     import Vue from 'vue'
     import GraphUi from '@/graph/GraphUi'
+    import IdUri from '@/IdUri'
 
     export default {
         name: "Bubble",
@@ -119,12 +121,15 @@
                 isSelected: false,
                 SelectionHandler: SelectionHandler,
                 loaded: false,
-                isDragOver: false
+                isDragOver: false,
+                isContainerDragOver: false
             }
         },
         mounted: function () {
             if (this.bubble.isCenter) {
                 this.containerId = "center";
+            } else {
+                this.containerId = IdUri.uuid();
             }
             if (this.bubble.isEdge()) {
                 this.bubble.setSourceVertex(this.bubble.parentVertex);
@@ -181,14 +186,17 @@
             },
             setupDrag: function () {
                 let html = this.bubble.getHtml();
+                html.addEventListener("mousedown", function (event) {
+                    GraphUi.disableDragScroll();
+                });
+                html.addEventListener("click", function (event) {
+                    GraphUi.enableDragScroll();
+                });
                 html.addEventListener("dragstart", function (event) {
                     event.target.style.opacity = .5;
-                    //event.originalEvent is undefined when using jasmine and v8 :S
-                    if (event.dataTransfer) {
-                        event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
-                    }
+                    event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
                     this.dragged = true;
-                    this.$store.dragged = this.bubble;
+                    this.$store.dispatch('setDragged', this.bubble);
                     GraphUi.setIsDraggingBubble(true);
                     GraphUi.disableDragScroll();
                     // var ghostImage = graphElementUi.getLabel().get(0);
@@ -204,7 +212,8 @@
                     event.target.style.opacity = 1;
                     GraphUi.setIsDraggingBubble(false);
                     GraphUi.enableDragScroll();
-                });
+                    this.$store.dispatch('setDragged', null);
+                }.bind(this));
                 let labelHtml = this.bubble.getLabelHtml();
 
                 labelHtml.addEventListener("dragover", function (event) {
@@ -212,7 +221,7 @@
                     event.stopPropagation();
                     // this.bubble.getHtml().parents(".vertex-tree-container").removeClass("drag-over");
                     this.isDragOver = false;
-                    let dragged = this.$store.dragged;
+                    let dragged = this.$store.state.dragged;
                     let shouldSetToDragOver = dragged !== undefined &&
                         dragged.getUri() !== this.bubble.getUri();
                     if (!shouldSetToDragOver) {
@@ -231,18 +240,62 @@
                     GraphUi.setIsDraggingBubble(false);
                     let parent = this.bubble;
                     this.isDragOver = false;
-                    // parent.getHtml().parents(
-                    //     ".vertex-tree-container"
-                    // ).removeClass(
-                    //     "drag-over"
-                    // );
-                    let dragged = this.$store.dragged;
-                    if (dragged === undefined) {
+                    let dragged = this.$store.state.dragged;
+                    this.$store.dispatch('setDragged', null);
+                    if (dragged === null) {
                         return;
                     }
+
                     dragged.getController().moveUnderParent(
                         parent
                     );
+                }.bind(this));
+                let container = document.getElementById(this.containerId);
+                container.addEventListener("dragover", function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.isContainerDragOver = false;
+                    let bubble = this.bubble;
+                    if (bubble.isVertex()) {
+                        bubble = bubble.getParentBubble();
+                    }
+                    let bubbleChild = bubble.getNextBubble();
+                    let dragged = this.$store.state.dragged;
+                    if (dragged.getId() === bubble.getId() || dragged.getId() === bubbleChild.getId()) {
+                        return;
+                    }
+                    this.isContainerDragOver = true;
+                }.bind(this));
+                container.addEventListener("dragleave", function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.isContainerDragOver = false;
+                }.bind(this));
+                container.addEventListener("drop", function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.isContainerDragOver = false;
+                    let edge = this.bubble;
+                    if (edge.isVertex()) {
+                        edge = edge.getParentBubble();
+                    }
+                    let dragged = this.$store.state.dragged;
+                    this.$store.dispatch('setDragged', null);
+                    if (dragged.getId() === edge.getId()) {
+                        return;
+                    }
+                    let mouseY = event.clientY;
+                    let edgeLabelHtml = edge.getHtml().querySelectorAll('.label-container')[0];
+                    let edgeYPosition = edgeLabelHtml.getBoundingClientRect().top + edgeLabelHtml.offsetHeight;
+                    if (mouseY > edgeYPosition) {
+                        dragged.getController().moveBelow(
+                            edge
+                        );
+                    } else {
+                        dragged.getController().moveAbove(
+                            edge
+                        );
+                    }
                 }.bind(this));
             }
         },
@@ -273,8 +326,14 @@
         padding-right: 500px;
     }
 
-    .drag-over .in-bubble-content {
+    .bubble.drag-over .in-bubble-content {
         border: 3px dashed red;
         border-radius: 50px;
+    }
+
+    .vertex-tree-container.drag-over {
+        border-top: dashed red 3px;
+        border-bottom: dashed red 3px;
+        border-radius: 0;
     }
 </style>

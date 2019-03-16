@@ -61,7 +61,7 @@ GroupRelation.prototype.getRightBubble = function (bottom) {
 
 GroupRelation.prototype.getImmediateChild = function () {
     let edges = [];
-    if(!this.parentVertex){
+    if (!this.parentVertex) {
         return edges;
     }
     this.sortedImmediateChild(this.parentVertex).map(function (child) {
@@ -260,8 +260,8 @@ GroupRelation.prototype.getVerticesAsArray = function () {
 };
 
 GroupRelation.prototype.getSortedVerticesArrayAtAnyDepth = function (childrenIndex) {
-    var groupRelationVertices = this.getSortedVerticesAtAnyDepth(childrenIndex);
-    var vertices = [];
+    let groupRelationVertices = this.getSortedVerticesAtAnyDepth(childrenIndex);
+    let vertices = [];
     Object.keys(groupRelationVertices).forEach(function (vertexUri) {
         Object.keys(groupRelationVertices[vertexUri]).forEach(function (vertedId) {
             vertices.push(
@@ -279,6 +279,44 @@ GroupRelation.prototype.getIdentifiersAtAnyDepth = function () {
     });
     return identifiers;
 };
+
+GroupRelation.prototype.buildChildrenIndex = function () {
+    let childrenIndex = {};
+    let index = 0;
+    if (this.getNumberOfChild() === 0) {
+        this.getModel().getSortedVerticesArrayAtAnyDepth(
+            this.getParentVertex().getModel().getChildrenIndex()
+        ).forEach(function (childVertex) {
+            setChildVertexIndex(childVertex.getUri());
+        });
+    } else {
+        this.visitAllImmediateChild(function (child) {
+            if (child.isRelation()) {
+                setChildVertexIndex(
+                    child.getModel().getOtherVertex(
+                        this.getParentVertex().getModel()
+                    ).getUri()
+                );
+            } else if (child.isGroupRelation()) {
+                var grandChildIndex = child.buildChildrenIndex();
+                Object.keys(grandChildIndex).sort(function (a, b) {
+                    return grandChildIndex[a].index - grandChildIndex[b].index;
+                }).forEach(function (vertexUri) {
+                    setChildVertexIndex(vertexUri);
+                });
+            }
+        }.bind(this));
+    }
+    return childrenIndex;
+
+    function setChildVertexIndex(childVertexUri) {
+        childrenIndex[childVertexUri] = {
+            index: index
+        };
+        index++;
+    }
+};
+
 
 GroupRelation.prototype.hasRelevantTags = function () {
     return true;

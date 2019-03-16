@@ -174,11 +174,17 @@ Vertex.prototype.getRelationWithUiParent = function () {
     return this.parentBubble;
 };
 
-Vertex.prototype.addChild = function (child) {
-    if (this.isCenter && this._shouldAddLeft()) {
-        this.leftBubbles.push(child)
+Vertex.prototype.addChild = function (child, isToTheLeft, index) {
+    let children;
+    if (this.isCenter && (this._shouldAddLeft() || isToTheLeft)) {
+        children = this.leftBubbles;
     } else {
-        this.rightBubbles.push(child)
+        children = this.rightBubbles;
+    }
+    if (index !== undefined) {
+        children.splice(index, 0, child);
+    } else {
+        children.push(child)
     }
 };
 
@@ -231,11 +237,11 @@ Vertex.prototype.remove = function () {
 };
 
 Vertex.prototype.removeChild = function (child) {
-    let immediateChild = this.getImmediateChild();
-    let l = immediateChild.length;
+    let childrenArray = this.isCenter && child.isToTheLeft() ? this.leftBubbles : this.rightBubbles;
+    let l = childrenArray.length;
     while (l--) {
-        if (immediateChild[l].getId() === child.getId()) {
-            immediateChild.splice(l, 1);
+        if (childrenArray[l].getId() === child.getId()) {
+            childrenArray.splice(l, 1);
         }
     }
 };
@@ -247,6 +253,42 @@ api.getWhenEmptyLabel = function () {
 Vertex.prototype._shouldAddLeft = function () {
     return this.leftBubbles.length <
         this.rightBubbles.length;
+};
+
+Vertex.prototype.buildChildrenIndex = function () {
+    let childrenIndex = {};
+    let index = 0;
+    this.visitAllImmediateChild(function (child) {
+        if (child.isRelation()) {
+            let otherVertex = child.getOtherVertex(
+                this
+            );
+            setChildVertexIndex.bind(this)(
+                otherVertex.getUri(),
+                child.isToTheLeft()
+            );
+        } else if (child.isGroupRelation()) {
+            var grandChildIndex = child.buildChildrenIndex();
+            Object.keys(grandChildIndex).sort(function (a, b) {
+                return grandChildIndex[a].index - grandChildIndex[b].index;
+            }).forEach(function (vertexUri) {
+                setChildVertexIndex.bind(this)(vertexUri, child.isToTheLeft());
+            }.bind(this));
+        }
+    }.bind(this));
+    return childrenIndex;
+
+    function setChildVertexIndex(childVertexUri, isToTheLeft) {
+        let previousValue = this.getModel().getChildrenIndex()[childVertexUri];
+        if (!this.isCenterBubble() && previousValue) {
+            isToTheLeft = previousValue.toTheLeft;
+        }
+        childrenIndex[childVertexUri] = {
+            index: index,
+            toTheLeft: isToTheLeft
+        };
+        index++;
+    }
 };
 
 Vertex.prototype._buildIncludedEdges = function () {

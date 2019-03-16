@@ -499,7 +499,7 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
             previousParentVertex
         )
     );
-    var parentBubble = otherEdge.getParentBubble();
+    let parentBubble = otherEdge.getParentBubble();
     if (parentBubble.isGroupRelation()) {
         var identification = parentBubble.getGroupRelation().getIdentification();
         if (movedEdge.isGroupRelation()) {
