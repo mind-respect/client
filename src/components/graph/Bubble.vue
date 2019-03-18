@@ -3,98 +3,143 @@
   -->
 
 <template>
-    <v-layout
-            v-if="loaded"
-            row :class="{
-        'vertex-tree-container': !bubble.isCenter,
-        'vertex-container': bubble.isCenter,
-        'drag-over' : isContainerDragOver
-    }" :id="containerId">
-        <v-flex class="v-center">
-            <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
-            <Children :bubble="bubble"
-                      v-if="bubble.orientation === 'left'"
+    <div v-if="loaded"
+    >
+        <v-flex xs12>
+            <v-flex xs12 class="pt-2"
+                    @dragover="topDragOver"
+                    @dragleave="resetDragOver"
+                    @drop="topDrop"
+                    v-if="bubble.isEdge() && !bubble.getNextBubble().isExpanded"
+                    :class="{
+                        'dotted-border-top': isContainerDragOver
+                    }"
             >
-            </Children>
-            <div class='vertex-container' :class="{
+            </v-flex>
+            <v-flex xs12
+                    v-if="bubble.isVertex()"
+                    :class="{
+                        'dotted-border-top': isContainerDragOver
+                    }"
+            ></v-flex>
+        </v-flex>
+        <v-layout
+                row :class="{
+        'vertex-tree-container': !bubble.isCenter,
+        'vertex-container': bubble.isCenter
+    }" :id="containerId">
+            <v-flex class="v-center">
+                <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
+                <Children :bubble="bubble"
+                          v-if="bubble.orientation === 'left'"
+                >
+                </Children>
+                <div class='vertex-container v-center' :class="{
                 'vh-center':bubble.orientation === 'center',
                 'left':bubble.orientation === 'right'
-            }" @click="click" @dblclick="dblclick"
-                 :id="bubble.uiId"
-                 draggable="true"
-            >
-                <div
-                        v-if="bubble.isVertex()"
-                        class="bubble vertex graph-element relative" :class="{
-                        'selected' : isSelected,
+            }"
+                     @click="click" @dblclick="dblclick"
+                     :id="bubble.uiId"
+                     @mousedown="mouseDown"
+                     @dragstart="dragStart"
+                     @dragend="dragEnd"
+                     draggable="true"
+                >
+                    <div class="vertex-drag-over"
+                         @dragover="topDragOver"
+                         @dragleave="resetDragOver"
+                         @drop="topDrop"
+                         style="top:0;"
+                    ></div>
+                    <div
+                            v-if="bubble.isVertex()"
+                            class="bubble vertex graph-element relative" :class="{
+                        'selected' : isSelected || isLabelDragOver,
                         'center-vertex': bubble.isCenter,
-                        'reverse': bubble.orientation === 'left',
-                        'drag-over': isDragOver
+                        'reverse': bubble.orientation === 'left'
                 }">
-                    <div class="image_container"></div>
-                    <div class="in-bubble-content-wrapper">
-                        <div class="in-bubble-content">
-                            <div class="bubble-label ui-autocomplete-input bubble-size font-weight-regular"
-                                 @blur="leaveEditFlow"
-                                 :data-placeholder="$t('vertex:default')"
-                                 autocomplete="off" v-text="bubble.getServerFormat().label"
-                                 @keydown="keydown"></div>
-                            <div class="in-label-buttons"></div>
-                            <!--<v-text-field v-model="vertex.getServerFormat().label"></v-text-field>-->
+                        <div class="image_container"></div>
+                        <div class="in-bubble-content-wrapper">
+                            <div class="in-bubble-content pl-1 pr-1" :class="{
+                                'pt-0 pb-0':  isContainerDragOver || isLabelDragOver,
+                                'pt-1 pb-1': !isContainerDragOver && !isLabelDragOver
+                            }"
+                                 style="max-width:500px!important;"
+                            >
+                                <div class="bubble-label ui-autocomplete-input bubble-size font-weight-regular"
+                                     @blur="leaveEditFlow"
+                                     @dragstart="labelDragStart"
+                                     @dragover="labelDragOver"
+                                     @dragleave="labelDragLeave"
+                                     @drop="labelDrop"
+                                     :data-placeholder="$t('vertex:default')"
+                                     autocomplete="off" v-text="bubble.getServerFormat().label"
+                                     @keydown="keydown"></div>
+                                <div class="in-label-buttons"></div>
+                            </div>
                         </div>
+                        <ChildNotice :bubble="bubble"
+                                     v-if="bubble.canExpand()"></ChildNotice>
                     </div>
-                    <ChildNotice :bubble="bubble"
-                                 v-if="bubble.canExpand()"></ChildNotice>
-                    <!--<span class="connector"></span>-->
-                </div>
-                <div
-                        v-if="bubble.isEdge() || bubble.isGroupRelation()"
-                        class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0"
-                        :class="{
+                    <div
+                            class="vertex-drag-over"
+                            @dragover="bottomDragOver" @dragleave="resetDragOver" @drop="bottomDrop"
+                            style="bottom:0;"
+                    ></div>
+                    <div
+                            v-if="bubble.isEdge() || bubble.isGroupRelation()"
+                            class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0"
+                            :class="{
                             'selected' : isSelected
                  }">
-                    <div class="image_container"></div>
-                    <div class="in-bubble-content">
-                        <div class="label-container">
-                            <v-chip color="edgeColor"
-                                    small
-                                    :selected="isSelected"
-                                    class="pt-0 pb-0 mt-0 mb-0"
-                                    dark
-                                    :class="{
+                        <div class="image_container"></div>
+                        <div class="in-bubble-content">
+                            <div class="label-container">
+                                <v-chip color="edgeColor"
+                                        small
+                                        :selected="isSelected"
+                                        class="pt-0 pb-0 mt-0 mb-0"
+                                        dark
+                                        :class="{
                                         'is-shrinked' : bubble.isShrinked()
                                     }"
-                            >
-                                <div class="bubble-label white--text"
-                                     @blur="leaveEditFlow"
-                                     :data-placeholder="relationPlaceholder"
-                                     autocomplete="off"
-                                     v-show="!bubble.isShrinked()"
-                                     v-text="bubble.getServerFormat().label"
-                                     @keydown="keydown"></div>
-                            </v-chip>
+                                >
+                                    <div class="bubble-label white--text"
+                                         @blur="leaveEditFlow"
+                                         @dragstart="labelDragStart"
+                                         @dragover="labelDragOver"
+                                         @dragleave="labelDragLeave"
+                                         @drop="labelDrop"
+                                         :data-placeholder="relationPlaceholder"
+                                         autocomplete="off"
+                                         v-show="!bubble.isShrinked()"
+                                         v-text="bubble.getServerFormat().label"
+                                         @keydown="keydown"></div>
+                                </v-chip>
+                            </div>
                         </div>
-                        <!--<v-text-field v-model="vertex.getServerFormat().label"></v-text-field>-->
                     </div>
-                    <!--<span class="connector"></span>-->
                 </div>
-            </div>
-            <Children :bubble="bubble"
-                      v-if="bubble.orientation === 'right'"
-            >
-            </Children>
-            <!--<div class="vertical-border vertical-border-first small">-->
-            <!--<div class="vertical-border-filling"></div>-->
-            <!--</div>-->
-            <!--<span class="arrow vertex"></span>-->
-            <!--<div class="vertical-border vertical-border-second small">-->
-            <!--<div class="vertical-border-filling"></div>-->
-            <!--</div>-->
-            <!--<div class="vertical-border vertical-border-third small">-->
-            <!--<div class="vertical-border-filling"></div>-->
-            <!--</div>-->
+                <Children :bubble="bubble"
+                          v-if="bubble.orientation === 'right'"
+                >
+                </Children>
+            </v-flex>
+        </v-layout>
+        <v-flex xs12 class="pb-2"
+                :class="{
+                    'dotted-border-bottom': isContainerDragOver
+                }"
+                @dragover="bottomDragOver" @dragleave="resetDragOver" @drop="bottomDrop"
+                v-if="bubble.isEdge() && !bubble.getNextBubble().isExpanded">
         </v-flex>
-    </v-layout>
+        <v-flex xs12
+                v-if="bubble.isVertex()"
+                :class="{
+                        'dotted-border-bottom': isContainerDragOver
+                    }"
+        ></v-flex>
+    </div>
 </template>
 
 <script>
@@ -104,7 +149,6 @@
     import KeyCode from 'keycode-js';
     import Children from '@/components/graph/Children'
     import ChildNotice from '@/components/graph/ChildNotice'
-    import Vue from 'vue'
     import GraphUi from '@/graph/GraphUi'
     import IdUri from '@/IdUri'
 
@@ -121,8 +165,11 @@
                 isSelected: false,
                 SelectionHandler: SelectionHandler,
                 loaded: false,
-                isDragOver: false,
-                isContainerDragOver: false
+                isLabelDragOver: false,
+                isContainerDragOver: false,
+                dragOverTimeout: undefined,
+                isTopDragOver: null,
+                isBottomDragOver: null
             }
         },
         mounted: function () {
@@ -136,18 +183,69 @@
                 this.bubble.setDestinationVertex(this.bubble.destinationVertex);
             }
             this.loaded = true;
-            Vue.nextTick(function () {
-                this.setupDrag();
-            }.bind(this));
         },
         computed: {
             relationPlaceholder: function () {
                 return this.isSelected ? this.$t('edge:default') : "";
-            }
+            },
         },
         methods: {
+            topBottomDrop: function (method) {
+                this.isContainerDragOver = false;
+                this.isBottomDragOver = false;
+                this.isTopDragOver = false;
+                let edge = this.bubble;
+                if (edge.isVertex()) {
+                    edge = edge.getParentBubble();
+                }
+                let dragged = this.$store.state.dragged;
+                this.$store.dispatch('setDragged', null);
+                if (dragged.getId() === edge.destinationVertex.getId()) {
+                    return;
+                }
+                return dragged.getController()[method](edge);
+            },
+            topDrop: function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                this.topBottomDrop("moveAbove");
+            },
+            bottomDrop: function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                this.topBottomDrop("moveBelow");
+            },
+            resetDragOver: function (event) {
+                event.preventDefault();
+                this.dragOverTimeout = setTimeout(function () {
+                    this.isContainerDragOver = false;
+                    this.isBottomDragOver = false;
+                    this.isTopDragOver = false;
+                }.bind(this), 50);
+            },
+            topDragOver: function (event) {
+                event.preventDefault();
+                clearTimeout(this.dragOverTimeout);
+                let bubble = this.bubble.isEdge() ? this.bubble.getNextBubble() : this.bubble;
+                if (this.$store.state.dragged.getId() === bubble.getId()) {
+                    return;
+                }
+                this.isContainerDragOver = true;
+                this.isTopDragOver = true;
+            },
+            bottomDragOver: function (event) {
+                event.preventDefault();
+                clearTimeout(this.dragOverTimeout);
+                let bubble = this.bubble.isEdge() ? this.bubble.getNextBubble() : this.bubble;
+                if (this.$store.state.dragged.getId() === bubble.getId()) {
+                    return;
+                }
+                this.isContainerDragOver = true;
+                this.isBottomDragOver = true;
+            },
             click: function (event) {
                 event.stopPropagation();
+                GraphUi.enableDragScroll();
                 if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
                     if (this.bubble.isSelected) {
                         SelectionHandler.remove(this.bubble);
@@ -184,119 +282,56 @@
                 }.bind(this));
                 this.isSelected = found;
             },
-            setupDrag: function () {
-                let html = this.bubble.getHtml();
-                html.addEventListener("mousedown", function (event) {
-                    GraphUi.disableDragScroll();
-                });
-                html.addEventListener("click", function (event) {
-                    GraphUi.enableDragScroll();
-                });
-                html.addEventListener("dragstart", function (event) {
-                    event.target.style.opacity = .5;
-                    event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
-                    this.dragged = true;
-                    this.$store.dispatch('setDragged', this.bubble);
-                    GraphUi.setIsDraggingBubble(true);
-                    GraphUi.disableDragScroll();
-                    // var ghostImage = graphElementUi.getLabel().get(0);
-                    // $("#drag-bubble-text-for-chrome").text(
-                    //     graphElementUi.getTextOrDefault()
-                    // );
-                    // if (event.originalEvent) {
-                    //     event.originalEvent.dataTransfer.setDragImage(ghostImage, 0, 0);
-                    // }
-                }.bind(this), false);
-                html.addEventListener("dragend", function (event) {
-                    event.preventDefault();
-                    event.target.style.opacity = 1;
-                    GraphUi.setIsDraggingBubble(false);
-                    GraphUi.enableDragScroll();
-                    this.$store.dispatch('setDragged', null);
-                }.bind(this));
-                let labelHtml = this.bubble.getLabelHtml();
-
-                labelHtml.addEventListener("dragover", function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    // this.bubble.getHtml().parents(".vertex-tree-container").removeClass("drag-over");
-                    this.isDragOver = false;
-                    let dragged = this.$store.state.dragged;
-                    let shouldSetToDragOver = dragged !== undefined &&
-                        dragged.getUri() !== this.bubble.getUri();
-                    if (!shouldSetToDragOver) {
-                        return;
-                    }
-                    this.isDragOver = true;
-                }.bind(this));
-                labelHtml.addEventListener("dragleave", function (event) {
-                    event.preventDefault();
-                    this.isDragOver = false;
-                }.bind(this));
-                labelHtml.addEventListener("drop", function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    GraphUi.enableDragScroll();
-                    GraphUi.setIsDraggingBubble(false);
-                    let parent = this.bubble;
-                    this.isDragOver = false;
-                    let dragged = this.$store.state.dragged;
-                    this.$store.dispatch('setDragged', null);
-                    if (dragged === null) {
-                        return;
-                    }
-
-                    dragged.getController().moveUnderParent(
-                        parent
-                    );
-                }.bind(this));
-                let container = document.getElementById(this.containerId);
-                container.addEventListener("dragover", function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    this.isContainerDragOver = false;
-                    let bubble = this.bubble;
-                    if (bubble.isVertex()) {
-                        bubble = bubble.getParentBubble();
-                    }
-                    let bubbleChild = bubble.getNextBubble();
-                    let dragged = this.$store.state.dragged;
-                    if (dragged.getId() === bubble.getId() || dragged.getId() === bubbleChild.getId()) {
-                        return;
-                    }
-                    this.isContainerDragOver = true;
-                }.bind(this));
-                container.addEventListener("dragleave", function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    this.isContainerDragOver = false;
-                }.bind(this));
-                container.addEventListener("drop", function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    this.isContainerDragOver = false;
-                    let edge = this.bubble;
-                    if (edge.isVertex()) {
-                        edge = edge.getParentBubble();
-                    }
-                    let dragged = this.$store.state.dragged;
-                    this.$store.dispatch('setDragged', null);
-                    if (dragged.getId() === edge.getId()) {
-                        return;
-                    }
-                    let mouseY = event.clientY;
-                    let edgeLabelHtml = edge.getHtml().querySelectorAll('.label-container')[0];
-                    let edgeYPosition = edgeLabelHtml.getBoundingClientRect().top + edgeLabelHtml.offsetHeight;
-                    if (mouseY > edgeYPosition) {
-                        dragged.getController().moveBelow(
-                            edge
-                        );
-                    } else {
-                        dragged.getController().moveAbove(
-                            edge
-                        );
-                    }
-                }.bind(this));
+            mouseDown: function () {
+                GraphUi.disableDragScroll();
+            },
+            dragStart: function (event) {
+                event.target.style.opacity = .5;
+                event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
+                this.dragged = true;
+                this.$store.dispatch('setDragged', this.bubble);
+                this.isContainerDragOver = false;
+                GraphUi.disableDragScroll();
+            },
+            dragEnd: function (event) {
+                event.preventDefault();
+                event.target.style.opacity = 1;
+                GraphUi.enableDragScroll();
+                this.$store.dispatch('setDragged', null);
+            },
+            labelDragStart: function () {
+                clearTimeout(this.dragOverTimeout);
+            },
+            labelDragOver: function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                let dragged = this.$store.state.dragged;
+                let shouldSetToDragOver = dragged !== undefined &&
+                    dragged.getUri() !== this.bubble.getUri();
+                if (!shouldSetToDragOver) {
+                    this.isLabelDragOver = false;
+                    return;
+                }
+                this.isLabelDragOver = true;
+            },
+            labelDragLeave: function (event) {
+                event.preventDefault();
+                this.isLabelDragOver = false;
+            },
+            labelDrop: function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                GraphUi.enableDragScroll();
+                let parent = this.bubble;
+                this.isLabelDragOver = false;
+                let dragged = this.$store.state.dragged;
+                this.$store.dispatch('setDragged', null);
+                if (dragged === null) {
+                    return;
+                }
+                dragged.getController().moveUnderParent(
+                    parent
+                );
             }
         },
         watch: {
@@ -309,6 +344,11 @@
 
 <style scoped>
 
+    .vertex-container {
+        height: 100%;
+        position: relative;
+    }
+
     .bubble-size {
         font-size: 18px !important;
     }
@@ -318,22 +358,29 @@
         width: 10px !important;
     }
 
-    .left-oriented .leaf {
-        padding-left: 500px;
-    }
-
-    .right-oriented .leaf {
-        padding-right: 500px;
-    }
-
-    .bubble.drag-over .in-bubble-content {
-        border: 3px dashed red;
+    .label-drag-over {
+        border: 1px dashed red;
         border-radius: 50px;
     }
 
     .vertex-tree-container.drag-over {
-        border-top: dashed red 3px;
-        border-bottom: dashed red 3px;
+        border-top: dashed red 1px;
+        border-bottom: dashed red 1px;
         border-radius: 0;
+    }
+
+    .dotted-border-top {
+        border-top: 1px dashed red
+    }
+
+    .dotted-border-bottom {
+        border-bottom: 1px dashed red
+    }
+
+    .vertex-drag-over {
+        position: absolute !important;
+        height: 40% !important;
+        width: 100% !important;
+        max-width: 500px !important;
     }
 </style>

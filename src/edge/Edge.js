@@ -129,6 +129,12 @@ api.Edge.prototype.getOtherVertex = function (vertex) {
 //     return childVertexIndex.toTheLeft;
 // };
 
+api.Edge.prototype.getNextBubble = function () {
+    return this.isInverse() ?
+        this.getSourceVertex() :
+        this.getDestinationVertex();
+};
+
 api.Edge.prototype.getRightBubble = function () {
     return this.isToTheLeft() ? this.sourceVertex : this.destinationVertex;
 };

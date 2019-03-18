@@ -71,9 +71,12 @@ SubGraphController.prototype.load = function () {
                     // if(triple.vertex.getLabel() === "communication"){
                     //     debugger;
                     // }
+
+                    let childIndex = childrenIndex[triple.vertex.getUri()];
+                    let addLeft = childIndex !== undefined && childIndex.toTheLeft;
                     modelToAddChild.addChild(
                         triple.edge,
-                        childrenIndex[triple.vertex.getUri()].toTheLeft
+                        addLeft
                     )
                 }.bind(this));
             }.bind(this));
