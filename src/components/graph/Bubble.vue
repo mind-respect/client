@@ -6,20 +6,20 @@
     <div v-if="loaded"
     >
         <v-flex xs12>
-            <v-flex xs12 class="pt-2"
+            <v-flex xs12 class="pt-1 dotted-border-top"
                     @dragover="topDragEnter"
                     @dragleave="resetDragOver"
                     @drop="topDrop"
                     v-if="bubble.isEdge() && !bubble.getNextBubble().isExpanded"
-                    style="position:relative;"
                     :class="{
-                        'dotted-border-top': isTopDragOver
+                        'border-visible': isTopDragOver
                     }"
             ></v-flex>
             <v-flex xs12
+                    class="dotted-border-top"
                     v-if="bubble.isVertex()"
                     :class="{
-                        'dotted-border-top': isTopDragOver
+                        'border-visible': isTopDragOver
                     }"
             ></v-flex>
         </v-flex>
@@ -124,17 +124,18 @@
                 </Children>
             </v-flex>
         </v-layout>
-        <v-flex xs12 class="pb-2"
+        <v-flex xs12 class="pb-1 dotted-border-bottom"
                 :class="{
-                    'dotted-border-bottom': isBottomDragOver
+                    'border-visible': isBottomDragOver
                 }"
                 @dragover="bottomDragEnter" @dragleave="resetDragOver" @drop="bottomDrop"
                 v-if="bubble.isEdge() && !bubble.getNextBubble().isExpanded">
         </v-flex>
         <v-flex xs12
+                class="dotted-border-bottom"
                 v-if="bubble.isVertex()"
                 :class="{
-                        'dotted-border-bottom': isBottomDragOver
+                        'border-visible': isBottomDragOver
                     }"
         ></v-flex>
     </div>
@@ -232,7 +233,7 @@
                 GraphUi.disableDragScroll();
             },
             dragStart: function (event) {
-                SelectionHandler.setToSingle(this.bubble);
+                SelectionHandler.reset();
                 event.target.style.opacity = .5;
                 event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
                 this.$store.dispatch('setDragged', this.bubble);
@@ -402,11 +403,15 @@
     }
 
     .dotted-border-top {
-        border-top: 1px dashed red
+        border-top: 1px dashed transparent;
     }
 
     .dotted-border-bottom {
-        border-bottom: 1px dashed red
+        border-bottom: 1px dashed transparent;
+    }
+
+    .border-visible{
+        border-color: red;
     }
 
     .vertex-drag-over {
@@ -415,4 +420,5 @@
         width: 100% !important;
         max-width: 500px !important;
     }
+
 </style>
