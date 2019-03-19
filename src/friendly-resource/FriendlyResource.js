@@ -308,7 +308,6 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
         otherBubble.isExpanded = true;
     } else {
         this.getParentBubble().removeChild(this);
-
         let otherParentBubble = otherBubble.getParentBubble();
         let index = otherParentBubble.getChildIndex(otherBubble);
         if (MoveRelation.Before === relation) {

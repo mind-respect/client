@@ -35,8 +35,8 @@ GroupRelationController.prototype.centerCanDo = function () {
 };
 
 GroupRelationController.prototype.addChild = function (edgeOver) {
-    var parentVertex = this.getUi().getParentVertex();
-    var triple;
+    let parentVertex = this.getUi().getParentVertex();
+    let triple;
     if (this.getUi().canExpand()) {
         this.expand();
     }
@@ -47,22 +47,23 @@ GroupRelationController.prototype.addChild = function (edgeOver) {
     ).then(function (_triple) {
         triple = _triple;
         this.getModel().addTuple({
-            edge: triple.edge().getModel(),
-            vertex: triple.destinationVertex().getModel()
+            edge: triple.edge,
+            vertex: triple.destination
         });
         this.getModel().getIdentifiers().forEach(function (identifier) {
             identifier.makeSameAs();
-            triple.edge().getController().addIdentification(
+            triple.edge.getController().addIdentification(
                 identifier
             );
         });
-        var promises = [
+        let promises = [
             EdgeService.updateLabel(
-                triple.edge(),
+                triple.edge,
                 this.getModel().getIdentification().getLabel()
             ).then(function () {
-                triple.edge().setText(this.getModel().getIdentification().getLabel());
-                triple.edge().reviewIsSameAsGroupRelation();
+                triple.edge.setLabel(
+                    this.getModel().getIdentification().getLabel()
+                );
             }.bind(this))
         ];
         if (parentVertex.getModel().isPublic()) {
@@ -70,16 +71,15 @@ GroupRelationController.prototype.addChild = function (edgeOver) {
                 triple.destinationVertex().getController().makePublic()
             );
         }
-        return $.when.apply($, promises);
+        return Promise.all(promises);
     }.bind(this)).then(function () {
         if (edgeOver) {
             triple.edge().moveBelow(edgeOver);
         }
-        triple.sourceVertex().tripleAdded(triple);
         return GraphElementService.changeChildrenIndex(
-            triple.sourceVertex()
+            this.getModel().getParentVertex()
         );
-    }).then(function () {
+    }.bind(this)).then(function () {
         return triple;
     });
 };

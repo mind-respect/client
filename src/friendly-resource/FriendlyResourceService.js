@@ -7,7 +7,7 @@ import Service from '@/Service'
 
 const api = {};
 api.updateLabel = function (friendlyResource) {
-    Service.geApi().post(
+    return Service.geApi().post(
         friendlyResource.getUri() + '/label',
         {
             content: friendlyResource.getLabel()

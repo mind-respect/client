@@ -2,13 +2,15 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
+import Vue from 'vue'
 import $ from 'jquery'
 import GraphElementController from '@/graph-element/GraphElementController'
 import EdgeService from '@/edge/EdgeService'
-import GraphDisplayer from '@/graph/GraphDisplayer'
 import BubbleDeleteMenu from '@/bubble/BubbleDeleteMenu'
 import GraphElementType from '@/graph-element/GraphElementType'
 import SelectionHandler from '@/SelectionHandler'
+import GroupRelation from '@/group-relation/GroupRelation'
+import GraphElementService from '@/graph-element/GraphElementService'
 
 const api = {};
 api.RelationController = EdgeController;
@@ -28,16 +30,29 @@ EdgeController.prototype.addChildCanDo = function () {
 };
 
 EdgeController.prototype.addChild = function () {
-    var deferred = $.Deferred();
-    var newGroupRelation = this._convertToGroupRelation();
-    newGroupRelation.getController().addChild().then(function (triple) {
-        triple.edge().getController().addIdentifiers(
+    let newGroupRelation = this._convertToGroupRelation();
+    let triple;
+    return newGroupRelation.getController().addChild().then(function (_triple) {
+        triple = _triple;
+        return triple.edge.getController().addIdentifiers(
             this.getModel().getIdentifiers()
-        ).then(function () {
-            deferred.resolve(triple);
+        );
+    }.bind(this)).then(function () {
+        let parentBubble = this.getModel().getParentBubble();
+        let index = parentBubble.getChildIndex(this.getModel());
+        SelectionHandler.reset();
+        parentBubble.removeChild(this.getModel());
+        parentBubble.addChild(newGroupRelation, this.getModel().isToTheLeft(),
+            index
+        );
+        GraphElementService.changeChildrenIndex(
+            parentBubble
+        );
+        Vue.nextTick(function () {
+            SelectionHandler.setToSingle(triple.destination);
         });
+        return triple
     }.bind(this));
-    return deferred.promise();
 };
 
 EdgeController.prototype.addSibling = function () {
@@ -89,12 +104,12 @@ EdgeController.prototype.becomeParent = function (graphElementUi) {
 };
 
 EdgeController.prototype._convertToGroupRelation = function () {
-    var tuple = {
+    let tuple = {
         edge: this.getModel(),
         vertex: this.getModel().getDestinationVertex()
     };
-    var parentBubble = this.getUi().getParentBubble();
-    var groupRelationIdentifiers;
+    let parentBubble = this.getUi().getParentBubble();
+    let groupRelationIdentifiers;
     if (parentBubble.isGroupRelation()) {
         if (parentBubble.getModel().hasIdentification(this.getModel().buildSelfIdentifier())) {
             groupRelationIdentifiers = [
@@ -110,14 +125,18 @@ EdgeController.prototype._convertToGroupRelation = function () {
             this.getModel().getIdentifiers() :
             this.getModel().getIdentifiersIncludingSelf();
     }
-    let newGroupRelation = GraphDisplayer.addNewGroupRelation(
-        groupRelationIdentifiers,
-        parentBubble,
-        this.getUi().isToTheLeft(),
-        this.getUi()
+    // let newGroupRelation = GraphDisplayer.addNewGroupRelation(
+    //     groupRelationIdentifiers,
+    //     parentBubble,
+    //     this.getUi().isToTheLeft(),
+    //     this.getUi()
+    // );
+    let newGroupRelation = GroupRelation.usingIdentifiers(
+        groupRelationIdentifiers
     );
-    this.getUi().convertToGroupRelation(newGroupRelation);
     newGroupRelation.getModel().addTuple(tuple);
+    newGroupRelation.parentBubble = newGroupRelation.parentVertex = parentBubble;
+    // this.getUi().convertToGroupRelation(newGroupRelation);
     return newGroupRelation;
 };
 

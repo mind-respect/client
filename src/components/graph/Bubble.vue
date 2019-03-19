@@ -77,7 +77,7 @@
                 }">
                         <div class="image_container"></div>
                         <div class="in-bubble-content-wrapper">
-                            <div class="in-bubble-content pl-1 pr-1 pt-0 pb-0"
+                            <div class="in-bubble-content pl-1 pr-1 pt-1 pb-1"
                                  style="max-width:500px!important;"
                             >
                                 <div class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"

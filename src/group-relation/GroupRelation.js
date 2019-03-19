@@ -52,6 +52,10 @@ GroupRelation.prototype.getLeftBubble = function () {
     return this.isToTheLeft() ? this.getFirstEdge(0) : this.parentBubble;
 };
 
+GroupRelation.prototype.isLeaf = function () {
+    return false;
+};
+
 GroupRelation.prototype.getRightBubble = function (bottom) {
     if (this.isToTheLeft()) {
         return this.parentBubble;

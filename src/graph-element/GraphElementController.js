@@ -610,40 +610,28 @@ GraphElementController.prototype.addIdentifiers = function (identifiers) {
     identifiers.forEach(function (identifier) {
         promises.push(this.addIdentification(identifier));
     }.bind(this));
-    return $.when.apply($, promises);
+    return Promise.all(promises);
 };
 
 GraphElementController.prototype.addIdentification = function (identification) {
-    var self = this;
-    var deferred = $.Deferred();
-    GraphElementService.addIdentification(
-        this.getUi(),
+    return GraphElementService.addIdentification(
+        this.getModel(),
         identification
     ).then(function (identifications) {
-        self.getUi().getModel().addIdentifications(
+        this.getModel().addIdentifications(
             identifications
         );
-        $.each(identifications, function () {
-            var identification = this;
-            self.getUi().addIdentification(
-                identification
+        Object.values(identifications).forEach(function (identifier) {
+            this.getModel().addIdentification(
+                identifier
             );
-            self.getUi().applyToOtherInstances(function (otherInstanceUi) {
-                otherInstanceUi.getModel().addIdentification(
-                    identification
-                );
-                otherInstanceUi.addIdentification(
-                    identification
-                );
-            });
             EventBus.publish(
                 identificationBaseEventBusKey + "added",
-                [self.getUi(), identification]
+                [this.getModel(), identifier]
             );
-        });
-        deferred.resolve(identifications);
-    });
-    return deferred.promise();
+        }.bind(this));
+        return identifications;
+    }.bind(this));
 };
 
 GraphElementController.prototype.removeIdentifier = function (identification) {

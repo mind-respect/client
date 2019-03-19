@@ -185,6 +185,7 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     } else {
         children.push(child)
     }
+    this.incrementNumberOfConnectedEdges();
 };
 
 Vertex.prototype.getRightBubble = function (bottom) {
@@ -233,6 +234,7 @@ Vertex.prototype.remove = function () {
             immediateChild.splice(l, 1);
         }
     }
+    this.parentVertex.decrementNumberOfConnectedEdges();
 };
 
 Vertex.prototype.removeChild = function (child) {
@@ -243,6 +245,7 @@ Vertex.prototype.removeChild = function (child) {
             childrenArray.splice(l, 1);
         }
     }
+    this.decrementNumberOfConnectedEdges();
 };
 
 api.getWhenEmptyLabel = function () {
