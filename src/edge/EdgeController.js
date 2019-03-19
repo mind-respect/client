@@ -110,7 +110,7 @@ EdgeController.prototype._convertToGroupRelation = function () {
             this.getModel().getIdentifiers() :
             this.getModel().getIdentifiersIncludingSelf();
     }
-    var newGroupRelation = GraphDisplayer.addNewGroupRelation(
+    let newGroupRelation = GraphDisplayer.addNewGroupRelation(
         groupRelationIdentifiers,
         parentBubble,
         this.getUi().isToTheLeft(),

@@ -71,7 +71,7 @@
                                      @dragleave="labelDragLeave"
                                      @drop="labelDrop"
                                      :data-placeholder="$t('vertex:default')"
-                                     autocomplete="off" v-text="bubble.getServerFormat().label"
+                                     autocomplete="off" v-text="bubble.getFriendlyJson().label"
                                      @keydown="keydown"></div>
                                 <div class="in-label-buttons"></div>
                             </div>
@@ -111,7 +111,7 @@
                                          :data-placeholder="relationPlaceholder"
                                          autocomplete="off"
                                          v-show="!bubble.isShrinked()"
-                                         v-text="bubble.getServerFormat().label"
+                                         v-text="bubble.getFriendlyJson().label"
                                          @keydown="keydown"></div>
                                 </v-chip>
                             </div>

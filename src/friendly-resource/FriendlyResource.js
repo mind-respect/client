@@ -577,9 +577,18 @@ FriendlyResource.FriendlyResource.prototype.getImagesServerFormat = function () 
         this._images
     );
 };
+
+/*
+* @deprecated
+*/
 FriendlyResource.FriendlyResource.prototype.getServerFormat = function () {
     return this.friendlyResourceServerFormat;
 };
+
+FriendlyResource.FriendlyResource.prototype.getFriendlyJson = function () {
+    return this.friendlyResourceServerFormat;
+};
+
 FriendlyResource.FriendlyResource.prototype.getCreationDate = function () {
     return this.friendlyResourceServerFormat.creationDate === undefined ?
         new Date() :
