@@ -58,7 +58,6 @@ function Vertex(vertexServerFormat) {
     this._suggestions = this._buildSuggestions();
     this.leftBubbles = [];
     this.rightBubbles = [];
-    this.isExpanded = true;
     GraphElement.GraphElement.apply(
         this
     );

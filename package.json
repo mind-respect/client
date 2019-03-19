@@ -26,14 +26,14 @@
     "moment": "^2.24.0",
     "n": "^2.1.12",
     "npm": "^6.8.0",
-    "vue": "^2.6.8",
+    "vue": "^2.6.9",
     "vue-dragscroll": "^1.8.3",
     "vue-router": "^3.0.1",
     "vue-scrollto": "^2.14.0",
-    "vue-template-compiler": "^2.6.8",
-    "vuetify": "1.5.6",
-    "vuex": "^3.0.1",
     "vue-shortkey": "^3.1.6",
+    "vue-template-compiler": "^2.6.9",
+    "vuetify": "1.5.7",
+    "vuex": "^3.0.1",
     "vuex-persistedstate": "^2.5.4"
   },
   "devDependencies": {

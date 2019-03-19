@@ -7,19 +7,19 @@
     >
         <v-flex xs12>
             <v-flex xs12 class="pt-2"
-                    @dragover="topDragOver"
+                    @dragover="topDragEnter"
                     @dragleave="resetDragOver"
                     @drop="topDrop"
                     v-if="bubble.isEdge() && !bubble.getNextBubble().isExpanded"
+                    style="position:relative;"
                     :class="{
-                        'dotted-border-top': isContainerDragOver
+                        'dotted-border-top': isTopDragOver
                     }"
-            >
-            </v-flex>
+            ></v-flex>
             <v-flex xs12
                     v-if="bubble.isVertex()"
                     :class="{
-                        'dotted-border-top': isContainerDragOver
+                        'dotted-border-top': isTopDragOver
                     }"
             ></v-flex>
         </v-flex>
@@ -42,11 +42,12 @@
                      :id="bubble.uiId"
                      @mousedown="mouseDown"
                      @dragstart="dragStart"
+                     @dragover="dragMove"
                      @dragend="dragEnd"
                      draggable="true"
                 >
                     <div class="vertex-drag-over"
-                         @dragover="topDragOver"
+                         @dragover="topDragEnter"
                          @dragleave="resetDragOver"
                          @drop="topDrop"
                          style="top:0;"
@@ -60,16 +61,13 @@
                 }">
                         <div class="image_container"></div>
                         <div class="in-bubble-content-wrapper">
-                            <div class="in-bubble-content pl-1 pr-1" :class="{
-                                'pt-0 pb-0':  isContainerDragOver || isLabelDragOver,
-                                'pt-1 pb-1': !isContainerDragOver && !isLabelDragOver
-                            }"
+                            <div class="in-bubble-content pl-1 pr-1 pt-1 pb-1"
                                  style="max-width:500px!important;"
                             >
-                                <div class="bubble-label ui-autocomplete-input bubble-size font-weight-regular"
+                                <div class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
                                      @blur="leaveEditFlow"
                                      @dragstart="labelDragStart"
-                                     @dragover="labelDragOver"
+                                     @dragover="labelDragEnter"
                                      @dragleave="labelDragLeave"
                                      @drop="labelDrop"
                                      :data-placeholder="$t('vertex:default')"
@@ -83,7 +81,7 @@
                     </div>
                     <div
                             class="vertex-drag-over"
-                            @dragover="bottomDragOver" @dragleave="resetDragOver" @drop="bottomDrop"
+                            @dragover="bottomDragEnter" @dragleave="resetDragOver" @drop="bottomDrop"
                             style="bottom:0;"
                     ></div>
                     <div
@@ -107,7 +105,7 @@
                                     <div class="bubble-label white--text"
                                          @blur="leaveEditFlow"
                                          @dragstart="labelDragStart"
-                                         @dragover="labelDragOver"
+                                         @dragover="labelDragEnter"
                                          @dragleave="labelDragLeave"
                                          @drop="labelDrop"
                                          :data-placeholder="relationPlaceholder"
@@ -128,15 +126,15 @@
         </v-layout>
         <v-flex xs12 class="pb-2"
                 :class="{
-                    'dotted-border-bottom': isContainerDragOver
+                    'dotted-border-bottom': isBottomDragOver
                 }"
-                @dragover="bottomDragOver" @dragleave="resetDragOver" @drop="bottomDrop"
+                @dragover="bottomDragEnter" @dragleave="resetDragOver" @drop="bottomDrop"
                 v-if="bubble.isEdge() && !bubble.getNextBubble().isExpanded">
         </v-flex>
         <v-flex xs12
                 v-if="bubble.isVertex()"
                 :class="{
-                        'dotted-border-bottom': isContainerDragOver
+                        'dotted-border-bottom': isBottomDragOver
                     }"
         ></v-flex>
     </div>
@@ -169,7 +167,8 @@
                 isContainerDragOver: false,
                 dragOverTimeout: undefined,
                 isTopDragOver: null,
-                isBottomDragOver: null
+                isBottomDragOver: null,
+                isDragging: false
             }
         },
         mounted: function () {
@@ -190,59 +189,6 @@
             },
         },
         methods: {
-            topBottomDrop: function (method) {
-                this.isContainerDragOver = false;
-                this.isBottomDragOver = false;
-                this.isTopDragOver = false;
-                let edge = this.bubble;
-                if (edge.isVertex()) {
-                    edge = edge.getParentBubble();
-                }
-                let dragged = this.$store.state.dragged;
-                this.$store.dispatch('setDragged', null);
-                if (dragged.getId() === edge.destinationVertex.getId()) {
-                    return;
-                }
-                return dragged.getController()[method](edge);
-            },
-            topDrop: function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                this.topBottomDrop("moveAbove");
-            },
-            bottomDrop: function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                this.topBottomDrop("moveBelow");
-            },
-            resetDragOver: function (event) {
-                event.preventDefault();
-                this.dragOverTimeout = setTimeout(function () {
-                    this.isContainerDragOver = false;
-                    this.isBottomDragOver = false;
-                    this.isTopDragOver = false;
-                }.bind(this), 50);
-            },
-            topDragOver: function (event) {
-                event.preventDefault();
-                clearTimeout(this.dragOverTimeout);
-                let bubble = this.bubble.isEdge() ? this.bubble.getNextBubble() : this.bubble;
-                if (this.$store.state.dragged.getId() === bubble.getId()) {
-                    return;
-                }
-                this.isContainerDragOver = true;
-                this.isTopDragOver = true;
-            },
-            bottomDragOver: function (event) {
-                event.preventDefault();
-                clearTimeout(this.dragOverTimeout);
-                let bubble = this.bubble.isEdge() ? this.bubble.getNextBubble() : this.bubble;
-                if (this.$store.state.dragged.getId() === bubble.getId()) {
-                    return;
-                }
-                this.isContainerDragOver = true;
-                this.isBottomDragOver = true;
-            },
             click: function (event) {
                 event.stopPropagation();
                 GraphUi.enableDragScroll();
@@ -286,39 +232,62 @@
                 GraphUi.disableDragScroll();
             },
             dragStart: function (event) {
+                SelectionHandler.setToSingle(this.bubble);
                 event.target.style.opacity = .5;
                 event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
-                this.dragged = true;
                 this.$store.dispatch('setDragged', this.bubble);
                 this.isContainerDragOver = false;
+                this.isDragging = true;
                 GraphUi.disableDragScroll();
+            },
+            dragMove: function (event) {
+                return;
+                if (this.$store.state.dragged.getId() !== this.bubble.getId()) {
+                    console.log(this.bubble.getLabel());
+                    // debugger;
+                    return;
+                }
             },
             dragEnd: function (event) {
                 event.preventDefault();
                 event.target.style.opacity = 1;
                 GraphUi.enableDragScroll();
+                this.isDragging = false;
                 this.$store.dispatch('setDragged', null);
             },
             labelDragStart: function () {
                 clearTimeout(this.dragOverTimeout);
             },
-            labelDragOver: function (event) {
+            labelDragEnter: function (event) {
+                /*
+                method name is drag enter but actually
+                called on drag over to enable drop handler to trigger
+                I don't know why !
+                 */
                 event.preventDefault();
                 event.stopPropagation();
                 let dragged = this.$store.state.dragged;
                 let shouldSetToDragOver = dragged !== undefined &&
                     dragged.getUri() !== this.bubble.getUri();
                 if (!shouldSetToDragOver) {
+                    // console.log("not " + this.bubble.getLabel())
                     this.isLabelDragOver = false;
                     return;
                 }
                 this.isLabelDragOver = true;
+                // console.log("yes " + this.bubble.getLabel())
+            },
+            foo: function () {
+
             },
             labelDragLeave: function (event) {
                 event.preventDefault();
+                // console.log("label drag leave");
                 this.isLabelDragOver = false;
             },
             labelDrop: function (event) {
+                // console.log("label drop");
+                // debugger;
                 event.preventDefault();
                 event.stopPropagation();
                 GraphUi.enableDragScroll();
@@ -332,7 +301,70 @@
                 dragged.getController().moveUnderParent(
                     parent
                 );
-            }
+            },
+            topBottomDrop: function (method) {
+                this.isContainerDragOver = false;
+                this.isBottomDragOver = false;
+                this.isTopDragOver = false;
+                let edge = this.bubble;
+                if (edge.isVertex()) {
+                    edge = edge.getParentBubble();
+                }
+                let dragged = this.$store.state.dragged;
+                this.$store.dispatch('setDragged', null);
+                if (dragged.getId() === edge.destinationVertex.getId()) {
+                    return;
+                }
+                return dragged.getController()[method](edge);
+            },
+            topDrop: function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                this.topBottomDrop("moveAbove");
+            },
+            bottomDrop: function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                this.topBottomDrop("moveBelow");
+            },
+            resetDragOver: function (event) {
+                event.preventDefault();
+                this.dragOverTimeout = setTimeout(function () {
+                    this.isContainerDragOver = false;
+                    this.isBottomDragOver = false;
+                    this.isTopDragOver = false;
+                }.bind(this), 50);
+            },
+            topDragEnter: function (event) {
+                /*
+                method name is drag enter but actually
+                called on drag over to enable drop handler to trigger
+                I don't know why !
+                 */
+                event.preventDefault();
+                clearTimeout(this.dragOverTimeout);
+                let bubble = this.bubble.isEdge() ? this.bubble.getNextBubble() : this.bubble;
+                if (this.$store.state.dragged.getId() === bubble.getId()) {
+                    return;
+                }
+                this.isContainerDragOver = true;
+                this.isTopDragOver = true;
+            },
+            bottomDragEnter: function (event) {
+                /*
+                method name is drag enter but actually
+                called on drag over to enable drop handler to trigger
+                I don't know why !
+                 */
+                event.preventDefault();
+                clearTimeout(this.dragOverTimeout);
+                let bubble = this.bubble.isEdge() ? this.bubble.getNextBubble() : this.bubble;
+                if (this.$store.state.dragged.getId() === bubble.getId()) {
+                    return;
+                }
+                this.isContainerDragOver = true;
+                this.isBottomDragOver = true;
+            },
         },
         watch: {
             "SelectionHandler.selected": function () {
