@@ -102,7 +102,7 @@ function pasteHandler(event) {
 function keyDownHandler(event) {
     // console.log(event.which);
     let target = $(event.target),
-        isWorkingOnSomething = !target.is("body") && !target.is("button") && !target.is("a");
+        isWorkingOnSomething = !target.is("body") && !target.is("button") && !target.is("a") && !target.is("span");
     let isCombineKeyPressed = UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey;
     if (isWorkingOnSomething) {
         if (event.keyCode === escapeKeyNumber) {
