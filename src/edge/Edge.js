@@ -162,6 +162,10 @@ api.Edge.prototype.getNumberOfChild = function () {
     return 1;
 };
 
+api.Edge.prototype.isLeaf = function () {
+    return false;
+};
+
 api.Edge.prototype.isShrinked = function () {
     if (this.isSelected) {
         return false;

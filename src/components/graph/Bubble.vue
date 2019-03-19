@@ -8,19 +8,33 @@
         <v-flex xs12>
             <v-flex xs12 class="pt-1 dotted-border-top"
                     @dragover="topDragEnter"
-                    @dragleave="resetDragOver"
+                    @dragleave="resetTopBottomDragOver"
                     @drop="topDrop"
                     v-if="bubble.isEdge() && !bubble.getNextBubble().isExpanded"
-                    :class="{
-                        'border-visible': isTopDragOver
-                    }"
             ></v-flex>
+            <v-flex xs12 style="position:relative;">
+                <div
+                        style="top: -12px;"
+                        class="arrowTopBottomContainer"
+                        :class="{
+                            'top-bottom-left-side text-xs-right': bubble.isToTheLeft(),
+                            'top-bottom-right-side': !bubble.isToTheLeft()
+                }">
+                    <v-icon v-for="i in 5" small
+                            style="overflow-x: hidden"
+                            class="unselectable"
+                            :color="topDragOverColor" :class="{
+                        'ml-4 fa-flip-horizontal': bubble.isToTheLeft(),
+                        'mr-4': !bubble.isToTheLeft()
+                    }">
+                        arrow_forward
+                    </v-icon>
+                </div>
+            </v-flex>
             <v-flex xs12
+                    style="position:relative;"
                     class="dotted-border-top"
                     v-if="bubble.isVertex()"
-                    :class="{
-                        'border-visible': isTopDragOver
-                    }"
             ></v-flex>
         </v-flex>
         <v-layout
@@ -36,7 +50,9 @@
                 </Children>
                 <div class='vertex-container v-center' :class="{
                 'vh-center':bubble.orientation === 'center',
-                'left':bubble.orientation === 'right'
+                'left':bubble.orientation === 'right',
+                'pl-5': bubble.isLeaf() && bubble.isToTheLeft(),
+                'pr-5': bubble.isLeaf() && !bubble.isToTheLeft()
             }"
                      @click="click" @dblclick="dblclick"
                      :id="bubble.uiId"
@@ -48,7 +64,7 @@
                 >
                     <div class="vertex-drag-over"
                          @dragover="topDragEnter"
-                         @dragleave="resetDragOver"
+                         @dragleave="resetTopBottomDragOver"
                          @drop="topDrop"
                          style="top:0;"
                     ></div>
@@ -61,7 +77,7 @@
                 }">
                         <div class="image_container"></div>
                         <div class="in-bubble-content-wrapper">
-                            <div class="in-bubble-content pl-1 pr-1 pt-1 pb-1"
+                            <div class="in-bubble-content pl-1 pr-1 pt-0 pb-0"
                                  style="max-width:500px!important;"
                             >
                                 <div class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
@@ -81,7 +97,7 @@
                     </div>
                     <div
                             class="vertex-drag-over"
-                            @dragover="bottomDragEnter" @dragleave="resetDragOver" @drop="bottomDrop"
+                            @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"
                             style="bottom:0;"
                     ></div>
                     <div
@@ -124,19 +140,32 @@
                 </Children>
             </v-flex>
         </v-layout>
-        <v-flex xs12 class="pb-1 dotted-border-bottom"
-                :class="{
-                    'border-visible': isBottomDragOver
-                }"
-                @dragover="bottomDragEnter" @dragleave="resetDragOver" @drop="bottomDrop"
-                v-if="bubble.isEdge() && !bubble.getNextBubble().isExpanded">
-        </v-flex>
         <v-flex xs12
                 class="dotted-border-bottom"
                 v-if="bubble.isVertex()"
-                :class="{
-                        'border-visible': isBottomDragOver
-                    }"
+        ></v-flex>
+        <v-flex xs12 style="position:relative;">
+            <div style="bottom:-12px"
+                 @dragover="bottomDragEnter"
+                 @drop="bottomDrop"
+                 class="arrowTopBottomContainer"
+                 :class="{
+                    'top-bottom-left-side text-xs-right': bubble.isToTheLeft(),
+                    'top-bottom-right-side': !bubble.isToTheLeft()
+                }">
+                <v-icon v-for="i in 4" small :color="bottomDragOverColor"
+                        class="unselectable"
+                        :class="{
+                        'ml-4 fa-flip-horizontal': bubble.isToTheLeft(),
+                        'mr-4': !bubble.isToTheLeft()
+                    }">
+                    arrow_forward
+                </v-icon>
+            </div>
+        </v-flex>
+        <v-flex xs12 class="pb-1 dotted-border-bottom"
+                @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"
+                v-if="bubble.isEdge() && !bubble.getNextBubble().isExpanded"
         ></v-flex>
     </div>
 </template>
@@ -165,8 +194,9 @@
                 SelectionHandler: SelectionHandler,
                 loaded: false,
                 isLabelDragOver: false,
+                dragOverLabelTimeout: undefined,
                 isContainerDragOver: false,
-                dragOverTimeout: undefined,
+                dragOverTopBottomTimeout: undefined,
                 isTopDragOver: null,
                 isBottomDragOver: null,
                 isDragging: false
@@ -188,6 +218,12 @@
             relationPlaceholder: function () {
                 return this.isSelected ? this.$t('edge:default') : "";
             },
+            topDragOverColor: function () {
+                return this.isTopDragOver ? "red" : "transparent";
+            },
+            bottomDragOverColor: function () {
+                return this.isBottomDragOver ? "red" : "transparent";
+            }
         },
         methods: {
             click: function (event) {
@@ -257,7 +293,7 @@
                 this.$store.dispatch('setDragged', null);
             },
             labelDragStart: function () {
-                clearTimeout(this.dragOverTimeout);
+                clearTimeout(this.dragOverTopBottomTimeout);
             },
             labelDragEnter: function (event) {
                 /*
@@ -267,6 +303,10 @@
                  */
                 event.preventDefault();
                 event.stopPropagation();
+                clearTimeout(this.dragOverLabelTimeout);
+                if (this.isLabelDragOver = true) {
+                    return;
+                }
                 let dragged = this.$store.state.dragged;
                 let shouldSetToDragOver = dragged !== undefined &&
                     dragged.getUri() !== this.bubble.getUri();
@@ -278,13 +318,12 @@
                 this.isLabelDragOver = true;
                 // console.log("yes " + this.bubble.getLabel())
             },
-            foo: function () {
-
-            },
             labelDragLeave: function (event) {
                 event.preventDefault();
                 // console.log("label drag leave");
-                this.isLabelDragOver = false;
+                this.dragOverLabelTimeout = setTimeout(function () {
+                    this.isLabelDragOver = false;
+                }.bind(this), 50)
             },
             labelDrop: function (event) {
                 // console.log("label drop");
@@ -328,9 +367,9 @@
                 event.stopPropagation();
                 this.topBottomDrop("moveBelow");
             },
-            resetDragOver: function (event) {
+            resetTopBottomDragOver: function (event) {
                 event.preventDefault();
-                this.dragOverTimeout = setTimeout(function () {
+                this.dragOverTopBottomTimeout = setTimeout(function () {
                     this.isContainerDragOver = false;
                     this.isBottomDragOver = false;
                     this.isTopDragOver = false;
@@ -343,7 +382,10 @@
                 I don't know why !
                  */
                 event.preventDefault();
-                clearTimeout(this.dragOverTimeout);
+                clearTimeout(this.dragOverTopBottomTimeout);
+                if (this.isTopDragOver) {
+                    return;
+                }
                 let bubble = this.bubble.isEdge() ? this.bubble.getNextBubble() : this.bubble;
                 if (this.$store.state.dragged.getId() === bubble.getId()) {
                     return;
@@ -358,7 +400,10 @@
                 I don't know why !
                  */
                 event.preventDefault();
-                clearTimeout(this.dragOverTimeout);
+                clearTimeout(this.dragOverTopBottomTimeout);
+                if (this.isBottomDragOver) {
+                    return;
+                }
                 let bubble = this.bubble.isEdge() ? this.bubble.getNextBubble() : this.bubble;
                 if (this.$store.state.dragged.getId() === bubble.getId()) {
                     return;
@@ -410,7 +455,7 @@
         border-bottom: 1px dashed transparent;
     }
 
-    .border-visible{
+    .border-visible {
         border-color: red;
     }
 
@@ -419,6 +464,23 @@
         height: 40% !important;
         width: 100% !important;
         max-width: 500px !important;
+    }
+
+    .top-bottom-left-side {
+        right: 0px;
+    }
+
+    .top-bottom-right-side {
+        left: 5px;
+    }
+
+    .arrowTopBottomContainer {
+        position: absolute;
+        max-width: inherit;
+        width: 100%;
+        overflow-x: hidden;
+        white-space: nowrap;
+        z-index: -1;
     }
 
 </style>
