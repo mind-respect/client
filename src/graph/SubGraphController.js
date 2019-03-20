@@ -8,6 +8,7 @@ import SubGraph from '@/graph/SubGraph'
 import $ from "jquery";
 import Edge from '@/edge/Edge'
 import GraphElement from '@/graph-element/GraphElement'
+import GraphElementService from '@/graph-element/GraphElementService'
 
 const api = {};
 
@@ -54,12 +55,18 @@ SubGraphController.prototype.load = function () {
             modelToAddChild = this.getModel();
         }
         let childrenIndex = parentAsCenter.getChildrenIndex();
+        let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
         sortGroupRelationRootsByIsGroupRelationOrCreationDate(
             parentAsCenter.groupRelationRoots,
             childrenIndex
         ).forEach(function (groupRelationRoot) {
             if (groupRelationRoot.isGroupRelation() && groupRelationRoot.isTrulyAGroupRelation()) {
-                modelToAddChild.addChild(groupRelationRoot);
+                let childIndex = childrenIndex[groupRelationRoot.getFirstVertex(childrenIndex).getUri()];
+                let addLeft = childIndex !== undefined && childIndex.toTheLeft;
+                modelToAddChild.addChild(
+                    groupRelationRoot,
+                    addLeft
+                );
                 return;
             }
             groupRelationRoot.sortedImmediateChild(parentAsCenter).forEach(function (child) {
@@ -81,7 +88,12 @@ SubGraphController.prototype.load = function () {
                 }.bind(this));
             }.bind(this));
         }.bind(this));
-        return graph;
+        return isChildrenIndexBuilt ? Promise.resolve(graph) :
+            GraphElementService.changeChildrenIndex(
+                modelToAddChild
+            ).then(function () {
+                return graph;
+            });
     }.bind(this));
 };
 

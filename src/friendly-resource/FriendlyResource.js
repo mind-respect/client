@@ -326,6 +326,11 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
         }
     }
     this.orientation = otherBubble.orientation;
+    if (this.isGroupRelation()) {
+        this.visitDescendants(function (child) {
+            child.orientation = otherBubble.orientation;
+        }.bind(this))
+    }
     // this._resetIsToTheLeft();
     // if (isOriginalToTheLeft === this.isToTheLeft()) {
     //     return;
@@ -492,6 +497,7 @@ FriendlyResource.FriendlyResource.prototype.visitDescendants = function (visitor
         if (child.isLeaf()) {
             return visitor(child);
         } else {
+            visitor(child);
             return child.visitDescendants(
                 visitor
             );

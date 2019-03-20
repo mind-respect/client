@@ -111,7 +111,7 @@
                             <div class="label-container">
                                 <v-chip color="edgeColor"
                                         small
-                                        :selected="isSelected"
+                                        :selected="isSelected || isLabelDragOver"
                                         class="pt-0 pb-0 mt-0 mb-0"
                                         dark
                                         :class="{
@@ -349,12 +349,10 @@
                 let edge = this.bubble;
                 if (edge.isVertex()) {
                     edge = edge.getParentBubble();
-                } else if (edge.isGroupRelation()) {
-                    edge = this.isTopDragOver ? edge.getFirstEdge() : edge.getLastEdge();
                 }
                 let dragged = this.$store.state.dragged;
                 this.$store.dispatch('setDragged', null);
-                if (dragged.getId() === edge.destinationVertex.getId()) {
+                if (edge.isRelation() && dragged.getId() === edge.destinationVertex.getId()) {
                     return;
                 }
                 return dragged.getController()[method](edge);
