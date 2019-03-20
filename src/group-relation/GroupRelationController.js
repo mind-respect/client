@@ -34,7 +34,8 @@ GroupRelationController.prototype.centerCanDo = function () {
     return false;
 };
 
-GroupRelationController.prototype.addChild = function (edgeOver) {
+GroupRelationController.prototype.addChild = function (saveIndex) {
+    saveIndex = saveIndex || false;
     let parentVertex = this.getUi().getParentVertex();
     let triple;
     if (this.getUi().canExpand()) {
@@ -42,8 +43,7 @@ GroupRelationController.prototype.addChild = function (edgeOver) {
     }
     return VertexService.addRelationAndVertexToVertex(
         parentVertex,
-        this.getUi(),
-        edgeOver
+        this.getUi()
     ).then(function (_triple) {
         triple = _triple;
         this.getModel().addTuple({
@@ -73,12 +73,9 @@ GroupRelationController.prototype.addChild = function (edgeOver) {
         }
         return Promise.all(promises);
     }.bind(this)).then(function () {
-        if (edgeOver) {
-            triple.edge().moveBelow(edgeOver);
-        }
-        return GraphElementService.changeChildrenIndex(
+        return saveIndex ? GraphElementService.changeChildrenIndex(
             this.getModel().getParentVertex()
-        );
+        ) : Promise.resolve();
     }.bind(this)).then(function () {
         return triple;
     });
@@ -122,8 +119,8 @@ GroupRelationController.prototype.becomeParent = function (graphElementUi) {
 };
 
 GroupRelationController.prototype.becomeExParent = function (movedEdge) {
-    var promises = [];
-    var previousParentGroupRelation = this.getUi().getGreatestGroupRelationAncestor();
+    let promises = [];
+    let previousParentGroupRelation = this.getModel().getGreatestGroupRelationAncestor();
     previousParentGroupRelation.getModel().getIdentifiersAtAnyDepth().forEach(function (identifier) {
         identifier = movedEdge.getModel().getIdentifierHavingExternalUri(
             identifier.getExternalResourceUri()
@@ -136,7 +133,7 @@ GroupRelationController.prototype.becomeExParent = function (movedEdge) {
             );
         }
     });
-    return $.when.apply($, promises);
+    return Promise.all(promises);
 };
 
 export default api;

@@ -7,6 +7,7 @@ import GraphElement from '@/graph-element/GraphElement'
 import Identification from '@/identifier/Identification'
 import GraphElementType from '@/graph-element/GraphElementType'
 import GroupRelationController from '@/group-relation/GroupRelationController'
+import Vue from 'vue'
 
 const api = {};
 api.withoutAnIdentification = function () {
@@ -47,6 +48,31 @@ function GroupRelation(identifiers) {
 }
 
 GroupRelation.prototype = new Identification.Identification();
+
+GroupRelation.prototype.removeChild = function (edge) {
+    let parentVertex = this.parentVertex;
+    let vertexToRemove = edge.getOtherVertex(parentVertex);
+    Vue.delete(this.vertices, vertexToRemove.getUri());
+    if (this.getNumberOfVertices() === 1) {
+        parentVertex.replaceChild(
+            this,
+            this.getFirstEdge()
+        );
+    }
+}
+
+
+GroupRelation.prototype.getGreatestGroupRelationAncestor = function () {
+    let greatest = this;
+    let parent;
+    do {
+        parent = greatest.getParentBubble();
+        if (parent.isGroupRelation()) {
+            greatest = parent;
+        }
+    } while (parent.isGroupRelation());
+    return greatest;
+};
 
 GroupRelation.prototype.getLeftBubble = function () {
     return this.isToTheLeft() ? this.getFirstEdge(0) : this.parentBubble;
@@ -158,14 +184,17 @@ GroupRelation.prototype.getFirstVertex = function (childrenIndex) {
 };
 
 GroupRelation.prototype.getLastVertex = function (childrenIndex) {
+    childrenIndex = childrenIndex || 0;
     return this.getLastTuple(childrenIndex).vertex;
 };
 
 GroupRelation.prototype.getFirstEdge = function (childrenIndex) {
+    childrenIndex = childrenIndex || 0;
     return this.getFirstTuple(childrenIndex).edge;
 };
 
 GroupRelation.prototype.getLastEdge = function (childrenIndex) {
+    childrenIndex = childrenIndex || 0;
     return this.getLastTuple(childrenIndex).edge;
 };
 
@@ -202,18 +231,24 @@ GroupRelation.prototype.getSingleEdge = function () {
     var verticesWithId = verticesWithUri[Object.keys(verticesWithUri)[0]];
     return verticesWithId[Object.keys(verticesWithId)[0]].edge;
 };
+
+GroupRelation.prototype.addChild = function (edge) {
+    this.addTuple({
+        vertex: edge.getDestinationVertex(),
+        edge: edge
+    });
+};
+
 GroupRelation.prototype.addTuple = function (tuple) {
-    if (this.vertices[tuple.vertex.getUri()] === undefined) {
-        this.vertices[tuple.vertex.getUri()] = {};
+    let tupleKey = tuple.vertex.getUri();
+    let bubbleId = GraphUi.generateBubbleHtmlId();
+    if (this.vertices[tupleKey] === undefined) {
+        let tuples = {};
+        tuples[bubbleId] = tuple;
+        Vue.set(this.vertices, tupleKey, tuples);
+        return;
     }
-    this.vertices[
-        tuple.vertex.getUri()
-        ][
-        GraphUi.generateBubbleHtmlId()
-        ] = {
-        vertex: tuple.vertex,
-        edge: tuple.edge
-    };
+    Vue.set(this.vertices[tupleKey], bubbleId, tuple);
 };
 GroupRelation.prototype.visitTuples = function (visitor) {
     $.each(this.vertices, function (vertexUri, verticesWithSameUri) {

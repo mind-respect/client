@@ -94,17 +94,6 @@ api.GroupRelationUi.prototype.getNumberOfHiddenRelations = function () {
         this.getNumberOfChildEvenIfHidden();
 };
 
-api.GroupRelationUi.prototype.getGreatestGroupRelationAncestor = function () {
-    var greatest = this;
-    do {
-        var parent = greatest.getParentBubble();
-        if (parent.isGroupRelation()) {
-            greatest = parent;
-        }
-    } while (parent.isGroupRelation());
-    return greatest;
-};
-
 api.GroupRelationUi.prototype.getTagNumberOfOtherReferences = function (identifier) {
     return identifier.getNbReferences() - this.getModel().getNumberOfVerticesAtAnyDepth();
 };

@@ -32,18 +32,18 @@ EdgeController.prototype.addChildCanDo = function () {
 EdgeController.prototype.addChild = function () {
     let newGroupRelation = this._convertToGroupRelation();
     let triple;
-    return newGroupRelation.getController().addChild().then(function (_triple) {
+    return newGroupRelation.getController().addChild(false).then(function (_triple) {
         triple = _triple;
         return triple.edge.getController().addIdentifiers(
             this.getModel().getIdentifiers()
         );
     }.bind(this)).then(function () {
         let parentBubble = this.getModel().getParentBubble();
-        let index = parentBubble.getChildIndex(this.getModel());
+
         SelectionHandler.reset();
-        parentBubble.removeChild(this.getModel());
-        parentBubble.addChild(newGroupRelation, this.getModel().isToTheLeft(),
-            index
+        parentBubble.replaceChild(
+            this.getModel(),
+            newGroupRelation
         );
         GraphElementService.changeChildrenIndex(
             parentBubble

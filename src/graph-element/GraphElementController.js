@@ -501,7 +501,7 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
     );
     let parentBubble = otherEdge.getParentBubble();
     if (parentBubble.isGroupRelation()) {
-        var identification = parentBubble.getGroupRelation().getIdentification();
+        var identification = parentBubble.getIdentification();
         if (movedEdge.isGroupRelation()) {
             movedEdge.visitClosestChildRelations(function (relation) {
                 promises.push(
@@ -537,7 +537,7 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
             );
         }
     }
-    return $.when.apply($, promises);
+    return Promise.all(promises);
 };
 
 GraphElementController.prototype.mergeCanDo = function () {
@@ -634,34 +634,32 @@ GraphElementController.prototype.addIdentification = function (identification) {
     }.bind(this));
 };
 
-GraphElementController.prototype.removeIdentifier = function (identification) {
-    var deferred = $.Deferred();
-    var self = this;
-    GraphElementService.removeIdentifier(
-        this.getUi(),
-        identification
-    ).then(function () {
-        self.getUi().getModel().removeIdentifier(
-            identification
-        );
-        self.getUi().removeIdentifier(
-            identification
-        );
-        deferred.resolve();
-        self.getUi().applyToOtherInstances(function (otherUi) {
-            otherUi.getModel().removeIdentifier(
-                identification
+GraphElementController.prototype.removeIdentifier = function (identifier) {
+    return new Promise(function (resolve) {
+        GraphElementService.removeIdentifier(
+            this.getUi(),
+            identifier
+        ).then(function () {
+            this.getModel().removeIdentifier(
+                identifier
             );
-            otherUi.removeIdentifier(identification);
-        });
-        var eventBusKey = identificationBaseEventBusKey + "removed";
-        EventBus.publish(
-            eventBusKey,
-            [self.getUi(), identification]
-        );
-    });
-    return deferred.promise();
-
+            this.getModel().removeIdentifier(
+                identifier
+            );
+            resolve();
+            // this.getModel().applyToOtherInstances(function (otherUi) {
+            //     otherUi.getModel().removeIdentifier(
+            //         identifier
+            //     );
+            //     otherUi.removeIdentifier(identifier);
+            // });
+            // let eventBusKey = identificationBaseEventBusKey + "removed";
+            // EventBus.publish(
+            //     eventBusKey,
+            //     [this.getModel(), identifier]
+            // );
+        }.bind(this));
+    }.bind(this));
 };
 GraphElementController.prototype.selectTreeCanDo = function () {
     return this.isSingleAndOwned() && this.getUi().hasChildren();

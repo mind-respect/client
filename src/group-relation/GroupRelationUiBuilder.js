@@ -172,7 +172,7 @@ EventBus.subscribe(
         parentBubble.visitAllImmediateChild(function (child) {
             if (child.isGroupRelation()) {
                 var isSameIdentification =
-                    child.getGroupRelation().getIdentification().getExternalResourceUri() ===
+                    child.getIdentification().getExternalResourceUri() ===
                     identification.getExternalResourceUri();
                 if (isSameIdentification) {
                     graphElement.moveToParent(child);
@@ -180,14 +180,14 @@ EventBus.subscribe(
                 }
             }
             if (child.isRelation() && !child.isSameBubble(graphElement)) {
-                var childAsAnIdentification = Identification.fromFriendlyResource(
+                let childAsAnIdentification = Identification.fromFriendlyResource(
                     child.getModel()
                 );
-                var isIdentifiedToRelation = graphElement.getModel().hasIdentification(
+                let isIdentifiedToRelation = graphElement.getModel().hasIdentification(
                     childAsAnIdentification
                 );
                 if (isIdentifiedToRelation) {
-                    var newGroupRelation = GraphDisplayer.addNewGroupRelation(
+                    let newGroupRelation = GraphDisplayer.addNewGroupRelation(
                         [childAsAnIdentification],
                         parentBubble
                     );
@@ -198,21 +198,20 @@ EventBus.subscribe(
                     graphElement.moveToParent(newGroupRelation);
                     return;
                 }
-                $.each(child.getModel().getIdentifiers(), function () {
-                    var identification = this;
-                    if (graphElement.getModel().hasIdentification(identification)) {
+                child.getModel().getIdentifiers().forEach(function (identifier) {
+                    if (graphElement.getModel().hasIdentification(identifier)) {
                         var newGroupRelation = GraphDisplayer.addNewGroupRelation(
-                            [identification],
+                            [identifier],
                             parentBubble
                         );
                         newGroupRelation.setUri(
-                            identification.getUri()
+                            identifier.getUri()
                         );
                         child.moveToParent(newGroupRelation);
                         graphElement.moveToParent(newGroupRelation);
                         return false;
                     }
-                });
+                })
             }
         });
     }

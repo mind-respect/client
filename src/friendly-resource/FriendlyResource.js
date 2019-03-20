@@ -293,10 +293,10 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
     }
     if (MoveRelation.Parent === relation) {
         if (otherBubble.isGroupRelation()) {
-            if (!otherBubble.isExpanded()) {
+            if (!otherBubble.isExpanded) {
                 otherBubble.getController().expand();
             }
-            let identification = otherBubble.getGroupRelation().getIdentification();
+            let identification = otherBubble.getIdentification();
             if (this.getModel().hasIdentification(identification)) {
                 this.revertIdentificationIntegration(identification);
             }
@@ -308,14 +308,14 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
         otherBubble.isExpanded = true;
     } else {
         this.getParentBubble().removeChild(this);
-        let otherParentBubble = otherBubble.getParentBubble();
-        let index = otherParentBubble.getChildIndex(otherBubble);
+        let otherParentVertex = otherBubble.getParentVertex();
+        let index = otherParentVertex.getChildIndex(otherBubble);
         if (MoveRelation.Before === relation) {
-            otherParentBubble.addChild(this, otherBubble.isToTheLeft(),
+            otherParentVertex.addChild(this, otherBubble.isToTheLeft(),
                 index
             );
         } else {
-            otherParentBubble.addChild(
+            otherParentVertex.addChild(
                 this,
                 otherBubble.isToTheLeft(),
                 index + 1
@@ -338,6 +338,12 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
     //     });
     //     this.convertToRight();
     // }
+};
+
+FriendlyResource.FriendlyResource.prototype.revertIdentificationIntegration = function (identifier) {
+    identifier.getImages().forEach(function (image) {
+        this.removeImage(image);
+    }.bind(this));
 };
 
 FriendlyResource.FriendlyResource.prototype.moveToParent = function (parent) {

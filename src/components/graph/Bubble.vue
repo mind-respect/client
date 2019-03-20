@@ -349,6 +349,8 @@
                 let edge = this.bubble;
                 if (edge.isVertex()) {
                     edge = edge.getParentBubble();
+                } else if (edge.isGroupRelation()) {
+                    edge = this.isTopDragOver ? edge.getFirstEdge() : edge.getLastEdge();
                 }
                 let dragged = this.$store.state.dragged;
                 this.$store.dispatch('setDragged', null);

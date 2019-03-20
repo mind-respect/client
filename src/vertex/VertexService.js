@@ -28,7 +28,7 @@ api.createVertex = function () {
         dataType: 'json'
     });
 };
-api.addRelationAndVertexToVertex = function (vertex, sourceBubble, relationOver) {
+api.addRelationAndVertexToVertex = function (vertex, sourceBubble) {
     return Service.geApi().post(
         vertex.getUri(),
         {}
