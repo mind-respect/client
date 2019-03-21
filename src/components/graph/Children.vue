@@ -5,7 +5,7 @@
 <template>
     <div>
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()">
-            <div v-for="child in bubble.sortedImmediateChild(bubble.parentVertex)" :key="child.uiId">
+            <div v-for="child in bubble._sortedImmediateChild">
                 <div v-for="(triple, uiId) in child">
                     <Bubble :bubble="addEdgeContext(triple.edge, triple.vertex, bubble.parentVertex)"></Bubble>
                 </div>
@@ -31,6 +31,11 @@
         },
         mounted: function () {
             // console.log(Bubble);
+            if(this.bubble.isGroupRelation()){
+                this.bubble.sortedImmediateChild(
+                    this.bubble.parentVertex.getChildrenIndex()
+                );
+            }
         },
         methods: {
             addVertexContext: function (vertex, parentVertex) {

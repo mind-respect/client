@@ -12,6 +12,7 @@ import GraphElementUiBuilder from '@/graph-element/GraphElementUiBuilder'
 import EdgeUiBuilderCommon from '@/edge/EdgeUiBuilderCommon'
 import MindMapInfo from '@/MindMapInfo'
 import BubbleFactory from '@/bubble/BubbleFactory'
+import GroupRelation from '@/group-relation/GroupRelation'
 
 const api = {},
     NUMBER_OF_SIBLINGS_UNDER_WHICH_YOU_SHOULD_EXPAND = 4,
@@ -162,7 +163,7 @@ EventBus.subscribe(
 EventBus.subscribe(
     "/event/ui/graph/identification/added",
     function (event, graphElement, identification) {
-        var parentBubble = graphElement.getParentBubble();
+        let parentBubble = graphElement.getParentBubble();
         if (parentBubble.isGroupRelation()) {
             parentBubble.setUri(
                 identification.getUri()
@@ -171,7 +172,7 @@ EventBus.subscribe(
         }
         parentBubble.visitAllImmediateChild(function (child) {
             if (child.isGroupRelation()) {
-                var isSameIdentification =
+                let isSameIdentification =
                     child.getIdentification().getExternalResourceUri() ===
                     identification.getExternalResourceUri();
                 if (isSameIdentification) {
@@ -200,15 +201,29 @@ EventBus.subscribe(
                 }
                 child.getModel().getIdentifiers().forEach(function (identifier) {
                     if (graphElement.getModel().hasIdentification(identifier)) {
-                        var newGroupRelation = GraphDisplayer.addNewGroupRelation(
-                            [identifier],
-                            parentBubble
+                        let newGroupRelation = GroupRelation.usingIdentifiers(
+                            [identifier]
                         );
+                        newGroupRelation.parentBubble = parentBubble;
+                        newGroupRelation.parentVertex = parentBubble;
+                        let index = parentBubble.getChildIndex(child);
+                        let isToTheLeft = child.isToTheLeft();
                         newGroupRelation.setUri(
                             identifier.getUri()
                         );
-                        child.moveToParent(newGroupRelation);
-                        graphElement.moveToParent(newGroupRelation);
+                        parentBubble.removeChild(child);
+                        parentBubble.removeChild(graphElement);
+                        newGroupRelation.addChild(
+                            graphElement
+                        );
+                        newGroupRelation.addChild(
+                            child
+                        );
+                        parentBubble.addChild(
+                            newGroupRelation,
+                            isToTheLeft,
+                            index
+                        );
                         return false;
                     }
                 })

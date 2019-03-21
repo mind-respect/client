@@ -474,11 +474,10 @@ GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previou
 };
 
 GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, previousParentVertex) {
-    var wasToTheLeft = this.getUi().isToTheLeft();
-    var movedEdge = this.getUi().isVertex() ?
+    let movedEdge = this.getUi().isVertex() ?
         this.getUi().getParentBubble() :
         this.getUi();
-    var promises = [];
+    let promises = [];
     if (!otherEdge.getParentBubble().isSameUri(movedEdge.getParentBubble())) {
         promises.push(
             movedEdge.getParentBubble().getController().becomeExParent(movedEdge)
@@ -501,7 +500,7 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
     );
     let parentBubble = otherEdge.getParentBubble();
     if (parentBubble.isGroupRelation()) {
-        var identification = parentBubble.getIdentification();
+        let identification = parentBubble.getIdentification();
         if (movedEdge.isGroupRelation()) {
             movedEdge.visitClosestChildRelations(function (relation) {
                 promises.push(
@@ -613,10 +612,13 @@ GraphElementController.prototype.addIdentifiers = function (identifiers) {
     return Promise.all(promises);
 };
 
-GraphElementController.prototype.addIdentification = function (identification) {
+GraphElementController.prototype.addIdentification = function (identifier) {
+    if(this.getModel().hasIdentification(identifier)){
+        return Promise.resolve()
+    }
     return GraphElementService.addIdentification(
         this.getModel(),
-        identification
+        identifier
     ).then(function (identifications) {
         this.getModel().addIdentifications(
             identifications

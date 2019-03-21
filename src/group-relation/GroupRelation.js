@@ -39,6 +39,7 @@ function GroupRelation(identifiers) {
     this.identifiers = identifiers;
     this.vertices = {};
     this.childGroupRelations = [];
+    this._sortedImmediateChild = null;
     Identification.Identification.apply(
         this
     );
@@ -49,11 +50,18 @@ function GroupRelation(identifiers) {
 
 GroupRelation.prototype = new Identification.Identification();
 
-GroupRelation.prototype.removeChild = function (edge) {
+GroupRelation.prototype.removeChild = function (edge, temporarily) {
     let parentVertex = this.parentVertex;
     let vertexToRemove = edge.getOtherVertex(parentVertex);
     Vue.delete(this.vertices, vertexToRemove.getUri());
-    if (this.getNumberOfVertices() === 1) {
+    let l = this._sortedImmediateChild.length;
+    while (l--) {
+        let child = this._sortedImmediateChild[l];
+        if (child[edge.getId()]) {
+            this._sortedImmediateChild.splice(l, 1);
+        }
+    }
+    if (!temporarily && this.getNumberOfVertices() === 1) {
         parentVertex.replaceChild(
             this,
             this.getFirstEdge()
@@ -136,12 +144,15 @@ GroupRelation.prototype.getSortedVertices = function (childrenIndex) {
 };
 
 GroupRelation.prototype.sortedImmediateChild = function (childIndex) {
-    var immediateChild = this.getVerticesAsArray().concat(this.childGroupRelations);
-    return immediateChild.sort(function (a, b) {
-        var graphElementA = a instanceof GroupRelation ?
+    if (this._sortedImmediateChild !== null) {
+        return this._sortedImmediateChild;
+    }
+    let immediateChild = this.getVerticesAsArray().concat(this.childGroupRelations);
+    this._sortedImmediateChild = immediateChild.sort(function (a, b) {
+        let graphElementA = a instanceof GroupRelation ?
             a.getFirstVertex(childIndex) :
             a;
-        var graphElementB = b instanceof GroupRelation ?
+        let graphElementB = b instanceof GroupRelation ?
             b.getFirstVertex(childIndex) :
             b;
         return GraphElement.sortCompare(graphElementA, graphElementB, childIndex);
@@ -152,6 +163,7 @@ GroupRelation.prototype.sortedImmediateChild = function (childIndex) {
             return this.vertices[child.getUri()];
         }
     }.bind(this));
+    return this._sortedImmediateChild;
 };
 
 GroupRelation.prototype._getSortedVerticesAtAnyDepthOrNot = function (atAnyDepth, childrenIndex) {
@@ -232,23 +244,32 @@ GroupRelation.prototype.getSingleEdge = function () {
     return verticesWithId[Object.keys(verticesWithId)[0]].edge;
 };
 
-GroupRelation.prototype.addChild = function (edge) {
-    this.addTuple({
+GroupRelation.prototype.addChild = function (edge, isToTheLeft, index) {
+    let tuple = {
         vertex: edge.getDestinationVertex(),
         edge: edge
-    });
+    };
+    let tuplesOfUri = this.addTuple(tuple);
+    if (index !== undefined) {
+        this._sortedImmediateChild.splice(
+            index,
+            0,
+            tuplesOfUri
+        );
+    }
 };
 
 GroupRelation.prototype.addTuple = function (tuple) {
     let tupleKey = tuple.vertex.getUri();
-    let bubbleId = GraphUi.generateBubbleHtmlId();
+    let tupleId = tuple.edge.getId();
     if (this.vertices[tupleKey] === undefined) {
         let tuples = {};
-        tuples[bubbleId] = tuple;
+        tuples[tupleId] = tuple;
         Vue.set(this.vertices, tupleKey, tuples);
-        return;
+    } else {
+        Vue.set(this.vertices[tupleKey], tupleId, tuple);
     }
-    Vue.set(this.vertices[tupleKey], bubbleId, tuple);
+    return this.vertices[tupleKey];
 };
 GroupRelation.prototype.visitTuples = function (visitor) {
     $.each(this.vertices, function (vertexUri, verticesWithSameUri) {

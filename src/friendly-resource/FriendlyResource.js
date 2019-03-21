@@ -307,15 +307,17 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
         otherBubble.addChild(this);
         otherBubble.isExpanded = true;
     } else {
-        this.getParentBubble().removeChild(this);
-        let otherParentVertex = otherBubble.getParentVertex();
-        let index = otherParentVertex.getChildIndex(otherBubble);
+        let parentBubble = this.getParentBubble();
+        let otherParentBubble = otherBubble.getParentBubble();
+        let temporarilyRemove = parentBubble.isSameBubble(otherParentBubble);
+        parentBubble.removeChild(this, temporarilyRemove);
+        let index = otherParentBubble.getChildIndex(otherBubble);
         if (MoveRelation.Before === relation) {
-            otherParentVertex.addChild(this, otherBubble.isToTheLeft(),
+            otherParentBubble.addChild(this, otherBubble.isToTheLeft(),
                 index
             );
         } else {
-            otherParentVertex.addChild(
+            otherParentBubble.addChild(
                 this,
                 otherBubble.isToTheLeft(),
                 index + 1

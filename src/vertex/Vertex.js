@@ -175,15 +175,15 @@ Vertex.prototype.getRelationWithUiParent = function () {
 
 Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     let children;
-    if (this.isCenter && (this._shouldAddLeft() || isToTheLeft)) {
+    if (this.isCenter && (isToTheLeft || (this._shouldAddLeft() && isToTheLeft === undefined))) {
         children = this.leftBubbles;
     } else {
         children = this.rightBubbles;
     }
-    if (index !== undefined) {
-        children.splice(index, 0, child);
-    } else {
+    if (index === undefined) {
         children.push(child)
+    } else {
+        children.splice(index, 0, child);
     }
     this.incrementNumberOfConnectedEdges();
 };
@@ -275,27 +275,30 @@ Vertex.prototype.buildChildrenIndex = function () {
             );
             setChildVertexIndex.bind(this)(
                 otherVertex.getUri(),
-                child.isToTheLeft()
+                child.isToTheLeft(),
+                child
             );
         } else if (child.isGroupRelation()) {
             var grandChildIndex = child.buildChildrenIndex();
             Object.keys(grandChildIndex).sort(function (a, b) {
                 return grandChildIndex[a].index - grandChildIndex[b].index;
             }).forEach(function (vertexUri) {
-                setChildVertexIndex.bind(this)(vertexUri, child.isToTheLeft());
+                setChildVertexIndex.bind(this)(vertexUri, child.isToTheLeft(), child);
             }.bind(this));
         }
     }.bind(this));
     return childrenIndex;
 
-    function setChildVertexIndex(childVertexUri, isToTheLeft) {
+    function setChildVertexIndex(childVertexUri, isToTheLeft, child) {
         let previousValue = this.getModel().getChildrenIndex()[childVertexUri];
         if (!this.isCenterBubble() && previousValue) {
             isToTheLeft = previousValue.toTheLeft;
         }
         childrenIndex[childVertexUri] = {
             index: index,
-            toTheLeft: isToTheLeft
+            toTheLeft: isToTheLeft,
+            label: child.getLabel(),
+            type: child.getGraphElementType()
         };
         index++;
     }
