@@ -88,7 +88,7 @@ const Scroll = {
     centerBubbleForTreeOrNotIfApplicable: function (bubble, isForTree) {
         Vue.nextTick(function () {
             setTimeout(function () {
-                let element = bubble.getHtml();
+                let element = bubble.getLabelHtml();
                 if (isForTree && !bubble.isCenter && bubble.getNumberOfChild() > 0) {
                     element = element.parentElement;
                 }

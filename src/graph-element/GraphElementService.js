@@ -68,9 +68,12 @@ api.changeSortDate = function (graphElement) {
     });
 };
 api.changeChildrenIndex = function (graphElement) {
+    let childrenIndex = graphElement.buildChildrenIndex();
     return Service.geApi().post(
         graphElement.getUri() + "/childrenIndex",
-        graphElement.buildChildrenIndex()
-    );
+        childrenIndex
+    ).then(function () {
+        graphElement.setChildrenIndex(childrenIndex)
+    })
 };
 export default api;

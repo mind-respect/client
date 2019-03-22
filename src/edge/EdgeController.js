@@ -202,44 +202,47 @@ EdgeController.prototype.reverse = function () {
     });
 };
 EdgeController.prototype.sourceVertex = function (sourceVertex) {
-    var self = this;
     if (!sourceVertex.isExpanded()) {
-        return sourceVertex.getController().expand().then(doIt);
+        return sourceVertex.getController().expand().then(doIt.bind(this));
     } else {
-        return doIt();
+        return doIt.bind(this)();
     }
 
     function doIt() {
-        if (self.getUi().isInverse()) {
+        if (this.getModel().isInverse()) {
+            this.setSourceVertex(sourceVertex);
             return EdgeService.changeSourceVertex(
                 sourceVertex,
                 self.getUi()
             );
         }
+        this.setDestinationVertex(sourceVertex);
         return EdgeService.changeDestinationVertex(
             sourceVertex,
-            self.getUi()
+            this.getModel()
         );
     }
 };
 EdgeController.prototype.changeEndVertex = function (endVertex) {
-    let self = this;
     if (endVertex.canExpand()) {
-        return endVertex.getController().expand().then(doIt);
+        return endVertex.getController().expand().then(doIt.bind(this));
     } else {
-        return doIt();
+        return doIt.bind(this)();
     }
 
     function doIt() {
-        if (self.getUi().isInverse()) {
+        if (this.getModel().isInverse()) {
+            this.getModel().setDestinationVertex(endVertex)
             return EdgeService.changeDestinationVertex(
                 endVertex,
-                self.getUi()
-            );
+                this.getModel()
+            )
+
         }
+        this.getModel().setSourceVertex(endVertex)
         return EdgeService.changeSourceVertex(
             endVertex,
-            self.getUi()
+            this.getModel()
         );
     }
 };

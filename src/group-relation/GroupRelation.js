@@ -2,7 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import $ from 'jquery'
-import GraphUi from '@/graph/GraphUi'
 import GraphElement from '@/graph-element/GraphElement'
 import Identification from '@/identifier/Identification'
 import GraphElementType from '@/graph-element/GraphElementType'

@@ -80,7 +80,10 @@ SubGraphController.prototype.load = function () {
                     // }
 
                     let childIndex = childrenIndex[triple.vertex.getUri()];
-                    let addLeft = childIndex !== undefined && childIndex.toTheLeft;
+                    let addLeft;
+                    if (childIndex !== undefined ){
+                        addLeft = childIndex.toTheLeft;
+                    }
                     modelToAddChild.addChild(
                         triple.edge,
                         addLeft

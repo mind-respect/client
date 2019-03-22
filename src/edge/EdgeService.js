@@ -7,6 +7,7 @@ import IdUri from '@/IdUri'
 import UserService from '@/service/UserService'
 import Edge from '@/edge/Edge'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
+import Service from '@/Service'
 
 const api = {};
 api.add = function (sourceVertex, destinationVertex, callback) {
@@ -61,17 +62,15 @@ api.inverse = function (edge) {
         url: edge.getUri() + "/inverse"
     });
 };
-api.changeSourceVertex = function (sourceVertex, edge, callback) {
-    return $.ajax({
-        type: 'PUT',
-        url: edge.getUri() + "/source-vertex/" + IdUri.elementIdFromUri(sourceVertex.getUri())
-    }).then(callback);
+api.changeSourceVertex = function (sourceVertex, edge) {
+    return Service.geApi().put(
+        edge.getUri() + "/source-vertex/" + IdUri.elementIdFromUri(sourceVertex.getUri())
+    )
 };
-api.changeDestinationVertex = function (destinationVertex, edge, callback) {
-    return $.ajax({
-        type: 'PUT',
-        url: edge.getUri() + "/destination-vertex/" + IdUri.elementIdFromUri(destinationVertex.getUri())
-    }).then(callback);
+api.changeDestinationVertex = function (destinationVertex, edge) {
+    return Service.geApi().put(
+        edge.getUri() + "/destination-vertex/" + IdUri.elementIdFromUri(destinationVertex.getUri())
+    );
 };
 
 api._add = function (sourceVertexUri, destinationVertexUri) {

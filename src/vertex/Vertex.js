@@ -175,10 +175,12 @@ Vertex.prototype.getRelationWithUiParent = function () {
 
 Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     let children;
-    if (this.isCenter && (isToTheLeft || (this._shouldAddLeft() && isToTheLeft === undefined))) {
+    if (this._shouldAddLeft(isToTheLeft)) {
         children = this.leftBubbles;
+        child.makeLeft();
     } else {
         children = this.rightBubbles;
+        child.makeRight();
     }
     if (index === undefined) {
         children.push(child)
@@ -260,9 +262,15 @@ api.getWhenEmptyLabel = function () {
     return I18n.i18next.t("vertex", "default");
 };
 
-Vertex.prototype._shouldAddLeft = function () {
-    return this.leftBubbles.length <
-        this.rightBubbles.length;
+Vertex.prototype._shouldAddLeft = function (isToTheLeft) {
+    if (!this.isCenter) {
+        return false;
+    }
+    if (isToTheLeft === undefined || isToTheLeft === null) {
+        return this.leftBubbles.length <
+            this.rightBubbles.length;
+    }
+    return isToTheLeft;
 };
 
 Vertex.prototype.buildChildrenIndex = function () {
@@ -276,7 +284,7 @@ Vertex.prototype.buildChildrenIndex = function () {
             setChildVertexIndex.bind(this)(
                 otherVertex.getUri(),
                 child.isToTheLeft(),
-                child
+                otherVertex
             );
         } else if (child.isGroupRelation()) {
             var grandChildIndex = child.buildChildrenIndex();

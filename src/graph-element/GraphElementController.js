@@ -488,16 +488,6 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
     } else {
         this.getUi().moveBelow(otherEdge);
     }
-    promises.push(
-        GraphElementService.changeChildrenIndex(
-            otherEdge.getParentVertex()
-        )
-    );
-    promises.push(
-        GraphElementService.changeChildrenIndex(
-            previousParentVertex
-        )
-    );
     let parentBubble = otherEdge.getParentBubble();
     if (parentBubble.isGroupRelation()) {
         let identification = parentBubble.getIdentification();
@@ -536,7 +526,14 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
             );
         }
     }
-    return Promise.all(promises);
+    return Promise.all(promises).then(function () {
+        GraphElementService.changeChildrenIndex(
+            otherEdge.getParentVertex()
+        );
+        GraphElementService.changeChildrenIndex(
+            previousParentVertex
+        );
+    });
 };
 
 GraphElementController.prototype.mergeCanDo = function () {
@@ -613,7 +610,7 @@ GraphElementController.prototype.addIdentifiers = function (identifiers) {
 };
 
 GraphElementController.prototype.addIdentification = function (identifier) {
-    if(this.getModel().hasIdentification(identifier)){
+    if (this.getModel().hasIdentification(identifier)) {
         return Promise.resolve()
     }
     return GraphElementService.addIdentification(

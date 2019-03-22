@@ -23,7 +23,9 @@
                     <v-icon v-for="i in 5" small
                             style="overflow-x: hidden"
                             class="unselectable"
-                            :color="topDragOverColor" :class="{
+                            :class="{
+                            'red--text': isTopDragOver,
+                            'transparent--text': !isTopDragOver,
                         'ml-4 fa-flip-horizontal': bubble.isToTheLeft(),
                         'mr-4': !bubble.isToTheLeft()
                     }">
@@ -54,13 +56,7 @@
                 'pl-5': bubble.isLeaf() && bubble.isToTheLeft(),
                 'pr-5': bubble.isLeaf() && !bubble.isToTheLeft()
             }"
-                     @click="click" @dblclick="dblclick"
                      :id="bubble.uiId"
-                     @mousedown="mouseDown"
-                     @dragstart="dragStart"
-                     @dragover="dragMove"
-                     @dragend="dragEnd"
-                     draggable="true"
                 >
                     <div class="vertex-drag-over"
                          @dragover="topDragEnter"
@@ -78,11 +74,15 @@
                         <div class="image_container"></div>
                         <div class="in-bubble-content-wrapper">
                             <div class="in-bubble-content pl-1 pr-1 pt-1 pb-1"
+                                 @click="click" @dblclick="dblclick"
+                                 @mousedown="mouseDown"
+                                 @dragstart="dragStart"
+                                 @dragend="dragEnd"
+                                 draggable="true"
                                  style="max-width:500px!important;"
                             >
                                 <div class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
                                      @blur="leaveEditFlow"
-                                     @dragstart="labelDragStart"
                                      @dragover="labelDragEnter"
                                      @dragleave="labelDragLeave"
                                      @drop="labelDrop"
@@ -107,7 +107,11 @@
                             'selected' : isSelected
                  }">
                         <div class="image_container"></div>
-                        <div class="in-bubble-content">
+                        <div class="in-bubble-content" @click="click" @dblclick="dblclick"
+                             @mousedown="mouseDown"
+                             @dragstart="dragStart"
+                             @dragend="dragEnd"
+                             draggable="true">
                             <div class="label-container">
                                 <v-chip color="edgeColor"
                                         small
@@ -120,7 +124,6 @@
                                 >
                                     <div class="bubble-label white--text"
                                          @blur="leaveEditFlow"
-                                         @dragstart="labelDragStart"
                                          @dragover="labelDragEnter"
                                          @dragleave="labelDragLeave"
                                          @drop="labelDrop"
@@ -153,9 +156,11 @@
                     'top-bottom-left-side text-xs-right': bubble.isToTheLeft(),
                     'top-bottom-right-side': !bubble.isToTheLeft()
                 }">
-                <v-icon v-for="i in 4" small :color="bottomDragOverColor"
+                <v-icon v-for="i in 4" small
                         class="unselectable"
                         :class="{
+                        'red--text' : isBottomDragOver,
+                        'transparent--text': !isBottomDragOver,
                         'ml-4 fa-flip-horizontal': bubble.isToTheLeft(),
                         'mr-4': !bubble.isToTheLeft()
                     }">
@@ -269,7 +274,9 @@
                 GraphUi.disableDragScroll();
             },
             dragStart: function (event) {
+                // event.preventDefault();
                 SelectionHandler.reset();
+                // debugger;
                 event.target.style.opacity = .5;
                 event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
                 this.$store.dispatch('setDragged', this.bubble);
@@ -277,23 +284,12 @@
                 this.isDragging = true;
                 GraphUi.disableDragScroll();
             },
-            dragMove: function (event) {
-                return;
-                if (this.$store.state.dragged.getId() !== this.bubble.getId()) {
-                    console.log(this.bubble.getLabel());
-                    // debugger;
-                    return;
-                }
-            },
             dragEnd: function (event) {
                 event.preventDefault();
                 event.target.style.opacity = 1;
                 GraphUi.enableDragScroll();
                 this.isDragging = false;
                 this.$store.dispatch('setDragged', null);
-            },
-            labelDragStart: function () {
-                clearTimeout(this.dragOverTopBottomTimeout);
             },
             labelDragEnter: function (event) {
                 /*

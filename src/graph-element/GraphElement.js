@@ -334,6 +334,10 @@ GraphElement.GraphElement.prototype.getChildrenIndex = function () {
     return this.graphElementServerFormat.childrenIndex || {};
 };
 
+GraphElement.GraphElement.prototype.setChildrenIndex = function (childrenIndex) {
+    return this.graphElementServerFormat.childrenIndex = childrenIndex;
+};
+
 GraphElement.GraphElement.prototype.getMoveDate = function () {
     if (undefined === this.graphElementServerFormat.moveDate) {
         return this.getCreationDate();

@@ -712,9 +712,9 @@ VertexController.prototype._addChildToRealAndUiParent = function (realParent, ui
             }
         ).then(function () {
             // realParent.tripleAdded(triple);
-            // return GraphElementService.changeChildrenIndex(
-            //     triple.sourceVertex
-            // );
+            GraphElementService.changeChildrenIndex(
+                triple.source
+            );
             return triple;
         });
     }

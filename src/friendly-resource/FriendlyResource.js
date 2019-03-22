@@ -224,6 +224,14 @@ FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {
     return this.orientation === "left";
 };
 
+FriendlyResource.FriendlyResource.prototype.makeLeft = function () {
+    this.orientation = "left";
+};
+
+FriendlyResource.FriendlyResource.prototype.makeRight = function () {
+    this.orientation = "right";
+};
+
 FriendlyResource.FriendlyResource.prototype.makeSingleSelected = function () {
     this.isSelected = true;
     this.isSingleSelected = true;
