@@ -68,11 +68,14 @@ EdgeController.prototype.addSiblingCanDo = function () {
 };
 
 EdgeController.prototype.becomeParent = function (graphElementUi) {
-    var promises = [];
-    var newGroupRelation = this._convertToGroupRelation();
-    graphElementUi.moveToParent(
+    let promises = [];
+    SelectionHandler.reset();
+    let newGroupRelation = this._convertToGroupRelation();
+    this.getModel().getParentVertex().replaceChild(
+        this.getModel(),
         newGroupRelation
     );
+    newGroupRelation.addChild(graphElementUi);
     if (graphElementUi.isGroupRelation()) {
         graphElementUi.expand();
         graphElementUi.visitClosestChildOfType(

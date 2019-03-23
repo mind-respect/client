@@ -177,7 +177,7 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     let children;
     if (this._shouldAddLeft(isToTheLeft)) {
         children = this.leftBubbles;
-        child.makeLeft();
+        child.makeLeft()
     } else {
         children = this.rightBubbles;
         child.makeRight();

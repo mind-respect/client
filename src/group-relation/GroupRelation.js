@@ -243,10 +243,13 @@ GroupRelation.prototype.getSingleEdge = function () {
     return verticesWithId[Object.keys(verticesWithId)[0]].edge;
 };
 
-GroupRelation.prototype.addChild = function (edge, isToTheLeft, index) {
+GroupRelation.prototype.addChild = function (graphElementUi, isToTheLeft, index) {
+    let edge = graphElementUi.isEdge() ?
+        graphElementUi : graphElementUi.getParentBubble();
+    let vertex = graphElementUi.isVertex() ? graphElementUi : graphElementUi.getDestinationVertex();
     let tuple = {
-        vertex: edge.getDestinationVertex(),
-        edge: edge
+        edge: edge,
+        vertex: vertex
     };
     let tuplesOfUri = this.addTuple(tuple);
     if (index !== undefined) {
