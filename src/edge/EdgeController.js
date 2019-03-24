@@ -32,6 +32,7 @@ EdgeController.prototype.addChildCanDo = function () {
 EdgeController.prototype.addChild = function () {
     let newGroupRelation = this._convertToGroupRelation();
     let triple;
+    SelectionHandler.reset();
     return newGroupRelation.getController().addChild(false).then(function (_triple) {
         triple = _triple;
         return triple.edge.getController().addIdentifiers(
@@ -39,18 +40,16 @@ EdgeController.prototype.addChild = function () {
         );
     }.bind(this)).then(function () {
         let parentBubble = this.getModel().getParentBubble();
-
-        SelectionHandler.reset();
         parentBubble.replaceChild(
             this.getModel(),
             newGroupRelation
         );
-        GraphElementService.changeChildrenIndex(
-            parentBubble
-        );
         Vue.nextTick(function () {
+            GraphElementService.changeChildrenIndex(
+                this.getModel().getParentVertex()
+            );
             SelectionHandler.setToSingle(triple.destination);
-        });
+        }.bind(this))
         return triple
     }.bind(this));
 };

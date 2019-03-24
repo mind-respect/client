@@ -421,22 +421,34 @@ GraphElementController.prototype.moveAbove = function (otherEdge) {
     );
 };
 
-GraphElementController.prototype._canMoveUnderParent = function (parent) {
-    var newParentIsNotSelf = this.getUi().getUri() !== parent.getUri();
-    var isNotParentVertex = !this.getUi().getParentVertex().isSameBubble(parent);
-    var isNotParentBubble = !this.getUi().getParentBubble().isSameBubble(parent);
-    return newParentIsNotSelf && !this.getUi().isBubbleAChild(parent) && isNotParentVertex && isNotParentBubble;
+GraphElementController.prototype._canMoveUnderParent = function (parent, forceLeft) {
+    let newParentIsSelf = this.getUi().getUri() === parent.getUri();
+    if (newParentIsSelf) {
+        return false;
+    }
+    let isParentVertex = this.getUi().getParentVertex().isSameBubble(parent);
+    let isParentBubble = this.getUi().getParentBubble().isSameBubble(parent);
+    if (isParentVertex || isParentBubble || this.getUi().isBubbleAChild(parent)) {
+        if (forceLeft === true && !this.getModel().isToTheLeft()) {
+            return true;
+        }
+        if (forceLeft === false && this.getModel().isToTheLeft()) {
+            return true;
+        }
+        return false
+    }
+    return true;
 };
 
-GraphElementController.prototype.moveUnderParent = function (parent) {
-    if (!this._canMoveUnderParent(parent)) {
-        return $.Deferred().resolve();
+GraphElementController.prototype.moveUnderParent = function (parent, forceLeft) {
+    if (!this._canMoveUnderParent(parent, forceLeft)) {
+        return Promise.resolve();
     }
-    var previousParent;
-    var moveUnderParentCommand = new Command.forExecuteUndoAndRedo(
+    let previousParent;
+    let moveUnderParentCommand = new Command.forExecuteUndoAndRedo(
         function () {
             previousParent = this.getUi().getParentVertex();
-            return parent.getController().becomeParent(this.getUi());
+            return parent.getController().becomeParent(this.getUi(), forceLeft);
         }.bind(this),
         function () {
             return previousParent.getController().becomeParent(this.getUi());
@@ -639,7 +651,7 @@ GraphElementController.prototype.removeIdentifier = function (identifier) {
             this.getUi(),
             identifier
         ).then(function () {
-            this.getModel().removeIdentifier(
+            this.getMo().removeIdentifier(
                 identifier
             );
             this.getModel().removeIdentifier(

@@ -183,4 +183,8 @@ api.Edge.prototype.isShrinked = function () {
     return true;
 };
 
+api.Edge.prototype.remove = function () {
+    this.getParentBubble().removeChild(this);
+};
+
 export default api;

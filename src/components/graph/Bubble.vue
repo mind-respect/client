@@ -10,9 +10,9 @@
                     @dragover="topDragEnter"
                     @dragleave="resetTopBottomDragOver"
                     @drop="topDrop"
-                    v-if="bubble.isEdge() && !bubble.getNextBubble().isExpanded"
+                    v-if="(bubble.isEdge() || bubble.isGroupRelation()) && !bubble.getNextBubble().isExpanded"
             ></v-flex>
-            <v-flex xs12 style="position:relative;">
+            <v-flex xs12 style="position:relative;" v-if="!bubble.isCenter">
                 <div
                         style="top: -12px;"
                         class="arrowTopBottomContainer"
@@ -36,7 +36,7 @@
             <v-flex xs12
                     style="position:relative;"
                     class="dotted-border-top"
-                    v-if="bubble.isVertex()"
+                    v-if="bubble.isVertex() && !bubble.isCenter"
             ></v-flex>
         </v-flex>
         <v-layout
@@ -53,21 +53,28 @@
                 <div class='vertex-container v-center' :class="{
                 'vh-center':bubble.orientation === 'center',
                 'left':bubble.orientation === 'right',
-                'pl-5': bubble.isLeaf() && bubble.isToTheLeft(),
-                'pr-5': bubble.isLeaf() && !bubble.isToTheLeft()
+                'pl-5': (bubble.isLeaf() && bubble.isToTheLeft()) || (bubble.isCenter && bubble.leftBubbles.length === 0),
+                'pr-5': (bubble.isLeaf() && !bubble.isToTheLeft()) || (bubble.isCenter && bubble.rightBubbles.length === 0)
             }"
                      :id="bubble.uiId"
                 >
-                    <div class="vertex-drag-over"
+                    <div class="vertex-top-bottom-drop"
                          @dragover="topDragEnter"
                          @dragleave="resetTopBottomDragOver"
                          @drop="topDrop"
                          style="top:0;"
                     ></div>
+                    <div class="vertex-left-right-drop"
+                         v-if="bubble.isCenter || bubble.isToTheLeft()"
+                         @dragover="leftRightDragEnter"
+                         @dragleave="leftRightDragLeave"
+                         @drop="leftDrop"
+                         style="left:0;">
+                    </div>
                     <div
                             v-if="bubble.isVertex()"
                             class="bubble vertex graph-element relative" :class="{
-                        'selected' : isSelected || isLabelDragOver,
+                        'selected' : (isSelected || isLabelDragOver || isLeftRightDragOver),
                         'center-vertex': bubble.isCenter,
                         'reverse': bubble.orientation === 'left'
                 }">
@@ -96,10 +103,17 @@
                                      v-if="bubble.canExpand()"></ChildNotice>
                     </div>
                     <div
-                            class="vertex-drag-over"
+                            class="vertex-top-bottom-drop"
                             @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"
                             style="bottom:0;"
                     ></div>
+                    <div class="vertex-left-right-drop"
+                         v-if="bubble.isCenter || !bubble.isToTheLeft()"
+                         @dragover="leftRightDragEnter"
+                         @dragleave="leftRightDragLeave"
+                         @drop="rightDrop"
+                         style="right:0;">
+                    </div>
                     <div
                             v-if="bubble.isEdge() || bubble.isGroupRelation()"
                             class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0"
@@ -115,21 +129,21 @@
                             <div class="label-container">
                                 <v-chip color="edgeColor"
                                         small
+                                        @dragover="labelDragEnter"
+                                        @dragleave="labelDragLeave"
+                                        @drop="labelDrop"
                                         :selected="isSelected || isLabelDragOver"
                                         class="pt-0 pb-0 mt-0 mb-0"
                                         dark
                                         :class="{
-                                        'is-shrinked' : bubble.isShrinked()
+                                        'is-shrinked' : isShrinked
                                     }"
                                 >
                                     <div class="bubble-label white--text"
                                          @blur="leaveEditFlow"
-                                         @dragover="labelDragEnter"
-                                         @dragleave="labelDragLeave"
-                                         @drop="labelDrop"
                                          :data-placeholder="relationPlaceholder"
                                          autocomplete="off"
-                                         v-show="!bubble.isShrinked()"
+                                         v-show="!isShrinked"
                                          v-text="bubble.getFriendlyJson().label"
                                          @keydown="keydown"></div>
                                 </v-chip>
@@ -145,9 +159,9 @@
         </v-layout>
         <v-flex xs12
                 class="dotted-border-bottom"
-                v-if="bubble.isVertex()"
+                v-if="bubble.isVertex() && !bubble.isCenter"
         ></v-flex>
-        <v-flex xs12 style="position:relative;">
+        <v-flex xs12 style="position:relative;" v-if="!bubble.isCenter">
             <div style="bottom:-12px"
                  @dragover="bottomDragEnter"
                  @drop="bottomDrop"
@@ -170,7 +184,7 @@
         </v-flex>
         <v-flex xs12 class="pb-1 dotted-border-bottom"
                 @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"
-                v-if="bubble.isEdge() && !bubble.getNextBubble().isExpanded"
+                v-if="(bubble.isEdge() || bubble.isGroupRelation()) && !bubble.getNextBubble().isExpanded"
         ></v-flex>
     </div>
 </template>
@@ -204,7 +218,7 @@
                 dragOverTopBottomTimeout: undefined,
                 isTopDragOver: null,
                 isBottomDragOver: null,
-                isDragging: false
+                isLeftRightDragOver: null
             }
         },
         mounted: function () {
@@ -223,11 +237,21 @@
             relationPlaceholder: function () {
                 return this.isSelected ? this.$t('edge:default') : "";
             },
-            topDragOverColor: function () {
-                return this.isTopDragOver ? "red" : "transparent";
-            },
-            bottomDragOverColor: function () {
-                return this.isBottomDragOver ? "red" : "transparent";
+            isShrinked: function(){
+                if (this.isSelected) {
+                    return false;
+                }
+                if (this.bubble.isLabelEmpty()) {
+                    return true;
+                }
+                let parentBubble = this.bubble.getParentBubble();
+                if (!parentBubble.isGroupRelation()) {
+                    return false;
+                }
+                if (parentBubble.getLabel().trim() !== this.bubble.getLabel().trim() && "" !== this.bubble.getLabel().trim()) {
+                    return false;
+                }
+                return true;
             }
         },
         methods: {
@@ -281,14 +305,12 @@
                 event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
                 this.$store.dispatch('setDragged', this.bubble);
                 this.isContainerDragOver = false;
-                this.isDragging = true;
                 GraphUi.disableDragScroll();
             },
             dragEnd: function (event) {
                 event.preventDefault();
                 event.target.style.opacity = 1;
                 GraphUi.enableDragScroll();
-                this.isDragging = false;
                 this.$store.dispatch('setDragged', null);
             },
             labelDragEnter: function (event) {
@@ -321,13 +343,12 @@
                     this.isLabelDragOver = false;
                 }.bind(this), 50)
             },
-            labelDrop: function (event) {
+            labelDrop: function (event, forceLeft) {
                 // console.log("label drop");
                 // debugger;
                 event.preventDefault();
                 event.stopPropagation();
                 GraphUi.enableDragScroll();
-                let parent = this.bubble;
                 this.isLabelDragOver = false;
                 let dragged = this.$store.state.dragged;
                 this.$store.dispatch('setDragged', null);
@@ -335,7 +356,8 @@
                     return;
                 }
                 dragged.getController().moveUnderParent(
-                    parent
+                    this.bubble,
+                    forceLeft
                 );
             },
             topBottomDrop: function (method) {
@@ -407,6 +429,22 @@
                 this.isContainerDragOver = true;
                 this.isBottomDragOver = true;
             },
+            leftRightDragEnter: function (event) {
+                event.preventDefault();
+                this.isLeftRightDragOver = true;
+            },
+            leftRightDragLeave: function (event) {
+                event.preventDefault();
+                this.isLeftRightDragOver = false;
+            },
+            leftDrop: function (event) {
+                this.isLeftRightDragOver = false;
+                this.labelDrop(event, true);
+            },
+            rightDrop: function (event) {
+                this.isLeftRightDragOver = false;
+                this.labelDrop(event, false);
+            }
         },
         watch: {
             "SelectionHandler.selected": function () {
@@ -455,11 +493,18 @@
         border-color: red;
     }
 
-    .vertex-drag-over {
+    .vertex-top-bottom-drop {
         position: absolute !important;
         height: 40% !important;
         width: 100% !important;
         max-width: 500px !important;
+    }
+
+    .vertex-left-right-drop{
+        position: absolute !important;
+        width: 60px !important;
+        height: 100% !important;
+        /*border: 1px solid red;*/
     }
 
     .top-bottom-left-side {

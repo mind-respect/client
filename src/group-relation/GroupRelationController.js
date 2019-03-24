@@ -2,12 +2,13 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import $ from 'jquery'
 import VertexService from '@/vertex/VertexService'
 import EdgeService from '@/edge/EdgeService'
 import GraphElementController from '@/graph-element/GraphElementController'
 import GraphElementType from '@/graph-element/GraphElementType'
 import GraphElementService from '@/graph-element/GraphElementService'
+import SelectionHandler from '@/SelectionHandler'
+import Vue from 'vue'
 
 const api = {};
 api.GroupRelationController = GroupRelationController;
@@ -43,20 +44,19 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
     }
     return VertexService.addRelationAndVertexToVertex(
         parentVertex,
-        this.getUi()
+        this.getModel()
     ).then(function (_triple) {
         triple = _triple;
-        this.getModel().addTuple({
-            edge: triple.edge,
-            vertex: triple.destination
-        });
-        this.getModel().getIdentifiers().forEach(function (identifier) {
+        let addIdentifiers = Promise.all(this.getModel().getIdentifiers().map(function (identifier) {
             identifier.makeSameAs();
-            triple.edge.getController().addIdentification(
+            return triple.edge.getController().addIdentification(
                 identifier
             );
-        });
+        })).then(function () {
+            this.getModel().addChild(triple.edge)
+        }.bind(this));
         let promises = [
+            addIdentifiers,
             EdgeService.updateLabel(
                 triple.edge,
                 this.getModel().getIdentification().getLabel()
@@ -73,10 +73,12 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
         }
         return Promise.all(promises);
     }.bind(this)).then(function () {
-        return saveIndex ? GraphElementService.changeChildrenIndex(
-            this.getModel().getParentVertex()
-        ) : Promise.resolve();
-    }.bind(this)).then(function () {
+        Vue.nextTick(function () {
+            saveIndex === false ? Promise.resolve() : GraphElementService.changeChildrenIndex(
+                this.getModel().getParentVertex()
+            );
+            SelectionHandler.setToSingle(triple.destination);
+        }.bind(this));
         return triple;
     });
 };

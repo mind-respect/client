@@ -163,6 +163,7 @@ EventBus.subscribe(
 EventBus.subscribe(
     "/event/ui/graph/identification/added",
     function (event, graphElement, identification) {
+        return;
         let parentBubble = graphElement.getParentBubble();
         if (parentBubble.isGroupRelation()) {
             parentBubble.setUri(

@@ -87,7 +87,8 @@ Vertex.prototype.getNumberOfConnectedEdges = function () {
 };
 
 Vertex.prototype.getNumberOfChild = function () {
-    return this.getNumberOfConnectedEdges() - 1;
+    let children = this.getImmediateChild();
+    return children.length ? children.length : this.getNumberOfConnectedEdges() - 1;
 };
 
 Vertex.prototype.incrementNumberOfConnectedEdges = function () {
@@ -226,16 +227,7 @@ Vertex.prototype.getImmediateChild = function (isToTheLeft) {
 };
 
 Vertex.prototype.remove = function () {
-    let edgeId = this.parentBubble.getId();
-    let immediateChild = this.parentVertex.getImmediateChild(
-        this.isToTheLeft()
-    );
-    let l = immediateChild.length;
-    while (l--) {
-        if (immediateChild[l].getId() === edgeId) {
-            immediateChild.splice(l, 1);
-        }
-    }
+    this.getParentBubble().remove();
     this.parentVertex.decrementNumberOfConnectedEdges();
 };
 

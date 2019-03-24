@@ -252,7 +252,9 @@ GroupRelation.prototype.addChild = function (graphElementUi, isToTheLeft, index)
         vertex: vertex
     };
     let tuplesOfUri = this.addTuple(tuple);
-    if (index !== undefined) {
+    if (index === undefined) {
+        this._sortedImmediateChild.push(tuplesOfUri);
+    } else {
         this._sortedImmediateChild.splice(
             index,
             0,
@@ -264,6 +266,8 @@ GroupRelation.prototype.addChild = function (graphElementUi, isToTheLeft, index)
 GroupRelation.prototype.addTuple = function (tuple) {
     let tupleKey = tuple.vertex.getUri();
     let tupleId = tuple.edge.getId();
+    // tuple.edge.parentBubble = this;
+    // tuple.vertex.parentBubble = tuple.edge;
     if (this.vertices[tupleKey] === undefined) {
         let tuples = {};
         tuples[tupleId] = tuple;
@@ -280,7 +284,21 @@ GroupRelation.prototype.visitTuples = function (visitor) {
         });
     });
 };
+GroupRelation.prototype.removeChild = function (child) {
+    return this.removeTuple({
+        edge: child,
+        vertex: child.destinationVertex
+    })
+};
 GroupRelation.prototype.removeTuple = function (tuple) {
+    let l = this._sortedImmediateChild.length;
+    while (l--) {
+        let tuplesOfUri = this._sortedImmediateChild[l];
+        let _tuple = tuplesOfUri[tuple.edge.getId()];
+        if (_tuple && _tuple.edge.getId() === tuple.edge.getId()) {
+            this._sortedImmediateChild.splice(l, 1);
+        }
+    }
     delete this.vertices[tuple.vertex.getUri()];
 };
 GroupRelation.prototype.isTrulyAGroupRelation = function () {

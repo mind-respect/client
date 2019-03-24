@@ -209,7 +209,8 @@ VertexController.prototype.remove = function (skipConfirmation) {
     );
 
     function deleteAfterConfirmationBehavior() {
-        var removePromise = this.isSingle() ?
+        SelectionHandler.reset();
+        let removePromise = this.isSingle() ?
             VertexService.remove(
                 this.getUi()
             ) :
@@ -217,9 +218,6 @@ VertexController.prototype.remove = function (skipConfirmation) {
                 this.getUi()
             );
         return removePromise.then(function () {
-            SelectionHandler.remove(
-                this.getModel()
-            );
             this.getUiArray().forEach(function (ui) {
                 ui.remove();
             });
@@ -460,8 +458,8 @@ VertexController.prototype.setShareLevel = function (shareLevel) {
 };
 
 VertexController.prototype.becomeParent = function (graphElementUi) {
-    var promises = [];
-    var uiChild;
+    let promises = [];
+    let uiChild;
     if (graphElementUi.isGroupRelation()) {
         graphElementUi.expand();
         graphElementUi.visitClosestChildOfType(
@@ -474,11 +472,13 @@ VertexController.prototype.becomeParent = function (graphElementUi) {
         moveEdge.bind(this)(uiChild);
     }
 
-    return $.when.apply($, promises).then(function () {
+    return Promise.all(promises).then(function () {
         uiChild.moveToParent(
             this.getUi()
         );
-        this.getModel().incrementNumberOfConnectedEdges();
+        Vue.nextTick(function () {
+            GraphElementService.changeChildrenIndex(this.getModel());
+        }.bind(this));
     }.bind(this));
 
     function moveEdge(movedEdge) {

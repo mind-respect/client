@@ -28,14 +28,14 @@ api.createVertex = function () {
         dataType: 'json'
     });
 };
-api.addRelationAndVertexToVertex = function (vertex, sourceBubble) {
+api.addRelationAndVertexToVertex = function (vertex) {
     return Service.geApi().post(
         vertex.getUri(),
         {}
     ).then(function (response) {
         return Triple.fromEdgeAndSourceAndDestinationVertex(
             Edge.fromServerFormat(response.data.edge),
-            sourceBubble,
+            vertex,
             Vertex.fromServerFormat(response.data.end_vertex)
         );
     });
