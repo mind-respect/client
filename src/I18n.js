@@ -36,7 +36,8 @@ export default {
                         min8Char: "Minimum of 8 characters",
                         send: "Send",
                         change: "Change",
-                        centers: "Centers"
+                        centers: "Centers",
+                        confirm: "Confirm"
                     }
                 },
                 fr: {
@@ -53,7 +54,8 @@ export default {
                         min8Char: "Minimum de 8 charactères",
                         send: "Envoyer",
                         change: "Modifier",
-                        centers: "Centres"
+                        centers: "Centres",
+                        confirm: "Confirmer"
                     }
                 }
             }

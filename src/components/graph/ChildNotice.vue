@@ -12,8 +12,14 @@
              title=""
              data-original-title="Expand (ctrl+E)"
         >
-            <span>...</span>
-            <span>{{bubble.getNumberOfChild()}}</span>
+            <span>
+                <v-badge :left="bubble.isToTheLeft()" color="secondary">
+                    <span slot="badge">
+                        {{bubble.getNumberOfChild()}}
+                    </span>
+                    <v-icon large color="third">bubble_chart</v-icon>
+                </v-badge>
+            </span>
         </div>
         <v-progress-circular indeterminate color="red" v-if="bubble.loading"></v-progress-circular>
     </div>

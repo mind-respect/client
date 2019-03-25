@@ -127,7 +127,7 @@
                              @dragend="dragEnd"
                              draggable="true">
                             <div class="label-container">
-                                <v-chip color="edgeColor"
+                                <v-chip color="secondary"
                                         small
                                         @dragover="labelDragEnter"
                                         @dragleave="labelDragLeave"
