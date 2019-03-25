@@ -149,6 +149,13 @@ FriendlyResource.FriendlyResource.prototype.setLabel = function (label) {
 FriendlyResource.FriendlyResource.prototype.getLabel = function () {
     return this.friendlyResourceServerFormat.label;
 };
+
+FriendlyResource.FriendlyResource.prototype.getLabelOrDefault = function () {
+    return this.isLabelEmpty() ?
+        this.getWhenEmptyLabel() :
+        this.getLabel();
+};
+
 FriendlyResource.FriendlyResource.prototype.isLabelEmpty = function () {
     return this.getLabel().trim() === "";
 };

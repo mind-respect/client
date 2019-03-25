@@ -23,6 +23,7 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import ShareLevel from '@/vertex/ShareLevel'
 import SubGraphController from '@/graph/SubGraphController'
 import Vue from 'vue'
+import Store from '@/store'
 
 const api = {};
 
@@ -191,6 +192,8 @@ VertexController.prototype.removeCanDo = function () {
 };
 
 VertexController.prototype.remove = function (skipConfirmation) {
+    Store.dispatch("setIsRemoveFlow", true);
+    return;
     var isPristine = this.getModelArray().every(function (model) {
         return model.isPristine();
     });

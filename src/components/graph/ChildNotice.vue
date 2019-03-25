@@ -8,7 +8,7 @@
              :class="{
                 'reverse' : bubble.orientation === 'left'
              }"
-             v-if="!bubble.loading"
+             v-if="!loading"
              title=""
              data-original-title="Expand (ctrl+E)"
         >
@@ -21,22 +21,29 @@
                 </v-badge>
             </span>
         </div>
-        <v-progress-circular indeterminate color="red" v-if="bubble.loading"></v-progress-circular>
+        <v-progress-circular indeterminate color="third" v-if="loading"></v-progress-circular>
     </div>
 </template>
 
 <script>
-    import Vue from 'vue'
     import Scroll from '@/Scroll'
+    import Vue from 'vue'
 
     export default {
         name: "ChildNotice",
         props: ['bubble'],
+        data: function () {
+            return {
+                loading: false
+            }
+        },
         methods: {
             click: function () {
-                this.bubble.loading = true;
+                this.loading = this.bubble.loading = true;
                 this.bubble.getController().expand().then(function () {
-                    this.bubble.loading = false;
+                    Vue.nextTick(function(){
+                        this.loading = this.bubble.loading = false;
+                    }.bind(this))
                     Scroll.centerBubbleForTreeIfApplicable(
                         this.bubble,
                         true

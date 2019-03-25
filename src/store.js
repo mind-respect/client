@@ -21,7 +21,8 @@ const Store = new Vuex.Store({
     ],
     state: {
         user: null,
-        dragged: null
+        dragged: null,
+        isRemoveFlow : false
     },
     mutations: {
         setUser: function (state, user) {
@@ -48,6 +49,9 @@ const Store = new Vuex.Store({
         },
         setDragged: function (state, dragged) {
             state.dragged = dragged;
+        },
+        setIsRemoveFlow: function (state, isRemoveFlow) {
+            state.isRemoveFlow = isRemoveFlow;
         }
     },
     actions: {
@@ -59,6 +63,9 @@ const Store = new Vuex.Store({
         },
         setDragged: function (action, dragged) {
             action.commit('setDragged', dragged);
+        },
+        setIsRemoveFlow: function (action, isRemoveFlow) {
+            action.commit('setIsRemoveFlow', isRemoveFlow);
         }
     }
 });

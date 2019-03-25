@@ -9,7 +9,6 @@ import Suggestion from '@/suggestion/Suggestion'
 import ShareLevel from '@/vertex/ShareLevel'
 import GraphElementType from '@/graph-element/GraphElementType'
 import I18n from '@/I18n'
-import FriendlyResource from "../friendly-resource/FriendlyResource";
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -251,7 +250,11 @@ Vertex.prototype.removeChild = function (child) {
 };
 
 api.getWhenEmptyLabel = function () {
-    return I18n.i18next.t("vertex", "default");
+    return I18n.i18next.t("vertex:default");
+};
+
+Vertex.prototype.getWhenEmptyLabel = function () {
+    return api.getWhenEmptyLabel();
 };
 
 Vertex.prototype._shouldAddLeft = function (isToTheLeft) {

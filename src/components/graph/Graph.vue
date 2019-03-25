@@ -26,6 +26,7 @@
             </v-flex>
         </v-layout>
         <div style="width:8000px;"></div>
+        <RemoveDialog></RemoveDialog>
     </div>
     <!--<div :style="'width:' + rightWidth() + 'px'"></div>-->
 </template>
@@ -39,11 +40,13 @@
     import SelectionHandler from '@/SelectionHandler'
     import SubGraphController from '@/graph/SubGraphController'
     import Vertex from '@/vertex/Vertex'
+    import RemoveDialog from '@/components/RemoveDialog'
 
     export default {
         name: "Graph",
         components: {
-            Bubble
+            Bubble,
+            RemoveDialog
         },
         data: function () {
             return {
@@ -99,7 +102,6 @@
                 this.graph.center.leftBubbles.forEach(function (leftBubble) {
                     nbBubbles += leftBubble.getNumberOfChildDeep();
                 });
-                console.log("nbBubbles left " + nbBubbles)
                 return nbBubbles;
             },
             nbBubblesRight: function () {
@@ -107,7 +109,6 @@
                 this.graph.center.rightBubbles.forEach(function (leftBubble) {
                     nbBubbles += leftBubble.getNumberOfChildDeep();
                 });
-                console.log("nbBubbles right " + nbBubbles)
                 return nbBubbles;
             }
         },
