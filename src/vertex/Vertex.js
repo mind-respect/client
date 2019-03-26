@@ -233,7 +233,9 @@ Vertex.prototype.remove = function () {
 Vertex.prototype.replaceChild = function (existingChild, newChild) {
     let index = this.getChildIndex(existingChild);
     this.removeChild(existingChild);
-    this.addChild(newChild, existingChild.isToTheLeft(),
+    this.addChild(
+        newChild,
+        existingChild.isToTheLeft(),
         index
     );
 };

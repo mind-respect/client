@@ -10,7 +10,7 @@
                 <v-spacer></v-spacer>
                 <v-icon
                         color="third"
-                        @click="$store.dispatch('setIsRemoveFlow', false)"
+                        @click="removeDialog = false"
                 >close
                 </v-icon>
             </v-card-title>
@@ -43,13 +43,18 @@
                     </v-list>
                 </v-tooltip>
                 <v-list>
-                    <v-subheader v-if="multiple">
+                    <v-subheader v-if="multiple && false">
                         {{$t('remove:multiple')}}
                     </v-subheader>
                     <v-list-tile
                             v-for="bubble in selected"
                             :key="selected.uiId"
                     >
+                        <v-list-tile-action>
+                            <v-icon>
+                                panorama_fish_eye
+                            </v-icon>
+                        </v-list-tile-action>
                         <v-list-tile-content>
                             <v-list-tile-title>
                                 {{bubble.getLabelOrDefault()}}
@@ -59,7 +64,7 @@
                 </v-list>
             </v-card-text>
             <v-card-actions>
-                <v-btn color="secondary" class="ml-2">
+                <v-btn color="secondary" class="ml-2" @click="remove">
                     <v-icon class="mr-2">delete</v-icon>
                     {{$t('remove:confirm')}}
                     <span v-if="multiple" class="ml-2">
@@ -68,9 +73,10 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
+                        ref="removeBtn"
                         color="third" dark
                         class="mr-2"
-                        @click="$store.dispatch('setIsRemoveFlow', false)"
+                        @click="removeDialog = false"
                 >
                     {{$t('remove:cancel')}}
                 </v-btn>
@@ -82,6 +88,8 @@
 <script>
     import SelectionHandler from '@/SelectionHandler'
     import I18n from '@/I18n'
+    import VertexService from '@/vertex/VertexService'
+    import Vue from 'vue'
 
     export default {
         name: "RemoveDialog",
@@ -126,12 +134,47 @@
         },
         watch: {
             isRemoveFlow: function () {
-                this.removeDialog = this.$store.state.isRemoveFlow
+                if (this.$store.state.isRemoveFlow) {
+                    let selectedIsPristine = SelectionHandler.getSelectedElements().every(function (bubble) {
+                        return bubble.isPristine();
+                    });
+                    if (selectedIsPristine) {
+                        this.remove();
+                        this.$store.dispatch("setIsRemoveFlow", false)
+                    } else {
+                        this.removeDialog = true;
+                    }
+                } else {
+                    this.removeDialog = false;
+                }
             },
             removeDialog: function () {
-                if (this.removeDialog === false) {
+                if (this.removeDialog === true) {
+                    Vue.nextTick(function () {
+                        this.$refs["removeBtn"].$el.focus()
+                    }.bind(this))
+                } else {
                     this.$store.dispatch("setIsRemoveFlow", false)
                 }
+            }
+        },
+        methods: {
+            remove: function () {
+                let nbSelected = this.selected.length;
+                let removePromise = nbSelected === 1 ?
+                    VertexService.remove(
+                        SelectionHandler.getSingleElement()
+                    ) :
+                    VertexService.removeCollection(
+                        SelectionHandler.getSelectedElements()
+                    );
+                return removePromise.then(function () {
+                    SelectionHandler.getSelectedElements().forEach(function (bubble) {
+                        bubble.remove();
+                    });
+                    SelectionHandler.reset();
+                    this.removeDialog = false;
+                }.bind(this));
             }
         }
     }

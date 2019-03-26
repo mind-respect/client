@@ -42,7 +42,7 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
     if (this.getUi().canExpand()) {
         this.expand();
     }
-    return VertexService.addRelationAndVertexToVertex(
+    return VertexService.addTuple(
         parentVertex,
         this.getModel()
     ).then(function (_triple) {
@@ -80,7 +80,7 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
             SelectionHandler.setToSingle(triple.destination);
         }.bind(this));
         return triple;
-    });
+    }.bind(this));
 };
 
 GroupRelationController.prototype.becomeParent = function (graphElementUi) {

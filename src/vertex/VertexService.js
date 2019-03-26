@@ -28,7 +28,7 @@ api.createVertex = function () {
         dataType: 'json'
     });
 };
-api.addRelationAndVertexToVertex = function (vertex) {
+api.addTuple = function (vertex) {
     return Service.geApi().post(
         vertex.getUri(),
         {}
@@ -47,11 +47,10 @@ api.remove = function (vertex) {
     );
 };
 api.removeCollection = function (vertices) {
-    return $.ajax({
-        type: 'DELETE',
-        data: JSON.stringify(verticesUriFromVertices(vertices)),
-        contentType: 'application/json;charset=utf-8',
-        url: getVerticesUrl() + '/collection'
+    return Service.api().request({
+        url: getVerticesUrl() + '/collection',
+        method: 'delete',
+        data: verticesUriFromVertices(vertices)
     });
 };
 api.updateLabel = function (vertex, label) {

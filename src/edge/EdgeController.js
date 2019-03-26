@@ -49,21 +49,23 @@ EdgeController.prototype.addChild = function () {
                 this.getModel().getParentVertex()
             );
             SelectionHandler.setToSingle(triple.destination);
-        }.bind(this))
+        }.bind(this));
         return triple
     }.bind(this));
 };
 
 EdgeController.prototype.addSibling = function () {
-    return this.getUi().getTopMostChildBubble().getController().addSibling().then(function (triple) {
-        SelectionHandler.setToSingle(
-            triple.edge()
-        );
+    return this.getModel().getNextBubble().getController().addSibling().then(function (triple) {
+        Vue.nextTick(function(){
+            SelectionHandler.setToSingle(
+                triple.edge
+            );
+        })
     });
 };
 
 EdgeController.prototype.addSiblingCanDo = function () {
-    return this.isSingle() && this.getUi().getTopMostChildBubble().getController().addSiblingCanDo();
+    return this.isSingle() && this.getModel().getNextBubble().getController().addSiblingCanDo();
 };
 
 EdgeController.prototype.becomeParent = function (graphElementUi) {

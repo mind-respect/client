@@ -44,10 +44,36 @@ VertexController.prototype.addChildCanDo = function () {
     return this.isSingleAndOwned() && !this.getModel().isPristine();
 };
 
-VertexController.prototype.addChild = function () {
-    return this._addChildToRealAndUiParent(
-        this.getUi()
-    );
+VertexController.prototype.addChild = function (isToTheLeft) {
+    return this.getModel().isExpanded ?
+        doIt.bind(this)() :
+        this.expand().then(doIt.bind(this));
+
+    function doIt() {
+        let triple;
+        return VertexService.addTuple(
+            this.getModel()
+        ).then(function (_triple) {
+            triple = _triple;
+            this.getModel().addChild(triple.edge, isToTheLeft);
+            if (ShareLevel.PRIVATE === this.getModel().getModel().getShareLevel()) {
+                triple.destination.setShareLevel(ShareLevel.PRIVATE);
+                // triple.destinationVertex().reviewInLabelButtonsVisibility();
+            } else {
+                return triple.destination.getController().setShareLevel(
+                    this.getModel().getShareLevel()
+                );
+            }
+            Vue.nextTick(function () {
+                SelectionHandler.setToSingle(triple.destination);
+            })
+        }.bind(this)).then(function () {
+            GraphElementService.changeChildrenIndex(
+                triple.source
+            );
+            return triple;
+        });
+    }
 };
 
 VertexController.prototype.convertToRelationCanDo = function () {
@@ -165,23 +191,18 @@ VertexController.prototype.convertToGroupRelation = function () {
 };
 
 VertexController.prototype.addSiblingCanDo = function () {
-    return this.isSingleAndOwned() && !this.getUi().isCenterBubble() &&
+    return this.isSingleAndOwned() && !this.getModel().isCenter &&
         !this.getUi().getParentBubble().getParentBubble().isMeta() &&
         !this.getModel().isPristine();
 };
 
 VertexController.prototype.addSibling = function () {
-    var edgeOver = this.getUi().getParentBubble();
-    if (this.getUi().isImmediateChildOfGroupRelation()) {
-        var groupRelation = this.getUi().getParentBubble().getParentBubble();
-        return groupRelation.getController().addChild(
-            edgeOver
-        );
-    }
-    return this._addChildToRealAndUiParent(
-        this.getUi().getParentVertex(),
-        this.getUi().getParentBubble().getParentBubble(),
-        edgeOver
+    let parent = this.getModel().getClosestAncestorInTypes([
+        GraphElementType.Vertex,
+        GraphElementType.GroupRelation
+    ]);
+    return parent.getController().addChild(
+        this.getModel().isToTheLeft()
     );
 };
 
@@ -224,7 +245,7 @@ VertexController.prototype.remove = function (skipConfirmation) {
             this.getUiArray().forEach(function (ui) {
                 ui.remove();
             });
-            return true;
+            Store.dispatch("setIsRemoveFlow", true);
         }.bind(this));
     }
 };
@@ -683,44 +704,6 @@ VertexController.prototype._relateToDistantVertexWithUri = function (distantVert
             distantVertexUri
         );
     }.bind(this));
-};
-VertexController.prototype._addChildToRealAndUiParent = function (realParent, uiParent, edgeOver) {
-    if (uiParent === undefined) {
-        uiParent = realParent;
-    }
-    return uiParent.isExpanded ?
-        doIt() :
-        uiParent.getController().expand().then(doIt);
-
-    function doIt() {
-        let triple;
-        return VertexService.addRelationAndVertexToVertex(
-            realParent,
-            uiParent,
-            edgeOver
-        ).then(function (_triple) {
-                triple = _triple;
-                realParent.addChild(triple.edge);
-                if (ShareLevel.PRIVATE === realParent.getModel().getShareLevel()) {
-                    triple.destination.setShareLevel(ShareLevel.PRIVATE);
-                    // triple.destinationVertex().reviewInLabelButtonsVisibility();
-                } else {
-                    return triple.destination.getController().setShareLevel(
-                        realParent.getShareLevel()
-                    );
-                }
-                Vue.nextTick(function () {
-                    SelectionHandler.setToSingle(triple.destination);
-                })
-            }
-        ).then(function () {
-            // realParent.tripleAdded(triple);
-            GraphElementService.changeChildrenIndex(
-                triple.source
-            );
-            return triple;
-        });
-    }
 };
 
 VertexController.prototype.setFont = function (font) {

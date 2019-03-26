@@ -217,6 +217,10 @@ FriendlyResource.FriendlyResource.prototype.isGroupRelation = function () {
     return GraphElementType.GroupRelation === this.getGraphElementType();
 };
 
+FriendlyResource.FriendlyResource.prototype.isMeta = function () {
+    return this.getGraphElementType() === GraphElementType.Meta;
+};
+
 FriendlyResource.FriendlyResource.prototype.select = function () {
     this.isSelected = true;
 };
@@ -554,6 +558,20 @@ FriendlyResource.FriendlyResource.prototype._getIndexInTreeInTypes = function (g
         }.bind(this)
     );
     return index;
+};
+
+FriendlyResource.FriendlyResource.prototype.getClosestAncestorInTypes = function (types) {
+    let parentBubble = this.getParentBubble();
+    if (this.isSameBubble(parentBubble)) {
+        return this;
+    }
+    if (parentBubble.isInTypes(types)) {
+        return parentBubble;
+    }
+    let ancestor = parentBubble.getClosestAncestorInTypes(types);
+    return ancestor.isInTypes(types) ?
+        ancestor :
+        this;
 };
 
 FriendlyResource.FriendlyResource.prototype.visitClosestChildVertices = function (visitor) {
