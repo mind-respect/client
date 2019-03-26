@@ -40,7 +40,7 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
     let parentVertex = this.getUi().getParentVertex();
     let triple;
     if (this.getUi().canExpand()) {
-        this.expand();
+        this.expand(true);
     }
     return VertexService.addTuple(
         parentVertex,

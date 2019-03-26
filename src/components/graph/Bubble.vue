@@ -50,11 +50,13 @@
                           v-if="bubble.orientation === 'left'"
                 >
                 </Children>
-                <div class='vertex-container v-center' :class="{
+                <div class='vertex-container v-center'
+                     :class="{
                 'vh-center':bubble.orientation === 'center',
                 'left':bubble.orientation === 'right',
                 'pl-5': (bubble.isLeaf() && bubble.isToTheLeft()) || (bubble.isCenter && bubble.leftBubbles.length === 0),
-                'pr-5': (bubble.isLeaf() && !bubble.isToTheLeft()) || (bubble.isCenter && bubble.rightBubbles.length === 0)
+                'pr-5': (bubble.isLeaf() && !bubble.isToTheLeft()) || (bubble.isCenter && bubble.rightBubbles.length === 0),
+                'w-500': (bubble.isLeaf() && bubble.isToTheLeft())
             }"
                      :id="bubble.uiId"
                 >
@@ -71,6 +73,7 @@
                          @drop="leftDrop"
                          style="left:0;">
                     </div>
+                    <v-spacer v-if="bubble.isToTheLeft() && bubble.isLeaf()"></v-spacer>
                     <div
                             v-if="bubble.isVertex()"
                             class="bubble vertex graph-element relative" :class="{
@@ -80,23 +83,40 @@
                 }">
                         <div class="image_container"></div>
                         <div class="in-bubble-content-wrapper">
-                            <div class="in-bubble-content pl-1 pr-1 pt-1 pb-1"
-                                 @click="click" @dblclick="dblclick"
-                                 @mousedown="mouseDown"
-                                 @dragstart="dragStart"
-                                 @dragend="dragEnd"
-                                 draggable="true"
-                                 style="max-width:500px!important;"
+                            <div
+                                    class="in-bubble-content pl-1 pr-1 pt-1 pb-1"
+                                    :class="{
+                                        'reverse': bubble.orientation === 'left'
+                                    }"
+                                    @click="click" @dblclick="dblclick"
+                                    @mousedown="mouseDown"
+                                    @dragstart="dragStart"
+                                    @dragend="dragEnd"
+                                    draggable="true"
+                                    style="max-width:500px!important;height:100%;position:relative"
                             >
-                                <div class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
-                                     @blur="leaveEditFlow"
-                                     @dragover="labelDragEnter"
-                                     @dragleave="labelDragLeave"
-                                     @drop="labelDrop"
-                                     :data-placeholder="$t('vertex:default')"
-                                     autocomplete="off" v-text="bubble.getFriendlyJson().label"
-                                     @keydown="keydown"></div>
-                                <div class="in-label-buttons"></div>
+                                <div
+                                        class="in-label-buttons text-xs-center"
+                                        :class="{
+                                            'in-label-buttons-right':bubble.isToTheLeft(),
+                                            'in-label-buttons-left':bubble.isToTheLeft()
+                                        }"
+                                >
+                                    <v-icon small color="secondary">lock</v-icon>
+                                </div>
+                                <div
+                                        class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
+                                        :class="{
+                                            'pr-2': bubble.isToTheLeft(),
+                                            'pl-3': !bubble.isToTheLeft() || bubble.isCenter
+                                        }"
+                                        @blur="leaveEditFlow"
+                                        @dragover="labelDragEnter"
+                                        @dragleave="labelDragLeave"
+                                        @drop="labelDrop"
+                                        :data-placeholder="$t('vertex:default')"
+                                        autocomplete="off" v-text="bubble.getFriendlyJson().label"
+                                        @keydown="keydown"></div>
                             </div>
                         </div>
                         <ChildNotice :bubble="bubble"
@@ -237,7 +257,7 @@
             relationPlaceholder: function () {
                 return this.isSelected ? this.$t('edge:default') : "";
             },
-            isShrinked: function(){
+            isShrinked: function () {
                 if (this.isSelected) {
                     return false;
                 }
@@ -500,7 +520,7 @@
         max-width: 500px !important;
     }
 
-    .vertex-left-right-drop{
+    .vertex-left-right-drop {
         position: absolute !important;
         width: 60px !important;
         height: 100% !important;
@@ -524,4 +544,16 @@
         z-index: -1;
     }
 
+    .in-label-buttons {
+        position: absolute;
+        top: 20%;
+    }
+
+    .w-500 {
+        width: 500px;
+    }
+
+    .in-label-buttons-left {
+        right: 4px;
+    }
 </style>

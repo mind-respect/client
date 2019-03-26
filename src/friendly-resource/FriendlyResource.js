@@ -490,9 +490,9 @@ FriendlyResource.FriendlyResource.prototype._getNextBubble = function (bottom) {
 
 FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isChildExpand) {
     this.isExpanded = true;
-    // if (!avoidCenter && !isChildExpand) {
-    Scroll.centerBubbleForTreeOrNotIfApplicable(this);
-    // }
+    if (!avoidCenter && !isChildExpand) {
+        Scroll.centerBubbleForTreeOrNotIfApplicable(this);
+    }
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {

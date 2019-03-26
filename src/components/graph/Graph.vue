@@ -7,7 +7,7 @@
         <!--<div :style="'width:' + leftWidth() + 'px'"></div>-->
         <div style="width:8000px;"></div>
         <v-layout row class='root-vertex-super-container vh-center ma-5 pa-5' data-zoom='1'>
-            <v-flex grow class="vertices-children-container left-oriented">
+            <v-flex grow class="vertices-children-container left-oriented ml-5">
                 <v-layout row v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
                     <v-flex grow>
                         <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
@@ -17,7 +17,7 @@
             <v-flex grow class="vh-center pl-5 pr-5">
                 <Bubble :bubble="graph.center"></Bubble>
             </v-flex>
-            <v-flex grow class="vertices-children-container right-oriented" style="flex-basis: 100%;">
+            <v-flex grow class="vertices-children-container right-oriented mr-5" style="flex-basis: 100%;">
                 <v-layout v-for="rightBubble in graph.center.rightBubbles" :key="rightBubble.uiId">
                     <v-flex grow>
                         <Bubble :bubble="addBubbleContext(rightBubble, graph.center, 'right')"></Bubble>

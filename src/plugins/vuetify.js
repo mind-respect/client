@@ -9,7 +9,11 @@ Vue.use(Vuetify, {
     theme: {
         primary: '#000000',
         secondary: colors.indigo.darken4,
+        secondaryLight: colors.indigo.lighten2,
         third: colors.teal.darken1,
+        thirdLight: colors.teal.lighten1,
+        gray: colors.blueGrey.lighten1,
+        red: colors.red.lighten2,
         accent: '#82B1FF',
         error: '#ff4444',
         info: '#33b5e5',

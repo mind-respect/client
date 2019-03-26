@@ -86,6 +86,7 @@ const Scroll = {
         );
     },
     centerBubbleForTreeOrNotIfApplicable: function (bubble, isForTree) {
+        console.log(bubble.getHtml())
         Vue.nextTick(function () {
             setTimeout(function () {
                 let element = bubble.getLabelHtml();
@@ -98,5 +99,6 @@ const Scroll = {
             }, 100)
         });
     }
+
 };
 export default Scroll;

@@ -62,7 +62,10 @@ SubGraphController.prototype.load = function () {
         ).forEach(function (groupRelationRoot) {
             if (groupRelationRoot.isGroupRelation() && groupRelationRoot.isTrulyAGroupRelation()) {
                 let childIndex = childrenIndex[groupRelationRoot.getFirstVertex(childrenIndex).getUri()];
-                let addLeft = childIndex !== undefined && childIndex.toTheLeft;
+                let addLeft;
+                if (childIndex !== undefined) {
+                    addLeft = childIndex.toTheLeft;
+                }
                 modelToAddChild.addChild(
                     groupRelationRoot,
                     addLeft
@@ -81,7 +84,7 @@ SubGraphController.prototype.load = function () {
 
                     let childIndex = childrenIndex[triple.vertex.getUri()];
                     let addLeft;
-                    if (childIndex !== undefined ){
+                    if (childIndex !== undefined) {
                         addLeft = childIndex.toTheLeft;
                     }
                     modelToAddChild.addChild(
