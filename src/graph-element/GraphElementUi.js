@@ -944,12 +944,6 @@ api.GraphElementUi.prototype.setCenterBubbleFont = function (font) {
     }
 };
 
-EventBus.subscribe(
-    '/event/ui/graph/vertex/privacy/updated',
-    function (event, graphElement) {
-        graphElement.reviewInLabelButtonsVisibility();
-    }
-);
 
 export default api;
 

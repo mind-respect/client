@@ -152,14 +152,6 @@ api.EdgeUi.prototype.getTagNumberOfOtherReferences = function (tag) {
     );
 };
 
-EventBus.subscribe(
-    '/event/ui/graph/vertex/privacy/updated',
-    function (event, graphElement) {
-        graphElement.applyToConnectedEdges(function (edge) {
-            edge.reviewInLabelButtonsVisibility();
-        });
-    }
-);
 GraphElementUi.buildCommonConstructors(api);
 
 export default api;

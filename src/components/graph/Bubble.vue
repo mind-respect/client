@@ -104,7 +104,9 @@
                                             'in-label-buttons-left':bubble.isToTheLeft()
                                         }"
                                 >
-                                    <v-icon small color="secondary">lock</v-icon>
+                                    <v-icon small color="secondary" v-if="bubble.isPrivate()">lock</v-icon>
+                                    <v-icon small color="secondary" v-if="bubble.isPublic()">public</v-icon>
+                                    <v-icon small color="secondary" v-if="bubble.isFriendsOnly()">people</v-icon>
                                 </div>
                                 <div
                                         class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"

@@ -58,7 +58,6 @@ VertexController.prototype.addChild = function (isToTheLeft) {
             this.getModel().addChild(triple.edge, isToTheLeft);
             if (ShareLevel.PRIVATE === this.getModel().getModel().getShareLevel()) {
                 triple.destination.setShareLevel(ShareLevel.PRIVATE);
-                // triple.destinationVertex().reviewInLabelButtonsVisibility();
             } else {
                 return triple.destination.getController().setShareLevel(
                     this.getModel().getShareLevel()
@@ -476,7 +475,6 @@ VertexController.prototype.setShareLevel = function (shareLevel) {
                 vertexUi.getParentVertex().getModel().incrementNbFriendNeighbors();
             }
             vertexUi.getModel().setShareLevel(shareLevel.toUpperCase());
-            vertexUi.reviewInLabelButtonsVisibility(true);
         });
     }.bind(this));
 };
