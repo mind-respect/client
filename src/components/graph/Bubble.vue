@@ -78,13 +78,13 @@
                     <v-spacer v-if="bubble.isToTheLeft() && bubble.isLeaf()"></v-spacer>
                     <div
                             v-if="bubble.isVertex()"
-                            class="bubble vertex graph-element relative" :class="{
+                            class="bubble vertex graph-element relative vh-center" :class="{
                         'selected' : (isSelected || isLabelDragOver || isLeftRightDragOver),
                         'center-vertex': bubble.isCenter,
                         'reverse': bubble.orientation === 'left'
                 }">
                         <div class="image_container"></div>
-                        <div class="in-bubble-content-wrapper">
+                        <div class="in-bubble-content-wrapper" style="position:relative;">
                             <div
                                     class="in-bubble-content pl-1 pr-1 pt-1 pb-1"
                                     :class="{
@@ -122,6 +122,7 @@
                             </div>
                         </div>
                         <ChildNotice :bubble="bubble"
+                                     class=""
                                      v-if="bubble.canExpand()"></ChildNotice>
                     </div>
                     <div

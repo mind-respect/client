@@ -68,8 +68,8 @@
         color: red;
     }
 
-    .right-oriented .hidden-properties-container{
-        position:absolute;
-        top:30%;
-    }
+    /*.right-oriented .hidden-properties-container{*/
+        /*position:absolute;*/
+        /*top:30%;*/
+    /*}*/
 </style>

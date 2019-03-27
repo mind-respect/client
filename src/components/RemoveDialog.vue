@@ -64,7 +64,9 @@
                 </v-list>
             </v-card-text>
             <v-card-actions>
-                <v-btn color="secondary" class="ml-2" @click="remove">
+                <v-btn color="secondary" class="ml-2" @click="remove"
+                       v-shortkey="['enter']"
+                       @shortkey="remove">
                     <v-icon class="mr-2">delete</v-icon>
                     {{$t('remove:confirm')}}
                     <span v-if="multiple" class="ml-2">
@@ -73,7 +75,6 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                        ref="removeBtn"
                         color="third" dark
                         class="mr-2"
                         @click="removeDialog = false"
@@ -149,11 +150,7 @@
                 }
             },
             removeDialog: function () {
-                if (this.removeDialog === true) {
-                    Vue.nextTick(function () {
-                        this.$refs["removeBtn"].$el.focus()
-                    }.bind(this))
-                } else {
+                if (this.removeDialog === false) {
                     this.$store.dispatch("setIsRemoveFlow", false)
                 }
             }
