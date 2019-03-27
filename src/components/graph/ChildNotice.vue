@@ -3,8 +3,8 @@
   -->
 
 <template>
-    <div class="hidden-properties-container" @click="click">
-        <div class="hidden-properties-content bubble-size"
+    <div class="hidden-properties-container vh-center" @click="click">
+        <div class="hidden-properties-content bubble-size vh-center"
              :class="{
                 'reverse' : bubble.orientation === 'left'
              }"
@@ -68,4 +68,9 @@
         color: red;
     }
 
+    .right-oriented .hidden-properties-container{
+        position:absolute;
+        top:30%;
+
+    }
 </style>
