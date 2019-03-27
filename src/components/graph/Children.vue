@@ -4,20 +4,20 @@
 
 <template>
     <div>
-        <div class="vertices-children-container" v-if="bubble.isGroupRelation()">
+        <div class="vertices-children-container" v-if="!bubble.isCenter && bubble.isVertex()">
+            <div v-for="child in bubble.rightBubbles">
+                <Bubble v-if="child.isGroupRelation" :bubble="addGroupRelationContext(child, bubble)"></Bubble>
+                <Bubble v-else :bubble="addEdgeContext(child, child.destination, bubble)"></Bubble>
+            </div>
+        </div>
+        <div class="vertices-children-container" v-if="bubble.isEdge()" transition="fade-transition">
+            <Bubble :bubble="addVertexContext(bubble.destinationVertex, bubble.parentVertex)"></Bubble>
+        </div>
+        <div class="vertices-children-container" v-if="bubble.isGroupRelation()" transition="fade-transition">
             <div v-for="child in bubble._sortedImmediateChild">
                 <div v-for="(triple, uiId) in child">
                     <Bubble :bubble="addEdgeContext(triple.edge, triple.vertex, bubble.parentVertex)"></Bubble>
                 </div>
-            </div>
-        </div>
-        <div class="vertices-children-container" v-if="bubble.isEdge()">
-            <Bubble :bubble="addVertexContext(bubble.destinationVertex, bubble.parentVertex)"></Bubble>
-        </div>
-        <div class="vertices-children-container" v-if="!bubble.isCenter && bubble.isVertex()">
-            <div v-for="child in bubble.rightBubbles">
-                    <Bubble v-if="child.isGroupRelation" :bubble="addGroupRelationContext(child, bubble)"></Bubble>
-                    <Bubble v-else :bubble="addEdgeContext(child, child.destination, bubble)"></Bubble>
             </div>
         </div>
     </div>
@@ -31,7 +31,7 @@
         },
         mounted: function () {
             // console.log(Bubble);
-            if(this.bubble.isGroupRelation()){
+            if (this.bubble.isGroupRelation()) {
                 this.bubble.sortedImmediateChild(
                     this.bubble.parentVertex.getChildrenIndex()
                 );

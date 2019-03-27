@@ -46,10 +46,12 @@
     }" :id="containerId">
             <v-flex class="v-center">
                 <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
-                <Children :bubble="bubble"
-                          v-if="bubble.orientation === 'left'"
-                >
-                </Children>
+                <transition name="fade">
+                    <Children :bubble="bubble"
+                              v-if="bubble.orientation === 'left' && (!bubble.isVertex() || bubble.rightBubbles.length > 0)"
+                    >
+                    </Children>
+                </transition>
                 <div class='vertex-container v-center'
                      :class="{
                 'vh-center':bubble.orientation === 'center',
@@ -171,10 +173,12 @@
                         </div>
                     </div>
                 </div>
-                <Children :bubble="bubble"
-                          v-if="bubble.orientation === 'right'"
-                >
-                </Children>
+                <transition name="fade">
+                    <Children :bubble="bubble"
+                              v-if="bubble.orientation === 'right' && (!bubble.isVertex() || bubble.rightBubbles.length > 0)"
+                    >
+                    </Children>
+                </transition>
             </v-flex>
         </v-layout>
         <v-flex xs12
@@ -555,5 +559,19 @@
 
     .in-label-buttons-left {
         right: 4px;
+    }
+
+    .fade-enter-active {
+        transition: all .9s ease;
+    }
+
+    .fade-leave-active {
+        transition: all 2.4s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    }
+
+    .fade-enter, .fade-leave-to
+        /* .slide-fade-leave-active below version 2.1.8 */
+    {
+        opacity: 0;
     }
 </style>
