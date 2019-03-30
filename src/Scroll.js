@@ -7,7 +7,7 @@ import Vue from 'vue'
 import VueDragscroll from 'vue-dragscroll'
 import UiUtils from '@/UiUtils'
 
-Vue.use(VueDragscroll)
+Vue.use(VueDragscroll);
 Vue.use(VueScrollTo);
 
 const Scroll = {

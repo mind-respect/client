@@ -3,8 +3,9 @@
   -->
 
 <template>
-    <div v-if="loaded"
-    >
+    <div v-if="loaded">
+        <EdgeDrawing :bubble="bubble" :isLeft="true" v-if="bubble.isToTheLeft() || bubble.isCenter"></EdgeDrawing>
+        <EdgeDrawing :bubble="bubble" :isLeft="false" v-if="!bubble.isToTheLeft() || bubble.isCenter"></EdgeDrawing>
         <v-flex xs12>
             <v-flex xs12 class="pt-1 dotted-border-top"
                     @dragover="topDragEnter"
@@ -225,13 +226,15 @@
     import ChildNotice from '@/components/graph/ChildNotice'
     import GraphUi from '@/graph/GraphUi'
     import IdUri from '@/IdUri'
+    import EdgeDrawing from '@/components/graph/EdgeDrawing'
 
     export default {
         name: "Bubble",
         props: ['bubble'],
         components: {
             Children,
-            ChildNotice
+            ChildNotice,
+            EdgeDrawing
         },
         data: function () {
             return {
@@ -483,11 +486,6 @@
 
 <style scoped>
 
-    .vertex-container {
-        height: 100%;
-        position: relative;
-    }
-
     .bubble-size {
         font-size: 18px !important;
     }
@@ -565,11 +563,11 @@
     }
 
     .fade-enter-active {
-        transition: all .9s ease;
+        transition: all .3s ease;
     }
 
     .fade-leave-active {
-        transition: all 2.4s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+        transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
     }
 
     .fade-enter, .fade-leave-to
