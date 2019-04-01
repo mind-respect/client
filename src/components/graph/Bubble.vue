@@ -45,7 +45,7 @@
         'vertex-tree-container': !bubble.isCenter,
         'vertex-container': bubble.isCenter
     }" :id="containerId">
-            <v-flex class="v-center">
+            <v-flex class="v-center drop-relative-container">
                 <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
                 <transition name="fade">
                     <Children :bubble="bubble"
@@ -87,7 +87,7 @@
                         <div class="image_container"></div>
                         <div class="in-bubble-content-wrapper" style="position:relative;">
                             <div
-                                    class="in-bubble-content pl-1 pr-1 pt-1 pb-1"
+                                    class="in-bubble-content  pt-1 pb-1"
                                     :class="{
                                         'reverse': bubble.orientation === 'left'
                                     }"
@@ -147,7 +147,7 @@
                             'selected' : isSelected
                  }">
                         <div class="image_container"></div>
-                        <div class="in-bubble-content" @click="click" @dblclick="dblclick"
+                        <div class="in-bubble-content pl-4 pr-4" @click="click" @dblclick="dblclick"
                              @mousedown="mouseDown"
                              @dragstart="dragStart"
                              @dragend="dragEnd"
@@ -159,7 +159,7 @@
                                         @dragleave="labelDragLeave"
                                         @drop="labelDrop"
                                         :selected="isSelected || isLabelDragOver"
-                                        class="pt-0 pb-0 mt-0 mb-0"
+                                        class="pt-0 pb-0 mt-0 mb-0 ma-0 pa-0"
                                         dark
                                         :class="{
                                         'is-shrinked' : isShrinked
@@ -308,12 +308,14 @@
                 labelHtml.contentEditable = "false";
                 this.bubble.setLabel(labelHtml.innerHTML);
                 FriendlyResourceService.updateLabel(this.bubble)
+                this.$store.dispatch("redraw");
             },
             keydown: function (event) {
                 if ([KeyCode.KEY_RETURN, KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {
                     event.preventDefault();
                     return this.bubble.getLabelHtml().blur();
                 }
+                this.$store.dispatch("redraw");
             },
             checkIsSelected: function () {
                 let found = false;
@@ -516,6 +518,10 @@
 
     .border-visible {
         border-color: red;
+    }
+
+    .drop-relative-container {
+        position: relative;
     }
 
     .vertex-top-bottom-drop {

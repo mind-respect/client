@@ -187,4 +187,9 @@ api.Edge.prototype.remove = function () {
     this.getParentBubble().removeChild(this);
 };
 
+api.Edge.prototype.getChip = function () {
+    let html = this.getHtml();
+    return html.querySelectorAll('.v-chip')[0];
+};
+
 export default api;

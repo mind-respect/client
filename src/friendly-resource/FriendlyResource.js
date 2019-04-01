@@ -7,6 +7,7 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import Focus from '@/Focus'
 import SelectionHandler from '@/SelectionHandler'
 import Scroll from '@/Scroll'
+import Store from '@/store'
 
 const MoveRelation = {
     "Parent": "parent",
@@ -352,6 +353,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
             child.orientation = otherBubble.orientation;
         }.bind(this))
     }
+    Store.dispatch("redraw");
     // this._resetIsToTheLeft();
     // if (isOriginalToTheLeft === this.isToTheLeft()) {
     //     return;
@@ -493,6 +495,7 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isCh
     if (!avoidCenter && !isChildExpand) {
         Scroll.centerBubbleForTreeOrNotIfApplicable(this);
     }
+    Store.dispatch("redraw");
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {

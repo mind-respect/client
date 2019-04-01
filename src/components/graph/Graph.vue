@@ -3,30 +3,33 @@
   -->
 
 <template>
-    <div id="drawn_graph" v-if="loaded" @click="click" data-zoom="9" class="vh-center">
-        <!--<div :style="'width:' + leftWidth() + 'px'"></div>-->
-        <div style="width:8000px;"></div>
-        <v-layout row class='root-vertex-super-container vh-center ma-5 pa-5' data-zoom='1'>
-            <v-flex grow class="vertices-children-container left-oriented" style="width:7000px;">
-                <v-layout row v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
-                    <v-flex grow>
-                        <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
-                    </v-flex>
-                </v-layout>
-            </v-flex>
-            <v-flex grow class="vh-center pl-5 pr-5">
-                <Bubble :bubble="graph.center"></Bubble>
-            </v-flex>
-            <v-flex grow class="vertices-children-container right-oriented" style="width:7000px;">
-                <v-layout v-for="rightBubble in graph.center.rightBubbles" :key="rightBubble.uiId">
-                    <v-flex grow>
-                        <Bubble :bubble="addBubbleContext(rightBubble, graph.center, 'right')"></Bubble>
-                    </v-flex>
-                </v-layout>
-            </v-flex>
-        </v-layout>
-        <div style="width:8000px;"></div>
+    <div>
+        <div id="drawn_graph" v-if="loaded" @click="click" data-zoom="9" class="vh-center">
+            <!--<div :style="'width:' + leftWidth() + 'px'"></div>-->
+            <div style="width:8000px;"></div>
+            <v-layout row class='root-vertex-super-container vh-center ma-5 pa-5' data-zoom='1'>
+                <v-flex grow class="vertices-children-container left-oriented" style="width:7000px;">
+                    <v-layout row v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
+                        <v-flex grow>
+                            <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
+                        </v-flex>
+                    </v-layout>
+                </v-flex>
+                <v-flex grow class="vh-center">
+                    <Bubble :bubble="graph.center"></Bubble>
+                </v-flex>
+                <v-flex grow class="vertices-children-container right-oriented" style="width:7000px;">
+                    <v-layout v-for="rightBubble in graph.center.rightBubbles" :key="rightBubble.uiId">
+                        <v-flex grow>
+                            <Bubble :bubble="addBubbleContext(rightBubble, graph.center, 'right')"></Bubble>
+                        </v-flex>
+                    </v-layout>
+                </v-flex>
+            </v-layout>
+            <div style="width:8000px;"></div>
+        </div>
         <RemoveDialog></RemoveDialog>
+        <div id="svg-container" style="position:absolute;width:100%;height:100%;overflow:visible;top:0;left:0;"></div>
     </div>
     <!--<div :style="'width:' + rightWidth() + 'px'"></div>-->
 </template>

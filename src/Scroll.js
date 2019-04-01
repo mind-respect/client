@@ -6,6 +6,7 @@ import router from '@/router'
 import Vue from 'vue'
 import VueDragscroll from 'vue-dragscroll'
 import UiUtils from '@/UiUtils'
+import Store from '@/store'
 
 Vue.use(VueDragscroll);
 Vue.use(VueScrollTo);
@@ -86,7 +87,6 @@ const Scroll = {
         );
     },
     centerBubbleForTreeOrNotIfApplicable: function (bubble, isForTree) {
-        console.log(bubble.getHtml())
         Vue.nextTick(function () {
             setTimeout(function () {
                 let element = bubble.getLabelHtml();
@@ -95,6 +95,7 @@ const Scroll = {
                 }
                 if (!UiUtils.isElementFullyOnScreen(element)) {
                     Scroll.goToGraphElement(bubble)
+                    Store.dispatch("redraw");
                 }
             }, 100)
         });

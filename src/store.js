@@ -22,7 +22,8 @@ const Store = new Vuex.Store({
     state: {
         user: null,
         dragged: null,
-        isRemoveFlow : false
+        isRemoveFlow: false,
+        redraws: Math.random()
     },
     mutations: {
         setUser: function (state, user) {
@@ -52,6 +53,9 @@ const Store = new Vuex.Store({
         },
         setIsRemoveFlow: function (state, isRemoveFlow) {
             state.isRemoveFlow = isRemoveFlow;
+        },
+        redraw: function (state) {
+            state.redraws = Math.random();
         }
     },
     actions: {
@@ -66,6 +70,9 @@ const Store = new Vuex.Store({
         },
         setIsRemoveFlow: function (action, isRemoveFlow) {
             action.commit('setIsRemoveFlow', isRemoveFlow);
+        },
+        redraw: function (action) {
+            action.commit('redraw', true);
         }
     }
 });
