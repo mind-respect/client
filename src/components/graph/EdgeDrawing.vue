@@ -18,9 +18,9 @@
                 v-if="!isLeft && this.children.length > 1"
                 fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
         />
-        <!--<path :d="childrenLines()"-->
-        <!--fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"-->
-        <!--&gt;</path>-->
+        <path :d="childrenLines()"
+              fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
+        ></path>
     </svg>
 </template>
 
@@ -44,26 +44,25 @@
                 topPosition: null,
                 bottomPosition: null,
                 lowestPosition: null,
-                highestPosition: null
+                highestPosition: null,
+                bubbleRect: null
             }
         },
         mounted: function () {
             this.redraw();
         },
-        computed: {
-            position: function () {
-                let position = this.getBubblePosition(this.bubble);
-                return position;
-            }
-        },
         methods: {
             redraw: function () {
-                // this.loaded = false;
-                // if(this.bubble.getLabel() === "moustache"){
-                //     debugger;
-                // }
-                this.children = [];
-                this.children = this.getChildren();
+                let element = this.bubble.getHtml();
+                if (element === null) {
+                    this.$nextTick(function () {
+                        console.log('null bubble html redraw');
+                        this.redraw();
+                    }.bind(this));
+                    return;
+                }
+                this.bubbleRect = element.getBoundingClientRect();
+                this.children = this.bubble.getImmediateChild(this.isLeft);
                 if (this.children.length > 1) {
                     this.highestChild = this.children[0];
                     this.lowestChild = this.children[this.children.length - 1];
@@ -112,13 +111,32 @@
             ,
             childrenLines: function () {
                 let lines = "";
+                let inBetweenBuffer = 25;
                 this.children.forEach(function (child) {
                     if (child.isSameBubble(this.highestChild) || child.isSameBubble(this.lowestChild)) {
                         return;
                     }
-                    let childPosition = this.getBubblePosition(child);
-                    lines += "M " + childPosition.x + " " + childPosition.y;
-                    lines += "L " + this.position.x + " " + childPosition.y
+                    let childPosition = this.getBubblePosition(child, true);
+                    let xAdjust = 0;
+                    let yAdjust = 0;
+                    let isChildInBetween = childPosition.y > (this.topPosition.y - inBetweenBuffer) && childPosition.y < (this.bottomPosition.y + inBetweenBuffer)
+                    if (isChildInBetween) {
+                        xAdjust = this.isLeft ? standardInnerMargin * -1 : standardInnerMargin;
+                        let startX = (this.topPosition.x + xAdjust);
+                        let startY = (childPosition.y + yAdjust);
+                        lines += "M " + startX + " " + startY + " ";
+                        lines += "L " + childPosition.x + " " + childPosition.y
+                    } else {
+                        let isAbove = childPosition.y < this.topPosition.y;
+                        let yAdjust = isAbove ? 10 : -10;
+                        lines += "M " + this.topPosition.x + " " + (childPosition.y + yAdjust) + " ";
+                        let startCurve = (this.topPosition.x) + "  " + (childPosition.y + yAdjust) + " ";
+                        let endXCurve  = this.isLeft ? + 40 : -40;
+                        let endYCurve  = isAbove ? -10 : 10;
+                        let endCurve = (childPosition.x + endXCurve) + " " + (childPosition.y + endYCurve) + " ";
+                        let endPoint = childPosition.x + " " + childPosition.y;
+                        lines += "C " + startCurve + endCurve + endPoint;
+                    }
                 }.bind(this));
                 return lines;
             }
@@ -158,49 +176,15 @@
                 position.y = Math.round(position.y);
 
                 return position;
-
-                // let jOffset = $(element).offset();
-                // return {
-                //     x: jOffset.left,
-                //     y: jOffset.top - 48 - rect.height
-                // };
-
-                // var curTransform = new WebKitCSSMatrix(window.getComputedStyle(element).webkitTransform);
-                // console.log(element.offsetLeft + curTransform.m41); //real offset left
-                // console.log(element.offsetTop + curTransform.m42);
-                //
-                // return {
-                //     x: element.offsetLeft + curTransform.m41 + window.scrollX,
-                //     y: element.offsetTop + curTransform.m42 + window.scrollY
-                // }
-            }
-            ,
-            getChildren: function () {
-                if (this.bubble.isGroupRelation()) {
-                    return this.bubble._sortedImmediateChild;
-                } else if (this.bubble.isEdge()) {
-                    return [this.bubble.getDestinationVertex()]
-                } else if (this.bubble.isCenter) {
-                    return this.isLeft ? this.bubble.leftBubbles : this.bubble.rightBubbles;
-                } else {
-                    return this.bubble.rightBubbles;
-                }
             },
             topPositionCalculate: function () {
-                let bubble = this.bubble;
-                let element = bubble.getHtml();
-                let rect = element.getBoundingClientRect();
                 let position = {
                     x: 0,
                     y: 0
                 };
-                position.x = this.isLeft ? rect.left : rect.right;
+                position.x = this.isLeft ? this.bubbleRect.left : this.bubbleRect.right;
                 position.x += window.pageXOffset;
-                // if (this.isLeft && isChild) {
-                //     position.x += rect.width;
-                // }
-
-                let isSmall = (rect.width - standardInnerMargin * 2) < standardInnerMargin;
+                let isSmall = (this.bubbleRect.width - standardInnerMargin * 2) < standardInnerMargin;
                 let innerMargin = isSmall ? smallInnerMargin : standardInnerMargin;
                 let xAdjust = this.isLeft ? innerMargin : innerMargin * -1;
                 position.x += xAdjust;
@@ -211,33 +195,22 @@
                 } else {
                     yAdjust = this.isLeft ? -44 : -65;
                 }
-                // moustacheasdfa sdofijdas foiadsjf asdfoijasd fadsoipf jasdf opiasjdf sdpofijasdf asdf
-                // if(this.bubble.getLabel() === "a project"){
-                //     debugger;
-                // }
-                position.y = rect.top + yAdjust + window.pageYOffset;
+                position.y = this.bubbleRect.top + yAdjust + window.pageYOffset;
                 return position;
             },
             bottomPositionCalculate: function () {
-                let bubble = this.bubble;
-                let element = bubble.getHtml();
-                let rect = element.getBoundingClientRect();
                 let position = {
                     x: 0,
                     y: 0
                 };
-                position.x = rect.x + window.pageXOffset;
-                // if (this.isLeft && isChild) {
-                //     position.x += rect.width;
-                // }
-                let isSmall = (rect.width - standardInnerMargin * 2) < standardInnerMargin;
+                position.x = this.bubbleRect.x + window.pageXOffset;
+                let isSmall = (this.bubbleRect.width - standardInnerMargin * 2) < standardInnerMargin;
                 let innerMargin = isSmall ? smallInnerMargin : standardInnerMargin;
-                let xAdjust = this.isLeft ? innerMargin : rect.width - innerMargin;
+                let xAdjust = this.isLeft ? innerMargin : this.bubbleRect.width - innerMargin;
                 position.x += xAdjust;
                 position.x = Math.round(position.x);
-                let poire = element.offsetParent.getBoundingClientRect();
                 let yAdjust = this.isLeft ? -63 : -83;
-                position.y = Math.round(rect.bottom + yAdjust + window.pageYOffset);
+                position.y = Math.round(this.bubbleRect.bottom + yAdjust + window.pageYOffset);
                 return position;
             },
         }
@@ -245,11 +218,5 @@
 </script>
 
 <style scoped>
-    .svg-container {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
+
 </style>
