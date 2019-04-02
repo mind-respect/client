@@ -4,8 +4,6 @@
 
 <template>
     <div v-if="loaded">
-        <EdgeDrawing :bubble="bubble" :isLeft="true" v-if="bubble.isToTheLeft() || bubble.isCenter"></EdgeDrawing>
-        <EdgeDrawing :bubble="bubble" :isLeft="false" v-if="!bubble.isToTheLeft() || bubble.isCenter"></EdgeDrawing>
         <v-flex xs12>
             <v-flex xs12 class="pt-1 dotted-border-top"
                     @dragover="topDragEnter"
@@ -226,15 +224,13 @@
     import ChildNotice from '@/components/graph/ChildNotice'
     import GraphUi from '@/graph/GraphUi'
     import IdUri from '@/IdUri'
-    import EdgeDrawing from '@/components/graph/EdgeDrawing'
 
     export default {
         name: "Bubble",
         props: ['bubble'],
         components: {
             Children,
-            ChildNotice,
-            EdgeDrawing
+            ChildNotice
         },
         data: function () {
             return {

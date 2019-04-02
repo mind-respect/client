@@ -27,9 +27,11 @@
                 </v-flex>
             </v-layout>
             <div style="width:8000px;"></div>
+            <div class="svg-container" style="z-index:-1">
+                <GraphDrawing :center="graph.center" :key="redrawKey" v-if="redrawKey"></GraphDrawing>
+            </div>
         </div>
         <RemoveDialog></RemoveDialog>
-        <div id="svg-container" style="position:absolute;width:100%;height:100%;overflow:visible;top:0;left:0;"></div>
     </div>
     <!--<div :style="'width:' + rightWidth() + 'px'"></div>-->
 </template>
@@ -37,6 +39,7 @@
 <script>
     import MindMapInfo from '@/MindMapInfo'
     import Bubble from '@/components/graph/Bubble'
+    import GraphDrawing from '@/components/graph/GraphDrawing'
     import Scroll from '@/Scroll'
     import Vue from 'vue'
     import GraphUi from '@/graph/GraphUi'
@@ -49,13 +52,15 @@
         name: "Graph",
         components: {
             Bubble,
-            RemoveDialog
+            RemoveDialog,
+            GraphDrawing
         },
         data: function () {
             return {
                 graph: null,
                 loaded: false,
-                centerServerFormat: null
+                centerServerFormat: null,
+                redrawKey: null
             }
         },
         mounted: function () {
@@ -115,9 +120,24 @@
                 return nbBubbles;
             }
         },
+        computed: {
+            redraws: function () {
+                return this.$store.state.redraws;
+            }
+        },
         watch: {
             "centerServerFormat.label": function () {
                 document.title = this.graph.center.getTextOrDefault() + " | MindRespect";
+            },
+            redraws: function () {
+                // if (!this.loaded) {
+                //     return;
+                // }
+                this.$nextTick(function () {
+                    setTimeout(function () {
+                        this.redrawKey = Math.random();
+                    }.bind(this), 50)
+                }.bind(this));
             }
         }
     }

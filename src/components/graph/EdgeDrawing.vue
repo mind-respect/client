@@ -3,36 +3,35 @@
   -->
 
 <template>
-    <div class="svg-container" v-if="loaded && bubble.isVertex()" style="z-index:-1">
-        <svg
-                style="position:absolute;overflow:visible; top:0; left:0; height:100%; width:100%;z-index:-1;"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg">
-            <path
-                    :d="topBottomLineAtLeft()"
-                    v-if="isLeft && this.children.length > 1"
-                    fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
-            />
-            <path
-                    :d="topBottomLineAtRight()"
-                    v-if="!isLeft && this.children.length > 1"
-                    fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
-            />
-            <!--<path :d="childrenLines()"-->
-            <!--fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"-->
-            <!--&gt;</path>-->
-        </svg>
-    </div>
+    <svg
+            v-if="loaded"
+            style="position:absolute;overflow:visible; top:0; left:0; height:100%; width:100%;z-index:-1;"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg">
+        <path
+                :d="topBottomLineAtLeft()"
+                v-if="isLeft && this.children.length > 1"
+                fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
+        />
+        <path
+                :d="topBottomLineAtRight()"
+                v-if="!isLeft && this.children.length > 1"
+                fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
+        />
+        <!--<path :d="childrenLines()"-->
+        <!--fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"-->
+        <!--&gt;</path>-->
+    </svg>
 </template>
 
 <script>
 
     const arcRadius = 20;
     const arcRadiusLeft = arcRadius * -1;
-    const standardInnerMaring = 26;
+    const standardInnerMargin = 26;
     const smallInnerMargin = 15;
     export default {
-        name: "EdgesDrawing",
+        name: "EdgeDrawing",
         props: ['bubble', 'isLeft'],
         data: function () {
             return {
@@ -55,17 +54,6 @@
             position: function () {
                 let position = this.getBubblePosition(this.bubble);
                 return position;
-            },
-            redraws: function () {
-                return this.$store.state.redraws;
-            },
-        },
-        watch: {
-            redraws: function () {
-                // if (!this.loaded) {
-                //     return;
-                // }
-                this.redraw();
             }
         },
         methods: {
@@ -75,20 +63,16 @@
                 //     debugger;
                 // }
                 this.children = [];
-                this.$nextTick(function () {
-                    setTimeout(function () {
-                        this.children = this.getChildren();
-                        if (this.children.length > 1) {
-                            this.highestChild = this.children[0];
-                            this.lowestChild = this.children[this.children.length - 1];
-                            this.topPosition = this.topPositionCalculate();
-                            this.bottomPosition = this.bottomPositionCalculate();
-                            this.highestPosition = this.highestPositionCalculate();
-                            this.lowestPosition = this.lowestPositionCalculate();
-                            this.loaded = true;
-                        }
-                    }.bind(this), 50);
-                }.bind(this))
+                this.children = this.getChildren();
+                if (this.children.length > 1) {
+                    this.highestChild = this.children[0];
+                    this.lowestChild = this.children[this.children.length - 1];
+                    this.topPosition = this.topPositionCalculate();
+                    this.bottomPosition = this.bottomPositionCalculate();
+                    this.highestPosition = this.highestPositionCalculate();
+                    this.lowestPosition = this.lowestPositionCalculate();
+                    this.loaded = true;
+                }
             },
             highestPositionCalculate: function () {
                 return this.getBubblePosition(this.highestChild, true);
@@ -216,8 +200,8 @@
                 //     position.x += rect.width;
                 // }
 
-                let isSmall = (rect.width - standardInnerMaring * 2) < standardInnerMaring;
-                let innerMargin = isSmall ? smallInnerMargin : standardInnerMaring;
+                let isSmall = (rect.width - standardInnerMargin * 2) < standardInnerMargin;
+                let innerMargin = isSmall ? smallInnerMargin : standardInnerMargin;
                 let xAdjust = this.isLeft ? innerMargin : innerMargin * -1;
                 position.x += xAdjust;
                 position.x = Math.round(position.x);
@@ -246,8 +230,8 @@
                 // if (this.isLeft && isChild) {
                 //     position.x += rect.width;
                 // }
-                let isSmall = (rect.width - standardInnerMaring * 2) < standardInnerMaring;
-                let innerMargin = isSmall ? smallInnerMargin : standardInnerMaring;
+                let isSmall = (rect.width - standardInnerMargin * 2) < standardInnerMargin;
+                let innerMargin = isSmall ? smallInnerMargin : standardInnerMargin;
                 let xAdjust = this.isLeft ? innerMargin : rect.width - innerMargin;
                 position.x += xAdjust;
                 position.x = Math.round(position.x);
