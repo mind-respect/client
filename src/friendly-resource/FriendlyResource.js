@@ -111,6 +111,9 @@ FriendlyResource.FriendlyResource.prototype.isSameUri = function (bubble) {
 };
 
 FriendlyResource.FriendlyResource.prototype.isSameBubble = function (bubble) {
+    if(!bubble){
+        return false;
+    }
     return this.getId() === bubble.getId();
 };
 
@@ -224,12 +227,14 @@ FriendlyResource.FriendlyResource.prototype.isMeta = function () {
 
 FriendlyResource.FriendlyResource.prototype.select = function () {
     this.isSelected = true;
+    Store.dispatch("redraw");
 };
 
 FriendlyResource.FriendlyResource.prototype.deselect = function () {
     this.isSelected = false;
     this.isSingleSelected = false;
     this.getLabelHtml().blur();
+    Store.dispatch("redraw");
 };
 
 FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {

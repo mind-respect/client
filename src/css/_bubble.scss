@@ -2,35 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-#drag-bubble-text-for-chrome {
-  //position: absolute;
-  //max-width: 500px;
-  //text-align: center;
-  //font-size: calc(1em + 0.5vw);
-}
-
-#drag-bubble-text-for-chrome-container {
-  position: absolute;
-  display: table;
-}
-
-#drag-bubble-text-for-chrome {
-  font-size: calc(0.9em + 0.5vw);
-  padding: 10px;
-  width: auto;
-  max-width: 500px;
-  text-align: center;
-  display: table-cell;
-  border-radius: 50px;
-  position: relative;
-  margin: 0 auto;
-}
-
-.cboxPhoto {
-  max-width: 600px;
-  height: auto !important;
-}
-
 .bubble {
   z-index: 5;
   display: table;

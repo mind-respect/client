@@ -145,11 +145,15 @@
                             'selected' : isSelected
                  }">
                         <div class="image_container"></div>
-                        <div class="in-bubble-content pl-4 pr-4" @click="click" @dblclick="dblclick"
+                        <div class="in-bubble-content" @click="click" @dblclick="dblclick"
                              @mousedown="mouseDown"
                              @dragstart="dragStart"
                              @dragend="dragEnd"
-                             draggable="true">
+                             draggable="true"
+                             :class="{
+                                'pl-4 pr-4': !bubble.isGroupRelation()
+                             }"
+                        >
                             <div class="label-container">
                                 <v-chip color="secondary"
                                         small
