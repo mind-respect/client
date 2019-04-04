@@ -10,17 +10,21 @@
             xmlns="http://www.w3.org/2000/svg">
         <path
                 :d="topBottomLineAtLeft()"
-                v-if="isLeft && children.length > 1"
+                v-if="isLeft && children.length > 1 && highestPosition && lowestPosition"
                 fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
         />
         <path
                 :d="topBottomLineAtRight()"
-                v-if="!isLeft && children.length > 1"
+                v-if="!isLeft && children.length > 1 && highestPosition && lowestPosition"
                 fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
         />
         <path :d="drawChildren()"
               fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
         ></path>
+        <!--<path :d="drawArrowHead()"-->
+              <!--v-if="bubble.isEdge()"-->
+              <!--fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"-->
+        <!--&gt;</path>-->
     </svg>
 </template>
 
@@ -32,6 +36,7 @@
     const smallInnerMargin = 15;
     const farDistanceStandard = 30;
     const farDistanceForCenter = 33;
+    const arrowHeadLength = 10;
     export default {
         name: "EdgeDrawing",
         props: ['bubble', 'isLeft'],
@@ -59,10 +64,10 @@
         },
         methods: {
             redraw: function () {
-                let element = this.bubble.getHtml();
-                if (element === null) {
+                let element = this.getBubbleElement(this.bubble);
+                if (!element) {
                     this.$nextTick(function () {
-                        console.log('null bubble html redraw');
+                        console.warn('null bubble html redraw');
                         this.redraw();
                     }.bind(this));
                     return;
@@ -77,53 +82,28 @@
                 if (this.children.length > 1) {
                     this.highestChild = this.children[0];
                     this.lowestChild = this.children[this.children.length - 1];
-                    this.highestPosition = this.highestPositionCalculate();
-                    this.lowestPosition = this.lowestPositionCalculate();
+                    this.highestPosition = this.getChildPosition(this.highestChild);
+                    this.lowestPosition = this.getChildPosition(this.lowestChild);
                     this.isHighestInBetween = this.isChildInBetween(
-                        this.highestChild,
                         this.highestPosition
                     );
                     this.isLowestInBetween = this.isChildInBetween(
-                        this.lowestChild,
                         this.lowestPosition
                     );
 
-                    let topDistance = this.topPosition.y - this.highestPosition.y;
+                    let topDistance = this.topDistanceWithChild(this.highestPosition);
                     let isTopClose = topDistance < (this.bubble.isCenter ? farDistanceForCenter : farDistanceStandard);
-                    if (isTopClose) {
-                        if (this.isLeft) {
-                            topDistance += -19;
-                        } else {
-                            topDistance += -19
-                        }
-                    }
                     this.highestArcRadius = isTopClose ? Math.min(topDistance, arcRadiusStandard) : arcRadiusStandard;
                     this.highestArcRadius = Math.max(this.highestArcRadius, 0);
 
-                    let bottomDistance = this.lowestPosition.y - this.bottomPosition.y;
+                    let bottomDistance = this.bottomDistanceWithChild(this.lowestPosition);
                     let isBottomClose = bottomDistance < (this.bubble.isCenter ? farDistanceForCenter : farDistanceStandard);
-                    if (isBottomClose) {
-                        if (this.isLeft) {
-                            bottomDistance += 0;
-                        } else {
-                            bottomDistance += -15;
-                        }
-                    }
                     this.lowestArcRadius = isBottomClose ? Math.min(bottomDistance, arcRadiusStandard) : arcRadiusStandard;
                     this.lowestArcRadius = Math.max(this.lowestArcRadius, 0);
                     this.loaded = true;
                 } else {
                     this.loaded = true;
                 }
-            },
-            highestPositionCalculate: function () {
-                return this.getBubblePosition(this.highestChild, true);
-            },
-            lowestPositionCalculate: function () {
-                return this.getBubblePosition(
-                    this.lowestChild,
-                    true
-                );
             },
             topBottomLineAtLeft: function () {
                 let highestArcRadius = this.highestArcRadius * -1;
@@ -165,8 +145,14 @@
                 lines += "H " + this.highestPosition.x;
                 return lines
             },
-            isChildInBetween: function (child, childPosition) {
+            isChildInBetween: function (childPosition) {
                 return this.bubbleRect.top < childPosition.rect.top && this.bubbleRect.bottom > childPosition.rect.bottom;
+            },
+            topDistanceWithChild: function (childPosition) {
+                return Math.abs(this.bubbleRect.top - childPosition.rect.bottom)
+            },
+            bottomDistanceWithChild: function (childPosition) {
+                return Math.abs(this.bubbleRect.bottom - childPosition.rect.top)
             },
             buildArc: function (radius, firstPositive, secondPositive) {
                 radius = Math.abs(radius);
@@ -180,17 +166,25 @@
                     if (child.isSameBubble(this.highestChild) || child.isSameBubble(this.lowestChild)) {
                         return;
                     }
-                    let childPosition = this.getBubblePosition(child, true);
+                    let childPosition = this.getChildPosition(child);
+                    if (!childPosition) {
+                        this.loaded = false;
+                        this.$nextTick(function () {
+                            console.warn('drawChildren null child position html redraw');
+                            this.redraw();
+                        }.bind(this));
+                        return;
+                    }
                     if (this.bubble.isEdge()) {
                         let xAdjust = this.isLeft ? 13 : -13;
-                        let position = this.getBubblePosition(this.bubble, true);
+                        let position = this.getChildPosition(this.bubble);
                         lines += "M " + position.x + " " + position.y + " ";
                         lines += "H " + (childPosition.x + xAdjust);
                         return lines;
                     }
                     let xAdjust = 0;
                     let yAdjust = 0;
-                    let isChildInBetween = this.isChildInBetween(child, childPosition);
+                    let isChildInBetween = this.isChildInBetween(childPosition);
                     if (isChildInBetween) {
                         xAdjust = this.isLeft ? standardInnerMargin * -1 : standardInnerMargin;
                         let startX = (this.topPosition.x + xAdjust);
@@ -199,7 +193,7 @@
                         lines += "L " + childPosition.x + " " + childPosition.y
                     } else {
                         let isAbove = childPosition.y < this.topPosition.y;
-                        let distance = isAbove ? this.topPosition.y - childPosition.y : childPosition.y - this.bottomPosition.y;
+                        let distance = isAbove ? this.topDistanceWithChild(childPosition) : this.bottomDistanceWithChild(childPosition);
                         let isClose = distance < (this.bubble.isCenter ? farDistanceForCenter : farDistanceStandard);
                         let distanceAdjust;
                         if (isClose) {
@@ -236,38 +230,48 @@
                     }
                 }.bind(this));
                 return lines;
-            }
-            ,
-            getBubblePosition: function (bubble, isChild) {
+            },
+            drawArrowHead: function () {
+                this.topPosition = this.topPositionCalculate();
+                return "M " + this.topPosition.x + "," + this.topPosition.y + " " +
+                    "L " + (this.topPosition.x - 10) + "," + (this.topPosition.y) + " ";
+            },
+            getBubbleElement: function (bubble) {
+                if (bubble.isEdge()) {
+                    if (bubble.isShrinked()) {
+                        return bubble.getChip();
+                    } else {
+                        return bubble.getLabelHtml();
+                    }
+                }
+                if (bubble.isCenter) {
+                    return bubble.getHtml();
+                } else {
+                    return bubble.getLabelHtml();
+                }
+            },
+            getChildPosition: function (bubble) {
                 let position = {
                     x: 0,
                     y: 0,
                     rect: null
                 };
                 let yAdjust = 0;
-                let element;
-                if (isChild) {
-                    if (bubble.isEdge() && bubble.isShrinked()) {
-                        element = bubble.getChip();
-                        yAdjust = -10;
-                    } else {
-                        element = bubble.getLabelHtml();
-                    }
-                } else if (bubble.isCenter) {
-                    element = bubble.getHtml();
-                } else {
-                    element = bubble.getLabelHtml();
+                let element = this.getBubbleElement(bubble);
+                if (bubble.isEdge() && bubble.isShrinked()) {
+                    yAdjust = this.isLeft ? -10 : -10;
                 }
                 if (!element) {
                     this.loaded = false;
                     this.$nextTick(function () {
-                        this.loaded = true;
+                        console.warn('null child bubble html redraw');
+                        this.redraw();
                     }.bind(this));
-                    return position;
+                    return;
                 }
                 let rect = element.getBoundingClientRect();
                 position.rect = rect;
-                position.x = isChild && this.isLeft ? rect.right : rect.left;
+                position.x = this.isLeft ? rect.right : rect.left;
                 position.x += window.pageXOffset;
                 position.x = Math.round(position.x);
                 position.y = rect.top - (rect.height / 2) - 43 + window.pageYOffset;
@@ -275,7 +279,8 @@
                 position.y = Math.round(position.y);
 
                 return position;
-            },
+            }
+            ,
             topPositionCalculate: function () {
                 let position = {
                     x: 0,
@@ -293,6 +298,9 @@
                     yAdjust = this.isLeft ? -44 : -65;
                 } else {
                     yAdjust = this.isLeft ? -44 : -65;
+                }
+                if(this.bubble.isEdge()){
+                    yAdjust = -65;
                 }
                 position.y = this.bubbleRect.top + yAdjust + window.pageYOffset;
                 return position;
@@ -316,7 +324,8 @@
                 }
                 position.y = Math.round(this.bubbleRect.bottom + yAdjust + window.pageYOffset);
                 return position;
-            },
+            }
+            ,
         }
     }
 </script>

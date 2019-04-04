@@ -111,7 +111,7 @@ FriendlyResource.FriendlyResource.prototype.isSameUri = function (bubble) {
 };
 
 FriendlyResource.FriendlyResource.prototype.isSameBubble = function (bubble) {
-    if(!bubble){
+    if (!bubble) {
         return false;
     }
     return this.getId() === bubble.getId();
@@ -133,7 +133,9 @@ FriendlyResource.FriendlyResource.prototype.getHtml = function () {
 
 FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
     let html = this.getHtml();
-    return html.querySelectorAll('.bubble-label')[0];
+    if (html) {
+        return html.querySelectorAll('.bubble-label')[0];
+    }
 };
 
 FriendlyResource.FriendlyResource.prototype.focus = function (event) {

@@ -189,7 +189,9 @@ api.Edge.prototype.remove = function () {
 
 api.Edge.prototype.getChip = function () {
     let html = this.getHtml();
-    return html.querySelectorAll('.v-chip')[0];
+    if(html){
+        return html.querySelectorAll('.v-chip')[0];
+    }
 };
 
 export default api;

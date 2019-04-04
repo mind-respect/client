@@ -151,7 +151,9 @@
                              @dragend="dragEnd"
                              draggable="true"
                              :class="{
-                                'pl-4 pr-4': !bubble.isGroupRelation()
+                                'pl-4 pr-4': !bubble.isGroupRelation(),
+                                'pl-4': bubble.isGroupRelation() && !bubble.isToTheLeft(),
+                                'pr-4': bubble.isGroupRelation() && bubble.isToTheLeft()
                              }"
                         >
                             <div class="label-container">

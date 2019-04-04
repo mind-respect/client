@@ -16,7 +16,11 @@
             <Bubble :bubble="addVertexContext(bubble.destinationVertex, bubble.parentVertex)"></Bubble>
         </div>
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()" transition="fade-transition">
-            <div v-for="child in bubble._sortedImmediateChild">
+            <div v-for="child in bubble._sortedImmediateChild"
+                 :class="{
+                    'mt-1 mb-1' : bubble._sortedImmediateChild.length === 2
+                 }"
+            >
                 <div v-for="(triple, uiId) in child">
                     <Bubble :bubble="addEdgeContext(triple.edge, triple.vertex, bubble.parentVertex)"></Bubble>
                 </div>
