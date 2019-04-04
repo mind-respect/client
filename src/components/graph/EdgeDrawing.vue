@@ -22,8 +22,8 @@
               fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
         ></path>
         <!--<path :d="drawArrowHead()"-->
-              <!--v-if="bubble.isEdge()"-->
-              <!--fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"-->
+        <!--v-if="bubble.isEdge()"-->
+        <!--fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"-->
         <!--&gt;</path>-->
     </svg>
 </template>
@@ -82,8 +82,8 @@
                 if (this.children.length > 1) {
                     this.highestChild = this.children[0];
                     this.lowestChild = this.children[this.children.length - 1];
-                    this.highestPosition = this.getChildPosition(this.highestChild);
-                    this.lowestPosition = this.getChildPosition(this.lowestChild);
+                    this.highestPosition = this.getMiddleSidePosition(this.highestChild);
+                    this.lowestPosition = this.getMiddleSidePosition(this.lowestChild);
                     this.isHighestInBetween = this.isChildInBetween(
                         this.highestPosition
                     );
@@ -166,7 +166,7 @@
                     if (child.isSameBubble(this.highestChild) || child.isSameBubble(this.lowestChild)) {
                         return;
                     }
-                    let childPosition = this.getChildPosition(child);
+                    let childPosition = this.getMiddleSidePosition(child);
                     if (!childPosition) {
                         this.loaded = false;
                         this.$nextTick(function () {
@@ -176,34 +176,23 @@
                         return;
                     }
                     if (this.bubble.isEdge()) {
-                        let xAdjust = this.isLeft ? 13 : -13;
-                        let position = this.getChildPosition(this.bubble);
+                        let xAdjust = this.isLeft ? 0 : 0;
+                        let position = this.getMiddleSidePosition(this.bubble);
                         lines += "M " + position.x + " " + position.y + " ";
                         lines += "H " + (childPosition.x + xAdjust);
                         return lines;
                     }
-                    let xAdjust = 0;
-                    let yAdjust = 0;
                     let isChildInBetween = this.isChildInBetween(childPosition);
-                    if (isChildInBetween) {
-                        xAdjust = this.isLeft ? standardInnerMargin * -1 : standardInnerMargin;
-                        let startX = (this.topPosition.x + xAdjust);
-                        let startY = (childPosition.y + yAdjust);
+                    let position = this.getMiddleSidePosition(this.bubble, true);
+                    if (isChildInBetween || this.children.length === 1) {
+                        let startX = position.x;
+                        let startY = childPosition.y;
                         lines += "M " + startX + " " + startY + " ";
                         lines += "L " + childPosition.x + " " + childPosition.y
                     } else {
                         let isAbove = childPosition.y < this.topPosition.y;
                         let distance = isAbove ? this.topDistanceWithChild(childPosition) : this.bottomDistanceWithChild(childPosition);
                         let isClose = distance < (this.bubble.isCenter ? farDistanceForCenter : farDistanceStandard);
-                        let distanceAdjust;
-                        if (isClose) {
-                            if (this.isLeft) {
-                                distanceAdjust = isAbove ? -19 : 0;
-                            } else {
-                                distanceAdjust = isAbove ? -19 : -19;
-                            }
-                            distance += distanceAdjust;
-                        }
                         let arcRadius = isClose ? Math.min(distance, arcRadiusStandard) : arcRadiusStandard;
                         arcRadius = Math.max(arcRadius, 0);
                         if (isAbove) {
@@ -244,20 +233,23 @@
                         return bubble.getLabelHtml();
                     }
                 }
-                if (bubble.isCenter) {
-                    return bubble.getHtml();
-                } else {
+                if (bubble.isGroupRelation()) {
+                    return bubble.getChip();
+                }
+                if (bubble.isSame(this.bubble) && !bubble.isCenter) {
                     return bubble.getLabelHtml();
+                } else {
+                    return bubble.getHtml();
                 }
             },
-            getChildPosition: function (bubble) {
+            getMiddleSidePosition: function (bubble, isParent) {
                 let position = {
                     x: 0,
                     y: 0,
                     rect: null
                 };
                 let yAdjust = 0;
-                let element = this.getBubbleElement(bubble);
+                let element = isParent ? bubble.getHtml() : this.getBubbleElement(bubble);
                 if (bubble.isEdge() && bubble.isShrinked()) {
                     yAdjust = this.isLeft ? -10 : -10;
                 }
@@ -271,7 +263,11 @@
                 }
                 let rect = element.getBoundingClientRect();
                 position.rect = rect;
-                position.x = this.isLeft ? rect.right : rect.left;
+                if (isParent) {
+                    position.x = this.isLeft ? rect.left : rect.right;
+                } else {
+                    position.x = this.isLeft ? rect.right : rect.left;
+                }
                 position.x += window.pageXOffset;
                 position.x = Math.round(position.x);
                 position.y = rect.top - (rect.height / 2) - 43 + window.pageYOffset;
@@ -299,7 +295,7 @@
                 } else {
                     yAdjust = this.isLeft ? -44 : -65;
                 }
-                if(this.bubble.isEdge()){
+                if (this.bubble.isEdge()) {
                     yAdjust = -65;
                 }
                 position.y = this.bubbleRect.top + yAdjust + window.pageYOffset;

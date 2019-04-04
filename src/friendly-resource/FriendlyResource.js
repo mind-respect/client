@@ -652,9 +652,6 @@ FriendlyResource.FriendlyResource.prototype.getCreationDate = function () {
             this.friendlyResourceServerFormat.creationDate
         );
 };
-FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {
-    return this.orientation === "left";
-};
 
 FriendlyResource.FriendlyResource.prototype._buildImages = function () {
     return undefined === this.friendlyResourceServerFormat.images ?

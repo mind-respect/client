@@ -152,8 +152,8 @@
                              draggable="true"
                              :class="{
                                 'pl-4 pr-4': !bubble.isGroupRelation(),
-                                'pl-4': bubble.isGroupRelation() && !bubble.isToTheLeft(),
-                                'pr-4': bubble.isGroupRelation() && bubble.isToTheLeft()
+                                'pl-4': (bubble.isGroupRelation() && !bubble.isToTheLeft()),
+                                'pr-4': (bubble.isGroupRelation() && bubble.isToTheLeft())
                              }"
                         >
                             <div class="label-container">
@@ -169,13 +169,15 @@
                                         'is-shrinked' : isShrinked
                                     }"
                                 >
-                                    <div class="bubble-label white--text"
-                                         @blur="leaveEditFlow"
-                                         :data-placeholder="relationPlaceholder"
-                                         autocomplete="off"
-                                         v-show="!isShrinked"
-                                         v-text="bubble.getFriendlyJson().label"
-                                         @keydown="keydown"></div>
+                                    <transition name="fade">
+                                        <div class="bubble-label white--text"
+                                             @blur="leaveEditFlow"
+                                             :data-placeholder="relationPlaceholder"
+                                             autocomplete="off"
+                                             v-show="!isShrinked"
+                                             v-text="bubble.getFriendlyJson().label"
+                                             @keydown="keydown"></div>
+                                    </transition>
                                 </v-chip>
                             </div>
                         </div>

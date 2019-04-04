@@ -175,12 +175,17 @@ Vertex.prototype.getRelationWithUiParent = function () {
 
 Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     let children;
-    if (this._shouldAddLeft(isToTheLeft)) {
-        children = this.leftBubbles;
-        child.makeLeft()
+    if (this.isCenter) {
+        if (this._shouldAddLeft(isToTheLeft)) {
+            children = this.leftBubbles;
+            child.makeLeft()
+        } else {
+            children = this.rightBubbles;
+            child.makeRight();
+        }
     } else {
         children = this.rightBubbles;
-        child.makeRight();
+        child.orientation = this.orientation;
     }
     if (index === undefined) {
         children.push(child)

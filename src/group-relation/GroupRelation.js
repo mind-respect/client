@@ -478,6 +478,13 @@ GroupRelation.prototype.isARelation = function () {
     return this.getSingleEdge().getUri() === this.getIdentification().getExternalResourceUri();
 };
 
+GroupRelation.prototype.getChip = function () {
+    let html = this.getHtml();
+    if (html) {
+        return html.querySelectorAll('.v-chip')[0];
+    }
+};
+
 GroupRelation.prototype._hasOneOfTheIdentifiers = function (identifiers) {
     var has = false;
     identifiers.forEach(function (identifier) {
@@ -518,7 +525,7 @@ GroupRelation.prototype._containsAllTuplesOfGroupRelation = function (groupRelat
     return containsAll;
 };
 
-GroupRelation.prototype.isToTheLeft = function (centerBubble) {
+GroupRelation.prototype.shouldAddLeft = function (centerBubble) {
     var nbLeft = 0;
     var nbRight = 0;
     this.visitTuples(function (tuple) {
