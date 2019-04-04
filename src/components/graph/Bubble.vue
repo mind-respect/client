@@ -41,7 +41,7 @@
         <v-layout
                 row :class="{
         'vertex-tree-container': !bubble.isCenter,
-        'vertex-container': bubble.isCenter
+        'bubble-container': bubble.isCenter
     }" :id="containerId">
             <v-flex class="v-center drop-relative-container">
                 <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
@@ -51,7 +51,7 @@
                     >
                     </Children>
                 </transition>
-                <div class='vertex-container v-center'
+                <div class='bubble-container v-center'
                      :class="{
                 'vh-center':bubble.orientation === 'center',
                 'left':bubble.orientation === 'right',
@@ -569,16 +569,21 @@
     }
 
     .fade-enter-active {
-        transition: all .3s ease;
+        transition: all .6s ease;
     }
 
     .fade-leave-active {
-        transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+        transition: all 1.6s cubic-bezier(1.0, 0.5, 0.8, 1.0);
     }
 
     .fade-enter, .fade-leave-to
         /* .slide-fade-leave-active below version 2.1.8 */
     {
         opacity: 0;
+    }
+
+    .bubble-container {
+        /*position relative for absolute vertex-top-bottom-drop*/
+        position: relative;
     }
 </style>
