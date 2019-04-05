@@ -229,14 +229,14 @@ FriendlyResource.FriendlyResource.prototype.isMeta = function () {
 
 FriendlyResource.FriendlyResource.prototype.select = function () {
     this.isSelected = true;
-    Store.dispatch("redraw");
+    // Store.dispatch("redraw");
 };
 
 FriendlyResource.FriendlyResource.prototype.deselect = function () {
     this.isSelected = false;
     this.isSingleSelected = false;
     this.getLabelHtml().blur();
-    Store.dispatch("redraw");
+    // Store.dispatch("redraw");
 };
 
 FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {
@@ -293,6 +293,21 @@ FriendlyResource.FriendlyResource.prototype.getUpBubble = function () {
 };
 FriendlyResource.FriendlyResource.prototype.getDownBubble = function () {
     return this._getUpOrDownBubble(true);
+};
+
+FriendlyResource.FriendlyResource.prototype.getNextSibling = function () {
+    let downBubble = this.getDownBubble();
+    let upBubble = this.getUpBubble();
+    if (downBubble) {
+        if (downBubble.getParentBubble().isSame(this.getParentBubble())) {
+            return downBubble;
+        } else if (upBubble) {
+            return upBubble;
+        }
+        return downBubble;
+    } else {
+        return upBubble;
+    }
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpand = function () {

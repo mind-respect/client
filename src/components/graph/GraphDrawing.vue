@@ -1,5 +1,5 @@
 <!--
-  - Copyrigh1t Vincent Blouin under the GPL License version 3
+  - Copyright Vincent Blouin under the GPL License version 3
   -->
 
 <template>
@@ -31,7 +31,6 @@
         },
         methods: {
             showWhenChildrenLoaded: function () {
-                this.areChildrenLoaded = false;
                 if (!this.center.getImmediateChild) {
                     console.warn("no immediate child ? el id " + this.center.getId())
                     return false

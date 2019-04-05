@@ -43,7 +43,7 @@
                     </v-list>
                 </v-tooltip>
                 <v-list>
-                    <v-subheader v-if="multiple && false">
+                    <v-subheader v-if="isMultipleFlow && false">
                         {{$t('remove:multiple')}}
                     </v-subheader>
                     <v-list-tile
@@ -69,7 +69,7 @@
                        @shortkey="remove">
                     <v-icon class="mr-2">delete</v-icon>
                     {{$t('remove:confirm')}}
-                    <span v-if="multiple" class="ml-2">
+                    <span v-if="isMultipleFlow" class="ml-2">
                         {{$t('remove:multiple_confirm_suffix')}}
                     </span>
                 </v-btn>
@@ -90,7 +90,6 @@
     import SelectionHandler from '@/SelectionHandler'
     import I18n from '@/I18n'
     import VertexService from '@/vertex/VertexService'
-    import Vue from 'vue'
 
     export default {
         name: "RemoveDialog",
@@ -129,7 +128,7 @@
             isRemoveFlow: function () {
                 return this.$store.state.isRemoveFlow;
             },
-            multiple: function () {
+            isMultipleFlow: function () {
                 return this.selected.length > 1;
             }
         },
@@ -157,19 +156,26 @@
         },
         methods: {
             remove: function () {
-                let nbSelected = this.selected.length;
-                let removePromise = nbSelected === 1 ?
-                    VertexService.remove(
-                        SelectionHandler.getSingleElement()
-                    ) :
+                let removePromise = this.isMultipleFlow ?
                     VertexService.removeCollection(
                         SelectionHandler.getSelectedElements()
+                    ) :
+                    VertexService.remove(
+                        SelectionHandler.getSingleElement()
                     );
                 return removePromise.then(function () {
-                    SelectionHandler.getSelectedElements().forEach(function (bubble) {
+                    let nextSibling;
+                    if (!this.isMultipleFlow) {
+                        nextSibling = SelectionHandler.getSingleElement().getNextSibling();
+                    }
+                    this.selected.forEach(function (bubble) {
                         bubble.remove();
                     });
                     SelectionHandler.reset();
+                    if (nextSibling) {
+                        SelectionHandler.setToSingle(nextSibling);
+                    }
+                    this.$store.dispatch("redraw");
                     this.removeDialog = false;
                 }.bind(this));
             }

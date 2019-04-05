@@ -56,7 +56,7 @@
                 isHighestInBetween: null,
                 isLowestInBetween: null,
                 highestArcRadius: null,
-                lowestArcRadius: null,
+                lowestArcRadius: null
             }
         },
         mounted: function () {
@@ -236,8 +236,8 @@
                 if (bubble.isGroupRelation()) {
                     return bubble.getChip();
                 }
-                if (bubble.isSame(this.bubble) && !bubble.isCenter) {
-                    return bubble.getLabelHtml();
+                if (bubble.isSame(this.bubble) && !bubble.isCenter && !bubble.isSelected) {
+                    return bubble.getHtml();
                 } else {
                     return bubble.getHtml();
                 }
