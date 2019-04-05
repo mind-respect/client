@@ -6,6 +6,7 @@ import GraphElement from '@/graph-element/GraphElement'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import VertexServerFormatBuilder from '@/vertex/VertexServerFormatBuilder'
 import GraphElementType from '@/graph-element/GraphElementType'
+import Store from '@/store'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -76,6 +77,7 @@ api.Edge.prototype.init = function (edgeServerFormat) {
     return this;
 };
 
+
 api.Edge.prototype.getGraphElementType = function () {
     return GraphElementType.Relation;
 };
@@ -92,6 +94,40 @@ api.Edge.prototype.getSourceVertex = function () {
 api.Edge.prototype.getDestinationVertex = function () {
     return this.destinationVertex;
 };
+
+api.Edge.prototype.select = function () {
+    FriendlyResource.FriendlyResource.prototype.select.call(
+        this
+    );
+    this._selectRedraw();
+};
+
+api.Edge.prototype.deselect = function () {
+    FriendlyResource.FriendlyResource.prototype.deselect.call(
+        this
+    );
+    this._selectRedraw();
+};
+
+api.Edge.prototype._selectRedraw = function () {
+    let startTime;
+
+    requestAnimationFrame(function (timestamp) {
+        startTime = timestamp || new Date().getTime();
+        redraw(timestamp, 500)
+    });
+
+    function redraw(timestamp, duration) {
+        Store.dispatch("redraw");
+        let runtime = timestamp - startTime;
+        if (runtime < duration) {
+            requestAnimationFrame(function (timestamp) {
+                redraw(timestamp, duration)
+            })
+        }
+    }
+};
+
 api.Edge.prototype.isPublic = function () {
     return this.getSourceVertex().isPublic() &&
         this.getDestinationVertex().isPublic();
@@ -189,7 +225,7 @@ api.Edge.prototype.remove = function () {
 
 api.Edge.prototype.getChip = function () {
     let html = this.getHtml();
-    if(html){
+    if (html) {
         return html.querySelectorAll('.v-chip')[0];
     }
 };
