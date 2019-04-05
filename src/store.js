@@ -54,8 +54,11 @@ const Store = new Vuex.Store({
         setIsRemoveFlow: function (state, isRemoveFlow) {
             state.isRemoveFlow = isRemoveFlow;
         },
-        redraw: function (state) {
-            state.redraws = Math.random();
+        redraw: function (state, spec) {
+            state.redraws = {
+                refresh: Math.random(),
+                spec: spec
+            };
         }
     },
     actions: {
@@ -71,8 +74,8 @@ const Store = new Vuex.Store({
         setIsRemoveFlow: function (action, isRemoveFlow) {
             action.commit('setIsRemoveFlow', isRemoveFlow);
         },
-        redraw: function (action) {
-            action.commit('redraw', true);
+        redraw: function (action, spec) {
+            action.commit('redraw', spec);
         }
     }
 });

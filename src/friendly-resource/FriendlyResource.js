@@ -502,7 +502,7 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isCh
     if (!avoidCenter && !isChildExpand) {
         Scroll.centerBubbleForTreeOrNotIfApplicable(this);
     }
-    Store.dispatch("redraw");
+    Store.dispatch("redraw", "scale");
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {

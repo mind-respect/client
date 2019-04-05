@@ -146,7 +146,7 @@
                 return lines
             },
             isChildInBetween: function (childPosition) {
-                return this.bubbleRect.top < childPosition.rect.top && this.bubbleRect.bottom > childPosition.rect.bottom;
+                return this.bubbleRect.top < childPosition.rect.bottom && this.bubbleRect.bottom > childPosition.rect.top;
             },
             topDistanceWithChild: function (childPosition) {
                 return Math.abs(this.bubbleRect.top - childPosition.rect.bottom)

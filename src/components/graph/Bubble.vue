@@ -65,7 +65,7 @@
                          @dragover="topDragEnter"
                          @dragleave="resetTopBottomDragOver"
                          @drop="topDrop"
-                         style="top:0;"
+                         style="top:0;margin-top:-15px;"
                     ></div>
                     <div class="vertex-left-right-drop"
                          v-if="bubble.isCenter || bubble.isToTheLeft()"
@@ -129,7 +129,7 @@
                     <div
                             class="vertex-top-bottom-drop"
                             @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"
-                            style="bottom:0;"
+                            style="bottom:0;margin-bottom:-15px;"
                     ></div>
                     <div class="vertex-left-right-drop"
                          v-if="bubble.isCenter || !bubble.isToTheLeft()"
@@ -573,17 +573,19 @@
     }
 
     .fade-enter-active {
-        transition: all .6s ease;
+        transition: all .3s ease;
     }
 
     .fade-leave-active {
-        transition: all 1.6s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+        transition: all 0.8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+        transform: scale(1);
     }
 
     .fade-enter, .fade-leave-to
         /* .slide-fade-leave-active below version 2.1.8 */
     {
         opacity: 0;
+        transform: scale(0);
     }
 
     .bubble-container {

@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div v-if="center.getImmediateChild">
+    <div v-if="areChildrenLoaded">
         <EdgeDrawing :bubble="center" :isLeft="true" v-if="center.isToTheLeft() || center.isCenter"></EdgeDrawing>
         <EdgeDrawing :bubble="center" :isLeft="false" v-if="!center.isToTheLeft() || center.isCenter"></EdgeDrawing>
         <GraphDrawing
@@ -22,11 +22,24 @@
         components: {EdgeDrawing},
         props: ['center'],
         data: function () {
-            return {}
+            return {
+                areChildrenLoaded: false
+            }
         },
         mounted: function () {
-            if (!this.center.getImmediateChild) {
-                console.warn("no immediate child ? el id " + this.center.getId())
+            this.showWhenChildrenLoaded();
+        },
+        methods: {
+            showWhenChildrenLoaded: function () {
+                this.areChildrenLoaded = false;
+                if (!this.center.getImmediateChild) {
+                    console.warn("no immediate child ? el id " + this.center.getId())
+                    return false
+                }
+                if(this.center.getImmediateChild().length === 0){
+                    return;
+                }
+                this.areChildrenLoaded = true;
             }
         }
     }
