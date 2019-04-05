@@ -21,10 +21,6 @@
         <path :d="drawChildren()"
               fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
         ></path>
-        <!--<path :d="drawArrowHead()"-->
-        <!--v-if="bubble.isEdge()"-->
-        <!--fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"-->
-        <!--&gt;</path>-->
     </svg>
 </template>
 
@@ -36,7 +32,7 @@
     const smallInnerMargin = 15;
     const farDistanceStandard = 30;
     const farDistanceForCenter = 33;
-    const arrowHeadLength = 10;
+    const arrowHeadLength = 6;
     export default {
         name: "EdgeDrawing",
         props: ['bubble', 'isLeft'],
@@ -180,6 +176,11 @@
                         let position = this.getMiddleSidePosition(this.bubble);
                         lines += "M " + position.x + " " + position.y + " ";
                         lines += "H " + (childPosition.x + xAdjust);
+                        lines += this.arrowHead(
+                            position.x,
+                            childPosition.x + xAdjust,
+                            position.y
+                        );
                         return lines;
                     }
                     let isChildInBetween = this.isChildInBetween(childPosition);
@@ -188,7 +189,7 @@
                         let startX = position.x;
                         let startY = childPosition.y;
                         lines += "M " + startX + " " + startY + " ";
-                        lines += "L " + childPosition.x + " " + childPosition.y
+                        lines += "L " + childPosition.x + " " + childPosition.y;
                     } else {
                         let isAbove = childPosition.y < this.topPosition.y;
                         let distance = isAbove ? this.topDistanceWithChild(childPosition) : this.bottomDistanceWithChild(childPosition);
@@ -220,10 +221,23 @@
                 }.bind(this));
                 return lines;
             },
-            drawArrowHead: function () {
-                this.topPosition = this.topPositionCalculate();
-                return "M " + this.topPosition.x + "," + this.topPosition.y + " " +
-                    "L " + (this.topPosition.x - 10) + "," + (this.topPosition.y) + " ";
+            arrowHead: function (startX, endX, y) {
+                let lines = "";
+
+                let middleXAdjust = endX - startX;
+                middleXAdjust += this.isLeft ? this.bubbleRect.width * -1 : this.bubbleRect.width;
+                middleXAdjust /= 2;
+                middleXAdjust += this.isLeft ? arrowHeadLength * -1 : arrowHeadLength;
+                let middleX = startX + middleXAdjust;
+                let xAdjust = arrowHeadLength;
+                if (this.bubble.isInverse() || !this.isLeft) {
+                    xAdjust *= -1
+                }
+                lines += "M " + middleX + "," + y + " " +
+                    "L " + (middleX + xAdjust) + " " + (y - arrowHeadLength) + " " +
+                    "M " + middleX + "," + (y) + " " +
+                    "L " + (middleX + xAdjust) + " " + (y + arrowHeadLength) + " ";
+                return lines;
             },
             getBubbleElement: function (bubble) {
                 if (bubble.isEdge()) {
