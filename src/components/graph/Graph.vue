@@ -8,8 +8,10 @@
             <!--<div :style="'width:' + leftWidth() + 'px'"></div>-->
             <div style="width:8000px;"></div>
             <v-layout row class='root-vertex-super-container vh-center ma-5 pa-5' data-zoom='1'>
-                <v-flex grow class="vertices-children-container left-oriented" style="width:7000px;">
-                    <v-layout row v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
+                <v-flex grow class="vertices-children-container left-oriented" style="width:7000px;" :class="{
+                    'blur-overlay': graph.center.isEditFlow
+                }">
+                    <v-layout row v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId" >
                         <v-flex grow>
                             <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
                         </v-flex>
@@ -18,7 +20,9 @@
                 <v-flex grow class="vh-center">
                     <Bubble :bubble="graph.center"></Bubble>
                 </v-flex>
-                <v-flex grow class="vertices-children-container right-oriented" style="width:7000px;">
+                <v-flex grow class="vertices-children-container right-oriented" style="width:7000px;" :class="{
+                    'blur-overlay': graph.center.isEditFlow
+                }">
                     <v-layout v-for="rightBubble in graph.center.rightBubbles" :key="rightBubble.uiId">
                         <v-flex grow>
                             <Bubble :bubble="addBubbleContext(rightBubble, graph.center, 'right')"></Bubble>
@@ -28,7 +32,9 @@
             </v-layout>
             <div style="width:8000px;"></div>
             <div class="svg-container" style="z-index:-1">
-                <GraphDrawing :center="graph.center" :key="redrawKey" v-if="redrawKey"></GraphDrawing>
+                <transition name="fade">
+                    <GraphDrawing :center="graph.center" :key="redrawKey" v-if="redrawKey"></GraphDrawing>
+                </transition>
             </div>
         </div>
         <RemoveDialog></RemoveDialog>
@@ -132,10 +138,13 @@
             redraws: function () {
                 let startTime;
                 if (this.redraws.spec === "scale") {
-                    requestAnimationFrame(function (timestamp) {
-                        startTime = timestamp || new Date().getTime();
-                        redraw.bind(this)(timestamp, 800)
-                    }.bind(this));
+                    this.redrawKey = Math.random();
+                    setTimeout(function () {
+                        requestAnimationFrame(function (timestamp) {
+                            startTime = timestamp || new Date().getTime();
+                            redraw.bind(this)(timestamp, 650)
+                        }.bind(this));
+                    }.bind(this), 250);
                 } else {
                     this.$nextTick(function () {
                         this.redrawKey = Math.random();

@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div v-if="areChildrenLoaded">
+    <div v-if="areChildrenLoaded && !center.isEditFlow">
         <EdgeDrawing :bubble="center" :isLeft="true" v-if="center.isToTheLeft() || center.isCenter"></EdgeDrawing>
         <EdgeDrawing :bubble="center" :isLeft="false" v-if="!center.isToTheLeft() || center.isCenter"></EdgeDrawing>
         <GraphDrawing

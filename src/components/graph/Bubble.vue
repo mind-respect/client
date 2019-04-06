@@ -45,12 +45,16 @@
     }" :id="containerId">
             <v-flex class="v-center drop-relative-container">
                 <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
-                <transition name="fade">
-                    <Children :bubble="bubble"
-                              v-if="bubble.orientation === 'left' && (!bubble.isVertex() || bubble.rightBubbles.length > 0)"
-                    >
-                    </Children>
-                </transition>
+                <div :class="{
+                   'blur-overlay':isEditFlow
+                }">
+                    <transition name="fade">
+                        <Children :bubble="bubble"
+                                  v-if="bubble.orientation === 'left' && (!bubble.isVertex() || bubble.rightBubbles.length > 0)"
+                        >
+                        </Children>
+                    </transition>
+                </div>
                 <div class='bubble-container v-center'
                      :class="{
                 'vh-center':bubble.orientation === 'center',
@@ -81,9 +85,10 @@
                         'selected' : (isSelected || isLabelDragOver || isLeftRightDragOver),
                         'center-vertex': bubble.isCenter,
                         'reverse': bubble.orientation === 'left'
-                }">
+                }"
+                    >
                         <div class="image_container"></div>
-                        <div class="in-bubble-content-wrapper" style="position:relative;">
+                        <div class="in-bubble-content-wrapper">
                             <div
                                     class="in-bubble-content  pt-1 pb-1"
                                     :class="{
@@ -119,7 +124,9 @@
                                         @drop="labelDrop"
                                         :data-placeholder="$t('vertex:default')"
                                         autocomplete="off" v-text="bubble.getFriendlyJson().label"
-                                        @keydown="keydown"></div>
+                                        @focus="focus"
+                                        @keydown="keydown"
+                                ></div>
                             </div>
                         </div>
                         <ChildNotice :bubble="bubble"
@@ -184,12 +191,16 @@
                         </div>
                     </div>
                 </div>
-                <transition name="fade">
-                    <Children :bubble="bubble"
-                              v-if="bubble.orientation === 'right' && (!bubble.isVertex() || bubble.rightBubbles.length > 0)"
-                    >
-                    </Children>
-                </transition>
+                <div :class="{
+                   'blur-overlay':isEditFlow
+                }">
+                    <transition name="fade">
+                        <Children :bubble="bubble"
+                                  v-if="bubble.orientation === 'right' && (!bubble.isVertex() || bubble.rightBubbles.length > 0)"
+                        >
+                        </Children>
+                    </transition>
+                </div>
             </v-flex>
         </v-layout>
         <v-flex xs12
@@ -253,10 +264,12 @@
                 dragOverTopBottomTimeout: undefined,
                 isTopDragOver: null,
                 isBottomDragOver: null,
-                isLeftRightDragOver: null
+                isLeftRightDragOver: null,
+                isEditFlow: false
             }
         },
         mounted: function () {
+            this.bubble.isEditFlow = false;
             if (this.bubble.isCenter) {
                 this.containerId = "center";
             } else {
@@ -309,10 +322,17 @@
                 this.bubble.focus(event);
             },
             leaveEditFlow: function () {
+                this.isEditFlow = false;
+                this.bubble.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
                 this.bubble.setLabel(labelHtml.innerHTML);
                 FriendlyResourceService.updateLabel(this.bubble)
+                this.$store.dispatch("redraw");
+            },
+            focus: function () {
+                this.isEditFlow = true;
+                this.bubble.isEditFlow = true;
                 this.$store.dispatch("redraw");
             },
             keydown: function (event) {
@@ -320,7 +340,6 @@
                     event.preventDefault();
                     return this.bubble.getLabelHtml().blur();
                 }
-                this.$store.dispatch("redraw");
             },
             checkIsSelected: function () {
                 let found = false;
@@ -586,11 +605,36 @@
         /* .slide-fade-leave-active below version 2.1.8 */
     {
         opacity: 0;
+        transform-origin: left;
         transform: scale(0);
     }
+
+    .left-oriented .fade-enter, .left-oriented .fade-leave-to {
+        transform-origin: right;
+    }
+
+    .right-oriented .fade-enter, .right-oriented .fade-leave-to {
+        transform-origin: left;
+    }
+
 
     .bubble-container {
         /*position relative for absolute vertex-top-bottom-drop*/
         position: relative;
+    }
+
+    .edit-flow {
+        position: absolute !important;
+        /*width: 500px;*/
+        max-width: 500px;
+        z-index: 99999;
+    }
+
+    .in-bubble-content-wrapper {
+        position: relative;
+    }
+
+    .hidden {
+        visibility: hidden;
     }
 </style>

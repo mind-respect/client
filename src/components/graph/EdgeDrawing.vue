@@ -64,7 +64,8 @@
                 if (!element) {
                     this.$nextTick(function () {
                         console.warn('null bubble html redraw');
-                        this.redraw();
+                        // this.redraw();
+                        this.loaded = false;
                     }.bind(this));
                     return;
                 }
@@ -167,7 +168,8 @@
                         this.loaded = false;
                         this.$nextTick(function () {
                             console.warn('drawChildren null child position html redraw');
-                            this.redraw();
+                            // this.redraw();
+                            this.loaded = false;
                         }.bind(this));
                         return;
                     }
@@ -271,7 +273,8 @@
                     this.loaded = false;
                     this.$nextTick(function () {
                         console.warn('null child bubble html redraw');
-                        this.redraw();
+                        // this.redraw();
+                        this.loaded = false;
                     }.bind(this));
                     return;
                 }
