@@ -83,6 +83,7 @@ FriendlyResource.FriendlyResource = function () {
 
 FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceServerFormat) {
     this.friendlyResourceServerFormat = friendlyResourceServerFormat;
+    this.draw = true;
     this._images = this._buildImages();
     if (friendlyResourceServerFormat.comment === undefined) {
         friendlyResourceServerFormat.comment = "";
@@ -513,11 +514,15 @@ FriendlyResource.FriendlyResource.prototype._getNextBubble = function (bottom) {
 };
 
 FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isChildExpand) {
+    // Store.dispatch("redraw")
     this.isExpanded = true;
     if (!avoidCenter && !isChildExpand) {
         Scroll.centerBubbleForTreeOrNotIfApplicable(this);
     }
     Store.dispatch("redraw", "scale");
+    // setTimeout(function(){
+    //     Store.dispatch("redraw")
+    // }, 400)
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {

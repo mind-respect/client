@@ -7,6 +7,7 @@ import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import VertexServerFormatBuilder from '@/vertex/VertexServerFormatBuilder'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Store from '@/store'
+import Vue from 'vue'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -110,22 +111,9 @@ api.Edge.prototype.deselect = function () {
 };
 
 api.Edge.prototype._selectRedraw = function () {
-    let startTime;
-
-    requestAnimationFrame(function (timestamp) {
-        startTime = timestamp || new Date().getTime();
-        redraw(timestamp, 500)
-    });
-
-    function redraw(timestamp, duration) {
+    Vue.nextTick(function () {
         Store.dispatch("redraw");
-        let runtime = timestamp - startTime;
-        if (runtime < duration) {
-            requestAnimationFrame(function (timestamp) {
-                redraw(timestamp, duration)
-            })
-        }
-    }
+    });
 };
 
 api.Edge.prototype.isPublic = function () {

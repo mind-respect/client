@@ -4,7 +4,7 @@
 
 <template>
     <svg
-            v-if="loaded"
+            v-if="loaded && bubble.draw"
             style="position:absolute;overflow:visible; top:0; left:0; height:100%; width:100%;z-index:-1;"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg">
@@ -65,7 +65,8 @@
                     this.$nextTick(function () {
                         console.warn('null bubble html redraw');
                         // this.redraw();
-                        this.loaded = false;
+                        // this.loaded = false;
+                        this.$destroy();
                     }.bind(this));
                     return;
                 }
@@ -160,7 +161,7 @@
             drawChildren: function () {
                 let lines = "";
                 this.children.forEach(function (child) {
-                    if (child.isSameBubble(this.highestChild) || child.isSameBubble(this.lowestChild)) {
+                    if (child.isSameBubble(this.highestChild) || child.isSameBubble(this.lowestChild) || !child.draw) {
                         return;
                     }
                     let childPosition = this.getMiddleSidePosition(child);
@@ -169,7 +170,8 @@
                         this.$nextTick(function () {
                             console.warn('drawChildren null child position html redraw');
                             // this.redraw();
-                            this.loaded = false;
+                            // this.loaded = false;
+                            this.$destroy();
                         }.bind(this));
                         return;
                     }
@@ -274,7 +276,8 @@
                     this.$nextTick(function () {
                         console.warn('null child bubble html redraw');
                         // this.redraw();
-                        this.loaded = false;
+                        // this.loaded = false;
+                        this.$destroy();
                     }.bind(this));
                     return;
                 }

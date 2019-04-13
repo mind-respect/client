@@ -171,21 +171,20 @@
                                         @dragleave="labelDragLeave"
                                         @drop="labelDrop"
                                         :selected="isSelected || isLabelDragOver"
-                                        class="pt-0 pb-0 mt-0 mb-0 ma-0 pa-0"
+                                        class="pt-0 pb-0 mt-0 mb-0 ma-0 pa-0 label-chip"
                                         dark
+                                        transition="none"
                                         :class="{
                                         'is-shrinked' : isShrinked
                                     }"
                                 >
-                                    <transition name="fade">
-                                        <div class="bubble-label white--text"
-                                             @blur="leaveEditFlow"
-                                             :data-placeholder="relationPlaceholder"
-                                             autocomplete="off"
-                                             v-show="!isShrinked"
-                                             v-text="bubble.getFriendlyJson().label"
-                                             @keydown="keydown"></div>
-                                    </transition>
+                                    <div class="bubble-label white--text"
+                                         @blur="leaveEditFlow"
+                                         :data-placeholder="relationPlaceholder"
+                                         autocomplete="off"
+                                         v-show="!isShrinked"
+                                         v-text="bubble.getFriendlyJson().label"
+                                         @keydown="keydown"></div>
                                 </v-chip>
                             </div>
                         </div>
@@ -601,9 +600,7 @@
         transform: scale(1);
     }
 
-    .fade-enter, .fade-leave-to
-        /* .slide-fade-leave-active below version 2.1.8 */
-    {
+    .fade-enter, .fade-leave-to {
         opacity: 0;
         transform-origin: left;
         transform: scale(0);
@@ -616,7 +613,6 @@
     .right-oriented .fade-enter, .right-oriented .fade-leave-to {
         transform-origin: left;
     }
-
 
     .bubble-container {
         /*position relative for absolute vertex-top-bottom-drop*/
@@ -636,5 +632,13 @@
 
     .hidden {
         visibility: hidden;
+    }
+
+    .label-chip, .bubble-label, .label-chip .v-chip__content {
+        transition: none !important;
+    }
+
+    .v-chip__content {
+        transition: none !important;
     }
 </style>

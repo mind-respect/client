@@ -1,4 +1,4 @@
-`<!--
+<!--
   - Copyright Vincent Blouin under the GPL License version 3
   -->
 
@@ -11,7 +11,7 @@
                 <v-flex grow class="vertices-children-container left-oriented" style="width:7000px;" :class="{
                     'blur-overlay': graph.center.isEditFlow
                 }">
-                    <v-layout row v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId" >
+                    <v-layout row v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
                         <v-flex grow>
                             <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
                         </v-flex>
@@ -152,7 +152,9 @@
                 }
 
                 function redraw(timestamp, duration) {
-                    this.redrawKey = Math.random();
+                    this.$nextTick(function () {
+                        this.redrawKey = Math.random();
+                    }.bind(this));
                     let runtime = timestamp - startTime;
                     if (runtime < duration) {
                         requestAnimationFrame(function (timestamp) {

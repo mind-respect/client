@@ -343,6 +343,9 @@
 </script>
 
 <style>
+    .v-chip{
+        transition:none;
+    }
     #is-loading-overlay {
         position: fixed;
         width: 100%;

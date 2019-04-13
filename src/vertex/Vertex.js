@@ -9,6 +9,7 @@ import Suggestion from '@/suggestion/Suggestion'
 import ShareLevel from '@/vertex/ShareLevel'
 import GraphElementType from '@/graph-element/GraphElementType'
 import I18n from '@/I18n'
+import Store from '@/store'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -193,6 +194,7 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
         children.splice(index, 0, child);
     }
     this.incrementNumberOfConnectedEdges();
+    Store.dispatch("redraw");
 };
 
 Vertex.prototype.getRightBubble = function (bottom) {

@@ -66,7 +66,7 @@
     &:empty:not(:focus) {
       color: grey;
       max-width: 100%;
-      transition: all 0.3s;
+      //transition: all 0.3s;
       &:after {
         content: attr(data-placeholder);
         font-style: italic;
