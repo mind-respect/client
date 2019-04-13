@@ -41,7 +41,7 @@
             click: function () {
                 this.loading = this.bubble.loading = true;
                 this.bubble.getController().expand().then(function () {
-                    Vue.nextTick(function(){
+                    Vue.nextTick(function () {
                         this.loading = this.bubble.loading = false;
                     }.bind(this))
                     Scroll.centerBubbleForTreeIfApplicable(
@@ -69,7 +69,7 @@
     }
 
     /*.right-oriented .hidden-properties-container{*/
-        /*position:absolute;*/
-        /*top:30%;*/
+    /*position:absolute;*/
+    /*top:30%;*/
     /*}*/
 </style>

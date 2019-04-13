@@ -638,7 +638,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
                 if (avoidExpandChild) {
                     return true;
                 }
-                var expandChildCalls = [];
+                let expandChildCalls = [];
                 this.getUi().visitClosestChildVertices(function (childVertex) {
                     if (childVertex.getModel().hasOnlyOneHiddenChild()) {
                         expandChildCalls.push(

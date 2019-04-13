@@ -35,7 +35,7 @@
                     console.warn("no immediate child ? el id " + this.center.getId())
                     return false
                 }
-                if(this.center.getImmediateChild().length === 0){
+                if (this.center.getImmediateChild().length === 0) {
                     return;
                 }
                 this.areChildrenLoaded = true;

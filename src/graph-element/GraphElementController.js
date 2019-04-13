@@ -292,7 +292,7 @@ GraphElementController.prototype.expandDescendantsIfApplicable = function () {
 
 GraphElementController.prototype.collapseCanDo = function () {
     return this.isSingle() && (
-        (!this.getUi().isCenterBubble() && !this.getUi().isALeaf() && !this.getUi().isCollapsed) ||
+        (!this.getUi().isCenterBubble() && !this.getUi().isLeaf() && !this.getUi().isCollapsed) ||
         (this.getUi().isCenterBubble() && this.getUi().hasAnExpandedChild())
     );
 };

@@ -82,6 +82,9 @@
                     this.lowestChild = this.children[this.children.length - 1];
                     this.highestPosition = this.getMiddleSidePosition(this.highestChild);
                     this.lowestPosition = this.getMiddleSidePosition(this.lowestChild);
+                    if (!this.highestPosition || !this.lowestPosition) {
+                        return;
+                    }
                     this.isHighestInBetween = this.isChildInBetween(
                         this.highestPosition
                     );

@@ -45,15 +45,18 @@
     }" :id="containerId">
             <v-flex class="v-center drop-relative-container">
                 <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
-                <div :class="{
+                <div v-if="!bubble.isCollapsed">
+                    <div :class="{
                    'blur-overlay':isEditFlow
-                }">
-                    <transition name="fade">
-                        <Children :bubble="bubble"
-                                  v-if="bubble.orientation === 'left' && (!bubble.isVertex() || bubble.rightBubbles.length > 0)"
-                        >
-                        </Children>
-                    </transition>
+                }"
+                    >
+                        <transition name="fade">
+                            <Children :bubble="bubble"
+                                      v-if="bubble.orientation === 'left' && (!bubble.isVertex() || (bubble.rightBubbles.length > 0))"
+                            >
+                            </Children>
+                        </transition>
+                    </div>
                 </div>
                 <div class='bubble-container v-center'
                      :class="{
@@ -190,15 +193,18 @@
                         </div>
                     </div>
                 </div>
-                <div :class="{
+                <div v-if="!bubble.isCollapsed">
+                    <div :class="{
                    'blur-overlay':isEditFlow
-                }">
-                    <transition name="fade">
-                        <Children :bubble="bubble"
-                                  v-if="bubble.orientation === 'right' && (!bubble.isVertex() || bubble.rightBubbles.length > 0)"
-                        >
-                        </Children>
-                    </transition>
+                }"
+                    >
+                        <transition name="fade">
+                            <Children :bubble="bubble"
+                                      v-if="bubble.orientation === 'right' && (!bubble.isVertex() || (bubble.rightBubbles.length > 0))"
+                            >
+                            </Children>
+                        </transition>
+                    </div>
                 </div>
             </v-flex>
         </v-layout>
@@ -592,18 +598,21 @@
     }
 
     .fade-enter-active {
-        transition: all .3s ease;
+        transition: all 0.2s ease;
     }
 
     .fade-leave-active {
-        transition: all 0.8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-        transform: scale(1);
+        /*transition: all 0.3s cubic-bezier(1.0, 0.5, 0.8, 1.0);*/
+        /*max-height: 100%;*/
+        /*transition: max-height 5.25s ease-in;*/
     }
 
     .fade-enter, .fade-leave-to {
-        opacity: 0;
+        /*opacity: 0;*/
         transform-origin: left;
         transform: scale(0);
+        /*max-height: 0;*/
+        /*transition: max-height 3.15s ease-out;*/
     }
 
     .left-oriented .fade-enter, .left-oriented .fade-leave-to {

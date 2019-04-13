@@ -8,6 +8,7 @@ import Focus from '@/Focus'
 import SelectionHandler from '@/SelectionHandler'
 import Scroll from '@/Scroll'
 import Store from '@/store'
+import Vue from 'vue'
 
 const MoveRelation = {
     "Parent": "parent",
@@ -514,15 +515,30 @@ FriendlyResource.FriendlyResource.prototype._getNextBubble = function (bottom) {
 };
 
 FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isChildExpand) {
-    // Store.dispatch("redraw")
+    if (this.isExpanded) {
+        return;
+    }
     this.isExpanded = true;
+    this.isCollapsed = false;
     if (!avoidCenter && !isChildExpand) {
         Scroll.centerBubbleForTreeOrNotIfApplicable(this);
     }
-    Store.dispatch("redraw", "scale");
-    // setTimeout(function(){
-    //     Store.dispatch("redraw")
-    // }, 400)
+    this.draw = false;
+    Vue.nextTick(function () {
+        Store.dispatch("redraw");
+    })
+    setTimeout(function () {
+        this.draw = true;
+        Vue.nextTick(function () {
+            Store.dispatch("redraw");
+        })
+    }.bind(this), 300);
+};
+
+FriendlyResource.FriendlyResource.prototype.collapse = function () {
+    this.isExpanded = false;
+    this.isCollapsed = true;
+    Store.dispatch("redraw");
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {
@@ -548,7 +564,6 @@ FriendlyResource.FriendlyResource.prototype.visitDescendants = function (visitor
         if (child.isLeaf()) {
             return visitor(child);
         } else {
-            visitor(child);
             return child.visitDescendants(
                 visitor
             );

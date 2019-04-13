@@ -136,32 +136,9 @@
                 document.title = this.graph.center.getTextOrDefault() + " | MindRespect";
             },
             redraws: function () {
-                let startTime;
-                if (this.redraws.spec === "scale") {
+                this.$nextTick(function () {
                     this.redrawKey = Math.random();
-                    setTimeout(function () {
-                        requestAnimationFrame(function (timestamp) {
-                            startTime = timestamp || new Date().getTime();
-                            redraw.bind(this)(timestamp, 650)
-                        }.bind(this));
-                    }.bind(this), 250);
-                } else {
-                    this.$nextTick(function () {
-                        this.redrawKey = Math.random();
-                    }.bind(this))
-                }
-
-                function redraw(timestamp, duration) {
-                    this.$nextTick(function () {
-                        this.redrawKey = Math.random();
-                    }.bind(this));
-                    let runtime = timestamp - startTime;
-                    if (runtime < duration) {
-                        requestAnimationFrame(function (timestamp) {
-                            redraw.bind(this)(timestamp, duration)
-                        }.bind(this))
-                    }
-                }
+                }.bind(this));
             }
         }
     }

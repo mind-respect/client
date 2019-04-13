@@ -39,6 +39,7 @@ function GroupRelation(identifiers) {
     this.vertices = {};
     this.childGroupRelations = [];
     this._sortedImmediateChild = null;
+    this.isCollapsed = false;
     Identification.Identification.apply(
         this
     );

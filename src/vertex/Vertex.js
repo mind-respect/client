@@ -10,6 +10,8 @@ import ShareLevel from '@/vertex/ShareLevel'
 import GraphElementType from '@/graph-element/GraphElementType'
 import I18n from '@/I18n'
 import Store from '@/store'
+import FriendlyResource from '@/friendly-resource/FriendlyResource'
+import Vue from 'vue'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -57,7 +59,9 @@ function Vertex(vertexServerFormat) {
     this._includedEdges = this._buildIncludedEdges();
     this._suggestions = this._buildSuggestions();
     this.leftBubbles = [];
+    this.leftBubblesCollapsed = null;
     this.rightBubbles = [];
+    this.rightBubblesCollapsed = null;
     GraphElement.GraphElement.apply(
         this
     );
@@ -91,9 +95,6 @@ Vertex.prototype.getNumberOfChild = function () {
     return children.length ? children.length : this.getNumberOfConnectedEdges() - 1;
 };
 
-Vertex.prototype.incrementNumberOfConnectedEdges = function () {
-    this.vertexServerFormat.vertex.numberOfConnectedEdges++;
-};
 
 Vertex.prototype.decrementNumberOfConnectedEdges = function () {
     this.vertexServerFormat.vertex.numberOfConnectedEdges--;
@@ -163,6 +164,7 @@ Vertex.prototype.getGraphElementType = function () {
 Vertex.prototype.makeCenter = function () {
     this.isCenter = true;
     this.parentBubble = this;
+    this.isExpanded = true;
     this.orientation = "center"
 };
 
@@ -193,7 +195,6 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     } else {
         children.splice(index, 0, child);
     }
-    this.incrementNumberOfConnectedEdges();
     Store.dispatch("redraw");
 };
 
@@ -220,7 +221,39 @@ Vertex.prototype.getLeftBubble = function (bottom) {
     return this.parentBubble;
 };
 
+Vertex.prototype.collapse = function () {
+    this.vertexServerFormat.vertex.numberOfConnectedEdges = this.getImmediateChild().length + 1;
+    this.rightBubblesCollapsed = this.rightBubbles;
+    this.leftBubblesCollapsed = this.leftBubbles;
+    this.rightBubbles = [];
+    this.leftBubbles = [];
+    Vue.nextTick(function () {
+        FriendlyResource.FriendlyResource.prototype.collapse.call(
+            this
+        );
+    }.bind(this));
+};
+
+Vertex.prototype.expand = function () {
+    FriendlyResource.FriendlyResource.prototype.expand.call(
+        this
+    );
+    Vue.nextTick(function () {
+        if (this.rightBubblesCollapsed !== null) {
+            this.rightBubbles = this.rightBubblesCollapsed;
+            this.rightBubblesCollapsed = null;
+        }
+        if (this.leftBubblesCollapsed !== null) {
+            this.leftBubbles = this.leftBubblesCollapsed;
+            this.leftBubblesCollapsed = null;
+        }
+    }.bind(this))
+};
+
 Vertex.prototype.getImmediateChild = function (isToTheLeft) {
+    if (this.isCollapsed) {
+        return [];
+    }
     if (this.isCenter) {
         if (isToTheLeft === undefined) {
             return this.leftBubbles.concat(this.rightBubbles);
@@ -234,7 +267,6 @@ Vertex.prototype.getImmediateChild = function (isToTheLeft) {
 
 Vertex.prototype.remove = function () {
     this.getParentBubble().remove();
-    this.parentVertex.decrementNumberOfConnectedEdges();
 };
 
 Vertex.prototype.replaceChild = function (existingChild, newChild) {
@@ -255,7 +287,6 @@ Vertex.prototype.removeChild = function (child) {
             childrenArray.splice(l, 1);
         }
     }
-    this.decrementNumberOfConnectedEdges();
 };
 
 api.getWhenEmptyLabel = function () {
