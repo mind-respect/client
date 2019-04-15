@@ -22,24 +22,30 @@
                     {{getIcon(button)}}
                 </v-icon>
             </v-btn>
-            <span>{{$t('button:' + button.action)}}</span>
+            <span>
+                {{$t('button:' + button.action)}}
+                <span v-if="button.ctrlShortcut">
+                    ({{ctrlKey}}+{{button.ctrlShortcut}})
+                </span>
+            </span>
         </v-tooltip>
     </div>
 </template>
 
 <script>
     import SelectionHandler from '@/SelectionHandler'
-
+    import UiUtils from '@/UiUtils'
     export default {
         name: "BubbleButtons",
         data: function () {
             return {
                 isHover: false,
+                ctrlKey: UiUtils.isMacintosh() ? "⌘" : "ctrl",
                 buttons: [
                     {
                         action: "center",
-                        icon: "fa-bullseye"
-
+                        icon: "fa-bullseye",
+                        ctrlShortcut:"0"
                     },
                     {
                         action: "addChild",
@@ -55,16 +61,19 @@
                     },
                     {
                         icon: "unfold_more",
-                        action: "expand"
+                        action: "expand",
+                        ctrlShortcut:"E"
                     },
                     {
                         icon: "unfold_less",
                         iconClass: "fa-strike",
-                        action: "collapse"
+                        action: "collapse",
+                        ctrlShortcut:"H"
                     },
                     {
                         icon: "note",
-                        action: "note"
+                        action: "note",
+                        ctrlShortcut:"D"
                     },
                     {
                         icon: "photo",
@@ -76,7 +85,8 @@
                     },
                     {
                         icon: "fa-tags",
-                        action: "identifyWhenMany"
+                        action: "identifyWhenMany",
+                        ctrlShortcut:"G"
                     },
                     {
                         icon: "people",
@@ -84,11 +94,13 @@
                     },
                     {
                         icon: "lock",
-                        action: "makePrivate"
+                        action: "makePrivate",
+                        ctrlShortcut:"P"
                     },
                     {
                         icon: "lock_open",
-                        action: "makePublic"
+                        action: "makePublic",
+                        ctrlShortcut:"P"
                     },
                     {
                         icon: "file_copy",
@@ -96,19 +108,23 @@
                     },
                     {
                         icon: "fa-cut",
-                        action: "cut"
+                        action: "cut",
+                        ctrlShortcut:"X"
                     },
                     {
                         icon: "fa-paste",
-                        action: "paste"
+                        action: "paste",
+                        ctrlShortcut:"V"
                     },
                     {
                         icon: "fa-share",
-                        action: "reverseToRight"
+                        action: "reverseToRight",
+                        ctrlShortcut:"I"
                     },
                     {
                         icon: "fa-reply",
-                        action: "reverseToLeft"
+                        action: "reverseToLeft",
+                        ctrlShortcut:"I"
                     },
                     {
                         icon: "fa-check",
@@ -124,7 +140,8 @@
                     },
                     {
                         icon: "fa-handshake-o",
-                        action: "merge"
+                        action: "merge",
+                        ctrlShortcut:"I"
                     },
                     {
                         icon: "delete",
@@ -132,11 +149,18 @@
                     },
                     {
                         icon: "select_all",
-                        action: "selectTree"
+                        action: "selectTree",
+                        ctrlShortcut:"A"
                     },
                     {
                         icon: "fa-arrows-h",
-                        action: "convertToGroupRelation"
+                        action: "convertToRelation",
+                        ctrlShortcut:"O"
+                    },
+                    {
+                        icon: "fa-arrows-h",
+                        action: "convertToGroupRelation",
+                        ctrlShortcut:"O"
                     },
                     {
                         icon: "fa-lightbulb-o",
