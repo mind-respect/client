@@ -92,45 +92,105 @@
                     >
                         <div class="image_container"></div>
                         <div class="in-bubble-content-wrapper">
-                            <div
-                                    class="in-bubble-content  pt-1 pb-1"
-                                    :class="{
-                                        'reverse': bubble.orientation === 'left'
-                                    }"
-                                    @click="click" @dblclick="dblclick"
-                                    @mousedown="mouseDown"
-                                    @dragstart="dragStart"
-                                    @dragend="dragEnd"
-                                    draggable="true"
-                                    style="max-width:500px!important;height:100%;position:relative"
+                            <v-menu
+                                    v-model="showMenu"
+                                    :value="isSelected"
+                                    max-width="250"
+                                    :nudge-width="250"
+                                    auto offset-y
                             >
                                 <div
-                                        class="in-label-buttons text-xs-center"
+                                        slot="activator"
+                                        class="in-bubble-content  pt-1 pb-1"
                                         :class="{
+                                        'reverse': bubble.orientation === 'left'
+                                    }"
+                                        @click="click" @dblclick="dblclick"
+                                        @mousedown="mouseDown"
+                                        @dragstart="dragStart"
+                                        @dragend="dragEnd"
+                                        @contextmenu="rightClick"
+                                        draggable="true"
+                                        style="max-width:500px!important;height:100%;position:relative"
+                                >
+                                    <div
+                                            class="in-label-buttons text-xs-center"
+                                            :class="{
                                             'in-label-buttons-right':bubble.isToTheLeft(),
                                             'in-label-buttons-left':bubble.isToTheLeft()
                                         }"
-                                >
-                                    <v-icon small color="secondary" v-if="bubble.isPrivate()">lock</v-icon>
-                                    <v-icon small color="secondary" v-if="bubble.isPublic()">public</v-icon>
-                                    <v-icon small color="secondary" v-if="bubble.isFriendsOnly()">people</v-icon>
-                                </div>
-                                <div
-                                        class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
-                                        :class="{
+                                    >
+                                        <v-icon small color="secondary" v-if="bubble.isPrivate()">lock</v-icon>
+                                        <v-icon small color="secondary" v-if="bubble.isPublic()">public</v-icon>
+                                        <v-icon small color="secondary" v-if="bubble.isFriendsOnly()">people</v-icon>
+                                    </div>
+                                    <div
+                                            class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
+                                            :class="{
                                             'pr-2': bubble.isToTheLeft(),
                                             'pl-3': !bubble.isToTheLeft() || bubble.isCenter
                                         }"
-                                        @blur="leaveEditFlow"
-                                        @dragover="labelDragEnter"
-                                        @dragleave="labelDragLeave"
-                                        @drop="labelDrop"
-                                        :data-placeholder="$t('vertex:default')"
-                                        autocomplete="off" v-text="bubble.getFriendlyJson().label"
-                                        @focus="focus"
-                                        @keydown="keydown"
-                                ></div>
-                            </div>
+                                            @blur="leaveEditFlow"
+                                            @dragover="labelDragEnter"
+                                            @dragleave="labelDragLeave"
+                                            @drop="labelDrop"
+                                            :data-placeholder="$t('vertex:default')"
+                                            autocomplete="off" v-text="bubble.getFriendlyJson().label"
+                                            @focus="focus"
+                                            @keydown="keydown"
+                                    ></div>
+                                </div>
+                                <v-card>
+                                    <v-btn flat icon>
+                                        <v-icon>fa-bullseye</v-icon>
+                                    </v-btn>
+                                    <v-btn flat icon>
+                                        <v-icon>
+                                            meeting_room
+                                        </v-icon>
+                                    </v-btn>
+                                    <v-btn flat icon>
+                                        <v-icon>
+                                            meeting_room
+                                        </v-icon>
+                                    </v-btn>
+                                    <v-btn flat icon>
+                                        <v-icon>
+                                            meeting_room
+                                        </v-icon>
+                                    </v-btn>
+                                    <v-btn flat icon>
+                                        <v-icon>
+                                            meeting_room
+                                        </v-icon>
+                                    </v-btn>
+                                    <v-btn flat icon>
+                                        <v-icon>
+                                            meeting_room
+                                        </v-icon>
+                                    </v-btn>
+                                    <v-btn flat icon>
+                                        <v-icon>
+                                            meeting_room
+                                        </v-icon>
+                                    </v-btn>
+                                    <v-btn flat icon>
+                                        <v-icon>
+                                            meeting_room
+                                        </v-icon>
+                                    </v-btn>
+                                    <v-btn flat icon>
+                                        <v-icon>
+                                            meeting_room
+                                        </v-icon>
+                                    </v-btn>
+                                    <v-btn flat icon>
+                                        <v-icon>
+                                            meeting_room
+                                        </v-icon>
+                                    </v-btn>
+                                </v-card>
+                            </v-menu>
                         </div>
                         <ChildNotice :bubble="bubble"
                                      class=""
@@ -270,7 +330,8 @@
                 isTopDragOver: null,
                 isBottomDragOver: null,
                 isLeftRightDragOver: null,
-                isEditFlow: false
+                isEditFlow: false,
+                showMenu: false
             }
         },
         mounted: function () {
@@ -308,6 +369,11 @@
             }
         },
         methods: {
+            rightClick: function (event) {
+                event.preventDefault();
+                this.showMenu = true;
+                SelectionHandler.setToSingle(this.bubble)
+            },
             click: function (event) {
                 event.stopPropagation();
                 GraphUi.enableDragScroll();
@@ -510,6 +576,14 @@
         watch: {
             "SelectionHandler.selected": function () {
                 this.checkIsSelected()
+            },
+            showMenu: function () {
+                GraphUi.enableDragScroll();
+            },
+            isSelected: function () {
+                if (!this.isSelected) {
+                    this.showMenu = false;
+                }
             }
         }
     }

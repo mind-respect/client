@@ -293,7 +293,7 @@
                 }
                 position.x += window.pageXOffset;
                 position.x = Math.round(position.x);
-                position.y = rect.top - (rect.height / 2) - 43 + window.pageYOffset;
+                position.y = rect.top - (rect.height / 2) - 23 + window.pageYOffset;
                 position.y += yAdjust;
                 position.y = Math.round(position.y);
 
@@ -314,9 +314,9 @@
                 position.x = Math.round(position.x);
                 let yAdjust;
                 if (this.bubble.isSelected || this.bubble.isCenter || !this.bubble.isVertex()) {
-                    yAdjust = this.isLeft ? -44 : -65;
+                    yAdjust = this.isLeft ? -24 : -45;
                 } else {
-                    yAdjust = this.isLeft ? -44 : -65;
+                    yAdjust = this.isLeft ? -24 : -45;
                 }
                 if (this.bubble.isEdge()) {
                     yAdjust = -65;
@@ -337,9 +337,9 @@
                 position.x = Math.round(position.x);
                 let yAdjust;
                 if (this.bubble.isSelected || this.bubble.isCenter || !this.bubble.isVertex()) {
-                    yAdjust = this.isLeft ? -63 : -83;
+                    yAdjust = this.isLeft ? -43 : -63;
                 } else {
-                    yAdjust = this.isLeft ? -63 : -83;
+                    yAdjust = this.isLeft ? -43 : -63;
                 }
                 position.y = Math.round(this.bubbleRect.bottom + yAdjust + window.pageYOffset);
                 return position;

@@ -10,6 +10,7 @@
                     app
                     dark
                     color="white"
+                    height="43"
                     :class="{
                         'no-padding' : $vuetify.breakpoint.smAndDown
                     }"
@@ -440,5 +441,8 @@
     }
     .blur-overlay {
         filter:blur(4px);
+    }
+    .v-toolbar__content{
+        padding:6px;
     }
 </style>

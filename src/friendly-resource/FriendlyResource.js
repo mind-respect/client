@@ -532,7 +532,7 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isCh
         Vue.nextTick(function () {
             Store.dispatch("redraw");
         })
-    }.bind(this), 300);
+    }.bind(this), 325);
 };
 
 FriendlyResource.FriendlyResource.prototype.collapse = function () {

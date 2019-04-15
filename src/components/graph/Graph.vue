@@ -4,6 +4,8 @@
 
 <template>
     <div>
+        <v-divider></v-divider>
+        <MenuGraphBubble></MenuGraphBubble>
         <div id="drawn_graph" v-if="loaded" @click="click" data-zoom="9" class="vh-center">
             <!--<div :style="'width:' + leftWidth() + 'px'"></div>-->
             <div style="width:8000px;"></div>
@@ -46,6 +48,7 @@
     import MindMapInfo from '@/MindMapInfo'
     import Bubble from '@/components/graph/Bubble'
     import GraphDrawing from '@/components/graph/GraphDrawing'
+    import MenuGraphBubble from '@/components/graph/MenuGraphBubble'
     import Scroll from '@/Scroll'
     import Vue from 'vue'
     import GraphUi from '@/graph/GraphUi'
@@ -59,7 +62,8 @@
         components: {
             Bubble,
             RemoveDialog,
-            GraphDrawing
+            GraphDrawing,
+            MenuGraphBubble
         },
         data: function () {
             return {
@@ -91,9 +95,7 @@
             }.bind(this));
         },
         methods: {
-            click: function () {
-                SelectionHandler.removeAll();
-            },
+            click: function () {},
             addBubbleContext: function (bubble, parentVertex, orientation) {
                 bubble.parentBubble = bubble.parentVertex = parentVertex;
                 bubble.orientation = orientation;
@@ -144,7 +146,7 @@
     }
 </script>
 
-<style scoped>
+<style>
     #drawn_graph {
         position: absolute;
         padding: 50%;
@@ -158,11 +160,6 @@
     [draggable=true] {
         cursor: move;
         -khtml-user-drag: element;
-    }
-
-    body {
-        overflow-x: scroll;
-        margin: 0 !important;
     }
 
     #drawn_graph {
@@ -201,5 +198,4 @@
         width: 100%;
         height: 100%;
     }
-
 </style>
