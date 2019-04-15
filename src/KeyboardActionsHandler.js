@@ -88,7 +88,7 @@ function pasteHandler(event) {
     if (!SelectionHandler.isOnlyASingleElementSelected()) {
         return;
     }
-    var selectedElement = SelectionHandler.getSingleElement();
+    var selectedElement = SelectionHandler.getSingle();
     if (selectedElement.isInEditMode()) {
         return;
     }
@@ -120,7 +120,7 @@ function keyDownHandler(event) {
     if (feature === undefined) {
         let isPasting = isCombineKeyPressed && vKeyNumber && event.which;
         if (!isPasting && event.which !== api._ctrlKeyNumber && !MindMapInfo.isViewOnly() && SelectionHandler.isOnlyASingleElementSelected()) {
-            let selectedElement = SelectionHandler.getSingleElement();
+            let selectedElement = SelectionHandler.getSingle();
             if (!MindMapInfo.isViewOnly()) {
                 let labelHtml = selectedElement.getLabelHtml();
                 labelHtml.contentEditable = "true";

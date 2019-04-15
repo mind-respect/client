@@ -53,7 +53,7 @@ api._getSetterFromGraphElement = function (graphElement) {
 };
 
 api.setToSingleRelation = function (relation) {
-    if (api.getNbSelectedElements() === 1 && api.getSingleElement().getId() === relation.getId()) {
+    if (api.getNbSelectedElements() === 1 && api.getSingle().getId() === relation.getId()) {
         return;
     }
     deselectAll();
@@ -80,8 +80,8 @@ api.addRelation = function (relation) {
 };
 
 api.addVertex = function (vertex) {
-    if (api.isOnlyASingleBubbleSelected()) {
-        api.getSingleElement().removeSingleSelected();
+    if (api.isSingle()) {
+        api.getSingle().removeSingleSelected();
     }
     if (vertex.isSelected) {
         return;
@@ -118,9 +118,9 @@ api.getNbSelectedRelations = function () {
 };
 api.getOneOrArrayOfSelected = function () {
     return 1 === api.getNbSelected() ?
-        api.getSingleElement() : api.getSelectedElements();
+        api.getSingle() : api.getSelectedElements();
 };
-api.getSingleElement = function () {
+api.getSingle = function () {
     return api.getSelectedBubbles()[0];
 };
 api.getSelectedElements = api.getSelectedBubbles = function () {
@@ -129,7 +129,7 @@ api.getSelectedElements = api.getSelectedBubbles = function () {
 api.getNbSelected = api.getNbSelectedElements = function () {
     return api.selected.length;
 };
-api.isOnlyASingleBubbleSelected = api.isOnlyASingleElementSelected = function () {
+api.isSingle = function () {
     return 1 === api.getNbSelectedElements();
 };
 
@@ -138,16 +138,16 @@ api.isEmpty = function () {
 };
 
 api.getControllerFromCurrentSelection = function () {
-    var nbSelectedGraphElements = api.getNbSelected();
-    var currentController;
+    let nbSelectedGraphElements = api.getNbSelected();
+    let currentController;
     if (0 === nbSelectedGraphElements) {
         currentController = GraphDisplayer.getGraphMenuHandler();
     } else if (1 === nbSelectedGraphElements) {
-        currentController = api.getSingleElement().getController();
+        currentController = api.getSingle().getController();
     } else {
-        var anyElement = api.getSingleElement();
-        var anyElementType = anyElement.getGraphElementType();
-        var areAllElementsOfSameType = true;
+        let anyElement = api.getSingle();
+        let anyElementType = anyElement.getGraphElementType();
+        let areAllElementsOfSameType = true;
         api.getSelectedElements().forEach(function (selectedElement) {
             if (selectedElement.getGraphElementType() !== anyElementType) {
                 areAllElementsOfSameType = false;

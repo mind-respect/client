@@ -3,57 +3,10 @@
   -->
 
 <template>
-    <div>
+    <div v-if="loaded">
         <v-toolbar fixed flat color="transparent" class="top-toolbar pl-1" height="36" dense>
             <v-toolbar-items class="pa-0 mt-3">
-                <v-btn flat icon>
-                    <v-icon>fa-bullseye</v-icon>
-                </v-btn>
-                <v-btn flat icon>
-                    <v-icon>
-                        meeting_room
-                    </v-icon>
-                </v-btn>
-                <v-btn flat icon>
-                    <v-icon>
-                        meeting_room
-                    </v-icon>
-                </v-btn>
-                <v-btn flat icon>
-                    <v-icon>
-                        meeting_room
-                    </v-icon>
-                </v-btn>
-                <v-btn flat icon>
-                    <v-icon>
-                        meeting_room
-                    </v-icon>
-                </v-btn>
-                <v-btn flat icon>
-                    <v-icon>
-                        meeting_room
-                    </v-icon>
-                </v-btn>
-                <v-btn flat icon>
-                    <v-icon>
-                        meeting_room
-                    </v-icon>
-                </v-btn>
-                <v-btn flat icon>
-                    <v-icon>
-                        meeting_room
-                    </v-icon>
-                </v-btn>
-                <v-btn flat icon>
-                    <v-icon>
-                        meeting_room
-                    </v-icon>
-                </v-btn>
-                <v-btn flat icon>
-                    <v-icon>
-                        meeting_room
-                    </v-icon>
-                </v-btn>
+                <BubbleButtons :key="refreshKey" :isInMainMenu="true"></BubbleButtons>
             </v-toolbar-items>
         </v-toolbar>
         <v-navigation-drawer
@@ -136,17 +89,39 @@
 </template>
 
 <script>
+    import BubbleButtons from '@/components/graph/BubbleButtons'
+    import SelectionHandler from '@/SelectionHandler'
     export default {
-        name: "MenuGraphBubble",
+        name: "MainMenus",
+        components:{
+            BubbleButtons: BubbleButtons
+        },
+        mounted:function(){
+            setTimeout(function(){
+                this.loaded = true;
+            }.bind(this),1000)
+        },
         data: function () {
             return {
                 sideNavigation: true,
-                mini: true
+                mini: true,
+                refreshKey: Math.random(),
+                loaded: false
+            }
+        },
+        computed: {
+            selection: function () {
+                return SelectionHandler.selected;
+            }
+        },
+        watch: {
+            selection: function () {
+                console.log("refresh buttons ffd")
+                this.refreshKey = Math.random();
             }
         }
     }
 </script>
-
 <style>
     .top-toolbar {
         margin-top: 43px !important;

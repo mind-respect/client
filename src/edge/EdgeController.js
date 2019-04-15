@@ -206,7 +206,7 @@ EdgeController.prototype.reverse = function () {
     });
 };
 EdgeController.prototype.sourceVertex = function (sourceVertex) {
-    if (!sourceVertex.isExpanded()) {
+    if (!sourceVertex.isExpanded) {
         return sourceVertex.getController().expand().then(doIt.bind(this));
     } else {
         return doIt.bind(this)();

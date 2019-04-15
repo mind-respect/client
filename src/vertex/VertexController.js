@@ -79,7 +79,7 @@ VertexController.prototype.convertToRelationCanDo = function () {
     if (!this.isSingleAndOwned()) {
         return false;
     }
-    if (!this.getUi().isExpanded()) {
+    if (!this.getUi().isExpanded) {
         return false;
     }
     if (this.getModel().isLabelEmpty()) {
@@ -142,7 +142,7 @@ VertexController.prototype.convertToGroupRelationCanDo = function () {
     if (!this.isSingleAndOwned()) {
         return false;
     }
-    if (!this.getUi().isExpanded()) {
+    if (!this.getUi().isExpanded) {
         return false;
     }
     if (this.getModel().isLabelEmpty()) {

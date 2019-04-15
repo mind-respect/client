@@ -141,54 +141,7 @@
                                     ></div>
                                 </div>
                                 <v-card>
-                                    <v-btn flat icon>
-                                        <v-icon>fa-bullseye</v-icon>
-                                    </v-btn>
-                                    <v-btn flat icon>
-                                        <v-icon>
-                                            meeting_room
-                                        </v-icon>
-                                    </v-btn>
-                                    <v-btn flat icon>
-                                        <v-icon>
-                                            meeting_room
-                                        </v-icon>
-                                    </v-btn>
-                                    <v-btn flat icon>
-                                        <v-icon>
-                                            meeting_room
-                                        </v-icon>
-                                    </v-btn>
-                                    <v-btn flat icon>
-                                        <v-icon>
-                                            meeting_room
-                                        </v-icon>
-                                    </v-btn>
-                                    <v-btn flat icon>
-                                        <v-icon>
-                                            meeting_room
-                                        </v-icon>
-                                    </v-btn>
-                                    <v-btn flat icon>
-                                        <v-icon>
-                                            meeting_room
-                                        </v-icon>
-                                    </v-btn>
-                                    <v-btn flat icon>
-                                        <v-icon>
-                                            meeting_room
-                                        </v-icon>
-                                    </v-btn>
-                                    <v-btn flat icon>
-                                        <v-icon>
-                                            meeting_room
-                                        </v-icon>
-                                    </v-btn>
-                                    <v-btn flat icon>
-                                        <v-icon>
-                                            meeting_room
-                                        </v-icon>
-                                    </v-btn>
+                                    <BubbleButtons></BubbleButtons>
                                 </v-card>
                             </v-menu>
                         </div>
@@ -307,6 +260,7 @@
     import KeyCode from 'keycode-js';
     import Children from '@/components/graph/Children'
     import ChildNotice from '@/components/graph/ChildNotice'
+    import BubbleButtons from '@/components/graph/BubbleButtons'
     import GraphUi from '@/graph/GraphUi'
     import IdUri from '@/IdUri'
 
@@ -315,7 +269,8 @@
         props: ['bubble'],
         components: {
             Children,
-            ChildNotice
+            ChildNotice,
+            BubbleButtons
         },
         data: function () {
             return {

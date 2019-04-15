@@ -3,10 +3,10 @@
   -->
 
 <template>
-    <div>
+    <div v-if="loaded">
         <v-divider></v-divider>
-        <MenuGraphBubble></MenuGraphBubble>
-        <div id="drawn_graph" v-if="loaded" @click="click" data-zoom="9" class="vh-center">
+        <MainMenus></MainMenus>
+        <div id="drawn_graph" @click="click" data-zoom="9" class="vh-center">
             <!--<div :style="'width:' + leftWidth() + 'px'"></div>-->
             <div style="width:8000px;"></div>
             <v-layout row class='root-vertex-super-container vh-center ma-5 pa-5' data-zoom='1'>
@@ -48,7 +48,7 @@
     import MindMapInfo from '@/MindMapInfo'
     import Bubble from '@/components/graph/Bubble'
     import GraphDrawing from '@/components/graph/GraphDrawing'
-    import MenuGraphBubble from '@/components/graph/MenuGraphBubble'
+    import MainMenus from '@/components/graph/MainMenus'
     import Scroll from '@/Scroll'
     import Vue from 'vue'
     import GraphUi from '@/graph/GraphUi'
@@ -63,7 +63,7 @@
             Bubble,
             RemoveDialog,
             GraphDrawing,
-            MenuGraphBubble
+            MainMenus
         },
         data: function () {
             return {
@@ -87,6 +87,7 @@
                 center.makeCenter();
                 this.loaded = true;
                 Vue.nextTick(function () {
+                    SelectionHandler.setToSingle(this.graph.center);
                     GraphUi.resetBackGroundColor();
                     Scroll.centerBubbleIfApplicable(
                         this.graph.center

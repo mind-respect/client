@@ -315,7 +315,7 @@ GraphElementController.prototype.cut = function () {
 };
 
 GraphElementController.prototype.pasteCanDo = function () {
-    return this.isSingleAndOwned() && this.getUi().isLabelEditable();
+    return this.isSingleAndOwned() && !MindMapInfo.isViewOnly();
 };
 
 GraphElementController.prototype.paste = function (event) {

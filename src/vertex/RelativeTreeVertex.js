@@ -293,7 +293,7 @@ api.setupCopyButton = function (button) {
 EventBus.subscribe('/event/ui/graph/drawn', function () {
     var expandCalls = [];
     api.visitAllVertices(function (vertexUi) {
-        if (vertexUi.getModel().hasOnlyOneHiddenChild() && !vertexUi.isExpanded()) {
+        if (vertexUi.getModel().hasOnlyOneHiddenChild() && !vertexUi.isExpanded) {
             expandCalls.push(
                 vertexUi.getController().expand(true)
             );
@@ -331,7 +331,7 @@ function setupShareMenu() {
                 var treeListCopyDump = $("#copy-dump");
                 treeListCopyDump.text(
                     IdUri.absoluteUrlForBubbleUri(
-                        SelectionHandler.getSingleElement().getModel().getUri()
+                        SelectionHandler.getSingle().getModel().getUri()
                     )
                 );
                 return treeListCopyDump[0];

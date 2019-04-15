@@ -161,12 +161,12 @@
                         SelectionHandler.getSelectedElements()
                     ) :
                     VertexService.remove(
-                        SelectionHandler.getSingleElement()
+                        SelectionHandler.getSingle()
                     );
                 return removePromise.then(function () {
                     let nextSibling;
                     if (!this.isMultipleFlow) {
-                        nextSibling = SelectionHandler.getSingleElement().getNextSibling();
+                        nextSibling = SelectionHandler.getSingle().getNextSibling();
                     }
                     this.selected.forEach(function (bubble) {
                         bubble.remove();

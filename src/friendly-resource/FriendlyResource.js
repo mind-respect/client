@@ -154,7 +154,7 @@ FriendlyResource.FriendlyResource.prototype.setLabel = function (label) {
     this.friendlyResourceServerFormat.label = label;
 };
 
-FriendlyResource.FriendlyResource.prototype.getLabel = function () {
+FriendlyResource.FriendlyResource.prototype.getLabel = FriendlyResource.FriendlyResource.prototype.text = function () {
     return this.friendlyResourceServerFormat.label;
 };
 
@@ -174,6 +174,10 @@ FriendlyResource.FriendlyResource.prototype.isCenterBubble = function () {
 
 FriendlyResource.FriendlyResource.prototype.getParentBubble = function () {
     return this.parentBubble;
+};
+
+FriendlyResource.FriendlyResource.prototype.hasChildren = function () {
+    return this.getNumberOfChild() > 0;
 };
 
 FriendlyResource.FriendlyResource.prototype.getComment = function () {
@@ -617,6 +621,23 @@ FriendlyResource.FriendlyResource.prototype.getClosestAncestorInTypes = function
     return ancestor.isInTypes(types) ?
         ancestor :
         this;
+};
+
+FriendlyResource.FriendlyResource.prototype.hasAnExpandedChild = function () {
+    var hasAnExpandedChild = false;
+    this.visitClosestChildVertices(function (vertexUi) {
+        if (vertexUi.getNumberOfChild() > 0) {
+            hasAnExpandedChild = true;
+        }
+    });
+    this.visitAllImmediateChild(function (child) {
+        if (child.isGroupRelation()) {
+            if (child.getNumberOfChild() > 0) {
+                hasAnExpandedChild = true;
+            }
+        }
+    });
+    return hasAnExpandedChild;
 };
 
 FriendlyResource.FriendlyResource.prototype.visitClosestChildVertices = function (visitor) {

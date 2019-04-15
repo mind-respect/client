@@ -373,6 +373,11 @@ Vertex.prototype._buildIncludedVertices = function () {
     return includedVertices;
 };
 
+Vertex.prototype.hasSuggestions = function () {
+    let suggestions = this.getSuggestions();
+    return suggestions !== undefined && suggestions.length > 0;
+};
+
 Vertex.prototype._buildSuggestions = function () {
     var suggestions = [];
     if (this.vertexServerFormat.vertex.suggestions === undefined) {
