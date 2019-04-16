@@ -70,6 +70,7 @@ VertexController.prototype.addChild = function (isToTheLeft) {
             GraphElementService.changeChildrenIndex(
                 triple.source
             );
+            Store.dispatch("redraw");
             return triple;
         });
     }

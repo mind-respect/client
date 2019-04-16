@@ -111,7 +111,7 @@
                                         @dragstart="dragStart"
                                         @dragend="dragEnd"
                                         @contextmenu="rightClick"
-                                        draggable="true"
+                                        :draggable="!bubble.isCenter"
                                         style="max-width:500px!important;height:100%;position:relative"
                                 >
                                     <div
@@ -215,7 +215,7 @@
                         <transition name="fade" v-on:before-enter="beforeChildrenAnimation"
                                     v-on:after-enter="afterChildrenAnimation">
                             <Children :bubble="bubble"
-                                      v-if="bubble.orientation === 'right' && (!bubble.isVertex() || (bubble.rightBubbles.length > 0))"
+                                      v-if="bubble.orientation === 'right' && (!bubble.isVertex() || bubble.isExpanded)"
                             >
                             </Children>
                         </transition>

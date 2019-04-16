@@ -66,6 +66,9 @@ function Vertex(vertexServerFormat) {
         this
     );
     this.init(vertexServerFormat.vertex.graphElement);
+    if(this.getNumberOfChild() === 0){
+        this.isExpanded = true;
+    }
 }
 
 Vertex.prototype = new GraphElement.GraphElement();
@@ -195,7 +198,6 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     } else {
         children.splice(index, 0, child);
     }
-    Store.dispatch("redraw");
 };
 
 Vertex.prototype.getRightBubble = function (bottom) {

@@ -240,7 +240,10 @@ FriendlyResource.FriendlyResource.prototype.select = function () {
 FriendlyResource.FriendlyResource.prototype.deselect = function () {
     this.isSelected = false;
     this.isSingleSelected = false;
-    this.getLabelHtml().blur();
+    let label = this.getLabelHtml();
+    if (label) {
+        label.blur();
+    }
 };
 
 FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {
@@ -266,6 +269,10 @@ FriendlyResource.FriendlyResource.prototype.removeSingleSelected = function () {
 
 FriendlyResource.FriendlyResource.prototype.beforeExpand = function () {
     this.loading = true;
+    // this.draw = false
+    // Vue.nextTick(function(){
+    //     Store.dispatch("redraw")
+    // })
 };
 
 FriendlyResource.FriendlyResource.prototype.isInTypes = function (types) {
@@ -524,6 +531,10 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isCh
     if (!avoidCenter && !isChildExpand) {
         Scroll.centerBubbleForTreeOrNotIfApplicable(this);
     }
+    // this.draw = true;
+    // Vue.nextTick(function(){
+    //     Store.dispatch("redraw")
+    // })
 };
 
 FriendlyResource.FriendlyResource.prototype.collapse = function () {

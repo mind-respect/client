@@ -30,6 +30,7 @@
     const arcRadiusLeft = arcRadiusStandard * -1;
     const standardInnerMargin = 26;
     const smallInnerMargin = 15;
+    const inBetweenXAdjust = 20;
     const farDistanceStandard = 30;
     const farDistanceForCenter = 33;
     const arrowHeadLength = 6;
@@ -91,7 +92,6 @@
                     this.isLowestInBetween = this.isChildInBetween(
                         this.lowestPosition
                     );
-
                     let topDistance = this.topDistanceWithChild(this.highestPosition);
                     let isTopClose = topDistance < (this.bubble.isCenter ? farDistanceForCenter : farDistanceStandard);
                     this.highestArcRadius = isTopClose ? Math.min(topDistance, arcRadiusStandard) : arcRadiusStandard;
@@ -109,14 +109,15 @@
             topBottomLineAtLeft: function () {
                 let highestArcRadius = this.highestArcRadius * -1;
                 let lowestArcRadius = this.lowestArcRadius * -1;
+                let xAdjust = this.isHighestInBetween ? inBetweenXAdjust * -1 : 0;
                 let lines = "M " + this.highestPosition.x + "," + this.highestPosition.y + " " +
-                    "H " + (this.topPosition.x + highestArcRadius) + " ";
+                    "H " + (this.topPosition.x + xAdjust + highestArcRadius) + " ";
                 if (!this.isHighestInBetween) {
                     lines += this.buildArc(highestArcRadius, true, true) +
                         "V " + (this.topPosition.y + arcRadiusLeft) + " ";
                 }
                 if (this.isLowestInBetween) {
-                    lines += "M " + this.bottomPosition.x + " " + this.lowestPosition.y + " ";
+                    lines += "M " + (this.bottomPosition.x - inBetweenXAdjust) + " " + this.lowestPosition.y + " ";
                     lines += "H " + this.lowestPosition.x;
                 } else {
                     lines += "M " + this.bottomPosition.x + " " + this.bottomPosition.y + " " +
@@ -129,7 +130,7 @@
             topBottomLineAtRight: function () {
                 let lines = "M " + this.lowestPosition.x + "," + this.lowestPosition.y + " ";
                 if (this.isLowestInBetween) {
-                    lines += "H " + this.bottomPosition.x + " ";
+                    lines += "H " + (this.bottomPosition.x + inBetweenXAdjust) + " ";
                 } else {
                     lines += "H " + (this.bottomPosition.x + this.lowestArcRadius) + " " +
                         this.buildArc(this.lowestArcRadius, false, false) +
@@ -137,7 +138,7 @@
                 }
 
                 if (this.isHighestInBetween) {
-                    lines += "M " + this.topPosition.x + " " + this.highestPosition.y + " ";
+                    lines += "M " + (this.topPosition.x + inBetweenXAdjust) + " " + this.highestPosition.y + " ";
                 } else {
                     lines += "M " + this.topPosition.x + " " + this.topPosition.y + " " +
                         "V " + (this.highestPosition.y + this.highestArcRadius) + " " +
@@ -279,7 +280,7 @@
                     this.$nextTick(function () {
                         console.warn('null child bubble html redraw');
                         // this.redraw();
-                        // this.loaded = false;
+                        this.loaded = false;
                         this.$destroy();
                     }.bind(this));
                     return;
@@ -332,6 +333,10 @@
                 position.x = this.bubbleRect.x + window.pageXOffset;
                 let isSmall = (this.bubbleRect.width - standardInnerMargin * 2) < standardInnerMargin;
                 let innerMargin = isSmall ? smallInnerMargin : standardInnerMargin;
+                if (this.isLowestInBetween) {
+                    innerMargin = 10;
+                    debugger;
+                }
                 let xAdjust = this.isLeft ? innerMargin : this.bubbleRect.width - innerMargin;
                 position.x += xAdjust;
                 position.x = Math.round(position.x);
