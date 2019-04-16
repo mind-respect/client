@@ -35,6 +35,7 @@
 <script>
     import SelectionHandler from '@/SelectionHandler'
     import UiUtils from '@/UiUtils'
+
     export default {
         name: "BubbleButtons",
         data: function () {
@@ -45,7 +46,7 @@
                     {
                         action: "center",
                         icon: "fa-bullseye",
-                        ctrlShortcut:"0"
+                        ctrlShortcut: "0"
                     },
                     {
                         action: "addChild",
@@ -62,18 +63,18 @@
                     {
                         icon: "unfold_more",
                         action: "expand",
-                        ctrlShortcut:"E"
+                        ctrlShortcut: "E"
                     },
                     {
                         icon: "unfold_less",
                         iconClass: "fa-strike",
                         action: "collapse",
-                        ctrlShortcut:"H"
+                        ctrlShortcut: "H"
                     },
                     {
                         icon: "note",
                         action: "note",
-                        ctrlShortcut:"D"
+                        ctrlShortcut: "D"
                     },
                     {
                         icon: "photo",
@@ -86,7 +87,7 @@
                     {
                         icon: "fa-tags",
                         action: "identifyWhenMany",
-                        ctrlShortcut:"G"
+                        ctrlShortcut: "G"
                     },
                     {
                         icon: "people",
@@ -95,12 +96,12 @@
                     {
                         icon: "lock",
                         action: "makePrivate",
-                        ctrlShortcut:"P"
+                        ctrlShortcut: "P"
                     },
                     {
                         icon: "lock_open",
                         action: "makePublic",
-                        ctrlShortcut:"P"
+                        ctrlShortcut: "P"
                     },
                     {
                         icon: "file_copy",
@@ -109,22 +110,22 @@
                     {
                         icon: "fa-cut",
                         action: "cut",
-                        ctrlShortcut:"X"
+                        ctrlShortcut: "X"
                     },
                     {
                         icon: "fa-paste",
                         action: "paste",
-                        ctrlShortcut:"V"
+                        ctrlShortcut: "V"
                     },
                     {
                         icon: "fa-share",
                         action: "reverseToRight",
-                        ctrlShortcut:"I"
+                        ctrlShortcut: "I"
                     },
                     {
                         icon: "fa-reply",
                         action: "reverseToLeft",
-                        ctrlShortcut:"I"
+                        ctrlShortcut: "I"
                     },
                     {
                         icon: "fa-check",
@@ -141,7 +142,7 @@
                     {
                         icon: "fa-handshake-o",
                         action: "merge",
-                        ctrlShortcut:"I"
+                        ctrlShortcut: "I"
                     },
                     {
                         icon: "delete",
@@ -150,17 +151,17 @@
                     {
                         icon: "select_all",
                         action: "selectTree",
-                        ctrlShortcut:"A"
+                        ctrlShortcut: "A"
                     },
                     {
                         icon: "fa-arrows-h",
                         action: "convertToRelation",
-                        ctrlShortcut:"O"
+                        ctrlShortcut: "O"
                     },
                     {
                         icon: "fa-arrows-h",
                         action: "convertToGroupRelation",
-                        ctrlShortcut:"O"
+                        ctrlShortcut: "O"
                     },
                     {
                         icon: "fa-lightbulb-o",
@@ -174,12 +175,12 @@
             }
         },
         props: ['isInMainMenu'],
-        computed:{
-            attach:function(){
-                return this.isInMainMenu ? "body": false;
+        computed: {
+            attach: function () {
+                return this.isInMainMenu ? "body" : false;
             },
-            nudgeBottom:function(){
-                return this.isInMainMenu ? 35: 0;
+            nudgeBottom: function () {
+                return this.isInMainMenu ? 35 : 0;
             }
         },
         methods: {

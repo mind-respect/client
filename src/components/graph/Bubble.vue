@@ -94,6 +94,7 @@
                         <div class="image_container"></div>
                         <div class="in-bubble-content-wrapper">
                             <v-menu
+                                    lazy
                                     v-model="showMenu"
                                     :value="isSelected"
                                     max-width="250"
