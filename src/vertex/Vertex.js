@@ -240,6 +240,7 @@ Vertex.prototype.expand = function () {
     FriendlyResource.FriendlyResource.prototype.expand.call(
         this
     );
+    this.isExpanded = false; // to make the expand animation work in next tick
     Vue.nextTick(function () {
         if (this.rightBubblesCollapsed !== null) {
             this.rightBubbles = this.rightBubblesCollapsed;
@@ -249,6 +250,7 @@ Vertex.prototype.expand = function () {
             this.leftBubbles = this.leftBubblesCollapsed;
             this.leftBubblesCollapsed = null;
         }
+        this.isExpanded = true;
     }.bind(this))
 };
 
