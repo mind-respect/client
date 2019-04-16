@@ -30,13 +30,15 @@
 </template>
 
 <script>
+
+    import Store from '@/store'
+
     export default {
         name: "Children",
         components: {
             Bubble: () => import('@/components/graph/Bubble')
         },
         mounted: function () {
-            // console.log(Bubble);
             if (this.bubble.isGroupRelation()) {
                 this.bubble.sortedImmediateChild(
                     this.bubble.parentVertex.getChildrenIndex()

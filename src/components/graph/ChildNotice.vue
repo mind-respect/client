@@ -28,6 +28,8 @@
 <script>
     import Scroll from '@/Scroll'
     import Vue from 'vue'
+    import SelectionHandler from '@/SelectionHandler'
+    import Store from '@/store'
 
     export default {
         name: "ChildNotice",
@@ -44,10 +46,12 @@
                     Vue.nextTick(function () {
                         this.loading = this.bubble.loading = false;
                     }.bind(this))
+                    SelectionHandler.setToSingle(this.bubble);
                     Scroll.centerBubbleForTreeIfApplicable(
                         this.bubble,
                         true
                     );
+                    Store.dispatch("redraw");
                 }.bind(this));
             }
         },

@@ -51,7 +51,7 @@ api.TreeEdge.prototype.textHtml = function () {
 };
 
 api.TreeEdge.prototype.childVertexInDisplay = function () {
-    return this.getTopMostChildBubble();
+    return this.getNextBubble();
 };
 api.TreeEdge.prototype.serverFormat = function () {
     return {

@@ -65,7 +65,7 @@
                     this.$nextTick(function () {
                         console.warn('null bubble html redraw');
                         // this.redraw();
-                        // this.loaded = false;
+                        this.loaded = false;
                         this.$destroy();
                     }.bind(this));
                     return;
@@ -173,7 +173,7 @@
                         this.$nextTick(function () {
                             console.warn('drawChildren null child position html redraw');
                             // this.redraw();
-                            // this.loaded = false;
+                            this.loaded = false;
                             this.$destroy();
                         }.bind(this));
                         return;

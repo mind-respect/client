@@ -116,7 +116,6 @@
         },
         watch: {
             selection: function () {
-                console.log("refresh buttons ffd")
                 this.refreshKey = Math.random();
             }
         }

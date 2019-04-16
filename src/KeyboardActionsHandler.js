@@ -84,8 +84,7 @@ api._handleKeyboardActions = function () {
 export default api;
 
 function pasteHandler(event) {
-
-    if (!SelectionHandler.isOnlyASingleElementSelected()) {
+    if (!SelectionHandler.isSingle()) {
         return;
     }
     var selectedElement = SelectionHandler.getSingle();
@@ -119,7 +118,7 @@ function keyDownHandler(event) {
     let feature = actionSet[event.which];
     if (feature === undefined) {
         let isPasting = isCombineKeyPressed && vKeyNumber && event.which;
-        if (!isPasting && event.which !== api._ctrlKeyNumber && !MindMapInfo.isViewOnly() && SelectionHandler.isOnlyASingleElementSelected()) {
+        if (!isPasting && event.which !== api._ctrlKeyNumber && !MindMapInfo.isViewOnly() && SelectionHandler.isSingle()) {
             let selectedElement = SelectionHandler.getSingle();
             if (!MindMapInfo.isViewOnly()) {
                 let labelHtml = selectedElement.getLabelHtml();

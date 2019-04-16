@@ -50,7 +50,8 @@
                    'blur-overlay':isEditFlow
                 }"
                     >
-                        <transition name="fade">
+                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"
+                                    v-on:after-enter="afterChildrenAnimation">
                             <Children :bubble="bubble"
                                       v-if="bubble.orientation === 'left' && (!bubble.isVertex() || (bubble.rightBubbles.length > 0))"
                             >
@@ -211,7 +212,8 @@
                    'blur-overlay':isEditFlow
                 }"
                     >
-                        <transition name="fade">
+                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"
+                                    v-on:after-enter="afterChildrenAnimation">
                             <Children :bubble="bubble"
                                       v-if="bubble.orientation === 'right' && (!bubble.isVertex() || (bubble.rightBubbles.length > 0))"
                             >
@@ -263,6 +265,7 @@
     import BubbleButtons from '@/components/graph/BubbleButtons'
     import GraphUi from '@/graph/GraphUi'
     import IdUri from '@/IdUri'
+    import Store from '@/store'
 
     export default {
         name: "Bubble",
@@ -303,6 +306,9 @@
             this.loaded = true;
         },
         computed: {
+            selected: function () {
+                return SelectionHandler.selected;
+            },
             relationPlaceholder: function () {
                 return this.isSelected ? this.$t('edge:default') : "";
             },
@@ -324,6 +330,18 @@
             }
         },
         methods: {
+            beforeChildrenAnimation: function () {
+                this.bubble.draw = false;
+                this.$nextTick(function () {
+                    Store.dispatch("redraw");
+                });
+            },
+            afterChildrenAnimation: function () {
+                this.bubble.draw = true;
+                this.$nextTick(function () {
+                    Store.dispatch("redraw")
+                });
+            },
             rightClick: function (event) {
                 event.preventDefault();
                 this.showMenu = true;
@@ -370,7 +388,7 @@
             checkIsSelected: function () {
                 let found = false;
                 this.SelectionHandler.getSelectedBubbles().forEach(function (selected) {
-                    if (selected.getId() === this.bubble.getId()) {
+                    if (selected.getUri() === this.bubble.getUri()) {
                         found = true;
                     }
                 }.bind(this));
@@ -529,8 +547,8 @@
             }
         },
         watch: {
-            "SelectionHandler.selected": function () {
-                this.checkIsSelected()
+            selected: function () {
+                this.checkIsSelected();
             },
             showMenu: function () {
                 GraphUi.enableDragScroll();

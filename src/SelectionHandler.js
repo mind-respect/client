@@ -4,7 +4,6 @@
 
 import GraphUi from '@/graph/GraphUi'
 import GraphDisplayer from '@/graph/GraphDisplayer'
-import GraphElementMainMenu from '@/graph-element/GraphElementMainMenu'
 import EventBus from '@/EventBus'
 import Scroll from '@/Scroll'
 
@@ -83,12 +82,8 @@ api.addVertex = function (vertex) {
     if (api.isSingle()) {
         api.getSingle().removeSingleSelected();
     }
-    if (vertex.isSelected) {
-        return;
-    }
     vertex.select();
     api.selected.push(vertex);
-    api._reviewMenu();
 };
 api.remove = api.removeVertex = function (vertex) {
     deselectGraphElement(vertex, api.selected);
@@ -99,7 +94,6 @@ api.removeRelation = function (relation) {
 
 api.removeAll = function () {
     deselectAll();
-    api._reviewMenu();
 };
 
 api.getSelectedVertices = function () {
@@ -163,16 +157,6 @@ api.getControllerFromCurrentSelection = function () {
     return currentController;
 };
 
-api._reviewMenu = function () {
-    return;
-    GraphElementMainMenu.reviewOutOfBubbleButtonsDisplay(
-        api.getSelectedBubbles(),
-        api.getControllerFromCurrentSelection()
-    );
-    let GraphElementUi = require('@/graph-element/GraphElementUi').default;
-    GraphElementUi.resetOtherInstancesDisplay();
-};
-
 EventBus.subscribe("/event/ui/graph/reset", deselectAll);
 
 export default api;
@@ -188,7 +172,6 @@ function deselectAll() {
     for (let i = api.selected.length; i > 0; i--) {
         api.selected.pop();
     }
-    api._reviewMenu();
 }
 
 function deselectGraphElement(toDeselect, graphElements) {
@@ -200,5 +183,4 @@ function deselectGraphElement(toDeselect, graphElements) {
             return;
         }
     }
-    api._reviewMenu();
 }

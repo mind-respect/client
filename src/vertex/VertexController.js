@@ -95,7 +95,7 @@ VertexController.prototype.convertToRelationCanDo = function () {
         return false;
     }
     if (numberOfChild === 1) {
-        var childRelation = this.getUi().getTopMostChildBubble();
+        var childRelation = this.getUi().getNextBubble();
         return childRelation.isRelation() && childRelation.getModel().isPristine();
     }
     return true;
@@ -107,7 +107,7 @@ VertexController.prototype.convertToRelation = function () {
     var label = this.getModel().getLabel();
     var toSelect;
     if (this.getModel().getNumberOfChild() === 1) {
-        var childRelation = this.getUi().getTopMostChildBubble();
+        var childRelation = this.getUi().getNextBubble();
         promises.push(
             childRelation.getController().setLabel(
                 label

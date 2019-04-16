@@ -545,7 +545,8 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
         GraphElementService.changeChildrenIndex(
             previousParentVertex
         );
-    });
+        SelectionHandler.setToSingle(this.getModel())
+    }.bind(this));
 };
 
 GraphElementController.prototype.mergeCanDo = function () {

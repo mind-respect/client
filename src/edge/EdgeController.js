@@ -161,9 +161,9 @@ EdgeController.prototype.remove = function (skipConfirmation) {
     function deleteAfterConfirmationBehavior() {
         return EdgeService.remove(this.getUi(), function () {
             var parentBubble = this.getUi().getParentBubble();
-            var childVertex = this.getUi().getTopMostChildBubble();
+            var childVertex = this.getUi().getNextBubble()();
             this.getUi().applyToOtherInstances(function (otherInstance) {
-                var childVertex = otherInstance.getTopMostChildBubble();
+                var childVertex = otherInstance.getNextBubble()();
                 childVertex.remove(false);
             });
             childVertex.remove(false);

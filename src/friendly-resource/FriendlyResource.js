@@ -235,14 +235,12 @@ FriendlyResource.FriendlyResource.prototype.isMeta = function () {
 
 FriendlyResource.FriendlyResource.prototype.select = function () {
     this.isSelected = true;
-    // Store.dispatch("redraw");
 };
 
 FriendlyResource.FriendlyResource.prototype.deselect = function () {
     this.isSelected = false;
     this.isSingleSelected = false;
     this.getLabelHtml().blur();
-    // Store.dispatch("redraw");
 };
 
 FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {
@@ -474,7 +472,6 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
             bubbleAround = isDown ? bubbleAround.getFirstEdge(0) : bubbleAround.getLastEdge(0);
         }
     }
-
     return bubbleAround;
 };
 
@@ -527,16 +524,6 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isCh
     if (!avoidCenter && !isChildExpand) {
         Scroll.centerBubbleForTreeOrNotIfApplicable(this);
     }
-    this.draw = false;
-    Vue.nextTick(function () {
-        Store.dispatch("redraw");
-    })
-    setTimeout(function () {
-        this.draw = true;
-        Vue.nextTick(function () {
-            Store.dispatch("redraw");
-        })
-    }.bind(this), 325);
 };
 
 FriendlyResource.FriendlyResource.prototype.collapse = function () {
