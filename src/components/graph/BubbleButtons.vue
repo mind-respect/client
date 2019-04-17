@@ -3,32 +3,30 @@
   -->
 
 <template>
-    <div
-            @mouseover="isHover = true"
-            @mouseleave="isHover = false"
-    >
-        <v-tooltip
-                bottom
-                allow-overflow
-                :attach="attach"
-                :nudge-width="400"
-                max-width="200"
-                :nudge-bottom="nudgeBottom"
-                v-for="button in buttons"
-                :key="button.action"
-        >
-            <v-btn flat icon v-if="canDo(button)" slot="activator">
-                <v-icon :class="button.iconClass">
-                    {{getIcon(button)}}
-                </v-icon>
-            </v-btn>
-            <span>
+    <div>
+        <span v-for="button in buttons" :key="button.action">
+            <v-tooltip
+                    bottom
+                    allow-overflow
+                    :attach="attach"
+                    :nudge-width="400"
+                    max-width="200"
+                    :nudge-bottom="nudgeBottom"
+                    v-if="canDo(button)"
+            >
+                <v-btn flat icon slot="activator" @click="performAction(button)">
+                    <v-icon :class="button.iconClass">
+                        {{getIcon(button)}}
+                    </v-icon>
+                </v-btn>
+                <span>
                 {{$t('button:' + button.action)}}
                 <span v-if="button.ctrlShortcut">
                     ({{ctrlKey}}+{{button.ctrlShortcut}})
                 </span>
             </span>
-        </v-tooltip>
+            </v-tooltip>
+        </span>
     </div>
 </template>
 
@@ -40,7 +38,6 @@
         name: "BubbleButtons",
         data: function () {
             return {
-                isHover: false,
                 ctrlKey: UiUtils.isMacintosh() ? "⌘" : "ctrl",
                 buttons: [
                     {
@@ -140,7 +137,7 @@
                         action: "subElements"
                     },
                     {
-                        icon: "fa-handshake-o",
+                        icon: "merge_type",
                         action: "merge",
                         ctrlShortcut: "I"
                     },
@@ -184,6 +181,12 @@
             }
         },
         methods: {
+            performAction: function (button) {
+                let controller = SelectionHandler.getControllerFromCurrentSelection();
+                controller[
+                    button.action
+                    ]();
+            },
             canDo: function (button) {
                 let controller = SelectionHandler.getControllerFromCurrentSelection();
                 if (!this.canActionBePossiblyMade(button.action, controller)) {

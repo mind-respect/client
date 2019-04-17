@@ -246,6 +246,7 @@ VertexController.prototype.remove = function (skipConfirmation) {
                 ui.remove();
             });
             Store.dispatch("setIsRemoveFlow", true);
+            Store.dispatch("redraw");
         }.bind(this));
     }
 };
