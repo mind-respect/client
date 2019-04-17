@@ -6,7 +6,7 @@
     <div v-if="loaded">
         <v-toolbar fixed flat color="transparent" class="top-toolbar pl-1" height="36" dense>
             <v-toolbar-items class="pa-0 mt-3">
-                <BubbleButtons :key="refreshKey" :isInMainMenu="true"></BubbleButtons>
+                <BubbleButtons :key="refreshKey" :isInTopMenu="true"></BubbleButtons>
             </v-toolbar-items>
         </v-toolbar>
         <v-navigation-drawer
@@ -21,65 +21,9 @@
         >
             <v-toolbar flat color="transparent" class="side-toolbar" style="border:none;">
                 <v-list class="pa-0" color="transparent">
-                    <v-list-tile>
+                    <v-list-tile v-for="button in graphButtons">
                         <v-list-tile-action>
-                            <v-btn flat icon>
-                                <v-icon>fa-bullseye</v-icon>
-                            </v-btn>
-                        </v-list-tile-action>
-                    </v-list-tile>
-                    <v-list-tile>
-                        <v-list-tile-action>
-                            <v-btn flat icon>
-                                <v-icon>
-                                    meeting_room
-                                </v-icon>
-                            </v-btn>
-                        </v-list-tile-action>
-                    </v-list-tile>
-                    <v-list-tile>
-                        <v-list-tile-action>
-                            <v-btn flat icon>
-                                <v-icon>
-                                    meeting_room
-                                </v-icon>
-                            </v-btn>
-                        </v-list-tile-action>
-                    </v-list-tile>
-                    <v-list-tile>
-                        <v-list-tile-action>
-                            <v-btn flat icon>
-                                <v-icon>
-                                    meeting_room
-                                </v-icon>
-                            </v-btn>
-                        </v-list-tile-action>
-                    </v-list-tile>
-                    <v-list-tile>
-                        <v-list-tile-action>
-                            <v-btn flat icon>
-                                <v-icon>
-                                    meeting_room
-                                </v-icon>
-                            </v-btn>
-                        </v-list-tile-action>
-                    </v-list-tile>
-                    <v-list-tile>
-                        <v-list-tile-action>
-                            <v-btn flat icon>
-                                <v-icon>
-                                    meeting_room
-                                </v-icon>
-                            </v-btn>
-                        </v-list-tile-action>
-                    </v-list-tile>
-                    <v-list-tile>
-                        <v-list-tile-action>
-                            <v-btn flat icon>
-                                <v-icon>
-                                    meeting_room
-                                </v-icon>
-                            </v-btn>
+                            <Button :button="button" :isInSideMenu="true"></Button>
                         </v-list-tile-action>
                     </v-list-tile>
                 </v-list>
@@ -91,22 +35,38 @@
 <script>
     import BubbleButtons from '@/components/graph/BubbleButtons'
     import SelectionHandler from '@/SelectionHandler'
+    import AppController from '@/AppController'
+    import GraphController from '@/graph/GraphController'
+    import Button from '@/components/graph/Button'
+
     export default {
         name: "MainMenus",
-        components:{
-            BubbleButtons: BubbleButtons
+        components: {
+            BubbleButtons: BubbleButtons,
+            Button: Button
         },
-        mounted:function(){
-            setTimeout(function(){
+        mounted: function () {
+            setTimeout(function () {
                 this.loaded = true;
-            }.bind(this),1000)
+            }.bind(this), 1000)
         },
         data: function () {
             return {
                 sideNavigation: true,
                 mini: true,
                 refreshKey: Math.random(),
-                loaded: false
+                loaded: false,
+                graphButtons: [{
+                    action: "zoomIn",
+                    icon: "zoom_in",
+                    ctrlShortcut: "&plus;",
+                    controller: AppController
+                }, {
+                    action: "zoomOut",
+                    icon: "zoom_out",
+                    ctrlShortcut: "&minus;",
+                    controller: AppController
+                }]
             }
         },
         computed: {

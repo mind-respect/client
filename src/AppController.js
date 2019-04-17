@@ -13,6 +13,7 @@ import Vertex from '@/vertex/Vertex'
 import IdUri from '@/IdUri'
 import ToList from '@/ToList'
 import GraphElementUi from '@/graph-element/GraphElementUi'
+import Store from '@/store'
 
 const api = {};
 api.undoCanDo = function () {
@@ -37,11 +38,13 @@ api.zoomIn = function () {
     GraphUi.zoom(
         0.1
     );
+    Store.dispatch("redraw");
 };
 api.zoomOut = function () {
     GraphUi.zoom(
         -0.1
     );
+    Store.dispatch("redraw");
 };
 
 api.createVertex = function (label) {

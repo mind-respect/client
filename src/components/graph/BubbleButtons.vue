@@ -5,44 +5,26 @@
 <template>
     <div>
         <span v-for="button in buttons" :key="button.action">
-            <v-tooltip
-                    bottom
-                    allow-overflow
-                    :attach="attach"
-                    :nudge-width="400"
-                    max-width="200"
-                    :nudge-bottom="nudgeBottom"
-                    v-if="canDo(button)"
-            >
-                <v-btn flat icon slot="activator" @click="performAction(button)">
-                    <v-icon :class="button.iconClass">
-                        {{getIcon(button)}}
-                    </v-icon>
-                </v-btn>
-                <span>
-                {{$t('button:' + button.action)}}
-                <span v-if="button.ctrlShortcut">
-                    ({{ctrlKey}}+{{button.ctrlShortcut}})
-                </span>
-            </span>
-            </v-tooltip>
+            <Button :button="button" :isInTopMenu="isInTopMenu"></Button>
         </span>
     </div>
 </template>
 
 <script>
     import SelectionHandler from '@/SelectionHandler'
-    import UiUtils from '@/UiUtils'
+    import Button from '@/components/graph/Button'
 
     export default {
         name: "BubbleButtons",
+        components: {
+            Button
+        },
         data: function () {
             return {
-                ctrlKey: UiUtils.isMacintosh() ? "⌘" : "ctrl",
                 buttons: [
                     {
                         action: "center",
-                        icon: "fa-bullseye",
+                        icon: "filter_center_focus",
                         ctrlShortcut: "0"
                     },
                     {
@@ -171,48 +153,7 @@
                 ]
             }
         },
-        props: ['isInMainMenu'],
-        computed: {
-            attach: function () {
-                return this.isInMainMenu ? "body" : false;
-            },
-            nudgeBottom: function () {
-                return this.isInMainMenu ? 35 : 0;
-            }
-        },
-        methods: {
-            performAction: function (button) {
-                let controller = SelectionHandler.getControllerFromCurrentSelection();
-                controller[
-                    button.action
-                    ]();
-            },
-            canDo: function (button) {
-                let controller = SelectionHandler.getControllerFromCurrentSelection();
-                if (!this.canActionBePossiblyMade(button.action, controller)) {
-                    return false;
-                }
-                var methodToCheckIfActionCanBePerformedForElements = controller[
-                button.action + "CanDo"
-                    ];
-                if (undefined === methodToCheckIfActionCanBePerformedForElements) {
-                    return true;
-                }
-                return methodToCheckIfActionCanBePerformedForElements.call(
-                    controller
-                );
-            },
-            canActionBePossiblyMade: function (action, controller) {
-                return controller[
-                    action
-                    ] !== undefined;
-            },
-            getIcon: function (button) {
-                return typeof button.icon === "function" ?
-                    button.icon() :
-                    button.icon;
-            }
-        }
+        props: ['isInTopMenu']
     }
 </script>
 
