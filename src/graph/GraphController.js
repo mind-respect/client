@@ -6,12 +6,17 @@ import VertexUi from '@/vertex/VertexUi'
 import GraphElementUi from '@/graph-element/GraphElementUi'
 import CompareFlow from '@/compare/CompareFlow'
 import MindMapInfo from '@/MindMapInfo'
+import SubGraph from '@/graph/SubGraph'
 
 const api = {};
 api.expandAllCanDo = function () {
-    var canDo = false;
-    GraphElementUi.visitAll(function (graphElementUi) {
-        if (graphElementUi.getController().expandCanDo()) {
+    let canDo = false;
+    let center = SubGraph.graph.center;
+    if (!center) {
+        return false;
+    }
+    center.visitDescendants(function (descendant) {
+        if (descendant.getController().expandCanDo()) {
             canDo = true;
             return false;
         }
@@ -20,7 +25,7 @@ api.expandAllCanDo = function () {
 };
 
 api.expandAll = function () {
-    GraphElementUi.getCenterBubble().getController().expand();
+    SubGraph.graph.center.getController().expand();
 };
 
 api.compareCanDo = function () {

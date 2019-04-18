@@ -3,30 +3,11 @@
  */
 
 import $ from 'jquery'
-import EdgeUi from '@/edge/EdgeUi'
-import VertexUi from '@/vertex/VertexUi'
 import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
 
 const api = {};
-api.buildServerFormat = function () {
-    var edges = {},
-        vertices = {};
-    EdgeUi.visitAllEdges(function (edgeUi) {
-        edges[edgeUi.getUri()] = Edge.buildServerFormatFromUi(
-            edgeUi
-        );
-    });
-    VertexUi.visitAllVertices(function (vertexUi) {
-        vertices[vertexUi.getUri()] = Vertex.buildServerFormatFromUi(
-            vertexUi
-        );
-    });
-    return {
-        edges: edges,
-        vertices: vertices
-    };
-};
+api.graph = null;
 api.fromServerFormat = function (serverFormat) {
     return new api.SubGraph(
         serverFormat,

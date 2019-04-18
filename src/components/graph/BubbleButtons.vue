@@ -23,11 +23,6 @@
             return {
                 buttons: [
                     {
-                        action: "center",
-                        icon: "filter_center_focus",
-                        ctrlShortcut: "0"
-                    },
-                    {
                         action: "addChild",
                         icon: function () {
                             return SelectionHandler.getSingle().isToTheLeft() ?
@@ -49,6 +44,11 @@
                         iconClass: "fa-strike",
                         action: "collapse",
                         ctrlShortcut: "H"
+                    },
+                    {
+                        action: "center",
+                        icon: "filter_center_focus",
+                        ctrlShortcut: "0"
                     },
                     {
                         icon: "note",

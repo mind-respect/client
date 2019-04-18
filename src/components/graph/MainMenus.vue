@@ -12,22 +12,16 @@
         <v-navigation-drawer
                 v-model="sideNavigation"
                 :mini-variant.sync="mini"
-                class="elevation-0 pt-0 side-navigation-drawer"
+                class="elevation-0 pt-0 side-navigation-drawer ml-0"
                 fixed
                 mini-variant-width="50"
                 color="transparent"
                 flat
                 floating
         >
-            <v-toolbar flat color="transparent" class="side-toolbar" style="border:none;">
-                <v-list class="pa-0" color="transparent">
-                    <v-list-tile v-for="button in graphButtons">
-                        <v-list-tile-action>
-                            <Button :button="button" :isInSideMenu="true"></Button>
-                        </v-list-tile-action>
-                    </v-list-tile>
-                </v-list>
-            </v-toolbar>
+            <div v-for="(button, i) in graphButtons">
+                <Button :button="button" :isInSideMenu="true" :buttonIndex="i"></Button>
+            </div>
         </v-navigation-drawer>
     </div>
 </template>
@@ -65,6 +59,36 @@
                     action: "zoomOut",
                     icon: "zoom_out",
                     ctrlShortcut: "&minus;",
+                    controller: AppController
+                }, {
+                    action: "expandAll",
+                    icon: "unfold_more",
+                    controller: GraphController
+                }, {
+                    action: "selectAllBubbles",
+                    icon: "select_all",
+                    controller: GraphController
+                }, {
+                    action: "undo",
+                    icon: "undo",
+                    ctrlShortcut: "Z",
+                    controller: AppController
+                }, {
+                    action: "redo",
+                    icon: "redo",
+                    ctrlShortcut: "Y",
+                    controller: AppController
+                }, {
+                    action: "fontPicker",
+                    icon: "fa-font",
+                    controller: AppController
+                }, {
+                    action: "changeBackgroundColor",
+                    icon: "format_paint",
+                    controller: AppController
+                }, {
+                    action: "list",
+                    icon: "list",
                     controller: AppController
                 }]
             }

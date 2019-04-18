@@ -21,6 +21,7 @@ const Store = new Vuex.Store({
     ],
     state: {
         user: null,
+        isLoading:false,
         dragged: null,
         isRemoveFlow: false,
         redraws: Math.random()
@@ -40,6 +41,9 @@ const Store = new Vuex.Store({
                 state.user = undefined;
             }
             UserService.setAuthenticatedUserInCache(state.user);
+        },
+        setIsLoading: function(state, isLoading){
+            state.isLoading = isLoading;
         },
         setLocale: function (state, locale) {
             if (state.locale === locale) {
@@ -64,6 +68,9 @@ const Store = new Vuex.Store({
     actions: {
         setUser: function (action, user) {
             action.commit('setUser', user);
+        },
+        setIsLoading: function(action, isLoading){
+            action.commit('setIsLoading', isLoading);
         },
         setLocale: function (action, locale) {
             action.commit('setLocale', locale);

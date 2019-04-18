@@ -270,9 +270,9 @@ FriendlyResource.FriendlyResource.prototype.removeSingleSelected = function () {
 FriendlyResource.FriendlyResource.prototype.beforeExpand = function () {
     this.loading = true;
     // this.draw = false
-    // Vue.nextTick(function(){
-    //     Store.dispatch("redraw")
-    // })
+    // Vue.nextTick(function () {
+        // Store.dispatch("redraw")
+    // }.bind(this))
 };
 
 FriendlyResource.FriendlyResource.prototype.isInTypes = function (types) {

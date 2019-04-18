@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div v-if="areChildrenLoaded && !center.isEditFlow" :key="center.uiId">
+    <div v-if="areChildrenLoaded && !center.isEditFlow && !isAppLoading" :key="center.uiId">
         <EdgeDrawing :bubble="center" :isLeft="true" v-if="center.isToTheLeft() || center.isCenter"></EdgeDrawing>
         <EdgeDrawing :bubble="center" :isLeft="false" v-if="!center.isToTheLeft() || center.isCenter"></EdgeDrawing>
         <GraphDrawing
@@ -16,6 +16,7 @@
 
 <script>
     import EdgeDrawing from '@/components/graph/EdgeDrawing'
+    import LoadingFlow from '@/LoadingFlow'
 
     export default {
         name: "GraphDrawing",
@@ -23,7 +24,9 @@
         props: ['center'],
         data: function () {
             return {
-                areChildrenLoaded: false
+                areChildrenLoaded: false,
+                loadingFlows: LoadingFlow.loadingFlows,
+                isAppLoading: false
             }
         },
         mounted: function () {
@@ -39,6 +42,12 @@
                     return;
                 }
                 this.areChildrenLoaded = true;
+            }
+        },
+        watch: {
+            loadingFlows: function () {
+                this.isAppLoading = this.loadingFlows.length > 0;
+                console.log(this.isAppLoading)
             }
         }
     }

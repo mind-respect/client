@@ -4,7 +4,8 @@
 
 <template>
     <svg
-            v-if="loaded && bubble.draw"
+            :key="bubble.uiId"
+            v-if="loaded && bubble.draw && !$store.state.isLoading"
             style="position:absolute;overflow:visible; top:0; left:0; height:100%; width:100%;z-index:-1;"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg">

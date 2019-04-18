@@ -168,6 +168,16 @@ export default {
             "share": "Partager"
         });
 
+        i18next.addResources("en", "childNotice", {
+            "tooltip": "Expand (ctrl+E)",
+            "tooltipForMac": "Expand (⌘+E)"
+        });
+
+        i18next.addResources("fr", "childNotice", {
+            "tooltip": "Expandre (ctrl+E)",
+            "tooltipForMac": "Expandre (⌘+E)"
+        });
+
         return new VueI18Next(i18next);
     },
     i18next: i18next,

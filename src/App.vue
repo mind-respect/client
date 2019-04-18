@@ -210,6 +210,7 @@
     import ChangePasswordForm from '@/components/home/ChangePasswordForm'
     import LoginForm from "./components/home/LoginForm";
     import LoadingFlow from '@/LoadingFlow'
+    import Store from '@/store'
     import Vue from 'vue'
 
 
@@ -284,6 +285,7 @@
         watch: {
             loadingFlows: function () {
                 this.isLoading = this.loadingFlows.length > 0;
+                Store.dispatch("setIsLoading", this.isLoading);
             },
             '$route.name': function () {
                 if (this.$route.name === 'forgotPassword') {

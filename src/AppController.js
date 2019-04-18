@@ -97,9 +97,7 @@ api.isSingle = function () {
 };
 
 api.fontPickerCanDo = function () {
-    return !MindMapInfo.isViewOnly() &&
-        GraphElementUi.hasCenterBubble() &&
-        GraphElementUi.getCenterVertexOrSchema().isVertex();
+    return !MindMapInfo.isViewOnly();
 };
 
 api.fontPicker = function () {

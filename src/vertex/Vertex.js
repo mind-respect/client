@@ -66,7 +66,7 @@ function Vertex(vertexServerFormat) {
         this
     );
     this.init(vertexServerFormat.vertex.graphElement);
-    if(this.getNumberOfChild() === 0){
+    if (this.getNumberOfChild() === 0) {
         this.isExpanded = true;
     }
 }
@@ -236,9 +236,11 @@ Vertex.prototype.collapse = function () {
     }.bind(this));
 };
 
-Vertex.prototype.expand = function () {
+Vertex.prototype.expand = function (avoidCenter, isChildExpand) {
     FriendlyResource.FriendlyResource.prototype.expand.call(
-        this
+        this,
+        avoidCenter,
+        isChildExpand
     );
     this.isExpanded = false; // to make the expand animation work in next tick
     Vue.nextTick(function () {

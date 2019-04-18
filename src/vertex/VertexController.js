@@ -22,6 +22,8 @@ import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
 import ShareLevel from '@/vertex/ShareLevel'
 import SubGraphController from '@/graph/SubGraphController'
+import LoadingFlow from '@/LoadingFlow'
+import Scroll from '@/Scroll'
 import Vue from 'vue'
 import Store from '@/store'
 
@@ -652,7 +654,16 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
             }.bind(this));
         }
     } else {
-        promise = this.expandDescendantsIfApplicable();
+        LoadingFlow.enter();
+        this.getModel().loading = false;
+        promise = this.expandDescendantsIfApplicable().then(function () {
+            Vue.nextTick(function(){
+                setTimeout(function(){
+                    LoadingFlow.leave();
+                }, 325)
+            })
+            Scroll.goToGraphElement(this.getModel());
+        }.bind(this));
     }
     return promise.then(function () {
         this.getUi().expand(avoidCenter, isChildExpand);

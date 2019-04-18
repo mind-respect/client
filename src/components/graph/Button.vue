@@ -3,18 +3,17 @@
   -->
 
 <template>
+    <span v-if="canDo(button)">
     <v-tooltip
             open-delay="0"
             close-delay="0"
-            :bottom="!isInSideMenu"
+            bottom
             :right="isInSideMenu"
             allow-overflow
             :attach="attach"
-            :nudge-width="400"
-            max-width="200"
-            :nudge-bottom="nudgeBottom"
             :nudge-right="nudgeRight"
-            v-if="canDo(button)"
+            max-width="400"
+            :content-class="contentClass"
     >
         <v-btn flat icon slot="activator" @click="performAction(button)" :small="!isInMainMenu" color="primary">
             <v-icon :class="button.iconClass">
@@ -28,6 +27,7 @@
                 </span>
             </span>
     </v-tooltip>
+        </span>
 </template>
 
 <script>
@@ -36,21 +36,21 @@
 
     export default {
         name: "Button",
-        props: ['button', 'isInTopMenu', 'isInSideMenu'],
+        props: ['button', 'isInTopMenu', 'isInSideMenu', 'buttonIndex'],
         data: function () {
             return {
-                ctrlKey: UiUtils.isMacintosh() ? "⌘" : "ctrl",
+                ctrlKey: UiUtils.isMacintosh() ? "⌘" : "ctrl"
             };
         },
         computed: {
             attach: function () {
-                return this.isInMainMenu ? "body" : false;
+                return this.isInMainMenu ? "#drawn_graph": false;
             },
-            nudgeBottom: function () {
-                return this.isInTopMenu ? 35 : 0;
+            contentClass: function () {
+                return this.isInSideMenu ? "ml-4" : "";
             },
-            nudgeRight: function(){
-                return this.isInSideMenu ? 35 : 0;
+            nudgeRight: function () {
+                return this.isInSideMenu ? 100 : 0;
             },
             isInMainMenu: function () {
                 return this.isInTopMenu || this.isInSideMenu;

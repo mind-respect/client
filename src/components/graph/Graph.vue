@@ -56,6 +56,7 @@
     import SubGraphController from '@/graph/SubGraphController'
     import Vertex from '@/vertex/Vertex'
     import RemoveDialog from '@/components/RemoveDialog'
+    import SubGraph from '@/graph/SubGraph'
 
     export default {
         name: "Graph",
@@ -85,6 +86,7 @@
                 let center = this.graph.center;
                 this.centerServerFormat = center.getServerFormat();
                 center.makeCenter();
+                SubGraph.graph = this.graph;
                 this.loaded = true;
                 Vue.nextTick(function () {
                     SelectionHandler.setToSingle(this.graph.center);
@@ -96,7 +98,8 @@
             }.bind(this));
         },
         methods: {
-            click: function () {},
+            click: function () {
+            },
             addBubbleContext: function (bubble, parentVertex, orientation) {
                 bubble.parentBubble = bubble.parentVertex = parentVertex;
                 bubble.orientation = orientation;

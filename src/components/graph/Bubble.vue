@@ -559,6 +559,7 @@
                     this.showMenu = false;
                 }
             }
+
         }
     }
 </script>
