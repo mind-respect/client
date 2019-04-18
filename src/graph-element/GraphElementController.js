@@ -674,7 +674,7 @@ GraphElementController.prototype.removeIdentifier = function (identifier) {
     }.bind(this));
 };
 GraphElementController.prototype.selectTreeCanDo = function () {
-    return this.isSingleAndOwned() && this.getUi().hasChildren();
+    return this.isSingleAndOwned() && !this.getModel().isLeaf();
 };
 
 GraphElementController.prototype.selectTree = function () {

@@ -111,10 +111,6 @@
                         action: "accept"
                     },
                     {
-                        icon: "fa-compress",
-                        action: "group"
-                    },
-                    {
                         icon: "fa-expand",
                         action: "subElements"
                     },
@@ -147,7 +143,7 @@
                         action: "suggestions"
                     },
                     {
-                        icon: "fa-list",
+                        icon: "list",
                         action: "list"
                     }
                 ]

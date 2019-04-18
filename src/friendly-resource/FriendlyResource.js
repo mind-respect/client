@@ -246,6 +246,14 @@ FriendlyResource.FriendlyResource.prototype.deselect = function () {
     }
 };
 
+FriendlyResource.FriendlyResource.prototype.selectTree = function () {
+    this.visitDescendants(function (descendant) {
+        SelectionHandler.add(
+            descendant
+        );
+    });
+};
+
 FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {
     return this.orientation === "left";
 };
