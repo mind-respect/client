@@ -2,7 +2,7 @@
     <v-app id="app" v-if="dataLoaded">
         <div id="is-loading-overlay" v-if="isLoading">
             <div class="text">
-                <v-progress-circular indeterminate color="white"></v-progress-circular>
+                <v-progress-circular indeterminate color="white" v-if="hasLoadingSpinner"></v-progress-circular>
             </div>
         </div>
         <div id="nav" class="pa-0">
@@ -231,6 +231,7 @@
                 loginDialog: false,
                 loadingFlows: LoadingFlow.loadingFlows,
                 isLoading: false,
+                hasLoadingSpinner: true,
                 forgotPasswordDialog: false,
                 changePasswordDialog: false
             };
@@ -285,6 +286,9 @@
         watch: {
             loadingFlows: function () {
                 this.isLoading = this.loadingFlows.length > 0;
+                if (this.isLoading) {
+                    this.hasLoadingSpinner = this.loadingFlows[this.loadingFlows.length - 1];
+                }
                 Store.dispatch("setIsLoading", this.isLoading);
             },
             '$route.name': function () {
@@ -346,9 +350,10 @@
 </script>
 
 <style>
-    .v-chip{
-        transition:none;
+    .v-chip {
+        transition: none;
     }
+
     #is-loading-overlay {
         position: fixed;
         width: 100%;
@@ -441,10 +446,12 @@
         -ms-user-select: none;
         user-select: none;
     }
+
     .blur-overlay {
-        filter:blur(4px);
+        filter: blur(4px);
     }
-    .v-toolbar__content{
-        padding:6px;
+
+    .v-toolbar__content {
+        padding: 6px;
     }
 </style>

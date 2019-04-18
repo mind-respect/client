@@ -654,12 +654,13 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
             }.bind(this));
         }
     } else {
-        LoadingFlow.enter();
+        LoadingFlow.enterNoSpinner();
         this.getModel().loading = false;
         promise = this.expandDescendantsIfApplicable().then(function () {
-            Vue.nextTick(function(){
-                setTimeout(function(){
+            Vue.nextTick(function () {
+                setTimeout(function () {
                     LoadingFlow.leave();
+                    Store.dispatch("redraw");
                 }, 325)
             })
             Scroll.goToGraphElement(this.getModel());
