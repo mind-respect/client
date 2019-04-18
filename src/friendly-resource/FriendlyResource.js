@@ -271,7 +271,7 @@ FriendlyResource.FriendlyResource.prototype.beforeExpand = function () {
     this.loading = true;
     // this.draw = false
     // Vue.nextTick(function () {
-        // Store.dispatch("redraw")
+    // Store.dispatch("redraw")
     // }.bind(this))
 };
 
@@ -526,6 +526,7 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isCh
     if (this.isExpanded) {
         return;
     }
+    this.loading = false;
     this.isExpanded = true;
     this.isCollapsed = false;
     if (!avoidCenter && !isChildExpand) {
