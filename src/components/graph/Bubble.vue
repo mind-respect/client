@@ -45,7 +45,7 @@
     }" :id="containerId">
             <v-flex class="v-center drop-relative-container">
                 <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
-                <div v-if="!bubble.isCollapsed">
+                <div v-if="!bubble.isCollapsed || bubble.isCenter">
                     <div :class="{
                    'blur-overlay':isEditFlow && bubble.isVertex()
                 }"
@@ -53,7 +53,14 @@
                         <transition name="fade" v-on:before-enter="beforeChildrenAnimation"
                                     v-on:after-enter="afterChildrenAnimation">
                             <Children :bubble="bubble"
-                                      v-if="bubble.orientation === 'left' && (!bubble.isVertex() || (bubble.rightBubbles.length > 0))"
+                                      v-if="
+                                        bubble.orientation === 'left' &&
+                                          (
+                                            (bubble.isVertex() && bubble.rightBubbles.length > 0) ||
+                                            (bubble.isGroupRelation() && bubble._sortedImmediateChild && bubble._sortedImmediateChild.length > 0) ||
+                                            bubble.isEdge()
+                                          )
+                                      "
                             >
                             </Children>
                         </transition>
@@ -167,8 +174,9 @@
                             v-if="bubble.isEdge() || bubble.isGroupRelation()"
                             class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0"
                             :class="{
-                            'selected' : isSelected
-                 }">
+                            'selected' : isSelected,
+                            'reverse': bubble.orientation === 'left'
+                    }">
                         <div class="image_container"></div>
                         <div class="in-bubble-content" @click="click" @dblclick="dblclick"
                              @mousedown="mouseDown"
@@ -207,9 +215,12 @@
                                 </v-chip>
                             </div>
                         </div>
+                        <ChildNotice :bubble="bubble"
+                                     class=""
+                                     v-if="bubble.canExpand()"></ChildNotice>
                     </div>
                 </div>
-                <div v-if="!bubble.isCollapsed">
+                <div v-if="!bubble.isCollapsed || bubble.isCenter">
                     <div :class="{
                    'blur-overlay':isEditFlow && bubble.isVertex()
                 }"
@@ -217,7 +228,14 @@
                         <transition name="fade" v-on:before-enter="beforeChildrenAnimation"
                                     v-on:after-enter="afterChildrenAnimation">
                             <Children :bubble="bubble"
-                                      v-if="bubble.orientation === 'right' && (!bubble.isVertex() || bubble.isExpanded)"
+                                      v-if="
+                                      bubble.orientation === 'right'  &&
+                                      (
+                                        (bubble.isVertex() && bubble.rightBubbles.length > 0) ||
+                                        (bubble.isGroupRelation() && bubble._sortedImmediateChild && bubble._sortedImmediateChild.length > 0) ||
+                                        bubble.isEdge()
+                                      )
+                                      "
                             >
                             </Children>
                         </transition>
@@ -304,6 +322,20 @@
             if (this.bubble.isEdge()) {
                 this.bubble.setSourceVertex(this.bubble.parentVertex);
                 this.bubble.setDestinationVertex(this.bubble.destinationVertex);
+            }
+            if (this.bubble.isGroupRelation()) {
+                this.bubble.sortedImmediateChild(
+                    this.bubble.parentVertex.getChildrenIndex()
+                );
+                this.$nextTick(function () {
+                    this.bubble.collapse();
+                    this.bubble.isFirstInit = false;
+                    this.$nextTick(function () {
+                        if (this.bubble.hasFewEnoughBubblesToExpand()) {
+                            this.bubble.expand(true);
+                        }
+                    }.bind(this));
+                }.bind(this))
             }
             this.loaded = true;
         },

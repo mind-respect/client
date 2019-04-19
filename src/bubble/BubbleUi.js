@@ -4,7 +4,6 @@
 import $ from 'jquery'
 import UiUtils from '@/UiUtils'
 import ImageDisplayer from '@/image/ImageDisplayer'
-import GraphElementUi from '@/graph-element/GraphElementUi'
 import GraphElementType from '@/graph-element/GraphElementType'
 import BubbleFactory from '@/bubble/BubbleFactory'
 import SelectionHandler from '@/SelectionHandler'

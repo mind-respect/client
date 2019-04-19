@@ -14,7 +14,9 @@
                     'blur-overlay': graph.center.isEditFlow
                 }">
                     <v-layout row v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
-                        <v-flex grow>
+                        <v-flex grow :class="{
+                            'mt-3 mb-3' : graph.center.leftBubbles.length === 2
+                        }">
                             <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
                         </v-flex>
                     </v-layout>
@@ -26,7 +28,9 @@
                     'blur-overlay': graph.center.isEditFlow
                 }">
                     <v-layout v-for="rightBubble in graph.center.rightBubbles" :key="rightBubble.uiId">
-                        <v-flex grow>
+                        <v-flex grow :class="{
+                            'mt-3 mb-3' : graph.center.rightBubbles.length === 2
+                        }">
                             <Bubble :bubble="addBubbleContext(rightBubble, graph.center, 'right')"></Bubble>
                         </v-flex>
                     </v-layout>

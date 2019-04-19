@@ -4,11 +4,6 @@
 import $ from 'jquery'
 import GraphElementController from '@/graph-element/GraphElementController'
 import SuggestionService from '@/suggestion/SuggestionService'
-import GraphService from '@/graph/GraphService'
-import SubGraph from '@/graph/SubGraph'
-import Suggestion from '@/suggestion/Suggestion'
-import Triple from '@/triple/Triple'
-import GraphUiBuilder from '@/graph/GraphUiBuilder'
 
 const api = {};
 
@@ -73,57 +68,57 @@ SuggestionVertexController.prototype.centerCanDo = function () {
     return false;
 };
 SuggestionVertexController.prototype.expand = function () {
-    var deferred = $.Deferred();
-    if (this.getUi().isCollapsed) {
-        this.getUi().expand();
-        return deferred.resolve();
-    }
-    this.getUi().hideHiddenRelationsContainer();
-    var uriToFetch = this.getUi().getModel().getExternalResourceUri();
-    var suggestionUi = this.getUi();
-    var parentEdgeUri = this.getUi().getParentBubble().getModel().getFirstIdentificationToAGraphElement().getExternalResourceUri();
-    GraphService.getForCentralBubbleUri(
-        uriToFetch,
-        function (serverGraph) {
-            var subGraph = SubGraph.fromServerFormat(serverGraph);
-            var centerVertex = subGraph.getVertexWithUri(
-                suggestionUi.getModel().getExternalResourceUri()
-            );
-            subGraph.visitEdgesRelatedToVertex(centerVertex, function (edge) {
-                if (edge.getUri() === parentEdgeUri) {
-                    return;
-                }
-                var destinationVertex = edge.getOtherVertex(centerVertex);
-                destinationVertex = subGraph.getVertexWithUri(
-                    destinationVertex.getUri()
-                );
-                var triple = GraphUiBuilder.addSuggestionToVertex(
-                    Suggestion.fromTriple(
-                        Triple.fromEdgeAndSourceAndDestinationVertex(
-                            edge,
-                            centerVertex,
-                            destinationVertex
-                        )
-                    ),
-                    suggestionUi
-                );
-                triple.edge().setComparedWith(
-                    edge
-                );
-                triple.destinationVertex().setText(
-                    destinationVertex.getLabel()
-                );
-                triple.destinationVertex().setComparedWith(
-                    destinationVertex
-                );
-                if (destinationVertex.getNumberOfConnectedEdges() > 1) {
-                    triple.destinationVertex().buildHiddenNeighborPropertiesIndicator();
-                }
-            });
-            deferred.resolve();
-        }
-    );
-    return deferred.promise();
+    // var deferred = $.Deferred();
+    // if (this.getUi().isCollapsed) {
+    //     this.getUi().expand();
+    //     return deferred.resolve();
+    // }
+    // this.getUi().hideHiddenRelationsContainer();
+    // var uriToFetch = this.getUi().getModel().getExternalResourceUri();
+    // var suggestionUi = this.getUi();
+    // var parentEdgeUri = this.getUi().getParentBubble().getModel().getFirstIdentificationToAGraphElement().getExternalResourceUri();
+    // GraphService.getForCentralBubbleUri(
+    //     uriToFetch,
+    //     function (serverGraph) {
+    //         var subGraph = SubGraph.fromServerFormat(serverGraph);
+    //         var centerVertex = subGraph.getVertexWithUri(
+    //             suggestionUi.getModel().getExternalResourceUri()
+    //         );
+    //         subGraph.visitEdgesRelatedToVertex(centerVertex, function (edge) {
+    //             if (edge.getUri() === parentEdgeUri) {
+    //                 return;
+    //             }
+    //             var destinationVertex = edge.getOtherVertex(centerVertex);
+    //             destinationVertex = subGraph.getVertexWithUri(
+    //                 destinationVertex.getUri()
+    //             );
+    //             var triple = GraphUiBuilder.addSuggestionToVertex(
+    //                 Suggestion.fromTriple(
+    //                     Triple.fromEdgeAndSourceAndDestinationVertex(
+    //                         edge,
+    //                         centerVertex,
+    //                         destinationVertex
+    //                     )
+    //                 ),
+    //                 suggestionUi
+    //             );
+    //             triple.edge().setComparedWith(
+    //                 edge
+    //             );
+    //             triple.destinationVertex().setText(
+    //                 destinationVertex.getLabel()
+    //             );
+    //             triple.destinationVertex().setComparedWith(
+    //                 destinationVertex
+    //             );
+    //             if (destinationVertex.getNumberOfConnectedEdges() > 1) {
+    //                 triple.destinationVertex().buildHiddenNeighborPropertiesIndicator();
+    //             }
+    //         });
+    //         deferred.resolve();
+    //     }
+    // );
+    // return deferred.promise();
 };
 SuggestionVertexController.prototype.addSiblingCanDo = function () {
     return false;

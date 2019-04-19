@@ -249,7 +249,7 @@ GraphElementController.prototype.accept = function () {
 
 GraphElementController.prototype.expandCanDo = function () {
     return this.isSingle() && (
-        this.getUi().canExpand() ||
+        this.getUi().canExpand.bind(this.getUi())() ||
         this.getUi().canExpandDescendants() ||
         this.getUi().isCollapsed
     );

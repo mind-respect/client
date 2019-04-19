@@ -11,7 +11,6 @@ import GraphElementType from '@/graph-element/GraphElementType'
 
 import WikidataUri from '@/WikidataUri'
 import Wikidata from '@/Wikidata'
-import api from "./GraphElementUi";
 
 const controllerGetters = {};
 
@@ -90,10 +89,22 @@ const GraphElement = {
         );
     }
 };
-GraphElement.GraphElement = function () {
+
+GraphElement.initMenuHandlerGetters = function () {
+    controllerGetters[GraphElementType.Vertex] = GraphDisplayer.getVertexMenuHandler;
+    controllerGetters[GraphElementType.Relation] = GraphDisplayer.getRelationMenuHandler;
+    controllerGetters[GraphElementType.GroupRelation] = GraphDisplayer.getGroupRelationMenuHandler;
+    controllerGetters[GraphElementType.Schema] = GraphDisplayer.getSchemaMenuHandler;
+    controllerGetters[GraphElementType.Property] = GraphDisplayer.getPropertyMenuHandler;
+    controllerGetters[GraphElementType.VertexSuggestion] = GraphDisplayer.getVertexSuggestionController;
+    controllerGetters[GraphElementType.RelationSuggestion] = GraphDisplayer.getRelationSuggestionMenuHandler;
+    controllerGetters[GraphElementType.Meta] = GraphDisplayer.getMetaController;
+    controllerGetters[GraphElementType.MetaRelation] = GraphDisplayer.getMetaRelationController;
+    controllerGetters[GraphElementType.GroupVertexUnderMeta] = GraphDisplayer.getGroupVertexUnderMetaController;
 };
 
-initMenuHandlerGetters();
+GraphElement.GraphElement = function () {
+};
 
 GraphElement.GraphElement.prototype = new FriendlyResource.FriendlyResource();
 
@@ -371,10 +382,10 @@ GraphElement.GraphElement.prototype.getControllerWithElements = function (elemen
 };
 
 GraphElement.GraphElement.prototype._getControllerName = function () {
-    var controllerName = "";
-    var nameParts = this.getGraphElementType().split("_");
+    let controllerName = "";
+    let nameParts = this.getGraphElementType().split("_");
     nameParts.forEach(function (namePart) {
-        controllerName += namePart.capitalizeFirstLetter();
+        controllerName += namePart.charAt(0).toUpperCase() + namePart.substr(1);
     });
     return controllerName + "Controller";
 };
@@ -404,17 +415,3 @@ GraphElement.GraphElement.prototype._getControllerClass = function () {
 // };
 
 export default GraphElement;
-
-
-function initMenuHandlerGetters() {
-    controllerGetters[api.Types.Vertex] = GraphDisplayer.getVertexMenuHandler;
-    controllerGetters[api.Types.Relation] = GraphDisplayer.getRelationMenuHandler;
-    controllerGetters[api.Types.GroupRelation] = GraphDisplayer.getGroupRelationMenuHandler;
-    controllerGetters[api.Types.Schema] = GraphDisplayer.getSchemaMenuHandler;
-    controllerGetters[api.Types.Property] = GraphDisplayer.getPropertyMenuHandler;
-    controllerGetters[api.Types.VertexSuggestion] = GraphDisplayer.getVertexSuggestionController;
-    controllerGetters[api.Types.RelationSuggestion] = GraphDisplayer.getRelationSuggestionMenuHandler;
-    controllerGetters[api.Types.Meta] = GraphDisplayer.getMetaController;
-    controllerGetters[api.Types.MetaRelation] = GraphDisplayer.getMetaRelationController;
-    controllerGetters[GraphElementType.GroupVertexUnderMeta] = GraphDisplayer.getGroupVertexUnderMetaController;
-}

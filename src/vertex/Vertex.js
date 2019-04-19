@@ -224,6 +224,19 @@ Vertex.prototype.getLeftBubble = function (bottom) {
 };
 
 Vertex.prototype.collapse = function () {
+    if (this.isCenter) {
+        this.getImmediateChild().forEach(function (child) {
+            if (child.isEdge()) {
+                child.getOtherVertex(this).collapse()
+            } else {
+                child.collapse();
+            }
+        }.bind(this));
+        return;
+    }
+    if(!this.isExpanded){
+        return;
+    }
     this.vertexServerFormat.vertex.numberOfConnectedEdges = this.getImmediateChild().length + 1;
     this.rightBubblesCollapsed = this.rightBubbles;
     this.leftBubblesCollapsed = this.leftBubbles;

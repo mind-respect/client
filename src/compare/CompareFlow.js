@@ -10,7 +10,6 @@ import GraphService from '@/graph/GraphService'
 import GraphCompare from '@/compare/GraphCompare'
 import IdUri from '@/IdUri'
 import SubGraph from '@/graph/SubGraph'
-import GraphElementUi from '@/graph-element/GraphElementUi'
 
 const api = {};
 var compareModal;

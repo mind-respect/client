@@ -11,7 +11,6 @@ import ForkService from '@/compare/ForkService'
 import IdentifiedToService from '@/identifier/IdentifiedToService'
 import SubGraph from '@/graph/SubGraph'
 import Identification from '@/identifier/Identification'
-import GraphElementUi from '@/graph-element/GraphElementUi'
 
 const api = {};
 let otherUserMenu;

@@ -12,8 +12,8 @@ import GraphDisplayer from '@/graph/GraphDisplayer'
 import Vertex from '@/vertex/Vertex'
 import IdUri from '@/IdUri'
 import ToList from '@/ToList'
-import GraphElementUi from '@/graph-element/GraphElementUi'
 import Store from '@/store'
+import SubGraph from '@/graph/SubGraph'
 import Vue from 'vue'
 
 const api = {};
@@ -83,8 +83,7 @@ api.createVertex = function (label) {
 };
 api.changeBackgroundColorCanDo = function () {
     return !MindMapInfo.isViewOnly() &&
-        GraphElementUi.hasCenterBubble() &&
-        GraphElementUi.getCenterVertexOrSchema().isVertex();
+        SubGraph.graph.center.isVertex();
 };
 
 api.changeBackgroundColor = function () {

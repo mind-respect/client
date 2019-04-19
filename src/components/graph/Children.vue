@@ -18,7 +18,7 @@
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()" transition="fade-transition">
             <div v-for="child in bubble._sortedImmediateChild"
                  :class="{
-                    'mt-1 mb-1' : bubble._sortedImmediateChild.length === 2
+                    'mt-3 mb-3' : bubble._sortedImmediateChild.length === 2
                  }"
             >
                 <div v-for="(triple, uiId) in child">
@@ -31,20 +31,12 @@
 
 <script>
 
-    import Store from '@/store'
-
     export default {
         name: "Children",
         components: {
             Bubble: () => import('@/components/graph/Bubble')
         },
-        mounted: function () {
-            if (this.bubble.isGroupRelation()) {
-                this.bubble.sortedImmediateChild(
-                    this.bubble.parentVertex.getChildrenIndex()
-                );
-            }
-        },
+        mounted: function () {},
         methods: {
             addVertexContext: function (vertex, parentVertex) {
                 vertex.parentVertex = parentVertex;

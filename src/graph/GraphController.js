@@ -1,9 +1,6 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import SelectionHandler from '@/SelectionHandler'
-import VertexUi from '@/vertex/VertexUi'
-import GraphElementUi from '@/graph-element/GraphElementUi'
 import CompareFlow from '@/compare/CompareFlow'
 import MindMapInfo from '@/MindMapInfo'
 import SubGraph from '@/graph/SubGraph'
@@ -38,10 +35,6 @@ api.compare = function () {
 
 api.selectAllBubbles = function () {
     SubGraph.graph.center.selectTree();
-};
-
-api.selectTreeCanDo = function () {
-    return VertexUi.getNumber() > SelectionHandler.getNbSelectedVertices();
 };
 
 api.getUi = function () {

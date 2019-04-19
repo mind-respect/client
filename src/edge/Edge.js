@@ -218,4 +218,8 @@ api.Edge.prototype.getChip = function () {
     }
 };
 
+api.Edge.prototype.canExpand = function () {
+    return false;
+};
+
 export default api;

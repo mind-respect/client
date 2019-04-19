@@ -212,6 +212,7 @@
     import LoadingFlow from '@/LoadingFlow'
     import Store from '@/store'
     import Vue from 'vue'
+    import KeyboardActionsHandler from '@/KeyboardActionsHandler'
 
 
     const aboutPages = ['register', 'login', 'forgotPassword', 'changePassword'];
@@ -294,6 +295,11 @@
             '$route.name': function () {
                 if (this.$route.name === 'forgotPassword') {
                     this.forgotPasswordDialog = true;
+                }
+                if (this.$route.name === "Center") {
+                    KeyboardActionsHandler.enable();
+                } else {
+                    KeyboardActionsHandler.disable();
                 }
             },
             loginDialog: function () {

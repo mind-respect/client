@@ -8,20 +8,18 @@ import EdgeService from '@/edge/EdgeService'
 import SelectionHandler from '@/SelectionHandler'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphElementController from '@/graph-element/GraphElementController'
-import BubbleDeleteMenu from '@/bubble/BubbleDeleteMenu'
-import EdgeUi from '@/edge/EdgeUi'
 import ImageMenu from '@/image/ImageMenu'
 import IncludedGraphElementsMenu from '@/vertex/IncludedGraphElementsMenu'
 import Vertex from '@/vertex/Vertex'
 import Identification from '@/identifier/Identification'
 import GraphElementService from '@/graph-element/GraphElementService'
 import SchemaSuggestion from '@/schema/SchemaSuggestion'
-import GraphElementUi from '@/graph-element/GraphElementUi'
 import EventBus from '@/EventBus'
 import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
 import ShareLevel from '@/vertex/ShareLevel'
 import SubGraphController from '@/graph/SubGraphController'
+import SubGraph from '@/graph/SubGraph'
 import LoadingFlow from '@/LoadingFlow'
 import Scroll from '@/Scroll'
 import Vue from 'vue'
@@ -216,41 +214,41 @@ VertexController.prototype.removeCanDo = function () {
 
 VertexController.prototype.remove = function (skipConfirmation) {
     Store.dispatch("setIsRemoveFlow", true);
-    return;
-    var isPristine = this.getModelArray().every(function (model) {
-        return model.isPristine();
-    });
-    if (skipConfirmation === undefined && isPristine) {
-        skipConfirmation = true;
-    }
-    if (skipConfirmation) {
-        return deleteAfterConfirmationBehavior.bind(this)(
-            this.vertices
-        );
-    }
-    return BubbleDeleteMenu.forVertices(
-        this.vertices
-    ).ask().then(
-        deleteAfterConfirmationBehavior.bind(this)
-    );
-
-    function deleteAfterConfirmationBehavior() {
-        SelectionHandler.reset();
-        let removePromise = this.isSingle() ?
-            VertexService.remove(
-                this.getUi()
-            ) :
-            VertexService.removeCollection(
-                this.getUi()
-            );
-        return removePromise.then(function () {
-            this.getUiArray().forEach(function (ui) {
-                ui.remove();
-            });
-            Store.dispatch("setIsRemoveFlow", true);
-            Store.dispatch("redraw");
-        }.bind(this));
-    }
+    //
+    // var isPristine = this.getModelArray().every(function (model) {
+    //     return model.isPristine();
+    // });
+    // if (skipConfirmation === undefined && isPristine) {
+    //     skipConfirmation = true;
+    // }
+    // if (skipConfirmation) {
+    //     return deleteAfterConfirmationBehavior.bind(this)(
+    //         this.vertices
+    //     );
+    // }
+    // return BubbleDeleteMenu.forVertices(
+    //     this.vertices
+    // ).ask().then(
+    //     deleteAfterConfirmationBehavior.bind(this)
+    // );
+    //
+    // function deleteAfterConfirmationBehavior() {
+    //     SelectionHandler.reset();
+    //     let removePromise = this.isSingle() ?
+    //         VertexService.remove(
+    //             this.getUi()
+    //         ) :
+    //         VertexService.removeCollection(
+    //             this.getUi()
+    //         );
+    //     return removePromise.then(function () {
+    //         this.getUiArray().forEach(function (ui) {
+    //             ui.remove();
+    //         });
+    //         Store.dispatch("setIsRemoveFlow", true);
+    //         Store.dispatch("redraw");
+    //     }.bind(this));
+    // }
 };
 
 VertexController.prototype.imagesCanDo = function () {
@@ -601,35 +599,35 @@ VertexController.prototype.groupCanDo = function () {
     return this.isGroupAndOwned();
 };
 VertexController.prototype.group = function () {
-    var selectedGraphElements = {
-        edges: {},
-        vertices: {}
-    };
-    EdgeUi.visitAllEdges(function (edge) {
-        var sourceVertex = edge.getSourceVertex();
-        var destinationVertex = edge.getDestinationVertex();
-        var isSourceVertexSelected = sourceVertex.isSelected();
-        var isDestinationVertexSelected = destinationVertex.isSelected();
-        if (isSourceVertexSelected) {
-            selectedGraphElements.vertices[
-                sourceVertex.getUri()
-                ] = "";
-        }
-        if (isDestinationVertexSelected) {
-            selectedGraphElements.vertices[
-                destinationVertex.getUri()
-                ] = "";
-        }
-        if (isSourceVertexSelected && isDestinationVertexSelected) {
-            selectedGraphElements.edges[
-                edge.getUri()
-                ] = "";
-        }
-    });
-    VertexService.group(
-        selectedGraphElements,
-        GraphDisplayer.displayUsingCentralBubbleUri
-    );
+    // var selectedGraphElements = {
+    //     edges: {},
+    //     vertices: {}
+    // };
+    // EdgeUi.visitAllEdges(function (edge) {
+    //     var sourceVertex = edge.getSourceVertex();
+    //     var destinationVertex = edge.getDestinationVertex();
+    //     var isSourceVertexSelected = sourceVertex.isSelected();
+    //     var isDestinationVertexSelected = destinationVertex.isSelected();
+    //     if (isSourceVertexSelected) {
+    //         selectedGraphElements.vertices[
+    //             sourceVertex.getUri()
+    //             ] = "";
+    //     }
+    //     if (isDestinationVertexSelected) {
+    //         selectedGraphElements.vertices[
+    //             destinationVertex.getUri()
+    //             ] = "";
+    //     }
+    //     if (isSourceVertexSelected && isDestinationVertexSelected) {
+    //         selectedGraphElements.edges[
+    //             edge.getUri()
+    //             ] = "";
+    //     }
+    // });
+    // VertexService.group(
+    //     selectedGraphElements,
+    //     GraphDisplayer.displayUsingCentralBubbleUri
+    // );
 };
 VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isChildExpand) {
     let promise = Promise.resolve();
@@ -719,7 +717,7 @@ VertexController.prototype._relateToDistantVertexWithUri = function (distantVert
 };
 
 VertexController.prototype.setFont = function (font) {
-    var centerVertex = GraphElementUi.getCenterVertexOrSchema();
+    let centerVertex = SubGraph.graph.center;
     centerVertex.getModel().setFont(font);
     centerVertex.setCenterBubbleFont(font);
     return VertexService.saveFont({

@@ -11,7 +11,6 @@ import GraphUi from '@/graph/GraphUi'
 import BubbleFactory from '@/bubble/BubbleFactory'
 import IdentificationMenu from '@/identifier/IdentificationMenu'
 import ImageMenu from '@/image/ImageMenu'
-import GraphElementUi from '@/graph-element/GraphElementUi'
 import AppController from '@/AppController'
 
 const api = {};

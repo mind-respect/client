@@ -14,6 +14,7 @@
     import Graph from '@/components/graph/Graph'
     import GraphUi from '@/graph/GraphUi'
     import KeyboardActionsHandler from '@/KeyboardActionsHandler'
+    import GraphElement from '@/graph-element/GraphElement'
     import VueShortkey from 'vue-shortkey';
     import Vue from 'vue';
 
@@ -30,8 +31,10 @@
                     "relative_tree"
                 )
             );
+            GraphElement.initMenuHandlerGetters();
             GraphUi.initDragScroll();
             GraphUi.enableDragScroll();
+            KeyboardActionsHandler.init();
             KeyboardActionsHandler.enable();
         }
     }

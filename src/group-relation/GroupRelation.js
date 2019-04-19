@@ -7,6 +7,10 @@ import Identification from '@/identifier/Identification'
 import GraphElementType from '@/graph-element/GraphElementType'
 import GroupRelationController from '@/group-relation/GroupRelationController'
 import Vue from 'vue'
+import FriendlyResource from "../friendly-resource/FriendlyResource";
+
+const EXPAND_UNDER_NB_SIBLINGS = 4,
+    EXPAND_UNDER_NB_CHILD = 6;
 
 const api = {};
 api.withoutAnIdentification = function () {
@@ -38,17 +42,24 @@ function GroupRelation(identifiers) {
     this.identifiers = identifiers;
     this.vertices = {};
     this.childGroupRelations = [];
+    this.isExpanded = true;
     this._sortedImmediateChild = null;
-    this.isCollapsed = false;
+    this._sortedImmediateChildCollapsed = null;
     Identification.Identification.apply(
         this
     );
     this.init(
         this.getIdentification().getServerFormat()
     );
+    this.isFirstInit = true;
 }
 
 GroupRelation.prototype = new Identification.Identification();
+
+GroupRelation.prototype.hasFewEnoughBubblesToExpand = function () {
+    return this.getParentBubble().getNumberOfChild() < EXPAND_UNDER_NB_CHILD &&
+        this.getNumberOfVertices() < EXPAND_UNDER_NB_SIBLINGS;
+};
 
 GroupRelation.prototype.removeChild = function (edge, temporarily) {
     let parentVertex = this.parentVertex;
@@ -67,7 +78,7 @@ GroupRelation.prototype.removeChild = function (edge, temporarily) {
             this.getFirstEdge()
         );
     }
-}
+};
 
 
 GroupRelation.prototype.getGreatestGroupRelationAncestor = function () {
@@ -102,12 +113,45 @@ GroupRelation.prototype.getImmediateChild = function () {
     if (!this.parentVertex) {
         return edges;
     }
-    this.sortedImmediateChild(this.parentVertex).map(function (child) {
+    let children = this._sortedImmediateChild || [];
+    children.map(function (child) {
         Object.keys(child).forEach(function (id) {
             edges.push(child[id].edge);
         }.bind(this));
     });
     return edges;
+};
+
+GroupRelation.prototype.expand = function (avoidCenter, isChildExpand) {
+    FriendlyResource.FriendlyResource.prototype.expand.call(
+        this,
+        avoidCenter,
+        isChildExpand
+    );
+    this.isExpanded = false; // to make the expand animation work in next tick
+    this.isCollapsed = false;
+    Vue.nextTick(function () {
+        if (this._sortedImmediateChildCollapsed !== null) {
+            this._sortedImmediateChild = this._sortedImmediateChildCollapsed;
+            this._sortedImmediateChildCollapsed = null;
+        }
+        this.isExpanded = true;
+        this.isCollapsed = false;
+    }.bind(this))
+};
+
+GroupRelation.prototype.collapse = function () {
+    this.isExpanded = false;
+    this.isCollapsed = true;
+    if (this._sortedImmediateChild != null) {
+        this._sortedImmediateChildCollapsed = this._sortedImmediateChild;
+        this._sortedImmediateChild = null;
+    }
+    Vue.nextTick(function () {
+        FriendlyResource.FriendlyResource.prototype.collapse.call(
+            this
+        );
+    }.bind(this));
 };
 
 GroupRelation.prototype.getController = function () {
@@ -144,6 +188,9 @@ GroupRelation.prototype.getSortedVertices = function (childrenIndex) {
 };
 
 GroupRelation.prototype.sortedImmediateChild = function (childIndex) {
+    if (this.isCollapsed) {
+        return [];
+    }
     if (this._sortedImmediateChild !== null) {
         return this._sortedImmediateChild;
     }
