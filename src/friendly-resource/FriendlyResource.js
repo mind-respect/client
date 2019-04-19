@@ -247,10 +247,15 @@ FriendlyResource.FriendlyResource.prototype.deselect = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.selectTree = function () {
+    SelectionHandler.add(
+        this
+    );
     this.visitDescendants(function (descendant) {
-        SelectionHandler.add(
-            descendant
-        );
+        if (descendant.isVertex()) {
+            SelectionHandler.add(
+                descendant
+            );
+        }
     });
 };
 
@@ -572,13 +577,10 @@ FriendlyResource.FriendlyResource.prototype.visitExpandableDescendants = functio
 
 FriendlyResource.FriendlyResource.prototype.visitDescendants = function (visitor) {
     this.visitAllImmediateChild(function (child) {
-        if (child.isLeaf()) {
-            return visitor(child);
-        } else {
-            return child.visitDescendants(
-                visitor
-            );
-        }
+        visitor(child);
+        return child.visitDescendants(
+            visitor
+        );
     });
 };
 
