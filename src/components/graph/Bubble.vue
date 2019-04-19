@@ -103,7 +103,7 @@
                             >
                                 <div
                                         slot="activator"
-                                        class="in-bubble-content  pt-1 pb-1"
+                                        class="in-bubble-content pt-1 pb-1"
                                         :class="{
                                         'reverse': bubble.orientation === 'left'
                                     }"
@@ -129,7 +129,7 @@
                                     <div
                                             class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
                                             :class="{
-                                            'pr-2': bubble.isToTheLeft(),
+                                            'pr-3': bubble.isToTheLeft(),
                                             'pl-3': !bubble.isToTheLeft() || bubble.isCenter
                                         }"
                                             @blur="leaveEditFlow"

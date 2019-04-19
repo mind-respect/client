@@ -54,7 +54,8 @@
                 isHighestInBetween: null,
                 isLowestInBetween: null,
                 highestArcRadius: null,
-                lowestArcRadius: null
+                lowestArcRadius: null,
+                zoomAdjust: 0
             }
         },
         mounted: function () {
@@ -72,6 +73,7 @@
                     }.bind(this));
                     return;
                 }
+                this.zoomAdjust = Math.round((this.$store.state.zoom - 1) * 10);
                 this.bubbleRect = element.getBoundingClientRect();
                 this.topPosition = this.topPositionCalculate();
                 this.bottomPosition = this.bottomPositionCalculate();
@@ -274,8 +276,9 @@
                 let yAdjust = 0;
                 let element = isParent ? bubble.getHtml() : this.getBubbleElement(bubble);
                 if (bubble.isEdge() && bubble.isShrinked()) {
-                    yAdjust = this.isLeft ? -10 : -10;
+                    yAdjust = -10;
                 }
+                yAdjust += this.zoomAdjust;
                 if (!element) {
                     this.loaded = false;
                     this.$nextTick(function () {

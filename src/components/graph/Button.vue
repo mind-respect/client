@@ -11,7 +11,6 @@
             :right="isInSideMenu"
             allow-overflow
             :attach="attach"
-            :nudge-right="nudgeRight"
             max-width="400"
             :content-class="contentClass"
     >
@@ -47,10 +46,7 @@
                 return this.isInMainMenu ? "#drawn_graph": false;
             },
             contentClass: function () {
-                return this.isInSideMenu ? "ml-4" : "";
-            },
-            nudgeRight: function () {
-                return this.isInSideMenu ? 100 : 0;
+                return this.isInSideMenu ? "ml-5" : "";
             },
             isInMainMenu: function () {
                 return this.isInTopMenu || this.isInSideMenu;

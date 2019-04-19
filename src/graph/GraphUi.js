@@ -38,19 +38,7 @@ GraphUi.getZoom = function () {
         $(".root-vertex-super-container").attr("data-zoom")
     );
 };
-GraphUi.zoom = function (zoomDifference) {
-    let currentZoom = GraphUi.getZoom();
-    let newZoom = currentZoom + zoomDifference;
-    if (newZoom < 0.1) {
-        newZoom = 0.1;
-    }
-    $(".root-vertex-super-container").attr(
-        "data-zoom", newZoom
-    ).css(
-        "transform",
-        "scale(" + newZoom + "," + newZoom + ")"
-    );
-};
+
 GraphUi.getTopLayer = function () {
     if (!_topLayer) {
         _topLayer = $("body, html");

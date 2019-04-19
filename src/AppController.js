@@ -14,6 +14,7 @@ import IdUri from '@/IdUri'
 import ToList from '@/ToList'
 import GraphElementUi from '@/graph-element/GraphElementUi'
 import Store from '@/store'
+import Vue from 'vue'
 
 const api = {};
 api.undoCanDo = function () {
@@ -35,16 +36,26 @@ api.find = function () {
     $("#vertex-search-input").focus();
 };
 api.zoomIn = function () {
-    GraphUi.zoom(
+    api.zoom(
         0.1
-    );
-    Store.dispatch("redraw");
+    )
 };
 api.zoomOut = function () {
-    GraphUi.zoom(
+    api.zoom(
         -0.1
+    )
+};
+api.zoomOutCanDo = function () {
+    return Store.state.zoom >= 0.7;
+};
+api.zoom = function (adjust) {
+    Store.dispatch(
+        "zoom",
+        parseFloat((Store.state.zoom + adjust).toFixed(2))
     );
-    Store.dispatch("redraw");
+    Vue.nextTick(function () {
+        Store.dispatch("redraw");
+    })
 };
 
 api.createVertex = function (label) {

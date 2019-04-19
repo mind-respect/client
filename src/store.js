@@ -15,13 +15,15 @@ const Store = new Vuex.Store({
         createPersistedState({
             paths: [
                 "user",
-                "locale"
+                "locale",
+                "zoom"
             ]
         })
     ],
     state: {
         user: null,
-        isLoading:false,
+        zoom: 1,
+        isLoading: false,
         dragged: null,
         isRemoveFlow: false,
         redraws: Math.random()
@@ -42,7 +44,7 @@ const Store = new Vuex.Store({
             }
             UserService.setAuthenticatedUserInCache(state.user);
         },
-        setIsLoading: function(state, isLoading){
+        setIsLoading: function (state, isLoading) {
             state.isLoading = isLoading;
         },
         setLocale: function (state, locale) {
@@ -63,13 +65,16 @@ const Store = new Vuex.Store({
                 refresh: Math.random(),
                 spec: spec
             };
+        },
+        zoom: function (state, zoom) {
+            state.zoom = zoom;
         }
     },
     actions: {
         setUser: function (action, user) {
             action.commit('setUser', user);
         },
-        setIsLoading: function(action, isLoading){
+        setIsLoading: function (action, isLoading) {
             action.commit('setIsLoading', isLoading);
         },
         setLocale: function (action, locale) {
@@ -83,6 +88,9 @@ const Store = new Vuex.Store({
         },
         redraw: function (action, spec) {
             action.commit('redraw', spec);
+        },
+        zoom: function (action, zoom) {
+            action.commit('zoom', zoom);
         }
     }
 });

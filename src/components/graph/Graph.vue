@@ -9,7 +9,7 @@
         <div id="drawn_graph" @click="click" data-zoom="9" class="vh-center">
             <!--<div :style="'width:' + leftWidth() + 'px'"></div>-->
             <div style="width:8000px;"></div>
-            <v-layout row class='root-vertex-super-container vh-center ma-5 pa-5' data-zoom='1'>
+            <v-layout row class='root-vertex-super-container vh-center ma-5 pa-5' :style="zoomScale">
                 <v-flex grow class="vertices-children-container left-oriented" style="width:7000px;" :class="{
                     'blur-overlay': graph.center.isEditFlow
                 }">
@@ -135,6 +135,11 @@
         computed: {
             redraws: function () {
                 return this.$store.state.redraws;
+            },
+            zoomScale: function () {
+                return "transform: scale(" +
+                    this.$store.state.zoom + "," +
+                    this.$store.state.zoom + ")";
             }
         },
         watch: {
@@ -202,4 +207,5 @@
         width: 100%;
         height: 100%;
     }
+
 </style>
