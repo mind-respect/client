@@ -47,7 +47,7 @@
                 <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
                 <div v-if="!bubble.isCollapsed">
                     <div :class="{
-                   'blur-overlay':isEditFlow
+                   'blur-overlay':isEditFlow && bubble.isVertex()
                 }"
                     >
                         <transition name="fade" v-on:before-enter="beforeChildrenAnimation"
@@ -200,6 +200,7 @@
                                          @blur="leaveEditFlow"
                                          :data-placeholder="relationPlaceholder"
                                          autocomplete="off"
+                                         @focus="focus"
                                          v-show="!isShrinked"
                                          v-text="bubble.getFriendlyJson().label"
                                          @keydown="keydown"></div>
@@ -210,7 +211,7 @@
                 </div>
                 <div v-if="!bubble.isCollapsed">
                     <div :class="{
-                   'blur-overlay':isEditFlow
+                   'blur-overlay':isEditFlow && bubble.isVertex()
                 }"
                     >
                         <transition name="fade" v-on:before-enter="beforeChildrenAnimation"
