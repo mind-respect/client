@@ -118,7 +118,7 @@
                             >
                                 <div
                                         slot="activator"
-                                        class="in-bubble-content pt-1 pb-1"
+                                        class="in-bubble-content"
                                         :class="{
                                             'reverse': bubble.orientation === 'left'
                                     }"
@@ -128,7 +128,7 @@
                                         @dragend="dragEnd"
                                         @contextmenu="rightClick"
                                         :draggable="!bubble.isCenter"
-                                        style="max-width:500px!important;height:100%;position:relative;"
+                                        style="max-width:500px!important;height:100%;position:relative;padding-top:2px;padding-bottom:1px;"
                                 >
                                     <div
                                             class="in-label-buttons text-xs-center"
