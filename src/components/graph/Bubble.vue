@@ -9,29 +9,10 @@
                     @dragover="topDragEnter"
                     @dragleave="resetTopBottomDragOver"
                     @drop="topDrop"
+                    @click="click"
+                    @dblclick="dblclick"
                     v-if="(bubble.isEdge() || bubble.isGroupRelation()) && !bubble.getNextBubble().isExpanded"
             ></v-flex>
-            <v-flex xs12 style="position:relative;" v-if="!bubble.isCenter">
-                <div
-                        style="top: -12px;"
-                        class="arrowTopBottomContainer"
-                        :class="{
-                            'top-bottom-left-side text-xs-right': bubble.isToTheLeft(),
-                            'top-bottom-right-side': !bubble.isToTheLeft()
-                }">
-                    <v-icon v-for="i in 5" small
-                            style="overflow-x: hidden"
-                            class="unselectable"
-                            :class="{
-                            'red--text': isTopDragOver,
-                            'transparent--text': !isTopDragOver,
-                        'ml-4 fa-flip-horizontal': bubble.isToTheLeft(),
-                        'mr-4': !bubble.isToTheLeft()
-                    }">
-                        arrow_forward
-                    </v-icon>
-                </div>
-            </v-flex>
             <v-flex xs12
                     style="position:relative;"
                     class="dotted-border-top"
@@ -76,11 +57,38 @@
             }"
                      :id="bubble.uiId"
                 >
-                    <div class="vertex-top-bottom-drop"
-                         @dragover="topDragEnter"
-                         @dragleave="resetTopBottomDragOver"
-                         @drop="topDrop"
-                         style="top:0;margin-top:-15px;"
+
+                    <div
+                            v-if="!bubble.isCenter"
+                            class="arrowTopBottomContainer"
+                            :class="{
+                                'top-bottom-left-side text-xs-right': bubble.isToTheLeft(),
+                                'top-bottom-right-side': !bubble.isToTheLeft(),
+                                'vertex-drop-arrow-top':bubble.isVertex(),
+                                'edge-drop-arrow-top':!bubble.isVertex()
+                            }">
+                        <v-icon v-for="i in 5" small
+                                style="overflow-x: hidden"
+                                class="unselectable"
+                                :class="{
+                                    'red--text': isTopDragOver,
+                                    'transparent--text': !isTopDragOver,
+                                    'ml-4 fa-flip-horizontal': bubble.isToTheLeft(),
+                                    'mr-4': !bubble.isToTheLeft()
+                                }">
+                            arrow_forward
+                        </v-icon>
+                    </div>
+
+                    <div
+                            v-if="!bubble.isCenter"
+                            class="vertex-drop-arrow-top-bottom-drop"
+                            @dragover="topDragEnter"
+                            @dragleave="resetTopBottomDragOver"
+                            @drop="topDrop"
+                            @click="click"
+                            @dblclick="dblclick"
+                            style="top:0;margin-top:-10px"
                     ></div>
                     <div class="vertex-left-right-drop"
                          v-if="bubble.isCenter || bubble.isToTheLeft()"
@@ -112,7 +120,7 @@
                                         slot="activator"
                                         class="in-bubble-content pt-1 pb-1"
                                         :class="{
-                                        'reverse': bubble.orientation === 'left'
+                                            'reverse': bubble.orientation === 'left'
                                     }"
                                         @click="click" @dblclick="dblclick"
                                         @mousedown="mouseDown"
@@ -120,7 +128,7 @@
                                         @dragend="dragEnd"
                                         @contextmenu="rightClick"
                                         :draggable="!bubble.isCenter"
-                                        style="max-width:500px!important;height:100%;position:relative"
+                                        style="max-width:500px!important;height:100%;position:relative;"
                                 >
                                     <div
                                             class="in-label-buttons text-xs-center"
@@ -159,10 +167,34 @@
                                      v-if="bubble.canExpand()"></ChildNotice>
                     </div>
                     <div
-                            class="vertex-top-bottom-drop"
+                            class="vertex-drop-arrow-top-bottom-drop"
+                            @click="click"
+                            @dblclick="dblclick"
                             @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"
                             style="bottom:0;margin-bottom:-15px;"
                     ></div>
+                    <div @dragover="bottomDragEnter"
+                         @drop="bottomDrop"
+                         @click="click"
+                         @dblclick="dblclick"
+                         class="arrowTopBottomContainer"
+                         :class="{
+                            'top-bottom-left-side text-xs-right': bubble.isToTheLeft(),
+                            'top-bottom-right-side': !bubble.isToTheLeft(),
+                            'vertex-drop-arrow-bottom':bubble.isVertex(),
+                            'edge-drop-arrow-bottom':!bubble.isVertex()
+                        }">
+                        <v-icon v-for="i in 5" small
+                                class="unselectable"
+                                :class="{
+                        'red--text' : isBottomDragOver,
+                        'transparent--text': !isBottomDragOver,
+                        'ml-4 fa-flip-horizontal': bubble.isToTheLeft(),
+                        'mr-4': !bubble.isToTheLeft()
+                    }">
+                            arrow_forward
+                        </v-icon>
+                    </div>
                     <div class="vertex-left-right-drop"
                          v-if="bubble.isCenter || !bubble.isToTheLeft()"
                          @dragover="leftRightDragEnter"
@@ -247,27 +279,6 @@
                 class="dotted-border-bottom"
                 v-if="bubble.isVertex() && !bubble.isCenter"
         ></v-flex>
-        <v-flex xs12 style="position:relative;" v-if="!bubble.isCenter">
-            <div style="bottom:-12px"
-                 @dragover="bottomDragEnter"
-                 @drop="bottomDrop"
-                 class="arrowTopBottomContainer"
-                 :class="{
-                    'top-bottom-left-side text-xs-right': bubble.isToTheLeft(),
-                    'top-bottom-right-side': !bubble.isToTheLeft()
-                }">
-                <v-icon v-for="i in 4" small
-                        class="unselectable"
-                        :class="{
-                        'red--text' : isBottomDragOver,
-                        'transparent--text': !isBottomDragOver,
-                        'ml-4 fa-flip-horizontal': bubble.isToTheLeft(),
-                        'mr-4': !bubble.isToTheLeft()
-                    }">
-                    arrow_forward
-                </v-icon>
-            </div>
-        </v-flex>
         <v-flex xs12 class="pb-1 dotted-border-bottom"
                 @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"
                 v-if="(bubble.isEdge() || bubble.isGroupRelation()) && !bubble.getNextBubble().isExpanded"
@@ -598,6 +609,22 @@
 </script>
 
 <style scoped>
+    .vertex-drop-arrow-top {
+        top:-12px !important;
+    }
+
+    .edge-drop-arrow-top {
+        top:-20px !important;
+    }
+
+
+    .vertex-drop-arrow-bottom{
+        bottom:-12px !important;
+    }
+
+    .edge-drop-arrow-bottom{
+        bottom:-20px !important;
+    }
 
     .bubble-size {
         font-size: 18px !important;
@@ -635,11 +662,12 @@
         position: relative;
     }
 
-    .vertex-top-bottom-drop {
+    .vertex-drop-arrow-top-bottom-drop {
         position: absolute !important;
-        height: 40% !important;
+        height: 50% !important;
         width: 100% !important;
         max-width: 500px !important;
+        z-index: 10;
     }
 
     .vertex-left-right-drop {
@@ -706,7 +734,7 @@
     }
 
     .bubble-container {
-        /*position relative for absolute vertex-top-bottom-drop*/
+        /*position relative for absolute vertex-drop-arrow-top-bottom-drop*/
         position: relative;
     }
 

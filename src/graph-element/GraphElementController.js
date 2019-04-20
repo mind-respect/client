@@ -652,9 +652,6 @@ GraphElementController.prototype.removeIdentifier = function (identifier) {
             this.getUi(),
             identifier
         ).then(function () {
-            this.getMo().removeIdentifier(
-                identifier
-            );
             this.getModel().removeIdentifier(
                 identifier
             );
