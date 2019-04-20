@@ -120,5 +120,6 @@
         margin-top: 86px !important;
         background-color: transparent !important;
         border: none !important;
+        overflow: hidden;
     }
 </style>

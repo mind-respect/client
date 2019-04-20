@@ -84,9 +84,7 @@
                     {{$t('centers')}}
                 </v-btn>
                 <v-menu
-                        :close-on-content-click="false"
                         :nudge-width="250"
-                        offset-x
                         offset-y
                         v-if="$store.state.user !== undefined"
                 >
@@ -459,5 +457,10 @@
 
     .v-toolbar__content {
         padding: 6px;
+    }
+
+    #app > .v-menu__content {
+        left: 100% !important;
+        margin-left: -300px;
     }
 </style>
