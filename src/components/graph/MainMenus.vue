@@ -4,16 +4,21 @@
 
 <template>
     <div v-if="loaded">
-        <v-toolbar fixed flat color="transparent" class="top-toolbar pl-1" height="36" dense>
-            <v-toolbar-items class="pa-0 mt-3">
-                <BubbleButtons :key="refreshKey" :isInTopMenu="true"></BubbleButtons>
-            </v-toolbar-items>
-        </v-toolbar>
+        <v-layout row>
+            <v-flex grow>
+                <v-toolbar fixed flat color="transparent" class="top-toolbar pl-1" height="36" dense>
+                    <v-toolbar-items class="pa-0 mt-3">
+                        <BubbleButtons :key="refreshKey" :isInTopMenu="true"></BubbleButtons>
+                    </v-toolbar-items>
+                </v-toolbar>
+            </v-flex>
+        </v-layout>
         <v-navigation-drawer
                 v-model="sideNavigation"
                 :mini-variant.sync="mini"
                 class="elevation-0 pt-0 side-navigation-drawer ml-0"
                 fixed
+                width="50"
                 mini-variant-width="50"
                 color="transparent"
                 flat
@@ -107,7 +112,12 @@
 </script>
 <style>
     .top-toolbar {
-        margin-top: 43px !important;
+        margin-top: 33px !important;
+        height: 43px;
+    }
+    .top-toolbar .v-toolbar__content {
+        margin-top: 0;
+        display: inline-block;
     }
 
     .top-toolbar .v-toolbar__content, .side-toolbar .v-toolbar__content {

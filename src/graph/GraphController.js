@@ -7,18 +7,11 @@ import SubGraph from '@/graph/SubGraph'
 
 const api = {};
 api.expandAllCanDo = function () {
-    let canDo = false;
     let center = SubGraph.graph.center;
     if (!center) {
         return false;
     }
-    center.visitDescendants(function (descendant) {
-        if (descendant.getController().expandCanDo()) {
-            canDo = true;
-            return false;
-        }
-    });
-    return canDo;
+    return center.getController().expandCanDo();
 };
 
 api.expandAll = function () {
