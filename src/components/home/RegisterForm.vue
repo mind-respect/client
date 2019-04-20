@@ -16,12 +16,19 @@
                     <div v-if="usernameAlreadyRegistered">
                         {{$t('register:usernameAlreadyRegistered')}}
                     </div>
+                    <div v-if="invalidUsername">
+                        {{$t('register:invalidUsername')}}
+                    </div>
+                    <div v-if="usernameTooLong">
+                        {{$t('register:usernameTooLong')}}
+                    </div>
                 </v-alert>
                 <v-text-field
                         v-model="newUser.username"
                         :error-messages="newUsernameErrors"
                         :label="$t('register:newUsername')"
                         :rules="[Rules.required]"
+                        maxlength="30"
                         required
                 ></v-text-field>
                 <v-text-field
@@ -66,6 +73,8 @@
                 this.createConflict = false;
                 this.emailAlreadyRegistered = false;
                 this.usernameAlreadyRegistered = false;
+                this.invalidUsername = false;
+                this.usernameTooLong = false;
                 if (!this.$refs.registerForm.validate()) {
                     return;
                 }
@@ -90,6 +99,12 @@
                         if ("user_name_already_registered" === error.reason) {
                             this.usernameAlreadyRegistered = true;
                         }
+                        if("invalid_user_name" === error.reason){
+                            this.invalidUsername = true;
+                        }
+                        if("too_long" === error.reason){
+                            this.usernameTooLong = true;
+                        }
                     }.bind(this));
                     this.createConflict = true;
                     LoadingFlow.leave();
@@ -104,6 +119,8 @@
                 this.createConflict = false;
                 this.emailAlreadyRegistered = false;
                 this.usernameAlreadyRegistered = false;
+                this.invalidUsername = false;
+                this.usernameTooLong = false;
                 this.$refs.registerForm.reset();
             }
         },
@@ -116,7 +133,9 @@
                 password: 'Password',
                 registerBtn: "Register for free",
                 emailAlreadyRegistered: "Email already registered",
-                usernameAlreadyRegistered: "Username already taken"
+                usernameAlreadyRegistered: "Username already taken",
+                invalidUsername: "Username is invalid, it can only contain letters, numbers, underscores and hyphens",
+                usernameTooLong: "Username can't exceed 30 characters"
             });
             I18n.i18next.addResources("fr", "register", {
                 title: "Utilisez MindRespect.com",
@@ -126,7 +145,9 @@
                 password: 'Mot de passe',
                 registerBtn: "Inscrivez-vous gratuitement",
                 emailAlreadyRegistered: "Courriel déjà enregistré",
-                usernameAlreadyRegistered: "Usager est déjà pris"
+                usernameAlreadyRegistered: "Usager est déjà pris",
+                invalidUsername: "Le nom d'usager est invalide, il peut contenir des lettres, des nombres, des soulignements (underscores) et des traits d'union",
+                usernameTooLong: "Le nom d'usager ne peut excéder 30 caractères"
             });
             return {
                 Rules: Rules,
@@ -141,7 +162,9 @@
                 passwordErrors: null,
                 createConflict: false,
                 usernameAlreadyRegistered: false,
-                emailAlreadyRegistered: false
+                emailAlreadyRegistered: false,
+                invalidUsername: false,
+                usernameTooLong: false
             };
         }
     }
