@@ -181,7 +181,7 @@ FriendlyResource.FriendlyResource.prototype.hasChildren = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.getComment = function () {
-    return this.friendlyResourceServerFormat.comment;
+    return this.friendlyResourceServerFormat.comment.trim();
 };
 FriendlyResource.FriendlyResource.prototype.setComment = function (comment) {
     return this.friendlyResourceServerFormat.comment = comment;

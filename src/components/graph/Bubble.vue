@@ -135,22 +135,23 @@
                                         style="max-width:500px!important;height:100%;position:relative;padding-top:2px;padding-bottom:1px;"
                                 >
                                     <div
-                                            class="in-label-buttons text-xs-center"
+                                            class="in-label-buttons text-xs-center mt-1"
                                             :class="{
                                             'in-label-buttons-right':bubble.isToTheLeft(),
                                             'in-label-buttons-left':bubble.isToTheLeft()
                                         }"
                                     >
-                                        <v-icon small color="secondary" v-if="bubble.isPrivate()">lock</v-icon>
-                                        <v-icon small color="secondary" v-if="bubble.isPublic()">public</v-icon>
-                                        <v-icon small color="secondary" v-if="bubble.isFriendsOnly()">people</v-icon>
+                                        <span v-for="button in inLabelButtons">
+                                            <v-icon small color="secondary" v-if="button.condition(bubble)" :class="{
+                                                     'mr-1': !bubble.isToTheLeft(),
+                                                     'ml-1': bubble.isToTheLeft()
+                                                    }">
+                                                {{button.icon}}
+                                            </v-icon>
+                                        </span>
                                     </div>
                                     <div
                                             class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
-                                            :class="{
-                                            'pr-3': bubble.isToTheLeft(),
-                                            'pl-3': !bubble.isToTheLeft() || bubble.isCenter
-                                        }"
                                             @blur="leaveEditFlow"
                                             @dragover="labelDragEnter"
                                             @dragleave="labelDragLeave"
@@ -328,7 +329,33 @@
                 isBottomDragOver: null,
                 isLeftRightDragOver: null,
                 isEditFlow: false,
-                showMenu: false
+                showMenu: false,
+                inLabelButtons: [
+                    {
+                        icon: "note",
+                        condition: function (bubble) {
+                            return bubble.getComment() !== '';
+                        }
+                    },
+                    {
+                        icon: "lock",
+                        condition: function (bubble) {
+                            return bubble.isPrivate()
+                        }
+                    },
+                    {
+                        icon: "public",
+                        condition: function (bubble) {
+                            return bubble.isPublic()
+                        }
+                    },
+                    {
+                        icon: "people",
+                        condition: function (bubble) {
+                            return bubble.isFriendsOnly()
+                        }
+                    }
+                ]
             }
         },
         mounted: function () {
@@ -618,20 +645,19 @@
 
 <style scoped>
     .vertex-drop-arrow-top {
-        top:-12px !important;
+        top: -12px !important;
     }
 
     .edge-drop-arrow-top {
-        top:-20px !important;
+        top: -20px !important;
     }
 
-
-    .vertex-drop-arrow-bottom{
-        bottom:-12px !important;
+    .vertex-drop-arrow-bottom {
+        bottom: -12px !important;
     }
 
-    .edge-drop-arrow-bottom{
-        bottom:-20px !important;
+    .edge-drop-arrow-bottom {
+        bottom: -20px !important;
     }
 
     .bubble-size {
@@ -703,8 +729,7 @@
     }
 
     .in-label-buttons {
-        position: absolute;
-        top: 20%;
+        top: 20%
     }
 
     .w-500 {
@@ -767,5 +792,9 @@
 
     .v-chip__content {
         transition: none !important;
+    }
+
+    .bubble-label {
+        display:inline-block;
     }
 </style>

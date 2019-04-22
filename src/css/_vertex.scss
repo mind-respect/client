@@ -5,14 +5,6 @@
 .vertex {
   /*white-space: nowrap; because sometimes when hovering the relation menu and there is a vertex image it messes up */
   white-space: nowrap;
-
-  &.inverse {
-    .arrow {
-      width: 47px;
-      left: -37px;
-    }
-  }
-
   &.meta {
     .in-bubble-content {
       border-radius: 5px;
@@ -50,22 +42,6 @@
     .in-bubble-content {
       padding-bottom: 2em;
     }
-  }
-  .in-bubble-content {
-    &:hover {
-      background-color: $hoverOverBubbleColor;
-    }
-    .in-label-buttons {
-      margin-left: $margin-buttons;
-      padding-left: $inLabelButtonsPadding;
-      padding-right: $buttons-next-to-label-padding;
-    }
-    //box-shadow: inset 0px 1px 200px 1rem #E3E300 !important;
-    //-webkit-box-shadow: inset 0px 1px 100px -1px #E3E300;
-    //-moz-box-shadow: inset 0px 1px 100px -1px #E3E300;
-    //-o-box-shadow: inset 0px 1px 100px -1px #E3E300;
-
-    //background:radial-gradient(#77d19e,#46c17b);
   }
   &.selected {
     z-index: 12;
@@ -168,30 +144,5 @@
     //&:after{
     //  box-shadow: -15px 0 15px -15px inset;
     //}
-  }
-  .ui-button {
-    width: 1.7em;
-    height: 1.8em;
-    margin-right: 0;
-    font-size: 1.1em;
-    padding: 0;
-  }
-}
-
-.included-vertices-container {
-  .layout {
-    position: absolute;
-  }
-}
-
-.vertex-tree-container {
-  &.no-relation-label {
-    > .vertices-children-container > .vertex-tree-container > .vertex.arrow {
-      border-top: none;
-      margin-top: -2px;
-      &:before {
-        top: $arrowTop;
-      }
-    }
   }
 }
