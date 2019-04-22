@@ -419,37 +419,37 @@ VertexController.prototype.makePublic = function () {
     }
 };
 
-VertexController.prototype.share = function () {
-    var $shareMenu = $("#share-menu");
-    var $shareList = $("#share-list").empty();
-    var $copyShareLink = $("#copy-share-link");
-    this.getUiArray().forEach(function (bubble) {
-        $shareList.append(
-            $("<li>").text(bubble.text())
-        );
-    });
-    $shareMenu.find(".multiple-flow")[
-        this.isMultiple() ? 'removeClass' : 'addClass'
-        ]("hidden");
-    $copyShareLink[this.isMultiple() ? 'addClass' : 'removeClass'](
-        "hidden"
-    );
-    var $radios = $shareMenu.find("input[name=shareLevel]");
-    if (this._areAllElementsPrivate()) {
-        $radios.val(["private"]);
-        $copyShareLink.prop('disabled', true);
-    } else if (this._areAllElementsFriendsOnly()) {
-        $radios.val(["friends"]);
-    } else if (this._areAllElementsInShareLevels([ShareLevel.PUBLIC_WITH_LINK])) {
-        $radios.val(["public_with_link"]);
-    }
-    else if (this._areAllElementsInShareLevels([ShareLevel.PUBLIC])) {
-        $radios.val(["public"]);
-    } else {
-        $radios.val([""]);
-    }
-    $shareMenu.modal();
-};
+// VertexController.prototype.share = function () {
+//     var $shareMenu = $("#share-menu");
+//     var $shareList = $("#share-list").empty();
+//     var $copyShareLink = $("#copy-share-link");
+//     this.getUiArray().forEach(function (bubble) {
+//         $shareList.append(
+//             $("<li>").text(bubble.text())
+//         );
+//     });
+//     $shareMenu.find(".multiple-flow")[
+//         this.isMultiple() ? 'removeClass' : 'addClass'
+//         ]("hidden");
+//     $copyShareLink[this.isMultiple() ? 'addClass' : 'removeClass'](
+//         "hidden"
+//     );
+//     var $radios = $shareMenu.find("input[name=shareLevel]");
+//     if (this._areAllElementsPrivate()) {
+//         $radios.val(["private"]);
+//         $copyShareLink.prop('disabled', true);
+//     } else if (this._areAllElementsFriendsOnly()) {
+//         $radios.val(["friends"]);
+//     } else if (this._areAllElementsInShareLevels([ShareLevel.PUBLIC_WITH_LINK])) {
+//         $radios.val(["public_with_link"]);
+//     }
+//     else if (this._areAllElementsInShareLevels([ShareLevel.PUBLIC])) {
+//         $radios.val(["public"]);
+//     } else {
+//         $radios.val([""]);
+//     }
+//     $shareMenu.modal();
+// };
 
 VertexController.prototype.setShareLevel = function (shareLevel) {
     this.getUiArray().forEach(function (vertexUi) {

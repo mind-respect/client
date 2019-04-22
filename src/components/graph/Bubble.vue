@@ -427,6 +427,9 @@
             },
             click: function (event) {
                 event.stopPropagation();
+                if (this.isEditFlow) {
+                    return;
+                }
                 GraphUi.enableDragScroll();
                 if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
                     if (this.bubble.isSelected) {
@@ -441,6 +444,9 @@
                 }
             },
             dblclick: function (event) {
+                if (this.isEditFlow) {
+                    return;
+                }
                 this.bubble.focus(event);
             },
             leaveEditFlow: function () {
@@ -473,6 +479,9 @@
                 this.isSelected = found;
             },
             mouseDown: function () {
+                if (this.isEditFlow) {
+                    return;
+                }
                 GraphUi.disableDragScroll();
             },
             dragStart: function (event) {
@@ -582,8 +591,12 @@
                 if (this.isTopDragOver) {
                     return;
                 }
+                let dragged = this.$store.state.dragged;
+                if (!dragged) {
+                    return;
+                }
                 let bubble = this.bubble.isEdge() ? this.bubble.getNextBubble() : this.bubble;
-                if (this.$store.state.dragged.getId() === bubble.getId()) {
+                if (dragged.getId() === bubble.getId()) {
                     return;
                 }
                 this.isContainerDragOver = true;
@@ -793,6 +806,6 @@
     }
 
     .bubble-label {
-        display:inline-block;
+        display: inline-block;
     }
 </style>
