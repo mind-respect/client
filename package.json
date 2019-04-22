@@ -32,6 +32,7 @@
     "vue-scrollto": "^2.14.0",
     "vue-shortkey": "^3.1.6",
     "vue-template-compiler": "^2.6.10",
+    "vue2-editor": "^2.6.6",
     "vuetify": "1.5.12",
     "vuex": "^3.0.1",
     "vuex-persistedstate": "^2.5.4"

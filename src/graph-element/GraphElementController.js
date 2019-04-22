@@ -14,6 +14,7 @@ import Command from '@/Command'
 import SelectionHandler from '@/SelectionHandler'
 import UserMapAutocompleteProvider from '@/search/provider/UserMapAutocompleteProvider'
 import ToList from '@/ToList'
+import Store from '@/store'
 
 // "bootstrap-wysiwyg",
 // "bootstrap",
@@ -89,6 +90,8 @@ GraphElementController.prototype.setLabel = function (newLabel) {
 };
 
 GraphElementController.prototype.note = function () {
+    Store.dispatch("setIsDescriptionFlow", true);
+    return;
     var editor = api._getContentEditor().saferHtml(
         this.getUi().getModel().getComment()
     );

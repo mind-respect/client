@@ -39,22 +39,12 @@ api.removeIdentifier = function (graphElement, identification) {
         url: graphElement.getUri() + '/identification?uri=' + identification.getUri()
     });
 };
-api.updateNote = function (graphElement, note, callback) {
-    $.ajax({
-        type: 'POST',
-        url: graphElement.getUri() + '/comment',
-        data: note,
-        contentType: "text/plain"
-    }).then(function () {
-        graphElement.getModel().setComment(note);
-        EventBus.publish(
-            '/event/ui/graph/element/note/updated',
-            graphElement
-        );
-        if (callback !== undefined) {
-            callback(graphElement);
-        }
-    });
+api.updateNote = function (graphElement) {
+    return Service.geApi().post(
+        graphElement.getUri() + '/comment',
+        graphElement.getComment(),
+        {headers: {"Content-Type": "text/plain"}}
+    );
 };
 api.changeSortDate = function (graphElement) {
     return $.ajax({

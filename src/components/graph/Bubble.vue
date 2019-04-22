@@ -11,6 +11,7 @@
                     @drop="topDrop"
                     @click="click"
                     @dblclick="dblclick"
+                    @contextmenu="rightClick"
                     v-if="(bubble.isEdge() || bubble.isGroupRelation()) && !bubble.getNextBubble().isExpanded"
             ></v-flex>
             <v-flex xs12
@@ -88,6 +89,7 @@
                             @drop="topDrop"
                             @click="click"
                             @dblclick="dblclick"
+                            @contextmenu="rightClick"
                             style="top:0;margin-top:-10px"
                     ></div>
                     <div class="vertex-left-right-drop"
@@ -114,7 +116,8 @@
                                     :value="isSelected"
                                     max-width="250"
                                     :nudge-width="250"
-                                    auto offset-y
+                                    auto
+                                    offset-y
                             >
                                 <div
                                         slot="activator"
@@ -122,7 +125,8 @@
                                         :class="{
                                             'reverse': bubble.orientation === 'left'
                                     }"
-                                        @click="click" @dblclick="dblclick"
+                                        @click="click"
+                                        @dblclick="dblclick"
                                         @mousedown="mouseDown"
                                         @dragstart="dragStart"
                                         @dragend="dragEnd"
@@ -170,6 +174,7 @@
                             class="vertex-drop-arrow-top-bottom-drop"
                             @click="click"
                             @dblclick="dblclick"
+                            @contextmenu="rightClick"
                             @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"
                             style="bottom:0;margin-bottom:-15px;"
                     ></div>
@@ -177,6 +182,7 @@
                          @drop="bottomDrop"
                          @click="click"
                          @dblclick="dblclick"
+                         @contextmenu="rightClick"
                          class="arrowTopBottomContainer"
                          :class="{
                             'top-bottom-left-side text-xs-right': bubble.isToTheLeft(),
@@ -210,7 +216,9 @@
                             'reverse': bubble.orientation === 'left'
                     }">
                         <div class="image_container"></div>
-                        <div class="in-bubble-content" @click="click" @dblclick="dblclick"
+                        <div class="in-bubble-content"
+                             @click="click"
+                             @dblclick="dblclick"
                              @mousedown="mouseDown"
                              @dragstart="dragStart"
                              @dragend="dragEnd"

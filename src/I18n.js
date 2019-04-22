@@ -37,7 +37,8 @@ export default {
                         send: "Send",
                         change: "Change",
                         centers: "Centers",
-                        confirm: "Confirm"
+                        confirm: "Confirm",
+                        save: "Save"
                     }
                 },
                 fr: {
@@ -55,7 +56,8 @@ export default {
                         send: "Envoyer",
                         change: "Modifier",
                         centers: "Centres",
-                        confirm: "Confirmer"
+                        confirm: "Confirmer",
+                        save: "Sauvegarder"
                     }
                 }
             }

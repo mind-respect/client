@@ -86,6 +86,7 @@
                 <v-menu
                         :nudge-width="250"
                         offset-y
+                        content-class="settings-menu"
                         v-if="$store.state.user !== undefined"
                 >
                     <v-btn icon light slot="activator">
@@ -459,7 +460,7 @@
         padding: 6px;
     }
 
-    #app > .v-menu__content {
+    .settings-menu {
         left: 100% !important;
         margin-left: -300px;
     }
