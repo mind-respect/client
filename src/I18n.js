@@ -38,7 +38,8 @@ export default {
                         change: "Change",
                         centers: "Centers",
                         confirm: "Confirm",
-                        save: "Save"
+                        save: "Save",
+                        cancel: "Cancel"
                     }
                 },
                 fr: {
@@ -57,7 +58,8 @@ export default {
                         change: "Modifier",
                         centers: "Centres",
                         confirm: "Confirmer",
-                        save: "Sauvegarder"
+                        save: "Sauvegarder",
+                        cancel: "Annuler"
                     }
                 }
             }

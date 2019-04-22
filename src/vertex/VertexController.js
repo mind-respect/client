@@ -8,7 +8,6 @@ import EdgeService from '@/edge/EdgeService'
 import SelectionHandler from '@/SelectionHandler'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphElementController from '@/graph-element/GraphElementController'
-import ImageMenu from '@/image/ImageMenu'
 import IncludedGraphElementsMenu from '@/vertex/IncludedGraphElementsMenu'
 import Vertex from '@/vertex/Vertex'
 import Identification from '@/identifier/Identification'
@@ -252,13 +251,12 @@ VertexController.prototype.remove = function (skipConfirmation) {
 };
 
 VertexController.prototype.imagesCanDo = function () {
-    return this.isSingleAndOwned();
+    return false;
+    // return this.isSingleAndOwned();
 };
 
 VertexController.prototype.images = function () {
-    ImageMenu.ofVertex(
-        this.vertices
-    ).build();
+//
 };
 
 VertexController.prototype.togglePublicPrivate = function () {

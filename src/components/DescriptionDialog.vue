@@ -3,23 +3,18 @@
   -->
 
 <template>
-    <v-dialog v-model="dialog" v-if="isDescriptionFlow" width="600">
+    <v-dialog v-model="dialog" v-if="isDescriptionFlow" width="900" persistent>
         <v-card>
-            <v-card-title class="title">
-                {{bubble.getLabel()}}
-                <v-spacer></v-spacer>
-                <v-icon
-                        color="third"
-                        @click="dialog = false"
-                >close
-                </v-icon>
-            </v-card-title>
-            <v-card-text class="pt-0">
-                <vue-editor v-model="bubble.getFriendlyJson().comment"></vue-editor>
+            <v-card-text class="">
+                <vue-editor
+                        :key="bubble.uiId"
+                        v-model="note"
+                        ref="editor"
+                        :editorOptions="editorOptions"
+                ></vue-editor>
             </v-card-text>
             <v-card-actions>
-                <v-btn color="secondary" class="ml-2" @click="save">
-                    <v-icon class="mr-2">delete</v-icon>
+                <v-btn color="secondary" class="ml-2" @click="save" :disabled="note === bubble.getComment()">
                     {{$t('save')}}
                 </v-btn>
                 <v-spacer></v-spacer>
@@ -28,7 +23,7 @@
                         class="mr-2"
                         @click="dialog = false"
                 >
-                    {{$t('desc:cancel')}}
+                    {{$t('cancel')}}
                 </v-btn>
             </v-card-actions>
         </v-card>
@@ -48,27 +43,15 @@
         },
         data: function () {
             I18n.i18next.addResources("en", "desc", {
-                "title_prefix": "Remove ",
-                "multiple": "All these bubbles",
-                "desc1": "Do you really want to remove this?",
-                "desc2": "The relations around an erased bubble are also removed.",
-                "desc3": "If you choose to remove this and it seems like related bubbles have disapeared, try to look for them in the search bar.",
-                "confirm": "Remove",
-                "multiple_confirm_suffix": "all",
-                "cancel": "Cancel"
+                "title": "About"
             });
             I18n.i18next.addResources("fr", "desc", {
-                "title_prefix": "Effacer ",
-                "multiple": "Toutes ces bulles",
-                "desc1": "Voulez-vous vraiment effacer ça?",
-                "desc2": "Les relations autour des bulles seront également effacées.",
-                "desc3": "Si des bulles semblent avoir disparues, retrouvez les dans la barre de recherche.",
-                "confirm": "Effacer",
-                "multiple_confirm_suffix": "tout",
-                "cancel": "Annuler"
+                "title": "À propos de"
             });
             return {
-                dialog: false
+                dialog: false,
+                note: "",
+                editorOptions: {}
             }
         },
         mounted: function () {
@@ -85,15 +68,17 @@
         watch: {
             isDescriptionFlow: function () {
                 if (this.$store.state.isDescriptionFlow) {
-                    let selectedIsPristine = SelectionHandler.getSelectedElements().every(function (bubble) {
-                        return bubble.isPristine();
-                    });
-                    if (selectedIsPristine) {
-                        this.remove();
-                        this.$store.dispatch("setIsDescriptionFlow", false)
-                    } else {
-                        this.dialog = true;
-                    }
+                    this.dialog = true;
+                    this.note = this.bubble.getComment();
+                    this.editorOptions.placeholder = this.$t('desc:title') + " " + this.bubble.getLabel()
+                    this.$nextTick(function () {
+                        setTimeout(function () {
+                            this.$refs.editor.quill.setSelection(
+                                this.note.length
+                            );
+                        }.bind(this), 300)
+                    }.bind(this))
+
                 } else {
                     this.dialog = false;
                 }
@@ -106,6 +91,9 @@
         },
         methods: {
             save: function () {
+                this.bubble.setComment(
+                    this.note
+                );
                 GraphElementService.updateNote(
                     this.bubble
                 ).then(function () {
