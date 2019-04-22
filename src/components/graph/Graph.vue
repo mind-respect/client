@@ -167,6 +167,8 @@
         position: absolute;
         padding: 50%;
         top: 0;
+        left: 0;
+        min-width: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -178,18 +180,8 @@
         -khtml-user-drag: element;
     }
 
-    #drawn_graph {
-        top: 0;
-        left: 0;
-        min-width: 100%;
-        /*display: flex;*/
-        /*width:100%;*/
-        /*height:100%;*/
-        /*min-width: 2000px;*/
-        /*min-height: 2000px;*/
-        justify-content: center;
-        align-items: center;
-        z-index: 1;
+    .root-vertex-super-container {
+        z-index: 3;
     }
 
     .root-vertex-super-container > .vertices-children-container {
