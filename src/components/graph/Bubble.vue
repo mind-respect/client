@@ -121,7 +121,7 @@
                             >
                                 <div
                                         slot="activator"
-                                        class="in-bubble-content"
+                                        class="in-bubble-content vh-center"
                                         :class="{
                                             'reverse': bubble.orientation === 'left'
                                     }"
@@ -135,11 +135,9 @@
                                         style="max-width:500px!important;height:100%;position:relative;padding-top:2px;padding-bottom:1px;"
                                 >
                                     <div
-                                            class="in-label-buttons text-xs-center mt-1"
-                                            :class="{
-                                            'in-label-buttons-right':bubble.isToTheLeft(),
-                                            'in-label-buttons-left':bubble.isToTheLeft()
-                                        }"
+                                            class="in-label-buttons text-xs-center mt-0"
+                                            style="height:100%;"
+
                                     >
                                         <span v-for="button in inLabelButtons">
                                             <v-icon small color="secondary" v-if="button.condition(bubble)" :class="{
