@@ -97,7 +97,7 @@ const Scroll = {
                     Scroll.goToGraphElement(bubble)
                     Store.dispatch("redraw");
                 }
-            }, 100)
+            }, 200)
         });
     }
 

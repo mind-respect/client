@@ -132,7 +132,7 @@
                                         @dragend="dragEnd"
                                         @contextmenu="rightClick"
                                         :draggable="!bubble.isCenter"
-                                        style="max-width:500px!important;height:100%;position:relative;padding-top:2px;padding-bottom:1px;"
+                                        style="max-width:500px!important;height:100%;position:relative;padding-top:2px;padding-bottom:2px;"
                                 >
                                     <div
                                             class="in-label-buttons text-xs-center mt-0"

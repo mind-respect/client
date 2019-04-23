@@ -15,7 +15,8 @@ import SelectionHandler from '@/SelectionHandler'
 import UserMapAutocompleteProvider from '@/search/provider/UserMapAutocompleteProvider'
 import ToList from '@/ToList'
 import Store from '@/store'
-
+import router from '@/router'
+import Scroll from '@/Scroll'
 // "bootstrap-wysiwyg",
 // "bootstrap",
 // "jquery.safer-html"
@@ -150,18 +151,9 @@ GraphElementController.prototype.centerCanDo = function () {
 };
 
 GraphElementController.prototype.center = function () {
-    return GraphDisplayer.displayUsingCentralBubble(
-        this.getUi()
-    ).then(function () {
-        if (!this.isOwned() || !this.getUi().isVertex()) {
-            return;
-        }
-        return GraphElementService.changeChildrenIndex(
-            GraphDisplayer.getVertexSelector().withUri(
-                this.getModel().getUri()
-            )[0]
-        );
-    }.bind(this));
+    router.push(
+        this.getModel().uri().url()
+    );
 };
 
 GraphElementController.prototype.visitOtherInstancesCanDo = function () {
@@ -302,6 +294,7 @@ GraphElementController.prototype.collapseCanDo = function () {
 
 GraphElementController.prototype.collapse = function () {
     this.getUi().collapse();
+    Scroll.centerBubbleIfApplicable(this.getModel());
 };
 
 GraphElementController.prototype.cutCanDo = function () {
