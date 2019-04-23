@@ -389,10 +389,13 @@
                 return SelectionHandler.selected;
             },
             relationPlaceholder: function () {
-                return this.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
+                return this.bubble.isGroupRelation() || this.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
             },
             isShrinked: function () {
                 if (this.isSelected) {
+                    return false;
+                }
+                if (this.bubble.isGroupRelation()) {
                     return false;
                 }
                 if (this.isLabelDragOver) {

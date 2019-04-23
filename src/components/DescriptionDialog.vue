@@ -71,7 +71,7 @@
                 if (this.$store.state.isDescriptionFlow) {
                     this.dialog = true;
                     this.note = this.bubble.getComment();
-                    this.editorOptions.placeholder = this.$t('desc:title') + " " + this.bubble.getLabel()
+                    this.editorOptions.placeholder = this.$t('desc:title') + " " + this.bubble.getLabelOrDefault()
                     this.$nextTick(function () {
                         setTimeout(function () {
                             this.$refs.editor.quill.setSelection(
