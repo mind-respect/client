@@ -13,7 +13,7 @@
         >
             <v-tab>
                 <v-icon small class="mr-2">
-                    fa-bullseye
+                    filter_center_focus
                 </v-icon>
                 {{$t('userhome:centerTab')}}
             </v-tab>
@@ -52,10 +52,11 @@
                             {{$t('userhome:toGrid')}}
                         </v-tooltip>
                         <v-spacer></v-spacer>
-                        <v-btn icon float color="secondary" fab v-if="isOwner">
+                        <v-btn icon float color="secondary" fab v-if="isOwner" @click="createCenterVertex">
                             <v-icon large>add</v-icon>
                         </v-btn>
-                        <v-btn color="secondary" v-if="!isOwner && !isWaitingFriendship && !isConfirmedFriend" float @click="addFriend()">
+                        <v-btn color="secondary" v-if="!isOwner && !isWaitingFriendship && !isConfirmedFriend" float
+                               @click="addFriend()">
                             <v-icon class="mr-2">
                                 person_add
                             </v-icon>
@@ -208,6 +209,7 @@
     import Friends from '@/components/home/Friends.vue'
     import FriendService from '@/friend/FriendService'
     import UserService from '@/service/UserService'
+    import AppController from '@/AppController'
 
     export default {
         name: "CentersList",
@@ -320,6 +322,9 @@
             }
         },
         methods: {
+            createCenterVertex: function () {
+                AppController.createVertex();
+            },
             removeCenter: function (centerToRemove, index) {
                 CenterGraphElementService.removeCentersWithUri(
                     [centerToRemove.getUri()]
@@ -441,7 +446,7 @@
                     }
                 });
                 this.loaded = false;
-                this.setupCenters().then(function(){
+                this.setupCenters().then(function () {
                     this.loaded = true;
                 }.bind(this))
             },

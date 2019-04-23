@@ -10,11 +10,11 @@ import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService
 import MindMapInfo from '@/MindMapInfo'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import Vertex from '@/vertex/Vertex'
-import IdUri from '@/IdUri'
 import ToList from '@/ToList'
 import Store from '@/store'
 import SubGraph from '@/graph/SubGraph'
 import Vue from 'vue'
+import router from '@/router'
 
 const api = {};
 api.undoCanDo = function () {
@@ -59,23 +59,20 @@ api.zoom = function (adjust) {
 };
 
 api.createVertex = function (label) {
-    return VertexService.createVertex().then(function (serverFormat) {
+    return VertexService.createVertex().then(function (response) {
+        let serverFormat = response.data;
         var newVertex = Vertex.fromServerFormat(
             serverFormat
         );
-        var updateLabelPromise = label === undefined ? $.Deferred().resolve() :
+        var updateLabelPromise = label === undefined ? Promise.resolve() :
             FriendlyResourceService.updateLabel(
                 newVertex,
                 label
             );
         return updateLabelPromise.then(function () {
-            if (MindMapInfo.isTagCloudFlow() || MindMapInfo.isAuthenticatedLandingPageFlow()) {
-                window.location = IdUri.htmlUrlForBubbleUri(newVertex.getUri());
-            } else {
-                return GraphDisplayer.displayUsingCentralBubbleUri(
-                    newVertex.getUri()
-                );
-            }
+            router.push(
+                newVertex.uri().url()
+            );
         }).then(function () {
             return newVertex;
         });

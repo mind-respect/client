@@ -77,9 +77,9 @@
                         Français
                     </span>
                 </v-btn>
-                <v-btn :to="'/user/' + $store.state.user.username" v-if="$store.state.user" flat light>
+                <v-btn :to="'/user/' + $store.state.user.username" v-if="$store.state.user" flat color="primary">
                     <v-icon class="mr-2">
-                        fa-bullseye
+                        filter_center_focus
                     </v-icon>
                     {{$t('centers')}}
                 </v-btn>

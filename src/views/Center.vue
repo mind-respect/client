@@ -3,8 +3,8 @@
   -->
 
 <template>
-    <div id="mind_map">
-        <Graph></Graph>
+    <div id="mind_map" v-if="graphCenterUri">
+        <Graph :key="graphCenterUri"></Graph>
     </div>
 </template>
 
@@ -25,6 +25,11 @@
         components: {
             Graph
         },
+        data: function () {
+            return {
+                graphCenterUri: null
+            }
+        },
         mounted: function () {
             GraphDisplayer.setImplementation(
                 GraphDisplayerFactory.getByName(
@@ -36,7 +41,17 @@
             GraphUi.enableDragScroll();
             KeyboardActionsHandler.init();
             KeyboardActionsHandler.enable();
+            this.graphCenterUri = this.$route.params.centerUri;
+        },
+        watch: {
+            '$route.path'(to, from) {
+                if (this.$route.name !== 'Center') {
+                    return;
+                }
+                this.graphCenterUri = this.$route.params.centerUri;
+            }
         }
+
     }
 </script>
 

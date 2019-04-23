@@ -21,11 +21,7 @@ api.getByUri = function (uri, callback) {
     }).then(callback);
 };
 api.createVertex = function () {
-    return $.ajax({
-        type: 'POST',
-        url: getVerticesUrl(),
-        dataType: 'json'
-    });
+    return Service.api().post(getVerticesUrl());
 };
 api.addTuple = function (vertex) {
     return Service.geApi().post(
