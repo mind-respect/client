@@ -43,13 +43,16 @@
         },
         computed: {
             attach: function () {
-                return this.isInMainMenu ? "#drawn_graph": false;
+                return this.isInMainMenu ? "#drawn_graph" : false;
             },
             contentClass: function () {
                 return this.isInSideMenu ? "ml-5" : "";
             },
             isInMainMenu: function () {
                 return this.isInTopMenu || this.isInSideMenu;
+            },
+            bubble: function () {
+                return SelectionHandler.isSingle() ? SelectionHandler.getSingle() : {};
             }
         },
         methods: {
@@ -60,6 +63,9 @@
                     ]();
             },
             canDo: function (button) {
+                if (this.bubble.loading) {
+                    return false;
+                }
                 let controller = this.getController(button);
                 if (!this.canActionBePossiblyMade(button.action, controller)) {
                     return false;

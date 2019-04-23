@@ -367,6 +367,7 @@
                 this.bubble.setSourceVertex(this.bubble.parentVertex);
                 this.bubble.setDestinationVertex(this.bubble.destinationVertex);
             }
+            this.bubble.loading = false;
             if (this.bubble.isGroupRelation()) {
                 this.bubble.sortedImmediateChild(
                     this.bubble.parentVertex.getChildrenIndex()

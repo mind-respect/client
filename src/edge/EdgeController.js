@@ -3,7 +3,6 @@
  */
 
 import Vue from 'vue'
-import $ from 'jquery'
 import GraphElementController from '@/graph-element/GraphElementController'
 import EdgeService from '@/edge/EdgeService'
 import BubbleDeleteMenu from '@/bubble/BubbleDeleteMenu'
@@ -11,6 +10,7 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import SelectionHandler from '@/SelectionHandler'
 import GroupRelation from '@/group-relation/GroupRelation'
 import GraphElementService from '@/graph-element/GraphElementService'
+import Store from '@/store'
 
 const api = {};
 api.RelationController = EdgeController;
@@ -56,7 +56,7 @@ EdgeController.prototype.addChild = function () {
 
 EdgeController.prototype.addSibling = function () {
     return this.getModel().getNextBubble().getController().addSibling().then(function (triple) {
-        Vue.nextTick(function(){
+        Vue.nextTick(function () {
             SelectionHandler.setToSingle(
                 triple.edge
             );
@@ -72,11 +72,12 @@ EdgeController.prototype.becomeParent = function (graphElementUi) {
     let promises = [];
     SelectionHandler.reset();
     let newGroupRelation = this._convertToGroupRelation();
-    this.getModel().getParentVertex().replaceChild(
+    let parentVertex = this.getModel().getParentVertex();
+    newGroupRelation.addChild(graphElementUi);
+    parentVertex.replaceChild(
         this.getModel(),
         newGroupRelation
     );
-    newGroupRelation.addChild(graphElementUi);
     if (graphElementUi.isGroupRelation()) {
         graphElementUi.expand();
         graphElementUi.visitClosestChildOfType(
@@ -88,7 +89,10 @@ EdgeController.prototype.becomeParent = function (graphElementUi) {
     } else {
         moveEdge.bind(this)(graphElementUi);
     }
-    return $.when.apply($, promises);
+    return Promise.all(promises).then(function () {
+        newGroupRelation.expand(true);
+        Store.dispatch("redraw");
+    });
 
     function moveEdge(movedEdge) {
         var identifiers = this.getModel().hasIdentifications() ?
@@ -99,6 +103,7 @@ EdgeController.prototype.becomeParent = function (graphElementUi) {
                 identifiers
             )
         );
+        this.getModel().getParentBubble().removeChild(movedEdge);
         promises.push(
             movedEdge.getController().changeEndVertex(
                 this.getUi().getParentVertex()
@@ -129,18 +134,12 @@ EdgeController.prototype._convertToGroupRelation = function () {
             this.getModel().getIdentifiers() :
             this.getModel().getIdentifiersIncludingSelf();
     }
-    // let newGroupRelation = GraphDisplayer.addNewGroupRelation(
-    //     groupRelationIdentifiers,
-    //     parentBubble,
-    //     this.getUi().isToTheLeft(),
-    //     this.getUi()
-    // );
     let newGroupRelation = GroupRelation.usingIdentifiers(
         groupRelationIdentifiers
     );
     newGroupRelation.getModel().addTuple(tuple);
     newGroupRelation.parentBubble = newGroupRelation.parentVertex = parentBubble;
-    // this.getUi().convertToGroupRelation(newGroupRelation);
+    newGroupRelation._sortedImmediateChild = newGroupRelation.sortedImmediateChild();
     return newGroupRelation;
 };
 

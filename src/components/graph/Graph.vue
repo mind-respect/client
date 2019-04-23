@@ -15,7 +15,8 @@
                 }">
                     <v-layout row v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
                         <v-flex grow :class="{
-                            'mt-3 mb-3' : graph.center.leftBubbles.length === 2
+                        'mt-3' : graph.center.leftBubbles.length === 2 && graph.center.leftBubbles[0].isEdge(),
+                        'mb-3' : graph.center.leftBubbles.length === 2 && graph.center.leftBubbles[1].isEdge()
                         }">
                             <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
                         </v-flex>
@@ -29,7 +30,8 @@
                 }">
                     <v-layout v-for="rightBubble in graph.center.rightBubbles" :key="rightBubble.uiId">
                         <v-flex grow :class="{
-                            'mt-3 mb-3' : graph.center.rightBubbles.length === 2
+                            'mt-3' : graph.center.rightBubbles.length === 2 && graph.center.rightBubbles[0].isEdge(),
+                            'mb-3' : graph.center.rightBubbles.length === 2 && graph.center.rightBubbles[1].isEdge()
                         }">
                             <Bubble :bubble="addBubbleContext(rightBubble, graph.center, 'right')"></Bubble>
                         </v-flex>

@@ -98,7 +98,7 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
     );
     this.isSelected = false;
     this.isSingleSelected = false;
-    this.loading = false;
+    this.loading = true;
     this.isExpanded = false;
     this.isCollapsed = false;
     return this;
@@ -558,13 +558,12 @@ FriendlyResource.FriendlyResource.prototype.collapse = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {
-    let hasHiddenRelations = false;
-    this.visitDescendants(function (child) {
-        if (child.canExpand()) {
-            hasHiddenRelations = true;
+    return this.getImmediateChild().some(function (child) {
+        if (child.loading) {
+            return false;
         }
+        return child.canExpand() || child.canExpandDescendants();
     });
-    return hasHiddenRelations;
 };
 
 FriendlyResource.FriendlyResource.prototype.visitExpandableDescendants = function (visitor) {

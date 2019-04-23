@@ -339,6 +339,10 @@ GroupRelation.prototype.removeChild = function (child) {
     })
 };
 GroupRelation.prototype.removeTuple = function (tuple) {
+    delete this.vertices[tuple.vertex.getUri()];
+    if (!this._sortedImmediateChild) {
+        return;
+    }
     let l = this._sortedImmediateChild.length;
     while (l--) {
         let tuplesOfUri = this._sortedImmediateChild[l];
@@ -347,7 +351,6 @@ GroupRelation.prototype.removeTuple = function (tuple) {
             this._sortedImmediateChild.splice(l, 1);
         }
     }
-    delete this.vertices[tuple.vertex.getUri()];
 };
 GroupRelation.prototype.isTrulyAGroupRelation = function () {
     return this.hasMultipleVertices() || this.hasGroupRelationsChild();
