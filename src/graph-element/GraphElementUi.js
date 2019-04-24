@@ -211,58 +211,6 @@ api.GraphElementUi.prototype.setAsCentral = function () {
     _centralBubble = this;
     this.html.addClass('center-vertex');
     this.hideCenterButton();
-    var font = api.getCenterVertexOrSchema().getModel().getFont();
-    var isTesting = window.mindRespectConfig.googleFontsApiKey === "testing";
-    var $fontPicker = $("#font-picker");
-    if (!fontPicker && !isTesting) {
-        fontPicker = new FontPicker.FontPicker(
-            window.mindRespectConfig.googleFontsApiKey,
-            font.family,
-            {
-                limit: 500
-            },
-            function (font) {
-                api.getCenterVertexOrSchema().getController().setFont(font);
-            }
-        );
-        $fontPicker.find("> .dropdown-button").append(
-            $("<i class='remove-btn fa fa-remove'>").click(function () {
-                api.getCenterVertexOrSchema().getController().setFont(GraphElement.DEFAULT_FONT);
-                fontPicker.setActiveFont(GraphElement.DEFAULT_FONT.family);
-            })
-        ).find('.dropdown-icon').remove();
-        var input = $('<input type="text" class="form-control"/>').attr(
-            'placeholder',
-            $.t('left_menu.filterFonts')
-        ).keyup(function () {
-            var input = $(this);
-            var filter;
-            var li;
-            var a;
-            filter = $(input).val().toUpperCase();
-            $.each($fontPicker.find("ul").find("li"), function () {
-                li = $(this);
-                a = li.find("button");
-                if (a.text().toUpperCase().indexOf(filter) > -1) {
-                    li.removeClass("hidden");
-                } else {
-                    li.addClass("hidden");
-                }
-            });
-        });
-        $fontPicker.prepend(
-            $('<div>').append(
-                input,
-                $('<i class="glyphicon glyphicon-search form-control-feedback">')
-            )
-        );
-    } else if (!isTesting) {
-        fontPicker.setActiveFont(font.family);
-    }
-    GraphDisplayer.getVertexSelector().visitAll(function (vertexUi) {
-        vertexUi.refreshFont(font);
-    });
-    this.setCenterBubbleFont(font);
 };
 
 api.GraphElementUi.prototype.setAsNonCentral = function () {

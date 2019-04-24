@@ -14,7 +14,7 @@
             max-width="400"
             :content-class="contentClass"
     >
-        <v-btn flat icon slot="activator" @click="performAction(button)" :small="!isInMainMenu" color="primary">
+        <v-btn flat icon slot="activator" @click="performAction(button)" color="primary">
             <v-icon :class="button.iconClass">
                 {{getIcon(button)}}
             </v-icon>

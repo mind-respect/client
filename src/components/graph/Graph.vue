@@ -47,6 +47,7 @@
         </div>
         <RemoveDialog></RemoveDialog>
         <DescriptionDialog></DescriptionDialog>
+        <FontDialog></FontDialog>
     </div>
     <!--<div :style="'width:' + rightWidth() + 'px'"></div>-->
 </template>
@@ -64,6 +65,7 @@
     import Vertex from '@/vertex/Vertex'
     import RemoveDialog from '@/components/RemoveDialog'
     import DescriptionDialog from '@/components/DescriptionDialog'
+    import FontDialog from '@/components/FontDialog'
     import SubGraph from '@/graph/SubGraph'
 
     export default {
@@ -72,6 +74,7 @@
             Bubble,
             RemoveDialog,
             DescriptionDialog,
+            FontDialog,
             GraphDrawing,
             MainMenus
         },

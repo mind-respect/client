@@ -108,14 +108,7 @@ api.fontPickerCanDo = function () {
 };
 
 api.fontPicker = function () {
-    var offset = $("#font-btn").offset();
-    var $fontPicker = $("#font-picker");
-    $fontPicker.removeClass(
-        'hidden'
-    ).css({top: offset.top + 12, left: offset.left + 44, position: 'absolute'}).find(
-        "button, ul"
-    ).addClass('expanded');
-    $fontPicker.find("input").val('').focus().keyup();
+    Store.dispatch("setIsFontFlow", true);
 };
 
 $("#background-color-picker").on("change", function () {
