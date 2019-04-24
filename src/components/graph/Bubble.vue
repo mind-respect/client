@@ -330,6 +330,12 @@
                 showMenu: false,
                 inLabelButtons: [
                     {
+                        icon: "filter_center_focus",
+                        condition: function (bubble) {
+                            return bubble.isCenter;
+                        }
+                    },
+                    {
                         icon: "note",
                         condition: function (bubble) {
                             return bubble.getComment() !== '';

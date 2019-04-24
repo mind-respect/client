@@ -14,35 +14,6 @@
     }
   }
 
-  &.suggestion {
-    .in-bubble-content {
-      border: $edgeSize dotted $suggestionColor;
-      color: black;
-      text-shadow: none;
-    }
-  }
-  &.edit {
-    .in-bubble-content {
-      .in-bubble-note-button {
-        display: none;
-      }
-      .bubble-label {
-        white-space: pre-wrap;
-        width:100%;
-      }
-    }
-  }
-  &.absolute {
-    white-space: nowrap;
-    position: absolute !important;
-    min-width: 120px;
-  }
-
-  &.includes-vertices {
-    .in-bubble-content {
-      padding-bottom: 2em;
-    }
-  }
   &.selected {
     z-index: 12;
     $selectedBoxShadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
@@ -50,99 +21,10 @@
       background-color: $selectBubbleColor;
       box-shadow: $selectedBoxShadow;
     }
-    &.center-vertex {
-      .in-bubble-content {
-        box-shadow: $selectedBoxShadow !important;
-        background-color: $selectBubbleColor !important;
-      }
-    }
   }
-  &.center-vertex {
-    .connector {
-      height: 0;
-      width: 0;
-    }
-    .arrow {
-      height: 0;
-      width: 0;
-      top: 0;
-      left: 0;
-      border-top: none;
-      &:before {
-        content: ""
-      }
-    }
-    &:before {
-      border-left: none;
-      height: 0;
-      width: 0;
-      top: 0;
-      left: 0;
-    }
-    &:not(.meta) .in-bubble-content {
-      box-shadow: $centerVertexBorder;
-    }
 
-  }
-  .included-graph-elements-flag {
-    position: absolute;
-    top: 25px;
-    left: 30%;
-    font-weight: bold;
-  }
-  .included-graph-elements-flag {
-    z-index: 3;
-  }
   .in-bubble-content {
     border-radius: 50px;
-    //box-shadow: 1px 5px 5px rgba(204,204,204,.8);
-    //background-color: #E6E6FF;
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#c3d9ff+0,b1c8ef+41,98b0d9+100;Lavender+3D */
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#daeef6+0,96ddf2+50,ddeff7+100 */
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffedb7+0,ffe28d+100 */
-    //background: #ffedb7; /* Old browsers */
-    //background: -moz-linear-gradient(top,  #ffedb7 0%, #ffe28d 100%); /* FF3.6+ */
-    //background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffedb7), color-stop(100%,#ffe28d)); /* Chrome,Safari4+ */
-    //background: -webkit-linear-gradient(top,  #ffedb7 0%,#ffe28d 100%); /* Chrome10+,Safari5.1+ */
-    //background: -o-linear-gradient(top,  #ffedb7 0%,#ffe28d 100%); /* Opera 11.10+ */
-    //background: -ms-linear-gradient(top,  #ffedb7 0%,#ffe28d 100%); /* IE10+ */
-    //background: linear-gradient(to bottom,  #ffedb7 0%,#ffe28d 100%); /* W3C */
-    //filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffedb7', endColorstr='#ffe28d',GradientType=0 ); /* IE6-9 */
-
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#fff2cb+0,ffebaf+100 */
-    //background: #fff2cb; /* Old browsers */
-    //background: -moz-linear-gradient(top,  #fff2cb 0%, #ffebaf 100%); /* FF3.6+ */
-    //background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fff2cb), color-stop(100%,#ffebaf)); /* Chrome,Safari4+ */
-    //background: -webkit-linear-gradient(top,  #fff2cb 0%,#ffebaf 100%); /* Chrome10+,Safari5.1+ */
-    //background: -o-linear-gradient(top,  #fff2cb 0%,#ffebaf 100%); /* Opera 11.10+ */
-    //background: -ms-linear-gradient(top,  #fff2cb 0%,#ffebaf 100%); /* IE10+ */
-    //background: linear-gradient(to bottom,  #fff2cb 0%,#ffebaf 100%); /* W3C */
-    //filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff2cb', endColorstr='#ffebaf',GradientType=0 ); /* IE6-9 */
-
     white-space: normal;
-    //padding-left:20px !important;
-    //padding-right:20px !important;
-    //padding-bottom: 0.7em;
-    //padding-top: 0.7em;
-    //box-shadow: -10px 0 10px -10px #333, 10px 0 10px -10px #333;
-    //box-shadow: -10px 0 10px -10px #333, 10px 0 10px -10px #333;
-
-    //box-shadow: -7px 0px 10px 0px #000, 7px 0px 10px 0px #000;
-    //box-shadow: 0 3px 6px rgba(0,0,0,0.3), inset 0 -3px 3px rgba(0,0,0,0.1);
-    //box-shadow: 0 0 1em hsla(30, 100%, 50%, 0.5);
-    //box-shadow: -15px 0 15px -15px inset;
-    //&:after{
-    //  box-shadow: -15px 0 15px -15px inset;
-    //  content: " ";
-    //  height: 100%;
-    //  left: -15px;
-    //  position: absolute;
-    //  top: 0;
-    //  width: 15px;
-    //  border-radius: 100px;
-    //}
-    //&:after{
-    //  box-shadow: -15px 0 15px -15px inset;
-    //}
   }
 }
