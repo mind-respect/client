@@ -297,36 +297,27 @@ VertexController.prototype.friendsShareLevelCanShowInLabel = function () {
 };
 
 VertexController.prototype.makePrivate = function () {
-    var self = this;
     if (this.isSingle()) {
         VertexService.makePrivate(
-            this.getUi()
+            this.getModel()
         ).then(function () {
-            self.getModel().makePrivate();
-            self.getUi().makePrivate();
-            publishVertexPrivacyUpdated(
-                self.getUi()
-            );
-        });
+            this.getModel().makePrivate();
+        }.bind(this));
     } else {
-        var publicVertices = [];
-        $.each(self.getUi(), function () {
-            var vertex = this;
-            if (this.getModel().isPublic()) {
+        let publicVertices = [];
+        this.getUi().forEach(function (vertex) {
+            if (vertex.isPublic()) {
                 publicVertices.push(
                     vertex
                 );
             }
-        });
+        }.bind(this));
         VertexService.makeCollectionPrivate(
             publicVertices
         ).then(function () {
-            $.each(publicVertices, function () {
-                var ui = this;
-                ui.getModel().makePrivate();
-                ui.makePrivate();
-                publishVertexPrivacyUpdated(ui);
-            });
+            publicVertices.forEach(function (vertex) {
+                vertex.makePrivate();
+            })
         });
     }
 };
@@ -385,35 +376,26 @@ VertexController.prototype._areAllElementsInShareLevels = function (shareLevels)
 };
 
 VertexController.prototype.makePublic = function () {
-    var self = this;
     if (this.isSingle()) {
         return VertexService.makePublic(
             this.getUi()
         ).then(function () {
-            self.getModel().makePublic();
-            self.getUi().makePublic();
-            publishVertexPrivacyUpdated(
-                self.getUi()
-            );
-        });
+            this.getModel().makePublic();
+        }.bind(this));
     } else {
-        var privateVertices = [];
-        $.each(self.getUi(), function () {
-            var vertex = this;
-            if (!this.getModel().isPublic()) {
+        let privateVertices = [];
+        this.getUi().forEach(function (vertex) {
+            if (!vertex.isPublic()) {
                 privateVertices.push(
                     vertex
                 );
             }
-        });
+        }.bind(this));
         return VertexService.makeCollectionPublic(
             privateVertices
         ).then(function () {
-            $.each(privateVertices, function () {
-                var ui = this;
-                ui.getModel().makePublic();
-                ui.makePublic();
-                publishVertexPrivacyUpdated(ui);
+            privateVertices.forEach(function (vertex) {
+                vertex.makePublic()
             });
         });
     }
@@ -517,12 +499,6 @@ VertexController.prototype.becomeParent = function (graphElementUi) {
     }
 };
 
-function publishVertexPrivacyUpdated(ui) {
-    EventBus.publish(
-        '/event/ui/graph/vertex/privacy/updated',
-        ui
-    );
-}
 
 VertexController.prototype.subElementsCanDo = function () {
     return this.isSingle() && this.getModel().hasIncludedGraphElements();

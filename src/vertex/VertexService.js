@@ -91,16 +91,14 @@ api.addSuggestionsAjax = function (vertex, suggestions) {
         contentType: 'application/json;charset=utf-8'
     });
 };
-api.makePrivate = function (vertexUi) {
-    return setPrivacy(
-        false,
-        vertexUi
+api.makePrivate = function (vertex) {
+    return Service.geApi().delete(
+        vertex.getUri() + '/public_access'
     );
 };
-api.makePublic = function (vertexUi) {
-    return setPrivacy(
-        true,
-        vertexUi
+api.makePublic = function (vertex) {
+    return Service.geApi().post(
+        vertex.getUri() + '/public_access'
     );
 };
 api.setShareLevel = function (shareLevel, vertex) {
@@ -125,34 +123,34 @@ api.setCollectionShareLevel = function (shareLevel, vertices) {
     });
 };
 api.makeCollectionPrivate = function (vertices) {
-    return setCollectionPrivacy(
-        false,
-        vertices
+    return Service.api().delete(
+        getVerticesUrl() + '/collection/public_access',
+        {data: verticesUriFromVertices(vertices)}
     );
 };
 api.makeCollectionPublic = function (vertices) {
-    return setCollectionPrivacy(
-        true,
-        vertices
+    return Service.api().post(
+        getVerticesUrl() + '/collection/public_access',
+        verticesUriFromVertices(vertices)
     );
 };
-api.group = function (graphElementsUris, callback) {
-    return $.ajax({
-        type: 'POST',
-        url: getVerticesUrl() + '/group',
-        data: JSON.stringify(graphElementsUris),
-        contentType: 'application/json;charset=utf-8'
-    }).then(function (data, textStatus, jqXHR) {
-            var createdVertexUri = jqXHR.getResponseHeader("Location");
-            var relativeUri = createdVertexUri.substring(
-                createdVertexUri.indexOf("/service")
-            );
-            callback(
-                relativeUri
-            );
-        }
-    );
-};
+// api.group = function (graphElementsUris, callback) {
+//     return $.ajax({
+//         type: 'POST',
+//         url: getVerticesUrl() + '/group',
+//         data: JSON.stringify(graphElementsUris),
+//         contentType: 'application/json;charset=utf-8'
+//     }).then(function (data, textStatus, jqXHR) {
+//             var createdVertexUri = jqXHR.getResponseHeader("Location");
+//             var relativeUri = createdVertexUri.substring(
+//                 createdVertexUri.indexOf("/service")
+//             );
+//             callback(
+//                 relativeUri
+//             );
+//         }
+//     );
+// };
 api.mergeTo = function (vertex, distantVertexUri) {
     return $.ajax({
         type: 'POST',
@@ -183,33 +181,13 @@ api.saveFont = function (font) {
 
 export default api;
 
-function setCollectionPrivacy(isPublic, vertices) {
-    return $.ajax({
-        type: isPublic ? 'POST' : 'DELETE',
-        data: JSON.stringify(verticesUriFromVertices(vertices)),
-        contentType: 'application/json;charset=utf-8',
-        url: getVerticesUrl() + '/collection/public_access'
-    });
-}
-
-function setPrivacy(isPublic, vertex) {
-    return $.ajax({
-        type: isPublic ? 'POST' : 'DELETE',
-        url: vertex.getUri() + '/public_access'
-    });
-}
 
 function getVerticesUrl() {
     return UserService.currentUserUri() + "/graph/vertex";
 }
 
 function verticesUriFromVertices(vertices) {
-    var verticesUri = [];
-    $.each(vertices, function () {
-        var vertex = this;
-        verticesUri.push(
-            vertex.getUri()
-        );
+    return vertices.map(function (vertex) {
+        return vertex.getUri();
     });
-    return verticesUri;
 }
