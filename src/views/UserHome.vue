@@ -52,9 +52,13 @@
                             {{$t('userhome:toGrid')}}
                         </v-tooltip>
                         <v-spacer></v-spacer>
-                        <v-btn icon float color="secondary" fab v-if="isOwner" @click="createCenterVertex">
-                            <v-icon large>add</v-icon>
-                        </v-btn>
+                        <v-tooltip v-if="isOwner" left>
+                            <v-btn icon float color="secondary" fab @click="createCenterVertex" slot="activator">
+                                <v-icon large>add</v-icon>
+                            </v-btn>
+                            <span>{{$t('userhome:createInfo')}}</span>
+                        </v-tooltip>
+
                         <v-btn color="secondary" v-if="!isOwner && !isWaitingFriendship && !isConfirmedFriend" float
                                @click="addFriend()">
                             <v-icon class="mr-2">
@@ -126,7 +130,7 @@
                                         <v-list-tile :href="center.uri().url()">
                                             <v-list-tile-content>
                                                 <v-list-tile-title class="subheading font-weight-bold">
-                                                    <v-icon class="mr-2">
+                                                    <v-icon class="mr-2" color="secondary">
                                                         {{getIcon(center)}}
                                                     </v-icon>
                                                     {{center.getLabel()}}
@@ -148,7 +152,7 @@
                                             </v-list-tile-content>
                                             <v-list-tile-action>
                                                 <v-btn icon small @click.prevent="removeCenter(center, index)">
-                                                    <v-icon color="grey">
+                                                    <v-icon color="secondary">
                                                         delete
                                                     </v-icon>
                                                 </v-btn>
@@ -364,6 +368,8 @@
                         center.labelSearch = center.getLabel();
                         center.contextSearch = Object.values(center.getContext()).join(' ');
                         return center;
+                    }).sort(function (a, b) {
+                        return b.getLastCenterDate() - a.getLastCenterDate();
                     });
                 }.bind(this))
             },
@@ -500,15 +506,16 @@
     }
 
     .around-list-item::after {
-        content: " ● "
+        content: " ● ";
+        color:#1A237E;
     }
 
     .around-list-item:last-of-type {
-        content: " ● "
+        content: " ● ";
     }
 
     .around-list-item:not(empty):last-of-type::after {
-        content: " ..."
+        content: " ...";
     }
 
 </style>
