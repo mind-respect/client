@@ -44,35 +44,33 @@ VertexController.prototype.addChildCanDo = function () {
 };
 
 VertexController.prototype.addChild = function (isToTheLeft) {
-    return this.getModel().isExpanded ?
-        doIt.bind(this)() :
-        this.expand().then(doIt.bind(this));
-
-    function doIt() {
-        let triple;
+    let expand = this.getModel().isExpanded ? Promise.resolve() : this.expand();
+    let triple;
+    expand.then(() => {
         return VertexService.addTuple(
             this.getModel()
-        ).then(function (_triple) {
-            triple = _triple;
-            this.getModel().addChild(triple.edge, isToTheLeft);
-            if (ShareLevel.PRIVATE === this.getModel().getModel().getShareLevel()) {
-                triple.destination.setShareLevel(ShareLevel.PRIVATE);
-            } else {
-                return triple.destination.getController().setShareLevel(
-                    this.getModel().getShareLevel()
-                );
-            }
-            Vue.nextTick(function () {
-                SelectionHandler.setToSingle(triple.destination);
-            })
-        }.bind(this)).then(function () {
-            GraphElementService.changeChildrenIndex(
-                triple.source
+        );
+    }).then((_triple) => {
+        triple = _triple;
+        this.getModel().addChild(triple.edge, isToTheLeft);
+        if (ShareLevel.PRIVATE === this.getModel().getModel().getShareLevel()) {
+            triple.destination.setShareLevel(ShareLevel.PRIVATE);
+            return Promise.resolve();
+        } else {
+            return triple.destination.getController().setShareLevel(
+                this.getModel().getShareLevel()
             );
-            Store.dispatch("redraw");
-            return triple;
+        }
+    }).then(function () {
+        Vue.nextTick(function () {
+            SelectionHandler.setToSingle(triple.destination);
         });
-    }
+        GraphElementService.changeChildrenIndex(
+            triple.source
+        );
+        Store.dispatch("redraw");
+        return triple;
+    });
 };
 
 VertexController.prototype.convertToRelationCanDo = function () {
@@ -232,7 +230,7 @@ VertexController.prototype.remove = function (skipConfirmation) {
     // );
     //
     // function deleteAfterConfirmationBehavior() {
-    //     SelectionHandler.reset();
+    //     SelectionHandler.removeAll();
     //     let removePromise = this.isSingle() ?
     //         VertexService.remove(
     //             this.getUi()

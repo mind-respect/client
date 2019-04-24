@@ -61,25 +61,43 @@ GroupRelation.prototype.hasFewEnoughBubblesToExpand = function () {
         this.getNumberOfVertices() < EXPAND_UNDER_NB_SIBLINGS;
 };
 
-GroupRelation.prototype.removeChild = function (edge, temporarily) {
-    let parentVertex = this.parentVertex;
-    let vertexToRemove = edge.getOtherVertex(parentVertex);
-    Vue.delete(this.vertices, vertexToRemove.getUri());
-    let l = this._sortedImmediateChild.length;
-    while (l--) {
-        let child = this._sortedImmediateChild[l];
-        if (child[edge.getId()]) {
-            this._sortedImmediateChild.splice(l, 1);
+// GroupRelation.prototype.removeChild = function (edge, temporarily) {
+//     let parentVertex = this.parentVertex;
+//     let vertexToRemove = edge.getOtherVertex(parentVertex);
+//     Vue.delete(this.vertices, vertexToRemove.getUri());
+//     let l = this._sortedImmediateChild.length;
+//     while (l--) {
+//         let child = this._sortedImmediateChild[l];
+//         if (child[edge.getId()]) {
+//             this._sortedImmediateChild.splice(l, 1);
+//         }
+//     }
+//     if (!temporarily && this.getNumberOfVertices() === 1) {
+//         parentVertex.replaceChild(
+//             this,
+//             this.getFirstEdge()
+//         );
+//     }
+// };
+
+
+GroupRelation.prototype.removeChild = function (toRemove) {
+    if (toRemove.isGroupRelation()) {
+        let l = this._sortedImmediateChild.length;
+        while (l--) {
+            let child = this._sortedImmediateChild[l];
+            let isGroupRelation = child instanceof GroupRelation;
+            if (isGroupRelation && child.getId() === toRemove.getId()) {
+                this._sortedImmediateChild.splice(l, 1);
+            }
         }
-    }
-    if (!temporarily && this.getNumberOfVertices() === 1) {
-        parentVertex.replaceChild(
-            this,
-            this.getFirstEdge()
-        );
+    } else {
+        return this.removeTuple({
+            edge: toRemove,
+            vertex: toRemove.destinationVertex
+        })
     }
 };
-
 
 GroupRelation.prototype.getGreatestGroupRelationAncestor = function () {
     let greatest = this;
@@ -115,9 +133,13 @@ GroupRelation.prototype.getImmediateChild = function () {
     }
     let children = this._sortedImmediateChild || [];
     children.map(function (child) {
-        Object.keys(child).forEach(function (id) {
-            edges.push(child[id].edge);
-        }.bind(this));
+        if (child instanceof GroupRelation) {
+            edges.push(child)
+        } else {
+            Object.keys(child).forEach(function (id) {
+                edges.push(child[id].edge);
+            }.bind(this));
+        }
     });
     return edges;
 };
@@ -292,6 +314,18 @@ GroupRelation.prototype.getSingleEdge = function () {
 };
 
 GroupRelation.prototype.addChild = function (graphElementUi, isToTheLeft, index) {
+    if (graphElementUi.isGroupRelation()) {
+        if (index === undefined) {
+            this._sortedImmediateChild.push(graphElementUi);
+        } else {
+            this._sortedImmediateChild.splice(
+                index,
+                0,
+                graphElementUi
+            );
+        }
+        return;
+    }
     let edge = graphElementUi.isEdge() ?
         graphElementUi : graphElementUi.getParentBubble();
     let vertex = graphElementUi.isVertex() ? graphElementUi : graphElementUi.getDestinationVertex();
@@ -332,12 +366,7 @@ GroupRelation.prototype.visitTuples = function (visitor) {
         });
     });
 };
-GroupRelation.prototype.removeChild = function (child) {
-    return this.removeTuple({
-        edge: child,
-        vertex: child.destinationVertex
-    })
-};
+
 GroupRelation.prototype.removeTuple = function (tuple) {
     delete this.vertices[tuple.vertex.getUri()];
     if (!this._sortedImmediateChild) {

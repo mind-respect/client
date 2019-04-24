@@ -171,7 +171,7 @@
                     this.selected.forEach(function (bubble) {
                         bubble.remove();
                     });
-                    SelectionHandler.reset();
+                    SelectionHandler.removeAll();
                     if (nextSibling) {
                         SelectionHandler.setToSingle(nextSibling);
                     }

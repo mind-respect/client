@@ -288,16 +288,6 @@ Vertex.prototype.remove = function () {
     this.getParentBubble().remove();
 };
 
-Vertex.prototype.replaceChild = function (existingChild, newChild) {
-    let index = this.getChildIndex(existingChild);
-    this.removeChild(existingChild);
-    this.addChild(
-        newChild,
-        existingChild.isToTheLeft(),
-        index
-    );
-};
-
 Vertex.prototype.removeChild = function (child) {
     let childrenArray = this.isCenter && child.isToTheLeft() ? this.leftBubbles : this.rightBubbles;
     let l = childrenArray.length;

@@ -478,11 +478,11 @@
             },
             checkIsSelected: function () {
                 let found = false;
-                this.SelectionHandler.getSelectedBubbles().forEach(function (selected) {
+                this.SelectionHandler.getSelectedBubbles().forEach((selected) => {
                     if (selected.getUri() === this.bubble.getUri()) {
                         found = true;
                     }
-                }.bind(this));
+                });
                 this.isSelected = found;
             },
             mouseDown: function () {
@@ -493,7 +493,7 @@
             },
             dragStart: function (event) {
                 // event.preventDefault();
-                SelectionHandler.reset();
+                SelectionHandler.removeAll();
                 // debugger;
                 event.target.style.opacity = .5;
                 event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");

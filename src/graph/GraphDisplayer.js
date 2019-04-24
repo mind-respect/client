@@ -188,12 +188,6 @@ api.canGetIsToTheLeft = function () {
 api.expandGroupRelation = function (groupRelation) {
     return _implementation.expandGroupRelation(groupRelation);
 };
-api.reset = function () {
-    publishAboutToUpdate();
-    publishResetGraph();
-    $("#drawn_graph").empty();
-    GraphUi.removePopovers();
-};
 
 api.addNewGroupRelation = function (identifiers, parentBubble, addToLeft, previousEdge) {
     return _implementation.addNewGroupRelation(
@@ -205,20 +199,6 @@ api.addNewGroupRelation = function (identifiers, parentBubble, addToLeft, previo
 };
 
 export default api;
-
-function publishAboutToUpdate() {
-    EventBus.publish(
-        '/event/ui/graph/drawing_info/about_to/update',
-        []
-    );
-}
-
-function publishResetGraph() {
-    EventBus.publish(
-        '/event/ui/graph/reset',
-        []
-    );
-}
 
 function publishDrawingInfoUpdated(centralVertexUri) {
     EventBus.publish(

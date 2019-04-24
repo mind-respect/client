@@ -9,6 +9,7 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import GraphElementService from '@/graph-element/GraphElementService'
 import SelectionHandler from '@/SelectionHandler'
 import Vue from 'vue'
+import Store from '@/store'
 
 const api = {};
 api.GroupRelationController = GroupRelationController;
@@ -36,7 +37,9 @@ GroupRelationController.prototype.centerCanDo = function () {
 };
 
 GroupRelationController.prototype.addChild = function (saveIndex) {
-    saveIndex = saveIndex || false;
+    if (saveIndex === undefined) {
+        saveIndex = true;
+    }
     let parentVertex = this.getUi().getParentVertex();
     let triple;
     if (this.getUi().canExpand()) {
@@ -45,26 +48,26 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
     return VertexService.addTuple(
         parentVertex,
         this.getModel()
-    ).then(function (_triple) {
+    ).then((_triple) => {
         triple = _triple;
         let addIdentifiers = Promise.all(this.getModel().getIdentifiers().map(function (identifier) {
             identifier.makeSameAs();
             return triple.edge.getController().addIdentification(
                 identifier
             );
-        })).then(function () {
+        })).then(() => {
             this.getModel().addChild(triple.edge)
-        }.bind(this));
+        });
         let promises = [
             addIdentifiers,
             EdgeService.updateLabel(
                 triple.edge,
                 this.getModel().getIdentification().getLabel()
-            ).then(function () {
+            ).then(() => {
                 triple.edge.setLabel(
                     this.getModel().getIdentification().getLabel()
                 );
-            }.bind(this))
+            })
         ];
         if (parentVertex.getModel().isPublic()) {
             promises.push(
@@ -72,15 +75,18 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
             );
         }
         return Promise.all(promises);
-    }.bind(this)).then(function () {
-        Vue.nextTick(function () {
+    }).then(() => {
+        Vue.nextTick(() => {
             saveIndex === false ? Promise.resolve() : GraphElementService.changeChildrenIndex(
                 this.getModel().getParentVertex()
             );
-            SelectionHandler.setToSingle(triple.destination);
-        }.bind(this));
+            if (saveIndex) {
+                SelectionHandler.setToSingle(triple.destination);
+            }
+        });
+        Store.dispatch("redraw");
         return triple;
-    }.bind(this));
+    });
 };
 
 GroupRelationController.prototype.becomeParent = function (graphElementUi) {

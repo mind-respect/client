@@ -32,26 +32,29 @@ EdgeController.prototype.addChildCanDo = function () {
 EdgeController.prototype.addChild = function () {
     let newGroupRelation = this._convertToGroupRelation();
     let triple;
-    SelectionHandler.reset();
-    return newGroupRelation.getController().addChild(false).then(function (_triple) {
+    SelectionHandler.removeAll();
+    return newGroupRelation.getController().addChild(false).then((_triple) => {
         triple = _triple;
         return triple.edge.getController().addIdentifiers(
             this.getModel().getIdentifiers()
         );
-    }.bind(this)).then(function () {
+    }).then(() => {
         let parentBubble = this.getModel().getParentBubble();
         parentBubble.replaceChild(
             this.getModel(),
             newGroupRelation
         );
-        Vue.nextTick(function () {
+        Vue.nextTick(() => {
             GraphElementService.changeChildrenIndex(
                 this.getModel().getParentVertex()
             );
-            SelectionHandler.setToSingle(triple.destination);
-        }.bind(this));
+            setTimeout(function () {
+                SelectionHandler.setToSingle(triple.destination);
+                Store.dispatch("redraw");
+            }, 300)
+        });
         return triple
-    }.bind(this));
+    });
 };
 
 EdgeController.prototype.addSibling = function () {
@@ -68,26 +71,26 @@ EdgeController.prototype.addSiblingCanDo = function () {
     return this.isSingle() && this.getModel().getNextBubble().getController().addSiblingCanDo();
 };
 
-EdgeController.prototype.becomeParent = function (graphElementUi) {
+EdgeController.prototype.becomeParent = function (adoptedChild) {
     let promises = [];
-    SelectionHandler.reset();
+    SelectionHandler.removeAll();
     let newGroupRelation = this._convertToGroupRelation();
-    let parentVertex = this.getModel().getParentVertex();
-    newGroupRelation.addChild(graphElementUi);
-    parentVertex.replaceChild(
+    let parentBubble = this.getModel().getParentBubble();
+    newGroupRelation.addChild(adoptedChild);
+    parentBubble.replaceChild(
         this.getModel(),
         newGroupRelation
     );
-    if (graphElementUi.isGroupRelation()) {
-        graphElementUi.expand();
-        graphElementUi.visitClosestChildOfType(
+    if (adoptedChild.isGroupRelation()) {
+        adoptedChild.expand();
+        adoptedChild.visitClosestChildOfType(
             GraphElementType.Relation,
             moveEdge.bind(this)
         );
-    } else if (graphElementUi.isVertex()) {
-        moveEdge.bind(this)(graphElementUi.getParentBubble());
+    } else if (adoptedChild.isVertex()) {
+        moveEdge.bind(this)(adoptedChild.getParentBubble());
     } else {
-        moveEdge.bind(this)(graphElementUi);
+        moveEdge.bind(this)(adoptedChild);
     }
     return Promise.all(promises).then(function () {
         newGroupRelation.expand(true);

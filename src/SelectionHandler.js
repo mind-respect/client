@@ -4,7 +4,6 @@
 
 import GraphUi from '@/graph/GraphUi'
 import GraphDisplayer from '@/graph/GraphDisplayer'
-import EventBus from '@/EventBus'
 import Scroll from '@/Scroll'
 
 const api = {
@@ -39,6 +38,9 @@ api.setToSingle = function (graphElement) {
     if (!graphElement) {
         return;
     }
+    if (api.isSingle() && api.getSingle().getId() === graphElement.getId()) {
+        return;
+    }
     api.removeAll();
     api.add(graphElement);
     graphElement.makeSingleSelected();
@@ -62,16 +64,7 @@ api.setToSingleRelation = function (relation) {
 
 api.add = function (graphElement, onlyPrepare) {
     onlyPrepare = onlyPrepare || false;
-    api._getAdderFromGraphElement(graphElement)(
-        graphElement, onlyPrepare
-    );
-};
-
-api._getAdderFromGraphElement = function (graphElement) {
-    if (graphElement.isEdge()) {
-        return api.addRelation;
-    }
-    return api.addVertex;
+    api.addVertex(graphElement, onlyPrepare);
 };
 
 api.addRelation = function (relation) {
@@ -157,7 +150,6 @@ api.getControllerFromCurrentSelection = function () {
     return currentController;
 };
 
-EventBus.subscribe("/event/ui/graph/reset", deselectAll);
 
 export default api;
 
@@ -166,8 +158,8 @@ function centerBubbleIfApplicable(bubble) {
 }
 
 function deselectAll() {
-    api.getSelectedElements().forEach(function (graphElement) {
-        graphElement.deselect();
+    api.getSelectedElements().forEach(function (selected) {
+        selected.deselect();
     });
     for (let i = api.selected.length; i > 0; i--) {
         api.selected.pop();

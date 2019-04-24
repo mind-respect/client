@@ -23,7 +23,9 @@
                     'mt-2 mb-2' : bubble._sortedImmediateChild.length > 2
                  }"
             >
-                <div v-for="(triple, uiId) in child">
+                <Bubble v-if="child.isGroupRelation && child.isGroupRelation()"
+                        :bubble="addGroupRelationContext(child, bubble.parentVertex)"></Bubble>
+                <div v-else v-for="(triple, uiId) in child">
                     <Bubble :bubble="addEdgeContext(triple.edge, triple.vertex, bubble.parentVertex)"></Bubble>
                 </div>
             </div>

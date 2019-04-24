@@ -86,7 +86,7 @@
         mounted: function () {
             let centerUri = MindMapInfo.getCenterBubbleUri();
             let centerVertex = Vertex.withUri(centerUri);
-            SelectionHandler.reset();
+            SelectionHandler.removeAll();
             centerVertex.makeCenter();
             SubGraphController.withVertex(
                 centerVertex

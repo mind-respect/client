@@ -130,7 +130,12 @@ FriendlyResource.FriendlyResource.prototype.isBubbleAChild = function (bubble) {
 };
 
 FriendlyResource.FriendlyResource.prototype.getHtml = function () {
-    return document.getElementById(this.uiId);
+    let html = document.getElementById(this.uiId);
+    if (!html) {
+        console.warn("no html found for bubble " + this.getLabel())
+        return;
+    }
+    return html;
 };
 
 FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
@@ -493,6 +498,16 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
         }
     }
     return bubbleAround;
+};
+
+FriendlyResource.FriendlyResource.prototype.replaceChild = function (existingChild, newChild) {
+    let index = this.getChildIndex(existingChild);
+    this.removeChild(existingChild);
+    this.addChild(
+        newChild,
+        existingChild.isToTheLeft(),
+        index
+    );
 };
 
 FriendlyResource.FriendlyResource.prototype.getChildIndex = function (child) {
