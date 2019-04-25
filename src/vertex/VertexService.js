@@ -2,15 +2,15 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import $ from 'jquery'
-import EventBus from '@/EventBus'
 import Triple from '@/triple/Triple'
-import Suggestion from '@/suggestion/Suggestion'
 import UserService from '@/service/UserService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import IdUri from '@/IdUri'
 import Service from '@/Service'
 import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
+import SubGraph from '@/graph/SubGraph'
+import axios from 'axios'
 
 const api = {};
 api.getByUri = function (uri, callback) {
@@ -54,43 +54,43 @@ api.updateLabel = function (vertex, label) {
         label
     );
 };
-api.getSuggestions = function (vertex) {
-    return $.ajax({
-        type: 'GET',
-        url: vertex.getUri() + '/suggestions',
-        dataType: 'json'
-    }).then(function (jsonSuggestions) {
-        var suggestions = Suggestion.fromServerArray(
-            jsonSuggestions
-        );
-        vertex.setSuggestions(
-            suggestions
-        );
-        EventBus.publish(
-            '/event/ui/graph/vertex/suggestions/updated',
-            [vertex, suggestions]
-        );
-    });
-};
-api.addSuggestions = function (vertex, suggestions) {
-    return api.addSuggestionsAjax(
-        vertex, suggestions
-    ).then(function () {
-        vertex.addSuggestions(suggestions);
-        EventBus.publish(
-            '/event/ui/graph/vertex/suggestions/updated',
-            [vertex, suggestions]
-        );
-    });
-};
-api.addSuggestionsAjax = function (vertex, suggestions) {
-    return $.ajax({
-        type: 'POST',
-        url: vertex.getUri() + '/suggestions',
-        data: Suggestion.formatAllForServer(suggestions),
-        contentType: 'application/json;charset=utf-8'
-    });
-};
+// api.getSuggestions = function (vertex) {
+//     return $.ajax({
+//         type: 'GET',
+//         url: vertex.getUri() + '/suggestions',
+//         dataType: 'json'
+//     }).then(function (jsonSuggestions) {
+//         var suggestions = Suggestion.fromServerArray(
+//             jsonSuggestions
+//         );
+//         vertex.setSuggestions(
+//             suggestions
+//         );
+//         EventBus.publish(
+//             '/event/ui/graph/vertex/suggestions/updated',
+//             [vertex, suggestions]
+//         );
+//     });
+// };
+// api.addSuggestions = function (vertex, suggestions) {
+//     return api.addSuggestionsAjax(
+//         vertex, suggestions
+//     ).then(function () {
+//         vertex.addSuggestions(suggestions);
+//         EventBus.publish(
+//             '/event/ui/graph/vertex/suggestions/updated',
+//             [vertex, suggestions]
+//         );
+//     });
+// };
+// api.addSuggestionsAjax = function (vertex, suggestions) {
+//     return $.ajax({
+//         type: 'POST',
+//         url: vertex.getUri() + '/suggestions',
+//         data: Suggestion.formatAllForServer(suggestions),
+//         contentType: 'application/json;charset=utf-8'
+//     });
+// };
 api.makePrivate = function (vertex) {
     return Service.geApi().delete(
         vertex.getUri() + '/public_access'
@@ -169,14 +169,18 @@ api.saveColors = function (colors) {
     });
 };
 
+api.listFonts = function () {
+    let apiKey = process.env.VUE_APP_FONT_API_KEY_GOOGLE;
+    return axios.get(
+        "https://www.googleapis.com/webfonts/v1/webfonts?key=" + apiKey
+    );
+};
+
 api.saveFont = function (font) {
-    return $.ajax({
-        type: 'POST',
-        url: GraphElementUi.getCenterVertexOrSchema().getUri() + '/font',
-        data: JSON.stringify(font),
-        contentType: 'application/json;charset=utf-8',
-        dataType: 'json'
-    });
+    return Service.geApi().post(
+        SubGraph.graph.center.getUri() + '/font',
+        font
+    );
 };
 
 export default api;

@@ -158,6 +158,7 @@
                                             autocomplete="off" v-text="bubble.getFriendlyJson().label"
                                             @focus="focus"
                                             @keydown="keydown"
+                                            :style="labelFont"
                                     ></div>
                                 </div>
                                 <v-card>
@@ -250,7 +251,9 @@
                                          @focus="focus"
                                          v-show="!isShrinked"
                                          v-text="bubble.getFriendlyJson().label"
-                                         @keydown="keydown"></div>
+                                         @keydown="keydown"
+                                         :style="labelFont"
+                                    ></div>
                                 </v-chip>
                             </div>
                         </div>
@@ -304,6 +307,7 @@
     import GraphUi from '@/graph/GraphUi'
     import IdUri from '@/IdUri'
     import Store from '@/store'
+    import SubGraph from '@/graph/SubGraph'
 
     export default {
         name: "Bubble",
@@ -391,6 +395,10 @@
             this.loaded = true;
         },
         computed: {
+            labelFont: function () {
+                let font = SubGraph.graph.center.getFont();
+                return "font-family:" + font.family;
+            },
             selected: function () {
                 return SelectionHandler.selected;
             },

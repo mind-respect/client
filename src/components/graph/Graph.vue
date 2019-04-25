@@ -6,7 +6,7 @@
     <div v-if="loaded">
         <v-divider></v-divider>
         <MainMenus></MainMenus>
-        <div id="drawn_graph" @click="click" data-zoom="9" class="vh-center">
+        <div id="drawn_graph" data-zoom="9" class="vh-center">
             <!--<div :style="'width:' + leftWidth() + 'px'"></div>-->
             <div style="width:8000px;"></div>
             <v-layout row class='root-vertex-super-container vh-center ma-5 pa-5' :style="zoomScale">
@@ -67,6 +67,7 @@
     import DescriptionDialog from '@/components/DescriptionDialog'
     import FontDialog from '@/components/FontDialog'
     import SubGraph from '@/graph/SubGraph'
+    import Store from '@/store'
 
     export default {
         name: "Graph",
@@ -93,25 +94,23 @@
             centerVertex.makeCenter();
             SubGraphController.withVertex(
                 centerVertex
-            ).load().then(function (graph) {
+            ).load().then((graph) => {
                 this.graph = graph;
                 let center = this.graph.center;
                 this.centerServerFormat = center.getServerFormat();
                 center.makeCenter();
                 SubGraph.graph = this.graph;
                 this.loaded = true;
-                Vue.nextTick(function () {
+                Vue.nextTick(() => {
                     SelectionHandler.setToSingle(this.graph.center);
                     GraphUi.resetBackGroundColor();
                     Scroll.centerBubbleIfApplicable(
                         this.graph.center
                     );
-                }.bind(this))
-            }.bind(this));
+                })
+            });
         },
         methods: {
-            click: function () {
-            },
             addBubbleContext: function (bubble, parentVertex, orientation) {
                 bubble.parentBubble = bubble.parentVertex = parentVertex;
                 bubble.orientation = orientation;
@@ -145,6 +144,12 @@
             }
         },
         computed: {
+            centerFont: function () {
+                if (!this.loaded) {
+                    return;
+                }
+                return this.graph.center.graphElementServerFormat.font;
+            },
             redraws: function () {
                 return this.$store.state.redraws;
             },
@@ -162,6 +167,23 @@
                 this.$nextTick(function () {
                     this.redrawKey = Math.random();
                 }.bind(this));
+            },
+            centerFont: function () {
+                if (!this.loaded) {
+                    return;
+                }
+                let link = document.createElement("link");
+                link.setAttribute("rel", "stylesheet")
+                link.setAttribute("type", "text/css")
+                let font = this.graph.center.getFont();
+                link.setAttribute("href", "http://fonts.googleapis.com/css?family=" + font.family.replace(/ /g, '+'))
+                document.getElementsByTagName("head")[0].appendChild(link);
+                setTimeout(() => {
+                    this.$nextTick(() => {
+                        Store.dispatch("redraw");
+                    });
+                }, 750);
+
             }
         }
     }

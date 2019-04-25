@@ -16,7 +16,7 @@ const controllerGetters = {};
 
 const GraphElement = {
     DEFAULT_FONT: {
-        family: 'IBM Plex Sans'
+        family: 'Roboto'
     },
     sortCompare: function (a, b, childrenIndex) {
         if (a.getIndex(childrenIndex) === b.getIndex(childrenIndex)) {
@@ -131,6 +131,8 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
         this.graphElementServerFormat.font = JSON.parse(
             this.graphElementServerFormat.font
         );
+    } else {
+        this.graphElementServerFormat.font = GraphElement.DEFAULT_FONT;
     }
     this._buildIdentifications();
     // this.wikipediaLinksPromise = this._buildWikidataLinks();
