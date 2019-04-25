@@ -2,23 +2,16 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import $ from 'jquery'
 import VertexService from '@/vertex/VertexService'
 import EdgeService from '@/edge/EdgeService'
 import SelectionHandler from '@/SelectionHandler'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphElementController from '@/graph-element/GraphElementController'
-import IncludedGraphElementsMenu from '@/vertex/IncludedGraphElementsMenu'
-import Vertex from '@/vertex/Vertex'
-import Identification from '@/identifier/Identification'
 import GraphElementService from '@/graph-element/GraphElementService'
-import SchemaSuggestion from '@/schema/SchemaSuggestion'
-import EventBus from '@/EventBus'
 import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
 import ShareLevel from '@/vertex/ShareLevel'
 import SubGraphController from '@/graph/SubGraphController'
-import SubGraph from '@/graph/SubGraph'
 import LoadingFlow from '@/LoadingFlow'
 import Scroll from '@/Scroll'
 import Vue from 'vue'
@@ -100,10 +93,10 @@ VertexController.prototype.convertToRelationCanDo = function () {
 };
 
 VertexController.prototype.convertToRelation = function () {
-    var parentRelation = this.getUi().getParentBubble();
-    var promises = [];
-    var label = this.getModel().getLabel();
-    var toSelect;
+    let parentRelation = this.getUi().getParentBubble();
+    let promises = [];
+    let label = this.getModel().getLabel();
+    let toSelect;
     if (this.getModel().getNumberOfChild() === 1) {
         var childRelation = this.getUi().getNextBubble();
         promises.push(
@@ -131,7 +124,7 @@ VertexController.prototype.convertToRelation = function () {
         );
         toSelect = this.getUi();
     }
-    return $.when.apply($, promises).then(function () {
+    return Promise.all(promises).then(() => {
         SelectionHandler.setToSingle(toSelect);
     });
 };
@@ -276,40 +269,22 @@ VertexController.prototype.makePrivateCanDo = function () {
     );
 };
 
-VertexController.prototype.privateShareLevelCanShowInLabel = function () {
-    return $.Deferred().resolve(
-        this.getModel().isPrivate()
-    );
-};
-
-VertexController.prototype.publicShareLevelCanShowInLabel = function () {
-    return $.Deferred().resolve(
-        this.getModel().isPublic()
-    );
-};
-
-VertexController.prototype.friendsShareLevelCanShowInLabel = function () {
-    return $.Deferred().resolve(
-        this.getModel().isFriendsOnly()
-    );
-};
-
 VertexController.prototype.makePrivate = function () {
     if (this.isSingle()) {
         VertexService.makePrivate(
             this.getModel()
-        ).then(function () {
+        ).then(() => {
             this.getModel().makePrivate();
-        }.bind(this));
+        });
     } else {
         let publicVertices = [];
-        this.getUi().forEach(function (vertex) {
+        this.getUi().forEach((vertex) => {
             if (vertex.isPublic()) {
                 publicVertices.push(
                     vertex
                 );
             }
-        }.bind(this));
+        });
         VertexService.makeCollectionPrivate(
             publicVertices
         ).then(function () {
@@ -320,19 +295,12 @@ VertexController.prototype.makePrivate = function () {
     }
 };
 
-VertexController.prototype.makePublicManyIsPossible = true;
 
 VertexController.prototype.makePublicCanDo = function () {
     return this.isOwned() && (
         (this.isMultiple() && !this._areAllElementsPublic()) || (
             this.isSingle() && !this.getUi().getModel().isPublic()
         )
-    );
-};
-
-VertexController.prototype.makePublicCanShowInLabel = function () {
-    return $.Deferred().resolve(
-        !this.getModel().isPublic() && this.isOwned()
     );
 };
 
@@ -361,34 +329,29 @@ VertexController.prototype._areAllElementsInShareLevels = function (shareLevels)
             this.getModel().getShareLevel()
         ) !== -1;
     }
-    var allInShareLevel = true;
-    this.getUi().forEach(function (ui) {
-        var isInShareLevel = shareLevels.indexOf(
+    return this.getUi().every(function (ui) {
+        return shareLevels.indexOf(
             ui.getModel().getShareLevel()
         ) !== -1;
-        if (!isInShareLevel) {
-            allInShareLevel = false;
-        }
     });
-    return allInShareLevel;
 };
 
 VertexController.prototype.makePublic = function () {
     if (this.isSingle()) {
         return VertexService.makePublic(
             this.getUi()
-        ).then(function () {
+        ).then(() => {
             this.getModel().makePublic();
-        }.bind(this));
+        });
     } else {
         let privateVertices = [];
-        this.getUi().forEach(function (vertex) {
+        this.getUi().forEach((vertex) => {
             if (!vertex.isPublic()) {
                 privateVertices.push(
                     vertex
                 );
             }
-        }.bind(this));
+        });
         return VertexService.makeCollectionPublic(
             privateVertices
         ).then(function () {
@@ -440,13 +403,13 @@ VertexController.prototype.setShareLevel = function (shareLevel) {
             vertexUi.getParentVertex().getModel().decrementNbFriendNeigbors();
         }
     });
-    var promise = this.isMultiple() ?
+    let promise = this.isMultiple() ?
         VertexService.setCollectionShareLevel(
             shareLevel, this.getUi()
         ) : VertexService.setShareLevel(
             shareLevel, this.getUi()
         );
-    return promise.then(function () {
+    return promise.then(() => {
         this.getUiArray().forEach(function (vertexUi) {
             if (ShareLevel.isPublic(shareLevel)) {
                 vertexUi.getParentVertex().getModel().incrementNbPublicNeighbors();
@@ -456,7 +419,7 @@ VertexController.prototype.setShareLevel = function (shareLevel) {
             }
             vertexUi.getModel().setShareLevel(shareLevel.toUpperCase());
         });
-    }.bind(this));
+    });
 };
 
 VertexController.prototype.becomeParent = function (graphElementUi) {
@@ -478,9 +441,9 @@ VertexController.prototype.becomeParent = function (graphElementUi) {
         uiChild.moveToParent(
             this.getUi()
         );
-        Vue.nextTick(function () {
+        Vue.nextTick(() => {
             GraphElementService.changeChildrenIndex(this.getModel());
-        }.bind(this));
+        });
     }.bind(this));
 
     function moveEdge(movedEdge) {
@@ -498,73 +461,74 @@ VertexController.prototype.becomeParent = function (graphElementUi) {
 };
 
 
-VertexController.prototype.subElementsCanDo = function () {
-    return this.isSingle() && this.getModel().hasIncludedGraphElements();
-};
+// VertexController.prototype.subElementsCanDo = function () {
+//     return this.isSingle() && this.getModel().hasIncludedGraphElements();
+// };
 
-VertexController.prototype.subElements = function () {
-    IncludedGraphElementsMenu.ofVertex(
-        this.vertices
-    ).create();
-};
+// VertexController.prototype.subElements = function () {
+//     IncludedGraphElementsMenu.ofVertex(
+//         this.vertices
+//     ).create();
+// };
 
-VertexController.prototype.suggestionsCanDo = function () {
-    return this.isSingleAndOwned() && this.vertices.hasSuggestions();
-};
+// VertexController.prototype.suggestionsCanDo = function () {
+//     return this.isSingleAndOwned() && this.vertices.hasSuggestions();
+// };
 
-VertexController.prototype.suggestions = function () {
-    var suggestionMethod = this.vertices.areSuggestionsShown() ?
-        "hide" : "show";
-    this.vertices.visitAllImmediateChild(function (child) {
-        if (child.isSuggestion()) {
-            child[suggestionMethod]();
-        }
-    });
-};
+// VertexController.prototype.suggestions = function () {
+//     var suggestionMethod = this.vertices.areSuggestionsShown() ?
+//         "hide" : "show";
+//     this.vertices.visitAllImmediateChild(function (child) {
+//         if (child.isSuggestion()) {
+//             child[suggestionMethod]();
+//         }
+//     });
+// };
 
-VertexController.prototype.createVertexFromSchema = function (schema) {
-    var newVertex;
-    var deferred = $.Deferred();
-    VertexService.createVertex().then(
-        addIdentification
-    ).then(
-        addSuggestions
-    ).then(function () {
-        deferred.resolve(
-            newVertex
-        );
-    });
-    return deferred;
-
-    function addIdentification(newVertexServerFormat) {
-        newVertex = Vertex.fromServerFormat(
-            newVertexServerFormat
-        );
-        var identification = Identification.fromFriendlyResource(
-            schema
-        );
-        identification.makeGeneric();
-        return GraphElementService.addIdentification(
-            newVertex,
-            identification
-        );
-    }
-
-    function addSuggestions() {
-        return SchemaSuggestion.addSchemaSuggestionsIfApplicable(
-            newVertex,
-            schema.getUri()
-        );
-    }
-};
+// VertexController.prototype.createVertexFromSchema = function (schema) {
+//     var newVertex;
+//     var deferred = $.Deferred();
+//     VertexService.createVertex().then(
+//         addIdentification
+//     ).then(
+//         addSuggestions
+//     ).then(function () {
+//         deferred.resolve(
+//             newVertex
+//         );
+//     });
+//     return deferred;
+//
+//     function addIdentification(newVertexServerFormat) {
+//         newVertex = Vertex.fromServerFormat(
+//             newVertexServerFormat
+//         );
+//         var identification = Identification.fromFriendlyResource(
+//             schema
+//         );
+//         identification.makeGeneric();
+//         return GraphElementService.addIdentification(
+//             newVertex,
+//             identification
+//         );
+//     }
+//
+//     function addSuggestions() {
+//         return SchemaSuggestion.addSchemaSuggestionsIfApplicable(
+//             newVertex,
+//             schema.getUri()
+//         );
+//     }
+// };
 
 VertexController.prototype.copyManyIsPossible = true;
 
 VertexController.prototype.copyCanDo = function () {
-    return !this.isSingle() || "" !== this.getUi().text();
+    return !this.isSingle() || !this.getUi().isLabelEmpty();
 };
 
 VertexController.prototype.copy = function () {
+
 };
 
 VertexController.prototype.groupCanDo = function () {
@@ -608,7 +572,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
     this.getModel().beforeExpand();
     if (!this.getModel().isExpanded) {
         if (!this.getModel().isCollapsed) {
-            promise = this.subGraphController.load().then(function () {
+            promise = this.subGraphController.load().then(() => {
                 if (avoidExpandChild) {
                     return true;
                 }
@@ -621,7 +585,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
                     }
                 });
                 return Promise.all(expandChildCalls);
-            }.bind(this));
+            });
         }
     } else {
         LoadingFlow.enterNoSpinner();
@@ -632,7 +596,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
                     LoadingFlow.leave();
                     Store.dispatch("redraw");
                 }, 325)
-            })
+            });
             Scroll.goToGraphElement(this.getModel());
         }.bind(this));
     }
@@ -648,12 +612,12 @@ VertexController.prototype.convertToDistantBubbleWithUriCanDo = function (distan
     if (!IdUri.isVertexUri(distantVertexUri)) {
         return false;
     }
-    var parent = this.getUi().getParentVertex();
-    var grandParent = parent.getParentVertex();
+    let parent = this.getUi().getParentVertex();
+    let grandParent = parent.getParentVertex();
     if (distantVertexUri === grandParent.getUri()) {
         return false;
     }
-    var canDo = true;
+    let canDo = true;
     parent.visitClosestChildVertices(function (child) {
         if (distantVertexUri === child.getUri()) {
             canDo = false;
@@ -664,15 +628,15 @@ VertexController.prototype.convertToDistantBubbleWithUriCanDo = function (distan
 
 VertexController.prototype.convertToDistantBubbleWithUri = function (distantVertexUri) {
     if (!this.convertToDistantBubbleWithUriCanDo(distantVertexUri)) {
-        return $.Deferred().reject();
+        return Promise.reject();
     }
     this.getUi().beforeConvertToDistantBubbleWithUri();
-    return VertexService.mergeTo(this.getModel(), distantVertexUri).then(function () {
+    return VertexService.mergeTo(this.getModel(), distantVertexUri).then(() => {
         this.getUi().mergeTo(distantVertexUri);
         return this.subGraphController.load();
-    }.bind(this)).then(function () {
+    }).then(() => {
         this.getUi().afterConvertToDistantBubbleWithUri();
-    }.bind(this));
+    });
 };
 
 VertexController.prototype.mergeCanDo = function () {
@@ -680,20 +644,11 @@ VertexController.prototype.mergeCanDo = function () {
 };
 
 VertexController.prototype._relateToDistantVertexWithUri = function (distantVertexUri) {
-    return EdgeService.addToFarVertex(this.getUi(), distantVertexUri).then(function () {
+    return EdgeService.addToFarVertex(this.getUi(), distantVertexUri).then(() =>{
         return GraphDisplayer.connectVertexToVertexWithUri(
             this.getUi(),
             distantVertexUri
         );
-    }.bind(this));
-};
-
-VertexController.prototype.setFont = function (font) {
-    let centerVertex = SubGraph.graph.center;
-    centerVertex.getModel().setFont(font);
-    centerVertex.setCenterBubbleFont(font);
-    return VertexService.saveFont({
-        family: font.family
     });
 };
 

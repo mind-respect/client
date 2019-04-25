@@ -127,7 +127,7 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
             this.graphElementServerFormat.colors
         );
     }
-    if (this.graphElementServerFormat.font) {
+    if (this.graphElementServerFormat.font && typeof this.graphElementServerFormat.font === 'string') {
         this.graphElementServerFormat.font = JSON.parse(
             this.graphElementServerFormat.font
         );

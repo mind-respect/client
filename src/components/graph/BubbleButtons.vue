@@ -5,7 +5,26 @@
 <template>
     <div>
         <span v-for="button in buttons" :key="button.action">
-            <Button :button="button" :isInTopMenu="isInTopMenu"></Button>
+            <Button :button="button" :isInTopMenu="isInTopMenu" v-if="!button.isCustom"></Button>
+            <v-tooltip
+                    open-delay="0"
+                    close-delay="0"
+                    v-if="button.isCustom && button.action === 'copy'"
+                    bottom
+                    allow-overflow
+                    :attach="attach"
+            >
+                <v-btn slot="activator"
+                       icon
+                       flat
+                       v-clipboard:copy="copyContent"
+                >
+                    <v-icon>{{button.icon}}</v-icon>
+                </v-btn>
+                <span>
+                    {{$t('button:' + button.action)}}
+                </span>
+            </v-tooltip>
         </span>
     </div>
 </template>
@@ -60,7 +79,7 @@
                         action: "images"
                     },
                     {
-                        icon: "local_offer",
+                        icon: "label",
                         action: "identify"
                     },
                     {
@@ -84,7 +103,8 @@
                     },
                     {
                         icon: "file_copy",
-                        action: "copy"
+                        action: "copy",
+                        isCustom: true
                     },
                     {
                         icon: "fa-cut",
@@ -149,7 +169,15 @@
                 ]
             }
         },
-        props: ['isInTopMenu']
+        props: ['isInTopMenu'],
+        computed: {
+            attach: function () {
+                return this.isInTopMenu ? "#drawn_graph" : false;
+            },
+            copyContent: function () {
+                return SelectionHandler.getSingle().getLabel()
+            }
+        }
     }
 </script>
 

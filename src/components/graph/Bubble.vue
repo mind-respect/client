@@ -399,9 +399,7 @@
                 let font = SubGraph.graph.center.getFont();
                 return "font-family:" + font.family;
             },
-            selected: function () {
-                return SelectionHandler.selected;
-            },
+            selected: () => SelectionHandler.selected,
             relationPlaceholder: function () {
                 return this.bubble.isGroupRelation() || this.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
             },
