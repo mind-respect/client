@@ -71,11 +71,11 @@
         name: "FontDialog",
         data: function () {
             I18n.i18next.addResources("en", "font", {
-                "title": "Font",
+                "title": "Select a font",
                 "defaultFont": "Use default font"
             });
             I18n.i18next.addResources("fr", "font", {
-                "title": "Police de caractères",
+                "title": "Sélectionnez une police de caractères",
                 "defaultFont": "Utiliser la police par défaut"
             });
             return {

@@ -178,7 +178,7 @@
                     controller: AppController
                 }, {
                     action: "fontPicker",
-                    icon: "fa-font",
+                    icon: "font_download",
                     controller: AppController
                 }, {
                     action: "changeBackgroundColor",
