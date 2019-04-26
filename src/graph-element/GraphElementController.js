@@ -8,7 +8,6 @@ import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import MindMapInfo from '@/MindMapInfo'
 import EventBus from '@/EventBus'
-import GraphUi from '@/graph/GraphUi'
 import IdentificationMenu from '@/identifier/IdentificationMenu'
 import Command from '@/Command'
 import SelectionHandler from '@/SelectionHandler'
@@ -17,6 +16,7 @@ import ToList from '@/ToList'
 import Store from '@/store'
 import router from '@/router'
 import Scroll from '@/Scroll'
+import Vue from 'vue'
 // "bootstrap-wysiwyg",
 // "bootstrap",
 // "jquery.safer-html"
@@ -24,17 +24,8 @@ import Scroll from '@/Scroll'
 const api = {};
 let bubbleCutClipboard,
     identificationBaseEventBusKey = "/event/ui/graph/identification/";
-var isMergePopoverBuilt = false;
-EventBus.subscribe(
-    '/event/ui/mind_map_info/is_view_only',
-    setUpSaveButton
-);
-api._getBubbleNoteModal = function () {
-    return $("#bubble-note-modal");
-};
-api._getContentEditor = function () {
-    return api._getBubbleNoteModal().find(".editor");
-};
+let isMergePopoverBuilt = false;
+
 api.GraphElementController = GraphElementController;
 
 function GraphElementController(graphElements) {
@@ -71,17 +62,9 @@ GraphElementController.prototype.noteCanDo = function () {
         this.isOwned() || this.getModel().hasComment()
     );
 };
-GraphElementController.prototype.noteCanShowInLabel = function () {
-    return $.Deferred().resolve(
-        this.getModel().hasComment()
-    );
-};
 
 GraphElementController.prototype.setLabel = function (newLabel) {
     this.getUi().getModel().setLabel(
-        newLabel
-    );
-    this.getUi().setText(
         newLabel
     );
     return FriendlyResourceService.updateLabel(
@@ -92,33 +75,6 @@ GraphElementController.prototype.setLabel = function (newLabel) {
 
 GraphElementController.prototype.note = function () {
     Store.dispatch("setIsDescriptionFlow", true);
-    return;
-    var editor = api._getContentEditor().saferHtml(
-        this.getUi().getModel().getComment()
-    );
-    api._getBubbleNoteModal().data(
-        "graphElement", this.graphElements
-    ).find(".bubble-label-in-title").text(
-        this.getUi().text()
-    );
-    getSaveButton().text($.t("vertex.menu.note.update"));
-    var $modal = api._getBubbleNoteModal();
-    $modal.modal({
-        backdrop: 'static',
-        keyboard: false
-    });
-    if (MindMapInfo.isViewOnly()) {
-        api._getContentEditor().prop("content-editable", "false");
-    }
-    editor.wysiwyg({
-        hotKeys: {
-            'ctrl+b meta+b': 'bold',
-            'ctrl+i meta+i': 'italic',
-            'ctrl+u meta+u': 'underline',
-            'ctrl+z meta+z': 'undo',
-            'ctrl+y meta+y meta+shift+z': 'redo'
-        }
-    });
 };
 
 GraphElementController.prototype.focusCanDo = function () {
@@ -160,16 +116,6 @@ GraphElementController.prototype.visitOtherInstancesCanDo = function () {
     return false;
 };
 
-GraphElementController.prototype.visitOtherInstancesCanShowInLabel = function () {
-    return $.Deferred().resolve(
-        this.getUi().hasOtherVisibleInstance()
-    );
-};
-
-GraphElementController.prototype.visitOtherInstancesInLabelClick = function () {
-    this.getUi().showLinesToSimilarInstances();
-};
-
 GraphElementController.prototype.identifyHideIfDisabled = function () {
     return true;
 };
@@ -181,34 +127,8 @@ GraphElementController.prototype.identifyCanDo = function () {
     );
 };
 
-GraphElementController.prototype.identifyCanShowInLabel = function () {
-    var canShow = this.getModel().getRelevantTags().length === 1;
-    if (canShow) {
-        var tag = this.getModel().getRelevantTags()[0];
-        canShow = this.getUi().getTagNumberOfOtherReferences(
-            tag
-        ) > 0;
-    }
-    return $.Deferred().resolve(
-        canShow
-    );
-};
-
 GraphElementController.prototype.identifyWhenManyHideIfDisabled = function () {
     return true;
-};
-
-GraphElementController.prototype.identifyWhenManyCanShowInLabel = function () {
-    if (this.getModel().getRelevantTags().length < 2) {
-        return $.Deferred().resolve(
-            false
-        );
-    }
-    return $.Deferred().resolve(
-        this.getModel().getRelevantTags().some(function (tag) {
-            return this.getUi().getTagNumberOfOtherReferences(tag) > 0;
-        }.bind(this))
-    );
 };
 
 GraphElementController.prototype.identifyWhenManyCanDo = function () {
@@ -225,14 +145,8 @@ GraphElementController.prototype.acceptCanDo = function () {
     return false;
 };
 
-GraphElementController.prototype.acceptCanShowInLabel = function () {
-    return $.Deferred().resolve(
-        this.getUi().isDisplayingComparison()
-    );
-};
-
 GraphElementController.prototype.accept = function () {
-    var comparedWithLabel = this.getUi().getComparedWith().getLabel();
+    let comparedWithLabel = this.getUi().getComparedWith().getLabel();
     return FriendlyResourceService.updateLabel(
         this.getUi(),
         comparedWithLabel
@@ -252,7 +166,7 @@ GraphElementController.prototype.expandCanDo = function () {
 
 GraphElementController.prototype.expand = function (avoidCenter, avoidExpandChild, isChildExpand) {
     let promise = this.expandDescendantsIfApplicable();
-    return promise.then(function () {
+    return promise.then(() => {
         this.getUi().expand(avoidCenter);
         var expandChildCalls = [];
         this.getUi().visitClosestChildVertices(function (childVertex) {
@@ -263,7 +177,7 @@ GraphElementController.prototype.expand = function (avoidCenter, avoidExpandChil
             }
         });
         return Promise.all(expandChildCalls);
-    }.bind(this));
+    });
 };
 
 GraphElementController.prototype.expandDescendantsIfApplicable = function () {
@@ -315,27 +229,30 @@ GraphElementController.prototype.pasteCanDo = function () {
 };
 
 GraphElementController.prototype.paste = function (event) {
+    document.execCommand('paste')
     if (bubbleCutClipboard === undefined) {
+        document.queryCommandSupported('paste')
         this._pasteText(event);
     } else {
         this._pasteBubble();
     }
-    this.getUi().paste();
 };
 
 GraphElementController.prototype._pasteText = function (event) {
-    var clipText = '';
+    let clipText = '';
     if (window.clipboardData) {
         clipText = window.clipboardData.getData('Text');
     } else if (typeof event === 'object' && event.clipboardData) {
         clipText = event.clipboardData.getData('text/plain');
     }
-    var separator = "" === this.getUi().text().trim() ?
+    let separator = "" === this.getUi().getLabel().trim() ?
         "" : " ";
     this.setLabel(
         this.getModel().getLabel() + separator + clipText
     );
-    this.getUi().pasteText();
+    Vue.nextTick(() => {
+        this.getUi().focus();
+    });
 };
 
 GraphElementController.prototype._pasteBubble = function () {
@@ -350,7 +267,7 @@ GraphElementController.prototype._pasteBubble = function () {
 };
 
 GraphElementController.prototype.moveUp = function () {
-    var bubbleAbove = this.getUi().getBubbleAbove();
+    let bubbleAbove = this.getUi().getBubbleAbove();
     if (bubbleAbove.isSameBubble(this.getUi())) {
         return;
     }
@@ -369,7 +286,7 @@ GraphElementController.prototype.moveUp = function () {
 
 
 GraphElementController.prototype.moveDown = function () {
-    var bubbleUnder = this.getUi().getBubbleUnder();
+    let bubbleUnder = this.getUi().getBubbleUnder();
     if (bubbleUnder.isSameBubble(this.getUi())) {
         return;
     }
@@ -387,7 +304,7 @@ GraphElementController.prototype.moveDown = function () {
 };
 
 GraphElementController.prototype._canMoveAboveOrUnder = function (otherEdge) {
-    var graphElementToCompare = this.getUi().isVertex() ?
+    let graphElementToCompare = this.getUi().isVertex() ?
         this.getUi().getParentBubble() :
         this.getUi();
     return !graphElementToCompare.isSameUri(otherEdge);
@@ -395,9 +312,9 @@ GraphElementController.prototype._canMoveAboveOrUnder = function (otherEdge) {
 
 GraphElementController.prototype.moveBelow = function (otherEdge) {
     if (!this._canMoveAboveOrUnder(otherEdge)) {
-        return $.Deferred().resolve();
+        return Promise.resolve();
     }
-    var previousParentVertex = this.getUi().getParentVertex();
+    let previousParentVertex = this.getUi().getParentVertex();
     return this._moveTo(
         otherEdge,
         false,
@@ -407,9 +324,9 @@ GraphElementController.prototype.moveBelow = function (otherEdge) {
 
 GraphElementController.prototype.moveAbove = function (otherEdge) {
     if (!this._canMoveAboveOrUnder(otherEdge)) {
-        return $.Deferred().resolve();
+        return Promise.resolve();
     }
-    var previousParentVertex = this.getUi().getParentVertex();
+    let previousParentVertex = this.getUi().getParentVertex();
     return this._moveTo(
         otherEdge,
         true,
@@ -607,11 +524,11 @@ GraphElementController.prototype.merge = function () {
 };
 
 GraphElementController.prototype.becomeExParent = function () {
-    return $.Deferred().resolve();
+    return Promise.resolve();
 };
 
 GraphElementController.prototype.addIdentifiers = function (identifiers) {
-    var promises = [];
+    let promises = [];
     identifiers.forEach(function (identifier) {
         promises.push(this.addIdentification(identifier));
     }.bind(this));
@@ -713,63 +630,5 @@ GraphElementController.prototype.list = function () {
         )
     );
 };
-
-setUpCancelButton();
-initNoteModal();
-
-function setUpSaveButton() {
-    if (MindMapInfo.isViewOnly()) {
-        getSaveButton().addClass("hidden");
-        return;
-    }
-    getSaveButton().click(function (event) {
-        event.preventDefault();
-        $(this).text(
-            $.t("vertex.menu.note.saving") + " ..."
-        );
-        var graphElement = api._getBubbleNoteModal().data("graphElement");
-        var note = api._getContentEditor().html();
-        graphElement.getModel().setComment(note);
-        GraphElementService.updateNote(
-            graphElement,
-            note,
-            function (graphElement) {
-                graphElement.reviewInLabelButtonsVisibility();
-                hideNoteModal();
-            }
-        );
-    });
-}
-
-function setUpCancelButton() {
-    getCancelButton().click(function (event) {
-        event.preventDefault();
-        hideNoteModal();
-    });
-}
-
-function getSaveButton() {
-    return api._getBubbleNoteModal().find("button.save");
-}
-
-function getCancelButton() {
-    return api._getBubbleNoteModal().find("button.cancel");
-}
-
-function hideNoteModal() {
-    api._getBubbleNoteModal().modal("hide");
-}
-
-function initNoteModal() {
-    api._getBubbleNoteModal().on('shown.bs.modal', function () {
-        GraphUi.disableDragScroll();
-        api._getContentEditor().focusEnd();
-    }).on('hidden.bs.modal', function () {
-        GraphUi.enableDragScroll();
-    });
-    api._getBubbleNoteModal().find("input[data-edit=createLink]").click(function (event) {
-        event.stopPropagation();
-    });
-}
 
 export default api;

@@ -88,7 +88,7 @@ function pasteHandler(event) {
         return;
     }
     var selectedElement = SelectionHandler.getSingle();
-    if (selectedElement.isInEditMode()) {
+    if (selectedElement.isEditFlow) {
         return;
     }
     var oEvent = event.originalEvent;

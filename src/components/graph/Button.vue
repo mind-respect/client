@@ -17,7 +17,7 @@
         <v-btn flat
                icon
                slot="activator"
-               @click="performAction(button)"
+               @click="performAction(button, $event)"
                color="primary"
                :small="isInSideMenu"
         >
@@ -62,11 +62,11 @@
             }
         },
         methods: {
-            performAction: function (button) {
+            performAction: function (button, event) {
                 let controller = this.getController(button);
                 controller[
                     button.action
-                    ]();
+                    ](event);
             },
             canDo: function (button) {
                 if (this.bubble.loading) {

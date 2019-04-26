@@ -521,8 +521,6 @@ VertexController.prototype.becomeParent = function (graphElementUi) {
 //     }
 // };
 
-VertexController.prototype.copyManyIsPossible = true;
-
 VertexController.prototype.copyCanDo = function () {
     return !this.isSingle() || !this.getUi().isLabelEmpty();
 };

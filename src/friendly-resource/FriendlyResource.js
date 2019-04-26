@@ -8,7 +8,6 @@ import Focus from '@/Focus'
 import SelectionHandler from '@/SelectionHandler'
 import Scroll from '@/Scroll'
 import Store from '@/store'
-import Vue from 'vue'
 
 const MoveRelation = {
     "Parent": "parent",
