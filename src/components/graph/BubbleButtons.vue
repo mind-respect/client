@@ -112,6 +112,11 @@
                         ctrlShortcut: "X"
                     },
                     {
+                        icon: "fa-paste",
+                        action: "paste",
+                        ctrlShortcut: "V"
+                    },
+                    {
                         icon: "fa-share",
                         action: "reverseToRight",
                         ctrlShortcut: "I"

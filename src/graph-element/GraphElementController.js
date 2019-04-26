@@ -221,17 +221,15 @@ GraphElementController.prototype.cutCanDo = function () {
 
 GraphElementController.prototype.cut = function () {
     bubbleCutClipboard = this.getUi();
-    this.getUi().cut();
 };
 
 GraphElementController.prototype.pasteCanDo = function () {
-    return this.isSingleAndOwned() && !MindMapInfo.isViewOnly();
+    return this.isSingleAndOwned() && !MindMapInfo.isViewOnly() && bubbleCutClipboard !== undefined;
 };
 
 GraphElementController.prototype.paste = function (event) {
     document.execCommand('paste')
     if (bubbleCutClipboard === undefined) {
-        document.queryCommandSupported('paste')
         this._pasteText(event);
     } else {
         this._pasteBubble();
@@ -263,7 +261,6 @@ GraphElementController.prototype._pasteBubble = function () {
         this.getUi()
     );
     bubbleCutClipboard = undefined;
-    this.getUi().pasteBubble();
 };
 
 GraphElementController.prototype.moveUp = function () {
