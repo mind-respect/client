@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div>
+    <div v-if="selected">
         <span v-for="button in buttons" :key="button.action">
             <Button :button="button" :isInTopMenu="isInTopMenu" v-if="!button.isCustom"></Button>
             <v-tooltip
@@ -176,6 +176,9 @@
             },
             copyContent: function () {
                 return SelectionHandler.getSingle().getLabel()
+            },
+            selected: function(){
+                return SelectionHandler.getSingle();
             }
         }
     }

@@ -71,7 +71,7 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
         ];
         if (parentVertex.getModel().isPublic()) {
             promises.push(
-                triple.destinationVertex().getController().makePublic()
+                triple.destination.getController().makePublic()
             );
         }
         return Promise.all(promises);
