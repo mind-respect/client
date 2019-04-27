@@ -4,19 +4,14 @@
 
 import $ from 'jquery'
 import DragScroll from '@/dragscroll'
-import Color from '@/Color'
-import Vue from 'vue'
 
-const DEFAULT_BACKGROUND_COLOR = "#1E87AF";
 const GraphUi = {};
 
 let _drawnGraph,
     _topLayer,
     _bubbleIdCounter = 0,
     _isDragScrollEnabled = false,
-    _isDragScrollLocked = false,
-    _backgroundColor = DEFAULT_BACKGROUND_COLOR,
-    _selectedBackgroundColor;
+    _isDragScrollLocked = false;
 
 GraphUi.initDragScroll = function () {
     let $body = $('body');
@@ -56,32 +51,6 @@ GraphUi.lockDragScroll = function () {
 
 GraphUi.unlockDragScroll = function () {
     _isDragScrollLocked = false;
-};
-
-GraphUi.changeBackgroundColor = function (backgroundColor) {
-    _backgroundColor = backgroundColor;
-    GraphUi.defineSelectedBackgroundColor();
-    $("#background-color-picker").val(backgroundColor);
-    $("#drawn_graph").css(
-        'background',
-        "radial-gradient(rgba(0, 0, 0, 0) -10%, " + backgroundColor + " 100%"
-    );
-};
-
-GraphUi.resetBackGroundColor = function () {
-    GraphUi.changeBackgroundColor(DEFAULT_BACKGROUND_COLOR);
-};
-
-GraphUi.defineSelectedBackgroundColor = function () {
-    let hsl = Color.hex2Hsl(_backgroundColor);
-    _selectedBackgroundColor = 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + 96 + '%)';
-};
-
-GraphUi.getSelectedBubbleBackgroundColor = function () {
-    if (!_selectedBackgroundColor) {
-        GraphUi.defineSelectedBackgroundColor();
-    }
-    return _selectedBackgroundColor;
 };
 
 GraphUi.disableDragScroll = function () {

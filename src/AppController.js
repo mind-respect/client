@@ -2,9 +2,7 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import $ from 'jquery'
 import Command from '@/Command'
-import GraphUi from '@/graph/GraphUi'
 import VertexService from '@/vertex/VertexService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import MindMapInfo from '@/MindMapInfo'
@@ -31,9 +29,6 @@ api.redoCanDo = function () {
 };
 api.getUi = function () {
     return [];
-};
-api.find = function () {
-    $("#vertex-search-input").focus();
 };
 api.zoomIn = function () {
     api.zoom(
@@ -84,7 +79,9 @@ api.changeBackgroundColorCanDo = function () {
 };
 
 api.changeBackgroundColor = function () {
-    $("#background-color-picker").click();
+    document.getElementById(
+        "background-color-picker"
+    ).click();
 };
 
 api.list = function () {
@@ -111,9 +108,4 @@ api.fontPicker = function () {
     Store.dispatch("setIsFontFlow", true);
 };
 
-$("#background-color-picker").on("change", function () {
-        GraphUi.changeBackgroundColor(this.value);
-        VertexService.saveColors({background: this.value});
-    }
-);
 export default api;

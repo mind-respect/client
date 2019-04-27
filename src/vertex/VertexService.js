@@ -1,7 +1,6 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import $ from 'jquery'
 import Triple from '@/triple/Triple'
 import UserService from '@/service/UserService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
@@ -13,13 +12,6 @@ import SubGraph from '@/graph/SubGraph'
 import axios from 'axios'
 
 const api = {};
-api.getByUri = function (uri, callback) {
-    return $.ajax({
-        type: 'GET',
-        url: uri,
-        dataType: 'json'
-    }).then(callback);
-};
 api.createVertex = function () {
     return Service.api().post(getVerticesUrl());
 };
@@ -102,25 +94,21 @@ api.makePublic = function (vertex) {
     );
 };
 api.setShareLevel = function (shareLevel, vertex) {
-    return $.ajax({
-        method: 'POST',
-        url: vertex.getUri() + "/shareLevel",
-        data: JSON.stringify({
+    return Service.geApi().post(
+        vertex.getUri() + "/shareLevel",
+        {
             shareLevel: shareLevel
-        }),
-        contentType: 'application/json'
-    });
+        }
+    );
 };
 api.setCollectionShareLevel = function (shareLevel, vertices) {
-    return $.ajax({
-        method: 'POST',
-        url: getVerticesUrl() + '/collection/share-level',
-        data: JSON.stringify({
+    return Service.geApi().post(
+        getVerticesUrl() + '/collection/share-level',
+        {
             shareLevel: shareLevel,
             verticesUri: verticesUriFromVertices(vertices)
-        }),
-        contentType: 'application/json;charset=utf-8'
-    });
+        }
+    );
 };
 api.makeCollectionPrivate = function (vertices) {
     return Service.api().delete(
@@ -152,21 +140,16 @@ api.makeCollectionPublic = function (vertices) {
 //     );
 // };
 api.mergeTo = function (vertex, distantVertexUri) {
-    return $.ajax({
-        type: 'POST',
-        url: vertex.getUri() + '/mergeTo/' + IdUri.getGraphElementShortIdFromUri(distantVertexUri),
-        dataType: 'json'
-    });
+    return Service.geApi().post(
+        vertex.getUri() + '/mergeTo/' + IdUri.getGraphElementShortIdFromUri(distantVertexUri)
+    );
 };
 
 api.saveColors = function (colors) {
-    return $.ajax({
-        type: 'POST',
-        url: GraphElementUi.getCenterVertexOrSchema().getUri() + '/colors',
-        data: JSON.stringify(colors),
-        contentType: 'application/json;charset=utf-8',
-        dataType: 'json'
-    });
+    return Service.geApi().post(
+        SubGraph.graph.center.getUri() + '/colors',
+        colors
+    );
 };
 
 api.listFonts = function () {

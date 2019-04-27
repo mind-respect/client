@@ -50,6 +50,7 @@ const Color = {
             s: s,
             l: l
         };
-    }
+    },
+    bubbleBackground: null
 };
 export default Color;

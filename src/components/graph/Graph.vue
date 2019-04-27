@@ -6,7 +6,7 @@
     <div v-if="loaded">
         <v-divider></v-divider>
         <MainMenus></MainMenus>
-        <div id="drawn_graph" data-zoom="9" class="vh-center">
+        <div id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle">
             <!--<div :style="'width:' + leftWidth() + 'px'"></div>-->
             <div style="width:8000px;"></div>
             <v-layout row class='root-vertex-super-container vh-center ma-5 pa-5' :style="zoomScale">
@@ -68,6 +68,7 @@
     import FontDialog from '@/components/FontDialog'
     import SubGraph from '@/graph/SubGraph'
     import Store from '@/store'
+    import Color from '@/Color'
 
     export default {
         name: "Graph",
@@ -84,7 +85,8 @@
                 graph: null,
                 loaded: false,
                 centerServerFormat: null,
-                redrawKey: null
+                redrawKey: null,
+                backgroundColorStyle: ""
             }
         },
         mounted: function () {
@@ -103,7 +105,6 @@
                 this.loaded = true;
                 Vue.nextTick(() => {
                     SelectionHandler.setToSingle(this.graph.center);
-                    GraphUi.resetBackGroundColor();
                     Scroll.centerBubbleIfApplicable(
                         this.graph.center
                     );
@@ -150,6 +151,12 @@
                 }
                 return this.graph.center.graphElementServerFormat.font;
             },
+            backgroundColor: function () {
+                if (!this.loaded) {
+                    return;
+                }
+                return this.graph.center.graphElementServerFormat.colors.background;
+            },
             redraws: function () {
                 return this.$store.state.redraws;
             },
@@ -183,7 +190,15 @@
                         Store.dispatch("redraw");
                     });
                 }, 750);
-
+            },
+            backgroundColor: function () {
+                if (!this.loaded) {
+                    return "";
+                }
+                let backgroundColor = this.graph.center.getBackgroundColor();
+                this.backgroundColorStyle = "background:radial-gradient(rgba(0, 0, 0, 0) -10%, " + backgroundColor + " 100%";
+                let hsl = Color.hex2Hsl(backgroundColor);
+                Color.bubbleBackground = 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + 96 + '%)';
             }
         }
     }

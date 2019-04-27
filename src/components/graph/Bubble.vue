@@ -132,7 +132,7 @@
                                         @dragend="dragEnd"
                                         @contextmenu="rightClick"
                                         :draggable="!bubble.isCenter"
-                                        style="max-width:500px!important;height:100%;position:relative;padding-top:2px;padding-bottom:2px;"
+                                        :style="background"
                                 >
                                     <div
                                             class="in-label-buttons text-xs-center mt-0"
@@ -161,9 +161,9 @@
                                             :style="labelFont"
                                     ></div>
                                 </div>
-                                <v-card>
+                                <div :style="background">
                                     <BubbleButtons></BubbleButtons>
-                                </v-card>
+                                </div>
                             </v-menu>
                         </div>
                         <ChildNotice :bubble="bubble"
@@ -308,6 +308,7 @@
     import IdUri from '@/IdUri'
     import Store from '@/store'
     import SubGraph from '@/graph/SubGraph'
+    import Color from '@/Color'
 
     export default {
         name: "Bubble",
@@ -395,6 +396,11 @@
             this.loaded = true;
         },
         computed: {
+            background: function () {
+                return this.isSelected && Color.bubbleBackground ?
+                    "background-color:" + Color.bubbleBackground :
+                    "";
+            },
             labelFont: function () {
                 let font = SubGraph.graph.center.getFont();
                 return "font-family:" + font.family;
@@ -806,6 +812,14 @@
         /*width: 500px;*/
         max-width: 500px;
         z-index: 99999;
+    }
+
+    .vertex .in-bubble-content {
+        max-width: 500px !important;
+        height: 100%;
+        position: relative;
+        padding-top: 2px;
+        padding-bottom: 2px;
     }
 
     .in-bubble-content-wrapper {

@@ -28,6 +28,13 @@
                 <Button :button="button" :isInSideMenu="true" :buttonIndex="i"></Button>
             </div>
         </v-navigation-drawer>
+        <input
+                id="background-color-picker"
+                v-show="false"
+                type="color"
+                v-model="backgroundColor"
+                @change="changeBackgroundColor"
+        >
     </div>
 </template>
 
@@ -38,6 +45,8 @@
     import GraphController from '@/graph/GraphController'
     import Button from '@/components/graph/Button'
     import I18n from '@/I18n'
+    import SubGraph from '@/graph/SubGraph'
+    import VertexService from '@/vertex/VertexService'
 
     export default {
         name: "MainMenus",
@@ -46,9 +55,18 @@
             Button: Button
         },
         mounted: function () {
+            this.backgroundColor = SubGraph.graph.center.getBackgroundColor();
             setTimeout(function () {
                 this.loaded = true;
             }.bind(this), 1000)
+        },
+        methods: {
+            changeBackgroundColor: function () {
+                SubGraph.graph.center.setBackgroundColor(this.backgroundColor);
+                VertexService.saveColors({
+                    background: this.backgroundColor
+                });
+            }
         },
         data: function () {
             I18n.i18next.addResources("en", "button", {
@@ -144,6 +162,7 @@
                 mini: true,
                 refreshKey: Math.random(),
                 loaded: false,
+                backgroundColor: null,
                 graphButtons: [{
                     action: "createVertex",
                     icon: "add",
@@ -183,7 +202,8 @@
                 }, {
                     action: "changeBackgroundColor",
                     icon: "format_paint",
-                    controller: AppController
+                    controller: AppController,
+                    isCustom: true
                 }, {
                     action: "list",
                     icon: "list",

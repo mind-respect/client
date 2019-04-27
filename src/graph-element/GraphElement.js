@@ -122,10 +122,14 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
             this.graphElementServerFormat.childrenIndex
         );
     }
-    if (this.graphElementServerFormat.colors) {
+    if (this.graphElementServerFormat.colors && typeof this.graphElementServerFormat.colors === 'string') {
         this.graphElementServerFormat.colors = JSON.parse(
             this.graphElementServerFormat.colors
         );
+    } else {
+        this.graphElementServerFormat.colors = {
+            background: Color.DEFAULT_BACKGROUND_COLOR
+        }
     }
     if (this.graphElementServerFormat.font && typeof this.graphElementServerFormat.font === 'string') {
         this.graphElementServerFormat.font = JSON.parse(
@@ -330,9 +334,12 @@ GraphElement.GraphElement.prototype.getColors = function () {
     return this.graphElementServerFormat.colors || {};
 };
 
+GraphElement.GraphElement.prototype.setBackgroundColor = function (backgroundColor) {
+    return this.getColors().background = backgroundColor;
+};
+
 GraphElement.GraphElement.prototype.getBackgroundColor = function () {
-    let mapColor = this.getColors().background || Color.DEFAULT_BACKGROUND_COLOR;
-    return Color.getBackgroundColorForColor(mapColor);
+    return this.getColors().background || Color.DEFAULT_BACKGROUND_COLOR;
 };
 
 GraphElement.GraphElement.prototype.setFont = function (font) {
