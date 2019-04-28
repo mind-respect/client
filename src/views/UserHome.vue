@@ -500,7 +500,6 @@
         overflow: hidden;
         float: left;
         max-width: 50%;
-    / / 200 % / 4 items (2 lines / 4 items) but reserve some extra space for padding etc overflow: hidden;
         padding-left: 5px;
         text-overflow: ellipsis;
     }

@@ -83,14 +83,13 @@
 
                     <div
                             v-if="!bubble.isCenter"
-                            class="vertex-drop-arrow-top-bottom-drop"
+                            class="vertex-drop-arrow-top-bottom-drop top-vertex-arrow-drop"
                             @dragover="topDragEnter"
                             @dragleave="resetTopBottomDragOver"
                             @drop="topDrop"
                             @click="click"
                             @dblclick="dblclick"
                             @contextmenu="rightClick"
-                            style="top:0;margin-top:-10px"
                     ></div>
                     <div class="vertex-left-right-drop"
                          v-if="bubble.isCenter || bubble.isToTheLeft()"
@@ -171,12 +170,11 @@
                                      v-if="bubble.canExpand()"></ChildNotice>
                     </div>
                     <div
-                            class="vertex-drop-arrow-top-bottom-drop"
+                            class="vertex-drop-arrow-top-bottom-drop bottom-vertex-drop-arrow-drop"
                             @click="click"
                             @dblclick="dblclick"
                             @contextmenu="rightClick"
                             @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"
-                            style="bottom:0;margin-bottom:-15px;"
                     ></div>
                     <div @dragover="bottomDragEnter"
                          @drop="bottomDrop"
@@ -734,10 +732,21 @@
 
     .vertex-drop-arrow-top-bottom-drop {
         position: absolute !important;
-        height: 50% !important;
         width: 100% !important;
         max-width: 500px !important;
         z-index: 10;
+    }
+
+    .top-vertex-arrow-drop{
+        height: 50% !important;
+        top:0;
+        margin-top:-10px
+    }
+
+    .bottom-vertex-drop-arrow-drop {
+        bottom: 0;
+        height: 30% !important;
+        margin-bottom: -10px;
     }
 
     .vertex-left-right-drop {
