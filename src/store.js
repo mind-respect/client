@@ -28,6 +28,7 @@ const Store = new Vuex.Store({
         isRemoveFlow: false,
         isDescriptionFlow: false,
         isFontFlow: false,
+        isTagFlow: false,
         redraws: Math.random()
     },
     mutations: {
@@ -68,6 +69,9 @@ const Store = new Vuex.Store({
         setIsFontFlow: function (state, isFontFlow) {
             state.isFontFlow = isFontFlow;
         },
+        setIsTagFlow: function (state, isTagFlow) {
+            state.isTagFlow = isTagFlow;
+        },
         redraw: function (state, spec) {
             state.redraws = {
                 refresh: Math.random(),
@@ -99,6 +103,9 @@ const Store = new Vuex.Store({
         },
         setIsFontFlow: function (action, isFontFlow) {
             action.commit('setIsFontFlow', isFontFlow);
+        },
+        setIsTagFlow: function (action, isTagFlow) {
+            action.commit('setIsTagFlow', isTagFlow);
         },
         redraw: function (action, spec) {
             action.commit('redraw', spec);

@@ -2,8 +2,8 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import $ from 'jquery'
-import Wikidata from '@/Wikidata'
-import WikidataUri from '@/WikidataUri'
+import Wikidata from '@/wikidata/Wikidata'
+import WikidataUri from '@/wikidata/WikidataUri'
 import I18n from '@/I18n'
 
 const api = {};

@@ -1,30 +1,23 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import $ from 'jquery'
 import GraphElementType from '@/graph-element/GraphElementType'
 import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import MindMapInfo from '@/MindMapInfo'
 import EventBus from '@/EventBus'
-import IdentificationMenu from '@/identifier/IdentificationMenu'
 import Command from '@/Command'
 import SelectionHandler from '@/SelectionHandler'
-import UserMapAutocompleteProvider from '@/search/provider/UserMapAutocompleteProvider'
 import ToList from '@/ToList'
 import Store from '@/store'
 import router from '@/router'
 import Scroll from '@/Scroll'
 import Vue from 'vue'
-// "bootstrap-wysiwyg",
-// "bootstrap",
-// "jquery.safer-html"
 
 const api = {};
 let bubbleCutClipboard,
     identificationBaseEventBusKey = "/event/ui/graph/identification/";
-let isMergePopoverBuilt = false;
 
 api.GraphElementController = GraphElementController;
 
@@ -136,9 +129,7 @@ GraphElementController.prototype.identifyWhenManyCanDo = function () {
 };
 
 GraphElementController.prototype.identifyWhenMany = GraphElementController.prototype.identify = function () {
-    IdentificationMenu.ofGraphElement(
-        this.graphElements
-    ).create();
+    Store.dispatch("setIsTagFlow", true);
 };
 
 GraphElementController.prototype.acceptCanDo = function () {
@@ -464,60 +455,60 @@ GraphElementController.prototype.mergeCanDo = function () {
 };
 
 GraphElementController.prototype.merge = function () {
-    if (!isMergePopoverBuilt) {
-        this.getUi().getHtml().popoverLikeToolTip({
-            animation: false,
-            html: true,
-            title: $('<div>').append($.t("merge.title"), $('<br>'), $("<small>").text($.t("merge.instruction"))),
-            placement: 'auto left',
-            container: '#drawn_graph',
-            trigger: "manual",
-            allowMultiplePopoverDisplayed: true,
-            content: function () {
-                return $("#merge-popover").html();
-            }
-        });
-    }
-    this.getUi().getHtml().popover("show").popover("show");
-    $('.popover-title').mousedown(function (event) {
-        event.stopPropagation();
-    });
-    var searchInput = $('.popover').find("input").empty().mousedown(function (event) {
-        event.stopPropagation();
-        $(this).focus();
-    });
-    if (!searchInput.isMrAutocompleteSetup()) {
-        var searchFetcher = this.getUi().isMeta() ?
-            UserMapAutocompleteProvider.toFetchOwnTags :
-            UserMapAutocompleteProvider.toFetchOnlyCurrentUserVerticesExcept;
-        searchInput.mrAutocomplete({
-            select: function (event, ui) {
-                event.preventDefault();
-                if (event.keyCode === 13) {
-                    return;
-                }
-                this.convertToDistantBubbleWithUri(ui.item.uri);
-                this.setLabel(ui.item.label);
-                this.getUi().getHtml().popover("hide");
-            }.bind(this),
-            resultsProviders: [
-                searchFetcher(
-                    this.getUi(),
-                    {
-                        noFilter: true,
-                        additionalFilter: function (searchResults) {
-                            return searchResults.filter(function (searchResult) {
-                                return this.convertToDistantBubbleWithUriCanDo(
-                                    searchResult.uri
-                                );
-                            }.bind(this));
-                        }.bind(this)
-                    }
-                )
-            ]
-        });
-    }
-    searchInput.focus();
+    // if (!isMergePopoverBuilt) {
+    //     this.getUi().getHtml().popoverLikeToolTip({
+    //         animation: false,
+    //         html: true,
+    //         title: $('<div>').append($.t("merge.title"), $('<br>'), $("<small>").text($.t("merge.instruction"))),
+    //         placement: 'auto left',
+    //         container: '#drawn_graph',
+    //         trigger: "manual",
+    //         allowMultiplePopoverDisplayed: true,
+    //         content: function () {
+    //             return $("#merge-popover").html();
+    //         }
+    //     });
+    // }
+    // this.getUi().getHtml().popover("show").popover("show");
+    // $('.popover-title').mousedown(function (event) {
+    //     event.stopPropagation();
+    // });
+    // var searchInput = $('.popover').find("input").empty().mousedown(function (event) {
+    //     event.stopPropagation();
+    //     $(this).focus();
+    // });
+    // if (!searchInput.isMrAutocompleteSetup()) {
+    //     var searchFetcher = this.getUi().isMeta() ?
+    //         UserMapAutocompleteProvider.toFetchOwnTags :
+    //         UserMapAutocompleteProvider.toFetchOnlyCurrentUserVerticesExcept;
+    //     searchInput.mrAutocomplete({
+    //         select: function (event, ui) {
+    //             event.preventDefault();
+    //             if (event.keyCode === 13) {
+    //                 return;
+    //             }
+    //             this.convertToDistantBubbleWithUri(ui.item.uri);
+    //             this.setLabel(ui.item.label);
+    //             this.getUi().getHtml().popover("hide");
+    //         }.bind(this),
+    //         resultsProviders: [
+    //             searchFetcher(
+    //                 this.getUi(),
+    //                 {
+    //                     noFilter: true,
+    //                     additionalFilter: function (searchResults) {
+    //                         return searchResults.filter(function (searchResult) {
+    //                             return this.convertToDistantBubbleWithUriCanDo(
+    //                                 searchResult.uri
+    //                             );
+    //                         }.bind(this));
+    //                     }.bind(this)
+    //                 }
+    //             )
+    //         ]
+    //     });
+    // }
+    // searchInput.focus();
 };
 
 GraphElementController.prototype.becomeExParent = function () {

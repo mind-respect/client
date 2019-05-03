@@ -6,7 +6,6 @@ import $ from 'jquery'
 import UserService from '@/service/UserService'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Router from '@/router';
-import api from "./UiUtils";
 const IdUri = {
     uuid: function () {
         // https://stackoverflow.com/a/2117523
@@ -42,9 +41,6 @@ const IdUri = {
     isSchemaUri: function (uri) {
         return uri.indexOf("/schema/") !== -1 &&
             uri.indexOf("/property") === -1;
-    },
-    isPropertyUri: function (uri) {
-        return uri.indexOf("/property") !== -1;
     },
     isEdgeUri: function (uri) {
         return GraphElementType.Relation === IdUri.getGraphElementTypeFromUri(

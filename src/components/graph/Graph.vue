@@ -48,6 +48,7 @@
         <RemoveDialog></RemoveDialog>
         <DescriptionDialog></DescriptionDialog>
         <FontDialog></FontDialog>
+        <TagDialog></TagDialog>
     </div>
     <!--<div :style="'width:' + rightWidth() + 'px'"></div>-->
 </template>
@@ -59,13 +60,13 @@
     import MainMenus from '@/components/graph/MainMenus'
     import Scroll from '@/Scroll'
     import Vue from 'vue'
-    import GraphUi from '@/graph/GraphUi'
     import SelectionHandler from '@/SelectionHandler'
     import SubGraphController from '@/graph/SubGraphController'
     import Vertex from '@/vertex/Vertex'
     import RemoveDialog from '@/components/RemoveDialog'
     import DescriptionDialog from '@/components/DescriptionDialog'
     import FontDialog from '@/components/FontDialog'
+    import TagDialog from '@/components/TagDialog'
     import SubGraph from '@/graph/SubGraph'
     import Store from '@/store'
     import Color from '@/Color'
@@ -77,6 +78,7 @@
             RemoveDialog,
             DescriptionDialog,
             FontDialog,
+            TagDialog,
             GraphDrawing,
             MainMenus
         },

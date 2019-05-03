@@ -3,7 +3,7 @@
  */
 
 import $ from 'jquery'
-import WikidataUri from '@/WikidataUri'
+import WikidataUri from '@/wikidata/WikidataUri'
 import Image from '@/image/Image'
 import EventBus from '@/EventBus'
 

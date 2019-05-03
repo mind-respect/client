@@ -1,16 +1,12 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import $ from 'jquery'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Identification from '@/identifier/Identification'
 import IdUri from '@/IdUri'
 import Color from '@/Color'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphElementType from '@/graph-element/GraphElementType'
-
-import WikidataUri from '@/WikidataUri'
-import Wikidata from '@/Wikidata'
 
 const controllerGetters = {};
 
@@ -169,24 +165,16 @@ GraphElement.GraphElement.prototype.hasAllIdentifiers = function (identifiers) {
     return has;
 };
 GraphElement.GraphElement.prototype.getIdentifierHavingExternalUri = function (externalUri) {
-    var identification = false;
-    $.each(this.getIdentifiersIncludingSelf(), function () {
-        if (this.getExternalResourceUri() === externalUri) {
-            identification = this;
-            return false;
-        }
+    let matching = this.getIdentifiersIncludingSelf().filter((identifier) => {
+        return identifier.getExternalResourceUri() === externalUri;
     });
-    return identification;
+    return matching.length ? matching[0] : false;
 };
 
 GraphElement.GraphElement.prototype.getIdentifiers = function () {
-    var identifiers = [];
-    this.identifiers.forEach(function (identifier) {
-        if (identifier.getExternalResourceUri() !== this.getUri()) {
-            return identifiers.push(identifier);
-        }
-    }.bind(this));
-    return identifiers;
+    return this.identifiers.filter((identifier) => {
+        return identifier.getExternalResourceUri() !== this.getUri()
+    });
 };
 
 GraphElement.GraphElement.prototype.getIdentifiersIncludingSelf = function () {
@@ -217,7 +205,7 @@ GraphElement.GraphElement.prototype.getRelevantTags = function () {
 };
 
 GraphElement.GraphElement.prototype.getSelfTag = function () {
-    var selfTag = this.getIdentifierHavingExternalUri(
+    let selfTag = this.getIdentifierHavingExternalUri(
         this.getUri()
     );
     return selfTag ? selfTag : this.buildSelfIdentifier();
@@ -228,26 +216,25 @@ GraphElement.GraphElement.prototype._buildIdentifications = function () {
     if (undefined === this.graphElementServerFormat.identifications) {
         return;
     }
-    var self = this;
-    $.each(this.graphElementServerFormat.identifications, function () {
-        self.identifiers.push(Identification.fromServerFormat(
-            this
-        ));
+    Object.values(
+        this.graphElementServerFormat.identifications
+    ).forEach((identifier) => {
+        this.identifiers.push(
+            Identification.fromServerFormat(
+                identifier
+            )
+        )
     });
 };
-GraphElement.GraphElement.prototype.hasIdentification = function (identification) {
-    var contains = false;
-    $.each(this.getIdentifiersIncludingSelf(), function () {
-        if (this.getExternalResourceUri() === identification.getExternalResourceUri()) {
-            contains = true;
-            return false;
-        }
-    });
-    return contains;
+GraphElement.GraphElement.prototype.hasIdentification = function (identifierToTest) {
+    return this.getIdentifiersIncludingSelf().some((identifier) => {
+        return identifier.getExternalResourceUri() === identifierToTest.getExternalResourceUri();
+    })
 };
 
+
 GraphElement.GraphElement.prototype.buildSelfIdentifier = function () {
-    var identification = Identification.fromFriendlyResource(
+    let identification = Identification.fromFriendlyResource(
         this
     );
     identification.setLabel(
@@ -260,7 +247,7 @@ GraphElement.GraphElement.prototype.buildSelfIdentifier = function () {
 };
 
 GraphElement.GraphElement.prototype.buildTwiceSelfIdentifier = function () {
-    var identification = Identification.fromFriendlyResource(
+    let identification = Identification.fromFriendlyResource(
         this
     );
     identification.makeExternalUriATwiceReference();
@@ -279,10 +266,9 @@ GraphElement.GraphElement.prototype.isRelatedToIdentifier = function (identifica
 };
 
 GraphElement.GraphElement.prototype.addIdentifications = function (identifications) {
-    var self = this;
-    $.each(identifications, function () {
-        self.addIdentification(
-            this
+    return identifications.forEach((identifier) => {
+        this.addIdentification(
+            identifier
         );
     });
 };
@@ -299,14 +285,10 @@ GraphElement.GraphElement.prototype.addIdentification = function (identification
 };
 
 GraphElement.GraphElement.prototype.getFirstIdentificationToAGraphElement = function () {
-    var identification = false;
-    $.each(this.getIdentifiersIncludingSelf(), function () {
-        if (IdUri.isUriOfAGraphElement(this.getExternalResourceUri())) {
-            identification = this;
-            return false;
-        }
+    let matching = this.getIdentifiersIncludingSelf().filter((identifier) => {
+        return IdUri.isUriOfAGraphElement(identifier.getExternalResourceUri());
     });
-    return identification;
+    return matching.length ? matching[0] : false;
 };
 
 GraphElement.GraphElement.prototype.setSortDate = function (sortDate) {
@@ -373,7 +355,7 @@ GraphElement.GraphElement.prototype.isPristine = function () {
 
 
 GraphElement.GraphElement.prototype.getTextOrDefault = function () {
-    var text = this.getLabel();
+    let text = this.getLabel();
     return "" === text.trim() ?
         this.getWhenEmptyLabel() :
         text;
@@ -384,7 +366,7 @@ GraphElement.GraphElement.prototype.getController = function () {
 };
 
 GraphElement.GraphElement.prototype.getControllerWithElements = function (elements) {
-    var controller = this._getControllerClass();
+    let controller = this._getControllerClass();
     return new controller[
         this._getControllerName()
         ](elements);

@@ -204,41 +204,6 @@ VertexController.prototype.removeCanDo = function () {
 
 VertexController.prototype.remove = function (skipConfirmation) {
     Store.dispatch("setIsRemoveFlow", true);
-    //
-    // var isPristine = this.getModelArray().every(function (model) {
-    //     return model.isPristine();
-    // });
-    // if (skipConfirmation === undefined && isPristine) {
-    //     skipConfirmation = true;
-    // }
-    // if (skipConfirmation) {
-    //     return deleteAfterConfirmationBehavior.bind(this)(
-    //         this.vertices
-    //     );
-    // }
-    // return BubbleDeleteMenu.forVertices(
-    //     this.vertices
-    // ).ask().then(
-    //     deleteAfterConfirmationBehavior.bind(this)
-    // );
-    //
-    // function deleteAfterConfirmationBehavior() {
-    //     SelectionHandler.removeAll();
-    //     let removePromise = this.isSingle() ?
-    //         VertexService.remove(
-    //             this.getUi()
-    //         ) :
-    //         VertexService.removeCollection(
-    //             this.getUi()
-    //         );
-    //     return removePromise.then(function () {
-    //         this.getUiArray().forEach(function (ui) {
-    //             ui.remove();
-    //         });
-    //         Store.dispatch("setIsRemoveFlow", true);
-    //         Store.dispatch("redraw");
-    //     }.bind(this));
-    // }
 };
 
 VertexController.prototype.imagesCanDo = function () {

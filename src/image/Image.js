@@ -1,8 +1,8 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import $ from 'jquery'
-import WikidataUri from '@/WikidataUri'
+import axios from 'axios'
+import WikidataUri from '@/wikidata/WikidataUri'
 
 const Image = {
     fromServerJson: function (imageAsServerJson) {
@@ -12,23 +12,14 @@ const Image = {
         );
     },
     arrayToServerJson: function (images) {
-        let imagesJson = [];
-        $.each(images, function () {
-            imagesJson.push(
-                this.jsonFormat()
-            );
+        return images.map((image) => {
+            image.jsonFormat();
         });
-        return imagesJson;
     },
     arrayFromServerJson: function (imagesAsServerJson) {
-        var images = [];
-        $.each(imagesAsServerJson, function () {
-            var imageAsJson = this;
-            images.push(
-                Image.fromServerJson(imageAsJson)
-            );
-        });
-        return images;
+        return imagesAsServerJson.map((image) => {
+            return Image.fromServerJson(image)
+        })
     },
     withBase64ForSmallAndUrlForBigger: function (base64ForSmall, urlForBigger) {
         return new Image.Image(
@@ -37,23 +28,17 @@ const Image = {
         );
     },
     getBase64OfExternalUrl: function (url) {
-        let deferred = $.Deferred();
-        let img = $("<img>")
-            .attr(
-                "crossOrigin",
-                "Anonymous"
-            ).appendTo("body").load(function () {
-                    deferred.resolve(
-                        getBase64Image(this)
-                    );
-                }
-            ).error(function () {
-                deferred.reject();
-            }).prop(
-                "src",
-                url
-            );
-        return deferred.promise();
+        return new Promise(function (resolve, reject) {
+            let img = document.createElement('img');
+            img.crossorigin = "anonymous";
+            img.src = url;
+            document.getElementById('drawn_graph').appendChild(img);
+            img.onload = function () {
+                getBase64Image(this).then((base64) => {
+                    resolve(base64)
+                }).catch(reject);
+            };
+        });
     },
     srcUrlForBase64: function (base64) {
         return "data:application/octet-stream;base64," + base64;

@@ -5,7 +5,6 @@
 import Vue from 'vue'
 import GraphElementController from '@/graph-element/GraphElementController'
 import EdgeService from '@/edge/EdgeService'
-import BubbleDeleteMenu from '@/bubble/BubbleDeleteMenu'
 import GraphElementType from '@/graph-element/GraphElementType'
 import SelectionHandler from '@/SelectionHandler'
 import GroupRelation from '@/group-relation/GroupRelation'
@@ -151,28 +150,28 @@ EdgeController.prototype.removeCanDo = function () {
 };
 
 EdgeController.prototype.remove = function (skipConfirmation) {
-    if (skipConfirmation) {
-        return deleteAfterConfirmationBehavior.bind(this)();
-    }
-    return BubbleDeleteMenu.forRelation(
-        this.getUi()
-    ).ask().then(
-        deleteAfterConfirmationBehavior.bind(this)
-    );
-
-    function deleteAfterConfirmationBehavior() {
-        return EdgeService.remove(this.getUi(), function () {
-            var parentBubble = this.getUi().getParentBubble();
-            var childVertex = this.getUi().getNextBubble()();
-            this.getUi().applyToOtherInstances(function (otherInstance) {
-                var childVertex = otherInstance.getNextBubble()();
-                childVertex.remove(false);
-            });
-            childVertex.remove(false);
-            parentBubble.getModel().decrementNumberOfConnectedEdges();
-            parentBubble.sideCenterOnScreenWithAnimation();
-        }.bind(this));
-    }
+    // if (skipConfirmation) {
+    //     return deleteAfterConfirmationBehavior.bind(this)();
+    // }
+    // return BubbleDeleteMenu.forRelation(
+    //     this.getUi()
+    // ).ask().then(
+    //     deleteAfterConfirmationBehavior.bind(this)
+    // );
+    //
+    // function deleteAfterConfirmationBehavior() {
+    //     return EdgeService.remove(this.getUi(), function () {
+    //         var parentBubble = this.getUi().getParentBubble();
+    //         var childVertex = this.getUi().getNextBubble()();
+    //         this.getUi().applyToOtherInstances(function (otherInstance) {
+    //             var childVertex = otherInstance.getNextBubble()();
+    //             childVertex.remove(false);
+    //         });
+    //         childVertex.remove(false);
+    //         parentBubble.getModel().decrementNumberOfConnectedEdges();
+    //         parentBubble.sideCenterOnScreenWithAnimation();
+    //     }.bind(this));
+    // }
 };
 EdgeController.prototype.reverseToRightCanDo = function () {
     if (!this.isSingleAndOwned()) {

@@ -19,16 +19,16 @@ const WikidataUri = {
         return uri.indexOf("wikimedia.org") !== -1;
     },
     thumbUrlForImageName: function (imageName) {
-        return api._getImageUrlAtSizeInPixelsFromImageName(
-            60,
+        return WikidataUri._getImageUrlAtSizeInPixelsFromImageName(
+            40,
             imageName
         );
     },
     _getImageUrlAtSizeInPixelsFromImageName: function (size, imageName) {
         imageName = replaceWhiteSpace(imageName);
-        var md5 = MD5(imageName);
-        var firstChar = md5[0];
-        var firstAndSecondChar = firstChar + md5[1];
+        let md5 = MD5(imageName);
+        let firstChar = md5[0];
+        let firstAndSecondChar = firstChar + md5[1];
         imageName = replaceParenthesis(
             encodeURIComponent(
                 imageName
@@ -40,9 +40,9 @@ const WikidataUri = {
             imageName;
     },
     get600pxUrlFromRawUrl: function (rawImageUrl) {
-        return api._getImageUrlAtSizeInPixelsFromImageName(
+        return WikidataUri._getImageUrlAtSizeInPixelsFromImageName(
             600,
-            api._getImageNameFromRawUrl(
+            WikidataUri._getImageNameFromRawUrl(
                 rawImageUrl
             )
         );

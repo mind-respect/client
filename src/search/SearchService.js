@@ -4,8 +4,27 @@
 
 import $ from 'jquery'
 import UserService from '@/service/UserService'
+import WikidataService from '@/wikidata/WikidataService'
 
 const api = {};
+api.tags = function (term) {
+    return resultsFromProviders([
+        WikidataService.search(term)
+    ])
+};
+
+function resultsFromProviders(providers) {
+    let allResults = [];
+    providers.forEach((provider) => {
+        provider.then((results) => {
+            allResults = allResults.concat(results);
+        })
+    });
+    return Promise.all(providers).then(() => {
+        return allResults;
+    });
+}
+
 api.searchForAllOwnResources = function (searchText) {
     return $.ajax({
         type: 'POST',
@@ -14,7 +33,7 @@ api.searchForAllOwnResources = function (searchText) {
         }),
         contentType: 'application/json;charset=utf-8',
         url: UserService.currentUserUri() +
-        "/search/own_all_resource/auto_complete"
+            "/search/own_all_resource/auto_complete"
     });
 };
 
@@ -36,7 +55,7 @@ api.searchForOnlyOwnVerticesAjaxCall = function (searchText) {
         }),
         contentType: 'application/json;charset=utf-8',
         url: UserService.currentUserUri() +
-        "/search/own_vertices/auto_complete"
+            "/search/own_vertices/auto_complete"
     });
 };
 api.searchOwnTags = function (searchText) {
@@ -47,7 +66,7 @@ api.searchOwnTags = function (searchText) {
         }),
         contentType: 'application/json;charset=utf-8',
         url: UserService.currentUserUri() +
-        "/search/own_tags/auto_complete"
+            "/search/own_tags/auto_complete"
     });
 };
 api.searchForOnlyOwnTagsAjaxCall = function (searchText) {
@@ -58,7 +77,7 @@ api.searchForOnlyOwnTagsAjaxCall = function (searchText) {
         }),
         contentType: 'application/json;charset=utf-8',
         url: UserService.currentUserUri() +
-        "/search/own_tags/auto_complete"
+            "/search/own_tags/auto_complete"
     });
 };
 api.searchForOnlyOwnVerticesAndSchemasAjaxCall = function (searchText) {
@@ -69,7 +88,7 @@ api.searchForOnlyOwnVerticesAndSchemasAjaxCall = function (searchText) {
         }),
         contentType: 'application/json;charset=utf-8',
         url: UserService.currentUserUri() +
-        "/search/own_vertices_and_schemas/auto_complete"
+            "/search/own_vertices_and_schemas/auto_complete"
     });
 };
 api.searchForOwnVerticesAndPublicOnesAjaxCall = function (searchText) {
@@ -80,7 +99,7 @@ api.searchForOwnVerticesAndPublicOnesAjaxCall = function (searchText) {
         }),
         contentType: 'application/json;charset=utf-8',
         url: UserService.currentUserUri() +
-        "/search/vertices/auto_complete"
+            "/search/vertices/auto_complete"
     });
 };
 api.searchForOwnRelationsAjaxCall = function (searchText) {
@@ -91,7 +110,7 @@ api.searchForOwnRelationsAjaxCall = function (searchText) {
         }),
         contentType: 'application/json;charset=utf-8',
         url: UserService.currentUserUri() +
-        "/search/relations/auto_complete"
+            "/search/relations/auto_complete"
     });
 };
 api.getSearchResultDetails = function (uri, callback) {
@@ -108,7 +127,7 @@ api.getSearchResultDetailsAjaxCall = function (uri) {
     return $.ajax({
         type: 'GET',
         url: baseUri +
-        "details?uri=" + uri
+            "details?uri=" + uri
     });
 };
 api.searchForPublicVerticesAndSchemasAjaxCall = function (searchText) {

@@ -5,8 +5,8 @@ import $ from 'jquery'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import IdUri from '@/IdUri'
 // import Search from "jquery.triple_brain.search"
-import WikidataUri from '@/WikidataUri'
-import Wikidata from '@/Wikidata'
+import WikidataUri from '@/wikidata/WikidataUri'
+import Wikidata from '@/wikidata/Wikidata'
 
 const RELATION_URIS = {
     "sameAs": "same-as",
