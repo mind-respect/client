@@ -6,7 +6,7 @@
     <v-dialog v-model="dialog" width="900" v-if="dialog">
         <v-card>
             <v-card-title class="title">
-<!--                <v-icon class="mr-2">label</v-icon>-->
+                <!--                <v-icon class="mr-2">label</v-icon>-->
                 {{$t('tag:title')}}
                 "{{selected.getLabel()}}"
                 <v-spacer></v-spacer>
@@ -18,31 +18,26 @@
             </v-card-title>
             <v-card-text class="pt-0 pb-0">
                 <v-autocomplete
-                        v-model="select"
+                        ref="search"
+                        v-model="selectedSearchResult"
                         attach="#tagDialog"
                         :items="items"
                         :search-input.sync="search"
-                        item-value="uri"
                         item-text="label"
+                        return-object
                         :menu-props="menuProps"
                         :loading="loading"
+                        @change="selectSearchResult()"
                         cache-items
                         hide-no-data
                 >
                     <template v-slot:prepend-inner>
-                        <!--                        <v-avatar size="20">-->
-                        <!--                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png" alt="avatar">-->
-                        <!--                        </v-avatar>-->
                         <i class="fab fa-wikipedia-w mt-1"></i>
                         <v-icon>
                             label
                         </v-icon>
                     </template>
                     <template v-slot:item="{ item }">
-                        <!--                        <v-list-tile-action v-if="item.imageUrl">-->
-                        <!--                            <img crossorigin="anonymous" :src="item.imageUrl"  width="40">-->
-                        <!--                            <v-img crossorigin="anonymous" :src="item.imageUrl" max-height="60"></v-img>-->
-                        <!--                        </v-list-tile-action>-->
                         <v-list-tile-content>
                             <v-list-tile-title>
                                 {{item.label}}
@@ -56,18 +51,18 @@
                         </v-list-tile-action>
                     </template>
                 </v-autocomplete>
-                </v-layout>
             </v-card-text>
             <v-card flat class="pt-0">
                 <v-card-text class="pt-0" id="tagDialog"></v-card-text>
             </v-card>
             <v-card min-height="150" flat class="pt-0">
-                <v-list subheader>
+                <v-list subheader three-line>
                     <v-subheader>
                         {{$t('tag:tags')}}
                     </v-subheader>
                     <v-list-tile v-for="identifier in selected.getIdentifiers()">
-                        <v-list-tile-action>
+                        <v-list-tile-action v-if="identifier.hasImages()">
+                            <img :src="identifier.getImage().urlForSmall">
                         </v-list-tile-action>
                         <v-list-tile>
                             <v-list-tile-content>
@@ -79,6 +74,14 @@
                                 </v-list-tile-sub-title>
                             </v-list-tile-content>
                         </v-list-tile>
+                        <v-spacer></v-spacer>
+                        <v-list-tile-action>
+                            <v-btn icon flat @click="removeIdentifier(identifier)">
+                                <v-icon color="third">
+                                    delete
+                                </v-icon>
+                            </v-btn>
+                        </v-list-tile-action>
                     </v-list-tile>
                 </v-list>
             </v-card>
@@ -97,7 +100,7 @@
 
 <script>
     import I18n from '@/I18n'
-    import GraphElement from '@/graph-element/GraphElement'
+    import Identification from '@/identifier/Identification'
     import SelectionHandler from '@/SelectionHandler'
     import SearchService from '@/search/SearchService'
 
@@ -115,8 +118,9 @@
             return {
                 dialog: false,
                 loading: false,
-                select: null,
+                selectedSearchResult: null,
                 search: null,
+                identifier: null,
                 items: [],
                 menuProps: {
                     "content-class": 'search-menu'
@@ -141,6 +145,9 @@
             isTagFlow: function () {
                 if (this.$store.state.isTagFlow) {
                     this.dialog = true;
+                    this.$nextTick(() => {
+                        this.$refs.search.focus();
+                    })
                 } else {
                     this.dialog = false;
                 }
@@ -158,6 +165,42 @@
                     this.items = results;
                     this.loading = false;
                 });
+            },
+            selectSearchResult: function () {
+                this.search = '';
+                let identifier = Identification.fromSearchResult(
+                    this.selectedSearchResult
+                );
+                if (this.selected.getModel().hasIdentification(identifier)) {
+                    return false;
+                }
+                identifier.makeGeneric();
+                this.selectedSearchResult.getImageUrl(this.selectedSearchResult).then((imageUrl) => {
+                    identifier.addImage(imageUrl);
+                    this.identify(identifier);
+                });
+                // var self = this;
+                // SchemaSuggestion.addSchemaSuggestionsIfApplicable(
+                //     graphElement,
+                //     searchResult.uri
+                // );
+                // if (graphElement.isSuggestion()) {
+                //     var vertexSuggestion = graphElement.isRelationSuggestion() ?
+                //         graphElement.childVertexInDisplay() : graphElement;
+                //     vertexSuggestion.getController().accept(vertexSuggestion).then(
+                //         identify
+                //     );
+                // } else {
+                // }
+                return identifier;
+            },
+            identify: function (identifier) {
+                this.selected.getController().addIdentification(
+                    identifier
+                );
+            },
+            removeIdentifier: function (identifier) {
+                this.selected.getController().removeIdentifier(identifier);
             }
         }
     }

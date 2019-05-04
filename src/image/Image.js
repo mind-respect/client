@@ -1,19 +1,17 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import axios from 'axios'
-import WikidataUri from '@/wikidata/WikidataUri'
 
 const Image = {
     fromServerJson: function (imageAsServerJson) {
         return new Image.Image(
-            imageAsServerJson.base64ForSmall,
+            imageAsServerJson.urlForSmall,
             imageAsServerJson.urlForBigger
         );
     },
     arrayToServerJson: function (images) {
         return images.map((image) => {
-            image.jsonFormat();
+            return image.jsonFormat();
         });
     },
     arrayFromServerJson: function (imagesAsServerJson) {
@@ -21,9 +19,9 @@ const Image = {
             return Image.fromServerJson(image)
         })
     },
-    withBase64ForSmallAndUrlForBigger: function (base64ForSmall, urlForBigger) {
+    withUrlForSmallAndBig: function (urlForSmall, urlForBigger) {
         return new Image.Image(
-            base64ForSmall,
+            urlForSmall,
             urlForBigger
         );
     },
@@ -45,52 +43,47 @@ const Image = {
     }
 };
 
-function getBase64Image(imgElem) {
-    var canvas = document.createElement("canvas");
-    canvas.width = imgElem.clientWidth;
-    canvas.height = imgElem.clientHeight;
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(imgElem, 0, 0);
-    imgElem.crossOrigin = 'Access-Control-Allow-Origin';
-    var dataURL = canvas.toDataURL("image/png");
-    return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-}
+Image.Image = function (urlForSmall, urlForBigger) {
+    this.urlForSmall = urlForSmall;
+    this.urlForBigger = urlForBigger;
+};
+Image.Image.prototype.isUploadedByUser = function () {
+    return this.urlForBigger.indexOf(
+        window.location.hostname
+    ) !== -1;
+};
+Image.Image.prototype.getBase64ForSmall = function () {
+    return api.srcUrlForBase64(this.urlForSmall);
+};
+Image.Image.prototype.getUrlForBigger = function () {
+    return this.urlForBigger;
+};
+Image.Image.prototype.getUrlFor600pxOrBig = function () {
+    return this.urlForBigger;
+};
 
-Image.Image = function (base64ForSmall, urlForBigger) {
-    var self = this;
-    this.isUploadedByUser = function () {
-        return self.getUrlForBigger().indexOf(
-            window.location.hostname
-        ) !== -1;
+Image.Image.prototype.serverFormat = function () {
+    return this.jsonFormat();
+};
+Image.Image.prototype.jsonFormat = function () {
+    return {
+        urlForSmall: this.urlForSmall,
+        urlForBigger: this.urlForBigger
     };
-    this.getBase64ForSmall = function () {
-        return api.srcUrlForBase64(base64ForSmall);
-    };
-    this.getUrlForBigger = function () {
-        return urlForBigger;
-    };
-    this.getUrlFor600pxOrBig = function () {
-        if (WikidataUri.isAWikidataImageUrl(urlForBigger)) {
-            return WikidataUri.get600pxUrlFromRawUrl(
-                urlForBigger
-            );
-        }
-        return urlForBigger;
-    };
-    this.serverFormat = function () {
-        return JSON.stringify(
-            self.jsonFormat()
-        );
-    };
-    this.jsonFormat = function () {
-        return {
-            base64ForSmall: base64ForSmall,
-            urlForBigger: self.getUrlForBigger()
-        };
-    };
-    this.isEqualTo = function (image) {
-        return self.getUrlForBigger() === image.getUrlForBigger();
-    };
+};
+Image.Image.prototype.isEqualTo = function (image) {
+    return this.getUrlForBigger() === image.getUrlForBigger();
 };
 
 export default Image;
+
+function getBase64Image(imgElem) {
+    let canvas = document.createElement("canvas");
+    canvas.width = imgElem.clientWidth;
+    canvas.height = imgElem.clientHeight;
+    let ctx = canvas.getContext("2d");
+    ctx.drawImage(imgElem, 0, 0);
+    imgElem.crossOrigin = 'Access-Control-Allow-Origin';
+    let dataURL = canvas.toDataURL("image/png");
+    return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+}

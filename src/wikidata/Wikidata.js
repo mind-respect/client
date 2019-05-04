@@ -80,10 +80,10 @@ const Wikidata = {
         return deferred.promise();
     }
 };
-EventBus.before(
-    '/event/ui/graph/before/identification/added',
-    Wikidata._beforeIdentificationAdded
-);
+// EventBus.before(
+//     '/event/ui/graph/before/identification/added',
+//     Wikidata._beforeIdentificationAdded
+// );
 
 export default Wikidata;
 
@@ -105,7 +105,7 @@ function imageFromSearchResult(result, wikidataId) {
         thumbUrl
     ).then(function (imageBase64) {
         deferred.resolve(
-            Image.withBase64ForSmallAndUrlForBigger(
+            Image.withUrlForSmallAndBig(
                 imageBase64,
                 WikidataUri.rawImageUrlFromThumbUrl(thumbUrl)
             )

@@ -20,7 +20,13 @@ const WikidataUri = {
     },
     thumbUrlForImageName: function (imageName) {
         return WikidataUri._getImageUrlAtSizeInPixelsFromImageName(
-            40,
+            60,
+            imageName
+        );
+    },
+    bigUrlForImageName: function (imageName) {
+        return WikidataUri._getImageUrlAtSizeInPixelsFromImageName(
+            600,
             imageName
         );
     },

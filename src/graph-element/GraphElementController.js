@@ -527,35 +527,29 @@ GraphElementController.prototype.addIdentification = function (identifier) {
     if (this.getModel().hasIdentification(identifier)) {
         return Promise.resolve()
     }
+    this.getModel().addIdentification(
+        identifier
+    );
     return GraphElementService.addIdentification(
         this.getModel(),
         identifier
-    ).then(function (identifications) {
+    ).then((identifications) => {
         this.getModel().addIdentifications(
             identifications
         );
-        Object.values(identifications).forEach(function (identifier) {
-            this.getModel().addIdentification(
-                identifier
-            );
-            EventBus.publish(
-                identificationBaseEventBusKey + "added",
-                [this.getModel(), identifier]
-            );
-        }.bind(this));
         return identifications;
-    }.bind(this));
+    });
 };
 
 GraphElementController.prototype.removeIdentifier = function (identifier) {
-    return new Promise(function (resolve) {
+    this.getModel().removeIdentifier(
+        identifier
+    );
+    return new Promise((resolve) => {
         GraphElementService.removeIdentifier(
-            this.getUi(),
+            this.getModel(),
             identifier
-        ).then(function () {
-            this.getModel().removeIdentifier(
-                identifier
-            );
+        ).then(() => {
             resolve();
             // this.getModel().applyToOtherInstances(function (otherUi) {
             //     otherUi.getModel().removeIdentifier(
@@ -568,8 +562,8 @@ GraphElementController.prototype.removeIdentifier = function (identifier) {
             //     eventBusKey,
             //     [this.getModel(), identifier]
             // );
-        }.bind(this));
-    }.bind(this));
+        });
+    });
 };
 GraphElementController.prototype.selectTreeCanDo = function () {
     return this.isSingleAndOwned() && !this.getModel().isLeaf();

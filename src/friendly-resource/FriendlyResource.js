@@ -196,6 +196,9 @@ FriendlyResource.FriendlyResource.prototype.hasComment = function () {
 FriendlyResource.FriendlyResource.prototype.addImage = function (image) {
     this._images.push(image);
 };
+FriendlyResource.FriendlyResource.prototype.getImage = function () {
+    return this._images[0]
+};
 FriendlyResource.FriendlyResource.prototype.getImages = function () {
     return this._images;
 };
@@ -419,9 +422,9 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
 };
 
 FriendlyResource.FriendlyResource.prototype.revertIdentificationIntegration = function (identifier) {
-    identifier.getImages().forEach(function (image) {
+    identifier.getImages().forEach((image) => {
         this.removeImage(image);
-    }.bind(this));
+    });
 };
 
 FriendlyResource.FriendlyResource.prototype.moveToParent = function (parent) {
@@ -702,10 +705,9 @@ FriendlyResource.FriendlyResource.prototype.visitAllImmediateChild = function (v
 FriendlyResource.FriendlyResource.prototype.getJsonFormat = function () {
     var serverFormat = this.getServerFormat();
     serverFormat.images = this.getImagesServerFormat();
-    return JSON.stringify(
-        serverFormat
-    );
+    return serverFormat;
 };
+
 FriendlyResource.FriendlyResource.prototype.getImagesServerFormat = function () {
     return Image.arrayToServerJson(
         this._images

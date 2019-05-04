@@ -2,6 +2,7 @@ import axios from 'axios'
 import WikidataUri from '@/wikidata/WikidataUri'
 import I18n from '@/I18n'
 import jsonpAdapter from 'axios-jsonp';
+import Image from '@/image/Image'
 
 
 const WikidataService = {};
@@ -20,12 +21,28 @@ WikidataService.search = function (term) {
                 url: searchResult.url,
                 label: searchResult.label,
                 description: searchResult.description,
+                getImageUrl: WikidataService.getImageUrl,
                 original: searchResult,
-                source:"wikidata"
+                source: "wikidata"
             }
         })
     }).then((searchResults) => {
         return this._searchResultsWithImageUrl(searchResults);
+    });
+};
+
+WikidataService.getImageUrl = function (searchResult) {
+    let url = WikidataUri.BASE_URL + "/w/api.php?action=wbgetentities&ids=" +
+        searchResult.original.id + "&props=claims&format=json";
+    return axios({
+        method: "get",
+        url: url,
+        adapter: jsonpAdapter,
+    }).then(function (response) {
+        return imageUrlFromSearchResult(
+            response.data,
+            searchResult.original.id
+        );
     });
 };
 
@@ -60,7 +77,10 @@ function imageUrlFromSearchResult(result, wikidataId) {
         return;
     }
     let imageName = imageRelation[0].mainsnak.datavalue.value;
-    return WikidataUri.thumbUrlForImageName(imageName);
+    return Image.withUrlForSmallAndBig(
+        WikidataUri.thumbUrlForImageName(imageName),
+        WikidataUri.bigUrlForImageName(imageName)
+    );
 }
 
 export default WikidataService;

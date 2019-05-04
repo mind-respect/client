@@ -1,10 +1,8 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import $ from 'jquery'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import IdUri from '@/IdUri'
-// import Search from "jquery.triple_brain.search"
 import WikidataUri from '@/wikidata/WikidataUri'
 import Wikidata from '@/wikidata/Wikidata'
 
@@ -15,26 +13,22 @@ const RELATION_URIS = {
 };
 const Identification = {
     fromMultipleServerFormat: function (serverFormat, relationExternalResourceUri) {
-        var identifications = {};
-        $.each(serverFormat, function (externalUri, identificationServerFormat) {
-            var identification = Identification.fromServerFormat(
-                identificationServerFormat
+        return Object.values(
+            serverFormat
+        ).map((serverFormat) => {
+            let identifier = Identification.fromServerFormat(
+                serverFormat
             );
-            identification.setRelationExternalResourceUri(
+            identifier.setRelationExternalResourceUri(
                 relationExternalResourceUri
             );
-            identifications[externalUri] = identification;
+            return identifier;
         });
-        return identifications;
     },
     getServerFormatArrayFromFacadeArray: function (identifications) {
-        var serverFormat = [];
-        $.each(identifications, function () {
-            serverFormat.push(
-                this.getServerFormat()
-            );
+        return identifications.map((identifier) => {
+            return identifier.getServerFormat();
         });
-        return serverFormat;
     },
     fromServerFormat: function (serverFormat) {
         return new Identification.Identification().init(serverFormat);
@@ -45,7 +39,7 @@ const Identification = {
         );
     },
     fromFriendlyResource: function (friendlyResource) {
-        var identification = new Identification.Identification().init({
+        let identification = new Identification.Identification().init({
             externalResourceUri: friendlyResource.getUri(),
             friendlyResource: FriendlyResource.clone(friendlyResource).getServerFormat()
         });
@@ -85,20 +79,11 @@ const Identification = {
         });
     },
     fromSearchResult: function (searchResult) {
-        var identification = Identification.withUriLabelAndDescription(
+        let identification = Identification.withUriLabelAndDescription(
             searchResult.uri,
             searchResult.label,
-            searchResult.comment
+            searchResult.description
         );
-        // if (Search.hasCachedDetailsForSearchResult(searchResult)) {
-        //     var moreInfo = Search.getCachedDetailsOfSearchResult(searchResult);
-        //     if (moreInfo.image !== undefined) {
-        //         identification.addImage(moreInfo.image);
-        //     }
-        //     if (!identification.hasComment() && moreInfo.comment !== "") {
-        //         identification.setComment(moreInfo.comment);
-        //     }
-        // }
         return identification;
     }
 };
@@ -183,11 +168,9 @@ Identification.Identification.prototype.hasRelationExternalUri = function () {
 };
 
 Identification.Identification.prototype.getJsonFormat = function () {
-    var serverFormat = this.getServerFormat();
+    let serverFormat = this.getServerFormat();
     serverFormat.friendlyResource.images = this.getImagesServerFormat();
-    return JSON.stringify(
-        serverFormat
-    );
+    return serverFormat;
 };
 
 Identification.Identification.prototype.getNbReferences = function () {
@@ -215,17 +198,17 @@ Identification.Identification.prototype.getIdentifiers = function () {
     return [this];
 };
 Identification.Identification.prototype._buildWikidataLink = function () {
-    var deferred = $.Deferred().resolve(false);
-    var externalUri = this.getExternalResourceUri();
+    let promise = Promise.resolve(false);
+    let externalUri = this.getExternalResourceUri();
     if (WikidataUri.isAWikidataUri(externalUri)) {
-        deferred = Wikidata.getWikipediaUrlFromWikidataUri(externalUri).then(function (wikipediaUrl) {
+        promise = Wikidata.getWikipediaUrlFromWikidataUri(externalUri).then((wikipediaUrl) => {
             return {
                 link: wikipediaUrl,
                 label: this.getLabel()
             };
-        }.bind(this));
+        });
     }
-    return deferred.promise();
+    return promise;
 };
 Identification.Identification.prototype.getWikipediaLink = function () {
     return this.wikipediaLinkPromise;
