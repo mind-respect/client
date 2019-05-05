@@ -4,7 +4,7 @@
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import IdUri from '@/IdUri'
 import WikidataUri from '@/wikidata/WikidataUri'
-import Wikidata from '@/wikidata/Wikidata'
+import WikidataService from '@/wikidata/WikidataService'
 
 const RELATION_URIS = {
     "sameAs": "same-as",
@@ -102,7 +102,6 @@ Identification.Identification.prototype.init = function (serverFormat) {
         this,
         serverFormat.friendlyResource
     );
-    this.wikipediaLinkPromise = this._buildWikidataLink();
     return this;
 };
 
@@ -197,30 +196,28 @@ Identification.Identification.prototype.hasIdentifications = function () {
 Identification.Identification.prototype.getIdentifiers = function () {
     return [this];
 };
-Identification.Identification.prototype._buildWikidataLink = function () {
-    let promise = Promise.resolve(false);
-    let externalUri = this.getExternalResourceUri();
-    if (WikidataUri.isAWikidataUri(externalUri)) {
-        promise = Wikidata.getWikipediaUrlFromWikidataUri(externalUri).then((wikipediaUrl) => {
-            return {
-                link: wikipediaUrl,
-                label: this.getLabel()
-            };
-        });
-    }
-    return promise;
-};
-Identification.Identification.prototype.getWikipediaLink = function () {
-    return this.wikipediaLinkPromise;
-};
+
 Identification.Identification.prototype.isPristine = function () {
     return false;
 };
 
 Identification.Identification.prototype.getFont = function () {
     return {
-        family: 'IBM Plex Sans'
+        family: 'Roboto'
     };
+};
+
+Identification.Identification.prototype.getUrl = function () {
+    let externalUri = this.getExternalResourceUri();
+    if (this.url) {
+        return Promise.resolve(this.url);
+    }
+    let promise = WikidataUri.isAWikidataUri(externalUri) ?
+        WikidataService.getWikipediaUrlFromWikidataUri(externalUri) : Promise.resolve(IdUri.htmlUrlForBubbleUri(externalUri));
+    return promise.then((url) => {
+        this.url = url;
+        return this.url;
+    });
 };
 
 export default Identification;

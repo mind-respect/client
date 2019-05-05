@@ -6,7 +6,6 @@ import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import MindMapInfo from '@/MindMapInfo'
-import EventBus from '@/EventBus'
 import Command from '@/Command'
 import SelectionHandler from '@/SelectionHandler'
 import ToList from '@/ToList'
@@ -14,6 +13,7 @@ import Store from '@/store'
 import router from '@/router'
 import Scroll from '@/Scroll'
 import Vue from 'vue'
+import TagService from '@/identifier/TagService'
 
 const api = {};
 let bubbleCutClipboard,
@@ -530,7 +530,7 @@ GraphElementController.prototype.addIdentification = function (identifier) {
     this.getModel().addIdentification(
         identifier
     );
-    return GraphElementService.addIdentification(
+    return TagService.add(
         this.getModel(),
         identifier
     ).then((identifications) => {
@@ -546,7 +546,7 @@ GraphElementController.prototype.removeIdentifier = function (identifier) {
         identifier
     );
     return new Promise((resolve) => {
-        GraphElementService.removeIdentifier(
+        GraphElementService.remove(
             this.getModel(),
             identifier
         ).then(() => {

@@ -345,6 +345,12 @@
                         }
                     },
                     {
+                        icon: "label",
+                        condition: function (bubble) {
+                            return bubble.getIdentifiers().length > 1;
+                        }
+                    },
+                    {
                         icon: "lock",
                         condition: function (bubble) {
                             return bubble.isPrivate()
@@ -737,10 +743,10 @@
         z-index: 10;
     }
 
-    .top-vertex-arrow-drop{
+    .top-vertex-arrow-drop {
         height: 50% !important;
-        top:0;
-        margin-top:-10px
+        top: 0;
+        margin-top: -10px
     }
 
     .bottom-vertex-drop-arrow-drop {

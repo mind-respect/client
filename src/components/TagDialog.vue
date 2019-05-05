@@ -60,9 +60,9 @@
                     <v-subheader>
                         {{$t('tag:tags')}}
                     </v-subheader>
-                    <v-list-tile v-for="identifier in selected.getIdentifiers()">
+                    <v-list-tile v-for="identifier in identifiersByLatest" :href="identifier.url" target="_blank">
                         <v-list-tile-action v-if="identifier.hasImages()">
-                            <img :src="identifier.getImage().urlForSmall">
+                            <v-img :src="identifier.getImage().urlForSmall" max-height="90"></v-img>
                         </v-list-tile-action>
                         <v-list-tile>
                             <v-list-tile-content>
@@ -75,6 +75,7 @@
                             </v-list-tile-content>
                         </v-list-tile>
                         <v-spacer></v-spacer>
+                        <i class="fab fa-wikipedia-w mr-4"></i>
                         <v-list-tile-action>
                             <v-btn icon flat @click="removeIdentifier(identifier)">
                                 <v-icon color="third">
@@ -136,6 +137,9 @@
             },
             isTagFlow: function () {
                 return this.$store.state.isTagFlow;
+            },
+            identifiersByLatest: function () {
+                return this.selected.getIdentifiers().reverse();
             }
         },
         watch: {
@@ -144,10 +148,12 @@
             },
             isTagFlow: function () {
                 if (this.$store.state.isTagFlow) {
-                    this.dialog = true;
-                    this.$nextTick(() => {
-                        this.$refs.search.focus();
-                    })
+                    this.defineUrls().then(() => {
+                        this.dialog = true;
+                        this.$nextTick(() => {
+                            this.$refs.search.focus();
+                        })
+                    });
                 } else {
                     this.dialog = false;
                 }
@@ -167,7 +173,6 @@
                 });
             },
             selectSearchResult: function () {
-                this.search = '';
                 let identifier = Identification.fromSearchResult(
                     this.selectedSearchResult
                 );
@@ -192,6 +197,9 @@
                 //     );
                 // } else {
                 // }
+                this.defineUrls();
+                this.$refs.search.reset();
+                this.search = '';
                 return identifier;
             },
             identify: function (identifier) {
@@ -201,6 +209,13 @@
             },
             removeIdentifier: function (identifier) {
                 this.selected.getController().removeIdentifier(identifier);
+            },
+            defineUrls: function () {
+                return Promise.all(
+                    this.selected.getIdentifiers().map((identifier) => {
+                        return identifier.getUrl();
+                    })
+                );
             }
         }
     }

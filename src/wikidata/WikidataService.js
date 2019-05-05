@@ -3,8 +3,9 @@ import WikidataUri from '@/wikidata/WikidataUri'
 import I18n from '@/I18n'
 import jsonpAdapter from 'axios-jsonp';
 import Image from '@/image/Image'
+import $ from "jquery";
 
-
+const wikipediaUrlProperty = "P373";
 const WikidataService = {};
 WikidataService.search = function (term) {
     let url = WikidataUri.BASE_URL + "/w/api.php?action=wbsearchentities&language=" + I18n.getLocale() +
@@ -31,20 +32,43 @@ WikidataService.search = function (term) {
     });
 };
 
-WikidataService.getImageUrl = function (searchResult) {
-    let url = WikidataUri.BASE_URL + "/w/api.php?action=wbgetentities&ids=" +
-        searchResult.original.id + "&props=claims&format=json";
+WikidataService.getWikipediaUrlFromWikidataUri = function (wikidataUri) {
+    let apiUrlToGetWikipediaUrl = WikidataUri.BASE_URL + "/w/api.php?action=wbgetclaims&entity=" + WikidataUri.idInWikidataUri(
+        wikidataUri
+    ) + "&property=" + wikipediaUrlProperty + "&format=json";
     return axios({
-        method: "get",
-        url: url,
+        url: apiUrlToGetWikipediaUrl,
         adapter: jsonpAdapter,
     }).then(function (response) {
-        return imageUrlFromSearchResult(
-            response.data,
-            searchResult.original.id
+        let path;
+        if (response.data.claims) {
+            path = response.data.claims[wikipediaUrlProperty];
+        }
+        if (path === undefined || path.length === 0) {
+            return Promise.resolve(
+                wikidataUri
+            );
+        }
+        return Promise.resolve(
+            WikidataUri.WIKIPEDIA_ARTICLE_BASE_URL + path[0].mainsnak.datavalue.value
         );
     });
-};
+},
+
+    WikidataService.getImageUrl = function (searchResult) {
+        let url = WikidataUri.BASE_URL + "/w/api.php?action=wbgetentities&ids=" +
+            searchResult.original.id + "&props=claims&format=json";
+        return axios({
+            method: "get",
+            url: url,
+            adapter: jsonpAdapter,
+        }).then(function (response) {
+            return imageUrlFromSearchResult(
+                response.data,
+                searchResult.original.id
+            );
+        });
+    };
 
 WikidataService._searchResultsWithImageUrl = function (searchResults) {
     let ids = searchResults.map((searchResult) => {
