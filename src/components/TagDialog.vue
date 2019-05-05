@@ -48,6 +48,9 @@
                         </v-list-tile-content>
                         <v-list-tile-action>
                             <i class="fab fa-wikipedia-w mt-1" v-if="item.source ==='wikidata'"></i>
+                            <v-icon v-else>
+                                {{item.original.getIcon(item)}}
+                            </v-icon>
                         </v-list-tile-action>
                     </template>
                 </v-autocomplete>
@@ -75,7 +78,10 @@
                             </v-list-tile-content>
                         </v-list-tile>
                         <v-spacer></v-spacer>
-                        <i class="fab fa-wikipedia-w mr-4"></i>
+                        <v-icon class="mr-4" v-if="identifier.refersToAGraphElement()">
+                            {{identifier.getIcon()}}
+                        </v-icon>
+                        <i class="fab fa-wikipedia-w mr-4" v-else></i>
                         <v-list-tile-action>
                             <v-btn icon flat @click.native="removeIdentifier($event, identifier)">
                                 <v-icon color="third">

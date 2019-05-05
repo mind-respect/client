@@ -8,6 +8,7 @@ import Focus from '@/Focus'
 import SelectionHandler from '@/SelectionHandler'
 import Scroll from '@/Scroll'
 import Store from '@/store'
+import Icon from '@/Icon'
 
 const MoveRelation = {
     "Parent": "parent",
@@ -748,6 +749,7 @@ FriendlyResource.FriendlyResource.prototype.getModel = function () {
 FriendlyResource.FriendlyResource.prototype.getParentVertex = function () {
     return this.parentVertex;
 };
-
-
+FriendlyResource.FriendlyResource.prototype.getIcon = function () {
+    return Icon.getForGraphElement(this);
+};
 export default FriendlyResource;

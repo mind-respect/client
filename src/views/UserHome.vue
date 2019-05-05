@@ -89,7 +89,7 @@
                                                 :href="center.uri().url()">
                                             <v-card-title class="subheading">
                                                 <v-icon>
-                                                    {{getIcon(center)}}
+                                                    {{center.getIcon()}}
                                                 </v-icon>
                                                 <v-spacer></v-spacer>
                                                 {{center.getLabel()}}
@@ -131,7 +131,7 @@
                                             <v-list-tile-content>
                                                 <v-list-tile-title class="subheading font-weight-bold">
                                                     <v-icon class="mr-2" color="secondary">
-                                                        {{getIcon(center)}}
+                                                        {{center.getIcon()}}
                                                     </v-icon>
                                                     {{center.getLabel()}}
                                                     <small class="grey--text font-weight-normal font-italic mr-1 right"
@@ -341,18 +341,6 @@
                     }
                 }
             },
-            getIcon: function (center) {
-                let uri = center.getUri();
-                let graphElementType = IdUri.getGraphElementTypeFromUri(uri);
-                switch (graphElementType) {
-                    case GraphElementType.Relation :
-                        return "arrow_right_alt";
-                    case GraphElementType.Meta :
-                        return "local_offer";
-                    default :
-                        return "panorama_fish_eye";
-                }
-            },
             setupCenters: function () {
                 let isOwner = this.$store.state.user.username === this.$route.params.username;
                 let centersRequest = isOwner ? CenterGraphElementService.getPublicAndPrivate() : CenterGraphElementService.getPublicOnlyForUsername(
@@ -506,7 +494,7 @@
 
     .around-list-item::after {
         content: " ● ";
-        color:#1A237E;
+        color: #1A237E;
     }
 
     .around-list-item:last-of-type {

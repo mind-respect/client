@@ -5,6 +5,7 @@ import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import IdUri from '@/IdUri'
 import WikidataUri from '@/wikidata/WikidataUri'
 import WikidataService from '@/wikidata/WikidataService'
+import Icon from '@/Icon'
 
 const RELATION_URIS = {
     "sameAs": "same-as",
@@ -218,6 +219,10 @@ Identification.Identification.prototype.getUrl = function () {
         this.url = url;
         return this.url;
     });
+};
+
+Identification.Identification.prototype.getIcon = function () {
+    return Icon.getForTag(this);
 };
 
 export default Identification;

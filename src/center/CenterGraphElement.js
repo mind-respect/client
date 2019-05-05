@@ -4,6 +4,7 @@
 
 import GraphElement from '@/graph-element/GraphElement'
 import Moment from 'moment'
+import Icon from '@/Icon'
 
 export default {
     fromServerFormat: function (centersServerFormat) {
@@ -60,5 +61,8 @@ CenterGraphElement.prototype.getNbReferences = function () {
 };
 CenterGraphElement.prototype.lastVisit = function () {
     return new Moment(this.getLastCenterDate()).fromNow();
+};
+CenterGraphElement.prototype.getIcon = function () {
+    return Icon.getForUri(this.getUri());
 };
 

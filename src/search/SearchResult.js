@@ -5,6 +5,7 @@ import GraphElement from '@/graph-element/GraphElement'
 import Schema from '@/schema/Schema'
 import Property from '@/property/Property'
 import GraphElementType from '@/graph-element/GraphElementType'
+import Icon from '@/Icon'
 
 const api = {};
 api.additionalTypes = {
@@ -149,5 +150,8 @@ SearchResult.prototype.is = function (graphElementType) {
 };
 SearchResult.prototype.getSomethingToDistinguish = function () {
     return this.somethingToDistinguish;
+};
+SearchResult.getIcon = function(){
+    return Icon.getForSearchResult(this);
 };
 export default api;
