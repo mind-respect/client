@@ -135,12 +135,6 @@
             selected: function () {
                 return SelectionHandler.getSingle();
             },
-            selectedIdentifiers: function () {
-                if (!this.dialog) {
-                    return;
-                }
-                return SelectionHandler.getSingle().identifiers;
-            },
             isTagFlow: function () {
                 return this.$store.state.isTagFlow;
             },
@@ -159,7 +153,12 @@
                     this.defineUrls().then(() => {
                         this.dialog = true;
                         this.$nextTick(() => {
+                            // if(this.selected.getIdentifiers().length === 0){
+                            //     this.search = this.selected.getLabel();
+                            // }
+                            // this.$nextTick(()=>{
                             this.$refs.search.focus();
+                            // })
                         })
                     });
                 } else {
@@ -170,9 +169,6 @@
                 if (this.dialog === false) {
                     this.$store.dispatch("setIsTagFlow", false)
                 }
-            },
-            selectedIdentifiers: function () {
-                this.defineUrls()
             }
         },
         methods: {

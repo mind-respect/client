@@ -1,29 +1,21 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-
-import $ from 'jquery'
 import GraphElement from '@/graph-element/GraphElement'
 import Schema from '@/schema/Schema'
 import Property from '@/property/Property'
 import GraphElementType from '@/graph-element/GraphElementType'
-import EventBus from '@/EventBus'
 
 const api = {};
-let referencesText;
 api.additionalTypes = {
     "Edge": "edge"
 };
 api.fromServerFormatArray = function (searchResultsServerFormat) {
-    var searchResults = [];
-    $.each(searchResultsServerFormat, function () {
-        searchResults.push(
-            api.fromServerFormat(
-                this
-            )
-        );
-    });
-    return searchResults;
+    return searchResultsServerFormat.map((searchResult)=>{
+        return api.fromServerFormat(
+            searchResult
+        )
+    })
 };
 api.fromServerFormat = function (searchResult) {
     switch (searchResult.type) {
@@ -43,7 +35,7 @@ api.fromServerFormat = function (searchResult) {
                 searchResult
             );
         case GraphElementType.Schema :
-            var schema = Schema.fromSearchResult(searchResult);
+            let schema = Schema.fromSearchResult(searchResult);
             return new SearchResult(
                 schema,
                 GraphElementType.Schema,
@@ -51,7 +43,7 @@ api.fromServerFormat = function (searchResult) {
                 searchResult
             );
         case GraphElementType.Property :
-            var property = Property.fromServerFormat(searchResult.graphElement);
+            let property = Property.fromServerFormat(searchResult.graphElement);
             return new SearchResult(
                 property,
                 GraphElementType.Property,
@@ -59,22 +51,22 @@ api.fromServerFormat = function (searchResult) {
                 searchResult
             );
         case GraphElementType.Vertex :
-            var vertex = GraphElement.fromServerFormat(searchResult.graphElement);
+            let vertex = GraphElement.fromServerFormat(searchResult.graphElement);
             return new SearchResult(
                 vertex,
                 GraphElementType.Vertex,
-                api._buildVertexSomethingToDistinguish(searchResult),
+                "",
                 searchResult
             );
         case GraphElementType.Meta :
-            var identifierAsGraphElement = GraphElement.fromServerFormat(
+            let identifierAsGraphElement = GraphElement.fromServerFormat(
                 searchResult.graphElement
             );
-            var identifier = identifierAsGraphElement.getIdentifiers()[0];
+            let identifier = identifierAsGraphElement.getIdentifiers()[0];
             return new SearchResult(
                 identifier,
                 GraphElementType.Meta,
-                api._buildVertexSomethingToDistinguish(searchResult),
+                "",
                 searchResult
             );
     }
@@ -89,14 +81,14 @@ api._buildSomethingToDistinguish = function (searchResult) {
     if (!searchResult.context) {
         return "";
     }
-    var contextLabels = [];
+    let contextLabels = [];
     Object.keys(searchResult.context).forEach(function (uri) {
         contextLabels.push(searchResult.context[uri]);
     });
     return contextLabels.join(", ");
 };
 api._buildEdgeSomethingToDistinguish = function (searchResult) {
-    var contextValues = Object.values(searchResult.context);
+    let contextValues = Object.values(searchResult.context);
     return contextValues[0] + "  " + contextValues[1];
 };
 api._buildSchemaSomethingToDistinguish = function (schema) {
@@ -105,22 +97,6 @@ api._buildSchemaSomethingToDistinguish = function (schema) {
             schema.getPropertiesName()
         )
     );
-};
-api._buildVertexSomethingToDistinguish = function (searchResult) {
-    if (!searchResult.context) {
-        return "";
-    }
-    var contextUris = Object.keys(searchResult.context);
-    var container = $("<div class='distinguish-vertex clearfix'>");
-    for (var i = 0; i < contextUris.length; i++) {
-        var text = searchResult.context[contextUris[i]];
-        container.append(
-            $("<div class='distinguish-vertex-item'>").text(
-                text
-            )
-        );
-    }
-    return container.prop('outerHTML');
 };
 api.forGraphElementAndItsType = function (graphElement, graphElementType) {
     return new SearchResult(
@@ -174,7 +150,4 @@ SearchResult.prototype.is = function (graphElementType) {
 SearchResult.prototype.getSomethingToDistinguish = function () {
     return this.somethingToDistinguish;
 };
-EventBus.subscribe("localized-text-loaded", function () {
-    referencesText = $.t("search.identifier.bubbles");
-});
 export default api;

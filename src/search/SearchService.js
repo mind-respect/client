@@ -3,39 +3,46 @@
  */
 
 import $ from 'jquery'
-import UserService from '@/service/UserService'
 import WikidataService from '@/wikidata/WikidataService'
-import axios from 'axios'
-import jsonpAdapter from "axios-jsonp";
+import UserService from '@/service/UserService'
+import Service from '@/Service'
+import SearchResult from '@/search/SearchResult'
 
 const api = {};
 api.tags = function (term) {
     return resultsFromProviders([
-        WikidataService.search(term)
+        api.searchForAllOwnResources(term),
+        WikidataService.search(term),
     ])
 };
 api.searchForAllOwnResources = function (searchText) {
-    return axios({
-        url: UserService.currentUserUri() + "/search/own_all_resource/auto_complete",
-        method: 'POST',
-        data: {
+    return Service.api().post(
+        UserService.currentUserUri() + "/search/own_all_resource/auto_complete",
+        {
             "searchText": searchText
-        },
-        adapter: jsonpAdapter,
-    }).then((response) => {
-        return response.data.search.map((searchResult) => {
+        }
+    ).then((response) => {
+        return response.data.map((searchResult) => {
+            let facade = SearchResult.fromServerFormat(searchResult);
+            let graphElement = facade.getGraphElement();
             return {
-                uri: searchResult.concepturi,
+                uri: graphElement.getUri(),
                 url: searchResult.url,
-                label: searchResult.label,
-                description: searchResult.description,
-                getImageUrl: WikidataService.getImageUrl,
-                original: searchResult,
-                source: "wikidata"
+                label: graphElement.getLabel(),
+                description: graphElement.getComment(),
+                getImageUrl: (searchResult) => {
+                    let graphElement = searchResult.original.getGraphElement();
+                    if (!graphElement.hasImages()) {
+                        return Promise.resolve(undefined);
+                    }
+                    return Promise.resolve(
+                        graphElement.getImages()[0].getBase64ForSmall()
+                    )
+                },
+                original: facade,
+                source: "mindrespect.com"
             }
-        })
-    }).then((searchResults) => {
-        return this._searchResultsWithImageUrl(searchResults);
+        });
     });
 //     return $.ajax({
 //         type: 'POST',
