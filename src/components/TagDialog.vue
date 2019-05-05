@@ -77,7 +77,7 @@
                         <v-spacer></v-spacer>
                         <i class="fab fa-wikipedia-w mr-4"></i>
                         <v-list-tile-action>
-                            <v-btn icon flat @click="removeIdentifier(identifier)">
+                            <v-btn icon flat @click.native="removeIdentifier($event, identifier)">
                                 <v-icon color="third">
                                     delete
                                 </v-icon>
@@ -135,11 +135,19 @@
             selected: function () {
                 return SelectionHandler.getSingle();
             },
+            selectedIdentifiers: function () {
+                if (!this.dialog) {
+                    return;
+                }
+                return SelectionHandler.getSingle().identifiers;
+            },
             isTagFlow: function () {
                 return this.$store.state.isTagFlow;
             },
             identifiersByLatest: function () {
-                return this.selected.getIdentifiers().reverse();
+                return this.selected.getIdentifiers().sort((a, b) => {
+                    return b.getCreationDate() - a.getCreationDate();
+                })
             }
         },
         watch: {
@@ -162,6 +170,9 @@
                 if (this.dialog === false) {
                     this.$store.dispatch("setIsTagFlow", false)
                 }
+            },
+            selectedIdentifiers: function () {
+                this.defineUrls()
             }
         },
         methods: {
@@ -181,7 +192,9 @@
                 }
                 identifier.makeGeneric();
                 this.selectedSearchResult.getImageUrl(this.selectedSearchResult).then((imageUrl) => {
-                    identifier.addImage(imageUrl);
+                    if (imageUrl) {
+                        identifier.addImage(imageUrl);
+                    }
                     this.identify(identifier);
                 });
                 // var self = this;
@@ -197,17 +210,17 @@
                 //     );
                 // } else {
                 // }
-                this.defineUrls();
                 this.$refs.search.reset();
                 this.search = '';
                 return identifier;
             },
             identify: function (identifier) {
-                this.selected.getController().addIdentification(
+                return this.selected.getController().addIdentification(
                     identifier
                 );
             },
-            removeIdentifier: function (identifier) {
+            removeIdentifier: function ($event, identifier) {
+                $event.preventDefault();
                 this.selected.getController().removeIdentifier(identifier);
             },
             defineUrls: function () {

@@ -527,17 +527,20 @@ GraphElementController.prototype.addIdentification = function (identifier) {
     if (this.getModel().hasIdentification(identifier)) {
         return Promise.resolve()
     }
-    this.getModel().addIdentification(
-        identifier
-    );
     return TagService.add(
         this.getModel(),
         identifier
     ).then((identifications) => {
-        this.getModel().addIdentifications(
-            identifications
-        );
-        return identifications;
+        return Promise.all(
+            identifications.map((identifier) => {
+                return identifier.getUrl();
+            })
+        ).then(() => {
+            this.getModel().addIdentifications(
+                identifications
+            );
+            return identifications;
+        })
     });
 };
 
@@ -546,7 +549,7 @@ GraphElementController.prototype.removeIdentifier = function (identifier) {
         identifier
     );
     return new Promise((resolve) => {
-        GraphElementService.remove(
+        TagService.remove(
             this.getModel(),
             identifier
         ).then(() => {

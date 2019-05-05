@@ -5,12 +5,56 @@
 import $ from 'jquery'
 import UserService from '@/service/UserService'
 import WikidataService from '@/wikidata/WikidataService'
+import axios from 'axios'
+import jsonpAdapter from "axios-jsonp";
 
 const api = {};
 api.tags = function (term) {
     return resultsFromProviders([
         WikidataService.search(term)
     ])
+};
+api.searchForAllOwnResources = function (searchText) {
+    return axios({
+        url: UserService.currentUserUri() + "/search/own_all_resource/auto_complete",
+        method: 'POST',
+        data: {
+            "searchText": searchText
+        },
+        adapter: jsonpAdapter,
+    }).then((response) => {
+        return response.data.search.map((searchResult) => {
+            return {
+                uri: searchResult.concepturi,
+                url: searchResult.url,
+                label: searchResult.label,
+                description: searchResult.description,
+                getImageUrl: WikidataService.getImageUrl,
+                original: searchResult,
+                source: "wikidata"
+            }
+        })
+    }).then((searchResults) => {
+        return this._searchResultsWithImageUrl(searchResults);
+    });
+//     return $.ajax({
+//         type: 'POST',
+//         data: JSON.stringify(),
+//         contentType: 'application/json;charset=utf-8',
+//         url:;
+// }
+//     ;
+};
+api.searchOwnTags = function (searchText) {
+    return $.ajax({
+        type: 'POST',
+        data: JSON.stringify({
+            "searchText": searchText
+        }),
+        contentType: 'application/json;charset=utf-8',
+        url: UserService.currentUserUri() +
+            "/search/own_tags/auto_complete"
+    });
 };
 
 function resultsFromProviders(providers) {
@@ -24,18 +68,6 @@ function resultsFromProviders(providers) {
         return allResults;
     });
 }
-
-api.searchForAllOwnResources = function (searchText) {
-    return $.ajax({
-        type: 'POST',
-        data: JSON.stringify({
-            "searchText": searchText
-        }),
-        contentType: 'application/json;charset=utf-8',
-        url: UserService.currentUserUri() +
-            "/search/own_all_resource/auto_complete"
-    });
-};
 
 api.searchForOwnVerticesAndPublicOnes = function (searchText, successCallback) {
     return api.searchForOwnVerticesAndPublicOnesAjaxCall(
@@ -58,17 +90,7 @@ api.searchForOnlyOwnVerticesAjaxCall = function (searchText) {
             "/search/own_vertices/auto_complete"
     });
 };
-api.searchOwnTags = function (searchText) {
-    return $.ajax({
-        type: 'POST',
-        data: JSON.stringify({
-            "searchText": searchText
-        }),
-        contentType: 'application/json;charset=utf-8',
-        url: UserService.currentUserUri() +
-            "/search/own_tags/auto_complete"
-    });
-};
+
 api.searchForOnlyOwnTagsAjaxCall = function (searchText) {
     return $.ajax({
         type: 'POST',

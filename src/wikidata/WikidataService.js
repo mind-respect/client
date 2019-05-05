@@ -3,7 +3,6 @@ import WikidataUri from '@/wikidata/WikidataUri'
 import I18n from '@/I18n'
 import jsonpAdapter from 'axios-jsonp';
 import Image from '@/image/Image'
-import $ from "jquery";
 
 const wikipediaUrlProperty = "P373";
 const WikidataService = {};
@@ -27,8 +26,6 @@ WikidataService.search = function (term) {
                 source: "wikidata"
             }
         })
-    }).then((searchResults) => {
-        return this._searchResultsWithImageUrl(searchResults);
     });
 };
 

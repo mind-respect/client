@@ -83,7 +83,7 @@
                         action: "identify"
                     },
                     {
-                        icon: "fa-tags",
+                        icon: "label",
                         action: "identifyWhenMany",
                         ctrlShortcut: "G"
                     },
