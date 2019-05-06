@@ -67,7 +67,7 @@ api.fromServerFormat = function (searchResult) {
             return new SearchResult(
                 identifier,
                 GraphElementType.Meta,
-                searchResult.context.description,
+                api._buildMetaSomethingToDistinguish(searchResult),
                 searchResult
             );
     }
@@ -78,6 +78,14 @@ api._buildPropertySomethingToDistinguish = function (searchResult) {
     }
     return "<- " + searchResult.context[Object.keys(searchResult.context)];
 };
+api._buildMetaSomethingToDistinguish = function (searchResult) {
+    if (!searchResult.context) {
+        return "";
+    }
+    return searchResult.context.description === undefined ?
+        api._buildSomethingToDistinguish(searchResult) : searchResult.context.description;
+};
+``
 api._buildSomethingToDistinguish = function (searchResult) {
     if (!searchResult.context) {
         return "";

@@ -464,4 +464,30 @@
         left: 100% !important;
         margin-left: -300px;
     }
+
+    .around-list {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .around-list-item {
+        overflow: hidden;
+        float: left;
+        max-width: 50%;
+        padding-left: 5px;
+        text-overflow: ellipsis;
+    }
+
+    .around-list-item::after {
+        content: " ● ";
+        color: #1A237E;
+    }
+
+    .around-list-item:last-of-type {
+        content: " ● ";
+    }
+
+    .around-list-item:not(empty):last-of-type::after {
+        content: " ...";
+    }
 </style>

@@ -48,7 +48,11 @@
                                     {{item.description}}
                                 </span>
                                 <span v-else>
-                                    <span v-if="item.original.getGraphElementType() === 'vertex'">
+                                    <span v-if="item.original.getGraphElementType() === 'vertex'" class="around-list">
+                                        <span v-for="context in Object.values(item.original.context)"
+                                              class="around-list-item">
+                                            {{context}}
+                                        </span>
                                     </span>
                                     <span v-else>
                                         {{item.original.somethingToDistinguish}}
