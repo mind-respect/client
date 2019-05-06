@@ -30,6 +30,7 @@
                         @change="selectSearchResult()"
                         cache-items
                         hide-no-data
+                        clearable
                 >
                     <template v-slot:prepend-inner>
                         <i class="fab fa-wikipedia-w mt-1"></i>
@@ -43,14 +44,26 @@
                                 {{item.label}}
                             </v-list-tile-title>
                             <v-list-tile-sub-title>
-                                {{item.description}}
+                                <span v-if="item.source ==='wikidata'">
+                                    {{item.description}}
+                                </span>
+                                <span v-else>
+                                    <span v-if="item.original.getGraphElementType() === 'vertex'">
+                                    </span>
+                                    <span v-else>
+                                        {{item.original.somethingToDistinguish}}
+                                    </span>
+                                </span>
                             </v-list-tile-sub-title>
                         </v-list-tile-content>
                         <v-list-tile-action>
-                            <i class="fab fa-wikipedia-w mt-1" v-if="item.source ==='wikidata'"></i>
-                            <v-icon v-else>
-                                {{item.original.getIcon(item)}}
-                            </v-icon>
+                            <i v-if="item.source ==='wikidata'" class="fab fa-wikipedia-w mt-1"></i>
+                            <span v-else>
+                                <v-icon>
+                                    {{item.original.getIcon(item)}}
+                                </v-icon>
+                                <i v-if="item.original.isTagFromWikipedia()" class="fab fa-wikipedia-w mt-1 ml-2"></i>
+                            </span>
                         </v-list-tile-action>
                     </template>
                 </v-autocomplete>

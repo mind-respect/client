@@ -12,7 +12,7 @@ api.additionalTypes = {
     "Edge": "edge"
 };
 api.fromServerFormatArray = function (searchResultsServerFormat) {
-    return searchResultsServerFormat.map((searchResult)=>{
+    return searchResultsServerFormat.map((searchResult) => {
         return api.fromServerFormat(
             searchResult
         )
@@ -67,7 +67,7 @@ api.fromServerFormat = function (searchResult) {
             return new SearchResult(
                 identifier,
                 GraphElementType.Meta,
-                "",
+                searchResult.context.description,
                 searchResult
             );
     }
@@ -122,6 +122,7 @@ function SearchResult(graphElement, graphElementType, somethingToDistinguish, se
     this.graphElementType = graphElementType;
     this.somethingToDistinguish = somethingToDistinguish;
     this.serverFormat = serverFormat;
+    this.context = this.serverFormat.context;
 }
 
 SearchResult.prototype.getGraphElement = function () {
@@ -151,7 +152,10 @@ SearchResult.prototype.is = function (graphElementType) {
 SearchResult.prototype.getSomethingToDistinguish = function () {
     return this.somethingToDistinguish;
 };
-SearchResult.getIcon = function(){
+SearchResult.prototype.getIcon = function () {
     return Icon.getForSearchResult(this);
+};
+SearchResult.prototype.isTagFromWikipedia = function () {
+    return GraphElementType.Meta === this.getGraphElementType() && this.getGraphElement().isFromWikidata();
 };
 export default api;

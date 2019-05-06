@@ -15,7 +15,7 @@ Icon.getForTag = function (tag) {
 };
 Icon.getForSearchResult = function (searchResult) {
     return Icon.getForGraphElementType(
-        searchResult.original.getGraphElementType()
+        searchResult.getGraphElementType()
     )
 };
 Icon.getForUri = function (uri) {

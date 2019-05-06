@@ -6,6 +6,7 @@ import IdUri from '@/IdUri'
 import WikidataUri from '@/wikidata/WikidataUri'
 import WikidataService from '@/wikidata/WikidataService'
 import Icon from '@/Icon'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 const RELATION_URIS = {
     "sameAs": "same-as",
@@ -221,8 +222,18 @@ Identification.Identification.prototype.getUrl = function () {
     });
 };
 
+Identification.Identification.prototype.isFromWikidata = function () {
+    return WikidataUri.isAWikidataUri(
+        this.getExternalResourceUri()
+    );
+};
+
 Identification.Identification.prototype.getIcon = function () {
     return Icon.getForTag(this);
+};
+
+Identification.Identification.prototype.getGraphElementType = function () {
+    return GraphElementType.Meta;
 };
 
 export default Identification;
