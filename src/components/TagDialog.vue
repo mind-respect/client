@@ -39,36 +39,8 @@
                         </v-icon>
                     </template>
                     <template v-slot:item="{ item }">
-                        <v-list-tile-content>
-                            <v-list-tile-title>
-                                {{item.label}}
-                            </v-list-tile-title>
-                            <v-list-tile-sub-title>
-                                <span v-if="item.source ==='wikidata'">
-                                    {{item.description}}
-                                </span>
-                                <span v-else>
-                                    <span v-if="item.original.getGraphElementType() === 'vertex'" class="around-list">
-                                        <span v-for="context in Object.values(item.original.context)"
-                                              class="around-list-item">
-                                            {{context}}
-                                        </span>
-                                    </span>
-                                    <span v-else>
-                                        {{item.original.somethingToDistinguish}}
-                                    </span>
-                                </span>
-                            </v-list-tile-sub-title>
-                        </v-list-tile-content>
-                        <v-list-tile-action>
-                            <i v-if="item.source ==='wikidata'" class="fab fa-wikipedia-w mt-1"></i>
-                            <span v-else>
-                                <v-icon>
-                                    {{item.original.getIcon(item)}}
-                                </v-icon>
-                                <i v-if="item.original.isTagFromWikipedia()" class="fab fa-wikipedia-w mt-1 ml-2"></i>
-                            </span>
-                        </v-list-tile-action>
+                        <SearchResultContent :item="item"></SearchResultContent>
+                        <SearchResultAction :item="item"></SearchResultAction>
                     </template>
                 </v-autocomplete>
             </v-card-text>
@@ -123,6 +95,8 @@
 </template>
 
 <script>
+    import SearchResultContent from '@/components/SearchResultContent'
+    import SearchResultAction from '@/components/SearchResultAction'
     import I18n from '@/I18n'
     import Identification from '@/identifier/Identification'
     import SelectionHandler from '@/SelectionHandler'
@@ -130,6 +104,10 @@
 
     export default {
         name: "TagDialog",
+        components:{
+            SearchResultContent,
+            SearchResultAction
+        },
         data: function () {
             I18n.i18next.addResources("en", "tag", {
                 "title": "Tags of",

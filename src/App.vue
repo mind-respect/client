@@ -41,6 +41,7 @@
                 <!--append-icon="search"-->
                 <!--v-if="$vuetify.breakpoint.mdAndUp"-->
                 <!--&gt;</v-text-field>-->
+                <Search></Search>
                 <v-btn flat light
                        v-if="$store.state.user === undefined"
                        @click="loginDialog = true"
@@ -212,7 +213,7 @@
     import Store from '@/store'
     import Vue from 'vue'
     import KeyboardActionsHandler from '@/KeyboardActionsHandler'
-
+    import Search from '@/components/Search'
 
     const aboutPages = ['register', 'login', 'forgotPassword', 'changePassword'];
 
@@ -221,7 +222,8 @@
             RegisterForm,
             LoginForm,
             ForgotPasswordForm,
-            ChangePasswordForm
+            ChangePasswordForm,
+            Search
         },
         data: function () {
             return {
