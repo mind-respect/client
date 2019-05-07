@@ -14,6 +14,7 @@
                     :class="{
                         'no-padding' : $vuetify.breakpoint.smAndDown
                     }"
+                    style="z-index:4;"
             >
                 <v-toolbar-title>
                     <router-link to="/welcome" class="no-style-link vh-center">

@@ -59,7 +59,6 @@
     import GraphDrawing from '@/components/graph/GraphDrawing'
     import MainMenus from '@/components/graph/MainMenus'
     import Scroll from '@/Scroll'
-    import Vue from 'vue'
     import SelectionHandler from '@/SelectionHandler'
     import SubGraphController from '@/graph/SubGraphController'
     import Vertex from '@/vertex/Vertex'
@@ -105,7 +104,7 @@
                 center.makeCenter();
                 SubGraph.graph = this.graph;
                 this.loaded = true;
-                Vue.nextTick(() => {
+                this.$nextTick(() => {
                     SelectionHandler.setToSingle(this.graph.center);
                     Scroll.centerBubbleIfApplicable(
                         this.graph.center
