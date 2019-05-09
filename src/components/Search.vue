@@ -1,4 +1,8 @@
 <template>
+    <!--    <div>-->
+    <!--        <v-btn fab icon v-if="!isFocusFLow" @click="isFocusFLow = true">-->
+    <!--            search-->
+    <!--        </v-btn>-->
     <v-autocomplete
             v-if="$store.state.user"
             ref="search"
@@ -12,19 +16,28 @@
             solo
             :loading="loading"
             flat
-            hide-no-data
             cache-items
             attach="#mind_map"
             :placeholder="$t('search:placeholder')"
             @change="selectSearchResult()"
             :menuProps="menuProps"
-            clearable
+            append-icon=""
             height="43">
         <template v-slot:item="{ item }">
             <SearchResultContent :item="item"></SearchResultContent>
             <SearchResultAction :item="item"></SearchResultAction>
         </template>
+        <div slot="no-data">
+            <h3 class="subheading font-italic">
+                {{$t('noSearchResults')}}
+            </h3>
+            <v-btn class="ml-0" color="secondary" @click="createCenterVertex">
+                <v-icon class="mr-2">add</v-icon>
+                {{searchText}}
+            </v-btn>
+        </div>
     </v-autocomplete>
+    <!--    </div>-->
 </template>
 
 <script>
@@ -32,7 +45,7 @@
     import SearchResultAction from '@/components/SearchResultAction'
     import I18n from '@/I18n'
     import SearchService from '@/search/SearchService'
-    import SubGraph from '@/graph/SubGraph'
+    import AppController from '@/AppController'
     import IdUri from '@/IdUri'
 
     export default {
@@ -43,10 +56,10 @@
         },
         data: () => {
             I18n.i18next.addResources("en", "search", {
-                "placeholder": "Search your bubbles"
+                "placeholder": "Bubbles"
             });
             I18n.i18next.addResources("fr", "search", {
-                "placeholder": "Recherchez vos bulles"
+                "placeholder": "Bulles"
             });
             return {
                 selectedSearchResult: null,
@@ -56,7 +69,8 @@
                 menuProps: {
                     "nudge-left": 50
                 },
-                readyToDisplay: false
+                readyToDisplay: false,
+                isFocusFLow: false
             };
         },
         watch: {
@@ -72,6 +86,7 @@
                     )
                 );
                 this.$refs.search.reset();
+                this.$refs.search.blur();
             },
             querySelections: function (searchText) {
                 this.loading = true;
@@ -79,6 +94,12 @@
                     this.items = results;
                     this.loading = false;
                 });
+            },
+            createCenterVertex: function () {
+                AppController.createVertex(this.searchText).then(() => {
+                    this.$refs.search.reset();
+                    this.$refs.search.blur();
+                })
             }
         }
     }

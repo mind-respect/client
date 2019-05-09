@@ -28,8 +28,8 @@
                     <v-card-title>
                         <v-text-field
                                 v-model="search"
-                                append-icon="search"
-                                :label="$t('search')"
+                                prepend-icon="search"
+                                :label="$t('centers')"
                                 single-line
                                 small
                                 hide-details

@@ -43,6 +43,7 @@
                 <!--v-if="$vuetify.breakpoint.mdAndUp"-->
                 <!--&gt;</v-text-field>-->
                 <Search></Search>
+                <v-spacer></v-spacer>
                 <v-btn flat light
                        v-if="$store.state.user === undefined"
                        @click="loginDialog = true"

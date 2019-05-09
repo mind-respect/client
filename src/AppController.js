@@ -56,19 +56,20 @@ api.zoom = function (adjust) {
 api.createVertex = function (label) {
     return VertexService.createVertex().then(function (response) {
         let serverFormat = response.data;
-        var newVertex = Vertex.fromServerFormat(
+        let newVertex = Vertex.fromServerFormat(
             serverFormat
         );
-        var updateLabelPromise = label === undefined ? Promise.resolve() :
-            FriendlyResourceService.updateLabel(
-                newVertex,
-                label
+        let promise = Promise.resolve();
+        if (label) {
+            newVertex.setLabel(label);
+            promise = FriendlyResourceService.updateLabel(
+                newVertex
             );
-        return updateLabelPromise.then(function () {
+        }
+        return promise.then(function () {
             router.push(
                 newVertex.uri().url()
             );
-        }).then(function () {
             return newVertex;
         });
     });

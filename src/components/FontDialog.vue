@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <v-dialog v-model="dialog" width="900" fullscreen>
+    <v-dialog v-model="dialog" width="900">
         <v-card>
             <v-card-title class="title">
                 {{$t('font:title')}}
@@ -14,7 +14,7 @@
                 >close
                 </v-icon>
             </v-card-title>
-            <v-card-text class="pt-0" id="fontDialog">
+            <v-card-text class="pt-0">
                 <v-progress-linear v-if="!fonts" :indeterminate="true" color="secondary"></v-progress-linear>
                 <!--<v-layout row wrap v-if="fonts">-->
                 <!--<v-flex v-for="font in fonts" grow>-->
@@ -41,6 +41,11 @@
                 </v-autocomplete>
                 <!--</v-layout>-->
             </v-card-text>
+            <v-card flat class="pt-0">
+                <v-card-text class="pt-0" id="fontDialog"></v-card-text>
+            </v-card>
+            <v-card min-height="150" flat class="pt-0">
+            </v-card>
             <v-card-actions>
                 <v-btn @click="saveDefault" color="secondary">
                     <v-icon class="mr-2">
