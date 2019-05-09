@@ -113,18 +113,26 @@
                                 </v-flex>
                             </v-layout>
                             <v-layout row wrap class="">
-                                <h3 class="subheading vh-center font-italic" v-if="centers.length === 0">
-                                    {{$t('userhome:noBubbles')}}
-                                </h3>
-                                <div class="ml-3" v-if="centers.length !== 0 && centersFiltered.length === 0">
-                                    <h3 class="subheading font-italic">
-                                        {{$t('noSearchResults')}}
+                                <v-flex xs12 md6>
+                                    <h3 class="subheading vh-center font-italic" v-if="centers.length === 0">
+                                        {{$t('userhome:noBubbles')}}
                                     </h3>
-                                    <v-btn class="ml-0" color="secondary">
-                                        <v-icon class="mr-2">add</v-icon>
-                                        {{search}}
-                                    </v-btn>
-                                </div>
+                                    <v-list-tile slot="no-data" @click="createCenterVertex(search)" v-if="centers.length !== 0 && centersFiltered.length === 0">
+                                        <v-list-tile-content>
+                                            <v-list-tile-title>
+                                                {{$t('noSearchResults')}}
+                                            </v-list-tile-title>
+                                            <v-list-tile-sub-title>
+                                                {{$t('create')}} "{{search}}"
+                                            </v-list-tile-sub-title>
+                                        </v-list-tile-content>
+                                        <v-list-tile-action>
+                                            <v-icon>
+                                                add
+                                            </v-icon>
+                                        </v-list-tile-action>
+                                    </v-list-tile>
+                                </v-flex>
                                 <v-flex xs12 :md3="!isListView" v-for="(center, index) in centersFiltered">
                                     <v-list two-line id="bubbles-as-list">
                                         <v-list-tile :href="center.uri().url()">
@@ -326,8 +334,8 @@
             }
         },
         methods: {
-            createCenterVertex: function () {
-                AppController.createVertex();
+            createCenterVertex: function (label) {
+                AppController.createVertex(label);
             },
             removeCenter: function (centerToRemove, index) {
                 CenterGraphElementService.removeCentersWithUri(

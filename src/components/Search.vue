@@ -27,15 +27,21 @@
             <SearchResultContent :item="item"></SearchResultContent>
             <SearchResultAction :item="item"></SearchResultAction>
         </template>
-        <div slot="no-data">
-            <h3 class="subheading font-italic">
-                {{$t('noSearchResults')}}
-            </h3>
-            <v-btn class="ml-0" color="secondary" @click="createCenterVertex">
-                <v-icon class="mr-2">add</v-icon>
-                {{searchText}}
-            </v-btn>
-        </div>
+        <v-list-tile slot="no-data" @click="createCenterVertex">
+            <v-list-tile-content>
+                <v-list-tile-title>
+                    {{$t('noSearchResults')}}
+                </v-list-tile-title>
+                <v-list-tile-sub-title class="">
+                    {{$t('create')}} "{{searchText}}"
+                </v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+                <v-icon>
+                    add
+                </v-icon>
+            </v-list-tile-action>
+        </v-list-tile>
     </v-autocomplete>
     <!--    </div>-->
 </template>
