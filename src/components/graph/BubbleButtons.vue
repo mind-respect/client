@@ -78,15 +78,15 @@
                         icon: "photo",
                         action: "images"
                     },
-                    {
-                        icon: "label",
-                        action: "identify"
-                    },
-                    {
-                        icon: "label",
-                        action: "identifyWhenMany",
-                        ctrlShortcut: "G"
-                    },
+                    // {
+                    //     icon: "label",
+                    //     action: "identify"
+                    // },
+                    // {
+                    //     icon: "label",
+                    //     action: "identifyWhenMany",
+                    //     ctrlShortcut: "G"
+                    // },
                     {
                         icon: "people",
                         action: "share"
@@ -134,11 +134,11 @@
                         icon: "fa-expand",
                         action: "subElements"
                     },
-                    {
-                        icon: "merge_type",
-                        action: "merge",
-                        ctrlShortcut: "I"
-                    },
+                    // {
+                    //     icon: "merge_type",
+                    //     action: "merge",
+                    //     ctrlShortcut: "I"
+                    // },
                     {
                         icon: "delete",
                         action: "remove"

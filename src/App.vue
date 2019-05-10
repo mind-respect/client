@@ -86,6 +86,13 @@
                     </v-icon>
                     {{$t('centers')}}
                 </v-btn>
+                <Button :button="zoomOutButton"></Button>
+                <Button :button="zoomInButton"></Button>
+                <v-btn icon flat color="primary" class="mr-2">
+                    <v-icon large>
+                        add
+                    </v-icon>
+                </v-btn>
                 <v-menu
                         :nudge-width="250"
                         offset-y
@@ -137,6 +144,7 @@
             <!--<router-link to="/">Home</router-link>-->
             <!--<router-link to="/about">About</router-link>-->
         </div>
+        <SideMenu v-if="$route.name === 'Center'"></SideMenu>
         <v-content>
             <router-view></router-view>
         </v-content>
@@ -207,10 +215,13 @@
 <script>
     import UserService from '@/service/UserService'
     import AuthenticateService from "./service/AuthenticateService";
-    import RegisterForm from "./components/home/RegisterForm";
+    import LoginForm from "@/components/home/LoginForm";
+    import RegisterForm from "@/components/home/RegisterForm";
     import ForgotPasswordForm from '@/components/home/ForgotPasswordForm'
     import ChangePasswordForm from '@/components/home/ChangePasswordForm'
-    import LoginForm from "./components/home/LoginForm";
+    import SideMenu from '@/components/SideMenu'
+    import Button from '@/components/graph/Button'
+    import AppController from '@/AppController'
     import LoadingFlow from '@/LoadingFlow'
     import Store from '@/store'
     import Vue from 'vue'
@@ -221,11 +232,13 @@
 
     export default {
         components: {
+            SideMenu,
             RegisterForm,
             LoginForm,
             ForgotPasswordForm,
             ChangePasswordForm,
-            Search
+            Search,
+            Button
         },
         data: function () {
             return {
@@ -237,7 +250,19 @@
                 isLoading: false,
                 hasLoadingSpinner: true,
                 forgotPasswordDialog: false,
-                changePasswordDialog: false
+                changePasswordDialog: false,
+                zoomInButton: {
+                    action: "zoomIn",
+                    icon: "zoom_in",
+                    ctrlShortcut: "&plus;",
+                    controller: AppController
+                },
+                zoomOutButton: {
+                    action: "zoomOut",
+                    icon: "zoom_out",
+                    ctrlShortcut: "&minus;",
+                    controller: AppController
+                }
             };
         },
         methods: {

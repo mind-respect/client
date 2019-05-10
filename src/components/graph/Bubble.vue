@@ -347,7 +347,7 @@
                     {
                         icon: "label",
                         condition: function (bubble) {
-                            return bubble.getIdentifiers().length > 1;
+                            return bubble.getIdentifiers().length > 0;
                         }
                     },
                     {

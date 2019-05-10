@@ -4,30 +4,32 @@
 
 <template>
     <div v-if="loaded">
-        <v-layout row>
-            <v-flex grow>
-                <v-toolbar fixed flat color="transparent" class="top-toolbar pl-1" height="36" dense>
-                    <v-toolbar-items class="pa-0 mt-3">
-                        <BubbleButtons :key="refreshKey" :isInTopMenu="true"></BubbleButtons>
-                    </v-toolbar-items>
-                </v-toolbar>
-            </v-flex>
-        </v-layout>
-        <v-navigation-drawer
-                v-model="sideNavigation"
-                :mini-variant.sync="mini"
-                class="elevation-0 pt-0 side-navigation-drawer ml-0"
-                fixed
-                width="50"
-                mini-variant-width="50"
-                color="transparent"
-                flat
-                floating
-        >
-            <div v-for="(button, i) in graphButtons">
-                <Button :button="button" :isInSideMenu="true" :buttonIndex="i"></Button>
-            </div>
-        </v-navigation-drawer>
+<!--        <v-spacer></v-spacer>-->
+<!--        <v-toolbar flat fixed color="transparent" class="top-toolbar pl-1" height="36" dense right>-->
+<!--            <v-toolbar-side-icon></v-toolbar-side-icon>-->
+<!--            <v-toolbar-title>Title</v-toolbar-title>-->
+<!--            <v-spacer></v-spacer>-->
+<!--            <v-toolbar-items class="pa-0 mt-3">-->
+<!--                <div v-for="(button, i) in graphButtons" :key="button.action">-->
+<!--                    <Button :button="button" :isInSideMenu="true" :buttonIndex="i"></Button>-->
+<!--                </div>-->
+<!--            </v-toolbar-items>-->
+<!--        </v-toolbar>-->
+        <!--        <v-navigation-drawer-->
+        <!--                v-model="sideNavigation"-->
+        <!--                :mini-variant.sync="mini"-->
+        <!--                class="elevation-0 pt-0 side-navigation-drawer"-->
+        <!--                fixed-->
+        <!--                width="50"-->
+        <!--                mini-variant-width="50"-->
+        <!--                color="transparent"-->
+        <!--                flat-->
+        <!--                floating-->
+        <!--        >-->
+        <!--            <div v-for="(button, i) in graphButtons" :key="button.action">-->
+        <!--                <Button :button="button" :isInSideMenu="true" :buttonIndex="i"></Button>-->
+        <!--            </div>-->
+        <!--        </v-navigation-drawer>-->
         <input
                 id="background-color-picker"
                 v-show="false"
@@ -39,7 +41,6 @@
 </template>
 
 <script>
-    import BubbleButtons from '@/components/graph/BubbleButtons'
     import SelectionHandler from '@/SelectionHandler'
     import AppController from '@/AppController'
     import GraphController from '@/graph/GraphController'
@@ -51,7 +52,6 @@
     export default {
         name: "MainMenus",
         components: {
-            BubbleButtons: BubbleButtons,
             Button: Button
         },
         mounted: function () {
@@ -229,21 +229,22 @@
         height: 43px;
     }
 
-    .top-toolbar .v-toolbar__content {
-        margin-top: 0;
-        display: inline-block;
-    }
+    /*.top-toolbar .v-toolbar__content {*/
+    /*    margin-top: 0;*/
+    /*    display: inline-block;*/
+    /*}*/
 
-    .top-toolbar .v-toolbar__content, .side-toolbar .v-toolbar__content {
-        padding: 0;
-    }
+    /*.top-toolbar .v-toolbar__content, .side-toolbar .v-toolbar__content {*/
+    /*    padding: 0;*/
+    /*}*/
 
     .side-navigation-drawer {
-        margin-left: 8px;
         padding-left: 4px;
         margin-top: 86px !important;
         background-color: transparent !important;
         border: none !important;
         overflow: hidden;
+        left: 100% !important;
+        margin-left: -40px;
     }
 </style>

@@ -18,10 +18,10 @@
                icon
                slot="activator"
                @click="performAction(button, $event)"
-               color="primary"
                :small="isInSideMenu"
+               color="primary"
         >
-            <v-icon :class="button.iconClass">
+            <v-icon :class="button.iconClass" dark>
                 {{getIcon(button)}}
             </v-icon>
         </v-btn>
