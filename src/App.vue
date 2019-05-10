@@ -88,18 +88,14 @@
                 </v-btn>
                 <Button :button="zoomOutButton"></Button>
                 <Button :button="zoomInButton"></Button>
-                <v-btn icon flat color="primary" class="mr-2">
-                    <v-icon large>
-                        add
-                    </v-icon>
-                </v-btn>
+                <Button :button="createVertexButton" :large="true"></Button>
                 <v-menu
                         :nudge-width="250"
                         offset-y
                         content-class="settings-menu"
                         v-if="$store.state.user !== undefined"
                 >
-                    <v-btn icon light slot="activator">
+                    <v-btn icon light slot="activator" class="mr-2">
                         <v-icon>
                             settings
                         </v-icon>
@@ -261,6 +257,11 @@
                     action: "zoomOut",
                     icon: "zoom_out",
                     ctrlShortcut: "&minus;",
+                    controller: AppController
+                },
+                createVertexButton:{
+                    action: "createVertex",
+                    icon: "add",
                     controller: AppController
                 }
             };

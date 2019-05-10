@@ -57,8 +57,9 @@
                     mini-variant
                     mini-variant-width="60"
                     stateless
+                    id="buttonsDrawer"
             >
-                <BubbleButtons></BubbleButtons>
+                <BubbleButtons :isInSideMenu="true"></BubbleButtons>
             </v-navigation-drawer>
         </v-layout>
     </v-navigation-drawer>
@@ -86,7 +87,7 @@
             I18n.i18next.addResources("fr", "side", {
                 "creationDate": "Créé",
                 "tags": "Étiquettes",
-                "merge": "Fusioner"
+                "merge": "Fusion"
             });
             return {
                 SelectionHandler: SelectionHandler,

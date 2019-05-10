@@ -5,26 +5,19 @@
 <template>
     <div v-if="selected">
         <span v-for="button in buttons" :key="button.action">
-            <Button :button="button" :isInTopMenu="isInTopMenu" v-if="!button.isCustom"></Button>
-            <v-tooltip
-                    open-delay="0"
-                    close-delay="0"
-                    v-if="button.isCustom && button.action === 'copy'"
-                    bottom
-                    allow-overflow
-                    :attach="attach"
-            >
-                <v-btn slot="activator"
+            <Button :button="button" :isInSideMenu="isInSideMenu" v-if="!button.isCustom"></Button>
+            <Button :button="button" :isInSideMenu="isInSideMenu" v-if="button.isCustom && button.action === 'copy'">
+                <v-btn slot="button"
                        icon
                        flat
                        v-clipboard:copy="copyContent"
                 >
                     <v-icon>{{button.icon}}</v-icon>
                 </v-btn>
-                <span>
+                <span slot="tooltipContent">
                     {{$t('button:' + button.action)}}
                 </span>
-            </v-tooltip>
+            </Button>
         </span>
     </div>
 </template>
@@ -169,11 +162,8 @@
                 ]
             }
         },
-        props: ['isInTopMenu'],
+        props: ['isInSideMenu'],
         computed: {
-            attach: function () {
-                return this.isInTopMenu ? "#drawn_graph" : false;
-            },
             copyContent: function () {
                 return SelectionHandler.getSingle().getLabel()
             },

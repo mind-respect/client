@@ -8,24 +8,26 @@
             open-delay="0"
             close-delay="0"
             bottom
-            :right="isInSideMenu"
             allow-overflow
             :attach="attach"
             max-width="400"
             :content-class="contentClass"
     >
-        <v-btn flat
-               icon
-               slot="activator"
-               @click="performAction(button, $event)"
-               :small="isInSideMenu"
-               color="primary"
+        <slot name="button" v-if="$slots.button" slot="activator"></slot>
+        <v-btn
+                v-else
+                flat
+                icon
+                slot="activator"
+                @click="performAction(button, $event)"
+                color="primary"
         >
-            <v-icon :class="button.iconClass" dark>
+            <v-icon :class="button.iconClass" dark :large="large">
                 {{getIcon(button)}}
             </v-icon>
         </v-btn>
-        <span>
+        <slot name="tooltipContent" v-if="$slots.tooltipContent"></slot>
+        <span v-else>
                 {{$t('button:' + button.action)}}
                 <span v-if="button.ctrlShortcut">
                     ({{ctrlKey}}+<span v-html="button.ctrlShortcut"></span>)
@@ -41,7 +43,7 @@
 
     export default {
         name: "Button",
-        props: ['button', 'isInTopMenu', 'isInSideMenu', 'buttonIndex'],
+        props: ['button', 'large', 'isInTopMenu', 'isInSideMenu', 'buttonIndex'],
         data: function () {
             return {
                 ctrlKey: UiUtils.isMacintosh() ? "⌘" : "ctrl"
@@ -49,10 +51,10 @@
         },
         computed: {
             attach: function () {
-                return this.isInMainMenu ? "#drawn_graph" : false;
+                return this.isInMainMenu ? "#mind_map" : false;
             },
             contentClass: function () {
-                return this.isInSideMenu ? "ml-5" : "";
+                return this.isInSideMenu ? "side-button-tooltip" : "bubble-menu-tooltip";
             },
             isInMainMenu: function () {
                 return this.isInTopMenu || this.isInSideMenu;
@@ -106,6 +108,14 @@
     }
 </script>
 
-<style scoped>
+<style>
+    .side-button-tooltip {
+        margin-left: 385px;
+        margin-top: -40px;
+        white-space: nowrap;
+    }
 
+    .bubble-menu-tooltip {
+        white-space: nowrap;
+    }
 </style>
