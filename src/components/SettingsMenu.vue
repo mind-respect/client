@@ -75,6 +75,16 @@
                         </v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
+                <v-list-tile @click="listAll" v-if="isGraphRoute">
+                    <v-list-tile-action>
+                        <v-icon class="">list</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-content>
+                        <v-list-tile-title>
+                            {{$t('button:listAll')}}
+                        </v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
                 <v-list-tile @click="logout()">
                     <v-list-tile-action>
                         <v-icon>exit_to_app</v-icon>
@@ -142,6 +152,9 @@
                 VertexService.saveColors({
                     background: this.backgroundColor
                 });
+            },
+            listAll: function () {
+                AppController.listAll();
             },
             switchLanguage: function () {
                 let newLocale = this.$store.state.locale === "en" ? "fr" : "en";

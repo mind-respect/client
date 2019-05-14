@@ -88,7 +88,7 @@ api.changeBackgroundColor = function () {
     ).click();
 };
 
-api.list = function () {
+api.listAll = function () {
     ToList.showForList(
         GraphDisplayer.getVertexSelector().VerticesToHtmlLists(
             GraphDisplayer.getVertexSelector().getAllVertices()
