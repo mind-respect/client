@@ -19,6 +19,8 @@
                     cache-items
                     hide-no-data
                     clearable
+                    @focus="$emit('focus')"
+                    @blur="$emit('blur')"
             >
                 <template v-slot:prepend-inner>
                     <i class="fab fa-wikipedia-w mt-1"></i>
@@ -100,7 +102,7 @@
                 identifier: null,
                 items: [],
                 menuProps: {
-                    "content-class": 'search-menu'
+                    "contentClass": 'tag-search-menu'
                 }
             }
         },
@@ -209,5 +211,10 @@
 <style>
     #tagMenu .v-menu__content {
         top: -16px !important;
+    }
+    .tag-search-menu .v-list__tile {
+        height: auto;
+        min-height: 48px;
+        max-height: 105px;
     }
 </style>

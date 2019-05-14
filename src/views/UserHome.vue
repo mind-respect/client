@@ -53,7 +53,7 @@
                         </v-tooltip>
                         <v-spacer></v-spacer>
                         <v-tooltip v-if="isOwner" left>
-                            <v-btn icon float color="secondary" fab @click="createCenterVertex" slot="activator">
+                            <v-btn icon float color="secondary" fab @click="createCenterVertex()" slot="activator">
                                 <v-icon large>add</v-icon>
                             </v-btn>
                             <span>{{$t('userhome:createInfo')}}</span>

@@ -4,16 +4,16 @@
             style="margin-top:42px;"
             value="true"
             fixed
-            width="400"
+            :width="mainWidth"
             :mini-variant="!SelectionHandler.isSingle() || $store.state.isSideMenuCollapsed"
-            :mini-variant-width="mainNavMiniWidth()"
+            :mini-variant-width="mainNavMiniWidth"
     >
         <v-layout fill-height>
             <v-navigation-drawer
                     v-if="SelectionHandler.isSingle()"
                     :mini-variant="$store.state.isSideMenuCollapsed"
                     mini-variant-width="50"
-                    width="340"
+                    :width="menuWidth"
             >
                 <v-card class="" flat>
                     <v-btn @click="expand" icon v-if="$store.state.isSideMenuCollapsed" class="mt-4">
@@ -49,7 +49,7 @@
                         </v-tabs>
                         <v-tabs-items v-model="tabMenu" class="white">
                             <v-tab-item>
-                                <TagMenu></TagMenu>
+                                <TagMenu @focus="isStretched = true" @blur="isStretched = false"></TagMenu>
                             </v-tab-item>
                             <v-tab-item>
                                 <v-card flat>
@@ -101,6 +101,7 @@
             return {
                 SelectionHandler: SelectionHandler,
                 tabMenu: null,
+                isStretched: false,
                 items: [
                     {title: 'Home', icon: 'dashboard'},
                     {title: 'About', icon: 'question_answer'}
@@ -113,12 +114,18 @@
             },
             isSingle: () => {
                 return SelectionHandler.isSingle();
+            },
+            menuWidth: function(){
+                return this.isStretched ? 340: 340;
+            },
+            mainWidth: function () {
+                return this.isStretched ? 400 : 400;
+            },
+            mainNavMiniWidth: function () {
+                return SelectionHandler.isSingle() ? 110 : 60;
             }
         },
         methods: {
-            mainNavMiniWidth: function () {
-                return SelectionHandler.isSingle() ? 110 : 60;
-            },
             formatDate: function (date) {
                 return new Moment(date).fromNow();
             },
