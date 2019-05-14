@@ -335,7 +335,7 @@
         },
         methods: {
             createCenterVertex: function (label) {
-                AppController.createVertex(label);
+                AppController.createVertex(null, label);
             },
             removeCenter: function (centerToRemove, index) {
                 CenterGraphElementService.removeCentersWithUri(

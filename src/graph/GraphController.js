@@ -7,6 +7,10 @@ import SubGraph from '@/graph/SubGraph'
 
 const api = {};
 api.expandAllCanDo = function () {
+    let graph = SubGraph.graph;
+    if(!graph){
+        return false;
+    }
     let center = SubGraph.graph.center;
     if (!center) {
         return false;

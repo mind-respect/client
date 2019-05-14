@@ -102,7 +102,7 @@
                 });
             },
             createCenterVertex: function () {
-                AppController.createVertex(this.searchText).then(() => {
+                AppController.createVertex(null, this.searchText).then(() => {
                     this.$refs.search.reset();
                     this.$refs.search.blur();
                 })

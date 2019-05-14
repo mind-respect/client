@@ -53,7 +53,7 @@ api.zoom = function (adjust) {
     })
 };
 
-api.createVertex = function (label) {
+api.createVertex = function (event, label) {
     return VertexService.createVertex().then(function (response) {
         let serverFormat = response.data;
         let newVertex = Vertex.fromServerFormat(

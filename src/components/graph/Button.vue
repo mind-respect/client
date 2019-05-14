@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <span v-if="canDo(button)">
+    <span v-if="button.disableNotHide || canDo(button)">
     <v-tooltip
             open-delay="0"
             close-delay="0"
@@ -20,9 +20,9 @@
                 icon
                 slot="activator"
                 @click="performAction(button, $event)"
-                color="primary"
+                :disabled="button.disableNotHide && !canDo(button)"
         >
-            <v-icon :class="button.iconClass" dark :large="large">
+            <v-icon :class="button.iconClass" :large="large">
                 {{getIcon(button)}}
             </v-icon>
         </v-btn>

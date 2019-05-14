@@ -8,7 +8,6 @@
         <div id="nav" class="pa-0">
             <v-toolbar
                     app
-                    dark
                     color="white"
                     height="43"
                     :class="{
@@ -86,14 +85,15 @@
                     </v-icon>
                     {{$t('centers')}}
                 </v-btn>
-                <Button :button="zoomOutButton"></Button>
-                <Button :button="zoomInButton"></Button>
+                <Button :button="zoomOutButton" v-if="isGraphRoute"></Button>
+                <Button :button="zoomInButton" v-if="isGraphRoute"></Button>
                 <Button :button="createVertexButton" :large="true"></Button>
                 <v-menu
                         :nudge-width="250"
                         offset-y
                         content-class="settings-menu"
                         v-if="$store.state.user !== undefined"
+                        :close-on-content-click="false"
                 >
                     <v-btn icon light slot="activator" class="mr-2">
                         <v-icon>
@@ -120,6 +120,16 @@
                                         <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.mdAndUp">
                                             Français
                                         </span>
+                                    </v-list-tile-title>
+                                </v-list-tile-content>
+                            </v-list-tile>
+                            <v-list-tile @click="expandAll" :disabled="!canExpandAll()" v-if="isGraphRoute">
+                                <v-list-tile-action>
+                                    <v-icon class="">unfold_more</v-icon>
+                                </v-list-tile-action>
+                                <v-list-tile-content>
+                                    <v-list-tile-title>
+                                        {{$t('button:expandAll')}}
                                     </v-list-tile-title>
                                 </v-list-tile-content>
                             </v-list-tile>
@@ -218,6 +228,7 @@
     import SideMenu from '@/components/SideMenu'
     import Button from '@/components/graph/Button'
     import AppController from '@/AppController'
+    import GraphController from '@/graph/GraphController'
     import LoadingFlow from '@/LoadingFlow'
     import Store from '@/store'
     import Vue from 'vue'
@@ -257,9 +268,10 @@
                     action: "zoomOut",
                     icon: "zoom_out",
                     ctrlShortcut: "&minus;",
-                    controller: AppController
+                    controller: AppController,
+                    disableNotHide: true
                 },
-                createVertexButton:{
+                createVertexButton: {
                     action: "createVertex",
                     icon: "add",
                     controller: AppController
@@ -267,6 +279,12 @@
             };
         },
         methods: {
+            expandAll: function () {
+                GraphController.expandAll();
+            },
+            canExpandAll: function () {
+                return GraphController.expandAllCanDo();
+            },
             switchLanguage: function () {
                 let newLocale = this.$store.state.locale === "en" ? "fr" : "en";
                 this.$store.dispatch('setLocale', newLocale);
@@ -292,6 +310,11 @@
                 if (this.$route.name === 'changePassword') {
                     this.changePasswordDialog = true;
                 }
+            }
+        },
+        computed: {
+            isGraphRoute: function () {
+                return this.$route.name === "Center"
             }
         },
         mounted: function () {
