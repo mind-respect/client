@@ -85,72 +85,17 @@
                     </v-icon>
                     {{$t('centers')}}
                 </v-btn>
+                <Button :button="undoButton" v-if="isGraphRoute"></Button>
+                <Button :button="redoButton" v-if="isGraphRoute"></Button>
                 <Button :button="zoomOutButton" v-if="isGraphRoute"></Button>
                 <Button :button="zoomInButton" v-if="isGraphRoute"></Button>
                 <Button :button="createVertexButton" :large="true"></Button>
-                <v-menu
-                        :nudge-width="250"
-                        offset-y
-                        content-class="settings-menu"
-                        v-if="$store.state.user !== undefined"
-                        :close-on-content-click="false"
-                >
-                    <v-btn icon light slot="activator" class="mr-2">
-                        <v-icon>
-                            settings
-                        </v-icon>
-                    </v-btn>
-                    <v-card>
-                        <v-list>
-                            <v-list-tile @click="switchLanguage()">
-                                <v-list-tile-action>
-                                    <v-icon class="">public</v-icon>
-                                </v-list-tile-action>
-                                <v-list-tile-content>
-                                    <v-list-tile-title>
-                                        <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.smAndDown">
-                                            EN
-                                        </span>
-                                        <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.mdAndUp">
-                                            English
-                                        </span>
-                                        <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.smAndDown">
-                                            FR
-                                        </span>
-                                        <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.mdAndUp">
-                                            Français
-                                        </span>
-                                    </v-list-tile-title>
-                                </v-list-tile-content>
-                            </v-list-tile>
-                            <v-list-tile @click="expandAll" :disabled="!canExpandAll()" v-if="isGraphRoute">
-                                <v-list-tile-action>
-                                    <v-icon class="">unfold_more</v-icon>
-                                </v-list-tile-action>
-                                <v-list-tile-content>
-                                    <v-list-tile-title>
-                                        {{$t('button:expandAll')}}
-                                    </v-list-tile-title>
-                                </v-list-tile-content>
-                            </v-list-tile>
-                            <v-list-tile @click="logout()">
-                                <v-list-tile-action>
-                                    <v-icon>exit_to_app</v-icon>
-                                </v-list-tile-action>
-                                <v-list-tile-content>
-                                    <v-list-tile-title>
-                                        {{$t('logout')}}
-                                    </v-list-tile-title>
-                                </v-list-tile-content>
-                            </v-list-tile>
-                        </v-list>
-                    </v-card>
-                </v-menu>
+                <SettingsMenu></SettingsMenu>
             </v-toolbar>
             <!--<router-link to="/">Home</router-link>-->
             <!--<router-link to="/about">About</router-link>-->
         </div>
-        <SideMenu v-if="$route.name === 'Center'"></SideMenu>
+        <SideMenu v-if="isGraphRoute"></SideMenu>
         <v-content>
             <router-view></router-view>
         </v-content>
@@ -226,6 +171,7 @@
     import ForgotPasswordForm from '@/components/home/ForgotPasswordForm'
     import ChangePasswordForm from '@/components/home/ChangePasswordForm'
     import SideMenu from '@/components/SideMenu'
+    import SettingsMenu from '@/components/SettingsMenu'
     import Button from '@/components/graph/Button'
     import AppController from '@/AppController'
     import GraphController from '@/graph/GraphController'
@@ -240,6 +186,7 @@
     export default {
         components: {
             SideMenu,
+            SettingsMenu,
             RegisterForm,
             LoginForm,
             ForgotPasswordForm,
@@ -258,6 +205,20 @@
                 hasLoadingSpinner: true,
                 forgotPasswordDialog: false,
                 changePasswordDialog: false,
+                undoButton:{
+                    action: "undo",
+                    icon: "undo",
+                    ctrlShortcut: "Z",
+                    controller: AppController,
+                    disableNotHide: true
+                },
+                redoButton:{
+                    action: "redo",
+                    icon: "redo",
+                    ctrlShortcut: "Y",
+                    controller: AppController,
+                    disableNotHide: true
+                },
                 zoomInButton: {
                     action: "zoomIn",
                     icon: "zoom_in",
@@ -279,24 +240,6 @@
             };
         },
         methods: {
-            expandAll: function () {
-                GraphController.expandAll();
-            },
-            canExpandAll: function () {
-                return GraphController.expandAllCanDo();
-            },
-            switchLanguage: function () {
-                let newLocale = this.$store.state.locale === "en" ? "fr" : "en";
-                this.$store.dispatch('setLocale', newLocale);
-            },
-            logout: function () {
-                Promise.all([
-                    AuthenticateService.logout(),
-                    this.$store.dispatch('setUser', undefined)
-                ]).then(function () {
-                    this.$router.push("/")
-                }.bind(this));
-            },
             showDialogFromRoute: function () {
                 if (this.$route.name === 'register') {
                     this.registerDialog = true;

@@ -56,6 +56,7 @@ const Store = new Vuex.Store({
             }
             state.locale = locale;
             DateUtil.refreshLocale();
+            location.reload();
         },
         setDragged: function (state, dragged) {
             state.dragged = dragged;

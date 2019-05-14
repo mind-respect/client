@@ -30,13 +30,6 @@
         <!--                <Button :button="button" :isInSideMenu="true" :buttonIndex="i"></Button>-->
         <!--            </div>-->
         <!--        </v-navigation-drawer>-->
-        <input
-                id="background-color-picker"
-                v-show="false"
-                type="color"
-                v-model="backgroundColor"
-                @change="changeBackgroundColor"
-        >
     </div>
 </template>
 
@@ -103,7 +96,7 @@
                 "copy": "Copy",
                 "undo": "Undo",
                 "redo": "Redo",
-                "changeBackgroundColor": "Change background color for this map",
+                "changeBackgroundColor": "Background color",
                 "convertToRelation": "Convert to relation",
                 "convertToGroupRelation": "Convert to group relation",
                 "wikipediaLinks": "Learn more on Wikipedia",
@@ -147,7 +140,7 @@
                 "copy": "Copier",
                 "undo": "Annuller",
                 "redo": "Refaire",
-                "changeBackgroundColor": "Modifier la couleur de fond pour cette carte",
+                "changeBackgroundColor": "Couleur de fond",
                 "convertToRelation": "Convertir en relation",
                 "convertToGroupRelation": "Convertir en relation groupée",
                 "wikipediaLinks": "En savoir plus sur Wikipédia",

@@ -75,6 +75,9 @@ api.createVertex = function (event, label) {
     });
 };
 api.changeBackgroundColorCanDo = function () {
+    if (!SubGraph.graph) {
+        return false;
+    }
     return !MindMapInfo.isViewOnly() &&
         SubGraph.graph.center.isVertex();
 };
