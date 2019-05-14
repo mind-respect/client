@@ -5,22 +5,31 @@
             value="true"
             fixed
             width="400"
-            :mini-variant="!SelectionHandler.isSingle()"
-            mini-variant-width="60"
+            :mini-variant="!SelectionHandler.isSingle() || $store.state.isSideMenuCollapsed"
+            :mini-variant-width="mainNavMiniWidth()"
     >
         <v-layout fill-height>
             <v-navigation-drawer
                     v-if="SelectionHandler.isSingle()"
+                    :mini-variant="$store.state.isSideMenuCollapsed"
+                    mini-variant-width="50"
                     width="340"
             >
                 <v-card class="" flat>
-                    <v-card-title class="subheading">
+                    <v-btn @click="expand" icon v-if="$store.state.isSideMenuCollapsed" class="mt-4">
+                        <v-icon>chevron_right</v-icon>
+                    </v-btn>
+                    <v-card-title class="subheading" v-if="!$store.state.isSideMenuCollapsed">
                         <div class="grey--text">
                             {{$t('side:creationDate')}}
                             {{formatDate(SelectionHandler.getSingle().getCreationDate())}}
                         </div>
+                        <v-spacer></v-spacer>
+                        <v-btn @click="collapse" icon>
+                            <v-icon>chevron_left</v-icon>
+                        </v-btn>
                     </v-card-title>
-                    <div>
+                    <div v-if="!$store.state.isSideMenuCollapsed">
                         <v-tabs
                                 v-model="tabMenu"
                                 grow
@@ -107,8 +116,17 @@
             }
         },
         methods: {
+            mainNavMiniWidth: function () {
+                return SelectionHandler.isSingle() ? 110 : 60;
+            },
             formatDate: function (date) {
                 return new Moment(date).fromNow();
+            },
+            collapse: function () {
+                this.$store.dispatch("setIsSideMenuCollapsed", true);
+            },
+            expand: function () {
+                this.$store.dispatch("setIsSideMenuCollapsed", false);
             }
         }
     }

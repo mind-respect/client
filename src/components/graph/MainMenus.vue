@@ -87,7 +87,7 @@
                 "zoomIn": "Zoom in",
                 "zoomOut": "Zoom out",
                 "expandAll": "Expand all",
-                "selectAllBubbles": "Select all bubbles",
+                "selectAllBubbles": "Select all",
                 "visitOtherInstances": "See where this bubble is also found on this map",
                 "collapse": "Hide tree",
                 "expand": "Expand",
@@ -132,7 +132,7 @@
                 "zoomIn": "Zoom intérieur",
                 "zoomOut": "Zoom extérieur",
                 "expandAll": "Expandre tout",
-                "selectAllBubbles": "Sélectionner toutes les bulles",
+                "selectAllBubbles": "Sélectionner tout",
                 "visitOtherInstances": "Voir où cette bulle se trouve également sur cette carte",
                 "collapse": "Cacher l'arbre",
                 "expand": "Expandre",
@@ -148,7 +148,7 @@
                 "merge": "Fusionner",
                 "list": "Voir la sélection sous forme de liste",
                 "listAll": "Tout voir en liste",
-                "fontPicker": "Sélecteur de polices",
+                "fontPicker": "Polices",
                 "share": "Partager",
                 "createVertex": "Créer une nouvelle bulle"
             });

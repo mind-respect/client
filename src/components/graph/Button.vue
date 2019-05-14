@@ -54,7 +54,14 @@
                 return this.isInMainMenu ? "#mind_map" : false;
             },
             contentClass: function () {
-                return this.isInSideMenu ? "side-button-tooltip" : "bubble-menu-tooltip";
+                if (this.isInSideMenu) {
+                    let contentClass = "side-button-tooltip ";
+                    contentClass += this.$store.state.isSideMenuCollapsed ?
+                        "side-button-collapsed-margin" :
+                        "side-button-expanded-margin";
+                    return contentClass;
+                }
+                return "bubble-menu-tooltip"
             },
             isInMainMenu: function () {
                 return this.isInTopMenu || this.isInSideMenu;
@@ -110,9 +117,16 @@
 
 <style>
     .side-button-tooltip {
-        margin-left: 385px;
         margin-top: -40px;
         white-space: nowrap;
+    }
+
+    .side-button-expanded-margin {
+        margin-left: 385px;
+    }
+
+    .side-button-collapsed-margin {
+        margin-left: 95px;
     }
 
     .bubble-menu-tooltip {

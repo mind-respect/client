@@ -7,6 +7,7 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import UserService from '@/service/UserService'
 import DateUtil from '@/DateUtil'
+
 Vue.use(Vuex);
 
 const Store = new Vuex.Store({
@@ -16,7 +17,8 @@ const Store = new Vuex.Store({
             paths: [
                 "user",
                 "locale",
-                "zoom"
+                "zoom",
+                "isSideMenuCollapsed"
             ]
         })
     ],
@@ -29,7 +31,8 @@ const Store = new Vuex.Store({
         isDescriptionFlow: false,
         isFontFlow: false,
         isTagFlow: false,
-        redraws: Math.random()
+        redraws: Math.random(),
+        isSideMenuCollapsed: false
     },
     mutations: {
         setUser: function (state, user) {
@@ -81,6 +84,9 @@ const Store = new Vuex.Store({
         },
         zoom: function (state, zoom) {
             state.zoom = zoom;
+        },
+        setIsSideMenuCollapsed: function (state, isSideMenuCollapsed) {
+            state.isSideMenuCollapsed = isSideMenuCollapsed;
         }
     },
     actions: {
@@ -113,6 +119,9 @@ const Store = new Vuex.Store({
         },
         zoom: function (action, zoom) {
             action.commit('zoom', zoom);
+        },
+        setIsSideMenuCollapsed: function(action, isSideMenuCollapsed){
+            action.commit('setIsSideMenuCollapsed', isSideMenuCollapsed);
         }
     }
 });

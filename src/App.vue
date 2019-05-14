@@ -85,8 +85,8 @@
                     </v-icon>
                     {{$t('centers')}}
                 </v-btn>
-                <Button :button="undoButton" v-if="isGraphRoute"></Button>
-                <Button :button="redoButton" v-if="isGraphRoute"></Button>
+<!--                <Button :button="undoButton" v-if="isGraphRoute"></Button>-->
+<!--                <Button :button="redoButton" v-if="isGraphRoute"></Button>-->
                 <Button :button="zoomOutButton" v-if="isGraphRoute"></Button>
                 <Button :button="zoomInButton" v-if="isGraphRoute"></Button>
                 <Button :button="createVertexButton" :large="true"></Button>
