@@ -593,12 +593,19 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
     if (!this.convertToDistantBubbleWithUriCanDo(distantVertexUri)) {
         return Promise.reject();
     }
-    this.getUi().beforeConvertToDistantBubbleWithUri();
+    // this.getUi().beforeConvertToDistantBubbleWithUri();
+    let parentVertex = this.getModel().getParentVertex();
     return VertexService.mergeTo(this.getModel(), distantVertexUri).then(() => {
-        this.getUi().mergeTo(distantVertexUri);
-        return this.subGraphController.load();
+        this.getModel().remove();
+        return SubGraphController.withVertex(
+            parentVertex
+        ).loadForParentIsAlreadyOnMap();
     }).then(() => {
-        this.getUi().afterConvertToDistantBubbleWithUri();
+        parentVertex.visitClosestChildVertices((childVertex) => {
+            if (childVertex.getUri() === distantVertexUri) {
+                childVertex.getController().expand();
+            }
+        });
     });
 };
 
@@ -607,7 +614,7 @@ VertexController.prototype.mergeCanDo = function () {
 };
 
 VertexController.prototype._relateToDistantVertexWithUri = function (distantVertexUri) {
-    return EdgeService.addToFarVertex(this.getUi(), distantVertexUri).then(() =>{
+    return EdgeService.addToFarVertex(this.getUi(), distantVertexUri).then(() => {
         return GraphDisplayer.connectVertexToVertexWithUri(
             this.getUi(),
             distantVertexUri

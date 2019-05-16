@@ -32,7 +32,11 @@ api.SubGraphController = SubGraphController;
 
 SubGraphController.prototype = new GraphElementController.GraphElementController();
 
-SubGraphController.prototype.load = function () {
+SubGraphController.prototype.loadForParentIsAlreadyOnMap = function () {
+    return this.load(true);
+};
+
+SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
     return GraphService.getForCentralBubbleUri(
         this.getModel().getUri()
     ).then(function (response) {
@@ -48,7 +52,7 @@ SubGraphController.prototype.load = function () {
         );
         let parentAsCenter = graph.center;
         let modelToAddChild;
-        if (this.getModel().isCenter) {
+        if (this.getModel().isCenter && !isParentAlreadyOnMap) {
             parentAsCenter.makeCenter();
             modelToAddChild = parentAsCenter;
         } else {
