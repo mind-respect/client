@@ -102,7 +102,7 @@
                 identifier: null,
                 items: [],
                 menuProps: {
-                    "contentClass": 'tag-search-menu'
+                    "contentClass": 'side-search-menu'
                 }
             }
         },
@@ -209,12 +209,4 @@
 </script>
 
 <style>
-    #tagMenu .v-menu__content {
-        top: -16px !important;
-    }
-    .tag-search-menu .v-list__tile {
-        height: auto;
-        min-height: 48px;
-        max-height: 105px;
-    }
 </style>

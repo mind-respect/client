@@ -52,9 +52,7 @@
                                 <TagMenu @focus="isStretched = true" @blur="isStretched = false"></TagMenu>
                             </v-tab-item>
                             <v-tab-item>
-                                <v-card flat>
-                                    <v-card-text>Savon vert</v-card-text>
-                                </v-card>
+                                <MergeMenu></MergeMenu>
                             </v-tab-item>
                         </v-tabs-items>
                     </div>
@@ -76,6 +74,7 @@
 
 <script>
     import TagMenu from '@/components/TagMenu'
+    import MergeMenu from '@/components/MergeMenu'
     import BubbleButtons from '@/components/graph/BubbleButtons'
     import Moment from 'moment'
     import I18n from '@/I18n'
@@ -85,6 +84,7 @@
         name: "SideMenu",
         components: {
             TagMenu,
+            MergeMenu,
             BubbleButtons
         },
         data: () => {
@@ -115,8 +115,8 @@
             isSingle: () => {
                 return SelectionHandler.isSingle();
             },
-            menuWidth: function(){
-                return this.isStretched ? 340: 340;
+            menuWidth: function () {
+                return this.isStretched ? 340 : 340;
             },
             mainWidth: function () {
                 return this.isStretched ? 400 : 400;
@@ -139,6 +139,13 @@
     }
 </script>
 
-<style scoped>
-
+<style>
+    .side-search-menu {
+        top: -16px !important;
+    }
+    .side-search-menu .v-list__tile {
+        height: auto;
+        min-height: 48px;
+        max-height: 105px;
+    }
 </style>

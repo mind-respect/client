@@ -172,6 +172,9 @@ Vertex.prototype.makeCenter = function () {
 };
 
 Vertex.prototype.getParentVertex = function () {
+    if (this.isCenter) {
+        return this;
+    }
     return this.parentBubble.getOtherVertex(this);
 };
 
@@ -234,7 +237,7 @@ Vertex.prototype.collapse = function () {
         }.bind(this));
         return;
     }
-    if(!this.isExpanded){
+    if (!this.isExpanded) {
         return;
     }
     this.vertexServerFormat.vertex.numberOfConnectedEdges = this.getImmediateChild().length + 1;

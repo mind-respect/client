@@ -1,0 +1,106 @@
+<template>
+    <v-card flat>
+        <v-card-text class="pt-0 pb-0">
+            <v-autocomplete
+                    ref="search"
+                    v-model="selectedSearchResult"
+                    attach="#mergeMenu"
+                    :items="items"
+                    :search-input.sync="search"
+                    item-text="label"
+                    return-object
+                    :menu-props="menuProps"
+                    :loading="loading"
+                    @change="selectSearchResult()"
+                    cache-items
+                    hide-no-data
+                    clearable
+                    :placeholder="$t('merge:placeholder')"
+                    :filter="filter"
+                    @focus="$emit('focus')"
+                    @blur="$emit('blur')"
+            >
+                <template v-slot:item="{ item }">
+                    <SearchResultContent :item="item"></SearchResultContent>
+                    <SearchResultAction :item="item"></SearchResultAction>
+                </template>
+            </v-autocomplete>
+        </v-card-text>
+        <v-card flat class="pt-0">
+            <v-card-text class="pt-0" id="mergeMenu"></v-card-text>
+        </v-card>
+        <!--        <v-card-title class="subheading grey&#45;&#45;text">-->
+        <!--            {{$t('merge:instruction')}}-->
+        <!--        </v-card-title>-->
+    </v-card>
+</template>
+
+<script>
+    import I18n from '@/I18n'
+    import SearchService from '@/search/SearchService'
+    import SearchResultContent from '@/components/SearchResultContent'
+    import SearchResultAction from '@/components/SearchResultAction'
+    import SelectionHandler from '@/SelectionHandler'
+
+    export default {
+        name: "MergeMenu",
+        components: {
+            SearchResultContent,
+            SearchResultAction
+        },
+        data: function () {
+            I18n.i18next.addResources("en", "merge", {
+                "instruction": "This bubble will be removed but all its relationships will move to be added to bubble you will have selected in the search bar below.",
+                'placeholder': "Merge with"
+            });
+            I18n.i18next.addResources("fr", "merge", {
+                "instruction": "Cette bulle s'effacera mais toutes ses relations vont se déplacer pour s'ajouter à la bulle que vous aurez sélectionnée dans la barre de recherche ci-bas.",
+                'placeholder': "Fusionner avec"
+            });
+            return {
+                loading: false,
+                selectedSearchResult: null,
+                search: null,
+                items: [],
+                menuProps: {
+                    "contentClass": 'side-search-menu'
+                }
+            }
+        },
+        watch: {
+            search: function (val) {
+                val && val !== this.select && this.querySelections(val)
+            }
+        },
+        methods: {
+            querySelections(term) {
+                this.loading = true;
+                SearchService.ownVertices(term).then((results) => {
+                    this.items = results;
+                    this.loading = false;
+                });
+            },
+            selectSearchResult: function () {
+                this.selected.getController().convertToDistantBubbleWithUri(
+                    this.selectedSearchResult.uri
+                );
+            },
+            filter: function (item, searchText, itemText) {
+                if (!this.selected.getController().convertToDistantBubbleWithUriCanDo(item.uri)) {
+                    return false;
+                }
+                return itemText.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
+            }
+        },
+        computed: {
+            selected: function () {
+                return SelectionHandler.getSingle();
+            }
+        }
+    }
+
+</script>
+
+<style scoped>
+
+</style>
