@@ -4,11 +4,9 @@
 import GraphElementType from '@/graph-element/GraphElementType'
 import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
-import GraphDisplayer from '@/graph/GraphDisplayer'
 import MindMapInfo from '@/MindMapInfo'
 import Command from '@/Command'
 import SelectionHandler from '@/SelectionHandler'
-import ToList from '@/ToList'
 import Store from '@/store'
 import router from '@/router'
 import Scroll from '@/Scroll'
@@ -606,14 +604,6 @@ GraphElementController.prototype.listSingleIsPossible = false;
 
 GraphElementController.prototype.listCanDo = function () {
     return this.isMultiple();
-};
-
-GraphElementController.prototype.list = function () {
-    ToList.showForList(
-        GraphDisplayer.getVertexSelector().VerticesToHtmlLists(
-            SelectionHandler.getSelectedVertices()
-        )
-    );
 };
 
 export default api;
