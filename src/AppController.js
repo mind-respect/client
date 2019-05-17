@@ -6,9 +6,7 @@ import Command from '@/Command'
 import VertexService from '@/vertex/VertexService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import MindMapInfo from '@/MindMapInfo'
-import GraphDisplayer from '@/graph/GraphDisplayer'
 import Vertex from '@/vertex/Vertex'
-import ToList from '@/ToList'
 import Store from '@/store'
 import SubGraph from '@/graph/SubGraph'
 import Vue from 'vue'
@@ -89,11 +87,7 @@ api.changeBackgroundColor = function () {
 };
 
 api.listAll = function () {
-    ToList.showForList(
-        GraphDisplayer.getVertexSelector().VerticesToHtmlLists(
-            GraphDisplayer.getVertexSelector().getAllVertices()
-        )
-    );
+    Store.dispatch("setIsListViewFlow", true);
 };
 
 api.isMultiple = function () {

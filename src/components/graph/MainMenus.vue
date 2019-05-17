@@ -102,7 +102,7 @@
                 "wikipediaLinks": "Learn more on Wikipedia",
                 "merge": "Merge",
                 "list": "See the selection as a list",
-                "listAll": "See all as list",
+                "listAll": "See as list",
                 "fontPicker": "Font picker",
                 "share": "Share",
                 "createVertex": "Create a new bubble"
@@ -147,7 +147,7 @@
                 "wikipediaLinks": "En savoir plus sur Wikipédia",
                 "merge": "Fusionner",
                 "list": "Voir la sélection sous forme de liste",
-                "listAll": "Tout voir en liste",
+                "listAll": "Voir en liste",
                 "fontPicker": "Polices",
                 "share": "Partager",
                 "createVertex": "Créer une nouvelle bulle"

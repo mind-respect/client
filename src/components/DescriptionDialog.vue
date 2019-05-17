@@ -36,6 +36,7 @@
     import SelectionHandler from '@/SelectionHandler'
     import I18n from '@/I18n'
     import GraphElementService from '@/graph-element/GraphElementService'
+    import GraphUi from '@/graph/GraphUi'
 
     export default {
         name: "DescriptionDialog",
@@ -87,6 +88,9 @@
             dialog: function () {
                 if (this.dialog === false) {
                     this.$store.dispatch("setIsDescriptionFlow", false)
+                    GraphUi.enableDragScroll();
+                } else {
+                    GraphUi.disableDragScroll();
                 }
             }
         },

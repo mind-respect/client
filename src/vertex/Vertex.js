@@ -182,6 +182,7 @@ Vertex.prototype.getRelationWithUiParent = function () {
     return this.parentBubble;
 };
 
+
 Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     let children;
     if (this.isCenter) {

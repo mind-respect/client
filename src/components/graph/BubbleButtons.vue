@@ -154,10 +154,6 @@
                     {
                         icon: "fa-lightbulb-o",
                         action: "suggestions"
-                    },
-                    {
-                        icon: "list",
-                        action: "list"
                     }
                 ]
             }

@@ -29,6 +29,7 @@ const Store = new Vuex.Store({
         dragged: null,
         isRemoveFlow: false,
         isDescriptionFlow: false,
+        isListViewFlow: false,
         isFontFlow: false,
         isTagFlow: false,
         redraws: Math.random(),
@@ -87,6 +88,9 @@ const Store = new Vuex.Store({
         },
         setIsSideMenuCollapsed: function (state, isSideMenuCollapsed) {
             state.isSideMenuCollapsed = isSideMenuCollapsed;
+        },
+        setIsListViewFlow: function (state, isListViewFlow) {
+            state.isListViewFlow = isListViewFlow;
         }
     },
     actions: {
@@ -120,8 +124,11 @@ const Store = new Vuex.Store({
         zoom: function (action, zoom) {
             action.commit('zoom', zoom);
         },
-        setIsSideMenuCollapsed: function(action, isSideMenuCollapsed){
+        setIsSideMenuCollapsed: function (action, isSideMenuCollapsed) {
             action.commit('setIsSideMenuCollapsed', isSideMenuCollapsed);
+        },
+        setIsListViewFlow: function (action, isListViewFlow) {
+            action.commit('setIsListViewFlow', isListViewFlow);
         }
     }
 });

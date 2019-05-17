@@ -666,6 +666,12 @@ FriendlyResource.FriendlyResource.prototype.hasAnExpandedChild = function () {
     return hasAnExpandedChild;
 };
 
+FriendlyResource.FriendlyResource.prototype.getClosestChildVertices = function () {
+    return this.getClosestChildrenOfType(
+        GraphElementType.Vertex
+    );
+};
+
 FriendlyResource.FriendlyResource.prototype.visitClosestChildVertices = function (visitor) {
     this.visitClosestChildOfType(
         GraphElementType.Vertex,
@@ -678,12 +684,38 @@ FriendlyResource.FriendlyResource.prototype.visitClosestChildRelations = functio
         visitor
     );
 };
+
+FriendlyResource.FriendlyResource.prototype.getClosestChildrenOfType = function (type) {
+    return this.getClosestChildrenInTypes(
+        [type]
+    );
+};
+
 FriendlyResource.FriendlyResource.prototype.visitClosestChildOfType = function (type, visitor) {
     return this.visitClosestChildInTypes(
         [type],
         visitor
     );
 };
+
+FriendlyResource.FriendlyResource.prototype.getClosestChildrenInTypes = function (types) {
+    return this.getImmediateChild().reduce((children, child) => {
+        if (child.isInTypes(types)) {
+            children.push(child)
+        } else if (child.isLeaf()) {
+            return false;
+        } else {
+            let childOfRightType = child.getClosestChildrenInTypes(
+                types
+            );
+            if (childOfRightType) {
+                return children.concat(childOfRightType);
+            }
+        }
+        return children;
+    }, []);
+};
+
 FriendlyResource.FriendlyResource.prototype.visitClosestChildInTypes = function (types, visitor) {
     this.visitAllImmediateChild(function (child) {
         if (child.isInTypes(types)) {

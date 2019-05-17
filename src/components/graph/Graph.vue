@@ -48,6 +48,7 @@
         <RemoveDialog></RemoveDialog>
         <DescriptionDialog></DescriptionDialog>
         <FontDialog></FontDialog>
+        <ListView></ListView>
     </div>
     <!--<div :style="'width:' + rightWidth() + 'px'"></div>-->
 </template>
@@ -57,6 +58,7 @@
     import Bubble from '@/components/graph/Bubble'
     import GraphDrawing from '@/components/graph/GraphDrawing'
     import MainMenus from '@/components/graph/MainMenus'
+    import ListView from '@/components/ListView'
     import Scroll from '@/Scroll'
     import SelectionHandler from '@/SelectionHandler'
     import SubGraphController from '@/graph/SubGraphController'
@@ -76,7 +78,8 @@
             DescriptionDialog,
             FontDialog,
             GraphDrawing,
-            MainMenus
+            MainMenus,
+            ListView
         },
         data: function () {
             return {
