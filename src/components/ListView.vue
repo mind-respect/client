@@ -1,17 +1,21 @@
 <template>
     <v-dialog v-model="dialog" v-if="dialog" width="900">
         <v-card>
-            <v-card-title>
+            <v-card-title class="pb-0">
                 <v-spacer></v-spacer>
                 <v-btn icon @click="dialog = false">
                     <v-icon>close</v-icon>
                 </v-btn>
             </v-card-title>
-            <v-card-text>
+            <v-card-text class="pt-0">
                 <v-treeview
                         :items="items"
                         open-all
                 >
+                    <template v-slot:label="{ item }">
+                        <span class="font-italic">{{getEdgeLabel(item)}}</span>
+                        {{item.original.getLabelOrDefault()}}
+                    </template>
                 </v-treeview>
             </v-card-text>
         </v-card>
@@ -51,7 +55,7 @@
                 if (this.dialog === false) {
                     this.$store.dispatch("setIsListViewFlow", false)
                     GraphUi.enableDragScroll();
-                }else{
+                } else {
                     GraphUi.disableDragScroll();
                 }
             }
@@ -60,11 +64,16 @@
             vertexAsItem: function (vertex) {
                 return {
                     id: vertex.getUri(),
-                    name: vertex.getLabelOrDefault(),
+                    original: vertex,
                     children: vertex.getClosestChildVertices().map((childVertex) => {
                         return this.vertexAsItem(childVertex)
                     })
                 }
+            },
+            getEdgeLabel: function (item) {
+                let parentBubble = item.original.getParentBubble();
+                return parentBubble.isEdge() && !parentBubble.isLabelEmpty() ?
+                    "(" + parentBubble.getLabel() + ") " : "";
             }
         }
     }
