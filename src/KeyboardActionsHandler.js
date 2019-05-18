@@ -2,8 +2,7 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import $ from 'jquery'
-import EventBus from '@/EventBus'
+import Store from '@/store'
 import SelectionHandler from '@/SelectionHandler'
 import MindMapInfo from '@/MindMapInfo'
 import UiUtils from '@/UiUtils'
@@ -49,38 +48,42 @@ let tabKeyNumber = 9,
 api._ctrlKeyNumber = UiUtils.isMacintosh() ? 91 : 17;
 
 api.disable = function () {
-    $(window).off(
+    window.removeEventListener(
         "keydown", keyDownHandler
-    ).off(
+    );
+    window.removeEventListener(
         "paste", pasteHandler
     );
 };
 
 api.enable = function () {
     api.disable();
-    $(window).on(
+    window.addEventListener(
         "keydown", keyDownHandler
-    ).on(
-        'paste', pasteHandler
+    );
+    window.addEventListener(
+        "paste", pasteHandler
     );
 };
-
 api.init = function () {
-    $(window).bind('mousewheel DOMMouseScroll', function (event) {
-        //should use event.which === api._ctrlKeyNumber but event.which is zero even if ctrl is pressed
-        if (event.ctrlKey) {
-            event.preventDefault();
+    document.addEventListener('mousewheel', wheelZoomHandle, false);
+    document.addEventListener('DOMMouseScroll', wheelZoomHandle, false);
+    let redrawTimeout;
+
+    function wheelZoomHandle(event) {
+        let isCtrl = UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey;
+        if (isCtrl) {
+            if(redrawTimeout){
+                clearTimeout(redrawTimeout);
+            }
+            redrawTimeout = setTimeout(() => {
+                Store.dispatch("redraw");
+            }, 100)
+
         }
-    });
-    EventBus.subscribe(
-        "/event/ui/graph/drawing_info/updated/",
-        api._handleKeyboardActions
-    );
+    }
 };
 
-api._handleKeyboardActions = function () {
-    api.enable();
-};
 export default api;
 
 function pasteHandler(event) {
@@ -91,17 +94,21 @@ function pasteHandler(event) {
     if (selectedElement.isEditFlow) {
         return;
     }
-    var oEvent = event.originalEvent;
     event.preventDefault();
     executeFeature({
         action: "paste"
-    }, oEvent);
+    }, event);
 }
 
 function keyDownHandler(event) {
     // console.log(event.which);
-    let target = $(event.target),
-        isWorkingOnSomething = !target.is("body") && !target.is("button") && !target.is("a") && !target.is("span");
+    let target = event.target;
+    let isWorkingOnSomething = [
+        "BODY",
+        "BUTTON",
+        "A",
+        "SPAN"
+    ].indexOf(target.tagName) === -1;
     let isCombineKeyPressed = UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey;
     if (isWorkingOnSomething) {
         if (event.keyCode === escapeKeyNumber) {

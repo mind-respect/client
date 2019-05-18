@@ -2,7 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import $ from 'jquery'
 import UserService from '@/service/UserService'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Router from '@/router';
@@ -22,10 +21,6 @@ const IdUri = {
         return decodeURIComponent(
             uri
         );
-    },
-    usernameFromUri: function (uri) {
-        var segments = $.url(uri).segment();
-        return segments[2];
     },
     currentUsernameInUrl: function () {
         return Router.history.current.params.username;
@@ -134,11 +129,6 @@ const IdUri = {
         return uri.substring(
             uri.lastIndexOf("/") + 1
         );
-    },
-    hostNameOfUri: function (uri) {
-        return $.url(
-            uri
-        ).attr("host");
     },
     isUriOfAGraphElement: function (uri) {
         return uri.indexOf("/service/users") === 0;
