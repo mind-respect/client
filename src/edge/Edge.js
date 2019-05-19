@@ -180,6 +180,7 @@ api.Edge.prototype.inverse = function () {
     let destinationVertex = this.getDestinationVertex();
     this.setSourceVertex(destinationVertex);
     this.setDestinationVertex(sourceVertex);
+    Store.dispatch("redraw");
 };
 
 api.Edge.prototype.isInverse = function () {
