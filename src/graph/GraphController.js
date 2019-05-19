@@ -1,7 +1,6 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import CompareFlow from '@/compare/CompareFlow'
 import MindMapInfo from '@/MindMapInfo'
 import SubGraph from '@/graph/SubGraph'
 
@@ -26,9 +25,9 @@ api.compareCanDo = function () {
     return !MindMapInfo.isViewOnly();
 };
 
-api.compare = function () {
-    CompareFlow.enter();
-};
+// api.compare = function () {
+//     CompareFlow.enter();
+// };
 
 api.selectAllBubbles = function () {
     SubGraph.graph.center.selectTree();

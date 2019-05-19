@@ -110,12 +110,12 @@
                         ctrlShortcut: "V"
                     },
                     {
-                        icon: "fa-share",
+                        icon: "navigate_next",
                         action: "reverseToRight",
                         ctrlShortcut: "I"
                     },
                     {
-                        icon: "fa-reply",
+                        icon: "navigate_before",
                         action: "reverseToLeft",
                         ctrlShortcut: "I"
                     },

@@ -23,33 +23,7 @@ api.addToFarVertex = function (sourceVertex, destinationVertexUri) {
         destinationVertexUri
     );
 };
-api.remove = function (edge, callback) {
-    return $.ajax({
-        type: 'DELETE',
-        url: edge.getUri()
-    }).then(function () {
-        api._removeCallback(
-            edge,
-            callback
-        );
-    });
-};
-api._removeCallback = function (edge, callback) {
-    var sourceVertex = edge.getSourceVertex(),
-        destinationVertex = edge.getDestinationVertex(),
-        sourceVertexUri = sourceVertex.getUri(),
-        destinationVertexUri = destinationVertex.getUri(),
-        sourceVertexId = sourceVertex.getId(),
-        destinationVertexId = destinationVertex.getId();
-    if (undefined !== callback) {
-        callback(
-            edge,
-            edge.getUri(),
-            sourceVertexUri,
-            destinationVertexUri
-        );
-    }
-};
+
 api.updateLabel = function (edge, label) {
     return FriendlyResourceService.updateLabel(
         edge,
@@ -57,10 +31,9 @@ api.updateLabel = function (edge, label) {
     );
 };
 api.inverse = function (edge) {
-    return $.ajax({
-        type: 'PUT',
-        url: edge.getUri() + "/inverse"
-    });
+    return Service.geApi().put(
+        edge.getUri() + "/inverse"
+    );
 };
 api.changeSourceVertex = function (sourceVertex, edge) {
     return Service.geApi().put(
@@ -80,8 +53,8 @@ api._add = function (sourceVertexUri, destinationVertexUri) {
     $.ajax({
         type: 'POST',
         url: edgesUrl() +
-        '?sourceVertexId=' + sourceVertexUriFormatted +
-        '&destinationVertexId=' + destinationVertexUriFormatted
+            '?sourceVertexId=' + sourceVertexUriFormatted +
+            '&destinationVertexId=' + destinationVertexUriFormatted
     }).then(function (data, textStatus, jqXHR) {
             var newEdgeUri = IdUri.resourceUriFromAjaxResponse(
                 jqXHR

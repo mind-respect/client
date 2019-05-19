@@ -150,28 +150,7 @@ EdgeController.prototype.removeCanDo = function () {
 };
 
 EdgeController.prototype.remove = function (skipConfirmation) {
-    // if (skipConfirmation) {
-    //     return deleteAfterConfirmationBehavior.bind(this)();
-    // }
-    // return BubbleDeleteMenu.forRelation(
-    //     this.getUi()
-    // ).ask().then(
-    //     deleteAfterConfirmationBehavior.bind(this)
-    // );
-    //
-    // function deleteAfterConfirmationBehavior() {
-    //     return EdgeService.remove(this.getUi(), function () {
-    //         var parentBubble = this.getUi().getParentBubble();
-    //         var childVertex = this.getUi().getNextBubble()();
-    //         this.getUi().applyToOtherInstances(function (otherInstance) {
-    //             var childVertex = otherInstance.getNextBubble()();
-    //             childVertex.remove(false);
-    //         });
-    //         childVertex.remove(false);
-    //         parentBubble.getModel().decrementNumberOfConnectedEdges();
-    //         parentBubble.sideCenterOnScreenWithAnimation();
-    //     }.bind(this));
-    // }
+    Store.dispatch("setIsRemoveFlow", true);
 };
 EdgeController.prototype.reverseToRightCanDo = function () {
     if (!this.isSingleAndOwned()) {
@@ -199,12 +178,11 @@ EdgeController.prototype.reverseToLeft = function () {
 };
 
 EdgeController.prototype.reverse = function () {
-    var self = this;
     EdgeService.inverse(
-        this.getUi()
-    ).then(function () {
-        self.getUi().inverse();
-    });
+        this.getModel()
+    ).then(() => {
+        this.getModel().inverse();
+    })
 };
 EdgeController.prototype.sourceVertex = function (sourceVertex) {
     if (!sourceVertex.isExpanded) {

@@ -82,9 +82,21 @@ api.Edge.prototype.init = function (edgeServerFormat) {
 api.Edge.prototype.getGraphElementType = function () {
     return GraphElementType.Relation;
 };
+
+api.Edge.prototype.updateSourceOrDestination = function (vertex) {
+    if (this.getSourceVertex().isSameUri(vertex)) {
+        this.setSourceVertex(vertex);
+    } else if (this.getDestinationVertex().isSameUri(vertex)) {
+        this.setDestinationVertex(vertex);
+    } else {
+        console.warn("trying to update non related source or destination vertex to " + this.getLabel())
+    }
+};
+
 api.Edge.prototype.setSourceVertex = function (sourceVertex) {
     this.sourceVertex = sourceVertex;
 };
+
 api.Edge.prototype.setDestinationVertex = function (destinationVertex) {
     this.destinationVertex = destinationVertex;
 };
@@ -163,6 +175,13 @@ api.Edge.prototype.getRightBubble = function () {
     return this.isToTheLeft() ? this.sourceVertex : this.destinationVertex;
 };
 
+api.Edge.prototype.inverse = function () {
+    let sourceVertex = this.getSourceVertex();
+    let destinationVertex = this.getDestinationVertex();
+    this.setSourceVertex(destinationVertex);
+    this.setDestinationVertex(sourceVertex);
+};
+
 api.Edge.prototype.isInverse = function () {
     return this.getSourceVertex().getUri() !== this.parentVertex.getUri();
 };
@@ -179,7 +198,9 @@ api.Edge.prototype.getLeftBubble = function () {
 };
 
 api.Edge.prototype.getImmediateChild = function () {
-    return [this.destinationVertex];
+    return [
+        this.getOtherVertex(this.parentVertex)
+    ];
 };
 
 api.Edge.prototype.getNumberOfChild = function () {

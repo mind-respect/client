@@ -14,7 +14,9 @@
             </div>
         </div>
         <div class="vertices-children-container" v-if="bubble.isEdge()" transition="fade-transition">
-            <Bubble :bubble="addVertexContext(bubble.destinationVertex, bubble.parentVertex)"></Bubble>
+            <Bubble :bubble="addVertexContext(bubble.sourceVertex, bubble.destinationVertex)"
+                    v-if="bubble.isInverse()"></Bubble>
+            <Bubble :bubble="addVertexContext(bubble.destinationVertex, bubble.sourceVertex)" v-else></Bubble>
         </div>
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()" transition="fade-transition">
             <div v-for="child in bubble._sortedImmediateChild"
@@ -47,8 +49,9 @@
                 vertex.parentVertex = parentVertex;
                 return this.addCommonContext(vertex);
             },
-            addEdgeContext: function (edge, destinationVertex, parentVertex) {
-                edge.destinationVertex = destinationVertex;
+            addEdgeContext: function (edge, childVertex, parentVertex) {
+                edge.updateSourceOrDestination(parentVertex);
+                edge.updateSourceOrDestination(childVertex);
                 edge.parentVertex = parentVertex;
                 return this.addCommonContext(edge);
             },

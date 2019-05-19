@@ -2,7 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import $ from 'jquery'
 import Service from '@/Service'
 import UserService from '@/service/UserService'
 

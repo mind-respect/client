@@ -2,7 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import $ from 'jquery'
 import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
 
@@ -53,9 +52,9 @@ api.SubGraph.prototype.getVertexRelatedToIdentification = function (identificati
 };
 
 api.SubGraph.prototype.visitEdgesRelatedToVertex = function (vertex, visitor) {
-    $.each(this.edges, function () {
+    this.edges.forEach((edge) => {
         if (this.isRelatedToVertex(vertex)) {
-            visitor(this);
+            visitor(edge);
         }
     });
 };
@@ -68,11 +67,10 @@ api.SubGraph.prototype.getAnyUri = function () {
 
 api.SubGraph.prototype._buildEdges = function () {
     this.edges = {};
-    var self = this;
-    $.each(this.serverFormat.edges, function () {
-        var facade = Edge.fromServerFormat(this);
-        self.edges[facade.getUri()] = facade;
-    });
+    this.serverFormat.edges.forEach((edge) => {
+        let facade = Edge.fromServerFormat(edge);
+        this.edges[facade.getUri()] = facade;
+    })
 };
 
 api.SubGraph.prototype.visitEdges = function (visitor) {
@@ -102,22 +100,16 @@ api.SubGraph.prototype.getCenter = function () {
 
 api.SubGraph.prototype._buildVertices = function () {
     this.vertices = {};
-    var self = this;
-    $.each(this.serverFormat.vertices, function () {
-        var facade = Vertex.fromServerFormat(this);
-        self.vertices[facade.getUri()] = facade;
+    this.serverFormat.vertices.forEach((vertex) => {
+        let facade = Vertex.fromServerFormat(vertex);
+        this.vertices[facade.getUri()] = facade;
     });
 };
 api.SubGraph.prototype._relatedToIdentificationForGraphElements = function (identification, graphElements) {
-    var related = false;
-    $.each(graphElements, function () {
-        var graphElement = this;
-        if (graphElement.isRelatedToIdentifier(identification)) {
-            related = graphElement;
-            return false;
-        }
+    let related = graphElements.filter((graphElement) => {
+        return graphElement.isRelatedToIdentifier(identification)
     });
-    return related;
+    return related.length > 0 ? related[0] : false;
 };
 
 export default api;

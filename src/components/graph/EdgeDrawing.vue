@@ -167,11 +167,14 @@
             },
             drawChildren: function () {
                 let lines = "";
-                this.children.forEach(function (child) {
-                    if (child.isSameBubble(this.highestChild) || child.isSameBubble(this.lowestChild) || !child.draw) {
-                        return;
-                    }
+                this.children.forEach((child) => {
                     let childPosition = this.getMiddleSidePosition(child);
+                    if (child.isEdge() && child.isInverse()) {
+                        lines += this.inverseArrowHead(childPosition)
+                    }
+                    if (child.isSameBubble(this.highestChild) || child.isSameBubble(this.lowestChild) || !child.draw) {
+                        return lines;
+                    }
                     if (!childPosition) {
                         this.loaded = false;
                         this.$nextTick(function () {
@@ -183,15 +186,17 @@
                         return;
                     }
                     if (this.bubble.isEdge()) {
-                        let xAdjust = this.isLeft ? 0 : 0;
                         let position = this.getMiddleSidePosition(this.bubble);
                         lines += "M " + position.x + " " + position.y + " ";
-                        lines += "H " + (childPosition.x + xAdjust);
-                        lines += this.arrowHead(
-                            position.x,
-                            childPosition.x + xAdjust,
-                            position.y
-                        );
+                        lines += "H " + (childPosition.x);
+                        let childXPosition = childPosition.x;
+                        if(!this.bubble.isInverse()){
+                            lines += this.arrowHead(
+                                position.x,
+                                childXPosition,
+                                position.y
+                            );
+                        }
                         return lines;
                     }
                     let isChildInBetween = this.isChildInBetween(childPosition);
@@ -229,7 +234,7 @@
                             }
                         }
                     }
-                }.bind(this));
+                });
                 return lines;
             },
             arrowHead: function (startX, endX, y) {
@@ -241,7 +246,7 @@
                 middleXAdjust += this.isLeft ? arrowHeadLength * -1 : arrowHeadLength;
                 let middleX = startX + middleXAdjust;
                 let xAdjust = arrowHeadLength;
-                if (this.bubble.isInverse() || !this.isLeft) {
+                if (!this.isLeft) {
                     xAdjust *= -1
                 }
                 lines += "M " + middleX + "," + y + " " +
@@ -249,6 +254,23 @@
                     "M " + middleX + "," + (y) + " " +
                     "L " + (middleX + xAdjust) + " " + (y + arrowHeadLength) + " ";
                 return lines;
+            },
+            inverseArrowHead: function (childPosition) {
+                let position = {
+                    x: this.topPosition.x,
+                    y: childPosition.y
+                };
+                let xAdjust = arrowHeadLength;
+                if(this.isLeft){
+                    position.x -= arcRadiusStandard + 20;
+                    xAdjust *= -1
+                }else{
+                    position.x += arcRadiusStandard + 20;
+                }
+                return "M " + position.x + "," + position.y + " " +
+                    "L " + (position.x + xAdjust) + " " + (position.y - arrowHeadLength) + " " +
+                    "M " + position.x + "," + position.y + " " +
+                    "L " + (position.x + xAdjust) + " " + (position.y + arrowHeadLength) + " "
             },
             getBubbleElement: function (bubble) {
                 if (bubble.isEdge()) {

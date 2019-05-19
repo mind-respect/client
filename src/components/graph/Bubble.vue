@@ -379,8 +379,8 @@
                 this.containerId = IdUri.uuid();
             }
             if (this.bubble.isEdge()) {
-                this.bubble.setSourceVertex(this.bubble.parentVertex);
-                this.bubble.setDestinationVertex(this.bubble.destinationVertex);
+                this.bubble.updateSourceOrDestination(this.bubble.parentVertex);
+                this.bubble.updateSourceOrDestination(this.bubble.destinationVertex);
             }
             this.bubble.loading = false;
             if (this.bubble.isGroupRelation()) {

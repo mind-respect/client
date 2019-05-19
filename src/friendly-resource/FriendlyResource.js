@@ -576,7 +576,7 @@ FriendlyResource.FriendlyResource.prototype.collapse = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {
-    return this.getImmediateChild().some(function (child) {
+    return this.getImmediateChild().some((child) => {
         if (child.loading) {
             return false;
         }

@@ -79,8 +79,8 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
             groupRelationRoot.sortedImmediateChild(parentAsCenter).forEach(function (child) {
                 Object.keys(child).forEach(function (uId) {
                     let triple = child[uId];
-                    triple.edge.setSourceVertex(modelToAddChild);
-                    triple.edge.setDestinationVertex(triple.vertex);
+                    triple.edge.updateSourceOrDestination(modelToAddChild);
+                    triple.edge.updateSourceOrDestination(triple.vertex);
                     triple.edge.uiId = uId;
                     // if(triple.vertex.getLabel() === "communication"){
                     //     debugger;
