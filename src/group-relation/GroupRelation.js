@@ -406,7 +406,7 @@ GroupRelation.prototype.getVerticesAtAnyDepth = function () {
         Object.entries(childGroupRelation.getVerticesAtAnyDepth()).reduce((vertices, entry) => {
             vertices[entry[0]] = entry[1];
             return vertices;
-        });
+        }, vertices);
     });
     return vertices;
 };
