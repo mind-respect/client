@@ -2,7 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import GraphUi from '@/graph/GraphUi'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import Scroll from '@/Scroll'
 
@@ -14,25 +13,6 @@ api.reset = function () {
     api.selected = [];
 };
 
-api.selectAllVerticesOnly = function () {
-    GraphUi.getDrawnGraph().detachTemp();
-    deselectAll();
-    var onlyPrepare = true;
-    GraphDisplayer.getVertexSelector().visitAllVertices(function (vertex) {
-        api.addVertex(vertex, onlyPrepare);
-    });
-    GraphUi.getDrawnGraph().reattach();
-};
-
-api.selectAllRelationsOnly = function () {
-    GraphUi.getDrawnGraph().detachTemp();
-    deselectAll();
-    var onlyPrepare = true;
-    GraphDisplayer.getEdgeSelector().visitAllEdges(function (edge) {
-        api.addRelation(edge, onlyPrepare);
-    });
-    GraphUi.getDrawnGraph().reattach();
-};
 
 api.setToSingle = function (graphElement) {
     if (!graphElement) {
