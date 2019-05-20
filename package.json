@@ -23,7 +23,6 @@
     "npm": "^6.8.0",
     "vue": "^2.6.10",
     "vue-clipboard2": "^0.3.0",
-    "vue-linkify": "^1.0.1",
     "vue-router": "^3.0.1",
     "vue-scrollto": "^2.14.0",
     "vue-shortkey": "^3.1.6",

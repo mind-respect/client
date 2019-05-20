@@ -161,8 +161,8 @@
                                                 autocomplete="off" v-html="bubble.getFriendlyJson().label"
                                                 @focus="focus"
                                                 @keydown="keydown"
-                                                v-linkified
                                                 :style="labelFont"
+                                                ref="vertexLabel"
                                         ></div>
 
                                     </v-badge>
@@ -315,6 +315,8 @@
     import SubGraph from '@/graph/SubGraph'
     import Color from '@/Color'
     import MindMapInfo from '@/MindMapInfo'
+    import linkifyElement from 'linkifyjs/element'
+
     export default {
         name: "Bubble",
         props: ['bubble'],
@@ -394,15 +396,16 @@
                 this.bubble.sortedImmediateChild(
                     this.bubble.parentVertex.getChildrenIndex()
                 );
-                this.$nextTick(function () {
+                this.$nextTick(() => {
                     this.bubble.collapse();
                     this.bubble.isFirstInit = false;
-                    this.$nextTick(function () {
+                    this.$nextTick(() => {
                         if (this.bubble.hasFewEnoughBubblesToExpand()) {
                             this.bubble.expand(true);
                         }
-                    }.bind(this));
-                }.bind(this))
+                        this.linkify();
+                    });
+                })
             }
             this.loaded = true;
         },
@@ -488,7 +491,17 @@
                 }
                 this.bubble.focus(event);
             },
+            linkify: function () {
+                if (!this.$refs.vertexLabel) {
+                    return;
+                }
+                linkifyElement(this.$refs.vertexLabel)
+            },
             leaveEditFlow: function () {
+                this.linkify();
+                // console.log();
+                // console.log(linkifyElement);
+                // linkifyElement(document.getElementById('id'), options);
                 this.isEditFlow = false;
                 this.bubble.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
