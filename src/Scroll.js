@@ -4,11 +4,8 @@
 import VueScrollTo from 'vue-scrollto'
 import router from '@/router'
 import Vue from 'vue'
-import VueDragscroll from 'vue-dragscroll'
 import Store from '@/store'
 import SideMenu from '@/SideMenu'
-
-Vue.use(VueDragscroll);
 Vue.use(VueScrollTo);
 
 const IS_ON_SCREEN_RIGHT_THRESHOLD = 100;
