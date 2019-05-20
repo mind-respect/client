@@ -398,7 +398,7 @@ GroupRelation.prototype.getNumberOfVerticesAtAnyDepth = function () {
 };
 
 GroupRelation.prototype.getVerticesAtAnyDepth = function () {
-    let vertices = Object.entries(this.vertices).reduce((vertices, entry) => {
+    let verticesAtAnyDepth = Object.entries(this.vertices).reduce((vertices, entry) => {
         vertices[entry[0]] = entry[1];
         return vertices;
     }, {});
@@ -406,9 +406,9 @@ GroupRelation.prototype.getVerticesAtAnyDepth = function () {
         Object.entries(childGroupRelation.getVerticesAtAnyDepth()).reduce((vertices, entry) => {
             vertices[entry[0]] = entry[1];
             return vertices;
-        }, vertices);
+        }, verticesAtAnyDepth);
     });
-    return vertices;
+    return verticesAtAnyDepth;
 };
 
 GroupRelation.prototype.getVerticesAsArray = function () {
