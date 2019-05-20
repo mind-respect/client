@@ -1,7 +1,6 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import $ from 'jquery'
 import IdUri from '@/IdUri'
 import UserService from '@/service/UserService'
 import EventBus from '@/EventBus'
@@ -85,12 +84,12 @@ api.isSchemaMode = function () {
         IdUri.getGraphElementUriInUrl()
     );
 };
-api.isInCompareMode = function () {
-    var $compareFlowWarning = $(
-        "#compare-flow-warning"
-    );
-    return $compareFlowWarning.length > 0 && !$compareFlowWarning.hasClass(
-        "hidden"
-    );
-};
+// api.isInCompareMode = function () {
+//     var $compareFlowWarning = $(
+//         "#compare-flow-warning"
+//     );
+//     return $compareFlowWarning.length > 0 && !$compareFlowWarning.hasClass(
+//         "hidden"
+//     );
+// };
 export default api;

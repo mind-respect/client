@@ -14,25 +14,6 @@ import GraphElementMainMenu from '@/graph-element/GraphElementMainMenu'
 import SelectionHandler from '@/SelectionHandler'
 
 const api = {};
-api.buildFromMetaSubGraph = function (metaSubGraph) {
-    var deferred = $.Deferred();
-    if (metaSubGraph.getMetaCenter()) {
-        deferred.resolve(
-            api._build(metaSubGraph)
-        );
-    }
-    else {
-        MetaService.getForUri(
-            IdUri.getGraphElementUriInUrl()
-        ).then(function (metaCenter) {
-            metaSubGraph.setMetaCenter(metaCenter);
-            deferred.resolve(
-                api._build(metaSubGraph)
-            );
-        });
-    }
-    return deferred.promise();
-};
 api._build = function (metaSubGraph) {
     var container = GraphUiBuilder.buildRootBubbleContainer();
     var graphUiBuilder = GraphUiBuilder.usingVertexUiBuilder(

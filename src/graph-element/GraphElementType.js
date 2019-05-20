@@ -42,6 +42,9 @@ api.getEdgeTypes = function () {
 api.isEdgeType = function (type) {
     return api.getEdgeTypes().indexOf(type) > -1;
 };
+api.isVertexType = function (type) {
+    return api.getVertexTypes().indexOf(type) > -1;
+};
 api.getAll = function () {
     return api.getVertexTypes().concat(
         api.getEdgeTypes()

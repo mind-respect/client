@@ -17,7 +17,7 @@
             <v-flex xs12
                     style="position:relative;"
                     class="dotted-border-top"
-                    v-if="bubble.isVertex() && !bubble.isCenter"
+                    v-if="bubble.isVertexType() && !bubble.isCenter"
             ></v-flex>
         </v-flex>
         <v-layout
@@ -29,7 +29,7 @@
                 <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
                 <div v-if="!bubble.isCollapsed || bubble.isCenter">
                     <div :class="{
-                   'blur-overlay':isEditFlow && bubble.isVertex()
+                   'blur-overlay':isEditFlow && bubble.isVertexType()
                 }"
                     >
                         <transition name="fade" v-on:before-enter="beforeChildrenAnimation"
@@ -38,7 +38,7 @@
                                       v-if="
                                         bubble.orientation === 'left' &&
                                           (
-                                            (bubble.isVertex() && bubble.rightBubbles.length > 0) ||
+                                            (bubble.isVertexType() && bubble.rightBubbles.length > 0) ||
                                             (bubble.isGroupRelation() && bubble._sortedImmediateChild && bubble._sortedImmediateChild.length > 0) ||
                                             bubble.isEdge()
                                           )
@@ -65,8 +65,8 @@
                             :class="{
                                 'top-bottom-left-side text-xs-right': bubble.isToTheLeft(),
                                 'top-bottom-right-side': !bubble.isToTheLeft(),
-                                'vertex-drop-arrow-top':bubble.isVertex(),
-                                'edge-drop-arrow-top':!bubble.isVertex()
+                                'vertex-drop-arrow-top':bubble.isVertexType(),
+                                'edge-drop-arrow-top':!bubble.isVertexType()
                             }">
                         <v-icon v-for="i in 5" small
                                 style="overflow-x: hidden"
@@ -100,7 +100,7 @@
                     </div>
                     <v-spacer v-if="bubble.isToTheLeft() && bubble.isLeaf()"></v-spacer>
                     <div
-                            v-if="bubble.isVertex()"
+                            v-if="bubble.isVertexType()"
                             class="bubble vertex graph-element relative vh-center" :class="{
                         'selected' : (isSelected || isLabelDragOver || isLeftRightDragOver),
                         'center-vertex': bubble.isCenter,
@@ -147,18 +147,24 @@
                                             </v-icon>
                                         </span>
                                     </div>
-                                    <div
-                                            class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
-                                            @blur="leaveEditFlow"
-                                            @dragover="labelDragEnter"
-                                            @dragleave="labelDragLeave"
-                                            @drop="labelDrop"
-                                            :data-placeholder="$t('vertex:default')"
-                                            autocomplete="off" v-text="bubble.getFriendlyJson().label"
-                                            @focus="focus"
-                                            @keydown="keydown"
-                                            :style="labelFont"
-                                    ></div>
+                                    <v-badge color="third">
+                                        <template v-slot:badge v-if="bubble.isMeta()">
+                                            <v-icon dark>label</v-icon>
+                                        </template>
+                                        <div
+                                                class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
+                                                @blur="leaveEditFlow"
+                                                @dragover="labelDragEnter"
+                                                @dragleave="labelDragLeave"
+                                                @drop="labelDrop"
+                                                :data-placeholder="$t('vertex:default')"
+                                                autocomplete="off" v-text="bubble.getFriendlyJson().label"
+                                                @focus="focus"
+                                                @keydown="keydown"
+                                                :style="labelFont"
+                                        ></div>
+
+                                    </v-badge>
                                 </div>
                                 <div :style="background">
                                     <BubbleButtons></BubbleButtons>
@@ -185,8 +191,8 @@
                          :class="{
                             'top-bottom-left-side text-xs-right': bubble.isToTheLeft(),
                             'top-bottom-right-side': !bubble.isToTheLeft(),
-                            'vertex-drop-arrow-bottom':bubble.isVertex(),
-                            'edge-drop-arrow-bottom':!bubble.isVertex()
+                            'vertex-drop-arrow-bottom':bubble.isVertexType(),
+                            'edge-drop-arrow-bottom':!bubble.isVertexType()
                         }">
                         <v-icon v-for="i in 5" small
                                 class="unselectable"
@@ -262,7 +268,7 @@
                 </div>
                 <div v-if="!bubble.isCollapsed || bubble.isCenter">
                     <div :class="{
-                   'blur-overlay':isEditFlow && bubble.isVertex()
+                   'blur-overlay':isEditFlow && bubble.isVertexType()
                 }"
                     >
                         <transition name="fade" v-on:before-enter="beforeChildrenAnimation"
@@ -271,7 +277,7 @@
                                       v-if="
                                       bubble.orientation === 'right'  &&
                                       (
-                                        (bubble.isVertex() && bubble.rightBubbles.length > 0) ||
+                                        (bubble.isVertexType() && bubble.rightBubbles.length > 0) ||
                                         (bubble.isGroupRelation() && bubble._sortedImmediateChild && bubble._sortedImmediateChild.length > 0) ||
                                         bubble.isEdge()
                                       )
@@ -285,7 +291,7 @@
         </v-layout>
         <v-flex xs12
                 class="dotted-border-bottom"
-                v-if="bubble.isVertex() && !bubble.isCenter"
+                v-if="bubble.isVertexType() && !bubble.isCenter"
         ></v-flex>
         <v-flex xs12 class="pb-1 dotted-border-bottom"
                 @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"

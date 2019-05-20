@@ -29,7 +29,7 @@ api.MetaGraph.prototype.getSubGraph = function () {
 };
 
 api.MetaGraph.prototype._getMetaCenter = function () {
-    var centerMeta;
+    let centerMeta;
     this.subGraph.visitGraphElements(function (graphElement) {
         graphElement.getIdentifiersIncludingSelf().forEach(function (identifier) {
             if (identifier.getUri() === this.centerUri) {

@@ -55,6 +55,7 @@
 
 <script>
     import MindMapInfo from '@/MindMapInfo'
+    import IdUri from '@/IdUri'
     import Bubble from '@/components/graph/Bubble'
     import GraphDrawing from '@/components/graph/GraphDrawing'
     import MainMenus from '@/components/graph/MainMenus'
@@ -63,6 +64,7 @@
     import SelectionHandler from '@/SelectionHandler'
     import SubGraphController from '@/graph/SubGraphController'
     import Vertex from '@/vertex/Vertex'
+    import Meta from '@/identifier/Meta'
     import RemoveDialog from '@/components/RemoveDialog'
     import DescriptionDialog from '@/components/DescriptionDialog'
     import FontDialog from '@/components/FontDialog'
@@ -91,13 +93,16 @@
             }
         },
         mounted: function () {
-            let centerUri = MindMapInfo.getCenterBubbleUri();
-            let centerVertex = Vertex.withUri(centerUri);
             SelectionHandler.removeAll();
-            centerVertex.makeCenter();
-            SubGraphController.withVertex(
-                centerVertex
-            ).load().then((graph) => {
+            let centerUri = MindMapInfo.getCenterBubbleUri();
+            let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : Vertex.withUri(centerUri);
+            center.makeCenter();
+            let promise = center.isMeta() ?
+                center.getController().loadGraph(center) :
+                SubGraphController.withVertex(
+                    center
+                ).load();
+            promise.then((graph) => {
                 this.graph = graph;
                 let center = this.graph.center;
                 this.centerServerFormat = center.getServerFormat();
@@ -113,6 +118,9 @@
             });
         },
         methods: {
+            setupForMeta: function () {
+
+            },
             addBubbleContext: function (bubble, parentVertex, orientation) {
                 bubble.parentBubble = bubble.parentVertex = parentVertex;
                 bubble.orientation = orientation;

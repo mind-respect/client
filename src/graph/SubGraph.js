@@ -67,7 +67,7 @@ api.SubGraph.prototype.getAnyUri = function () {
 
 api.SubGraph.prototype._buildEdges = function () {
     this.edges = {};
-    this.serverFormat.edges.forEach((edge) => {
+    Object.values(this.serverFormat.edges).forEach((edge) => {
         let facade = Edge.fromServerFormat(edge);
         this.edges[facade.getUri()] = facade;
     })
@@ -100,7 +100,7 @@ api.SubGraph.prototype.getCenter = function () {
 
 api.SubGraph.prototype._buildVertices = function () {
     this.vertices = {};
-    this.serverFormat.vertices.forEach((vertex) => {
+    Object.values(this.serverFormat.vertices).forEach((vertex) => {
         let facade = Vertex.fromServerFormat(vertex);
         this.vertices[facade.getUri()] = facade;
     });

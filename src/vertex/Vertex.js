@@ -2,9 +2,7 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import $ from 'jquery'
 import GraphElement from '@/graph-element/GraphElement'
-import Edge from '@/edge/Edge'
 import Suggestion from '@/suggestion/Suggestion'
 import ShareLevel from '@/vertex/ShareLevel'
 import GraphElementType from '@/graph-element/GraphElementType'
@@ -15,16 +13,16 @@ import Vue from 'vue'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
-    return new Vertex(
+    return new Vertex().init(
         serverFormat
     );
 };
 api.withUri = function (uri) {
-    return new Vertex(
+    return new Vertex().init(
         api.buildServerFormatFromUri(
             uri
         )
-    );
+    )
 };
 api.buildServerFormatFromUri = function (uri) {
     return {
@@ -52,11 +50,14 @@ api.buildServerFormatFromUi = function (vertexUi) {
     };
 };
 
-function Vertex(vertexServerFormat) {
+function Vertex() {
+}
+
+Vertex.prototype = new GraphElement.GraphElement();
+
+Vertex.prototype.init = function (vertexServerFormat) {
     this.vertexServerFormat = vertexServerFormat;
     this.vertexServerFormat.vertex.numberOfConnectedEdges = this.vertexServerFormat.vertex.numberOfConnectedEdges || 0;
-    this._includedVertices = this._buildIncludedVertices();
-    this._includedEdges = this._buildIncludedEdges();
     this._suggestions = this._buildSuggestions();
     this.leftBubbles = [];
     this.leftBubblesCollapsed = null;
@@ -65,13 +66,15 @@ function Vertex(vertexServerFormat) {
     GraphElement.GraphElement.apply(
         this
     );
-    this.init(vertexServerFormat.vertex.graphElement);
+    GraphElement.GraphElement.prototype.init.call(
+        this,
+        vertexServerFormat.vertex.graphElement
+    );
     if (this.getNumberOfChild() === 0) {
         this.isExpanded = true;
     }
-}
-
-Vertex.prototype = new GraphElement.GraphElement();
+    return this;
+};
 
 Vertex.prototype.hasIncludedGraphElements = function () {
     return Object.keys(this.getIncludedVertices()).length > 0;
@@ -360,32 +363,6 @@ Vertex.prototype.buildChildrenIndex = function () {
     }
 };
 
-Vertex.prototype._buildIncludedEdges = function () {
-    var includedEdges = {};
-    if (this.vertexServerFormat.vertex.includedEdges === undefined) {
-        return includedEdges;
-    }
-    $.each(this.vertexServerFormat.vertex.includedEdges, function (key, value) {
-        includedEdges[key] = Edge.fromServerFormat(
-            value
-        );
-    });
-    return includedEdges;
-};
-
-Vertex.prototype._buildIncludedVertices = function () {
-    var includedVertices = {};
-    if (this.vertexServerFormat.vertex.includedVertices === undefined) {
-        return includedVertices;
-    }
-    $.each(this.vertexServerFormat.vertex.includedVertices, function (key, value) {
-        includedVertices[key] = api.fromServerFormat(
-            value
-        );
-    });
-    return includedVertices;
-};
-
 Vertex.prototype.hasSuggestions = function () {
     let suggestions = this.getSuggestions();
     return suggestions !== undefined && suggestions.length > 0;
@@ -413,5 +390,7 @@ Vertex.prototype.isMeta = function () {
 Vertex.prototype.isImmediateChildOfGroupRelation = function () {
     return this.parentBubble.parentBubble.isGroupRelation();
 };
+
+api.Vertex = Vertex;
 
 export default api;

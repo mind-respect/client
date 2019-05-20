@@ -76,6 +76,12 @@ export default {
         i18next.addResources("fr", "edge", {
             "default": "relie"
         });
+        i18next.addResources("en", "tag", {
+            "default": "Tag"
+        });
+        i18next.addResources("fr", "tag", {
+            "default": "Étiquette"
+        });
         i18next.addResources("en", "childNotice", {
             "tooltip": "Expand (ctrl+E)",
             "tooltipForMac": "Expand (⌘+E)"

@@ -2,31 +2,27 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import $ from 'jquery'
 import Identification from '@/identifier/Identification'
 import IdUri from '@/IdUri'
+import Service from '@/Service'
 
 const api = {};
 api.getForUri = function (uri) {
-    return $.ajax({
-        type: 'GET',
-        url: uri,
-        contentType: 'application/json;charset=utf-8'
-    }).then(function (serverFormat) {
+    return Service.geApi().get(
+        uri
+    ).then(function (response) {
         return Identification.fromServerFormat(
-            serverFormat
+            response.data
         );
     });
 };
 
 api.mergeTo = function (identifier, distantTagUri) {
-    return $.ajax({
-        type: 'POST',
-        url: identifier.getUri() + '/mergeTo/' + IdUri.getGraphElementShortIdFromUri(
-            distantTagUri
-        ),
-        dataType: 'json'
-    });
+    return Service.geApi().post(
+        identifier.getUri() + '/mergeTo/' + IdUri.getGraphElementShortIdFromUri(
+        distantTagUri
+        )
+    )
 };
 
 export default api;
