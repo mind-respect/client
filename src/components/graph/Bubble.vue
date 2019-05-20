@@ -158,9 +158,10 @@
                                                 @dragleave="labelDragLeave"
                                                 @drop="labelDrop"
                                                 :data-placeholder="$t('vertex:default')"
-                                                autocomplete="off" v-text="bubble.getFriendlyJson().label"
+                                                autocomplete="off" v-html="bubble.getFriendlyJson().label"
                                                 @focus="focus"
                                                 @keydown="keydown"
+                                                v-linkified
                                                 :style="labelFont"
                                         ></div>
 
@@ -314,7 +315,6 @@
     import SubGraph from '@/graph/SubGraph'
     import Color from '@/Color'
     import MindMapInfo from '@/MindMapInfo'
-
     export default {
         name: "Bubble",
         props: ['bubble'],

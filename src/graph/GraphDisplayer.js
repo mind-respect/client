@@ -2,12 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import $ from 'jquery'
-import EventBus from '@/EventBus'
-import MindMapInfo from '@/MindMapInfo'
-import IdUri from '@/IdUri'
-import GraphUi from '@/graph/GraphUi'
-import GraphElementType from '@/graph-element/GraphElementType'
 
 let _implementation;
 const api = {};
@@ -17,45 +11,7 @@ api.setImplementation = function (implementation) {
 api.name = function () {
     return _implementation.name();
 };
-api.displayUsingCentralBubble = function (centralBubble) {
-    return api.displayUsingCentralBubbleUri(
-        centralBubble.getUri()
-    );
-};
-api.displayUsingCentralBubbleUri = function (centralVertexUri, errorCallback) {
-    return displayUsingBubbleUri(
-        centralVertexUri,
-        _implementation.displayForBubbleWithUri,
-        errorCallback
-    );
-};
-api.displayForSchemaWithUri = function (schemaUri, errorCallback) {
-    displayUsingBubbleUri(
-        schemaUri,
-        _implementation.displayForSchemaWithUri,
-        errorCallback
-    );
-};
 
-api.displayForMetaWithUri = function (metaUri, errorCallback) {
-    displayUsingBubbleUri(
-        metaUri,
-        _implementation.displayForMetaWithUri,
-        errorCallback
-    );
-};
-
-api.displayForBubbleWithUri = function (bubbleUri, errorCallback) {
-    switch (IdUri.getGraphElementTypeFromUri(bubbleUri)) {
-        case GraphElementType.Schema :
-            return api.displayForSchemaWithUri(bubbleUri, errorCallback);
-        case GraphElementType.Vertex :
-        case GraphElementType.Relation :
-            return api.displayUsingCentralBubbleUri(bubbleUri, errorCallback);
-        case GraphElementType.Meta :
-            return api.displayForMetaWithUri(bubbleUri, errorCallback);
-    }
-};
 api.connectVertexToVertexWithUri = function (parentVertex, destinationVertexUri, callback) {
     return _implementation.connectVertexToVertexWithUri(
         parentVertex,
@@ -199,35 +155,3 @@ api.addNewGroupRelation = function (identifiers, parentBubble, addToLeft, previo
 };
 
 export default api;
-
-function publishDrawingInfoUpdated(centralVertexUri) {
-    EventBus.publish(
-        '/event/ui/graph/drawing_info/updated/',
-        [centralVertexUri]
-    );
-}
-
-function displayUsingBubbleUri(centralBubbleUri, displayer, errorCallback) {
-    api.reset();
-    var shouldPushState = !MindMapInfo.isCenterBubbleUriDefinedInUrl() ||
-        MindMapInfo.getCenterBubbleUri() !== centralBubbleUri;
-    if (shouldPushState) {
-        history.pushState(
-            {},
-            '',
-            IdUri.htmlUrlForBubbleUri(centralBubbleUri)
-        );
-    }
-    var deferred = $.Deferred();
-    displayer(
-        centralBubbleUri,
-        function () {
-            publishDrawingInfoUpdated(
-                centralBubbleUri
-            );
-            deferred.resolve();
-        },
-        errorCallback
-    );
-    return deferred.promise();
-}

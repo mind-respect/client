@@ -5,6 +5,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import DateUtil from '@/DateUtil'
+import linkify from 'vue-linkify'
+
+Vue.directive('linkified', linkify)
+
 Vue.config.productionTip = false
 
 const vueI18nExt = I18n.setup()
