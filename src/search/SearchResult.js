@@ -2,8 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import GraphElement from '@/graph-element/GraphElement'
-import Schema from '@/schema/Schema'
-import Property from '@/property/Property'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Icon from '@/Icon'
 
@@ -33,22 +31,6 @@ api.fromServerFormat = function (searchResult) {
                 api._buildSomethingToDistinguish(
                     searchResult
                 ),
-                searchResult
-            );
-        case GraphElementType.Schema :
-            let schema = Schema.fromSearchResult(searchResult);
-            return new SearchResult(
-                schema,
-                GraphElementType.Schema,
-                api._buildSomethingToDistinguish(searchResult),
-                searchResult
-            );
-        case GraphElementType.Property :
-            let property = Property.fromServerFormat(searchResult.graphElement);
-            return new SearchResult(
-                property,
-                GraphElementType.Property,
-                api._buildPropertySomethingToDistinguish(searchResult),
                 searchResult
             );
         case GraphElementType.Vertex :

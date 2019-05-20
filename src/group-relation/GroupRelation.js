@@ -1,7 +1,6 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import $ from 'jquery'
 import GraphElement from '@/graph-element/GraphElement'
 import Identification from '@/identifier/Identification'
 import GraphElementType from '@/graph-element/GraphElementType'
@@ -360,8 +359,8 @@ GroupRelation.prototype.addTuple = function (tuple) {
     return this.vertices[tupleKey];
 };
 GroupRelation.prototype.visitTuples = function (visitor) {
-    $.each(this.vertices, function (vertexUri, verticesWithSameUri) {
-        $.each(verticesWithSameUri, function (vertexHtmlId, tuple) {
+    Object.values(this.vertices).forEach((verticesWithSameUri) => {
+        Object.values(verticesWithSameUri).forEach((tuple) => {
             visitor(tuple);
         });
     });
@@ -399,9 +398,15 @@ GroupRelation.prototype.getNumberOfVerticesAtAnyDepth = function () {
 };
 
 GroupRelation.prototype.getVerticesAtAnyDepth = function () {
-    var vertices = $.extend(true, {}, this.vertices);
+    let vertices = Object.entries(this.vertices).reduce((vertices, entry) => {
+        vertices[entry[0]] = entry[1];
+        return vertices;
+    }, {});
     this.getChildGroupRelations().forEach(function (childGroupRelation) {
-        $.extend(true, vertices, childGroupRelation.getVerticesAtAnyDepth());
+        Object.entries(childGroupRelation.getVerticesAtAnyDepth()).reduce((vertices, entry) => {
+            vertices[entry[0]] = entry[1];
+            return vertices;
+        });
     });
     return vertices;
 };
@@ -485,15 +490,10 @@ GroupRelation.prototype.hasRelevantTags = function () {
 GroupRelation.prototype.hasIdentifications = function () {
     return true;
 };
-GroupRelation.prototype.hasIdentification = function (identification) {
-    var contains = false;
-    $.each(this.identifiers, function () {
-        if (this.getExternalResourceUri() === identification.getExternalResourceUri()) {
-            contains = true;
-            return false;
-        }
+GroupRelation.prototype.hasIdentification = function (tag) {
+    return this.identifiers.some((ownTag) => {
+        return ownTag.getExternalResourceUri() === tag.getExternalResourceUri();
     });
-    return contains;
 };
 GroupRelation.prototype.addIdentification = function (identifier) {
     if (this.hasIdentification(identifier)) {
@@ -587,20 +587,20 @@ GroupRelation.prototype._doesOneOfTheChildHasIdentifiers = function (identifiers
 };
 
 GroupRelation.prototype._containsAllTuplesOfGroupRelation = function (groupRelation) {
-    var containsAll = true;
-    var presentAtGreaterDepth = false;
+    let containsAll = true;
+    let presentAtGreaterDepth = false;
     this.getChildGroupRelations().forEach(function (childGroupRelation) {
         if (childGroupRelation._containsAllTuplesOfGroupRelation(groupRelation)) {
             presentAtGreaterDepth = true;
         }
     });
     if (!presentAtGreaterDepth) {
-        $.each(groupRelation.getVertices(), function (vertexKey) {
+        Object.keys(groupRelation.getVertices()).forEach((vertexKey) => {
             if (this.vertices[vertexKey] === undefined) {
                 containsAll = false;
                 return false;
             }
-        }.bind(this));
+        })
     }
     return containsAll;
 };

@@ -2,7 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import $ from 'jquery'
 import Vertex from '@/vertex/Vertex'
 import I18n from '@/I18n'
 import GraphElementType from '@/graph-element/GraphElementType'
@@ -39,30 +38,6 @@ Meta.prototype.hasHiddenRelations = function () {
 };
 Meta.prototype.getNumberOfHiddenRelations = function () {
     return 0;
-};
-
-Meta.prototype.wikipediaLinksInLabelButtonContent = function () {
-    var list = $("<ul class='list-group'>");
-    this.getModel().getWikipediaLink().then(function (link) {
-        list.append(
-            $("<a class='list-group-item'>").attr(
-                "href",
-                link.link
-            ).attr(
-                "target",
-                "_blank"
-            ).append(
-                $("<i>").addClass(
-                    "fa fa-wikipedia-w pull-right"
-                )
-            ).append(
-                $("<span>").text(link.label)
-            ).mousedown(function () {
-                window.open($(this).attr("href"), "_blank");
-            })
-        );
-    });
-    return list;
 };
 
 export default api;

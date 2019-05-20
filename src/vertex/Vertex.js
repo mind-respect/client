@@ -3,7 +3,6 @@
  */
 
 import GraphElement from '@/graph-element/GraphElement'
-import Suggestion from '@/suggestion/Suggestion'
 import ShareLevel from '@/vertex/ShareLevel'
 import GraphElementType from '@/graph-element/GraphElementType'
 import I18n from '@/I18n'
@@ -58,7 +57,7 @@ Vertex.prototype = new GraphElement.GraphElement();
 Vertex.prototype.init = function (vertexServerFormat) {
     this.vertexServerFormat = vertexServerFormat;
     this.vertexServerFormat.vertex.numberOfConnectedEdges = this.vertexServerFormat.vertex.numberOfConnectedEdges || 0;
-    this._suggestions = this._buildSuggestions();
+    // this._suggestions = this._buildSuggestions();
     this.leftBubbles = [];
     this.leftBubblesCollapsed = null;
     this.rightBubbles = [];
@@ -361,26 +360,6 @@ Vertex.prototype.buildChildrenIndex = function () {
         };
         index++;
     }
-};
-
-Vertex.prototype.hasSuggestions = function () {
-    let suggestions = this.getSuggestions();
-    return suggestions !== undefined && suggestions.length > 0;
-};
-
-Vertex.prototype._buildSuggestions = function () {
-    var suggestions = [];
-    if (this.vertexServerFormat.vertex.suggestions === undefined) {
-        return suggestions;
-    }
-    return Suggestion.fromServerArray(
-        this.vertexServerFormat.vertex.suggestions
-    );
-};
-Vertex.prototype.addSuggestions = function (suggestions) {
-    this._suggestions = this._suggestions.concat(
-        suggestions
-    );
 };
 
 Vertex.prototype.isMeta = function () {
