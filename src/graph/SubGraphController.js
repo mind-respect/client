@@ -5,7 +5,6 @@ import GraphElementController from '@/graph-element/GraphElementController'
 import GraphService from '@/graph/GraphService'
 import TreeDisplayerCommon from '@/graph/TreeDisplayerCommon'
 import SubGraph from '@/graph/SubGraph'
-import $ from "jquery";
 import Edge from '@/edge/Edge'
 import GraphElement from '@/graph-element/GraphElement'
 import GraphElementService from '@/graph-element/GraphElementService'
@@ -42,7 +41,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
     ).then(function (response) {
         let serverGraph = response.data;
         this.getModel().nbRelationsWithGrandParent = this._removeRelationWithGrandParentAndChildFromServerGraph(serverGraph);
-        if(!serverGraph.vertices[this.getModel().getUri()]){
+        if (!serverGraph.vertices[this.getModel().getUri()]) {
             return Promise.reject();
         }
         TreeDisplayerCommon.setUiTreeInfoToVertices(
@@ -130,23 +129,19 @@ SubGraphController.prototype._removeRelationWithGrandParentAndChildFromServerGra
     return nbRelationsWithGrandParent - 1;
 
     function getFilteredEdges() {
-        var filteredEdges = {};
-        $.each(serverGraph.edges, function () {
-            var edge = this;
-            var edgeFacade = Edge.fromServerFormat(
+        let filteredEdges = {};
+        Object.values(serverGraph.edges).forEach((edge) => {
+            let edgeFacade = Edge.fromServerFormat(
                 edge
             );
-            var sourceAndDestinationId = [
+            let sourceAndDestinationId = [
                 edgeFacade.getSourceVertex().getUri(),
                 edgeFacade.getDestinationVertex().getUri()
             ];
-            if ($.inArray(
-                grandParentUriToCompare,
-                sourceAndDestinationId
-            ) !== -1) {
+            if (sourceAndDestinationId.indexOf(grandParentUriToCompare) !== -1) {
                 nbRelationsWithGrandParent++;
             }
-            var alreadyChildEdge = alreadyPresentChildEdgesUri.indexOf(
+            let alreadyChildEdge = alreadyPresentChildEdgesUri.indexOf(
                 edgeFacade.getUri()
             ) !== -1;
             if (!alreadyChildEdge && relationWithGrandParentUri !== edgeFacade.getUri()) {
@@ -161,8 +156,8 @@ SubGraphController.prototype._removeRelationWithGrandParentAndChildFromServerGra
 
 function sortGroupRelationRootsByIsGroupRelationOrCreationDate(groupRelationRoots, childrenIndex) {
     return groupRelationRoots.sort(function (groupRelationA, groupRelationB) {
-            var vertexA = groupRelationA.getFirstVertex(childrenIndex);
-            var vertexB = groupRelationB.getFirstVertex(childrenIndex);
+            let vertexA = groupRelationA.getFirstVertex(childrenIndex);
+            let vertexB = groupRelationB.getFirstVertex(childrenIndex);
             return GraphElement.sortCompare(
                 vertexA,
                 vertexB,

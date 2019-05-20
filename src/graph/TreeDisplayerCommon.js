@@ -2,10 +2,10 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import $ from 'jquery'
 import Vertex from '@/vertex/Vertex'
 import Edge from '@/edge/Edge'
 import GroupRelation from '@/group-relation/GroupRelation'
+
 const api = {};
 api.setUiTreeInfoToVertices = function (serverGraph, centralVertexUri) {
     return new UiTreeInfoBuilder(
@@ -43,29 +43,34 @@ UiTreeInfoBuilder.prototype._setTreeInfoToVertices = function () {
 };
 
 UiTreeInfoBuilder.prototype._buildRelationsOfVertices = function () {
-    $.each(this.serverGraph.vertices, function (key, sourceVertex) {
-        sourceVertex.groupRelationRoots = [];
-        if (!sourceVertex.childrenGroupedByIdentifiers) {
-            return;
-        }
-        $.each(sortIdentifiersByNumberOfRelationsDesc(sourceVertex.childrenGroupedByIdentifiers), function (identifierKey, tuplesHavingSameIdentifier) {
-            var groupRelation = GroupRelation.forTuplesAndIdentifier(
-                tuplesHavingSameIdentifier,
-                this.allIdentifiers[identifierKey]
-            );
-            var isTupleUnderAnotherRelation = false;
-            sourceVertex.groupRelationRoots.forEach(function (existingGroupRelationRoot) {
-                if (existingGroupRelationRoot.integrateGroupRelationToTreeIfApplicable(groupRelation)) {
-                    isTupleUnderAnotherRelation = true;
-                }
-            });
-            if (!isTupleUnderAnotherRelation) {
-                sourceVertex.groupRelationRoots.push(
-                    groupRelation
-                );
+    Object.values(this.serverGraph.vertices).forEach((sourceVertex) => {
+            sourceVertex.groupRelationRoots = [];
+            if (!sourceVertex.childrenGroupedByIdentifiers) {
+                return;
             }
-        }.bind(this));
-    }.bind(this));
+            Object.entries(sortIdentifiersByNumberOfRelationsDesc(sourceVertex.childrenGroupedByIdentifiers)).forEach((entry) => {
+                    let identifierKey = entry[0];
+                    let tuplesHavingSameIdentifier = entry[1];
+                    let groupRelation = GroupRelation.forTuplesAndIdentifier(
+                        tuplesHavingSameIdentifier,
+                        this.allIdentifiers[identifierKey]
+                    );
+                    let isTupleUnderAnotherRelation = false;
+                    sourceVertex.groupRelationRoots.forEach(function (existingGroupRelationRoot) {
+                        if (existingGroupRelationRoot.integrateGroupRelationToTreeIfApplicable(groupRelation)) {
+                            isTupleUnderAnotherRelation = true;
+                        }
+                    });
+                    if (!isTupleUnderAnotherRelation) {
+                        sourceVertex.groupRelationRoots.push(
+                            groupRelation
+                        );
+                    }
+                }
+            );
+
+        }
+    );
 };
 
 UiTreeInfoBuilder.prototype._updateTripleTreeInfoUsingEdge = function (edge) {
@@ -83,16 +88,17 @@ UiTreeInfoBuilder.prototype._updateTripleTreeInfoUsingEdge = function (edge) {
 };
 
 UiTreeInfoBuilder.prototype._arrayOfEdgesHavingThoseRelatedToCenterVertexOnTop = function () {
-    var edges = [];
-    $.each(this.originalEdges, function () {
-        edges.push(
-            isGraphElementFacadeBuilt(this) ? this : Edge.fromServerFormat(
-                this
-            )
-        );
-    });
-    edges.sort(function (edge1, edge2) {
-        var edge1IsRelated = this._isEdgeRelatedToCenterVertex(edge1),
+    let edges = [];
+    Object.values(this.originalEdges).forEach((edge) => {
+            edges.push(
+                isGraphElementFacadeBuilt(edge) ? edge : Edge.fromServerFormat(
+                    edge
+                )
+            );
+        }
+    );
+    edges.sort((edge1, edge2) => {
+        let edge1IsRelated = this._isEdgeRelatedToCenterVertex(edge1),
             edge2IsRelated = this._isEdgeRelatedToCenterVertex(edge2);
         if (edge1IsRelated === edge2IsRelated) {
             return 0;
@@ -101,7 +107,7 @@ UiTreeInfoBuilder.prototype._arrayOfEdgesHavingThoseRelatedToCenterVertexOnTop =
             return -1;
         }
         return 1;
-    }.bind(this));
+    });
     return edges;
 };
 
@@ -158,13 +164,13 @@ UiTreeInfoBuilder.prototype._updateRelationsIdentification = function (edge) {
 };
 
 UiTreeInfoBuilder.prototype._revisitNonEnhancedEdges = function () {
-    $.each(this.nonEnhancedEdges, function (key, edge) {
+    Object.values(this.nonEnhancedEdges).forEach((edge) => {
         this._updateRelationsIdentification(edge);
-    }.bind(this));
+    });
 };
 
 UiTreeInfoBuilder.prototype._vertexWithId = function (vertexId) {
-    var serverFormat = this.vertices[vertexId];
+    let serverFormat = this.vertices[vertexId];
     if (isGraphElementFacadeBuilt(serverFormat)) {
         return serverFormat;
     }
@@ -178,12 +184,12 @@ function isGraphElementFacadeBuilt(graphElementServerFormat) {
 }
 
 function sortIdentifiersByNumberOfRelationsDesc(identifiers) {
-    var sortedKeys = Object.keys(identifiers).sort(
+    let sortedKeys = Object.keys(identifiers).sort(
         function (identifierAUri, identifierBUri) {
-            var relationsA = identifiers[identifierAUri];
-            var relationsB = identifiers[identifierBUri];
-            var numberOfRelationsInA = relationsA.length;
-            var numberOfRelationsInB = relationsB.length;
+            let relationsA = identifiers[identifierAUri];
+            let relationsB = identifiers[identifierBUri];
+            let numberOfRelationsInA = relationsA.length;
+            let numberOfRelationsInB = relationsB.length;
             if (numberOfRelationsInA === numberOfRelationsInB) {
                 return 0;
             }
@@ -192,9 +198,10 @@ function sortIdentifiersByNumberOfRelationsDesc(identifiers) {
             }
             return 1;
         });
-    var sortedIdentifiers = {};
-    $.each(sortedKeys, function () {
-        sortedIdentifiers[this] = identifiers[this];
+    let sortedIdentifiers = {};
+
+    sortedKeys.forEach((key) => {
+        sortedIdentifiers[key] = identifiers[key];
     });
     return sortedIdentifiers;
 }

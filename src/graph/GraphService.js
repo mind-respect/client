@@ -1,7 +1,6 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import $ from 'jquery'
 import IdUri from '@/IdUri'
 import MindMapInfo from '@/MindMapInfo'
 import Service from '@/Service'
@@ -14,12 +13,12 @@ api.getForCentralBubbleUri = function (centralBubbleUri) {
         )
     );
 };
-api.getForCentralVertexUriAtDepth = function (centralVertexUri, depth) {
-    return $.ajax({
-        type: 'GET',
-        url: api.graphUriForCentralBubbleUri(centralVertexUri) + "?depth=" + depth
-    });
-};
+// api.getForCentralVertexUriAtDepth = function (centralVertexUri, depth) {
+//     return $.ajax({
+//         type: 'GET',
+//         url: api.graphUriForCentralBubbleUri(centralVertexUri) + "?depth=" + depth
+//     });
+// };
 api.graphUriForCentralBubbleUri = function (centralBubbleUri) {
     if (!MindMapInfo.isAnonymous() && IdUri.isGraphElementUriOwnedByCurrentUser(centralBubbleUri)) {
         var uri = centralBubbleUri + "/surround_graph";
