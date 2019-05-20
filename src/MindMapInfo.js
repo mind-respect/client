@@ -3,8 +3,9 @@
  */
 import IdUri from '@/IdUri'
 import UserService from '@/service/UserService'
-import EventBus from '@/EventBus'
 import FriendService from '@/friend/FriendService'
+import Store from '@/store'
+
 const api = {};
 let _isViewOnly,
     _isAnonymous,
@@ -38,11 +39,7 @@ api.defineIsViewOnly = function () {
         false : _isAnonymous || !IdUri.isGraphElementUriOwnedByCurrentUser(
         IdUri.getGraphElementUriInUrl()
     );
-
-    EventBus.publish(
-        '/event/ui/mind_map_info/is_view_only',
-        [_isViewOnly]
-    );
+    Store.dispatch("setIsViewOnly", _isViewOnly);
 };
 
 api.defineIsFriend = function () {

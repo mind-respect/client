@@ -33,7 +33,8 @@ const Store = new Vuex.Store({
         isFontFlow: false,
         isTagFlow: false,
         redraws: Math.random(),
-        isSideMenuCollapsed: false
+        isSideMenuCollapsed: false,
+        isViewOnly: null
     },
     mutations: {
         setUser: function (state, user) {
@@ -91,6 +92,9 @@ const Store = new Vuex.Store({
         },
         setIsListViewFlow: function (state, isListViewFlow) {
             state.isListViewFlow = isListViewFlow;
+        },
+        setIsViewOnly: function (state, isViewOnly) {
+            state.isViewOnly = isViewOnly;
         }
     },
     actions: {
@@ -129,6 +133,9 @@ const Store = new Vuex.Store({
         },
         setIsListViewFlow: function (action, isListViewFlow) {
             action.commit('setIsListViewFlow', isListViewFlow);
+        },
+        setIsViewOnly: function (action, isViewOnly) {
+            action.commit('setIsViewOnly', isViewOnly);
         }
     }
 });

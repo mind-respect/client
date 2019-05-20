@@ -42,6 +42,9 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
     ).then(function (response) {
         let serverGraph = response.data;
         this.getModel().nbRelationsWithGrandParent = this._removeRelationWithGrandParentAndChildFromServerGraph(serverGraph);
+        if(!serverGraph.vertices[this.getModel().getUri()]){
+            return Promise.reject();
+        }
         TreeDisplayerCommon.setUiTreeInfoToVertices(
             serverGraph,
             this.getModel().getUri()

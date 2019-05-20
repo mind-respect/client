@@ -115,7 +115,9 @@
                         this.graph.center
                     );
                 })
-            });
+            }).catch(() => {
+                this.$router.push("/")
+            })
         },
         methods: {
             setupForMeta: function () {

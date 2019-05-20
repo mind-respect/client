@@ -14,7 +14,7 @@ const UserService = {
         return usersResourceUrl;
     },
     authenticatedUserInCache: function () {
-        return authenticatedUserInCache;
+        return authenticatedUserInCache || {};
     },
     setAuthenticatedUserInCache: function (user) {
         authenticatedUserInCache = user;

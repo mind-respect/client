@@ -349,7 +349,8 @@ FriendlyResource.FriendlyResource.prototype.getNextSibling = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpand = function () {
-    return !this.isCenter && !this.isExpanded && this.getNumberOfChild() > 0;
+    let nbChild = Store.state.isViewOnly ? this.getNbPublicNeighbors() -1 : this.getNumberOfChild();
+    return !this.isCenter && !this.isExpanded && nbChild > 0;
 };
 
 FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, relation) {

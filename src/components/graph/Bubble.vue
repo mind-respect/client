@@ -313,6 +313,7 @@
     import Store from '@/store'
     import SubGraph from '@/graph/SubGraph'
     import Color from '@/Color'
+    import MindMapInfo from '@/MindMapInfo'
 
     export default {
         name: "Bubble",
@@ -479,6 +480,9 @@
                 }
             },
             dblclick: function (event) {
+                if (MindMapInfo.isViewOnly()) {
+                    return;
+                }
                 if (this.isEditFlow) {
                     return;
                 }

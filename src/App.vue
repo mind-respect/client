@@ -89,7 +89,7 @@
 <!--                <Button :button="redoButton" v-if="isGraphRoute"></Button>-->
                 <Button :button="zoomOutButton" v-if="isGraphRoute"></Button>
                 <Button :button="zoomInButton" v-if="isGraphRoute"></Button>
-                <Button :button="createVertexButton" :large="true"></Button>
+                <Button :button="createVertexButton" :large="true" v-if="$store.state.user"></Button>
                 <SettingsMenu></SettingsMenu>
             </v-toolbar>
             <!--<router-link to="/">Home</router-link>-->
@@ -269,10 +269,6 @@
                 }.bind(this))
             }.bind(this)).catch(function () {
                 this.$store.dispatch('setUser', undefined);
-                let isOnAboutPage = aboutPages.indexOf(this.$route.name) > -1;
-                if (!isOnAboutPage) {
-                    this.$router.push("/");
-                }
                 this.dataLoaded = true;
                 Vue.nextTick(function () {
                     this.showDialogFromRoute();

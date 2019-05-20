@@ -22,7 +22,12 @@
                 >
                     <v-badge :left="bubble.isToTheLeft()" color="secondary" slot="activator">
                         <span slot="badge">
-                            {{bubble.getNumberOfChild()}}
+                            <span v-if="$store.state.isViewOnly">
+                                {{bubble.getNbPublicNeighbors() - 1}}
+                            </span>
+                            <span v-else>
+                                {{bubble.getNumberOfChild()}}
+                            </span>
                         </span>
                         <v-icon large color="third">bubble_chart</v-icon>
                     </v-badge>
