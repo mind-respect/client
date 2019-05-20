@@ -90,13 +90,7 @@ GraphElement.initMenuHandlerGetters = function () {
     controllerGetters[GraphElementType.Vertex] = GraphDisplayer.getVertexMenuHandler;
     controllerGetters[GraphElementType.Relation] = GraphDisplayer.getRelationMenuHandler;
     controllerGetters[GraphElementType.GroupRelation] = GraphDisplayer.getGroupRelationMenuHandler;
-    controllerGetters[GraphElementType.Schema] = GraphDisplayer.getSchemaMenuHandler;
-    controllerGetters[GraphElementType.Property] = GraphDisplayer.getPropertyMenuHandler;
-    controllerGetters[GraphElementType.VertexSuggestion] = GraphDisplayer.getVertexSuggestionController;
-    controllerGetters[GraphElementType.RelationSuggestion] = GraphDisplayer.getRelationSuggestionMenuHandler;
     controllerGetters[GraphElementType.Meta] = GraphDisplayer.getMetaController;
-    controllerGetters[GraphElementType.MetaRelation] = GraphDisplayer.getMetaRelationController;
-    controllerGetters[GraphElementType.GroupVertexUnderMeta] = GraphDisplayer.getGroupVertexUnderMetaController;
 };
 
 GraphElement.GraphElement = function () {
