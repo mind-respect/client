@@ -5,11 +5,13 @@ import VueScrollTo from 'vue-scrollto'
 import router from '@/router'
 import Vue from 'vue'
 import VueDragscroll from 'vue-dragscroll'
-import UiUtils from '@/UiUtils'
 import Store from '@/store'
+import SideMenu from '@/SideMenu'
 
 Vue.use(VueDragscroll);
 Vue.use(VueScrollTo);
+
+const IS_ON_SCREEN_RIGHT_THRESHOLD = 100;
 
 const Scroll = {
     goToSection: function (elementId, route) {
@@ -37,7 +39,7 @@ const Scroll = {
                 } else if (bubble.isToTheLeft()) {
                     offset = 1200 - element.offsetWidth;
                 } else {
-                    offset = 200;
+                    offset = 200 + SideMenu.getWidth();
                 }
                 let position = Math.abs(offset * screen.width / 1366);
                 return position * -1;
@@ -90,13 +92,13 @@ const Scroll = {
         Vue.nextTick(function () {
             setTimeout(function () {
                 let element = bubble.getLabelHtml();
-                if(!element){
+                if (!element) {
                     return;
                 }
                 if (isForTree && !bubble.isCenter && bubble.getNumberOfChild() > 0) {
                     element = element.parentElement;
                 }
-                if (!UiUtils.isElementFullyOnScreen(element)) {
+                if (!Scroll.isElementFullyOnScreen(element)) {
                     Scroll.goToGraphElement(bubble)
                     Store.dispatch("redraw");
                 }
@@ -104,5 +106,18 @@ const Scroll = {
         });
     }
 
+};
+
+Scroll.isElementFullyOnScreen = function (elem) {
+    let rect = elem.getBoundingClientRect();
+    let windowHeight = Math.max(window.innerHeight, document.documentElement.clientHeight);
+    let windowWidth = Math.max(window.innerWidth, document.documentElement.clientWidth);
+    let sideMenuWidth = SideMenu.getWidth();
+    return (
+        rect.top >= 0 &&
+        rect.left - sideMenuWidth >= 0 &&
+        rect.bottom <= windowHeight &&
+        rect.right + IS_ON_SCREEN_RIGHT_THRESHOLD <= windowWidth
+    );
 };
 export default Scroll;

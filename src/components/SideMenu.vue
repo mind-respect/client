@@ -79,6 +79,7 @@
     import Moment from 'moment'
     import I18n from '@/I18n'
     import SelectionHandler from '@/SelectionHandler'
+    import SideMenu from '@/SideMenu'
 
     export default {
         name: "SideMenu",
@@ -119,10 +120,10 @@
                 return this.isStretched ? 340 : 340;
             },
             mainWidth: function () {
-                return this.isStretched ? 400 : 400;
+                return this.isStretched ? SideMenu.EXPANDED_WIDTH : SideMenu.EXPANDED_WIDTH;
             },
             mainNavMiniWidth: function () {
-                return SelectionHandler.isSingle() ? 110 : 60;
+                return SelectionHandler.isSingle() ? SideMenu.MINI_WIDTH : 60;
             }
         },
         methods: {
@@ -143,6 +144,7 @@
     .side-search-menu {
         top: -16px !important;
     }
+
     .side-search-menu .v-list__tile {
         height: auto;
         min-height: 48px;
