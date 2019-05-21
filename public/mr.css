@@ -1,0 +1,309 @@
+/*!
+ * Copyright Vincent Blouin under the GPL License version 3
+ */
+/*
+ * Copyright Vincent Blouin under the GPL License version 3
+ */
+/*
+ * Copyright Vincent Blouin under the GPL License version 3
+ */
+.relation.bubble.selected .bubble-label:empty:not(:focus):after {
+  color: white; }
+
+/*
+ * Copyright Vincent Blouin under the GPL License version 3
+ */
+.bubble {
+  z-index: 5;
+  display: table;
+  /*.label to override bootstrap*/
+  white-space: nowrap;
+  position: relative;
+  min-width: 0;
+  margin: 0 0 0 0; }
+  .bubble.dragged {
+    background-color: transparent; }
+  .bubble > *, .bubble .label {
+    display: table-cell;
+    vertical-align: middle; }
+  .bubble.view-only .arrow:before {
+    left: 0; }
+  .bubble .in-bubble-content {
+    position: relative;
+    z-index: 3; }
+    .bubble .in-bubble-content .in-label-buttons {
+      display: inline-block;
+      white-space: nowrap; }
+      .bubble .in-bubble-content .in-label-buttons button {
+        width: 37px;
+        height: 37px;
+        height: auto;
+        display: inline-block;
+        background: none;
+        border: none;
+        box-shadow: none;
+        font-size: 20px;
+        margin: -6px; }
+        .bubble .in-bubble-content .in-label-buttons button[data-action=makePublic] i:before {
+          content: "\f023"; }
+        .bubble .in-bubble-content .in-label-buttons button[data-action=makePrivate] i:before {
+          content: "\f09c"; }
+  .bubble.edit {
+    user-select: text;
+    cursor: text; }
+    .bubble.edit .bubble-label:after {
+      content: ""; }
+  .bubble .bubble-label {
+    text-align: center;
+    color: black;
+    outline: 0 solid transparent;
+    border: none;
+    width: auto;
+    display: table-cell;
+    white-space: pre; }
+    .bubble .bubble-label:empty:not(:focus) {
+      color: grey;
+      max-width: 100%; }
+      .bubble .bubble-label:empty:not(:focus):after {
+        content: attr(data-placeholder);
+        font-style: italic;
+        font-size: calc(1em); }
+    .bubble .bubble-label del {
+      text-decoration: none; }
+    .bubble .bubble-label[contenteditable='true']:before {
+      content: "\feff "; }
+  .bubble.selected {
+    z-index: 11; }
+    .bubble.selected .bubble-label:empty:not(:focus):after {
+      content: attr(data-placeholder);
+      color: grey;
+      font-style: italic; }
+    .bubble.selected .in-bubble-content {
+      z-index: 5; }
+  .bubble .image_container {
+    z-index: 3;
+    position: relative;
+    min-width: 60px;
+    text-align: right; }
+    .bubble .image_container:empty {
+      min-width: 0; }
+  .bubble .edge-label {
+    display: inline; }
+  .bubble .connector {
+    position: absolute;
+    height: 22px;
+    border-top: calc(1px + 0.1em) solid #3a87ad;
+    top: calc(50% - 2px);
+    width: 32px;
+    left: -22px;
+    z-index: -1; }
+  .bubble .arrow {
+    position: absolute;
+    height: 1px;
+    width: 52px;
+    top: 50%;
+    border-top: calc(1px + 0.1em) solid #3a87ad;
+    z-index: -1; }
+    .bubble .arrow ~ {
+      background-color: yellow; }
+    .bubble .arrow ~ .in-bubble-note-button:not(hidden) {
+      width: 100%; }
+    .bubble .arrow:before {
+      content: url("images/icons/vertex/arrowhead_right.svg");
+      position: relative;
+      top: calc(-9px - 0.04em);
+      left: 20px; }
+
+/*
+ * Copyright Vincent Blouin under the GPL License version 3
+ */
+.vertex {
+  /*white-space: nowrap; because sometimes when hovering the relation menu and there is a vertex image it messes up */
+  white-space: nowrap; }
+  .vertex.meta .in-bubble-content {
+    border-radius: 5px;
+    border: calc(1px + 0.1em) solid purple;
+    color: black;
+    text-shadow: none; }
+  .vertex.selected {
+    z-index: 12; }
+    .vertex.selected .in-bubble-content {
+      background-color: transparent;
+      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12); }
+  .vertex .in-bubble-content {
+    border-radius: 50px;
+    white-space: normal; }
+
+/*
+ * Copyright Vincent Blouin under the GPL License version 3
+ */
+[data-zoom="0"] .vertex .in-bubble-content {
+  max-width: 500px; }
+  [data-zoom="0"] .vertex .in-bubble-content .bubble-label {
+    white-space: pre-wrap; }
+
+[data-zoom="0"] .vertex .in-bubble-content {
+  padding: 1em;
+  padding-bottom: 0.5em;
+  padding-top: 0.5em; }
+
+[data-zoom="0"] .in-bubble-note-button:before {
+  font-family: FontAwesome;
+  content: "\f02d"; }
+
+[data-zoom="1"] .vertex .in-bubble-content {
+  max-width: 500px; }
+  [data-zoom="1"] .vertex .in-bubble-content .bubble-label {
+    white-space: pre-wrap; }
+
+[data-zoom="1"] .vertex .in-bubble-content {
+  padding: 1em;
+  padding-bottom: 0.5em;
+  padding-top: 0.5em; }
+
+[data-zoom="1"] .in-bubble-note-button:before {
+  font-family: FontAwesome;
+  content: "\f02d"; }
+
+[data-zoom="2"] .vertex .in-bubble-content {
+  max-width: 500px; }
+  [data-zoom="2"] .vertex .in-bubble-content .bubble-label {
+    white-space: pre-wrap; }
+
+[data-zoom="2"] .vertex .in-bubble-content {
+  padding: 1em;
+  padding-bottom: 0.5em;
+  padding-top: 0.5em; }
+
+[data-zoom="2"] .in-bubble-note-button:before {
+  font-family: FontAwesome;
+  content: "\f02d"; }
+
+[data-zoom="3"] .vertex .in-bubble-content {
+  max-width: 500px; }
+  [data-zoom="3"] .vertex .in-bubble-content .bubble-label {
+    white-space: pre-wrap; }
+
+[data-zoom="3"] .vertex .in-bubble-content {
+  padding: 1em;
+  padding-bottom: 0.5em;
+  padding-top: 0.5em; }
+
+[data-zoom="3"] .in-bubble-note-button:before {
+  font-family: FontAwesome;
+  content: "\f02d"; }
+
+[data-zoom="4"] .vertex .in-bubble-content {
+  max-width: 500px; }
+  [data-zoom="4"] .vertex .in-bubble-content .bubble-label {
+    white-space: pre-wrap; }
+
+[data-zoom="4"] .vertex .in-bubble-content {
+  padding: 1em;
+  padding-bottom: 0.5em;
+  padding-top: 0.5em; }
+
+[data-zoom="4"] .in-bubble-note-button:before {
+  font-family: FontAwesome;
+  content: "\f02d"; }
+
+[data-zoom="5"] .vertex .in-bubble-content {
+  max-width: 500px; }
+  [data-zoom="5"] .vertex .in-bubble-content .bubble-label {
+    white-space: pre-wrap; }
+
+[data-zoom="5"] .vertex .in-bubble-content {
+  padding: 1em;
+  padding-bottom: 0.5em;
+  padding-top: 0.5em; }
+
+[data-zoom="5"] .in-bubble-note-button:before {
+  font-family: FontAwesome;
+  content: "\f02d"; }
+
+[data-zoom="6"] .vertex .in-bubble-content {
+  max-width: 500px; }
+  [data-zoom="6"] .vertex .in-bubble-content .bubble-label {
+    white-space: pre-wrap; }
+
+[data-zoom="6"] .vertex .in-bubble-content {
+  padding: 1em;
+  padding-bottom: 0.5em;
+  padding-top: 0.5em; }
+
+[data-zoom="6"] .in-bubble-note-button:before {
+  font-family: FontAwesome;
+  content: "\f02d"; }
+
+[data-zoom="7"] .vertex .in-bubble-content {
+  max-width: 500px; }
+  [data-zoom="7"] .vertex .in-bubble-content .bubble-label {
+    white-space: pre-wrap; }
+
+[data-zoom="7"] .vertex .in-bubble-content {
+  padding: 1em;
+  padding-bottom: 0.5em;
+  padding-top: 0.5em; }
+
+[data-zoom="7"] .in-bubble-note-button:before {
+  font-family: FontAwesome;
+  content: "\f02d"; }
+
+[data-zoom="8"] .vertex .in-bubble-content {
+  max-width: 500px; }
+  [data-zoom="8"] .vertex .in-bubble-content .bubble-label {
+    white-space: pre-wrap; }
+
+[data-zoom="8"] .vertex .in-bubble-content {
+  padding: 1em;
+  padding-bottom: 0.5em;
+  padding-top: 0.5em; }
+
+[data-zoom="8"] .in-bubble-note-button:before {
+  font-family: FontAwesome;
+  content: "\f02d"; }
+
+[data-zoom="9"] .vertex .in-bubble-content {
+  max-width: 500px; }
+  [data-zoom="9"] .vertex .in-bubble-content .bubble-label {
+    white-space: pre-wrap; }
+
+[data-zoom="9"] .vertex .in-bubble-content {
+  padding: 1em;
+  padding-bottom: 0.5em;
+  padding-top: 0.5em; }
+
+[data-zoom="9"] .in-bubble-note-button:before {
+  font-family: FontAwesome;
+  content: "\f02d"; }
+
+[data-zoom="10"] .vertex .in-bubble-content {
+  max-width: 500px; }
+  [data-zoom="10"] .vertex .in-bubble-content .bubble-label {
+    white-space: pre-wrap; }
+
+[data-zoom="10"] .vertex .in-bubble-content {
+  padding: 1em;
+  padding-bottom: 0.5em;
+  padding-top: 0.5em; }
+
+[data-zoom="10"] .in-bubble-note-button:before {
+  font-family: FontAwesome;
+  content: "\f02d"; }
+
+.zoom-scale .menu {
+  zoom: 30%;
+  -moz-transform: scale(0.3); }
+
+.zoom-scale-1 .in-bubble-content {
+  zoom: 500%;
+  -moz-transform: scale(5); }
+
+[draggable] {
+  cursor: move;
+  -khtml-user-drag: element; }
+
+.not-editable .bubble.single-selected .bubble-label:after {
+  content: "";
+  color: grey;
+  font-style: italic; }
