@@ -194,7 +194,7 @@
                 link.setAttribute("rel", "stylesheet")
                 link.setAttribute("type", "text/css")
                 let font = this.graph.center.getFont();
-                link.setAttribute("href", "http://fonts.googleapis.com/css?family=" + font.family.replace(/ /g, '+'))
+                link.setAttribute("href", "https://fonts.googleapis.com/css?family=" + font.family.replace(/ /g, '+'))
                 document.getElementsByTagName("head")[0].appendChild(link);
                 setTimeout(() => {
                     this.$nextTick(() => {
