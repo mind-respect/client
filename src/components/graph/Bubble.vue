@@ -29,10 +29,10 @@
                 <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
                 <div v-if="!bubble.isCollapsed || bubble.isCenter">
                     <div :class="{
-                   'blur-overlay':isEditFlow && bubble.isVertexType()
+                   'blur-overlay':(isEditFlow || bubble.loading) && bubble.isVertexType()
                 }"
                     >
-                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"
+                        <transition name="none" v-on:before-enter="beforeChildrenAnimation"
                                     v-on:after-enter="afterChildrenAnimation">
                             <Children :bubble="bubble"
                                       v-if="
@@ -269,10 +269,10 @@
                 </div>
                 <div v-if="!bubble.isCollapsed || bubble.isCenter">
                     <div :class="{
-                   'blur-overlay':isEditFlow && bubble.isVertexType()
+                   'blur-overlay':(isEditFlow || bubble.loading) && bubble.isVertexType()
                 }"
                     >
-                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"
+                        <transition name="none" v-on:before-enter="beforeChildrenAnimation"
                                     v-on:after-enter="afterChildrenAnimation">
                             <Children :bubble="bubble"
                                       v-if="
