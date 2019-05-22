@@ -22,6 +22,8 @@
             @change="selectSearchResult()"
             :menuProps="menuProps"
             append-icon=""
+            @focus="focus"
+            @blur="blur"
             height="43">
         <template v-slot:item="{ item }">
             <SearchResultContent :item="item"></SearchResultContent>
@@ -53,6 +55,7 @@
     import SearchService from '@/search/SearchService'
     import AppController from '@/AppController'
     import IdUri from '@/IdUri'
+    import GraphUi from '@/graph/GraphUi'
 
     export default {
         name: "Search",
@@ -85,6 +88,12 @@
             }
         },
         methods: {
+            focus:()=>{
+                GraphUi.disableDragScroll();
+            },
+            blur:()=>{
+                GraphUi.enableDragScroll();
+            },
             selectSearchResult: function () {
                 this.$router.push(
                     IdUri.htmlUrlForBubbleUri(
