@@ -856,8 +856,8 @@
         max-width: 500px !important;
         height: 100%;
         position: relative;
-        padding-top: 2px;
-        padding-bottom: 2px;
+        padding-top: 2px!important;
+        padding-bottom: 2px!important;
     }
 
     .in-bubble-content-wrapper {

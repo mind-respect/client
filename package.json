@@ -6,7 +6,7 @@
     "serve": "vue-cli-service --port 8084 serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "sass:compile": "node-sass --include-path sass src/css/mr.scss public/mr.css"
+    "sass:compile": "node-sass --include-path sass src/css/mr.scss src/assets/mr.css"
   },
   "dependencies": {
     "@panter/vue-i18next": "^0.13.0",

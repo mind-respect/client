@@ -130,24 +130,4 @@
     z-index: -1;
     //border-image: url("images/rope.svg.thumb.png") 30 round;
   }
-  .arrow {
-    position: absolute;
-    height: 1px;
-    width: 52px;
-    top: 50%;
-    border-top: $edgeStyle;
-    z-index: -1;
-    ~ {
-      background-color: yellow;
-    }
-    ~ .in-bubble-note-button:not(hidden) {
-      width: 100%;
-    }
-    &:before {
-      content: url('images/icons/vertex/arrowhead_right.svg');
-      position: relative;
-      top: $arrowTop;
-      left: $arrowLeft;
-    }
-  }
 }
