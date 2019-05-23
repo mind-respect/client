@@ -531,6 +531,7 @@ VertexController.prototype.group = function () {
 VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isChildExpand) {
     let promise = Promise.resolve();
     LoadingFlow.enterNoSpinner();
+    this.getModel().loading = false;
     avoidExpandChild = avoidExpandChild || false;
     isChildExpand = isChildExpand || false;
     this.getModel().beforeExpand();
