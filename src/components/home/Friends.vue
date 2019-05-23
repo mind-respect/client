@@ -3,45 +3,60 @@
   -->
 
 <template>
-    <v-card flat v-if="loaded">
-        <v-card-text>
-            <!--<v-icon>-->
-            <!--people-->
-            <!--</v-icon>-->
-            <v-autocomplete
-                    v-model="searchValue"
-                    :items="users"
-                    :loading="isLoading"
-                    :search-input.sync="friendSearch"
-                    color="secondary"
-                    item-text="username"
-                    item-value="username"
-                    :placeholder="$t('friends:search')"
-                    prepend-icon="people"
-                    @change="visitUser()"
-                    return-object
-                    :no-data-text="$t('noSearchResults')"
-            ></v-autocomplete>
-            <v-list>
-                <v-subheader inset>
-                    {{$t('friends:friends')}}
-                </v-subheader>
-                <v-list-tile v-for="friend in friends" :to="'/user/' + friend.username">
-                    <v-list-tile-action>
-                        <v-avatar class="text-uppercase teal white--text">{{friend.username.substring(0,2)}}</v-avatar>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title>
-                            {{friend.username}}
-                        </v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-            </v-list>
-        </v-card-text>
-        <v-card-text>
+    <div>
+        <v-card flat min-height="200">
+            <v-card-text>
+                <!--<v-icon>-->
+                <!--people-->
+                <!--</v-icon>-->
+                <v-autocomplete
+                        v-model="searchValue"
+                        :items="users"
+                        :loading="isLoading"
+                        :search-input.sync="friendSearch"
+                        color="secondary"
+                        item-text="username"
+                        item-value="username"
+                        :placeholder="$t('friends:search')"
+                        prepend-icon="people"
+                        @change="visitUser()"
+                        return-object
+                        :no-data-text="$t('noSearchResults')"
+                ></v-autocomplete>
+                <v-card flat v-if="!loaded">
+                    <v-card-text class="vh-center">
+                        <v-layout row wrap class="vh-center">
+                            <v-flex xs12 class="vh-center">
+                                <v-progress-circular size="64" indeterminate color="third"></v-progress-circular>
+                            </v-flex>
+                        </v-layout>
+                    </v-card-text>
+                </v-card>
+                <v-card-text v-if="loaded && Object.keys(friends).length === 0" class="text-xs-center headline grey--text">
+                    {{$t('friends:noFriends')}}
+                </v-card-text>
+                <v-list v-if="loaded && Object.keys(friends).length > 0">
+                    <v-subheader inset>
+                        {{$t('friends:friends')}}
+                    </v-subheader>
+                    <v-list-tile v-for="friend in friends" :to="'/user/' + friend.username">
+                        <v-list-tile-action>
+                            <v-avatar class="text-uppercase teal white--text">{{friend.username.substring(0,2)}}
+                            </v-avatar>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>
+                                {{friend.username}}
+                            </v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </v-card-text>
+            <v-card-text>
 
-        </v-card-text>
-    </v-card>
+            </v-card-text>
+        </v-card>
+    </div>
 </template>
 
 <script>
@@ -59,7 +74,8 @@
                 "waiting": "Friendship request pending",
                 "confirmed": "Friend",
                 "confirm": "Confirm friendship request",
-                "friends": "Friends"
+                "friends": "Friends",
+                "noFriends": "No friends yet"
             });
             I18n.i18next.addResources("fr", "friends", {
                 "search": "Usagers de Mind Respect",
@@ -67,7 +83,8 @@
                 "waiting": "Requête d'amitié en attente",
                 "confirmed": "Ami",
                 "confirm": "Confirmer la demande d'amitié",
-                "friends": "Amis"
+                "friends": "Amis",
+                "noFriends": "Pas encore d'amis"
             });
             return {
                 searchValue: null,

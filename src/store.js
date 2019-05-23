@@ -18,7 +18,8 @@ const Store = new Vuex.Store({
                 "user",
                 "locale",
                 "zoom",
-                "isSideMenuCollapsed"
+                "isSideMenuCollapsed",
+                "areCentersInGridView"
             ]
         })
     ],
@@ -26,6 +27,7 @@ const Store = new Vuex.Store({
         user: null,
         zoom: 1,
         isLoading: false,
+        areCentersInGridView: true,
         dragged: null,
         isRemoveFlow: false,
         isDescriptionFlow: false,
@@ -62,6 +64,9 @@ const Store = new Vuex.Store({
             state.locale = locale;
             DateUtil.refreshLocale();
             location.reload();
+        },
+        setAreCentersInGridView: (state, areCentersInGridView) => {
+            state.areCentersInGridView = areCentersInGridView;
         },
         setDragged: function (state, dragged) {
             state.dragged = dragged;
@@ -106,6 +111,9 @@ const Store = new Vuex.Store({
         },
         setLocale: function (action, locale) {
             action.commit('setLocale', locale);
+        },
+        setAreCentersInGridView: (action, areCentersInGridView) => {
+            action.commit('setAreCentersInGridView', areCentersInGridView);
         },
         setDragged: function (action, dragged) {
             action.commit('setDragged', dragged);

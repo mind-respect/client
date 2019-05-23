@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div v-if="loaded" class="">
+    <div class="">
         <v-tabs
                 v-model="tabMenu"
                 color="secondary"
@@ -35,16 +35,18 @@
                                 hide-details
                                 class="ml-3"
                         ></v-text-field>
-                        <v-tooltip v-if="!isListView && $vuetify.breakpoint.mdAndUp" left>
-                            <v-btn flat icon slot="activator" @click="isListView = !isListView" class="mt-3">
+                        <v-tooltip v-if="$store.state.areCentersInGridView && $vuetify.breakpoint.mdAndUp" left>
+                            <v-btn flat icon slot="activator" @click="$store.dispatch('setAreCentersInGridView', false)"
+                                   class="mt-3">
                                 <v-icon large>
                                     view_list
                                 </v-icon>
                             </v-btn>
                             {{$t('userhome:toList')}}
                         </v-tooltip>
-                        <v-tooltip v-if="isListView && $vuetify.breakpoint.mdAndUp" left>
-                            <v-btn flat icon slot="activator" @click="isListView = !isListView" class="mt-3">
+                        <v-tooltip v-if="!$store.state.areCentersInGridView && $vuetify.breakpoint.mdAndUp" left>
+                            <v-btn flat icon slot="activator" @click="$store.dispatch('setAreCentersInGridView', true)"
+                                   class="mt-3">
                                 <v-icon large>
                                     view_module
                                 </v-icon>
@@ -79,45 +81,20 @@
                             {{$t('userhome:confirmedFriend')}}
                         </v-chip>
                     </v-card-title>
-                    <v-card flat class="ma-0 pa-0">
-                        <v-card-text class="pt-0">
-                            <v-layout row wrap v-if="false">
-                                <v-flex xs12 md4 lg2 v-for="center in centersFiltered">
-                                    <v-hover>
-                                        <v-card height="200" class="ma-2" slot-scope="{hover}"
-                                                :class="`elevation-${hover ? 12 : 2}`"
-                                                :href="center.uri().url()">
-                                            <v-card-title class="subheading">
-                                                <v-icon>
-                                                    {{center.getIcon()}}
-                                                </v-icon>
-                                                <v-spacer></v-spacer>
-                                                {{center.getLabel()}}
-                                                <v-spacer></v-spacer>
-                                            </v-card-title>
-                                            <v-divider></v-divider>
-                                            <v-card-text class="text-xs-center">
-                                                <!--<v-list dense>-->
-                                                <!--<v-list-tile v-for="(value, key) in center.getContext()">-->
-                                                <!--<v-list-tile-tile class="body-1">-->
-                                                <!--{{value}}-->
-                                                <!--</v-list-tile-tile>-->
-                                                <!--</v-list-tile>-->
-                                                <!--</v-list>-->
-                                                <div v-for="(value, key) in center.getContext()" class="subheading">
-                                                    {{value}}
-                                                </div>
-                                            </v-card-text>
-                                        </v-card>
-                                    </v-hover>
+                    <v-card flat class="ma-0 pa-0 vh-center" min-height="200">
+                        <v-card-text class="pt-0 vh-center">
+                            <v-layout row wrap class="vh-center" v-if="!loaded">
+                                <v-flex xs12 class="vh-center">
+                                    <v-progress-circular size="64" indeterminate color="third"></v-progress-circular>
                                 </v-flex>
                             </v-layout>
-                            <v-layout row wrap class="">
+                            <v-layout row wrap class="" v-if="loaded && centers">
                                 <v-flex xs12 md6>
                                     <h3 class="subheading vh-center font-italic" v-if="centers.length === 0">
                                         {{$t('userhome:noBubbles')}}
                                     </h3>
-                                    <v-list-tile slot="no-data" @click="createCenterVertex(search)" v-if="centers.length !== 0 && centersFiltered.length === 0">
+                                    <v-list-tile slot="no-data" @click="createCenterVertex(search)"
+                                                 v-if="centers.length !== 0 && centersFiltered.length === 0">
                                         <v-list-tile-content>
                                             <v-list-tile-title>
                                                 {{$t('noSearchResults')}}
@@ -133,7 +110,8 @@
                                         </v-list-tile-action>
                                     </v-list-tile>
                                 </v-flex>
-                                <v-flex xs12 :md3="!isListView" v-for="(center, index) in centersFiltered">
+                                <v-flex xs12 :md3="$store.state.areCentersInGridView"
+                                        v-for="(center, index) in centersFiltered">
                                     <v-list two-line id="bubbles-as-list">
                                         <v-list-tile :href="center.uri().url()">
                                             <v-list-tile-content>
@@ -417,15 +395,24 @@
                         this.isWaitingFriendship = true;
                     }
                 }.bind(this));
+            },
+            reload: function () {
+                this.loaded = false;
+                let promise;
+                if (this.$route.name === 'UserHome') {
+                    this.tabMenu = 0;
+                    promise = this.setupCenters();
+                } else if (this.$route.name === 'FriendsUserHome') {
+                    this.tabMenu = 1;
+                    promise = this.setupFriendFlow();
+                }
+                promise.then(() => {
+                    this.loaded = true;
+                });
             }
         },
         mounted: function () {
-            Promise.all([
-                this.setupCenters(),
-                this.setupFriendFlow()
-            ]).then(function () {
-                this.loaded = true;
-            }.bind(this))
+            this.reload();
         },
         computed: {
             centersFiltered: function () {
@@ -440,24 +427,21 @@
         },
         watch: {
             tabMenu: function () {
-                let pathName = this.tabMenu === 0 ? "UserHome" : "FriendsUserHome";
+                let pathName;
+                if (this.tabMenu === 0) {
+                    pathName = "UserHome";
+                } else {
+                    pathName = "FriendsUserHome";
+                }
                 this.$router.push({
                     name: pathName,
                     params: {
                         username: this.$route.params.username
                     }
                 });
-                this.loaded = false;
-                this.setupCenters().then(function () {
-                    this.loaded = true;
-                }.bind(this))
             },
             '$route.name': function () {
-                if (this.$route.name === 'UserHome') {
-                    this.tabMenu = 0;
-                } else if (this.$route.name === 'FriendsUserHome') {
-                    this.tabMenu = 1;
-                }
+                this.reload();
             }
         }
     }
