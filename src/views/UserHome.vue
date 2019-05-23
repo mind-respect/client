@@ -114,7 +114,7 @@
                                 </v-flex>
                                 <v-flex xs12 :md3="$store.state.areCentersInGridView"
                                         v-for="(center, index) in centersFiltered">
-                                    <v-list two-line id="bubbles-as-list">
+                                    <v-list three-line>
                                         <v-list-tile :href="center.uri().url()">
                                             <v-list-tile-content>
                                                 <v-list-tile-title class="subheading font-weight-bold">
