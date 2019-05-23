@@ -473,8 +473,8 @@
         width: 60%;
     }
 
-    #grid-list .v-list__tile__content{
-        height:200px;
+    #grid-list .v-list__tile {
+        height:80px;
     }
 
 </style>
