@@ -89,8 +89,8 @@
                                 </v-flex>
                             </v-layout>
                             <v-layout row wrap class="" v-if="loaded && centers">
-                                <v-flex xs12 md6>
-                                    <h3 class="subheading vh-center font-italic" v-if="centers.length === 0">
+                                <v-flex xs12 md6 v-if="centers.length === 0">
+                                    <h3 class="subheading vh-center font-italic">
                                         {{$t('userhome:noBubbles')}}
                                     </h3>
                                     <v-list-tile slot="no-data" @click="createCenterVertex(search)"
