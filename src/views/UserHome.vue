@@ -114,7 +114,7 @@
                                 </v-flex>
                                 <v-flex xs12 :md3="$store.state.areCentersInGridView"
                                         v-for="(center, index) in centersFiltered">
-                                    <v-list three-line>
+                                    <v-list two-line id="grid-list">
                                         <v-list-tile :href="center.uri().url()">
                                             <v-list-tile-content>
                                                 <v-list-tile-title class="subheading font-weight-bold">
@@ -471,6 +471,10 @@
 
     .context {
         width: 60%;
+    }
+
+    #grid-list .v-list__tile__content{
+        height:200px;
     }
 
 </style>
