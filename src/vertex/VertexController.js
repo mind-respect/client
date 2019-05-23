@@ -530,6 +530,7 @@ VertexController.prototype.group = function () {
 };
 VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isChildExpand) {
     let promise = Promise.resolve();
+    LoadingFlow.enterNoSpinner();
     avoidExpandChild = avoidExpandChild || false;
     isChildExpand = isChildExpand || false;
     this.getModel().beforeExpand();
@@ -565,6 +566,10 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
     }
     return promise.then(function () {
         this.getUi().expand(avoidCenter, isChildExpand);
+        setTimeout(function () {
+            LoadingFlow.leave();
+            Store.dispatch("redraw");
+        }, 325)
     }.bind(this));
 };
 
