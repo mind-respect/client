@@ -81,16 +81,18 @@
                             {{$t('userhome:confirmedFriend')}}
                         </v-chip>
                     </v-card-title>
-                    <v-card flat class="ma-0 pa-0 vh-center" min-height="200">
-                        <v-card-text class="pt-0 vh-center">
-                            <v-layout row wrap class="vh-center" v-if="!loaded">
+                    <v-card flat class="ma-0 pa-0" min-height="200" :class="{
+                        'vh-center': !loaded
+                    }">
+                        <v-card-text class="pt-0">
+                            <v-layout row wrap v-if="!loaded">
                                 <v-flex xs12 class="vh-center">
                                     <v-progress-circular size="64" indeterminate color="third"></v-progress-circular>
                                 </v-flex>
                             </v-layout>
-                            <v-layout row wrap class="" v-if="loaded && centers">
-                                <v-flex xs12 md6 v-if="centers.length === 0">
-                                    <h3 class="subheading vh-center font-italic">
+                            <v-layout row wrap class="pt-0" v-if="loaded && centers">
+                                <v-flex xs12 md6 v-if="centersFiltered.length === 0">
+                                    <h3 class="subheading vh-center font-italic" v-if="centers.length === 0">
                                         {{$t('userhome:noBubbles')}}
                                     </h3>
                                     <v-list-tile slot="no-data" @click="createCenterVertex(search)"
@@ -104,7 +106,7 @@
                                             </v-list-tile-sub-title>
                                         </v-list-tile-content>
                                         <v-list-tile-action>
-                                            <v-icon>
+                                            <v-icon large>
                                                 add
                                             </v-icon>
                                         </v-list-tile-action>
