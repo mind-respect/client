@@ -22,7 +22,7 @@
                 >
                     <v-badge :left="bubble.isToTheLeft()" color="secondary" slot="activator">
                         <span slot="badge">
-                            <span v-if="$store.state.isViewOnly">
+                            <span v-if="$store.state.isViewOnly && bubble.isVertex()">
                                 {{bubble.getNbPublicNeighbors() - 1}}
                             </span>
                             <span v-else>

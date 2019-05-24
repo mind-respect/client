@@ -349,7 +349,7 @@ FriendlyResource.FriendlyResource.prototype.getNextSibling = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpand = function () {
-    let nbChild = Store.state.isViewOnly ? this.getNbPublicNeighbors() - 1 : this.getNumberOfChild();
+    let nbChild = Store.state.isViewOnly && this.isVertex() ? this.getNbPublicNeighbors() - 1 : this.getNumberOfChild();
     return !this.isCenter && !this.isExpanded && nbChild > 0;
 };
 
