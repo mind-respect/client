@@ -474,7 +474,7 @@
     }
 
     #grid-list .v-list__tile--link{
-        height:83px;
+        height:90px;
     }
 
 </style>
