@@ -37,7 +37,7 @@ VertexController.prototype.addChildCanDo = function () {
 };
 
 VertexController.prototype.addChild = function (isToTheLeft) {
-    let expand = this.getModel().isExpanded ? Promise.resolve() : this.expand();
+    let expand = this.getModel().canExpand() ? this.expand() : Promise.resolve();
     let triple;
     expand.then(() => {
         return VertexService.addTuple(

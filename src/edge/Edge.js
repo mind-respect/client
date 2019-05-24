@@ -21,7 +21,6 @@ api.withLabelSelfSourceAndDestinationUri = function (label, uri, sourceUri, dest
             destinationUri
         )
     );
-    this.isExpanded = true;
     edge.setLabel(label);
     return edge;
 };
@@ -75,6 +74,7 @@ api.Edge.prototype.init = function (edgeServerFormat) {
         edgeServerFormat.graphElement
     );
     this.edgeServerFormat = edgeServerFormat;
+    this.isExpanded = true;
     return this;
 };
 
@@ -153,6 +153,12 @@ api.Edge.prototype.isRelatedToVertex = function (vertex) {
         this.isDestinationVertex(vertex);
 };
 api.Edge.prototype.getOtherVertex = function (vertex) {
+    if(vertex === undefined){
+        debugger;
+    }
+    if(this.getSourceVertex() === undefined){
+        debugger;
+    }
     return this.getSourceVertex().getUri() === vertex.getUri() ?
         this.getDestinationVertex() : this.getSourceVertex();
 };

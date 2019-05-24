@@ -140,8 +140,10 @@ EdgeController.prototype._convertToGroupRelation = function () {
         groupRelationIdentifiers
     );
     newGroupRelation.getModel().addTuple(tuple);
-    newGroupRelation.parentBubble = newGroupRelation.parentVertex = parentBubble;
+    newGroupRelation.parentBubble = parentBubble;
+    newGroupRelation.parentVertex = this.getUi().getParentVertex();
     newGroupRelation._sortedImmediateChild = newGroupRelation.sortedImmediateChild();
+    newGroupRelation.isExpanded = true;
     return newGroupRelation;
 };
 

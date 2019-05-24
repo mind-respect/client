@@ -46,8 +46,7 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
         this.expand(true);
     }
     return VertexService.addTuple(
-        parentVertex,
-        this.getModel()
+        parentVertex
     ).then((_triple) => {
         triple = _triple;
         let addIdentifiers = Promise.all(this.getModel().getIdentifiers().map(function (identifier) {
