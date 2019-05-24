@@ -127,7 +127,7 @@
                                                         {{center.lastVisit()}}
                                                     </small>
                                                 </v-list-tile-title>
-                                                <v-list-tile-sub-title>
+                                                <v-list-tile-sub-title class="mt-1">
                                                     <div v-for="(value, key) in center.getContext()"
                                                          v-if="center.contextSearch !== ''"
                                                          class="around-list-item">
@@ -449,7 +449,7 @@
     }
 </script>
 
-<style scoped>
+<style>
     #bubbles-as-list .v-list__tile__title, .v-list__tile__sub-title {
 
     }
@@ -473,8 +473,8 @@
         width: 60%;
     }
 
-    #grid-list .v-list__tile {
-        height:80px;
+    #grid-list .v-list__tile--link{
+        height:83px;
     }
 
 </style>
