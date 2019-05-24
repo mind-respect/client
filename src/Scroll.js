@@ -24,6 +24,7 @@ const Scroll = {
     },
     goToGraphElement: function (bubble) {
         let element = bubble.getHtml();
+        let xOffset = SideMenu.getWidth() / 2.5;
         let options = {
             container: 'body',
             easing: 'ease',
@@ -38,7 +39,7 @@ const Scroll = {
                 } else {
                     offset = 200 + SideMenu.getWidth();
                 }
-                let position = Math.abs(offset * screen.width / 1366);
+                let position = Math.abs(offset * screen.width / 1366) + xOffset
                 return position * -1;
             },
             force: true,
@@ -50,7 +51,7 @@ const Scroll = {
                 options.x = false;
                 options.y = true;
                 options.offset = function () {
-                    let position = Math.abs(200 * screen.height / 768);
+                    let position = Math.abs(300 * screen.height / 768);
                     return position * -1;
                 };
                 VueScrollTo.scrollTo(
