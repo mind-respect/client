@@ -37,9 +37,8 @@ VertexController.prototype.addChildCanDo = function () {
 };
 
 VertexController.prototype.addChild = function (isToTheLeft) {
-    let expand = this.getModel().canExpand() ? this.expand() : Promise.resolve();
     let triple;
-    expand.then(() => {
+    this.expand().then(() => {
         return VertexService.addTuple(
             this.getModel()
         );
@@ -529,6 +528,10 @@ VertexController.prototype.group = function () {
     // );
 };
 VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isChildExpand) {
+    if (!this.getModel().canExpand()) {
+        this.getModel().isExpanded = true;
+        return Promise.resolve();
+    }
     let promise = Promise.resolve();
     LoadingFlow.enterNoSpinner();
     this.getModel().loading = false;
