@@ -330,7 +330,7 @@
                 }
             },
             setupCenters: function () {
-                let isOwner = this.$store.state.user.username === this.$route.params.username;
+                let isOwner = this.$store.state.user && this.$store.state.user.username === this.$route.params.username;
                 let centersRequest = isOwner ? CenterGraphElementService.getPublicAndPrivate() : CenterGraphElementService.getPublicOnlyForUsername(
                     this.$route.params.username
                 );
@@ -424,6 +424,9 @@
                 }.bind(this));
             },
             isOwner: function () {
+                if (!this.$store.state.user) {
+                    return false;
+                }
                 return this.$route.params.username === this.$store.state.user.username
             }
         },
@@ -473,8 +476,8 @@
         width: 60%;
     }
 
-    #grid-list .v-list__tile--link{
-        height:90px;
+    #grid-list .v-list__tile--link {
+        height: 90px;
     }
 
 </style>

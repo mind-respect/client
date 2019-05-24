@@ -528,7 +528,7 @@ VertexController.prototype.group = function () {
     // );
 };
 VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isChildExpand) {
-    if (!this.getModel().canExpand()) {
+    if (!this.getModel().isCenter && !this.getModel().canExpand()) {
         this.getModel().isExpanded = true;
         return Promise.resolve();
     }
