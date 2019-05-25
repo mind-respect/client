@@ -65,10 +65,12 @@ export default {
             }
         });
         i18next.addResources("en", "vertex", {
-            "default": "write it"
+            "default": "write it",
+            "openLink": "Open link"
         });
         i18next.addResources("fr", "vertex", {
-            "default": "écris le"
+            "default": "écris le",
+            "openLink": "Ouvrir le lien"
         });
         i18next.addResources("en", "edge", {
             "default": "relate"

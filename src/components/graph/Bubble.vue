@@ -116,6 +116,8 @@
                                     max-width="250"
                                     :nudge-width="250"
                                     auto
+                                    right
+                                    color="white"
                                     offset-y
                             >
                                 <div
@@ -147,25 +149,37 @@
                                             </v-icon>
                                         </span>
                                     </div>
-                                    <v-badge color="third">
-                                        <template v-slot:badge v-if="bubble.isMeta()">
-                                            <v-icon dark>label</v-icon>
-                                        </template>
-                                        <div
-                                                class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
-                                                @blur="leaveEditFlow"
-                                                @dragover="labelDragEnter"
-                                                @dragleave="labelDragLeave"
-                                                @drop="labelDrop"
-                                                :data-placeholder="$t('vertex:default')"
-                                                autocomplete="off" v-html="label"
-                                                @focus="focus"
-                                                @keydown="keydown"
-                                                :style="labelFont"
-                                                ref="vertexLabel"
-                                        ></div>
-
-                                    </v-badge>
+                                    <v-menu
+                                            lazy
+                                            v-model="linkMenu"
+                                            auto
+                                            offset-y
+                                    >
+                                        <v-badge color="third" slot="activator">
+                                            <template v-slot:badge v-if="bubble.isMeta()">
+                                                <v-icon dark>label</v-icon>
+                                            </template>
+                                            <div
+                                                    class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
+                                                    @blur="leaveEditFlow"
+                                                    @dragover="labelDragEnter"
+                                                    @dragleave="labelDragLeave"
+                                                    @drop="labelDrop"
+                                                    :data-placeholder="$t('vertex:default')"
+                                                    autocomplete="off" v-html="label"
+                                                    @focus="focus"
+                                                    @keydown="keydown"
+                                                    :style="labelFont"
+                                                    ref="vertexLabel"
+                                            ></div>
+                                        </v-badge>
+                                        <v-card :href="linkMenuHref" target="_blank">
+                                            <v-card-title>
+                                                <v-icon class="mr-2">share</v-icon>
+                                                {{$t('vertex:openLink')}}
+                                            </v-card-title>
+                                        </v-card>
+                                    </v-menu>
                                 </div>
                                 <div :style="background">
                                     <BubbleButtons></BubbleButtons>
@@ -341,6 +355,8 @@
                 isLeftRightDragOver: null,
                 isEditFlow: false,
                 showMenu: false,
+                linkMenu: false,
+                linkMenuHref: null,
                 inLabelButtons: [
                     {
                         icon: "filter_center_focus",
@@ -475,6 +491,13 @@
                 event.stopPropagation();
                 if (this.isEditFlow) {
                     return;
+                }
+                if (event.target.tagName === "A") {
+                    event.preventDefault();
+                    this.linkMenuHref = event.target.href;
+                    this.linkMenu = true;
+                }else{
+                    this.linkMenu = false;
                 }
                 GraphUi.enableDragScroll();
                 if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
