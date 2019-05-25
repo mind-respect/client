@@ -32,10 +32,8 @@
                    'blur-overlay':(isEditFlow || bubble.loading) && bubble.isVertexType()
                 }"
                     >
-                        <transition name="none" v-on:before-enter="beforeChildrenAnimation"
-                                    v-on:after-enter="afterChildrenAnimation">
-                            <Children :bubble="bubble"
-                                      v-if="
+                        <Children :bubble="bubble"
+                                  v-if="
                                         bubble.orientation === 'left' &&
                                           (
                                             (bubble.isVertexType() && bubble.rightBubbles.length > 0) ||
@@ -43,9 +41,8 @@
                                             bubble.isEdge()
                                           )
                                       "
-                            >
-                            </Children>
-                        </transition>
+                        >
+                        </Children>
                     </div>
                 </div>
                 <div class='bubble-container v-center'
@@ -188,7 +185,7 @@
                         </div>
                         <ChildNotice :bubble="bubble"
                                      class=""
-                                     v-if="bubble.canExpand()"></ChildNotice>
+                                     v-if="canExpand"></ChildNotice>
                     </div>
                     <div
                             class="vertex-drop-arrow-top-bottom-drop bottom-vertex-drop-arrow-drop"
@@ -278,7 +275,7 @@
                         </div>
                         <ChildNotice :bubble="bubble"
                                      class=""
-                                     v-if="bubble.canExpand()"></ChildNotice>
+                                     v-if="canExpand"></ChildNotice>
                     </div>
                 </div>
                 <div v-if="!bubble.isCollapsed || bubble.isCenter">
@@ -286,10 +283,8 @@
                    'blur-overlay':(isEditFlow || bubble.loading) && bubble.isVertexType()
                 }"
                     >
-                        <transition name="none" v-on:before-enter="beforeChildrenAnimation"
-                                    v-on:after-enter="afterChildrenAnimation">
-                            <Children :bubble="bubble"
-                                      v-if="
+                        <Children :bubble="bubble"
+                                  v-if="
                                       bubble.orientation === 'right'  &&
                                       (
                                         (bubble.isVertexType() && bubble.rightBubbles.length > 0) ||
@@ -297,9 +292,8 @@
                                         bubble.isEdge()
                                       )
                                       "
-                            >
-                            </Children>
-                        </transition>
+                        >
+                        </Children>
                     </div>
                 </div>
             </v-flex>
@@ -329,7 +323,6 @@
     import SubGraph from '@/graph/SubGraph'
     import Color from '@/Color'
     import MindMapInfo from '@/MindMapInfo'
-    import linkifyElement from 'linkifyjs/element'
     import linkifyHtml from 'linkifyjs/html'
 
     export default {
@@ -420,13 +413,15 @@
                         if (this.bubble.hasFewEnoughBubblesToExpand()) {
                             this.bubble.expand(true);
                         }
-                        this.linkify();
                     });
                 })
             }
             this.loaded = true;
         },
         computed: {
+            canExpand: function () {
+                return this.bubble.canExpand();
+            },
             label: function () {
                 let doc = new DOMParser().parseFromString(this.bubble.getFriendlyJson().label, 'text/html');
                 let text = doc.body.textContent || "";
@@ -496,7 +491,7 @@
                     event.preventDefault();
                     this.linkMenuHref = event.target.href;
                     this.linkMenu = true;
-                }else{
+                } else {
                     this.linkMenu = false;
                 }
                 GraphUi.enableDragScroll();
@@ -521,31 +516,7 @@
                 }
                 this.bubble.focus(event);
             },
-            linkify: function () {
-                if (!this.$refs.vertexLabel) {
-                    return;
-                }
-                debugger;
-                linkifyElement(this.$refs.vertexLabel, {
-                    target: {
-                        url: "_self"
-                    },
-                    formatHref: function (href, type) {
-                        debugger;
-                        return "patate";
-                    },
-                    events: {
-                        click: function (event) {
-                            debugger;
-                        }
-                    }
-                })
-            },
             leaveEditFlow: function () {
-                // this.linkify();
-                // console.log();
-                // console.log(linkifyElement);
-                // linkifyElement(document.getElementById('id'), options);
                 this.isEditFlow = false;
                 this.bubble.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
