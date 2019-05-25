@@ -49,9 +49,9 @@
                      :class="{
                 'vh-center':bubble.orientation === 'center',
                 'left':bubble.orientation === 'right',
-                'pl-5': (bubble.isLeaf() && bubble.isToTheLeft()) || (bubble.isCenter && bubble.leftBubbles.length === 0),
-                'pr-5': (bubble.isLeaf() && !bubble.isToTheLeft()) || (bubble.isCenter && bubble.rightBubbles.length === 0),
-                'w-500': (bubble.isLeaf() && bubble.isToTheLeft())
+                'pl-5': (isLeaf && bubble.isToTheLeft()) || (bubble.isCenter && bubble.leftBubbles.length === 0),
+                'pr-5': (isLeaf && !bubble.isToTheLeft()) || (bubble.isCenter && bubble.rightBubbles.length === 0),
+                'w-500': (isLeaf && bubble.isToTheLeft())
             }"
                      :id="bubble.uiId"
                 >
@@ -95,7 +95,7 @@
                          @drop="leftDrop"
                          style="left:0;">
                     </div>
-                    <v-spacer v-if="bubble.isToTheLeft() && bubble.isLeaf()"></v-spacer>
+                    <v-spacer v-if="bubble.isToTheLeft() && leaf"></v-spacer>
                     <div
                             v-if="bubble.isVertexType()"
                             class="bubble vertex graph-element relative vh-center" :class="{
@@ -163,7 +163,7 @@
                                                     @dragleave="labelDragLeave"
                                                     @drop="labelDrop"
                                                     :data-placeholder="$t('vertex:default')"
-                                                    autocomplete="off" v-html="label"
+                                                    v-html="label"
                                                     @focus="focus"
                                                     @keydown="keydown"
                                                     :style="labelFont"
@@ -263,7 +263,6 @@
                                     <div class="bubble-label white--text"
                                          @blur="leaveEditFlow"
                                          :data-placeholder="relationPlaceholder"
-                                         autocomplete="off"
                                          @focus="focus"
                                          v-show="!isShrinked"
                                          v-text="bubble.getFriendlyJson().label"
@@ -319,7 +318,6 @@
     import BubbleButtons from '@/components/graph/BubbleButtons'
     import GraphUi from '@/graph/GraphUi'
     import IdUri from '@/IdUri'
-    import Store from '@/store'
     import SubGraph from '@/graph/SubGraph'
     import Color from '@/Color'
     import MindMapInfo from '@/MindMapInfo'
@@ -419,6 +417,9 @@
             this.loaded = true;
         },
         computed: {
+            isLeaf: function () {
+                return this.bubble.isLeaf();
+            },
             canExpand: function () {
                 return this.bubble.canExpand();
             },
@@ -465,18 +466,6 @@
             }
         },
         methods: {
-            beforeChildrenAnimation: function () {
-                this.bubble.draw = false;
-                this.$nextTick(function () {
-                    Store.dispatch("redraw");
-                });
-            },
-            afterChildrenAnimation: function () {
-                this.bubble.draw = true;
-                this.$nextTick(function () {
-                    Store.dispatch("redraw")
-                });
-            },
             rightClick: function (event) {
                 event.preventDefault();
                 this.showMenu = true;

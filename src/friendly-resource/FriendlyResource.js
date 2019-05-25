@@ -245,7 +245,7 @@ FriendlyResource.FriendlyResource.prototype.isVertexType = function () {
     return GraphElementType.isVertexType(
         this.getGraphElementType()
     );
-}
+};
 
 FriendlyResource.FriendlyResource.prototype.select = function () {
     this.isSelected = true;
