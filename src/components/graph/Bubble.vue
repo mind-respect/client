@@ -158,7 +158,7 @@
                                                 @dragleave="labelDragLeave"
                                                 @drop="labelDrop"
                                                 :data-placeholder="$t('vertex:default')"
-                                                autocomplete="off" v-html="bubble.getFriendlyJson().label"
+                                                autocomplete="off" v-html="label"
                                                 @focus="focus"
                                                 @keydown="keydown"
                                                 :style="labelFont"
@@ -316,6 +316,7 @@
     import Color from '@/Color'
     import MindMapInfo from '@/MindMapInfo'
     import linkifyElement from 'linkifyjs/element'
+    import linkifyHtml from 'linkifyjs/html'
 
     export default {
         name: "Bubble",
@@ -410,6 +411,12 @@
             this.loaded = true;
         },
         computed: {
+            label: function () {
+                let doc = new DOMParser().parseFromString(this.bubble.getFriendlyJson().label, 'text/html');
+                let text = doc.body.textContent || "";
+                return this.isEditFlow ? text : linkifyHtml(text);
+
+            },
             background: function () {
                 return this.isSelected && Color.bubbleBackground ?
                     "background-color:" + Color.bubbleBackground :
@@ -495,10 +502,24 @@
                 if (!this.$refs.vertexLabel) {
                     return;
                 }
-                linkifyElement(this.$refs.vertexLabel)
+                debugger;
+                linkifyElement(this.$refs.vertexLabel, {
+                    target: {
+                        url: "_self"
+                    },
+                    formatHref: function (href, type) {
+                        debugger;
+                        return "patate";
+                    },
+                    events: {
+                        click: function (event) {
+                            debugger;
+                        }
+                    }
+                })
             },
             leaveEditFlow: function () {
-                this.linkify();
+                // this.linkify();
                 // console.log();
                 // console.log(linkifyElement);
                 // linkifyElement(document.getElementById('id'), options);
@@ -856,8 +877,8 @@
         max-width: 500px !important;
         height: 100%;
         position: relative;
-        padding-top: 2px!important;
-        padding-bottom: 2px!important;
+        padding-top: 2px !important;
+        padding-bottom: 2px !important;
     }
 
     .in-bubble-content-wrapper {
