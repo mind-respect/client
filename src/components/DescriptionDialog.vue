@@ -32,7 +32,6 @@
 </template>
 
 <script>
-    import {VueEditor} from 'vue2-editor'
     import SelectionHandler from '@/SelectionHandler'
     import I18n from '@/I18n'
     import GraphElementService from '@/graph-element/GraphElementService'
@@ -41,7 +40,9 @@
     export default {
         name: "DescriptionDialog",
         components: {
-            VueEditor
+            VueEditor: () => import ('vue2-editor').then((module) => {
+                return module.VueEditor
+            })
         },
         data: function () {
             I18n.i18next.addResources("en", "desc", {

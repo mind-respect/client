@@ -90,6 +90,11 @@
     import SelectionHandler from '@/SelectionHandler'
     import I18n from '@/I18n'
     import VertexService from '@/vertex/VertexService'
+    import Vue from 'vue'
+
+    const VueShortkey = () => import('vue-shortkey');
+
+    Vue.use(VueShortkey);
 
     export default {
         name: "RemoveDialog",

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify/lib'
+import Vuetify, { VLayout } from 'vuetify/lib'
 import 'vuetify/src/stylus/app.styl'
 import colors from 'vuetify/es5/util/colors'
 
@@ -20,5 +20,8 @@ Vue.use(Vuetify, {
         success: '#00C851',
         warning: '#ffbb33',
         edgeColor: '#3A87AD'
+    },
+    components: {
+        VLayout
     }
 })

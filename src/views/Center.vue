@@ -15,13 +15,11 @@
     import GraphUi from '@/graph/GraphUi'
     import KeyboardActionsHandler from '@/KeyboardActionsHandler'
     import GraphElement from '@/graph-element/GraphElement'
-    import VueShortkey from 'vue-shortkey';
+
     import Vue from 'vue';
     import VueClipboard from 'vue-clipboard2'
 
     Vue.use(VueClipboard);
-
-    Vue.use(VueShortkey);
 
     export default {
         name: "Center",
