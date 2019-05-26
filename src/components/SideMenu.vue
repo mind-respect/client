@@ -76,7 +76,7 @@
     import TagMenu from '@/components/TagMenu'
     import MergeMenu from '@/components/MergeMenu'
     import BubbleButtons from '@/components/graph/BubbleButtons'
-    import Moment from 'moment'
+    import DateUtil from '@/DateUtil'
     import I18n from '@/I18n'
     import SelectionHandler from '@/SelectionHandler'
     import SideMenu from '@/SideMenu'
@@ -128,7 +128,7 @@
         },
         methods: {
             formatDate: function (date) {
-                return new Moment(date).fromNow();
+                return DateUtil.fromNow(date);
             },
             collapse: function () {
                 this.$store.dispatch("setIsSideMenuCollapsed", true);

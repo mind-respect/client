@@ -95,7 +95,7 @@
                          @drop="leftDrop"
                          style="left:0;">
                     </div>
-                    <v-spacer v-if="bubble.isToTheLeft() && leaf"></v-spacer>
+                    <v-spacer v-if="bubble.isToTheLeft() && isLeaf"></v-spacer>
                     <div
                             v-if="bubble.isVertexType()"
                             class="bubble vertex graph-element relative vh-center" :class="{

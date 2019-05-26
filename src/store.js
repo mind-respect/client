@@ -6,7 +6,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import UserService from '@/service/UserService'
-import DateUtil from '@/DateUtil'
 
 Vue.use(Vuex);
 
@@ -62,7 +61,6 @@ const Store = new Vuex.Store({
                 return;
             }
             state.locale = locale;
-            DateUtil.refreshLocale();
             location.reload();
         },
         setAreCentersInGridView: (state, areCentersInGridView) => {

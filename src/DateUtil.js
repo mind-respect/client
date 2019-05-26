@@ -1,28 +1,12 @@
-import i18n from '@/I18n'
-import moment from 'moment'
-import Vue from 'vue'
+import {formatRelative} from 'date-fns'
+import {fr} from 'date-fns/locale'
+import I18n from '@/I18n'
 
-const DateUtil = {
-    setup: function () {
-        Vue.filter('date', function (value) {
-            if (value) {
-                return moment(String(value)).format('D MMMM YYYY, HH:mm:ss')
-            }
-        });
-        Vue.filter('dayDate', DateUtil.getDayDate);
-        DateUtil.refreshLocale()
-    },
-    refreshLocale: function () {
-        moment.locale(
-            i18n.getLocale() === 'fr'
-                ? 'fr-ca' : 'en'
-        )
-    },
-    getDayDate: function (value) {
-        if (value) {
-            return moment(String(value)).format('D MMMM YYYY')
-        }
-    }
+const DateUtil = {};
+DateUtil.fromNow = function (date) {
+    let options = I18n.getLocale() === "fr" ? {
+        locale: fr
+    } : {};
+    return formatRelative(date, new Date(), options);
 };
-
-export default DateUtil
+export default DateUtil;

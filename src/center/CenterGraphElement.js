@@ -3,8 +3,8 @@
  */
 
 import GraphElement from '@/graph-element/GraphElement'
-import Moment from 'moment'
 import Icon from '@/Icon'
+import DateUtil from '@/DateUtil'
 
 export default {
     fromServerFormat: function (centersServerFormat) {
@@ -60,7 +60,7 @@ CenterGraphElement.prototype.getNbReferences = function () {
     return this.centerGraphElementServerFormat.nbReferences;
 };
 CenterGraphElement.prototype.lastVisit = function () {
-    return new Moment(this.getLastCenterDate()).fromNow();
+    return DateUtil.fromNow(this.getLastCenterDate());
 };
 CenterGraphElement.prototype.getIcon = function () {
     return Icon.getForUri(this.getUri());

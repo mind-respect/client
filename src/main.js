@@ -4,10 +4,9 @@ import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import DateUtil from '@/DateUtil'
 Vue.config.productionTip = false
 
-const vueI18nExt = I18n.setup()
+const vueI18nExt = I18n.setup();
 
 new Vue({
     i18n: vueI18nExt,
@@ -15,5 +14,3 @@ new Vue({
     store,
     render: h => h(App)
 }).$mount('#app')
-
-DateUtil.setup();
