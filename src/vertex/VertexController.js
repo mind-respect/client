@@ -38,7 +38,8 @@ VertexController.prototype.addChildCanDo = function () {
 
 VertexController.prototype.addChild = function (isToTheLeft) {
     let triple;
-    this.expand().then(() => {
+    let promise = this.getModel().isCenter ? Promise.resolve() : this.expand();
+    promise.then(() => {
         return VertexService.addTuple(
             this.getModel()
         );
