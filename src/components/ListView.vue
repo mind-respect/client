@@ -13,7 +13,7 @@
                         open-all
                 >
                     <template v-slot:label="{ item }">
-                        <spanx class="font-italic">{{getEdgeLabel(item)}}</spanx>
+                        <span class="font-italic">{{getEdgeLabel(item)}}</span>
                         {{item.original.getLabelOrDefault()}}
                     </template>
                 </v-treeview>

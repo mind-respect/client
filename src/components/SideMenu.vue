@@ -36,23 +36,29 @@
                                 centered
                                 next-icon=""
                                 color="transparent"
-                                icons-and-text
                         >
                             <v-tab class="primary--text">
-                                <span class="grey--text">{{$t('side:tags')}}</span>
+                                <!--                                <span class="grey&#45;&#45;text">{{$t('side:note')}}</span>-->
+                                <v-icon>note</v-icon>
+                            </v-tab>
+                            <v-tab class="primary--text">
+                                <!--                                <span class="grey&#45;&#45;text">{{$t('side:tags')}}</span>-->
                                 <v-icon>label</v-icon>
                             </v-tab>
                             <v-tab class="primary--text">
-                                <span class="grey--text">{{$t('side:merge')}}</span>
+                                <!--                                <span class="grey&#45;&#45;text">{{$t('side:merge')}}</span>-->
                                 <v-icon>merge_type</v-icon>
                             </v-tab>
                         </v-tabs>
                         <v-tabs-items v-model="tabMenu" class="white">
                             <v-tab-item>
-                                <TagMenu @focus="isStretched = true" @blur="isStretched = false"></TagMenu>
+                                <NoteMenu></NoteMenu>
                             </v-tab-item>
                             <v-tab-item>
-                                <MergeMenu></MergeMenu>
+                                <TagMenu @focus="focus" @blur="blur"></TagMenu>
+                            </v-tab-item>
+                            <v-tab-item>
+                                <MergeMenu @focus="focus" @blur="blur"></MergeMenu>
                             </v-tab-item>
                         </v-tabs-items>
                     </div>
@@ -73,6 +79,7 @@
 </template>
 
 <script>
+    import NoteMenu from '@/components/NoteMenu'
     import TagMenu from '@/components/TagMenu'
     import MergeMenu from '@/components/MergeMenu'
     import BubbleButtons from '@/components/graph/BubbleButtons'
@@ -80,10 +87,12 @@
     import I18n from '@/I18n'
     import SelectionHandler from '@/SelectionHandler'
     import SideMenu from '@/SideMenu'
+    import KeyboardActionsHandler from '@/KeyboardActionsHandler'
 
     export default {
         name: "SideMenu",
         components: {
+            NoteMenu,
             TagMenu,
             MergeMenu,
             BubbleButtons
@@ -127,6 +136,12 @@
             }
         },
         methods: {
+            focus: function () {
+                KeyboardActionsHandler.disable();
+            },
+            blur: function () {
+                KeyboardActionsHandler.enable();
+            },
             formatDate: function (date) {
                 return DateUtil.fromNow(date);
             },

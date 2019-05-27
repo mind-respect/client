@@ -21,6 +21,7 @@
                     clearable
                     @focus="$emit('focus')"
                     @blur="$emit('blur')"
+                    :placeholder="$t('tag:title')"
             >
                 <template v-slot:prepend-inner>
                     <i class="fab fa-wikipedia-w mt-1"></i>
@@ -86,11 +87,11 @@
         },
         data: function () {
             I18n.i18next.addResources("en", "tag", {
-                "title": "Tags",
+                "title": "Tag",
                 'tags': 'Tags'
             });
             I18n.i18next.addResources("fr", "tag", {
-                "title": "Étiquettes",
+                "title": "Étiquette",
                 'tags': 'Étiquettes'
             });
             return {

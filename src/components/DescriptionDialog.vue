@@ -20,7 +20,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                        color="third" dark
+                        flat
                         class="mr-2"
                         @click="dialog = false"
                 >
