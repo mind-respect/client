@@ -18,11 +18,12 @@
                 v-else
                 flat
                 icon
+                :color="color"
                 slot="activator"
                 @click="performAction(button, $event)"
                 :disabled="button.disableNotHide && !canDo(button)"
         >
-            <v-icon :class="button.iconClass" :large="large">
+            <v-icon :class="button.iconClass" :large="hightlight">
                 {{getIcon(button)}}
             </v-icon>
         </v-btn>
@@ -43,11 +44,17 @@
 
     export default {
         name: "Button",
-        props: ['button', 'large', 'isInTopMenu', 'isInSideMenu', 'buttonIndex'],
+        props: ['button', 'hightlight', 'isInTopMenu', 'isInSideMenu', 'buttonIndex'],
         data: function () {
             return {
-                ctrlKey: UiUtils.isMacintosh() ? "⌘" : "ctrl"
+                ctrlKey: UiUtils.isMacintosh() ? "⌘" : "ctrl",
+                color: "primary"
             };
+        },
+        mounted: function () {
+            if (this.hightlight) {
+                this.color = "third";
+            }
         },
         computed: {
             attach: function () {

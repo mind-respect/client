@@ -12,7 +12,7 @@ Vue.use(Vuetify, {
         secondaryLight: colors.indigo.lighten2,
         third: colors.teal.darken1,
         thirdLight: colors.teal.lighten1,
-        gray: colors.blueGrey.lighten1,
+        grey: colors.grey.darken1,
         red: colors.red.lighten2,
         accent: '#82B1FF',
         error: '#ff4444',

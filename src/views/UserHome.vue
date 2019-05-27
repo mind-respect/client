@@ -55,7 +55,7 @@
                         </v-tooltip>
                         <v-spacer></v-spacer>
                         <v-tooltip v-if="isOwner" left>
-                            <v-btn icon float color="secondary" fab @click="createCenterVertex()" slot="activator">
+                            <v-btn icon float color="third" fab @click="createCenterVertex()" slot="activator" dark>
                                 <v-icon large>add</v-icon>
                             </v-btn>
                             <span>{{$t('userhome:createInfo')}}</span>
@@ -114,39 +114,42 @@
                                 </v-flex>
                                 <v-flex xs12 :md3="$store.state.areCentersInGridView"
                                         v-for="(center, index) in centersFiltered">
-                                    <v-list two-line id="grid-list">
-                                        <v-list-tile :href="center.uri().url()">
-                                            <v-list-tile-content>
-                                                <v-list-tile-title class="subheading font-weight-bold">
-                                                    <v-icon class="mr-2" color="secondary">
-                                                        {{center.getIcon()}}
-                                                    </v-icon>
-                                                    {{center.getLabel()}}
-                                                    <small class="grey--text font-weight-normal font-italic mr-1 right"
-                                                           v-if="$vuetify.breakpoint.mdAndUp">
-                                                        {{center.lastVisit()}}
-                                                    </small>
-                                                </v-list-tile-title>
-                                                <v-list-tile-sub-title class="mt-1">
-                                                    <div v-for="(value, key) in center.getContext()"
-                                                         v-if="center.contextSearch !== ''"
-                                                         class="around-list-item">
-                                                        {{value}}
-                                                    </div>
-                                                </v-list-tile-sub-title>
-                                                <!--<v-list-tile-sub-title class="text-xs-right" >-->
-                                                <!--{{center.lastVisit()}}-->
-                                                <!--</v-list-tile-sub-title>-->
-                                            </v-list-tile-content>
-                                            <v-list-tile-action>
-                                                <v-btn icon small @click.prevent="removeCenter(center, index)">
-                                                    <v-icon color="secondary">
-                                                        delete
-                                                    </v-icon>
-                                                </v-btn>
-                                            </v-list-tile-action>
-                                        </v-list-tile>
-                                    </v-list>
+                                    <v-hover>
+                                        <v-list two-line id="grid-list" slot-scope="{ hover }">
+                                            <v-list-tile :href="center.uri().url()">
+                                                <v-list-tile-content>
+                                                    <v-list-tile-title class="subheading font-weight-bold">
+                                                        <v-icon class="mr-2" color="secondary">
+                                                            {{center.getIcon()}}
+                                                        </v-icon>
+                                                        {{center.getLabel()}}
+                                                        <small class="grey--text font-weight-normal font-italic mr-1 right"
+                                                               v-if="$vuetify.breakpoint.mdAndUp">
+                                                            {{center.lastVisit()}}
+                                                        </small>
+                                                    </v-list-tile-title>
+                                                    <v-list-tile-sub-title class="mt-1">
+                                                        <div v-for="(value, key) in center.getContext()"
+                                                             v-if="center.contextSearch !== ''"
+                                                             class="around-list-item">
+                                                            {{value}}
+                                                        </div>
+                                                    </v-list-tile-sub-title>
+                                                    <!--<v-list-tile-s  ub-title class="text-xs-right" >-->
+                                                    <!--{{center.lastVisit()}}-->
+                                                    <!--</v-list-tile-sub-title>-->
+                                                </v-list-tile-content>
+                                                <v-list-tile-action>
+                                                    <v-btn icon small @click.prevent="removeCenter(center, index)" v-if="hover">
+                                                        <v-icon color="grey">
+<!--                                                            more_horiz-->
+                                                            delete
+                                                        </v-icon>
+                                                    </v-btn>
+                                                </v-list-tile-action>
+                                            </v-list-tile>
+                                        </v-list>
+                                    </v-hover>
                                     <v-data-table
                                             :headers="headers"
                                             :items="centers"
@@ -478,6 +481,8 @@
 
     #grid-list .v-list__tile--link {
         height: 90px;
+        /*padding-left:10px;*/
+        /*padding-right:10px;*/
     }
 
 </style>

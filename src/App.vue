@@ -89,7 +89,7 @@
 <!--                <Button :button="redoButton" v-if="isGraphRoute"></Button>-->
                 <Button :button="zoomOutButton" v-if="isGraphRoute"></Button>
                 <Button :button="zoomInButton" v-if="isGraphRoute"></Button>
-                <Button :button="createVertexButton" :large="true" v-if="$store.state.user"></Button>
+                <Button :button="createVertexButton" :hightlight="true" v-if="$store.state.user"></Button>
                 <SettingsMenu></SettingsMenu>
             </v-toolbar>
             <!--<router-link to="/">Home</router-link>-->
