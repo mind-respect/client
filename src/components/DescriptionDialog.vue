@@ -36,6 +36,7 @@
     import I18n from '@/I18n'
     import GraphElementService from '@/graph-element/GraphElementService'
     import GraphUi from '@/graph/GraphUi'
+    import KeyboardActionsHandler from '@/KeyboardActionsHandler'
 
     export default {
         name: "DescriptionDialog",
@@ -90,8 +91,10 @@
                 if (this.dialog === false) {
                     this.$store.dispatch("setIsDescriptionFlow", false)
                     GraphUi.enableDragScroll();
+                    KeyboardActionsHandler.enable();
                 } else {
                     GraphUi.disableDragScroll();
+                    KeyboardActionsHandler.disable();
                 }
             }
         },

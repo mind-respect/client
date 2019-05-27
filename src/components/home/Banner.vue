@@ -1,5 +1,4 @@
 <template>
-
     <v-parallax
             dark
             :src="require('@/assets/about/levels/personal-3286016_1280.png')"
