@@ -882,5 +882,6 @@
 
     .bubble-label {
         display: inline-block;
+        word-break: break-word;
     }
 </style>
