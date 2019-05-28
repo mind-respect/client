@@ -64,15 +64,16 @@
                 </v-list>
             </v-card-text>
             <v-card-actions>
-                <v-btn color="secondary" class="ml-2" @click="remove"
-                       v-shortkey="['enter']"
-                       @shortkey="remove">
-                    <v-icon class="mr-2">delete</v-icon>
-                    {{$t('remove:confirm')}}
-                    <span v-if="isMultipleFlow" class="ml-2">
-                        {{$t('remove:multiple_confirm_suffix')}}
-                    </span>
-                </v-btn>
+                <form @submit.prevent="remove">
+                    <input type="text" ref="enterRemoveInput" autofocus style="width:0">
+                    <v-btn color="secondary" class="ml-2" @click="remove" type="submit">
+                        <v-icon class="mr-2">delete</v-icon>
+                        {{$t('remove:confirm')}}
+                        <span v-if="isMultipleFlow" class="ml-2">
+                            {{$t('remove:multiple_confirm_suffix')}}
+                        </span>
+                    </v-btn>
+                </form>
                 <v-spacer></v-spacer>
                 <v-btn
                         flat
@@ -90,11 +91,6 @@
     import SelectionHandler from '@/SelectionHandler'
     import I18n from '@/I18n'
     import VertexService from '@/vertex/VertexService'
-    import Vue from 'vue'
-
-    const VueShortkey = () => import('vue-shortkey');
-
-    Vue.use(VueShortkey);
 
     export default {
         name: "RemoveDialog",
@@ -148,6 +144,12 @@
                         this.$store.dispatch("setIsRemoveFlow", false)
                     } else {
                         this.removeDialog = true;
+                        this.$nextTick(() => {
+                            const element = this.$refs.enterRemoveInput;
+                            this.$nextTick(() => {
+                                element.focus()
+                            });
+                        })
                     }
                 } else {
                     this.removeDialog = false;
@@ -176,9 +178,10 @@
                     this.selected.forEach(function (bubble) {
                         bubble.remove();
                     });
-                    SelectionHandler.removeAll();
-                    if (nextSibling) {
+                    if (nextSibling && !nextSibling.isSameUri(SelectionHandler.getSingle())) {
                         SelectionHandler.setToSingle(nextSibling);
+                    } else {
+                        SelectionHandler.removeAll();
                     }
                     this.$store.dispatch("redraw");
                     this.removeDialog = false;
