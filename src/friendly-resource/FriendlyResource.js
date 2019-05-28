@@ -304,7 +304,11 @@ FriendlyResource.FriendlyResource.prototype.beforeExpand = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.defineScrollPosition = function () {
-    this.scrollRect = this.getHtml().getBoundingClientRect();
+    let html = this.getHtml();
+    if(!html){
+        return;
+    }
+    this.scrollRect = html.getBoundingClientRect();
 };
 
 FriendlyResource.FriendlyResource.prototype.isScrollPositionDefined = function () {

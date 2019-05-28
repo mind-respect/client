@@ -261,18 +261,14 @@ Vertex.prototype.expand = function (avoidCenter, isChildExpand) {
         avoidCenter,
         isChildExpand
     );
-    this.isExpanded = false; // to make the expand animation work in next tick
-    Vue.nextTick(function () {
-        if (this.rightBubblesCollapsed !== null) {
-            this.rightBubbles = this.rightBubblesCollapsed;
-            this.rightBubblesCollapsed = null;
-        }
-        if (this.leftBubblesCollapsed !== null) {
-            this.leftBubbles = this.leftBubblesCollapsed;
-            this.leftBubblesCollapsed = null;
-        }
-        this.isExpanded = true;
-    }.bind(this))
+    if (this.rightBubblesCollapsed !== null) {
+        this.rightBubbles = this.rightBubblesCollapsed;
+        this.rightBubblesCollapsed = null;
+    }
+    if (this.leftBubblesCollapsed !== null) {
+        this.leftBubbles = this.leftBubblesCollapsed;
+        this.leftBubblesCollapsed = null;
+    }
 };
 
 Vertex.prototype.getImmediateChild = function (isToTheLeft) {

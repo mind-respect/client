@@ -46,22 +46,21 @@ VertexController.prototype.addChild = function (isToTheLeft) {
     }).then((_triple) => {
         triple = _triple;
         this.getModel().addChild(triple.edge, isToTheLeft);
-        if (ShareLevel.PRIVATE === this.getModel().getModel().getShareLevel()) {
-            triple.destination.setShareLevel(ShareLevel.PRIVATE);
-            return Promise.resolve();
-        } else {
-            return triple.destination.getController().setShareLevel(
-                this.getModel().getShareLevel()
-            );
-        }
-    }).then(function () {
-        Vue.nextTick(function () {
+        Vue.nextTick(() => {
             SelectionHandler.setToSingle(triple.destination);
         });
         GraphElementService.changeChildrenIndex(
             triple.source
         );
         Store.dispatch("redraw");
+        if (ShareLevel.PRIVATE === this.getModel().getModel().getShareLevel()) {
+            triple.destination.setShareLevel(ShareLevel.PRIVATE);
+        } else {
+            //not returning promise to allow faster process
+            triple.destination.getController().setShareLevel(
+                this.getModel().getShareLevel()
+            );
+        }
         return triple;
     });
 };
@@ -562,11 +561,11 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
     }
     return promise.then(function () {
         this.getUi().expand(avoidCenter, isChildExpand);
-        setTimeout(function () {
+        Vue.nextTick(() => {
             LoadingFlow.leave();
             Store.dispatch("redraw");
-        }, 325)
-        Scroll.goToGraphElement(this.getModel());
+            Scroll.goToGraphElement(this.getModel());
+        });
     }.bind(this));
 };
 

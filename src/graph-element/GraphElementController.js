@@ -196,8 +196,11 @@ GraphElementController.prototype.collapseCanDo = function () {
 };
 
 GraphElementController.prototype.collapse = function () {
+    this.getModel().defineScrollPosition();
     this.getUi().collapse();
-    Scroll.centerBubbleIfApplicable(this.getModel());
+    Vue.nextTick(() => {
+        Scroll.goToGraphElement(this.getModel());
+    })
 };
 
 GraphElementController.prototype.cutCanDo = function () {

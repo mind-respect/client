@@ -106,7 +106,6 @@ const Scroll = {
                 }
                 if (!Scroll.isElementFullyOnScreen(element)) {
                     Scroll.goToGraphElement(bubble)
-                    Store.dispatch("redraw");
                 }
             }, 200)
         });
