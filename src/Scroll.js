@@ -6,6 +6,7 @@ import router from '@/router'
 import Vue from 'vue'
 import Store from '@/store'
 import SideMenu from '@/SideMenu'
+
 Vue.use(VueScrollTo);
 
 const IS_ON_SCREEN_RIGHT_THRESHOLD = 100;
@@ -23,6 +24,13 @@ const Scroll = {
         }
     },
     goToGraphElement: function (bubble) {
+        if (bubble.isScrollPositionDefined()) {
+            let rect = bubble.getHtml().getBoundingClientRect();
+            let scrollTop = rect.top - bubble.scrollRect.top;
+            document.scrollingElement.scrollTop += scrollTop;
+            bubble.resetScrollPosition();
+            return;
+        }
         let element = bubble.getHtml();
         let xOffset = SideMenu.getWidth() / 2.5;
         let options = {
@@ -39,7 +47,7 @@ const Scroll = {
                 } else {
                     offset = 200 + SideMenu.getWidth();
                 }
-                let position = Math.abs(offset * screen.width / 1366) + xOffset
+                let position = Math.abs(offset * screen.width / 1366) + xOffset;
                 return position * -1;
             },
             force: true,

@@ -111,9 +111,6 @@
                 this.loaded = true;
                 this.$nextTick(() => {
                     SelectionHandler.setToSingle(this.graph.center);
-                    Scroll.centerBubbleIfApplicable(
-                        this.graph.center
-                    );
                 })
             }).catch(() => {
                 this.$router.push("/")

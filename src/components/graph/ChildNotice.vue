@@ -62,10 +62,6 @@
                         this.loading = this.bubble.loading = false;
                     }.bind(this))
                     SelectionHandler.setToSingle(this.bubble);
-                    Scroll.centerBubbleForTreeIfApplicable(
-                        this.bubble,
-                        true
-                    );
                     Store.dispatch("redraw");
                 }.bind(this));
             }

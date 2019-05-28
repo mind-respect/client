@@ -296,11 +296,25 @@ FriendlyResource.FriendlyResource.prototype.removeSingleSelected = function () {
 
 FriendlyResource.FriendlyResource.prototype.beforeExpand = function () {
     this.loading = true;
+    this.defineScrollPosition();
     // this.draw = false
     // Vue.nextTick(function () {
     // Store.dispatch("redraw")
     // }.bind(this))
 };
+
+FriendlyResource.FriendlyResource.prototype.defineScrollPosition = function () {
+    this.scrollRect = this.getHtml().getBoundingClientRect();
+};
+
+FriendlyResource.FriendlyResource.prototype.isScrollPositionDefined = function () {
+    return this.scrollRect !== undefined;
+};
+
+FriendlyResource.FriendlyResource.prototype.resetScrollPosition = function () {
+    delete this.scrollRect;
+};
+
 
 FriendlyResource.FriendlyResource.prototype.isInTypes = function (types) {
     return types.indexOf(this.getGraphElementType()) > -1;
@@ -567,9 +581,9 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isCh
     this.loading = false;
     this.isExpanded = true;
     this.isCollapsed = false;
-    if (!avoidCenter && !isChildExpand) {
-        Scroll.centerBubbleForTreeOrNotIfApplicable(this);
-    }
+    // if (!avoidCenter && !isChildExpand) {
+    //     Scroll.centerBubbleForTreeOrNotIfApplicable(this);
+    // }
     // this.draw = true;
     // Vue.nextTick(function(){
     //     Store.dispatch("redraw")

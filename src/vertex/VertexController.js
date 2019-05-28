@@ -557,17 +557,8 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
             });
         }
     } else {
-        LoadingFlow.enterNoSpinner();
         this.getModel().loading = false;
-        promise = this.expandDescendantsIfApplicable().then(function () {
-            Vue.nextTick(function () {
-                setTimeout(function () {
-                    LoadingFlow.leave();
-                    Store.dispatch("redraw");
-                }, 325)
-            });
-            Scroll.goToGraphElement(this.getModel());
-        }.bind(this));
+        promise = this.expandDescendantsIfApplicable();
     }
     return promise.then(function () {
         this.getUi().expand(avoidCenter, isChildExpand);
@@ -575,6 +566,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
             LoadingFlow.leave();
             Store.dispatch("redraw");
         }, 325)
+        Scroll.goToGraphElement(this.getModel());
     }.bind(this));
 };
 
