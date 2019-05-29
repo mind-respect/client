@@ -174,13 +174,13 @@
     import SettingsMenu from '@/components/SettingsMenu'
     import Button from '@/components/graph/Button'
     import AppController from '@/AppController'
-    import GraphController from '@/graph/GraphController'
     import LoadingFlow from '@/LoadingFlow'
     import Store from '@/store'
     import Vue from 'vue'
     import KeyboardActionsHandler from '@/KeyboardActionsHandler'
     import Search from '@/components/Search'
     import VueClipboard from 'vue-clipboard2'
+    import I18n from '@/I18n'
 
     Vue.use(VueClipboard);
 
@@ -198,6 +198,96 @@
             Button
         },
         data: function () {
+            I18n.i18next.addResources("en", "button", {
+                "select": "Hand selector",
+                "group": "Merge bubbles into one",
+                "addChild": "Add a child (tab)",
+                "identify": "Tags",
+                "identifyWhenMany": "Tags",
+                "compare": "Compare with another user",
+                "reverseToRight": "Invert relation",
+                "reverseToLeft": "Invert relation",
+                "suggestions": "Suggestions",
+                "subElements": "Made of graph elements",
+                "center": "Center bubble",
+                "note": "Description",
+                "images": "Add images",
+                "cut": "Cut",
+                "paste": "Paste",
+                "selectTree": "Select tree",
+                "makePrivate": "Make private",
+                "makePublic": "Make public",
+                "remove": "Delete (del)",
+                "accept": "Accept",
+                "addSibling": "Add sibling (enter)",
+                "zoomIn": "Zoom in",
+                "zoomOut": "Zoom out",
+                "expandAll": "Expand all",
+                "selectAllBubbles": "Select all",
+                "visitOtherInstances": "See where this bubble is also found on this map",
+                "collapse": "Hide tree",
+                "expand": "Expand",
+                "wikidataOn": "Activate autocompletion from Wikidata",
+                "wikidataOff": "Deactivate autocompletion from Wikidata",
+                "copy": "Copy",
+                "undo": "Undo",
+                "redo": "Redo",
+                "changeBackgroundColor": "Background color",
+                "convertToRelation": "Convert to relation",
+                "convertToGroupRelation": "Convert to group relation",
+                "wikipediaLinks": "Learn more on Wikipedia",
+                "merge": "Merge",
+                "list": "See the selection as a list",
+                "listAll": "See as list",
+                "fontPicker": "Font picker",
+                "share": "Share",
+                "createVertex": "Create a new bubble"
+            });
+            I18n.i18next.addResources("fr", "button", {
+                "select": "Sélection à la main",
+                "group": "Créer une bulle à partir de celles sélectionnés",
+                "addChild": "Ajouter un enfant (tab)",
+                "identify": "Étiquettes",
+                "identifyWhenMany": "Étiquettes",
+                "compare": "Comparer avec un autre usager",
+                "reverseToRight": "Inverser la relation",
+                "reverseToLeft": "Inverser la relation",
+                "suggestions": "Suggestions",
+                "subElements": "De quoi est composé la bulle",
+                "center": "Centrer la bulle",
+                "note": "Description",
+                "images": "Ajouter des images",
+                "cut": "Couper",
+                "paste": "Coller",
+                "selectTree": "Sélectionner l'arbre",
+                "makePrivate": "Rendre privé",
+                "makePublic": "Rendre public",
+                "remove": "Effacer (suppr)",
+                "accept": "Accepter",
+                "addSibling": "Ajouter une bulle soeur (enter)",
+                "zoomIn": "Zoom intérieur",
+                "zoomOut": "Zoom extérieur",
+                "expandAll": "Expandre tout",
+                "selectAllBubbles": "Sélectionner tout",
+                "visitOtherInstances": "Voir où cette bulle se trouve également sur cette carte",
+                "collapse": "Cacher l'arbre",
+                "expand": "Expandre",
+                "wikidataOn": "Activer l'autocompletion de Wikidata",
+                "wikidataOff": "Désactiver l'autocompletion de Wikidata",
+                "copy": "Copier",
+                "undo": "Annuller",
+                "redo": "Refaire",
+                "changeBackgroundColor": "Couleur de fond",
+                "convertToRelation": "Convertir en relation",
+                "convertToGroupRelation": "Convertir en relation groupée",
+                "wikipediaLinks": "En savoir plus sur Wikipédia",
+                "merge": "Fusionner",
+                "list": "Voir la sélection sous forme de liste",
+                "listAll": "Voir en liste",
+                "fontPicker": "Polices",
+                "share": "Partager",
+                "createVertex": "Créer une nouvelle bulle"
+            });
             return {
                 clipped: false,
                 dataLoaded: false,

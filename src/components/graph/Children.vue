@@ -6,7 +6,7 @@
     <div>
         <div class="vertices-children-container" v-if="!bubble.isCenter && bubble.isVertex()">
             <div v-for="child in bubble.rightBubbles" :class="{
-                        'mt-3 mb-3' : bubble.rightBubbles.length === 2,
+                        'mt-4 mb-4' : bubble.rightBubbles.length === 2,
                         'mt-0 mb-0' : bubble.rightBubbles.length > 2
                         }">
                 <Bubble v-if="child.isGroupRelation" :bubble="addGroupRelationContext(child, bubble)"></Bubble>
@@ -21,7 +21,7 @@
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()" transition="fade-transition">
             <div v-for="child in bubble._sortedImmediateChild"
                  :class="{
-                    'mt-3 mb-3' : bubble._sortedImmediateChild.length === 2,
+                    'mt-4 mb-4' : bubble._sortedImmediateChild.length === 2,
                     'mt-2 mb-2' : bubble._sortedImmediateChild.length > 2
                  }"
             >
