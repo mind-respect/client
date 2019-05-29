@@ -180,6 +180,9 @@
     import Vue from 'vue'
     import KeyboardActionsHandler from '@/KeyboardActionsHandler'
     import Search from '@/components/Search'
+    import VueClipboard from 'vue-clipboard2'
+
+    Vue.use(VueClipboard);
 
     const aboutPages = ['register', 'login', 'forgotPassword', 'changePassword'];
 

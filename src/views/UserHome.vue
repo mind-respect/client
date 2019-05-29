@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div class="">
+    <div class="" id="user-home">
         <v-tabs
                 v-model="tabMenu"
                 color="secondary"
@@ -116,7 +116,7 @@
                                         v-for="(center, index) in centersFiltered">
                                     <v-hover>
                                         <v-list two-line id="grid-list" slot-scope="{ hover }">
-                                            <v-list-tile :href="center.uri().url()">
+                                            <v-list-tile @click="go($event, center.uri().url())">
                                                 <v-list-tile-content>
                                                     <v-list-tile-title class="subheading font-weight-bold">
                                                         <v-icon class="mr-2" color="secondary">
@@ -139,13 +139,43 @@
                                                     <!--{{center.lastVisit()}}-->
                                                     <!--</v-list-tile-sub-title>-->
                                                 </v-list-tile-content>
-                                                <v-list-tile-action>
-                                                    <v-btn icon small @click.prevent="removeCenter(center, index)" v-if="hover">
-                                                        <v-icon color="grey">
-<!--                                                            more_horiz-->
-                                                            delete
-                                                        </v-icon>
-                                                    </v-btn>
+                                                <v-list-tile-action @click.stop v-if="$vuetify.breakpoint.smAndUp">
+                                                    <v-menu lazy offset-y v-if="hover || center.menu" left
+                                                            v-model="center.menu">
+                                                        <template v-slot:activator="{ on }">
+                                                            <v-btn icon small v-on="on">
+                                                                <v-icon color="third">
+                                                                    more_horiz
+                                                                </v-icon>
+                                                            </v-btn>
+                                                        </template>
+                                                        <v-list>
+                                                            <v-list-tile @click.prevent="removeCenter(center, index)">
+                                                                <v-list-tile-action>
+                                                                    <v-icon>delete</v-icon>
+                                                                </v-list-tile-action>
+                                                                <v-list-tile-title>
+                                                                    {{$t('userhome:remove')}}
+                                                                </v-list-tile-title>
+                                                            </v-list-tile>
+                                                            <v-list-tile :href="center.uri().url()" target="_blank">
+                                                                <v-list-tile-action>
+                                                                    <v-icon>open_in_new</v-icon>
+                                                                </v-list-tile-action>
+                                                                <v-list-tile-title>
+                                                                    {{$t('userhome:open')}}
+                                                                </v-list-tile-title>
+                                                            </v-list-tile>
+                                                            <v-list-tile @click="copyUrl(center)">
+                                                                <v-list-tile-action>
+                                                                    <v-icon>link</v-icon>
+                                                                </v-list-tile-action>
+                                                                <v-list-tile-title>
+                                                                    {{$t('userhome:copy')}}
+                                                                </v-list-tile-title>
+                                                            </v-list-tile>
+                                                        </v-list>
+                                                    </v-menu>
                                                 </v-list-tile-action>
                                             </v-list-tile>
                                         </v-list>
@@ -199,7 +229,6 @@
     import CenterGraphElementService from '@/center/CenterGraphElementService'
     import CenterGraphElement from '@/center/CenterGraphElement'
     import IdUri from '@/IdUri'
-    import GraphElementType from '@/graph-element/GraphElementType'
     import I18n from '@/I18n'
     import Friends from '@/components/home/Friends.vue'
     import FriendService from '@/friend/FriendService'
@@ -246,7 +275,10 @@
                 "friends": {
                     "search": "Users of Mind Respect",
                     "friends": "Friends"
-                }
+                },
+                remove: "Remove from center's list",
+                open: "Open in new tab",
+                copy: "Copy link"
             });
             I18n.i18next.addResources("fr", "userhome", {
                 "center": "Centre",
@@ -281,7 +313,10 @@
                 "friends": {
                     "search": "Usagers de Mind Respect",
                     "friends": "Amis"
-                }
+                },
+                remove: "Retirer de la liste des centres",
+                open: "Ouvrir dans un nouvel onglet",
+                copy: "Copier le lien"
             });
             return {
                 search: '',
@@ -317,6 +352,16 @@
             }
         },
         methods: {
+            go: function ($event, path) {
+                this.$router.push(
+                    path
+                );
+            },
+            copyUrl: function (center) {
+                this.$copyText(
+                    center.uri().absoluteUrl()
+                );
+            },
             createCenterVertex: function (label) {
                 AppController.createVertex(null, label);
             },

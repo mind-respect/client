@@ -16,11 +16,6 @@
     import KeyboardActionsHandler from '@/KeyboardActionsHandler'
     import GraphElement from '@/graph-element/GraphElement'
 
-    import Vue from 'vue';
-    import VueClipboard from 'vue-clipboard2'
-
-    Vue.use(VueClipboard);
-
     export default {
         name: "Center",
         components: {

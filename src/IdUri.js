@@ -5,6 +5,7 @@
 import UserService from '@/service/UserService'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Router from '@/router';
+
 const IdUri = {
     uuid: function () {
         // https://stackoverflow.com/a/2117523
@@ -182,6 +183,10 @@ IdUri.IdUri = function (uri) {
 
 IdUri.IdUri.prototype.url = function () {
     return IdUri.htmlUrlForBubbleUri(this.uri);
+};
+
+IdUri.IdUri.prototype.absoluteUrl = function () {
+    return window.location.origin + this.url();
 };
 
 export default IdUri;
