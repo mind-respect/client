@@ -77,7 +77,8 @@
                 items: [],
                 menuProps: {
                     "nudge-left": 50,
-                    "max-width": 500
+                    "max-width": 800,
+                    "contentClass": "search-menu"
                 },
                 readyToDisplay: false,
                 isFocusFLow: false
@@ -121,4 +122,10 @@
     }
 </script>
 
-<style></style>
+<style>
+    .search-menu .v-list__tile {
+        height: auto;
+        min-height: 48px;
+        max-height: 105px;
+    }
+</style>

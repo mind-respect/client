@@ -63,7 +63,7 @@
                 search: null,
                 items: [],
                 menuProps: {
-                    "contentClass": 'side-search-menu'
+                    "contentClass": 'side-search-menu search-menu'
                 }
             }
         },
