@@ -76,7 +76,8 @@
                 loading: false,
                 items: [],
                 menuProps: {
-                    "nudge-left": 50
+                    "nudge-left": 50,
+                    "max-width": 500
                 },
                 readyToDisplay: false,
                 isFocusFLow: false

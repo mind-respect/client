@@ -152,7 +152,7 @@
                                                         <v-list>
                                                             <v-list-tile @click.prevent="removeCenter(center, index)">
                                                                 <v-list-tile-action>
-                                                                    <v-icon>delete</v-icon>
+                                                                    <v-icon>visibility_off</v-icon>
                                                                 </v-list-tile-action>
                                                                 <v-list-tile-title>
                                                                     {{$t('userhome:remove')}}
