@@ -9,6 +9,7 @@
             prepend-icon="search"
             v-model="selectedSearchResult"
             :items="items"
+            item-value="uri"
             item-text="label"
             :search-input.sync="searchText"
             return-object
