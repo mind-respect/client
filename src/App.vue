@@ -85,8 +85,8 @@
                     </v-icon>
                     {{$t('centers')}}
                 </v-btn>
-<!--                <Button :button="undoButton" v-if="isGraphRoute"></Button>-->
-<!--                <Button :button="redoButton" v-if="isGraphRoute"></Button>-->
+                <!--                <Button :button="undoButton" v-if="isGraphRoute"></Button>-->
+                <!--                <Button :button="redoButton" v-if="isGraphRoute"></Button>-->
                 <Button :button="zoomOutButton" v-if="isGraphRoute"></Button>
                 <Button :button="zoomInButton" v-if="isGraphRoute"></Button>
                 <Button :button="createVertexButton" :hightlight="true" v-if="$store.state.user"></Button>
@@ -298,14 +298,14 @@
                 hasLoadingSpinner: true,
                 forgotPasswordDialog: false,
                 changePasswordDialog: false,
-                undoButton:{
+                undoButton: {
                     action: "undo",
                     icon: "undo",
                     ctrlShortcut: "Z",
                     controller: AppController,
                     disableNotHide: true
                 },
-                redoButton:{
+                redoButton: {
                     action: "redo",
                     icon: "redo",
                     ctrlShortcut: "Y",
@@ -333,6 +333,10 @@
             };
         },
         methods: {
+            switchLanguage: function () {
+                let newLocale = this.$store.state.locale === "en" ? "fr" : "en";
+                this.$store.dispatch('setLocale', newLocale);
+            },
             showDialogFromRoute: function () {
                 if (this.$route.name === 'register') {
                     this.registerDialog = true;
