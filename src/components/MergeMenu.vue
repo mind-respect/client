@@ -7,6 +7,7 @@
                     attach="#mergeMenu"
                     :items="items"
                     :search-input.sync="search"
+                    item-value="uri"
                     item-text="label"
                     return-object
                     :menu-props="menuProps"
