@@ -26,15 +26,6 @@
             <v-tab-item>
                 <v-card>
                     <v-card-title>
-                        <v-text-field
-                                v-model="search"
-                                prepend-icon="search"
-                                :label="$t('centers')"
-                                single-line
-                                small
-                                hide-details
-                                class="ml-3"
-                        ></v-text-field>
                         <v-tooltip v-if="$store.state.areCentersInGridView && $vuetify.breakpoint.mdAndUp" left>
                             <v-btn flat icon slot="activator" @click="$store.dispatch('setAreCentersInGridView', false)"
                                    class="mt-3">
@@ -91,29 +82,13 @@
                                 </v-flex>
                             </v-layout>
                             <v-layout row wrap class="pt-0" v-if="loaded && centers">
-                                <v-flex xs12 md6 v-if="centersFiltered.length === 0">
+                                <v-flex xs12 md6 v-if="centers.length === 0">
                                     <h3 class="subheading vh-center font-italic" v-if="centers.length === 0">
                                         {{$t('userhome:noBubbles')}}
                                     </h3>
-                                    <v-list-tile slot="no-data" @click="createCenterVertex(search)"
-                                                 v-if="centers.length !== 0 && centersFiltered.length === 0">
-                                        <v-list-tile-content>
-                                            <v-list-tile-title>
-                                                {{$t('noSearchResults')}}
-                                            </v-list-tile-title>
-                                            <v-list-tile-sub-title>
-                                                {{$t('create')}} "{{search}}"
-                                            </v-list-tile-sub-title>
-                                        </v-list-tile-content>
-                                        <v-list-tile-action>
-                                            <v-icon large>
-                                                add
-                                            </v-icon>
-                                        </v-list-tile-action>
-                                    </v-list-tile>
                                 </v-flex>
                                 <v-flex xs12 :md3="$store.state.areCentersInGridView"
-                                        v-for="(center, index) in centersFiltered">
+                                        v-for="(center, index) in centers">
                                     <v-hover>
                                         <v-list two-line id="grid-list" slot-scope="{ hover }">
                                             <v-list-tile @click="go($event, center.uri().url())">
@@ -180,38 +155,6 @@
                                             </v-list-tile>
                                         </v-list>
                                     </v-hover>
-                                    <v-data-table
-                                            :headers="headers"
-                                            :items="centers"
-                                            :pagination.sync="pagination"
-                                            :search="search"
-                                            select-all
-                                            v-if="false"
-                                            item-key="name"
-                                            class="elevation-1"
-                                    >
-                                        <template slot="items" slot-scope="props">
-                                            <td class="select-checkbox">
-
-                                            </td>
-                                            <td class="bubble-label subheading font-weight-bold">
-                                                {{props.item.getLabel()}}
-                                            </td>
-                                            <td class="context around-list subheading">
-                                                <div v-for="(value, key) in props.item.getContext()"
-                                                     v-if="props.item.contextSearch !== ''"
-                                                     class="around-list-item">
-                                                    {{value}}
-                                                </div>
-                                            </td>
-                                            <td class="px-0 last-visit subheading">
-                                                {{props.item.lastVisit()}}
-                                            </td>
-                                        </template>
-                                        <v-alert slot="no-results" :value="true" color="error" icon="warning">
-                                            Your search for "{{ search }}" found no results.
-                                        </v-alert>
-                                    </v-data-table>
                                 </v-flex>
                             </v-layout>
                         </v-card-text>
@@ -319,7 +262,6 @@
                 copy: "Copier le lien"
             });
             return {
-                search: '',
                 isListView: true,
                 centers: null,
                 IdUri: IdUri,
@@ -465,12 +407,6 @@
             this.reload();
         },
         computed: {
-            centersFiltered: function () {
-                return this.centers.filter(function (center) {
-                    let searchContent = center.labelSearch + ' ' + center.contextSearch;
-                    return searchContent.toLowerCase().indexOf(this.search.toLowerCase()) > -1
-                }.bind(this));
-            },
             isOwner: function () {
                 if (!this.$store.state.user) {
                     return false;
