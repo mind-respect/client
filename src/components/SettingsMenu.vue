@@ -1,5 +1,6 @@
 <template>
     <v-menu
+            lazy
             :nudge-width="250"
             offset-y
             content-class="settings-menu"
@@ -34,7 +35,8 @@
                         </v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile @click="expandAll" :disabled="!canExpandAll()" v-if="isGraphRoute">
+                <v-list-tile @click="expandAll" :disabled="!canExpandAll()"
+                             v-if="isGraphRoute && $store.state.dragged === null">
                     <v-list-tile-action>
                         <v-icon class="">unfold_more</v-icon>
                     </v-list-tile-action>

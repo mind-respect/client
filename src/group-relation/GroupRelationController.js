@@ -110,7 +110,7 @@ GroupRelationController.prototype.becomeParent = function (graphElementUi) {
     function moveEdge(movedEdge) {
         var parentGroupRelation = this.getUi();
         promises.push(
-            movedEdge.getController().changeEndVertex(
+            movedEdge.getController().replaceParentVertex(
                 this.getUi().getParentVertex()
             )
         );

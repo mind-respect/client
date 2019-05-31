@@ -93,6 +93,16 @@ api.Edge.prototype.updateSourceOrDestination = function (vertex) {
     }
 };
 
+api.Edge.prototype.replaceRelatedVertex = function (relatedVertex, newVertex) {
+    if (this.getSourceVertex().isSameUri(relatedVertex)) {
+        this.setSourceVertex(newVertex);
+    } else if (this.getDestinationVertex().isSameUri(relatedVertex)) {
+        this.setDestinationVertex(newVertex);
+    } else {
+        console.warn("trying to update non related source or destination vertex to " + this.getLabel())
+    }
+};
+
 api.Edge.prototype.setSourceVertex = function (sourceVertex) {
     this.sourceVertex = sourceVertex;
 };
@@ -153,10 +163,10 @@ api.Edge.prototype.isRelatedToVertex = function (vertex) {
         this.isDestinationVertex(vertex);
 };
 api.Edge.prototype.getOtherVertex = function (vertex) {
-    if(vertex === undefined){
+    if (vertex === undefined) {
         debugger;
     }
-    if(this.getSourceVertex() === undefined){
+    if (this.getSourceVertex() === undefined) {
         debugger;
     }
     return this.getSourceVertex().getUri() === vertex.getUri() ?

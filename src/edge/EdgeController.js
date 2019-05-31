@@ -107,7 +107,7 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
         );
         this.getModel().getParentBubble().removeChild(movedEdge);
         promises.push(
-            movedEdge.getController().changeEndVertex(
+            movedEdge.getController().replaceParentVertex(
                 this.getUi().getParentVertex()
             )
         );
@@ -208,27 +208,31 @@ EdgeController.prototype.sourceVertex = function (sourceVertex) {
         );
     }
 };
-EdgeController.prototype.changeEndVertex = function (endVertex) {
-    if (endVertex.canExpand()) {
-        return endVertex.getController().expand().then(doIt.bind(this));
+EdgeController.prototype.replaceParentVertex = function (newParentVertex) {
+    if (newParentVertex.canExpand()) {
+        return newParentVertex.getController().expand().then(doIt.bind(this));
     } else {
         return doIt.bind(this)();
     }
 
     function doIt() {
-        if (this.getModel().isInverse()) {
-            this.getModel().setDestinationVertex(endVertex)
+        let parentVertex = this.getModel().getParentVertex();
+        // parentVertex.removeChild(this.getModel());
+        this.getModel().replaceRelatedVertex(parentVertex, newParentVertex);
+        // this.getModel().parentBubble = newParentVertex;
+        // this.getModel().parentVertex = newParentVertex;
+        // newParentVertex.addChild(this.getModel());
+        if (this.getModel().isSourceVertex(newParentVertex)) {
+            return EdgeService.changeSourceVertex(
+                newParentVertex,
+                this.getModel()
+            );
+        } else {
             return EdgeService.changeDestinationVertex(
-                endVertex,
+                newParentVertex,
                 this.getModel()
             )
-
         }
-        this.getModel().setSourceVertex(endVertex)
-        return EdgeService.changeSourceVertex(
-            endVertex,
-            this.getModel()
-        );
     }
 };
 

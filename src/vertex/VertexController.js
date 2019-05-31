@@ -386,37 +386,41 @@ VertexController.prototype.setShareLevel = function (shareLevel) {
     });
 };
 
-VertexController.prototype.becomeParent = function (graphElementUi) {
+VertexController.prototype.becomeParent = function (child) {
     let promises = [];
     let uiChild;
-    if (graphElementUi.isGroupRelation()) {
-        graphElementUi.expand();
-        graphElementUi.visitClosestChildOfType(
+    if (child.isGroupRelation()) {
+        child.expand();
+        child.visitClosestChildOfType(
             GraphElementType.Relation,
             moveEdge.bind(this)
         );
-        uiChild = graphElementUi;
+        uiChild = child;
     } else {
-        uiChild = graphElementUi.isRelation() ? graphElementUi : graphElementUi.getParentBubble();
+        uiChild = child.isRelation() ? child : child.getParentBubble();
         moveEdge.bind(this)(uiChild);
     }
 
-    return Promise.all(promises).then(function () {
+    return Promise.all(promises).then(() => {
         uiChild.moveToParent(
             this.getUi()
         );
         Vue.nextTick(() => {
             GraphElementService.changeChildrenIndex(this.getModel());
         });
-    }.bind(this));
+    });
 
     function moveEdge(movedEdge) {
         promises.push(
-            movedEdge.getController().changeEndVertex(
+            movedEdge.getController().replaceParentVertex(
                 this.getUi()
-            )
+            ).then(()=>{
+                movedEdge.moveToParent(
+                    this.getModel()
+                )
+            })
         );
-        if (!graphElementUi.isGroupRelation()) {
+        if (!child.isGroupRelation()) {
             promises.push(
                 movedEdge.getParentBubble().getController().becomeExParent(movedEdge)
             );

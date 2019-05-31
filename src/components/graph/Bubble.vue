@@ -613,9 +613,10 @@
                 }
                 let dragged = this.$store.state.dragged;
                 this.$store.dispatch('setDragged', null);
-                if (edge.isRelation() && dragged.getId() === edge.destinationVertex.getId()) {
-                    return;
-                }
+                // if (edge.isRelation() && dragged.getId() === edge.destinationVertex.getId()) {
+                //     console.log("drop denied")
+                //     return;
+                // }")
                 return dragged.getController()[method](edge);
             },
             topDrop: function (event) {

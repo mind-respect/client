@@ -3,7 +3,6 @@
  */
 import MindMapInfo from '@/MindMapInfo'
 import SubGraph from '@/graph/SubGraph'
-
 const api = {};
 api.expandAllCanDo = function () {
     let graph = SubGraph.graph;

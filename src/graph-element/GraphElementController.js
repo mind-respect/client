@@ -12,7 +12,6 @@ import router from '@/router'
 import Scroll from '@/Scroll'
 import Vue from 'vue'
 import TagService from '@/identifier/TagService'
-
 const api = {};
 let bubbleCutClipboard,
     identificationBaseEventBusKey = "/event/ui/graph/identification/";
@@ -365,13 +364,13 @@ GraphElementController.prototype.moveUnderParent = function (parent, forceLeft) 
 };
 
 GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previousParentVertex) {
-    var previousIndex = this.getUi().getIndexInTree();
-    var moveToCommand = new Command.forExecuteUndoAndRedo(
-        function () {
+    let previousIndex = this.getUi().getIndexInTree();
+    let moveToCommand = new Command.forExecuteUndoAndRedo(
+        () => {
             return this._moveToExecute(otherEdge, isAbove, previousParentVertex);
-        }.bind(this),
-        function () {
-            var edgeUnder = previousParentVertex.getChildOfTypeAtIndex(
+        },
+        () => {
+            let edgeUnder = previousParentVertex.getChildOfTypeAtIndex(
                 GraphElementType.Relation,
                 previousIndex
             );
@@ -380,7 +379,7 @@ GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previou
                 true,
                 this.getUi().getParentVertex()
             );
-        }.bind(this)
+        }
     );
     return Command.executeCommand(
         moveToCommand
@@ -427,28 +426,29 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
             movedEdge.expand();
             movedEdge.visitClosestChildRelations(function (relationUi) {
                 promises.push(
-                    relationUi.getController().changeEndVertex(
+                    relationUi.getController().replaceParentVertex(
                         otherEdge.getParentVertex()
                     )
                 );
             });
         } else {
             promises.push(
-                movedEdge.getController().changeEndVertex(
+                movedEdge.getController().replaceParentVertex(
                     otherEdge.getParentVertex()
                 )
             );
         }
     }
-    return Promise.all(promises).then(function () {
+    return Promise.all(promises).then(() =>{
+
         GraphElementService.changeChildrenIndex(
             otherEdge.getParentVertex()
         );
         GraphElementService.changeChildrenIndex(
             previousParentVertex
         );
-        SelectionHandler.setToSingle(this.getModel())
-    }.bind(this));
+        SelectionHandler.setToSingle(this.getModel());
+    });
 };
 
 GraphElementController.prototype.mergeCanDo = function () {
