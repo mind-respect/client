@@ -14,7 +14,7 @@
                 >
                     <template v-slot:label="{ item }">
                         <span class="font-italic">{{getEdgeLabel(item)}}</span>
-                        {{item.original.getLabelOrDefault()}}
+                        <span v-html="linkify(item.original.getLabelOrDefault())"></span>
                     </template>
                 </v-treeview>
             </v-card-text>
@@ -25,6 +25,7 @@
 <script>
     import SubGraph from '@/graph/SubGraph'
     import GraphUi from '@/graph/GraphUi'
+    import linkifyHtml from 'linkifyjs/html'
 
     export default {
         name: "ListView",
@@ -74,6 +75,9 @@
                 let parentBubble = item.original.getParentBubble();
                 return parentBubble.isEdge() && !parentBubble.isLabelEmpty() ?
                     "(" + parentBubble.getLabel() + ") " : "";
+            },
+            linkify: function (label) {
+                return linkifyHtml(label);
             }
         }
     }
