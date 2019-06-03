@@ -22,9 +22,7 @@
             Graph
         },
         data: function () {
-            return {
-                graphCenterUri: null
-            }
+            return {}
         },
         mounted: function () {
             GraphDisplayer.setImplementation(
@@ -37,17 +35,15 @@
             GraphUi.enableDragScroll();
             KeyboardActionsHandler.init();
             KeyboardActionsHandler.enable();
-            this.graphCenterUri = this.$route.params.centerUri;
         },
-        watch: {
-            '$route.path'(to, from) {
+        computed:{
+            graphCenterUri: function(){
                 if (this.$route.name !== 'Center') {
                     return;
                 }
-                this.graphCenterUri = this.$route.params.centerUri;
+                return this.$route.params.centerUri;
             }
         }
-
     }
 </script>
 

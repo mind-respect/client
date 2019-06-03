@@ -2,9 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import About from '@/views/About.vue'
 import UserHome from '@/views/UserHome.vue'
-
+import Center from '@/views/Center.vue'
 Vue.use(Router)
-
 export default new Router({
     mode: 'history',
     base: process.env.BASE_URL,
@@ -65,7 +64,7 @@ export default new Router({
         {
             path: '/user/:username/graph/:graphElementType/:centerUri',
             name: "Center",
-            component: () => import ('@/views/Center.vue')
+            component: Center
         }
     ]
 })

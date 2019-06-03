@@ -16,11 +16,17 @@ api.updateNote = function (graphElement) {
 
 api.changeChildrenIndex = function (graphElement) {
     let childrenIndex = graphElement.buildChildrenIndex();
-    return Service.geApi().post(
-        graphElement.getUri() + "/childrenIndex",
+    return api.saveChildrenIndex(
+        graphElement,
         childrenIndex
     ).then(function () {
         graphElement.setChildrenIndex(childrenIndex)
     })
+};
+api.saveChildrenIndex = function (graphElement, childrenIndex) {
+    return Service.geApi().post(
+        graphElement.getUri() + "/childrenIndex",
+        childrenIndex
+    );
 };
 export default api;

@@ -9,7 +9,9 @@ let _isDragScrollEnabled = false,
     _isDragScrollLocked = false;
 
 GraphUi.initDragScroll = function () {
-    document.scrollingElement.classList.add("dragscroll");
+    if (document.scrollingElement) {
+        document.scrollingElement.classList.add("dragscroll");
+    }
     DragScroll.reset();
 };
 

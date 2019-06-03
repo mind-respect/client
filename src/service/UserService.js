@@ -24,13 +24,17 @@ const UserService = {
         return authenticatedUserInCache !== undefined;
     },
     authenticatedUser: function () {
-        return Service.api().get(sessionResourceUrl).then(function (response) {
+        return UserService._getCurrentUser().then(function (response) {
             response.data.preferred_locales = JSON.parse(
                 response.data.preferred_locales
             );
             authenticatedUserInCache = response.data;
             return response;
         });
+    },
+    _getCurrentUser: function () {
+        console.log("inside real user")
+        return Service.api().get(sessionResourceUrl);
     },
     resetPassword: function (email) {
         return Service.api().post(

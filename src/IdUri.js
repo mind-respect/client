@@ -141,17 +141,17 @@ const IdUri = {
         return IdUri._getUrlParamAtIndex(4);
     },
     _hasUsernameInUrl: function () {
-        return IdUri._hasParamAtIndex(1);
+        return Router.history.current.params.username !== undefined;
     },
     _hasGraphElementShortIdInUrl: function () {
-        return IdUri._hasParamAtIndex(4);
+        return Router.history.current.params.centerUri;
     },
     getGraphElementUriInUrl: function () {
         if (!IdUri._hasUsernameInUrl() || !IdUri._hasGraphElementShortIdInUrl()) {
             return undefined;
         }
-        return "/service/users/" + IdUri._getUsernameInUrl() +
-            "/graph/" + Router.history.current.params.graphElementType + "/" + IdUri._getGraphElementShortIdFromUrl();
+        return "/service/users/" + Router.history.current.params.username +
+            "/graph/" + Router.history.current.params.graphElementType + "/" + Router.history.current.params.centerUri;
     },
     absoluteUrlForBubbleUri: function (graphElementUri) {
         return window.location.protocol + "//" + window.location.host + IdUri.htmlUrlForBubbleUri(graphElementUri);
