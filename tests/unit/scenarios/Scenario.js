@@ -13,6 +13,7 @@ import Vuetify from 'vuetify'
 import I18n from '@/I18n'
 import Vue from 'vue'
 import SubGraph from '@/graph/SubGraph'
+import TestUtil from '../util/TestUtil'
 
 const clonedeep = require('lodash.clonedeep')
 const api = {}
@@ -42,15 +43,16 @@ api.Scenario.prototype.init = async function () {
         this.getGraph()
     );
     let center = this.getCenter();
+    //setting a new uri to force graph refresh;
+    center.setUri(TestUtil.generateVertexUri());
     router.push(
         center.uri().url()
     );
-    await nextTickPromise();
+    await this.nextTickPromise(5);
     return this;
 };
-
-async function nextTickPromise() {
-    let l = 5;
+api.Scenario.prototype.nextTickPromise = async function nextTickPromise(nbTicks) {
+    let l = nbTicks || 1;
     while (l--) {
         await new Promise((resolve) => {
             api.wrapper.vm.$nextTick(() => {
@@ -58,7 +60,7 @@ async function nextTickPromise() {
             })
         })
     }
-}
+};
 
 api.Scenario.prototype.getGraph = function () {
     return api.getTestData(this.dataKey)

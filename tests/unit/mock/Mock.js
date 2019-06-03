@@ -10,6 +10,14 @@ import VertexServiceMock from './VertexServiceMock'
 import UserServiceMock from './UserServiceMock'
 import EdgeServiceMock from './EdgeServiceMock'
 
+const crypto = require('crypto');
+
+Object.defineProperty(global.self, 'crypto', {
+    value: {
+        getRandomValues: arr => crypto.randomBytes(arr.length),
+    },
+});
+
 const api = {
     spies: {}
 };

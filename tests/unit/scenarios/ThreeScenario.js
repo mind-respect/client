@@ -1,6 +1,5 @@
 import Scenario from './Scenario'
 
-
 let ThreeScenario = function () {
     this.dataKey = "threeBubblesGraph.getGraph";
     return this.init();
@@ -60,7 +59,7 @@ ThreeScenario.prototype.getBubble3InTree = function () {
     return this.getBubbleWithLabelInTree("b3");
 };
 ThreeScenario.prototype.getRelation1InTree = function () {
-    return getRelationWithLabelInTree(
+    return this.getRelationWithLabelInTree(
         "r1"
     );
 };

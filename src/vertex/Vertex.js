@@ -97,7 +97,7 @@ Vertex.prototype.getNumberOfConnectedEdges = function () {
 
 Vertex.prototype.getNumberOfChild = function () {
     let children = this.getImmediateChild();
-    return children.length ? children.length : this.getNumberOfConnectedEdges() - 1;
+    return children.length ? children.length : Math.max(this.getNumberOfConnectedEdges() - 1, 0);
 };
 
 
