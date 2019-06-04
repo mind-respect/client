@@ -7,6 +7,7 @@ const api = {};
 const spies = {};
 api.applyDefault = function () {
     spies["remove"] = api.remove();
+    spies["removeCollection"] = api.removeCollection();
     spies["addTuple"] = api.addTuple();
     return spies;
 };
@@ -34,4 +35,9 @@ api.remove = function () {
     });
 };
 
+api.removeCollection = function () {
+    return jest.spyOn(VertexService, "removeCollection").mockImplementation(() => {
+        return Promise.resolve();
+    });
+};
 export default api;

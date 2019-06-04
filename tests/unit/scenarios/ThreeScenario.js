@@ -1,4 +1,5 @@
 import Scenario from './Scenario'
+import Mock from "../mock/Mock";
 
 let ThreeScenario = function () {
     this.dataKey = "threeBubblesGraph.getGraph";
@@ -8,10 +9,10 @@ let ThreeScenario = function () {
 ThreeScenario.prototype = new Scenario.Scenario();
 
 ThreeScenario.prototype.expandBubble2 = function (bubble2) {
-    return GraphDisplayerAsRelativeTree.addChildTreeUsingGraph(
-        bubble2,
+    Mock.setGetGraphFromService(
         this.getSubGraphForB2()
     );
+    return bubble2.getController().expand();
 };
 
 ThreeScenario.prototype.expandBubble3 = function (bubble3) {

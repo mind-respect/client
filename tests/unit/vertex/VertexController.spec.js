@@ -4,6 +4,8 @@ import GraphWithSimilarRelationsScenario from '../scenarios/GraphWithSimilarRela
 import TestUtil from '../util/TestUtil'
 import MindMapInfo from '@/MindMapInfo'
 import SelectionHandler from '@/SelectionHandler'
+import VertexController from '@/vertex/VertexController'
+
 
 describe('VertexController', () => {
     beforeEach(() => {
@@ -28,42 +30,31 @@ describe('VertexController', () => {
                 centerBubble.getNumberOfChild()
             ).toBe(nbChild - 1);
         });
-        fit("skips confirmation when multiple vertices are pristine", function () {
-            var scenario = new Scenarios.threeBubblesGraph();
-            var centerBubble = scenario.getBubble1InTree();
-            var deleteMenuSpy = Mock.getSpy(
-                "BubbleDeleteMenu",
-                "ask"
-            );
-            expect(
-                deleteMenuSpy.calls.count()
-            ).toBe(0);
-            var b2 = TestUtils.getChildWithLabel(
-                centerBubble,
-                'r1'
-            ).getTopMostChildBubble();
-            var b3 = TestUtils.getChildWithLabel(
-                centerBubble,
-                'r2'
-            ).getTopMostChildBubble();
-            var b2AndB3Controller = new VertexController.VertexController([b2, b3]);
-            b2AndB3Controller.remove();
-            expect(
-                deleteMenuSpy.calls.count()
-            ).toBe(1);
-            scenario.expandBubble2(b2);
-            b2.getController().addChild();
-            var emptyVertex = TestUtils.getChildWithLabel(
+        fit("skips confirmation when multiple vertices are pristine", async () => {
+            let scenario = await new ThreeScenario();
+            let b2 = scenario.getBubble2InTree();
+            await scenario.expandBubble2(b2);
+            await b2.getController().addChild();
+            let emptyVertex = TestUtil.getChildWithLabel(
                 b2,
                 ''
-            ).getTopMostChildBubble();
-            b2.getController().addChild();
-            var emptyVertex2 = emptyVertex.getBubbleUnder();
-            var emptyVerticesController = new VertexController.VertexController([emptyVertex, emptyVertex2]);
-            emptyVerticesController.remove();
+            ).getNextBubble();
+            await b2.getController().addChild();
+            let emptyVertex2 = emptyVertex.getDownBubble();
+            let emptyVerticesController = new VertexController.VertexController([emptyVertex, emptyVertex2]);
             expect(
-                deleteMenuSpy.calls.count()
-            ).toBe(1);
+                b2.getNumberOfChild()
+            ).toBe(2)
+            SelectionHandler.reset();
+            SelectionHandler.add(emptyVertex);
+            SelectionHandler.add(emptyVertex2);
+            console.log("is vertex " + emptyVertex.isPristine())
+            console.log("is vertex " + emptyVertex2.isPristine())
+            emptyVerticesController.remove();
+            await scenario.nextTickPromise();
+            expect(
+                b2.getNumberOfChild()
+            ).toBe(0)
         });
     });
     describe("addSiblingCanDo", function () {
