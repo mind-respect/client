@@ -298,6 +298,7 @@ Vertex.prototype.removeChild = function (child) {
             childrenArray.splice(l, 1);
         }
     }
+    this.decrementNbFriendNeigbors();
 };
 
 api.getWhenEmptyLabel = function () {
