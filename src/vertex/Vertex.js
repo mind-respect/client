@@ -298,7 +298,7 @@ Vertex.prototype.removeChild = function (child) {
             childrenArray.splice(l, 1);
         }
     }
-    this.decrementNbFriendNeigbors();
+    this.decrementNumberOfConnectedEdges();
 };
 
 api.getWhenEmptyLabel = function () {
