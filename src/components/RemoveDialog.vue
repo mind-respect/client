@@ -15,7 +15,7 @@
                 </v-icon>
             </v-card-title>
             <v-card-text class="pt-0">
-                <v-tooltip right class="mr-2" min-width="300" nudge-bottom="125" right nudge-right="300" attach="#removeDialog"">
+                <v-tooltip right class="mr-2" min-width="300" nudge-bottom="125" right nudge-right="300" attach="#removeDialog">
                     <v-icon slot="activator" class="ml-2">
                         info
                     </v-icon>
