@@ -26,7 +26,7 @@
             <v-tab-item>
                 <v-card>
                     <v-card-title>
-                        <v-tooltip v-if="$store.state.areCentersInGridView && $vuetify.breakpoint.mdAndUp" left>
+                        <v-tooltip v-if="$store.state.areCentersInGridView && $vuetify.breakpoint.mdAndUp" right>
                             <v-btn flat icon slot="activator" @click="$store.dispatch('setAreCentersInGridView', false)"
                                    class="mt-3">
                                 <v-icon large>
@@ -35,7 +35,7 @@
                             </v-btn>
                             {{$t('userhome:toList')}}
                         </v-tooltip>
-                        <v-tooltip v-if="!$store.state.areCentersInGridView && $vuetify.breakpoint.mdAndUp" left>
+                        <v-tooltip v-if="!$store.state.areCentersInGridView && $vuetify.breakpoint.mdAndUp" right>
                             <v-btn flat icon slot="activator" @click="$store.dispatch('setAreCentersInGridView', true)"
                                    class="mt-3">
                                 <v-icon large>
