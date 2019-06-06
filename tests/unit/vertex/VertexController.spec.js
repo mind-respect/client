@@ -719,4 +719,4 @@ describe('VertexController', () => {
             ).toBe(groupRelationNumberOfChild);
         });
     });
-})
+});
