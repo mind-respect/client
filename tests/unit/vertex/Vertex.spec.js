@@ -1,5 +1,5 @@
 import Mock from '../mock/Mock'
-import ThreeScenario from "../scenarios/ThreeScenario";
+import ThreeScenario from "../scenario/ThreeScenario";
 import MindMapInfo from '@/MindMapInfo'
 
 describe.only('Vertex', () => {
@@ -7,9 +7,9 @@ describe.only('Vertex', () => {
         Mock.applyDefault();
     });
     describe("remove", function () {
-        it("removes connected edges when removing a vertex", async () => {
-            let threeBubbles = await new ThreeScenario();
+        fit("removes connected edges when removing a vertex", async () => {
             MindMapInfo._setIsViewOnly(false);
+            let threeBubbles = await new ThreeScenario();
             let bubble1 = threeBubbles.getBubble1InTree(),
                 r1 = threeBubbles.getRelation1InTree();
             expect(

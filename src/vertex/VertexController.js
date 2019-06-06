@@ -585,13 +585,10 @@ VertexController.prototype.convertToDistantBubbleWithUriCanDo = function (distan
     if (distantVertexUri === grandParent.getUri()) {
         return false;
     }
-    let canDo = true;
-    parent.visitClosestChildVertices(function (child) {
-        if (distantVertexUri === child.getUri()) {
-            canDo = false;
-        }
+    let alreadyChildOfParent = parent.getClosestChildVertices().some((child) => {
+        return child.getUri() === distantVertexUri;
     });
-    return canDo;
+    return !alreadyChildOfParent;
 };
 
 VertexController.prototype.convertToDistantBubbleWithUri = function (distantVertexUri) {

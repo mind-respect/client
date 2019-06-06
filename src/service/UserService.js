@@ -25,15 +25,11 @@ const UserService = {
     },
     authenticatedUser: function () {
         return UserService._getCurrentUser().then(function (response) {
-            response.data.preferred_locales = JSON.parse(
-                response.data.preferred_locales
-            );
             authenticatedUserInCache = response.data;
             return response;
         });
     },
     _getCurrentUser: function () {
-        console.log("inside real user")
         return Service.api().get(sessionResourceUrl);
     },
     resetPassword: function (email) {

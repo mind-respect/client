@@ -22,7 +22,9 @@
             Graph
         },
         data: function () {
-            return {}
+            return {
+                forceUpdate: ""
+            }
         },
         mounted: function () {
             GraphDisplayer.setImplementation(
@@ -36,12 +38,12 @@
             KeyboardActionsHandler.init();
             KeyboardActionsHandler.enable();
         },
-        computed:{
-            graphCenterUri: function(){
+        computed: {
+            graphCenterUri: function () {
                 if (this.$route.name !== 'Center') {
                     return;
                 }
-                return this.$route.params.centerUri;
+                return this.$route.params.centerUri + this.forceUpdate
             }
         }
     }

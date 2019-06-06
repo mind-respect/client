@@ -175,7 +175,7 @@ UiTreeInfoBuilder.prototype._vertexWithId = function (vertexId) {
         return serverFormat;
     }
     return this.vertices[vertexId] = Vertex.fromServerFormat(
-        this.vertices[vertexId]
+        serverFormat
     );
 };
 

@@ -208,6 +208,9 @@ FriendlyResource.FriendlyResource.prototype.hasImages = function () {
 };
 FriendlyResource.FriendlyResource.prototype.setUri = function (uri) {
     this.friendlyResourceServerFormat.uri = uri;
+    this.uriFacade = new IdUri.IdUri(
+        this.getUri()
+    );
 };
 FriendlyResource.FriendlyResource.prototype.getUri = function () {
     return decodeURIComponent(
@@ -305,7 +308,7 @@ FriendlyResource.FriendlyResource.prototype.beforeExpand = function () {
 
 FriendlyResource.FriendlyResource.prototype.defineScrollPosition = function () {
     let html = this.getHtml();
-    if(!html){
+    if (!html) {
         return;
     }
     this.scrollRect = html.getBoundingClientRect();
@@ -592,6 +595,10 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isCh
     // Vue.nextTick(function(){
     //     Store.dispatch("redraw")
     // })
+};
+
+FriendlyResource.FriendlyResource.prototype.getIsExpanded = function () {
+    return this.isExpanded;
 };
 
 FriendlyResource.FriendlyResource.prototype.collapse = function () {

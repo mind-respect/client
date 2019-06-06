@@ -1,5 +1,5 @@
 import Scenario from './Scenario'
-import Mock from "../mock/Mock";
+import GraphServiceMock from "../mock/GraphServiceMock";
 
 let ThreeScenario = function () {
     this.dataKey = "threeBubblesGraph.getGraph";
@@ -9,7 +9,7 @@ let ThreeScenario = function () {
 ThreeScenario.prototype = new Scenario.Scenario();
 
 ThreeScenario.prototype.expandBubble2 = function (bubble2) {
-    Mock.setGetGraphFromService(
+    GraphServiceMock.getForCentralBubbleUri(
         this.getSubGraphForB2()
     );
     return bubble2.getController().expand();
@@ -41,7 +41,7 @@ ThreeScenario.prototype.getCenter = function () {
 };
 
 ThreeScenario.prototype.getCenterBubbleUri = function () {
-    return this.vertexWithLabelInServerGraph("b1");
+    return this.vertexWithLabelInServerGraph("b1").getUri();
 };
 
 ThreeScenario.prototype.getR1Uri = function () {

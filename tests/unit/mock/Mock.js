@@ -1,12 +1,12 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-
+import axios from 'axios'
 import IdUri from '@/IdUri'
 
-import GraphService from '@/graph/GraphService'
 import GraphElementService from '@/graph-element/GraphElementService'
 import VertexServiceMock from './VertexServiceMock'
+import TagServiceMock from './TagServiceMock'
 import UserServiceMock from './UserServiceMock'
 import EdgeServiceMock from './EdgeServiceMock'
 
@@ -42,19 +42,29 @@ api.setCenterBubbleUriInUrl = function (centerVertexUri) {
 };
 
 api.applyDefault = function () {
+    jest.spyOn(axios, "create").mockImplementation(() => {
+        return {
+            post: jest.fn(() => {
+                return Promise.resolve()
+            }),
+            get: jest.fn(() => {
+                return Promise.resolve({
+                    data: {}
+                })
+            }),
+            interceptors: {
+                response: {
+                    use: jest.fn(() => {
+
+                    })
+                }
+            }
+        }
+    });
     api.spies["UserService"] = UserServiceMock.applyDefault();
     api.spies["VertexService"] = VertexServiceMock.applyDefault();
     api.spies["EdgeService"] = EdgeServiceMock.applyDefault();
-};
-
-api.setGetGraphFromService = function (graph) {
-    let spy = jest.spyOn(GraphService, "getForCentralBubbleUri");
-    spy.mockImplementation(() => {
-        return Promise.resolve({
-            data: graph
-        })
-    });
-    return spy;
+    api.spies["TagService"] = TagServiceMock.applyDefault();
 };
 api.setGetSchemaFromService = function (schema) {
     SchemaService.get = function (schemaUri, callback) {
@@ -74,34 +84,16 @@ api.mockRemoveEdge = function () {
         callback(edge);
     });
 };
-api.applyDefaultMocks = function () {
-    spies["GraphElementService"] = {
-        mocker: GraphElementServiceMock,
-        spies: GraphElementServiceMock.applyDefaultMocks()
-    };
-    spies["FriendlyResourceService"] = {
-        mocker: FriendlyResourceServiceMock,
-        spies: FriendlyResourceServiceMock.applyDefaultMocks()
-    };
-    spies["Wikidata"] = {
-        mocker: WikidataMock,
-        spies: WikidataMock.applyDefaultMocks()
-    };
-    spies["BubbleDeleteMenu"] = {
-        mocker: BubbleDeleteMenuMock,
-        spies: BubbleDeleteMenuMock.applyDefaultMocks()
-    };
-    SelectionHandler.removeAll();
-};
+
 api.getSpy = function (object, method) {
-    return spies[object].spies[method];
+    return api.spies[object][method];
 };
 api.resetSpy = function (object, method) {
     api.getSpy(object, method).calls.reset();
 };
 api.newSpy = function (object, method, args) {
     api.resetSpy(object, method);
-    return spies[object].mocker[method].apply(this, args);
+    return api.spies[object].mocker[method].apply(this, args);
 };
 
 api.applyDefault();

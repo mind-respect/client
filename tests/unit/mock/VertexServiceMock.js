@@ -9,6 +9,10 @@ api.applyDefault = function () {
     spies["remove"] = api.remove();
     spies["removeCollection"] = api.removeCollection();
     spies["addTuple"] = api.addTuple();
+    spies["makeCollectionPrivate"] = api.makeCollectionPrivate();
+    spies["makeCollectionPublic"] = api.makeCollectionPublic();
+    spies["makePublic"] = api.makePublic();
+    spies["makePrivate"] = api.makePrivate();
     return spies;
 };
 
@@ -40,4 +44,26 @@ api.removeCollection = function () {
         return Promise.resolve();
     });
 };
+
+api.makeCollectionPrivate = function () {
+    return jest.spyOn(VertexService, "makeCollectionPrivate").mockImplementation(() => {
+        return Promise.resolve();
+    });
+};
+api.makeCollectionPublic = function () {
+    return jest.spyOn(VertexService, "makeCollectionPublic").mockImplementation(() => {
+        return Promise.resolve();
+    });
+};
+api.makePublic = function () {
+    return jest.spyOn(VertexService, "makePublic").mockImplementation(() => {
+        return Promise.resolve();
+    });
+};
+api.makePrivate = function () {
+    return jest.spyOn(VertexService, "makePrivate").mockImplementation(function () {
+        return Promise.resolve();
+    });
+};
+
 export default api;

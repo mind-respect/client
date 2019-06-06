@@ -1,4 +1,4 @@
-import Mock from '../mock/Mock'
+import GraphServiceMock from '../mock/GraphServiceMock'
 import TreeBuilder from '../util/TreeBuilder'
 import TestData from '../util/js-test-data-client-side.json';
 import App from '@/App.vue'
@@ -12,8 +12,11 @@ import Edge from '@/edge/Edge'
 import Vuetify from 'vuetify'
 import I18n from '@/I18n'
 import Vue from 'vue'
-import SubGraph from '@/graph/SubGraph'
 import TestUtil from '../util/TestUtil'
+import MindMapInfo from '@/MindMapInfo'
+import SubGraph from '@/graph/SubGraph'
+import IdUri from '@/IdUri'
+import CenterView from '@/views/Center.vue'
 
 const clonedeep = require('lodash.clonedeep')
 const api = {}
@@ -35,19 +38,30 @@ api.treeBuilder = new TreeBuilder(api.wrapper)
 Vue.use(Vuetify)
 
 api.Scenario = function () {
-
+    MindMapInfo._setIsViewOnly(false)
 };
 
 api.Scenario.prototype.init = async function () {
-    Mock.setGetGraphFromService(
-        this.getGraph()
-    );
+    this.graph = this.getGraph();
     let center = this.getCenter();
+    // console.log(this.graph.vertices[center.getUri()]);
     //setting a new uri to force graph refresh;
-    center.setUri(TestUtil.generateVertexUri());
-    router.push(
-        center.uri().url()
+    // let centerVertexServerFormat = this.graph.vertices[center.getUri()];
+    // delete this.graph.vertices[center.getUri()];
+    // center.setUri(TestUtil.generateVertexUri());
+    // centerVertexServerFormat.vertex.graphElement.friendlyResource.uri = center.getUri();
+    // this.graph.vertices[center.getUri()] = centerVertexServerFormat;
+    GraphServiceMock.getForCentralBubbleUri(
+        this.graph
     );
+    let uriInUrl = IdUri.getGraphElementUriInUrl();
+    if (uriInUrl && uriInUrl === center.getUri()) {
+        api.wrapper.find(CenterView).vm.forceUpdate = Math.random();
+    } else {
+        router.push(
+            center.uri().url()
+        );
+    }
     await this.nextTickPromise(5);
     return this;
 };
@@ -68,11 +82,15 @@ api.Scenario.prototype.getGraph = function () {
 
 
 api.Scenario.prototype.getBubbleWithLabelInTree = function (label) {
-    return Object.values(SubGraph.graph.vertices).filter((vertex) => {
+    let foundVertex = Object.values(SubGraph.graph.vertices).filter((vertex) => {
         if (vertex.getLabel() === label) {
             return vertex
         }
-    })[0];
+    });
+    if (foundVertex.length !== 1) {
+        console.log("ooops too many vertices with same label");
+    }
+    return foundVertex[0];
 };
 
 api.Scenario.prototype.getRelationWithLabelInTree = function (label) {
@@ -83,12 +101,13 @@ api.Scenario.prototype.getRelationWithLabelInTree = function (label) {
     })[0];
 };
 
-api.Scenario.prototype.vertexWithLabelInServerGraph = function (label) {
-    return api.vertexWithLabelInServerGraph(label, this.getGraph())
+api.Scenario.prototype.vertexWithLabelInServerGraph = function (label, graph) {
+    graph = graph || this.graph;
+    return api.vertexWithLabelInServerGraph(label, graph)
 };
 
 api.Scenario.prototype.edgeWithLabelInServerGraph = function (label) {
-    return api.edgeWithLabelInServerGraph(label, this.getGraph())
+    return api.edgeWithLabelInServerGraph(label, this.graph)
 }
 
 api.Scenario.prototype.relationTagWithLabel = function (label) {
@@ -112,7 +131,6 @@ api.getTestData = function (key) {
     while (splitKey.length && data) {
         data = data[splitKey.shift()];
     }
-    let deep = true;
     if (data.constructor === Array) {
         return data.slice();
     }

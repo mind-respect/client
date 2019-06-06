@@ -10,6 +10,7 @@ const spies = {};
 api.applyDefault = function () {
     // spies["authenticatedUserInCache"] = api.authenticatedUserInCache();"
     spies["_getCurrentUser"] = api._getCurrentUser();
+    spies["authenticatedUserInCache"] = api.authenticatedUserInCache();
     return spies;
 };
 
@@ -19,7 +20,7 @@ api._getCurrentUser = function () {
                 data: {
                     email: "iojasvasdvasdovij@aosdijv.com",
                     preferred_locales: [],
-                    uri: "/service/users/asdvioajsdvasd",
+                    uri: "/service/users/églantier",
                     user_name: "églantier"
                 }
             })
@@ -30,7 +31,7 @@ api._getCurrentUser = function () {
 api.authenticatedUserInCache = function (userName) {
     return jest.spyOn(UserService, "authenticatedUserInCache").mockImplementation(() => {
         return {
-            user_name: userName
+            user_name: "églantier"
         };
     });
 };

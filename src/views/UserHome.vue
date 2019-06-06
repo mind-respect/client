@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div class="" id="user-home">
+    <div class="" id="user-home" v-if="!isTesting">
         <v-tabs
                 v-model="tabMenu"
                 color="secondary"
@@ -404,6 +404,9 @@
             }
         },
         mounted: function () {
+            if (this.isTesting) {
+                return;
+            }
             this.reload();
         },
         computed: {
@@ -412,6 +415,9 @@
                     return false;
                 }
                 return this.$route.params.username === this.$store.state.user.username
+            },
+            isTesting: function () {
+                return process.env.NODE_ENV == "test";
             }
         },
         watch: {

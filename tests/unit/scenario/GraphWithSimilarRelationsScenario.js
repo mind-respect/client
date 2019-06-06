@@ -25,7 +25,7 @@ GraphWithSimilarRelationsScenario.prototype.getPossession = function () {
         "Possession"
     );
 };
-GraphWithSimilarRelationsScenario.prototype.getPossessionAsGroupRelation = function () {
+GraphWithSimilarRelationsScenario.prototype.getPossessionGroupRelation = function () {
     return TestUtil.getChildWithLabelAndType(
         this.getCenterVertexInTree(),
         "Possession",
