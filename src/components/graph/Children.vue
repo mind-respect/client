@@ -50,6 +50,8 @@
                 return this.addCommonContext(vertex);
             },
             addEdgeContext: function (edge, childVertex, parentVertex) {
+                edge.updateSourceOrDestination(parentVertex);
+                edge.updateSourceOrDestination(childVertex);
                 edge.parentVertex = parentVertex;
                 return this.addCommonContext(edge);
             },
