@@ -26,8 +26,8 @@ api.withFacadeAndCenterUri = function (serverFacade, centerUri) {
 api.SubGraph = function (graph, centerUri, buildFacade) {
     if (buildFacade) {
         this.serverFormat = graph;
-        this._buildEdges();
         this._buildVertices();
+        this._buildEdges();
     } else {
         this.edges = graph.edges;
         this.vertices = graph.vertices;
@@ -69,6 +69,12 @@ api.SubGraph.prototype._buildEdges = function () {
     this.edges = {};
     Object.values(this.serverFormat.edges).forEach((edge) => {
         let facade = Edge.fromServerFormat(edge);
+        facade.setSourceVertex(
+            this.getVertexWithUri(facade.getSourceVertex().getUri())
+        );
+        facade.setDestinationVertex(
+            this.getVertexWithUri(facade.getDestinationVertex().getUri())
+        );
         this.edges[facade.getUri()] = facade;
     })
 };

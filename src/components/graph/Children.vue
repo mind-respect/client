@@ -10,7 +10,7 @@
                         'mt-0 mb-0' : bubble.rightBubbles.length > 2
                         }">
                 <Bubble v-if="child.isGroupRelation" :bubble="addGroupRelationContext(child, bubble)"></Bubble>
-                <Bubble v-else :bubble="addEdgeContext(child, child.destination, bubble)"></Bubble>
+                <Bubble v-else :bubble="child"></Bubble>
             </div>
         </div>
         <div class="vertices-children-container" v-if="bubble.isEdge()" transition="fade-transition">
@@ -50,8 +50,6 @@
                 return this.addCommonContext(vertex);
             },
             addEdgeContext: function (edge, childVertex, parentVertex) {
-                edge.updateSourceOrDestination(parentVertex);
-                edge.updateSourceOrDestination(childVertex);
                 edge.parentVertex = parentVertex;
                 return this.addCommonContext(edge);
             },
