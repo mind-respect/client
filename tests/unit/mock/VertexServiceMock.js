@@ -6,8 +6,6 @@ import Triple from '@/triple/Triple'
 const api = {};
 const spies = {};
 api.applyDefault = function () {
-    spies["remove"] = api.remove();
-    spies["removeCollection"] = api.removeCollection();
     spies["addTuple"] = api.addTuple();
     spies["makeCollectionPrivate"] = api.makeCollectionPrivate();
     spies["makeCollectionPublic"] = api.makeCollectionPublic();
@@ -33,17 +31,6 @@ api.addTuple = function () {
     })
 };
 
-api.remove = function () {
-    return jest.spyOn(VertexService, "remove").mockImplementation((vertex) => {
-        return Promise.resolve(vertex);
-    });
-};
-
-api.removeCollection = function () {
-    return jest.spyOn(VertexService, "removeCollection").mockImplementation(() => {
-        return Promise.resolve();
-    });
-};
 
 api.makeCollectionPrivate = function () {
     return jest.spyOn(VertexService, "makeCollectionPrivate").mockImplementation(() => {

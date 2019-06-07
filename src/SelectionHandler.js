@@ -104,7 +104,7 @@ api.isEmpty = function () {
     return 0 === api.getNbSelected();
 };
 
-api.getControllerFromCurrentSelection = function () {
+api.getController = function () {
     let nbSelectedGraphElements = api.getNbSelected();
     let currentController;
     if (0 === nbSelectedGraphElements) {

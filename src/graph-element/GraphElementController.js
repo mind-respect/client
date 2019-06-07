@@ -12,6 +12,7 @@ import router from '@/router'
 import Scroll from '@/Scroll'
 import Vue from 'vue'
 import TagService from '@/identifier/TagService'
+
 const api = {};
 let bubbleCutClipboard,
     identificationBaseEventBusKey = "/event/ui/graph/identification/";
@@ -439,7 +440,7 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
             );
         }
     }
-    return Promise.all(promises).then(() =>{
+    return Promise.all(promises).then(() => {
 
         GraphElementService.changeChildrenIndex(
             otherEdge.getParentVertex()
@@ -543,6 +544,41 @@ GraphElementController.prototype.addIdentification = function (identifier) {
             return identifications;
         })
     });
+};
+
+GraphElementController.prototype.remove = function (skipConfirmation) {
+    if (skipConfirmation) {
+        return this.removeDo();
+    }
+    let selectedIsPristine = this.getUiArray().every((graphElement) => {
+        return graphElement.isPristine();
+    });
+    if (selectedIsPristine) {
+        return this.removeDo();
+    }
+    Store.dispatch("setIsRemoveFlow", true);
+};
+
+GraphElementController.prototype.removeDo = async function () {
+    await this.isSingle() ?
+        GraphElementService.remove(
+            this.getModel()
+        ) :
+        GraphElementService.removeCollection(
+            this.getModelArray()
+        );
+    let nextSibling;
+    if (this.isSingle()) {
+        nextSibling = this.getModel().getNextSibling();
+    }
+    this.getModelArray().forEach(function (bubble) {
+        bubble.remove();
+    });
+    if (nextSibling && !nextSibling.isSameUri(this.getModel())) {
+        SelectionHandler.setToSingle(nextSibling);
+    } else {
+        SelectionHandler.removeAll();
+    }
 };
 
 GraphElementController.prototype.removeIdentifier = function (identifier) {

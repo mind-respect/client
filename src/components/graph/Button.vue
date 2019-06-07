@@ -106,7 +106,7 @@
                 if (button.controller) {
                     return button.controller;
                 }
-                return SelectionHandler.getControllerFromCurrentSelection();
+                return SelectionHandler.getController();
             },
             canActionBePossiblyMade: function (action, controller) {
                 return controller[

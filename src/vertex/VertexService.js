@@ -28,18 +28,6 @@ api.addTuple = function (vertex) {
     });
 };
 
-api.remove = function (vertex) {
-    return Service.geApi().delete(
-        vertex.getUri()
-    );
-};
-api.removeCollection = function (vertices) {
-    return Service.api().request({
-        url: getVerticesUrl() + '/collection',
-        method: 'delete',
-        data: verticesUriFromVertices(vertices)
-    });
-};
 api.updateLabel = function (vertex, label) {
     return FriendlyResourceService.updateLabel(
         vertex,

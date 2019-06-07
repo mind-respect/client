@@ -29,4 +29,24 @@ api.saveChildrenIndex = function (graphElement, childrenIndex) {
         childrenIndex
     );
 };
+
+api.remove = function (graphElement) {
+    return Service.geApi().delete(
+        graphElement.getUri()
+    );
+};
+api.removeCollection = function (graphElements) {
+    return Service.geApi().request({
+        url: graphElements[0].uri().withoutId() + '/collection',
+        method: 'delete',
+        data: api._getGraphElementsUrl(graphElements)
+    });
+};
+
+api._getGraphElementsUrl = function (graphElements) {
+    return graphElements.map(function (graphElement) {
+        return graphElement.getUri();
+    });
+};
+
 export default api;

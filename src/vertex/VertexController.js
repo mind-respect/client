@@ -201,10 +201,6 @@ VertexController.prototype.removeCanDo = function () {
     return this.isOwned();
 };
 
-VertexController.prototype.remove = function (skipConfirmation) {
-    Store.dispatch("setIsRemoveFlow", true);
-};
-
 VertexController.prototype.imagesCanDo = function () {
     return false;
     // return this.isSingleAndOwned();

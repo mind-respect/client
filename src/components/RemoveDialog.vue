@@ -15,7 +15,8 @@
                 </v-icon>
             </v-card-title>
             <v-card-text class="pt-0">
-                <v-tooltip right class="mr-2" min-width="300" nudge-bottom="125" right nudge-right="300" attach="#removeDialog">
+                <v-tooltip right class="mr-2" min-width="300" nudge-bottom="125" right nudge-right="300"
+                           attach="#removeDialog">
                     <v-icon slot="activator" class="ml-2">
                         info
                     </v-icon>
@@ -136,21 +137,13 @@
         watch: {
             isRemoveFlow: function () {
                 if (this.$store.state.isRemoveFlow) {
-                    let selectedIsPristine = SelectionHandler.getSelectedElements().every(function (bubble) {
-                        return bubble.isPristine();
-                    });
-                    if (selectedIsPristine) {
-                        this.remove();
-                        this.$store.dispatch("setIsRemoveFlow", false)
-                    } else {
-                        this.removeDialog = true;
+                    this.removeDialog = true;
+                    this.$nextTick(() => {
+                        const element = this.$refs.enterRemoveInput;
                         this.$nextTick(() => {
-                            const element = this.$refs.enterRemoveInput;
-                            this.$nextTick(() => {
-                                element.focus()
-                            });
-                        })
-                    }
+                            element.focus()
+                        });
+                    })
                 } else {
                     this.removeDialog = false;
                 }
@@ -162,30 +155,10 @@
             }
         },
         methods: {
-            remove: function () {
-                let removePromise = this.isMultipleFlow ?
-                    VertexService.removeCollection(
-                        SelectionHandler.getSelectedElements()
-                    ) :
-                    VertexService.remove(
-                        SelectionHandler.getSingle()
-                    );
-                return removePromise.then(function () {
-                    let nextSibling;
-                    if (!this.isMultipleFlow) {
-                        nextSibling = SelectionHandler.getSingle().getNextSibling();
-                    }
-                    this.selected.forEach(function (bubble) {
-                        bubble.remove();
-                    });
-                    if (nextSibling && !nextSibling.isSameUri(SelectionHandler.getSingle())) {
-                        SelectionHandler.setToSingle(nextSibling);
-                    } else {
-                        SelectionHandler.removeAll();
-                    }
-                    this.$store.dispatch("redraw");
-                    this.removeDialog = false;
-                }.bind(this));
+            remove: async function () {
+                await SelectionHandler.getController().removeDo();
+                this.$store.dispatch("redraw");
+                this.removeDialog = false;
             }
         }
     }

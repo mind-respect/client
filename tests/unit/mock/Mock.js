@@ -6,6 +6,7 @@ import IdUri from '@/IdUri'
 
 import GraphElementService from '@/graph-element/GraphElementService'
 import VertexServiceMock from './VertexServiceMock'
+import GraphElementServiceMock from './GraphElementServiceMock'
 import TagServiceMock from './TagServiceMock'
 import UserServiceMock from './UserServiceMock'
 import EdgeServiceMock from './EdgeServiceMock'
@@ -65,6 +66,7 @@ api.applyDefault = function () {
     api.spies["VertexService"] = VertexServiceMock.applyDefault();
     api.spies["EdgeService"] = EdgeServiceMock.applyDefault();
     api.spies["TagService"] = TagServiceMock.applyDefault();
+    api.spies["GraphElementService"] = GraphElementServiceMock.applyDefault();
 };
 api.setGetSchemaFromService = function (schema) {
     SchemaService.get = function (schemaUri, callback) {

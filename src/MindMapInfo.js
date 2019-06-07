@@ -75,6 +75,7 @@ api.isAnonymous = function () {
 };
 api._setIsViewOnly = function (isViewOnly) {
     _isViewOnly = isViewOnly;
+    Store.dispatch("setIsViewOnly", _isViewOnly);
 };
 api.isSchemaMode = function () {
     return IdUri.isSchemaUri(

@@ -151,9 +151,6 @@ EdgeController.prototype.removeCanDo = function () {
     return this.isSingleAndOwned();
 };
 
-EdgeController.prototype.remove = function (skipConfirmation) {
-    Store.dispatch("setIsRemoveFlow", true);
-};
 EdgeController.prototype.reverseToRightCanDo = function () {
     if (!this.isSingleAndOwned()) {
         return false;

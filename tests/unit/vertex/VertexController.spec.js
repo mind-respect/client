@@ -43,14 +43,13 @@ describe('VertexController', () => {
             ).getNextBubble();
             await b2.getController().addChild();
             let emptyVertex2 = emptyVertex.getDownBubble();
-            let emptyVerticesController = new VertexController.VertexController([emptyVertex, emptyVertex2]);
             expect(
                 b2.getNumberOfChild()
             ).toBe(4);
             SelectionHandler.reset();
             SelectionHandler.add(emptyVertex);
             SelectionHandler.add(emptyVertex2);
-            emptyVerticesController.remove();
+            await SelectionHandler.getController().remove();
             await scenario.nextTickPromise();
             expect(
                 b2.getNumberOfChild()

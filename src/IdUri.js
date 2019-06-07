@@ -193,4 +193,11 @@ IdUri.IdUri.prototype.absoluteUrl = function () {
     return window.location.origin + this.url();
 };
 
+IdUri.IdUri.prototype.withoutId = function () {
+    return this.uri.substr(
+        0,
+        this.uri.lastIndexOf("/")
+    );
+};
+
 export default IdUri;
