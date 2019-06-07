@@ -314,7 +314,7 @@
                 let rect = element.getBoundingClientRect();
                 position.rect = rect;
                 if (isParent) {
-                    position.x = this.isLeft ? rect.left : rect.right;
+                    position.x = this.isLeft ? rect.left: rect.right;
                 } else {
                     position.x = this.isLeft ? rect.right : rect.left;
                 }

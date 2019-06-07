@@ -135,7 +135,7 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
 
 
 GraphElement.GraphElement.prototype.removeIdentifier = function (identifierToRemove) {
-    var i = 0;
+    let i = 0;
     this.identifiers.forEach(function (identifier) {
         if (identifier.getUri() === identifierToRemove.getUri()) {
             this.identifiers.splice(i, 1);
@@ -166,9 +166,7 @@ GraphElement.GraphElement.prototype.getIdentifierHavingExternalUri = function (e
 };
 
 GraphElement.GraphElement.prototype.getIdentifiers = function () {
-    return this.identifiers.filter((identifier) => {
-        return identifier.getExternalResourceUri() !== this.getUri()
-    });
+    return this.identifiers;
 };
 
 GraphElement.GraphElement.prototype.getIdentifiersIncludingSelf = function () {
@@ -212,11 +210,15 @@ GraphElement.GraphElement.prototype._buildIdentifications = function () {
     }
     Object.values(
         this.graphElementServerFormat.identifications
-    ).forEach((identifier) => {
+    ).map((tag) => {
+        return Identification.fromServerFormat(
+            tag
+        );
+    }).filter((tag) => {
+        return tag.getExternalResourceUri() === tag.getUri()
+    }).forEach((tag) => {
         this.identifiers.push(
-            Identification.fromServerFormat(
-                identifier
-            )
+            tag
         )
     });
 };

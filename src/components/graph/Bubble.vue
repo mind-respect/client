@@ -135,16 +135,29 @@
                                     <div
                                             class="in-label-buttons text-xs-center mt-0"
                                             style="height:100%;"
-
+                                            :class="{
+                                                     'in-label-icons-right': !bubble.isToTheLeft(),
+                                                     'in-label-icons-left': bubble.isToTheLeft()
+                                                    }"
                                     >
-                                        <span v-for="button in inLabelButtons">
-                                            <v-icon small color="secondary" v-if="button.condition(bubble)" :class="{
-                                                     'mr-1': !bubble.isToTheLeft(),
-                                                     'ml-1': bubble.isToTheLeft()
-                                                    }">
-                                                {{button.icon}}
-                                            </v-icon>
-                                        </span>
+                                        <v-icon small color="secondary" v-if="bubble.isCenter">
+                                            filter_center_focus
+                                        </v-icon>
+                                        <v-icon small color="secondary" v-if="bubble.getComment() !== ''">
+                                            note
+                                        </v-icon>
+                                        <v-icon small color="secondary" v-if="bubble.hasIdentifications()">
+                                            label
+                                        </v-icon>
+                                        <v-icon small color="secondary" v-if="isPrivate">
+                                            lock
+                                        </v-icon>
+                                        <v-icon small color="secondary" v-if="isPublic">
+                                            public
+                                        </v-icon>
+                                        <v-icon small color="secondary" v-if="bubble.isFriendsOnly()">
+                                            people
+                                        </v-icon>
                                     </div>
                                     <v-menu
                                             lazy
@@ -347,45 +360,7 @@
                 isEditFlow: false,
                 showMenu: false,
                 linkMenu: false,
-                linkMenuHref: null,
-                inLabelButtons: [
-                    {
-                        icon: "filter_center_focus",
-                        condition: function (bubble) {
-                            return bubble.isCenter;
-                        }
-                    },
-                    {
-                        icon: "note",
-                        condition: function (bubble) {
-                            return bubble.getComment() !== '';
-                        }
-                    },
-                    {
-                        icon: "label",
-                        condition: function (bubble) {
-                            return bubble.getIdentifiers().length > 0;
-                        }
-                    },
-                    {
-                        icon: "lock",
-                        condition: function (bubble) {
-                            return bubble.isPrivate()
-                        }
-                    },
-                    {
-                        icon: "public",
-                        condition: function (bubble) {
-                            return bubble.isPublic()
-                        }
-                    },
-                    {
-                        icon: "people",
-                        condition: function (bubble) {
-                            return bubble.isFriendsOnly()
-                        }
-                    }
-                ]
+                linkMenuHref: null
             }
         },
         mounted: function () {
@@ -417,6 +392,12 @@
             this.loaded = true;
         },
         computed: {
+            isPublic: function () {
+                return this.bubble.isPublic();
+            },
+            isPrivate: function () {
+                return this.bubble.isPrivate();
+            },
             isLeaf: function () {
                 return this.bubble.isLeaf();
             },
@@ -884,5 +865,11 @@
     .bubble-label {
         display: inline-block;
         word-break: break-word;
+    }
+    .in-label-icons-left i{
+        margin-left:5px;
+    }
+    .in-label-icons-right i{
+        margin-right:5px;
     }
 </style>
