@@ -18,6 +18,8 @@ import SubGraph from '@/graph/SubGraph'
 import IdUri from '@/IdUri'
 import CenterView from '@/views/Center.vue'
 
+import Bubble from '@/components/graph/Bubble.vue'
+
 const clonedeep = require('lodash.clonedeep')
 const api = {}
 
@@ -124,6 +126,20 @@ api.Scenario.prototype.relationTagWithLabel = function (label) {
     return foundTag;
 };
 
+api.Scenario.prototype.getBubbleComponent = function (graphElement) {
+    return this._getBubbleComponent(api.wrapper, graphElement);
+};
+
+api.Scenario.prototype._getBubbleComponent = function (ancestor, graphElement) {
+    let bubble = ancestor.find(Bubble);
+    if (bubble.isEmpty()) {
+        return;
+    }
+    if (bubble.vm.bubble.getId() === graphElement.getId()) {
+        return bubble;
+    }
+    return this._getBubbleComponent(ancestor.find(Bubble), graphElement);
+};
 
 api.getTestData = function (key) {
     let splitKey = key.split(/\./),

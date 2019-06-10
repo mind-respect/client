@@ -48,10 +48,10 @@ VertexController.prototype.addChild = function (isToTheLeft) {
         this.getModel().addChild(triple.edge, isToTheLeft);
         Vue.nextTick(() => {
             SelectionHandler.setToSingle(triple.destination);
+            GraphElementService.changeChildrenIndex(
+                this.getModel()
+            );
         });
-        GraphElementService.changeChildrenIndex(
-            triple.source
-        );
         Store.dispatch("redraw");
         if (ShareLevel.PRIVATE === this.getModel().getModel().getShareLevel()) {
             triple.destination.setShareLevel(ShareLevel.PRIVATE);

@@ -97,7 +97,7 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
     });
 
     function moveEdge(movedEdge) {
-        var identifiers = this.getModel().hasIdentifications() ?
+        let identifiers = this.getModel().hasIdentifications() ?
             this.getModel().getIdentifiers() :
             this.getModel().getIdentifiersIncludingSelf();
         promises.push(

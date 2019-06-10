@@ -31,9 +31,13 @@ api.generateIdentificationUri = function () {
     return "\/service\/users\/églantier\/graph\/identification\/" + generateUuid();
 };
 api.dummyIdentifier = function () {
-    return Identification.withUri(
+    let tag = Identification.withUri(
         api.generateIdentificationUri()
     );
+    tag.setExternalResourceUri(
+        api.generateVertexUri()
+    );
+    return tag;
 };
 
 api.getChildWithLabel = function (parent, label) {

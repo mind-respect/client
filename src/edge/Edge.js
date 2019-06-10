@@ -229,20 +229,13 @@ api.Edge.prototype.isLeaf = function () {
 };
 
 api.Edge.prototype.isShrinked = function () {
-    if (this.isSelected) {
-        return false;
-    }
     if (this.isLabelEmpty()) {
         return true;
     }
     let parentBubble = this.getParentBubble();
-    if (!parentBubble.isGroupRelation()) {
-        return false;
-    }
-    if (parentBubble.getLabel().trim() !== this.getLabel().trim() && "" !== this.getLabel().trim()) {
-        return false;
-    }
-    return true;
+    return parentBubble.isGroupRelation() && [parentBubble.getLabel(), ""].includes(
+        this.getLabel().trim()
+    );
 };
 
 api.Edge.prototype.remove = function () {

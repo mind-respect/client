@@ -113,6 +113,10 @@ Identification.Identification.prototype.getExternalResourceUri = function () {
     );
 };
 
+Identification.Identification.prototype.setExternalResourceUri = function (externalResourceUri) {
+    this.identificationServerFormat.externalResourceUri = externalResourceUri;
+};
+
 Identification.Identification.prototype.makeExternalUriATwiceReference = function () {
     this.identificationServerFormat.externalResourceUri = this.identificationServerFormat.externalResourceUri + "/twice";
 };

@@ -53,6 +53,9 @@ api.applyDefault = function () {
                     data: {}
                 })
             }),
+            put: jest.fn(() => {
+                return Promise.resolve();
+            }),
             interceptors: {
                 response: {
                     use: jest.fn(() => {

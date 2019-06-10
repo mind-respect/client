@@ -424,26 +424,10 @@
                 return this.bubble.isGroupRelation() || this.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
             },
             isShrinked: function () {
-                if (this.isSelected) {
+                if (this.isSelected || this.isLabelDragOver) {
                     return false;
                 }
-                if (this.bubble.isGroupRelation()) {
-                    return false;
-                }
-                if (this.isLabelDragOver) {
-                    return false;
-                }
-                if (this.bubble.isLabelEmpty()) {
-                    return true;
-                }
-                let parentBubble = this.bubble.getParentBubble();
-                if (!parentBubble.isGroupRelation()) {
-                    return false;
-                }
-                if (parentBubble.getLabel().trim() !== this.bubble.getLabel().trim() && "" !== this.bubble.getLabel().trim()) {
-                    return false;
-                }
-                return true;
+                return this.bubble.isShrinked();
             }
         },
         methods: {
@@ -866,10 +850,12 @@
         display: inline-block;
         word-break: break-word;
     }
-    .in-label-icons-left i{
-        margin-left:5px;
+
+    .in-label-icons-left i {
+        margin-left: 5px;
     }
-    .in-label-icons-right i{
-        margin-right:5px;
+
+    .in-label-icons-right i {
+        margin-right: 5px;
     }
 </style>
