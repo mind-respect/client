@@ -8,6 +8,7 @@ import VertexServerFormatBuilder from '@/vertex/VertexServerFormatBuilder'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Store from '@/store'
 import Vue from 'vue'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -84,10 +85,13 @@ api.Edge.prototype.getGraphElementType = function () {
 };
 
 api.Edge.prototype.updateSourceOrDestination = function (vertex) {
-    if (this.getSourceVertex().isSameUri(vertex)) {
-        this.setSourceVertex(vertex);
-    } else if (this.getDestinationVertex().isSameUri(vertex)) {
-        this.setDestinationVertex(vertex);
+    if (!CurrentSubGraph.isIdOnlyGraphElement(vertex)) {
+        vertex = CurrentSubGraph.graphElementAsId(vertex);
+    }
+    if (this.sourceVertex.uri === vertex.uri) {
+        this.setSourceVertex(CurrentSubGraph.graphElementAsId(vertex));
+    } else if (this.destinationVertex.uri === vertex.uri) {
+        this.setDestinationVertex(CurrentSubGraph.graphElementAsId(vertex));
     } else {
         console.warn("trying to update non related source or destination vertex to " + this.getLabel())
     }
@@ -112,10 +116,10 @@ api.Edge.prototype.setDestinationVertex = function (destinationVertex) {
 };
 
 api.Edge.prototype.getSourceVertex = function () {
-    return this.sourceVertex;
+    return CurrentSubGraph.idToInstance(this.sourceVertex)
 };
 api.Edge.prototype.getDestinationVertex = function () {
-    return this.destinationVertex;
+    return CurrentSubGraph.idToInstance(this.destinationVertex);
 };
 
 api.Edge.prototype.select = function () {
@@ -200,7 +204,7 @@ api.Edge.prototype.inverse = function () {
 };
 
 api.Edge.prototype.isInverse = function () {
-    return this.getSourceVertex().getUri() !== this.parentVertex.getUri();
+    return this.getSourceVertex().getUri() !== this.getParentVertex().getUri();
 };
 
 api.Edge.prototype.getLeftBubble = function () {
@@ -216,7 +220,7 @@ api.Edge.prototype.getLeftBubble = function () {
 
 api.Edge.prototype.getImmediateChild = function () {
     return [
-        this.getOtherVertex(this.parentVertex)
+        this.getOtherVertex(this.getParentVertex())
     ];
 };
 

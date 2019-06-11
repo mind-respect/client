@@ -27,6 +27,8 @@
 
 <script>
 
+    import CurrentSubGraph from '@/graph/CurrentSubGraph'
+
     const arcRadiusStandard = 20;
     const arcRadiusLeft = arcRadiusStandard * -1;
     const standardInnerMargin = 26;
@@ -37,7 +39,9 @@
     const arrowHeadLength = 6;
     export default {
         name: "EdgeDrawing",
-        props: ['bubble', 'isLeft'],
+        props: [
+            'bubbleIds',
+            'isLeft'],
         data: function () {
             return {
                 strokeColor: "#1a237e",
@@ -55,10 +59,12 @@
                 isLowestInBetween: null,
                 highestArcRadius: null,
                 lowestArcRadius: null,
-                zoomAdjust: 0
+                zoomAdjust: 0,
+                bubble:  null
             }
         },
         mounted: function () {
+            this.bubble = CurrentSubGraph.idToInstance(this.bubbleIds);
             this.redraw();
         },
         methods: {
@@ -190,7 +196,7 @@
                         lines += "M " + position.x + " " + position.y + " ";
                         lines += "H " + (childPosition.x);
                         let childXPosition = childPosition.x;
-                        if(!this.bubble.isInverse()){
+                        if (!this.bubble.isInverse()) {
                             lines += this.arrowHead(
                                 position.x,
                                 childXPosition,
@@ -261,10 +267,10 @@
                     y: childPosition.y
                 };
                 let xAdjust = arrowHeadLength;
-                if(this.isLeft){
+                if (this.isLeft) {
                     position.x -= arcRadiusStandard + 20;
                     xAdjust *= -1
-                }else{
+                } else {
                     position.x += arcRadiusStandard + 20;
                 }
                 return "M " + position.x + "," + position.y + " " +
@@ -314,7 +320,7 @@
                 let rect = element.getBoundingClientRect();
                 position.rect = rect;
                 if (isParent) {
-                    position.x = this.isLeft ? rect.left: rect.right;
+                    position.x = this.isLeft ? rect.left : rect.right;
                 } else {
                     position.x = this.isLeft ? rect.right : rect.left;
                 }
@@ -375,7 +381,6 @@
                 position.y = Math.round(this.bubbleRect.bottom + yAdjust + window.pageYOffset);
                 return position;
             }
-            ,
         }
     }
 </script>

@@ -5,6 +5,7 @@
 import GraphElement from '@/graph-element/GraphElement'
 import Icon from '@/Icon'
 import DateUtil from '@/DateUtil'
+import IdUri from '@/IdUri'
 
 export default {
     fromServerFormat: function (centersServerFormat) {
@@ -65,4 +66,9 @@ CenterGraphElement.prototype.lastVisit = function () {
 CenterGraphElement.prototype.getIcon = function () {
     return Icon.getForUri(this.getUri());
 };
+
+CenterGraphElement.prototype.getGraphElementType = function(){
+    return IdUri.getGraphElementTypeFromUri(this.getUri())
+};
+
 

@@ -69,7 +69,7 @@
 <script>
     import I18n from '@/I18n'
     import VertexService from '@/vertex/VertexService'
-    import SubGraph from '@/graph/SubGraph'
+    import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import GraphElement from '@/graph-element/GraphElement'
 
     export default {
@@ -100,7 +100,7 @@
         },
         computed: {
             center: function () {
-                return SubGraph.graph.center;
+                return CurrentSubGraph.get().center;
             },
             isFontFlow: function () {
                 return this.$store.state.isFontFlow;

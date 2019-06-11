@@ -8,7 +8,7 @@ import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService
 import MindMapInfo from '@/MindMapInfo'
 import Vertex from '@/vertex/Vertex'
 import Store from '@/store'
-import SubGraph from '@/graph/SubGraph'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import Vue from 'vue'
 import router from '@/router'
 
@@ -73,11 +73,11 @@ api.createVertex = function (event, label) {
     });
 };
 api.changeBackgroundColorCanDo = function () {
-    if (!SubGraph.graph) {
+    if (!CurrentSubGraph.get() || !CurrentSubGraph.get().center) {
         return false;
     }
     return !MindMapInfo.isViewOnly() &&
-        SubGraph.graph.center.isVertex();
+        CurrentSubGraph.get().center.isVertex();
 };
 
 api.changeBackgroundColor = function () {

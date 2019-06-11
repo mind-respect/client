@@ -11,38 +11,41 @@
             <div style="width:8000px;"></div>
             <v-layout row class='root-vertex-super-container vh-center ma-5 pa-5' :style="zoomScale">
                 <v-flex grow class="vertices-children-container left-oriented" style="width:7000px;" :class="{
-                    'blur-overlay': graph.center.isEditFlow
+                    'blur-overlay': isEditFlow
                 }">
-                    <v-layout row v-for="leftBubble in graph.center.leftBubbles" :key="leftBubble.uiId">
+                    <v-layout row v-for="leftBubble in leftBubbles" :key="leftBubble.uiId">
                         <v-flex grow :class="{
-                        'mt-3' : graph.center.leftBubbles.length === 2 && graph.center.leftBubbles[0].isEdge(),
-                        'mb-3' : graph.center.leftBubbles.length === 2 && graph.center.leftBubbles[1].isEdge()
-                        }">
-                            <Bubble :bubble="addBubbleContext(leftBubble, graph.center, 'left')"></Bubble>
+                                            'mt-3' : leftBubbles.length === 2 && leftBubbles[0].type.isEdge(),
+                                            'mb-3' : leftBubbles.length === 2 && leftBubbles[1].type.isEdge()
+                                            }">
+                            <Bubble :bubbleIds="leftBubble" :parentBubble="centerIds" :parentVertex="centerIds"
+                                    direction="left"></Bubble>
                         </v-flex>
                     </v-layout>
                 </v-flex>
                 <v-flex grow class="vh-center">
-                    <Bubble :bubble="graph.center"></Bubble>
+                    <Bubble :bubbleIds="centerIds" direction="center" :parentBubble="centerIds"
+                            :parentVertex="centerIds"></Bubble>
                 </v-flex>
                 <v-flex grow class="vertices-children-container right-oriented" style="width:7000px;" :class="{
-                    'blur-overlay': graph.center.isEditFlow
+                    'blur-overlay': isEditFlow
                 }">
-                    <v-layout v-for="rightBubble in graph.center.rightBubbles" :key="rightBubble.uiId">
+                    <v-layout v-for="rightBubble in rightBubbles" :key="rightBubble.uiId">
                         <v-flex grow :class="{
-                            'mt-3' : graph.center.rightBubbles.length === 2 && graph.center.rightBubbles[0].isEdge(),
-                            'mb-3' : graph.center.rightBubbles.length === 2 && graph.center.rightBubbles[1].isEdge()
-                        }">
-                            <Bubble :bubble="addBubbleContext(rightBubble, graph.center, 'right')"></Bubble>
+                                                'mt-3' : rightBubbles.length === 2 && rightBubbles[0].type.isEdge(),
+                                                'mb-3' : rightBubbles.length === 2 && rightBubbles[1].type.isEdge()
+                                            }">
+                            <Bubble :bubbleIds="rightBubble" :parentBubble="centerIds" :parentVertex="centerIds"
+                                    direction="right"></Bubble>
                         </v-flex>
                     </v-layout>
                 </v-flex>
             </v-layout>
             <div style="width:8000px;"></div>
             <div class="svg-container" style="z-index:-1">
-                <transition name="fade">
-                    <GraphDrawing :center="graph.center" :key="redrawKey" v-if="redrawKey"></GraphDrawing>
-                </transition>
+                <!--                <transition name="fade">-->
+                <GraphDrawing :centerIds="centerIds" :key="redrawKey" v-if="redrawKey"></GraphDrawing>
+                <!--                </transition>-->
             </div>
         </div>
         <RemoveDialog></RemoveDialog>
@@ -70,6 +73,9 @@
     import SubGraph from '@/graph/SubGraph'
     import Store from '@/store'
     import Color from '@/Color'
+    import CurrentSubGraph from '@/graph/CurrentSubGraph'
+
+    let graph = null;
 
     export default {
         name: "Graph",
@@ -84,14 +90,15 @@
         },
         data: function () {
             return {
-                graph: null,
                 loaded: false,
-                centerServerFormat: null,
+                center: null,
+                centerIds: null,
                 redrawKey: null,
                 backgroundColorStyle: ""
             }
         },
         mounted: function () {
+            CurrentSubGraph.set(SubGraph.empty());
             SelectionHandler.removeAll();
             let centerUri = MindMapInfo.getCenterBubbleUri();
             let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : Vertex.withUri(centerUri);
@@ -101,17 +108,19 @@
                 SubGraphController.withVertex(
                     center
                 ).load();
-            promise.then((graph) => {
-                this.graph = graph;
-                let center = this.graph.center;
-                this.centerServerFormat = center.getServerFormat();
+            promise.then((_graph) => {
+                graph = _graph;
+                let center = graph.center;
                 center.makeCenter();
-                SubGraph.graph = this.graph;
+                CurrentSubGraph.set(graph);
+                this.center = center;
+                this.centerIds = CurrentSubGraph.graphElementAsId(this.center);
                 this.loaded = true;
                 this.$nextTick(() => {
-                    SelectionHandler.setToSingle(this.graph.center);
+                    SelectionHandler.setToSingle(graph.center);
                 })
-            }).catch(() => {
+            }).catch((error) => {
+                console.error(error);
                 this.$router.push("/")
             })
         },
@@ -138,31 +147,40 @@
             },
             nbBubblesLeft: function () {
                 let nbBubbles = 0;
-                this.graph.center.leftBubbles.forEach(function (leftBubble) {
+                graph.center.leftBubbles.forEach(function (leftBubble) {
                     nbBubbles += leftBubble.getNumberOfChildDeep();
                 });
                 return nbBubbles;
             },
             nbBubblesRight: function () {
                 let nbBubbles = 0;
-                this.graph.center.rightBubbles.forEach(function (leftBubble) {
+                graph.center.rightBubbles.forEach(function (leftBubble) {
                     nbBubbles += leftBubble.getNumberOfChildDeep();
                 });
                 return nbBubbles;
             }
         },
         computed: {
+            leftBubbles: function () {
+                return this.center.leftBubbles;
+            },
+            rightBubbles: function () {
+                return this.center.rightBubbles;
+            },
+            isEditFlow: function () {
+                return this.center.isEditFlow;
+            },
             centerFont: function () {
                 if (!this.loaded) {
                     return;
                 }
-                return this.graph.center.graphElementServerFormat.font;
+                return graph.center.graphElementServerFormat.font;
             },
             backgroundColor: function () {
                 if (!this.loaded) {
                     return;
                 }
-                return this.graph.center.graphElementServerFormat.colors.background;
+                return graph.center.graphElementServerFormat.colors.background;
             },
             redraws: function () {
                 return this.$store.state.redraws;
@@ -174,9 +192,9 @@
             }
         },
         watch: {
-            "centerServerFormat.label": function () {
-                document.title = this.graph.center.getTextOrDefault() + " | MindRespect";
-            },
+            // "centerServerFormat.label": function () {
+            //     document.title = graph.center.getTextOrDefault() + " | MindRespect";
+            // },
             redraws: function () {
                 this.$nextTick(function () {
                     this.redrawKey = Math.random();
@@ -187,9 +205,9 @@
                     return;
                 }
                 let link = document.createElement("link");
-                link.setAttribute("rel", "stylesheet")
-                link.setAttribute("type", "text/css")
-                let font = this.graph.center.getFont();
+                link.setAttribute("rel", "stylesheet");
+                link.setAttribute("type", "text/css");
+                let font = graph.center.getFont();
                 link.setAttribute("href", "https://fonts.googleapis.com/css?family=" + font.family.replace(/ /g, '+'))
                 document.getElementsByTagName("head")[0].appendChild(link);
                 setTimeout(() => {
@@ -202,7 +220,7 @@
                 if (!this.loaded) {
                     return "";
                 }
-                let backgroundColor = this.graph.center.getBackgroundColor();
+                let backgroundColor = graph.center.getBackgroundColor();
                 this.backgroundColorStyle = "background:radial-gradient(rgba(0, 0, 0, 0) -10%, " + backgroundColor + " 100%";
                 let hsl = Color.hex2Hsl(backgroundColor);
                 Color.bubbleBackground = 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + 96 + '%)';

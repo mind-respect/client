@@ -6,9 +6,9 @@ import GraphElement from '@/graph-element/GraphElement'
 import ShareLevel from '@/vertex/ShareLevel'
 import GraphElementType from '@/graph-element/GraphElementType'
 import I18n from '@/I18n'
-import Store from '@/store'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Vue from 'vue'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -177,16 +177,18 @@ Vertex.prototype.getParentVertex = function () {
     if (this.isCenter) {
         return this;
     }
-    return this.parentBubble.getOtherVertex(this);
+    return this.getParentBubble().getOtherVertex(this);
 };
 
 Vertex.prototype.getRelationWithUiParent = function () {
-    return this.parentBubble;
+    return this.getParentBubble();
 };
 
 
 Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     let children;
+    child.parentVertex = CurrentSubGraph.graphElementAsId(this);
+    CurrentSubGraph.get().add(child);
     if (this.isCenter) {
         if (this._shouldAddLeft(isToTheLeft)) {
             children = this.leftBubbles;
@@ -200,9 +202,9 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
         child.orientation = this.orientation;
     }
     if (index === undefined) {
-        children.push(child)
+        children.push(CurrentSubGraph.graphElementAsId(child));
     } else {
-        children.splice(index, 0, child);
+        children.splice(index, 0, CurrentSubGraph.graphElementAsId(child));
     }
     // child.parentBubble = child.parentVertex = this;
 };
@@ -210,24 +212,31 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
 Vertex.prototype.getRightBubble = function (bottom) {
     let index = bottom ? this.rightBubbles.length - 1 : 0;
     if (this.isCenter) {
-        return this.rightBubbles[index];
+        return CurrentSubGraph.idToInstance(
+            this.rightBubbles[index]
+        );
     }
     if (this.isToTheLeft()) {
-        return this.parentBubble;
+        return this.getParentBubble();
     }
-    return this.rightBubbles[index];
+    return CurrentSubGraph.idToInstance(
+        this.rightBubbles[index]
+    );
 };
 
 Vertex.prototype.getLeftBubble = function (bottom) {
     if (this.isCenter) {
         let index = bottom ? this.leftBubbles.length - 1 : 0;
-        return this.leftBubbles[index];
-    }
-    if (this.isToTheLeft()) {
+        return CurrentSubGraph.idToInstance(
+            this.leftBubbles[index]
+        );
+    } else if (this.isToTheLeft()) {
         let index = bottom ? this.rightBubbles.length - 1 : 0;
-        return this.rightBubbles[index];
+        return CurrentSubGraph.idToInstance(
+            this.rightBubbles[index]
+        );
     }
-    return this.parentBubble;
+    return this.getParentBubble();
 };
 
 Vertex.prototype.collapse = function () {
@@ -273,18 +282,20 @@ Vertex.prototype.expand = function (avoidCenter, isChildExpand) {
 };
 
 Vertex.prototype.getImmediateChild = function (isToTheLeft) {
+    let immediateChild = [];
     if (this.isCollapsed) {
-        return [];
+        return immediateChild;
     }
     if (this.isCenter) {
         if (isToTheLeft === undefined) {
-            return this.leftBubbles.concat(this.rightBubbles);
+            immediateChild = this.leftBubbles.concat(this.rightBubbles);
         } else {
-            return isToTheLeft ? this.leftBubbles : this.rightBubbles;
+            immediateChild = isToTheLeft ? this.leftBubbles : this.rightBubbles;
         }
     } else {
-        return this.rightBubbles;
+        immediateChild = this.rightBubbles;
     }
+    return CurrentSubGraph.idsToInstances(immediateChild);
 };
 
 Vertex.prototype.remove = function () {

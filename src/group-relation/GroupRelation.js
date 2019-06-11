@@ -7,6 +7,7 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import GroupRelationController from '@/group-relation/GroupRelationController'
 import Vue from 'vue'
 import FriendlyResource from "../friendly-resource/FriendlyResource";
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const EXPAND_UNDER_NB_SIBLINGS = 4,
     EXPAND_UNDER_NB_CHILD = 6;
@@ -133,10 +134,14 @@ GroupRelation.prototype.getImmediateChild = function () {
     let children = this._sortedImmediateChild || [];
     children.map(function (child) {
         if (child instanceof GroupRelation) {
-            edges.push(child)
+            edges.push(
+                CurrentSubGraph.idToInstance(child)
+            )
         } else {
             Object.keys(child).forEach(function (id) {
-                edges.push(child[id].edge);
+                edges.push(
+                    CurrentSubGraph.idToInstance(child[id].edge)
+                );
             }.bind(this));
         }
     });
@@ -213,10 +218,10 @@ GroupRelation.prototype.sortedImmediateChild = function (childIndex) {
         return [];
     }
     if (this._sortedImmediateChild !== null) {
-        return this._sortedImmediateChild;
+        return this.sortedImmediateChildInstances();
     }
     let immediateChild = this.getVerticesAsArray().concat(this.childGroupRelations);
-    this._sortedImmediateChild = immediateChild.sort(function (a, b) {
+    let sortedImmediateChildInstances = immediateChild.sort((a, b) => {
         let graphElementA = a instanceof GroupRelation ?
             a.getFirstVertex(childIndex) :
             a;
@@ -224,14 +229,46 @@ GroupRelation.prototype.sortedImmediateChild = function (childIndex) {
             b.getFirstVertex(childIndex) :
             b;
         return GraphElement.sortCompare(graphElementA, graphElementB, childIndex);
-    }).map(function (child) {
+    }).map((child) => {
         if (child instanceof GroupRelation) {
             return child;
         } else {
             return this.vertices[child.getUri()];
         }
-    }.bind(this));
-    return this._sortedImmediateChild;
+    });
+
+    this._sortedImmediateChild = sortedImmediateChildInstances.map((child) => {
+        if (child instanceof GroupRelation) {
+            return CurrentSubGraph.graphElementAsId(child);
+        } else {
+            return Object.entries(child).reduce((triples, entry) => {
+                let triple = entry[1];
+                triples[entry[0]] = {
+                    edge: CurrentSubGraph.graphElementAsId(triple.edge),
+                    vertex: CurrentSubGraph.graphElementAsId(triple.vertex)
+                };
+                return triples;
+            }, {});
+        }
+    });
+
+    return sortedImmediateChildInstances;
+};
+
+GroupRelation.prototype.sortedImmediateChildInstances = function () {
+    return this._sortedImmediateChild.map((child) => {
+        if (child instanceof GroupRelation) {
+            return CurrentSubGraph.idToInstance(child);
+        } else {
+            return Object.entries(child).reduce((triples, entry) => {
+                let triple = entry[1];
+                triple.edge = CurrentSubGraph.idToInstance(triple.edge);
+                triple.vertex = CurrentSubGraph.idToInstance(triple.vertex);
+                triples[entry[0]] = triple;
+                return triples;
+            }, {});
+        }
+    });
 };
 
 GroupRelation.prototype._getSortedVerticesAtAnyDepthOrNot = function (atAnyDepth, childrenIndex) {
