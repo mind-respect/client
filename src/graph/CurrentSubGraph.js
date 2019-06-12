@@ -29,8 +29,8 @@ CurrentSubGraph.idToInstance = function (graphElementAsId) {
     if (graphElementAsId.type.isVertex()) {
         return CurrentSubGraph.graph.getVertexWithUri(graphElementAsId.uri)
     } else if (graphElementAsId.type.isGroupRelation()) {
-        return CurrentSubGraph.graph.getGroupRelationWithUri(
-            graphElementAsId.uri
+        return CurrentSubGraph.graph.getGroupRelationWithUiId(
+            graphElementAsId.uiId
         )
     }
     return CurrentSubGraph.graph.getEdgeWithUri(

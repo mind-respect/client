@@ -375,6 +375,7 @@
             }
         },
         mounted: function () {
+            console.log(this.bubbleIds);
             this.bubble = CurrentSubGraph.idToInstance(this.bubbleIds);
             this.bubble.isEditFlow = false;
             this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
@@ -388,9 +389,6 @@
             }
             this.bubble.loading = false;
             if (this.bubble.isGroupRelation()) {
-                this.bubble.sortedImmediateChild(
-                    this.bubble.getParentVertex().getChildrenIndex()
-                );
                 this.$nextTick(() => {
                     this.bubble.collapse();
                     this.bubble.isFirstInit = false;
@@ -405,9 +403,7 @@
         },
         computed: {
             _sortedImmediateChild: function () {
-                return CurrentSubGraph.graphElementsAsIds(
-                    this.bubble._sortedImmediateChild
-                );
+                return this.bubble._sortedImmediateChild;
             },
             isNextBubbleExpanded: function () {
                 return this.bubble.getNextBubble().isExpanded;

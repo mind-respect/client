@@ -257,17 +257,18 @@ GroupRelation.prototype.sortedImmediateChild = function (childIndex) {
 
 GroupRelation.prototype.sortedImmediateChildInstances = function () {
     return this._sortedImmediateChild.map((child) => {
-        if (child instanceof GroupRelation) {
-            return CurrentSubGraph.idToInstance(child);
-        } else {
-            return Object.entries(child).reduce((triples, entry) => {
-                let triple = entry[1];
-                triple.edge = CurrentSubGraph.idToInstance(triple.edge);
-                triple.vertex = CurrentSubGraph.idToInstance(triple.vertex);
-                triples[entry[0]] = triple;
-                return triples;
-            }, {});
-        }
+        return CurrentSubGraph.idToInstance(child);
+        // if (child instanceof GroupRelation) {
+        //     return CurrentSubGraph.idToInstance(child);
+        // } else {
+        //     return Object.entries(child).reduce((triples, entry) => {
+        //         let triple = entry[1];
+        //         triple.edge = CurrentSubGraph.idToInstance(triple.edge);
+        //         triple.vertex = CurrentSubGraph.idToInstance(triple.vertex);
+        //         triples[entry[0]] = triple;
+        //         return triples;
+        //     }, {});
+        // }
     });
 };
 

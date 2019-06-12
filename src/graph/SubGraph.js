@@ -62,6 +62,10 @@ api.SubGraph.prototype.add = function (graphElement) {
             graphElement
         );
         graphElement.sortedImmediateChild(graphElement.getParentVertex().getChildrenIndex()).forEach((child) => {
+            if (child.isGroupRelation) {
+                child.parentVertex = graphElement.parentVertex;
+                return this.add(child);
+            }
             Object.values(child).forEach((triple) => {
                 this.vertices[triple.vertex.getUri()] = triple.vertex;
                 triple.edge.setSourceVertex(graphElement.parentVertex)
@@ -141,9 +145,9 @@ api.SubGraph.prototype.getEdgeWithUri = function (uri) {
     })[0];
 };
 
-api.SubGraph.prototype.getGroupRelationWithUri = function (uri) {
+api.SubGraph.prototype.getGroupRelationWithUiId = function (uiId) {
     return this.groupRelations.filter((groupRelation) => {
-        return groupRelation.getUri() === uri;
+        return groupRelation.uiId === uiId;
     })[0];
 };
 

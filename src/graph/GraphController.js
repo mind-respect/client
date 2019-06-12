@@ -2,14 +2,15 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import MindMapInfo from '@/MindMapInfo'
-import SubGraph from '@/graph/SubGraph'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
+
 const api = {};
 api.expandAllCanDo = function () {
-    let graph = SubGraph.graph;
-    if(!graph){
+    let graph = CurrentSubGraph.get();
+    if (!graph) {
         return false;
     }
-    let center = SubGraph.graph.center;
+    let center = graph.center;
     if (!center) {
         return false;
     }
@@ -17,7 +18,7 @@ api.expandAllCanDo = function () {
 };
 
 api.expandAll = function () {
-    SubGraph.graph.center.getController().expand();
+    CurrentSubGraph.get().center.getController().expand();
 };
 
 api.compareCanDo = function () {
