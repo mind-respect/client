@@ -4,10 +4,10 @@
 
 <template>
     <div v-if="areChildrenLoaded && !center.isEditFlow" :key="center.uiId">
-        <EdgeDrawing :bubble="center" :isLeft="true" v-if="center.isToTheLeft() || center.isCenter"></EdgeDrawing>
-        <EdgeDrawing :bubble="center" :isLeft="false" v-if="!center.isToTheLeft() || center.isCenter"></EdgeDrawing>
+        <EdgeDrawing :bubble="center" :isLeft="true" v-if="isLeft || isCenter"></EdgeDrawing>
+        <EdgeDrawing :bubble="center" :isLeft="false" v-if="!isLeft || isCenter"></EdgeDrawing>
         <GraphDrawing
-                v-for="child in center.getImmediateChild()"
+                v-for="child in children"
                 :center="child"
                 :key="child.uiId"
         ></GraphDrawing>
@@ -23,24 +23,33 @@
         props: ['center'],
         data: function () {
             return {
-                areChildrenLoaded: false
+                areChildrenLoaded: false,
+                children: null
             }
         },
         mounted: function () {
-            this.showWhenChildrenLoaded();
+            this.isLeft = this.center.isToTheLeft();
+            this.isCenter = this.center.isCenter;
+            if (!this.center.getImmediateChild) {
+                debugger;
+                return;
+            }
+            this.children = this.center.getImmediateChild();
+            this.showWhenChildrenLoaded(this.center);
         },
         methods: {
-            showWhenChildrenLoaded: function () {
-                if (!this.center.getImmediateChild) {
-                    console.warn("no immediate child ? el id " + this.center.getId())
+            showWhenChildrenLoaded: function (center) {
+                if (!this.children) {
+                    console.warn("no immediate child ? el id " + center.getId())
                     return false
                 }
-                if (this.center.getImmediateChild().length === 0) {
+                if (this.children.length === 0) {
                     return;
                 }
                 this.areChildrenLoaded = true;
             }
-        }
+        },
+        computed: {}
     }
 </script>
 

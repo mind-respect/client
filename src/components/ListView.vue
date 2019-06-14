@@ -23,7 +23,7 @@
 </template>
 
 <script>
-    import SubGraph from '@/graph/SubGraph'
+    import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import GraphUi from '@/graph/GraphUi'
     import linkifyHtml from 'linkifyjs/html'
 
@@ -47,7 +47,7 @@
             isListViewFlow: function () {
                 if (this.isListViewFlow) {
                     this.items = [
-                        this.vertexAsItem(SubGraph.graph.center)
+                        this.vertexAsItem(CurrentSubGraph.get().center)
                     ];
                     this.dialog = true;
                 }

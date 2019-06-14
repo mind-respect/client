@@ -13,6 +13,43 @@ const api = {
     "MetaRelation": "meta_relation",
     "GroupVertexUnderMeta": "group_vertex_under_meta"
 };
+
+api.GraphElementType = function (type) {
+    this.type = type;
+};
+
+api.GraphElementType.prototype.isEdge = function () {
+    return api.isEdgeType(this.type);
+};
+
+api.GraphElementType.prototype.isVertex = function () {
+    return api.Vertex === this.type;
+};
+
+api.GraphElementType.prototype.isEdge = function () {
+    return api.isEdgeType(this.type);
+};
+
+
+api.GraphElementType.prototype.isRelation = function () {
+    return api.Relation === this.type;
+};
+
+api.GraphElementType.prototype.isGroupRelation = function () {
+    return api.GroupRelation === this.type;
+};
+
+api.GraphElementType.prototype.isMeta = function () {
+    return api.Meta === this.type;
+};
+
+
+api.GraphElementType.prototype.isVertexType = function () {
+    return api.isVertexType(
+        this.type
+    );
+};
+
 api.fromString = function (type) {
     switch (type) {
         case "edge" :

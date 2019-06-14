@@ -8,6 +8,7 @@ import SubGraph from '@/graph/SubGraph'
 import Edge from '@/edge/Edge'
 import GraphElement from '@/graph-element/GraphElement'
 import GraphElementService from '@/graph-element/GraphElementService'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 
@@ -57,6 +58,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
         if (this.getModel().isCenter && !isParentAlreadyOnMap) {
             parentAsCenter.makeCenter();
             modelToAddChild = parentAsCenter;
+            CurrentSubGraph.get().add(modelToAddChild);
         } else {
             modelToAddChild = this.getModel();
         }
@@ -72,27 +74,33 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
                 if (childIndex !== undefined) {
                     addLeft = childIndex.toTheLeft;
                 }
+                graph.groupRelations.push(groupRelationRoot);
                 modelToAddChild.addChild(
                     groupRelationRoot,
                     addLeft
                 );
                 return;
             }
-            groupRelationRoot.sortedImmediateChild(parentAsCenter).forEach(function (child) {
+            groupRelationRoot.sortedImmediateChild(parentAsCenter.getChildrenIndex()).forEach(function (child) {
                 Object.keys(child).forEach(function (uId) {
                     let triple = child[uId];
-                    triple.edge.updateSourceOrDestination(modelToAddChild);
-                    triple.edge.updateSourceOrDestination(triple.vertex);
                     triple.edge.uiId = uId;
-                    // if(triple.vertex.getLabel() === "communication"){
-                    //     debugger;
-                    // }
 
                     let childIndex = childrenIndex[triple.vertex.getUri()];
                     let addLeft;
                     if (childIndex !== undefined) {
                         addLeft = childIndex.toTheLeft;
                     }
+                    triple.edge.setSourceVertex(
+                        graph.getVertexWithUri(
+                            triple.edge.getSourceVertex().getUri()
+                        )
+                    );
+                    triple.edge.setDestinationVertex(
+                        graph.getVertexWithUri(
+                            triple.edge.getDestinationVertex().getUri()
+                        )
+                    );
                     modelToAddChild.addChild(
                         triple.edge,
                         addLeft

@@ -375,7 +375,6 @@
                 position.y = Math.round(this.bubbleRect.bottom + yAdjust + window.pageYOffset);
                 return position;
             }
-            ,
         }
     }
 </script>

@@ -6,7 +6,7 @@
     <div class="hidden-properties-container vh-center" @click="click">
         <div class="hidden-properties-content bubble-size vh-center"
              :class="{
-                'reverse' : bubble.orientation === 'left'
+                'reverse' : bubble.direction === 'left'
              }"
              v-if="!loading && !bubble.loading"
              title=""

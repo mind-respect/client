@@ -12,7 +12,7 @@
                     @click="click"
                     @dblclick="dblclick"
                     @contextmenu="rightClick"
-                    v-if="(bubble.isEdge() || bubble.isGroupRelation()) && !bubble.getNextBubble().isExpanded"
+                    v-if="(bubble.isEdge() || bubble.isGroupRelation()) && !isNextBubbleExpanded"
             ></v-flex>
             <v-flex xs12
                     style="position:relative;"
@@ -22,19 +22,23 @@
         </v-flex>
         <v-layout
                 row :class="{
-        'vertex-tree-container': !bubble.isCenter,
-        'bubble-container': bubble.isCenter
+        'vertex-tree-container': !isCenter,
+        'bubble-container': isCenter
     }" :id="containerId">
             <v-flex class="v-center drop-relative-container">
-                <v-spacer v-if="bubble.orientation === 'left'"></v-spacer>
-                <div v-if="!bubble.isCollapsed || bubble.isCenter">
+                <v-spacer v-if="isLeft"></v-spacer>
+                <div v-if="!isCollapsed || isCenter">
                     <div :class="{
-                   'blur-overlay':(isEditFlow || bubble.loading) && bubble.isVertexType()
+                   'blur-overlay':(isEditFlow || isBubbleLoading) && bubble.isVertexType()
                 }"
                     >
-                        <Children :bubble="bubble"
+                        <Children
+                                :bubble="bubble"
+                                direction="left"
+                                :parentBubble="parentBubble"
+                                :parentVertex="parentVertex"
                                   v-if="
-                                        bubble.orientation === 'left' &&
+                                        isLeft && !isCenter &&
                                           (
                                             (bubble.isVertexType() && bubble.rightBubbles.length > 0) ||
                                             (bubble.isGroupRelation() && bubble._sortedImmediateChild && bubble._sortedImmediateChild.length > 0) ||
@@ -47,21 +51,21 @@
                 </div>
                 <div class='bubble-container v-center'
                      :class="{
-                'vh-center':bubble.orientation === 'center',
-                'left':bubble.orientation === 'right',
-                'pl-5': (isLeaf && bubble.isToTheLeft()) || (bubble.isCenter && bubble.leftBubbles.length === 0),
-                'pr-5': (isLeaf && !bubble.isToTheLeft()) || (bubble.isCenter && bubble.rightBubbles.length === 0),
-                'w-500': (isLeaf && bubble.isToTheLeft())
+                'vh-center':isCenter,
+                'left':!isLeft && !isCenter,
+                'pl-5': (isLeaf && isLeft) || (isCenter && bubble.leftBubbles.length === 0),
+                'pr-5': (isLeaf && !isLeft) || (isCenter && bubble.rightBubbles.length === 0),
+                'w-500': (isLeaf && isLeft)
             }"
                      :id="bubble.uiId"
                 >
 
                     <div
-                            v-if="!bubble.isCenter"
+                            v-if="!isCenter"
                             class="arrowTopBottomContainer"
                             :class="{
-                                'top-bottom-left-side text-xs-right': bubble.isToTheLeft(),
-                                'top-bottom-right-side': !bubble.isToTheLeft(),
+                                'top-bottom-left-side text-xs-right': isLeft,
+                                'top-bottom-right-side': !isLeft,
                                 'vertex-drop-arrow-top':bubble.isVertexType(),
                                 'edge-drop-arrow-top':!bubble.isVertexType()
                             }">
@@ -71,15 +75,15 @@
                                 :class="{
                                     'red--text': isTopDragOver,
                                     'transparent--text': !isTopDragOver,
-                                    'ml-4 fa-flip-horizontal': bubble.isToTheLeft(),
-                                    'mr-4': !bubble.isToTheLeft()
+                                    'ml-4 fa-flip-horizontal': isLeft,
+                                    'mr-4': !isLeft
                                 }">
                             arrow_forward
                         </v-icon>
                     </div>
 
                     <div
-                            v-if="!bubble.isCenter"
+                            v-if="!isCenter"
                             class="vertex-drop-arrow-top-bottom-drop top-vertex-arrow-drop"
                             @dragover="topDragEnter"
                             @dragleave="resetTopBottomDragOver"
@@ -89,19 +93,19 @@
                             @contextmenu="rightClick"
                     ></div>
                     <div class="vertex-left-right-drop"
-                         v-if="bubble.isCenter || bubble.isToTheLeft()"
+                         v-if="isCenter || isLeft"
                          @dragover="leftRightDragEnter"
                          @dragleave="leftRightDragLeave"
                          @drop="leftDrop"
                          style="left:0;">
                     </div>
-                    <v-spacer v-if="bubble.isToTheLeft() && isLeaf"></v-spacer>
+                    <v-spacer v-if="isLeft && isLeaf"></v-spacer>
                     <div
                             v-if="bubble.isVertexType()"
                             class="bubble vertex graph-element relative vh-center" :class="{
                         'selected' : (isSelected || isLabelDragOver || isLeftRightDragOver),
-                        'center-vertex': bubble.isCenter,
-                        'reverse': bubble.orientation === 'left'
+                        'center-vertex': isCenter,
+                        'reverse': isLeft && !isCenter
                 }"
                     >
                         <div class="image_container"></div>
@@ -121,7 +125,7 @@
                                         slot="activator"
                                         class="in-bubble-content vh-center"
                                         :class="{
-                                            'reverse': bubble.orientation === 'left'
+                                            'reverse': isLeft
                                     }"
                                         @click="click"
                                         @dblclick="dblclick"
@@ -129,24 +133,24 @@
                                         @dragstart="dragStart"
                                         @dragend="dragEnd"
                                         @contextmenu="rightClick"
-                                        :draggable="!bubble.isCenter"
+                                        :draggable="!isCenter"
                                         :style="background"
                                 >
                                     <div
                                             class="in-label-buttons text-xs-center mt-0"
                                             style="height:100%;"
                                             :class="{
-                                                     'in-label-icons-right': !bubble.isToTheLeft(),
-                                                     'in-label-icons-left': bubble.isToTheLeft()
+                                                     'in-label-icons-right': !isLeft && !isCenter,
+                                                     'in-label-icons-left': isLeft && !isCenter
                                                     }"
                                     >
-                                        <v-icon small color="secondary" v-if="bubble.isCenter">
+                                        <v-icon small color="secondary" v-if="isCenter">
                                             filter_center_focus
                                         </v-icon>
-                                        <v-icon small color="secondary" v-if="bubble.getComment() !== ''">
+                                        <v-icon small color="secondary" v-if="hasComment">
                                             note
                                         </v-icon>
-                                        <v-icon small color="secondary" v-if="bubble.hasIdentifications()">
+                                        <v-icon small color="secondary" v-if="hasIdentifications">
                                             label
                                         </v-icon>
                                         <v-icon small color="secondary" v-if="isPrivate">
@@ -155,7 +159,7 @@
                                         <v-icon small color="secondary" v-if="isPublic">
                                             public
                                         </v-icon>
-                                        <v-icon small color="secondary" v-if="bubble.isFriendsOnly()">
+                                        <v-icon small color="secondary" v-if="isFriendsOnly">
                                             people
                                         </v-icon>
                                     </div>
@@ -214,8 +218,8 @@
                          @contextmenu="rightClick"
                          class="arrowTopBottomContainer"
                          :class="{
-                            'top-bottom-left-side text-xs-right': bubble.isToTheLeft(),
-                            'top-bottom-right-side': !bubble.isToTheLeft(),
+                            'top-bottom-left-side text-xs-right': isLeft && !isCenter,
+                            'top-bottom-right-side': !isLeft && !isCenter,
                             'vertex-drop-arrow-bottom':bubble.isVertexType(),
                             'edge-drop-arrow-bottom':!bubble.isVertexType()
                         }">
@@ -224,14 +228,14 @@
                                 :class="{
                         'red--text' : isBottomDragOver,
                         'transparent--text': !isBottomDragOver,
-                        'ml-4 fa-flip-horizontal': bubble.isToTheLeft(),
-                        'mr-4': !bubble.isToTheLeft()
+                        'ml-4 fa-flip-horizontal': isLeft,
+                        'mr-4': !isLeft
                     }">
                             arrow_forward
                         </v-icon>
                     </div>
                     <div class="vertex-left-right-drop"
-                         v-if="bubble.isCenter || !bubble.isToTheLeft()"
+                         v-if="isCenter || !isLeft"
                          @dragover="leftRightDragEnter"
                          @dragleave="leftRightDragLeave"
                          @drop="rightDrop"
@@ -242,7 +246,7 @@
                             class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0"
                             :class="{
                             'selected' : isSelected,
-                            'reverse': bubble.orientation === 'left'
+                            'reverse': isLeft && !isCenter
                     }">
                         <div class="image_container"></div>
                         <div class="in-bubble-content"
@@ -253,10 +257,10 @@
                              @dragend="dragEnd"
                              draggable="true"
                              :class="{
-                                'pl-5 pr-1': !bubble.isGroupRelation() && ( (bubble.isToTheLeft() && !bubble.isInverse()) || (!bubble.isToTheLeft() && bubble.isInverse())),
-                                'pl-1 pr-5': !bubble.isGroupRelation() && ( (bubble.isToTheLeft() && bubble.isInverse()) || (!bubble.isToTheLeft() && !bubble.isInverse())),
-                                'pl-4': (bubble.isGroupRelation() && !bubble.isToTheLeft()),
-                                'pr-4': (bubble.isGroupRelation() && bubble.isToTheLeft())
+                                'pl-5 pr-1': !bubble.isGroupRelation() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
+                                'pl-1 pr-5': !bubble.isGroupRelation() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
+                                'pl-4': (bubble.isGroupRelation() && !isLeft),
+                                'pr-4': (bubble.isGroupRelation() && isLeft)
                              }"
                         >
                             <div class="label-container">
@@ -278,7 +282,7 @@
                                          :data-placeholder="relationPlaceholder"
                                          @focus="focus"
                                          v-show="!isShrinked"
-                                         v-text="bubble.getFriendlyJson().label"
+                                         v-text="label"
                                          @keydown="keydown"
                                          :style="labelFont"
                                     ></div>
@@ -290,14 +294,17 @@
                                      v-if="canExpand"></ChildNotice>
                     </div>
                 </div>
-                <div v-if="!bubble.isCollapsed || bubble.isCenter">
+                <div v-if="!isCollapsed || isCenter">
                     <div :class="{
-                   'blur-overlay':(isEditFlow || bubble.loading) && bubble.isVertexType()
+                   'blur-overlay':(isEditFlow || isBubbleLoading) && bubble.isVertexType()
                 }"
                     >
                         <Children :bubble="bubble"
+                                  :parentBubble="parentBubble"
+                                  :parentVertex="parentVertex"
+                                  direction="right"
                                   v-if="
-                                      bubble.orientation === 'right'  &&
+                                      !isLeft && !isCenter &&
                                       (
                                         (bubble.isVertexType() && bubble.rightBubbles.length > 0) ||
                                         (bubble.isGroupRelation() && bubble._sortedImmediateChild && bubble._sortedImmediateChild.length > 0) ||
@@ -312,11 +319,11 @@
         </v-layout>
         <v-flex xs12
                 class="dotted-border-bottom"
-                v-if="bubble.isVertexType() && !bubble.isCenter"
+                v-if="bubble.isVertexType() && !isCenter"
         ></v-flex>
         <v-flex xs12 class="pb-1 dotted-border-bottom"
                 @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"
-                v-if="(bubble.isEdge() || bubble.isGroupRelation()) && !bubble.getNextBubble().isExpanded"
+                v-if="(bubble.isEdge() || bubble.isGroupRelation()) && !isNextBubbleExpanded"
         ></v-flex>
     </div>
 </template>
@@ -331,14 +338,19 @@
     import BubbleButtons from '@/components/graph/BubbleButtons'
     import GraphUi from '@/graph/GraphUi'
     import IdUri from '@/IdUri'
-    import SubGraph from '@/graph/SubGraph'
+    import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import Color from '@/Color'
     import MindMapInfo from '@/MindMapInfo'
     import linkifyHtml from 'linkifyjs/html'
 
     export default {
         name: "Bubble",
-        props: ['bubble'],
+        props: [
+            'bubble',
+            'parentBubble',
+            'parentVertex',
+            'direction'
+        ],
         components: {
             Children,
             ChildNotice,
@@ -348,7 +360,6 @@
             return {
                 containerId: "",
                 isSelected: false,
-                SelectionHandler: SelectionHandler,
                 loaded: false,
                 isLabelDragOver: false,
                 dragOverLabelTimeout: undefined,
@@ -357,46 +368,81 @@
                 isTopDragOver: null,
                 isBottomDragOver: null,
                 isLeftRightDragOver: null,
-                isEditFlow: false,
                 showMenu: false,
                 linkMenu: false,
                 linkMenuHref: null
             }
         },
-        mounted: function () {
+        mounted: async function () {
+            this.bubble.loading = false;
             this.bubble.isEditFlow = false;
-            if (this.bubble.isCenter) {
+            this.bubble.direction = this.direction;
+            this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
+            this.isLeft = this.direction === "left";
+            this.bubble.parentBubble = this.parentBubble;
+            this.bubble.parentVertex = this.parentVertex;
+            if (this.isCenter) {
                 this.containerId = "center";
             } else {
                 this.containerId = IdUri.uuid();
             }
-            if (this.bubble.isEdge()) {
-                this.bubble.updateSourceOrDestination(this.bubble.parentVertex);
-                this.bubble.updateSourceOrDestination(this.bubble.destinationVertex);
-            }
-            this.bubble.loading = false;
             if (this.bubble.isGroupRelation()) {
-                this.bubble.sortedImmediateChild(
-                    this.bubble.parentVertex.getChildrenIndex()
-                );
-                this.$nextTick(() => {
-                    this.bubble.collapse();
-                    this.bubble.isFirstInit = false;
-                    this.$nextTick(() => {
-                        if (this.bubble.hasFewEnoughBubblesToExpand()) {
-                            this.bubble.expand(true);
-                        }
-                    });
-                })
+                await this.$nextTick();
+                this.bubble.collapse();
+                this.bubble.isFirstInit = false;
+                await this.$nextTick();
+                if (this.bubble.hasFewEnoughBubblesToExpand()) {
+                    this.bubble.expand(true);
+                }
             }
             this.loaded = true;
         },
         computed: {
+            _sortedImmediateChild: function () {
+                return this.bubble._sortedImmediateChild;
+            },
+            isNextBubbleExpanded: function () {
+                return this.bubble.getNextBubble().isExpanded;
+            },
+            label: function () {
+                return this.bubble.getFriendlyJson().label;
+            },
+            isInverse: function () {
+                return this.bubble.isInverse();
+            },
+            hasIdentifications: function () {
+                return this.bubble.hasIdentifications();
+            },
+            hasComment: function () {
+                return this.bubble.hasComment();
+            },
+            leftBubbles: function () {
+                return this.bubble.leftBubbles ?
+                    this.bubble.leftBubbles :
+                    [];
+            },
+            rightBubbles: function () {
+                return this.bubble.rightBubbles ?
+                    this.bubble.rightBubbles :
+                    [];
+            },
+            isCollapsed: function () {
+                return this.bubble.isCollapsed;
+            },
+            isBubbleLoading: function () {
+                return this.bubble.loading;
+            },
+            isEditFlow: function () {
+                return this.bubble.isEditFlow;
+            },
             isPublic: function () {
                 return this.bubble.isPublic();
             },
             isPrivate: function () {
                 return this.bubble.isPrivate();
+            },
+            isFriendsOnly: function () {
+                return this.bubble.isFriendsOnly();
             },
             isLeaf: function () {
                 return this.bubble.isLeaf();
@@ -416,7 +462,7 @@
                     "";
             },
             labelFont: function () {
-                let font = SubGraph.graph.center.getFont();
+                let font = CurrentSubGraph.get().center.getFont();
                 return "font-family:" + font.family;
             },
             selected: () => SelectionHandler.selected,
@@ -471,7 +517,10 @@
                 this.bubble.focus(event);
             },
             leaveEditFlow: function () {
-                this.isEditFlow = false;
+                this.bubble.isEditFlow = false;
+                if(this.isCenter){
+                    document.title = this.bubble.getTextOrDefault() + " | MindRespect";
+                }
                 this.bubble.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
@@ -480,7 +529,7 @@
                 this.$store.dispatch("redraw");
             },
             focus: function () {
-                this.isEditFlow = true;
+                this.bubble.isEditFlow = true;
                 this.bubble.isEditFlow = true;
                 this.$store.dispatch("redraw");
             },
@@ -492,7 +541,7 @@
             },
             checkIsSelected: function () {
                 let found = false;
-                this.SelectionHandler.getSelectedBubbles().forEach((selected) => {
+                SelectionHandler.getSelectedBubbles().forEach((selected) => {
                     if (selected.getUri() === this.bubble.getUri()) {
                         found = true;
                     }

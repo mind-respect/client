@@ -113,7 +113,7 @@
     import AppController from '@/AppController'
     import GraphController from '@/graph/GraphController'
     import AuthenticateService from "@/service/AuthenticateService";
-    import SubGraph from '@/graph/SubGraph'
+    import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import VertexService from '@/vertex/VertexService'
 
     export default {
@@ -139,7 +139,7 @@
                 AppController.fontPicker();
             },
             changeBackgroundColorMenu: function () {
-                this.backgroundColor = SubGraph.graph.center.getBackgroundColor();
+                this.backgroundColor = CurrentSubGraph.get().center.getBackgroundColor();
                 this.$nextTick(() => {
                     document.getElementById(
                         "background-color-picker"
@@ -150,7 +150,7 @@
                 return AppController.changeBackgroundColorCanDo();
             },
             changeBackgroundColor: function () {
-                SubGraph.graph.center.setBackgroundColor(this.backgroundColor);
+                CurrentSubGraph.get().center.setBackgroundColor(this.backgroundColor);
                 VertexService.saveColors({
                     background: this.backgroundColor
                 });
@@ -174,12 +174,6 @@
         computed: {
             isGraphRoute: function () {
                 return this.$route.name === "Center"
-            }
-        },
-        watch: {
-            "SubGraph.graph.center": function () {
-                console.log(SubGraph.graph.center);
-                debugger;
             }
         }
     }

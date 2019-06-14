@@ -200,7 +200,7 @@ api.Edge.prototype.inverse = function () {
 };
 
 api.Edge.prototype.isInverse = function () {
-    return this.getSourceVertex().getUri() !== this.parentVertex.getUri();
+    return this.getSourceVertex().getUri() !== this.getParentVertex().getUri();
 };
 
 api.Edge.prototype.getLeftBubble = function () {
@@ -216,7 +216,7 @@ api.Edge.prototype.getLeftBubble = function () {
 
 api.Edge.prototype.getImmediateChild = function () {
     return [
-        this.getOtherVertex(this.parentVertex)
+        this.getOtherVertex(this.getParentVertex())
     ];
 };
 

@@ -14,7 +14,7 @@ import I18n from '@/I18n'
 import Vue from 'vue'
 import TestUtil from '../util/TestUtil'
 import MindMapInfo from '@/MindMapInfo'
-import SubGraph from '@/graph/SubGraph'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import IdUri from '@/IdUri'
 import CenterView from '@/views/Center.vue'
 
@@ -84,7 +84,7 @@ api.Scenario.prototype.getGraph = function () {
 
 
 api.Scenario.prototype.getBubbleWithLabelInTree = function (label) {
-    let foundVertex = Object.values(SubGraph.graph.vertices).filter((vertex) => {
+    let foundVertex = Object.values(CurrentSubGraph.get().vertices).filter((vertex) => {
         if (vertex.getLabel() === label) {
             return vertex
         }
@@ -96,7 +96,7 @@ api.Scenario.prototype.getBubbleWithLabelInTree = function (label) {
 };
 
 api.Scenario.prototype.getRelationWithLabelInTree = function (label) {
-    return Object.values(SubGraph.graph.edges).filter((edge) => {
+    return Object.values(CurrentSubGraph.get().edges).filter((edge) => {
         if (edge.getLabel() === label) {
             return edge
         }

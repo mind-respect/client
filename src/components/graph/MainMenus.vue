@@ -38,7 +38,7 @@
     import AppController from '@/AppController'
     import GraphController from '@/graph/GraphController'
     import Button from '@/components/graph/Button'
-    import SubGraph from '@/graph/SubGraph'
+    import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import VertexService from '@/vertex/VertexService'
 
     export default {
@@ -47,14 +47,14 @@
             Button: Button
         },
         mounted: function () {
-            this.backgroundColor = SubGraph.graph.center.getBackgroundColor();
+            this.backgroundColor = CurrentSubGraph.get().center.getBackgroundColor();
             setTimeout(function () {
                 this.loaded = true;
             }.bind(this), 1000)
         },
         methods: {
             changeBackgroundColor: function () {
-                SubGraph.graph.center.setBackgroundColor(this.backgroundColor);
+                CurrentSubGraph.get().center.setBackgroundColor(this.backgroundColor);
                 VertexService.saveColors({
                     background: this.backgroundColor
                 });

@@ -6,7 +6,6 @@ import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
 
 const api = {};
-api.graph = null;
 api.fromServerFormat = function (serverFormat) {
     return new api.SubGraph(
         serverFormat,
@@ -14,7 +13,17 @@ api.fromServerFormat = function (serverFormat) {
         true
     );
 };
-
+api.empty = function () {
+    return new api.SubGraph(
+        {
+            edges: [],
+            vertices: {},
+            groupRelations: []
+        },
+        undefined,
+        false
+    )
+};
 api.withFacadeAndCenterUri = function (serverFacade, centerUri) {
     return new api.SubGraph(
         serverFacade,
@@ -28,12 +37,42 @@ api.SubGraph = function (graph, centerUri, buildFacade) {
         this.serverFormat = graph;
         this._buildVertices();
         this._buildEdges();
+        this.groupRelations = [];
     } else {
         this.edges = graph.edges;
         this.vertices = graph.vertices;
+        this.groupRelations = graph.groupRelations || [];
     }
     if (centerUri) {
         this.center = this.getVertexWithUri(centerUri)
+    }
+};
+
+
+api.SubGraph.prototype.add = function (graphElement) {
+    if (graphElement.isEdge()) {
+        this.edges.push(graphElement);
+        this.add(
+            graphElement.getDestinationVertex()
+        );
+    } else if (graphElement.isVertex()) {
+        this.vertices[graphElement.getUri()] = graphElement;
+    } else if (graphElement.isGroupRelation()) {
+        this.groupRelations.push(
+            graphElement
+        );
+        graphElement.sortedImmediateChild(graphElement.getParentVertex().getChildrenIndex()).forEach((child) => {
+            if (child.isGroupRelation) {
+                child.parentVertex = graphElement.parentVertex;
+                return this.add(child);
+            }
+            Object.values(child).forEach((triple) => {
+                this.vertices[triple.vertex.getUri()] = triple.vertex;
+                triple.edge.setSourceVertex(graphElement.parentVertex)
+                triple.edge.setDestinationVertex(triple.vertex);
+                this.edges.push(triple.edge);
+            })
+        })
     }
 };
 
@@ -98,6 +137,18 @@ api.SubGraph.prototype.visitGraphElements = function (visitor) {
 
 api.SubGraph.prototype.getVertexWithUri = function (uri) {
     return this.vertices[uri];
+};
+
+api.SubGraph.prototype.getEdgeWithUri = function (uri) {
+    return this.edges.filter((edge) => {
+        return edge.getUri() === uri;
+    })[0];
+};
+
+api.SubGraph.prototype.getGroupRelationWithUiId = function (uiId) {
+    return this.groupRelations.filter((groupRelation) => {
+        return groupRelation.uiId === uiId;
+    })[0];
 };
 
 api.SubGraph.prototype.getCenter = function () {

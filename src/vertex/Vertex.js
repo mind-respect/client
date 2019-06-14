@@ -6,9 +6,9 @@ import GraphElement from '@/graph-element/GraphElement'
 import ShareLevel from '@/vertex/ShareLevel'
 import GraphElementType from '@/graph-element/GraphElementType'
 import I18n from '@/I18n'
-import Store from '@/store'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Vue from 'vue'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -170,23 +170,25 @@ Vertex.prototype.makeCenter = function () {
     this.isCenter = true;
     this.parentBubble = this;
     this.isExpanded = true;
-    this.orientation = "center"
+    this.direction = "center"
 };
 
 Vertex.prototype.getParentVertex = function () {
     if (this.isCenter) {
         return this;
     }
-    return this.parentBubble.getOtherVertex(this);
+    return this.getParentBubble().getOtherVertex(this);
 };
 
 Vertex.prototype.getRelationWithUiParent = function () {
-    return this.parentBubble;
+    return this.getParentBubble();
 };
 
 
 Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     let children;
+    child.parentVertex = this;
+    CurrentSubGraph.get().add(child);
     if (this.isCenter) {
         if (this._shouldAddLeft(isToTheLeft)) {
             children = this.leftBubbles;
@@ -197,7 +199,7 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
         }
     } else {
         children = this.rightBubbles;
-        child.orientation = this.orientation;
+        child.direction = this.direction;
     }
     if (index === undefined) {
         children.push(child)
@@ -227,7 +229,7 @@ Vertex.prototype.getLeftBubble = function (bottom) {
         let index = bottom ? this.rightBubbles.length - 1 : 0;
         return this.rightBubbles[index];
     }
-    return this.parentBubble;
+    return this.getParentBubble();
 };
 
 Vertex.prototype.collapse = function () {

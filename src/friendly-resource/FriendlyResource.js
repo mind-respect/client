@@ -6,9 +6,9 @@ import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Focus from '@/Focus'
 import SelectionHandler from '@/SelectionHandler'
-import Scroll from '@/Scroll'
 import Store from '@/store'
 import Icon from '@/Icon'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const MoveRelation = {
     "Parent": "parent",
@@ -101,6 +101,10 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
     this.loading = true;
     this.isExpanded = false;
     this.isCollapsed = false;
+    let graphElementType = this.getGraphElementType ? this.getGraphElementType() : IdUri.getGraphElementTypeFromUri(
+        this.getUri()
+    );
+    this.type = new GraphElementType.GraphElementType(graphElementType);
     return this;
 };
 
@@ -192,7 +196,7 @@ FriendlyResource.FriendlyResource.prototype.setComment = function (comment) {
     return this.friendlyResourceServerFormat.comment = comment;
 };
 FriendlyResource.FriendlyResource.prototype.hasComment = function () {
-    return this.friendlyResourceServerFormat.comment.length > 0;
+    return this.getComment() !== '';
 };
 FriendlyResource.FriendlyResource.prototype.addImage = function (image) {
     this._images.push(image);
@@ -224,30 +228,34 @@ FriendlyResource.FriendlyResource.prototype.isSame = function (friendlyResource)
     return this.getUri() === friendlyResource.getUri();
 };
 
+//@deprecated
 FriendlyResource.FriendlyResource.prototype.isVertex = function () {
-    return this.getGraphElementType() === GraphElementType.Vertex;
+    return this.type.isVertex();
 };
 
+//@deprecated
 FriendlyResource.FriendlyResource.prototype.isEdge = function () {
-    return GraphElementType.isEdgeType(this.getGraphElementType())
+    return this.type.isEdge();
 };
 
+//@deprecated
 FriendlyResource.FriendlyResource.prototype.isRelation = function () {
-    return this.getGraphElementType() === GraphElementType.Relation;
+    return this.type.isRelation();
 };
 
+//@deprecated
 FriendlyResource.FriendlyResource.prototype.isGroupRelation = function () {
-    return GraphElementType.GroupRelation === this.getGraphElementType();
+    return this.type.isGroupRelation();
 };
 
+//@deprecated
 FriendlyResource.FriendlyResource.prototype.isMeta = function () {
-    return this.getGraphElementType() === GraphElementType.Meta;
+    return this.type.isMeta();
 };
 
+//@deprecated
 FriendlyResource.FriendlyResource.prototype.isVertexType = function () {
-    return GraphElementType.isVertexType(
-        this.getGraphElementType()
-    );
+    return this.type.isVertexType();
 };
 
 FriendlyResource.FriendlyResource.prototype.select = function () {
@@ -277,15 +285,15 @@ FriendlyResource.FriendlyResource.prototype.selectTree = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {
-    return this.orientation === "left";
+    return this.direction === "left";
 };
 
 FriendlyResource.FriendlyResource.prototype.makeLeft = function () {
-    this.orientation = "left";
+    this.direction = "left";
 };
 
 FriendlyResource.FriendlyResource.prototype.makeRight = function () {
-    this.orientation = "right";
+    this.direction = "right";
 };
 
 FriendlyResource.FriendlyResource.prototype.makeSingleSelected = function () {
@@ -429,10 +437,10 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
             // );
         }
     }
-    this.orientation = otherBubble.orientation;
+    this.direction = otherBubble.direction;
     if (this.isGroupRelation()) {
         this.visitDescendants(function (child) {
-            child.orientation = otherBubble.orientation;
+            child.direction = otherBubble.direction;
         }.bind(this))
     }
     Store.dispatch("redraw");

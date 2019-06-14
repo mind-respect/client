@@ -7,6 +7,7 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import GroupRelationController from '@/group-relation/GroupRelationController'
 import Vue from 'vue'
 import FriendlyResource from "../friendly-resource/FriendlyResource";
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const EXPAND_UNDER_NB_SIBLINGS = 4,
     EXPAND_UNDER_NB_CHILD = 6;
