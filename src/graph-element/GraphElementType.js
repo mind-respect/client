@@ -16,38 +16,62 @@ const api = {
 
 api.GraphElementType = function (type) {
     this.type = type;
+    this._isEdge = api.isEdge(type);
+    this._isRelation = api.isRelation(type);
+    this._isGroupRelation = api.isGroupRelation(type)
+    this._isVertex = api.isVertex(type);
+    this._isVertexType = api.isVertexType(type);
+    this._isMeta = api.isMeta(type);
 };
 
 api.GraphElementType.prototype.isEdge = function () {
-    return api.isEdgeType(this.type);
+    return this._isEdge;
 };
-
-api.GraphElementType.prototype.isVertex = function () {
-    return api.Vertex === this.type;
-};
-
-api.GraphElementType.prototype.isEdge = function () {
-    return api.isEdgeType(this.type);
-};
-
 
 api.GraphElementType.prototype.isRelation = function () {
-    return api.Relation === this.type;
+    return this._isRelation;
 };
 
 api.GraphElementType.prototype.isGroupRelation = function () {
-    return api.GroupRelation === this.type;
+    return this._isGroupRelation;
+};
+
+api.GraphElementType.prototype.isVertex = function () {
+    return this._isVertex;
+};
+
+api.GraphElementType.prototype.isVertexType = function () {
+    return this._isVertexType;
 };
 
 api.GraphElementType.prototype.isMeta = function () {
-    return api.Meta === this.type;
+    return this._isMeta;
 };
 
+api.isEdge = function (type) {
+    return api.isEdgeType(type);
+};
 
-api.GraphElementType.prototype.isVertexType = function () {
+api.isRelation = function (type) {
+    return api.Relation === type;
+};
+
+api.isGroupRelation = function (type) {
+    return api.GroupRelation === type;
+};
+
+api.isVertex = function (type) {
+    return api.Vertex === type;
+};
+
+api.isVertexType = function (type) {
     return api.isVertexType(
-        this.type
+        type
     );
+};
+
+api.isMeta = function (type) {
+    return api.Meta === type;
 };
 
 api.fromString = function (type) {

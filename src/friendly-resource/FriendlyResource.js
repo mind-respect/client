@@ -104,7 +104,9 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
     let graphElementType = this.getGraphElementType ? this.getGraphElementType() : IdUri.getGraphElementTypeFromUri(
         this.getUri()
     );
-    this.type = new GraphElementType.GraphElementType(graphElementType);
+    this.type = Object.freeze(
+        new GraphElementType.GraphElementType(graphElementType)
+    );
     return this;
 };
 
