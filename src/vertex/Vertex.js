@@ -95,8 +95,8 @@ Vertex.prototype.getNumberOfConnectedEdges = function () {
     return this.vertexServerFormat.vertex.numberOfConnectedEdges;
 };
 
-Vertex.prototype.getNumberOfChild = function () {
-    let children = this.getImmediateChild();
+Vertex.prototype.getNumberOfChild = function (isLeft) {
+    let children = this.getImmediateChild(isLeft);
     return children.length ? children.length : Math.max(this.getNumberOfConnectedEdges() - 1, 0);
 };
 
@@ -187,7 +187,7 @@ Vertex.prototype.getRelationWithUiParent = function () {
 
 Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     let children;
-    child.parentVertex = this;
+    child.parentBubble = child.parentVertex = this;
     CurrentSubGraph.get().add(child);
     if (this.isCenter) {
         if (this._shouldAddLeft(isToTheLeft)) {
@@ -206,7 +206,6 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     } else {
         children.splice(index, 0, child);
     }
-    child.parentBubble = child.parentVertex = this;
 };
 
 Vertex.prototype.getRightBubble = function (bottom) {

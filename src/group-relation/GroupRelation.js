@@ -42,7 +42,7 @@ function GroupRelation(identifiers) {
     this.identifiers = identifiers;
     this.vertices = {};
     this.childGroupRelations = [];
-    this.isExpanded = true;
+    this.isExpanded = false;
     this._sortedImmediateChild = null;
     this._sortedImmediateChildCollapsed = null;
     Identification.Identification.apply(
@@ -51,14 +51,18 @@ function GroupRelation(identifiers) {
     this.init(
         this.getIdentification().getServerFormat()
     );
-    this.isFirstInit = true;
 }
 
 GroupRelation.prototype = new Identification.Identification();
 
 GroupRelation.prototype.hasFewEnoughBubblesToExpand = function () {
-    return this.getParentBubble().getNumberOfChild() < EXPAND_UNDER_NB_CHILD &&
-        this.getNumberOfVertices() < EXPAND_UNDER_NB_SIBLINGS;
+    let parentNbChild = this.getParentBubble().getNumberOfChild(this.isToTheLeft());
+    let nbChild = this.getNumberOfVertices();
+    if (parentNbChild === 1) {
+        return true;
+    }
+    return parentNbChild < EXPAND_UNDER_NB_CHILD &&
+        nbChild < EXPAND_UNDER_NB_SIBLINGS;
 };
 
 // GroupRelation.prototype.removeChild = function (edge, temporarily) {
@@ -328,6 +332,9 @@ GroupRelation.prototype.addChild = function (graphElementUi, isToTheLeft, index)
         vertex: vertex
     };
     let tuplesOfUri = this.addTuple(tuple);
+    graphElementUi.parentBubble = this;
+    graphElementUi.parentVertex = this.parentVertex;
+    CurrentSubGraph.get().add(graphElementUi);
     if (index === undefined) {
         this._sortedImmediateChild.push(tuplesOfUri);
     } else {

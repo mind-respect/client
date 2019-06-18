@@ -20,8 +20,6 @@
                         }">
                             <Bubble
                                     :bubble="leftBubble"
-                                    :parentBubble="center"
-                                    :parentVertex="center"
                                     direction="left"
                             ></Bubble>
                         </v-flex>
@@ -31,8 +29,6 @@
                     <Bubble
                             :bubble="center"
                             direction="center"
-                            :parentBubble="center"
-                            :parentVertex="center"
                     ></Bubble>
                 </v-flex>
                 <v-flex grow class="vertices-children-container right-oriented" style="width:7000px;" :class="{
@@ -45,8 +41,6 @@
                         }">
                             <Bubble
                                     :bubble="rightBubble"
-                                    :parentBubble="center"
-                                    :parentVertex="center"
                                     direction="right"
                             ></Bubble>
                         </v-flex>

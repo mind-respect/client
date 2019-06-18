@@ -35,8 +35,6 @@
                         <Children
                                 :bubble="bubble"
                                 direction="left"
-                                :parentBubble="parentBubble"
-                                :parentVertex="parentVertex"
                                   v-if="
                                         isLeft && !isCenter &&
                                           (
@@ -300,8 +298,6 @@
                 }"
                     >
                         <Children :bubble="bubble"
-                                  :parentBubble="parentBubble"
-                                  :parentVertex="parentVertex"
                                   direction="right"
                                   v-if="
                                       !isLeft && !isCenter &&
@@ -347,8 +343,6 @@
         name: "Bubble",
         props: [
             'bubble',
-            'parentBubble',
-            'parentVertex',
             'direction'
         ],
         components: {
@@ -379,21 +373,10 @@
             this.bubble.direction = this.direction;
             this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
             this.isLeft = this.direction === "left";
-            this.bubble.parentBubble = this.parentBubble;
-            this.bubble.parentVertex = this.parentVertex;
             if (this.isCenter) {
                 this.containerId = "center";
             } else {
                 this.containerId = IdUri.uuid();
-            }
-            if (this.bubble.isGroupRelation()) {
-                await this.$nextTick();
-                this.bubble.collapse();
-                this.bubble.isFirstInit = false;
-                await this.$nextTick();
-                if (this.bubble.hasFewEnoughBubblesToExpand()) {
-                    this.bubble.expand(true);
-                }
             }
             this.loaded = true;
         },

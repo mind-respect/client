@@ -10,8 +10,6 @@
                         'mt-0 mb-0' : bubble.rightBubbles.length > 2
                         }">
                 <Bubble :bubble="child"
-                        :parentBubble="bubble"
-                        :parentVertex="bubble"
                         :direction="direction"
                 ></Bubble>
             </div>
@@ -20,14 +18,10 @@
             <Bubble
                     v-if="isInverse"
                     :bubble="bubble.sourceVertex"
-                    :parentBubble="bubble"
-                    :parentVertex="bubble.destinationVertex"
                     :direction="direction"
             ></Bubble>
             <Bubble v-else
                     :bubble="bubble.destinationVertex"
-                    :parentBubble="bubble"
-                    :parentVertex="bubble.sourceVertex"
                     :direction="direction"
             ></Bubble>
         </div>
@@ -40,15 +34,11 @@
             >
                 <Bubble v-if="child.isGroupRelation"
                         :bubble="child"
-                        :parentBubble="bubble"
-                        :parentVertex="parentVertex"
                         :direction="direction"
                 ></Bubble>
                 <div v-else v-for="(triple, uiId) in child">
                     <Bubble
                             :bubble="triple.edge"
-                            :parentBubble="bubble"
-                            :parentVertex="parentVertex"
                             :direction="direction"
                     ></Bubble>
                 </div>
@@ -63,8 +53,6 @@
         name: "Children",
         props: [
             'bubble',
-            'parentBubble',
-            'parentVertex',
             'direction'
         ],
         components: {

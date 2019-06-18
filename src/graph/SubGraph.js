@@ -53,11 +53,14 @@ api.SubGraph.prototype.add = function (graphElement) {
     if (graphElement.isEdge()) {
         this.edges.push(graphElement);
         let destinationVertex = graphElement.getDestinationVertex();
-        destinationVertex.parentBubble  = graphElement;
+        destinationVertex.parentBubble = graphElement;
         this.add(
             destinationVertex
         );
     } else if (graphElement.isVertex()) {
+        if (graphElement.isCenter) {
+            graphElement.parentBubble = graphElement.parentVertex = graphElement;
+        }
         this.vertices[graphElement.getUri()] = graphElement;
     } else if (graphElement.isGroupRelation()) {
         this.groupRelations.push(
@@ -72,10 +75,10 @@ api.SubGraph.prototype.add = function (graphElement) {
             Object.values(child).forEach((triple) => {
                 this.vertices[triple.vertex.getUri()] = triple.vertex;
                 triple.edge.parentBubble = graphElement;
-                triple.edge.parentVertex =  graphElement.parentVertex;
+                triple.edge.parentVertex = graphElement.parentVertex;
                 triple.edge.setSourceVertex(graphElement.parentVertex)
                 triple.edge.setDestinationVertex(triple.vertex);
-                this.edges.push(triple.edge);
+                return this.add(triple.edge);
             })
         })
     }

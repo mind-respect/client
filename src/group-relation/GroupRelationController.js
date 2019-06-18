@@ -81,9 +81,9 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
             );
             if (saveIndex) {
                 SelectionHandler.setToSingle(triple.destination);
+                Store.dispatch("redraw");
             }
         });
-        Store.dispatch("redraw");
         return triple;
     });
 };

@@ -108,6 +108,13 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
                 }.bind(this));
             }.bind(this));
         }.bind(this));
+        graph.groupRelations.forEach((groupRelation) => {
+            if (groupRelation.hasFewEnoughBubblesToExpand()) {
+                groupRelation.expand(true);
+            } else {
+                groupRelation.collapse();
+            }
+        })
         return isChildrenIndexBuilt ? Promise.resolve(graph) :
             GraphElementService.changeChildrenIndex(
                 modelToAddChild
