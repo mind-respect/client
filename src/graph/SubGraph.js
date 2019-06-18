@@ -52,8 +52,10 @@ api.SubGraph = function (graph, centerUri, buildFacade) {
 api.SubGraph.prototype.add = function (graphElement) {
     if (graphElement.isEdge()) {
         this.edges.push(graphElement);
+        let destinationVertex = graphElement.getDestinationVertex();
+        destinationVertex.parentBubble  = graphElement;
         this.add(
-            graphElement.getDestinationVertex()
+            destinationVertex
         );
     } else if (graphElement.isVertex()) {
         this.vertices[graphElement.getUri()] = graphElement;
@@ -64,10 +66,13 @@ api.SubGraph.prototype.add = function (graphElement) {
         graphElement.sortedImmediateChild(graphElement.getParentVertex().getChildrenIndex()).forEach((child) => {
             if (child.isGroupRelation) {
                 child.parentVertex = graphElement.parentVertex;
+                child.parentBubble = graphElement;
                 return this.add(child);
             }
             Object.values(child).forEach((triple) => {
                 this.vertices[triple.vertex.getUri()] = triple.vertex;
+                triple.edge.parentBubble = graphElement;
+                triple.edge.parentVertex =  graphElement.parentVertex;
                 triple.edge.setSourceVertex(graphElement.parentVertex)
                 triple.edge.setDestinationVertex(triple.vertex);
                 this.edges.push(triple.edge);

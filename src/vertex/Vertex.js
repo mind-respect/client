@@ -206,7 +206,7 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     } else {
         children.splice(index, 0, child);
     }
-    // child.parentBubble = child.parentVertex = this;
+    child.parentBubble = child.parentVertex = this;
 };
 
 Vertex.prototype.getRightBubble = function (bottom) {

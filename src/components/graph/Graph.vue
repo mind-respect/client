@@ -182,10 +182,9 @@
             }
         },
         watch: {
-            redraws: function () {
-                this.$nextTick(function () {
-                    this.redrawKey = Math.random();
-                }.bind(this));
+            redraws: async function () {
+                await this.$nextTick();
+                this.redrawKey = Math.random();
             },
             centerFont: function () {
                 if (!this.loaded) {

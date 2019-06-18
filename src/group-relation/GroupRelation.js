@@ -150,16 +150,12 @@ GroupRelation.prototype.expand = function (avoidCenter, isChildExpand) {
         avoidCenter,
         isChildExpand
     );
-    this.isExpanded = false; // to make the expand animation work in next tick
+    if (this._sortedImmediateChildCollapsed !== null) {
+        this._sortedImmediateChild = this._sortedImmediateChildCollapsed;
+        this._sortedImmediateChildCollapsed = null;
+    }
+    this.isExpanded = true;
     this.isCollapsed = false;
-    Vue.nextTick(function () {
-        if (this._sortedImmediateChildCollapsed !== null) {
-            this._sortedImmediateChild = this._sortedImmediateChildCollapsed;
-            this._sortedImmediateChildCollapsed = null;
-        }
-        this.isExpanded = true;
-        this.isCollapsed = false;
-    }.bind(this))
 };
 
 GroupRelation.prototype.collapse = function () {
@@ -169,11 +165,9 @@ GroupRelation.prototype.collapse = function () {
         this._sortedImmediateChildCollapsed = this._sortedImmediateChild;
         this._sortedImmediateChild = null;
     }
-    Vue.nextTick(function () {
-        FriendlyResource.FriendlyResource.prototype.collapse.call(
-            this
-        );
-    }.bind(this));
+    FriendlyResource.FriendlyResource.prototype.collapse.call(
+        this
+    );
 };
 
 GroupRelation.prototype.getController = function () {

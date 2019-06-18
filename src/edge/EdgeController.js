@@ -28,7 +28,7 @@ EdgeController.prototype.addChildCanDo = function () {
     return this.isSingleAndOwned();
 };
 
-EdgeController.prototype.addChild = function () {
+EdgeController.prototype.addChild = async function () {
     let newGroupRelation = this._convertToGroupRelation();
     let triple;
     SelectionHandler.removeAll();
@@ -43,6 +43,7 @@ EdgeController.prototype.addChild = function () {
             this.getModel(),
             newGroupRelation
         );
+        newGroupRelation.expand();
         Vue.nextTick(() => {
             GraphElementService.changeChildrenIndex(
                 this.getModel().getParentVertex()
