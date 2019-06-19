@@ -501,14 +501,14 @@
             },
             leaveEditFlow: function () {
                 this.bubble.isEditFlow = false;
-                if(this.isCenter){
-                    document.title = this.bubble.getTextOrDefault() + " | MindRespect";
-                }
                 this.bubble.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
                 this.bubble.setLabel(labelHtml.innerHTML);
-                FriendlyResourceService.updateLabel(this.bubble)
+                FriendlyResourceService.updateLabel(this.bubble);
+                if(this.isCenter){
+                    document.title = this.bubble.getTextOrDefault() + " | MindRespect";
+                }
                 this.$store.dispatch("redraw");
             },
             focus: function () {

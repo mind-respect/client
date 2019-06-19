@@ -115,6 +115,7 @@
             promise.then(async (graph) => {
                 let center = graph.center;
                 center.makeCenter();
+                document.title = center.getTextOrDefault() + " | MindRespect";
                 CurrentSubGraph.set(graph);
                 this.center = center;
                 this.loaded = true;
