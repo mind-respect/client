@@ -64,7 +64,7 @@ api.Scenario.prototype.init = async function () {
             center.uri().url()
         );
     }
-    await this.nextTickPromise(5);
+    await this.nextTickPromise(1);
     return this;
 };
 api.Scenario.prototype.nextTickPromise = async function nextTickPromise(nbTicks) {

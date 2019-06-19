@@ -131,4 +131,38 @@ describe("GroupRelation", function () {
             "Impact on society"
         );
     });
+
+    it("can expand and collapse", async () => {
+        let scenario = await new GraphWithSimilarRelationsScenario();
+        let possessionInTree = scenario.getPossessionGroupRelation();
+        possessionInTree.expand();
+        expect(
+            possessionInTree.isCollapsed
+        ).toBeFalsy();
+        possessionInTree.collapse();
+        expect(
+            possessionInTree.isCollapsed
+        ).toBeTruthy();
+        possessionInTree.expand();
+        expect(
+            possessionInTree.isCollapsed
+        ).toBeFalsy();
+    });
+
+    it("does not duplicate children when expanding while already expanded", async () => {
+        let scenario = await new GraphWithSimilarRelationsScenario();
+        let possessionInTree = scenario.getPossessionGroupRelation();
+        possessionInTree.getController().expand();
+        expect(
+            possessionInTree.canExpandDescendants()
+        ).toBeTruthy();
+        expect(
+            possessionInTree.getNumberOfChild()
+        ).toBe(3);
+        possessionInTree.expand();
+        expect(
+            possessionInTree.getNumberOfChild()
+        ).toBe(3);
+    });
+
 });
