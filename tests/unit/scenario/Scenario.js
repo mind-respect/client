@@ -103,6 +103,14 @@ api.Scenario.prototype.getRelationWithLabelInTree = function (label) {
     })[0];
 };
 
+api.Scenario.prototype.getGroupRelationWithLabelInTree = function (label) {
+    return Object.values(CurrentSubGraph.get().groupRelations).filter((edge) => {
+        if (edge.getLabel() === label) {
+            return edge
+        }
+    })[0];
+};
+
 api.Scenario.prototype.vertexWithLabelInServerGraph = function (label, graph) {
     graph = graph || this.graph;
     return api.vertexWithLabelInServerGraph(label, graph)
