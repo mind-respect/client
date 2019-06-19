@@ -13,7 +13,7 @@ GraphWithSimilarRelationsScenario.prototype.getCenter = function () {
 };
 
 GraphWithSimilarRelationsScenario.prototype.getCenterVertexInTree = function () {
-    return this.getBubbleWithLabelInTree("me");
+    return this.getVertexWithLabelInTree("me");
 };
 
 GraphWithSimilarRelationsScenario.prototype.getCenterBubbleUri = function () {

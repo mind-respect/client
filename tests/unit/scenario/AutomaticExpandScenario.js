@@ -16,11 +16,11 @@ AutomaticExpandScenario.prototype.getCenterBubbleUri = function () {
 };
 
 AutomaticExpandScenario.prototype.getB1InTree = function () {
-    return this.getBubbleWithLabelInTree("b1");
+    return this.getVertexWithLabelInTree("b1");
 };
 
 AutomaticExpandScenario.prototype.getB3InTree = function () {
-    return this.getBubbleWithLabelInTree("b3");
+    return this.getVertexWithLabelInTree("b3");
 };
 
 AutomaticExpandScenario.prototype.getB2SubGraph = function () {

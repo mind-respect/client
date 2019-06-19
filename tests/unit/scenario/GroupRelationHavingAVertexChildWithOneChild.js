@@ -9,7 +9,7 @@ let GroupRelationHavingAVertexChildWithOneChild = function () {
 GroupRelationHavingAVertexChildWithOneChild.prototype = new Scenario.Scenario();
 
 GroupRelationHavingAVertexChildWithOneChild.prototype.getBubble2InTree = function () {
-    return this.getBubbleWithLabelInTree("b2");
+    return this.getVertexWithLabelInTree("b2");
 };
 
 GroupRelationHavingAVertexChildWithOneChild.prototype.getTshirtGroupRelationInTree = function () {

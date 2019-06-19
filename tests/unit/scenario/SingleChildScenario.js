@@ -16,7 +16,7 @@ SingleChildScenario.prototype.getCenterBubbleUri = function () {
 };
 
 SingleChildScenario.prototype.getParentInTree = function () {
-    return this.getBubbleWithLabelInTree("parent");
+    return this.getVertexWithLabelInTree("parent");
 };
 
 SingleChildScenario.prototype.getB1RelatedToParentGraph = function () {

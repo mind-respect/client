@@ -9,6 +9,8 @@ api.generateVertex = function () {
     );
 };
 api.generateEdge = function (sourceVertexUri, destinationVertexUri) {
+    sourceVertexUri = sourceVertexUri || api.generateVertexUri();
+    destinationVertexUri = destinationVertexUri || api.generateVertexUri();
     return Edge.fromServerFormat(
         Edge.buildObjectWithUriOfSelfSourceAndDestinationVertex(
             api.generateEdgeUri(),

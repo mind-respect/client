@@ -13,7 +13,7 @@ OneBubbleHavingSuggestionsScenario.prototype.getVertex = function () {
 };
 
 OneBubbleHavingSuggestionsScenario.prototype.getVertexUi = function () {
-    return this.getBubbleWithLabelInTree(
+    return this.getVertexWithLabelInTree(
         "Event"
     );
 };

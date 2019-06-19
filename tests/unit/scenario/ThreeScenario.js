@@ -23,7 +23,7 @@ ThreeScenario.prototype.expandBubble3 = function (bubble3) {
 };
 
 ThreeScenario.prototype.getBubble4InTree = function () {
-    return this.getBubbleWithLabelInTree("b4");
+    return this.getVertexWithLabelInTree("b4");
 };
 ThreeScenario.prototype.getSubGraphForB2 = function () {
     return Scenario.getTestData(
@@ -51,13 +51,13 @@ ThreeScenario.prototype.getBubble1 = function () {
     return this.vertexWithLabelInServerGraph("b1")
 };
 ThreeScenario.prototype.getBubble1InTree = function () {
-    return this.getBubbleWithLabelInTree("b1");
+    return this.getVertexWithLabelInTree("b1");
 };
 ThreeScenario.prototype.getBubble2InTree = function () {
-    return this.getBubbleWithLabelInTree("b2");
+    return this.getVertexWithLabelInTree("b2");
 };
 ThreeScenario.prototype.getBubble3InTree = function () {
-    return this.getBubbleWithLabelInTree("b3");
+    return this.getVertexWithLabelInTree("b3");
 };
 ThreeScenario.prototype.getRelation1InTree = function () {
     return this.getRelationWithLabelInTree(
@@ -74,7 +74,7 @@ ThreeScenario.prototype.getBubble2 = function () {
 };
 
 ThreeScenario.prototype.getCenterBubbleInTree = function () {
-    return this.getBubbleWithLabelInTree("b1");
+    return this.getVertexWithLabelInTree("b1");
 };
 
 

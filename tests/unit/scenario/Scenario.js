@@ -83,7 +83,7 @@ api.Scenario.prototype.getGraph = function () {
 };
 
 
-api.Scenario.prototype.getBubbleWithLabelInTree = function (label) {
+api.Scenario.prototype.getVertexWithLabelInTree = function (label) {
     let foundVertex = Object.values(CurrentSubGraph.get().vertices).filter((vertex) => {
         if (vertex.getLabel() === label) {
             return vertex
@@ -166,7 +166,8 @@ api.getTestData = function (key) {
 
 api.vertexWithLabelInServerGraph = function (label, graph) {
     return Object.values(graph.vertices).map((vertexServer) => {
-        return Vertex.fromServerFormat(vertexServer);
+        let isFacadeBuilt = vertexServer.getLabel !== undefined;
+        return isFacadeBuilt ? vertexServer : Vertex.fromServerFormat(vertexServer);
     }).filter((vertex) => {
         if (vertex.getLabel() === label) {
             return vertex
