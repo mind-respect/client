@@ -9,10 +9,9 @@ import Vue from 'vue'
 import FriendlyResource from "../friendly-resource/FriendlyResource";
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
-const EXPAND_UNDER_NB_SIBLINGS = 4,
-    EXPAND_UNDER_NB_CHILD = 6;
-
 const api = {};
+api.EXPAND_UNDER_NB_SIBLINGS = 4;
+api.EXPAND_UNDER_NB_CHILD = 6
 api.withoutAnIdentification = function () {
     return new GroupRelation(undefined);
 };
@@ -61,8 +60,8 @@ GroupRelation.prototype.hasFewEnoughBubblesToExpand = function () {
     if (parentNbChild === 1) {
         return true;
     }
-    return parentNbChild < EXPAND_UNDER_NB_CHILD &&
-        nbChild < EXPAND_UNDER_NB_SIBLINGS;
+    return parentNbChild < api.EXPAND_UNDER_NB_SIBLINGS &&
+        nbChild < api.EXPAND_UNDER_NB_CHILD;
 };
 
 // GroupRelation.prototype.removeChild = function (edge, temporarily) {

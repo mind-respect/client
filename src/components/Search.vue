@@ -18,7 +18,6 @@
             :loading="loading"
             flat
             cache-items
-            attach="#mind_map"
             :placeholder="$t('search:placeholder')"
             @change="selectSearchResult()"
             :menuProps="menuProps"
@@ -79,7 +78,7 @@
                 menuProps: {
                     "nudge-left": 50,
                     "max-width": 800,
-                    "contentClass": "search-menu"
+                    "contentClass": "search-menu top-search"
                 },
                 readyToDisplay: false,
                 isFocusFLow: false
@@ -128,5 +127,10 @@
         height: auto;
         min-height: 48px;
         max-height: 105px;
+    }
+
+    .top-search{
+        position:fixed;
+        left:32% !important;
     }
 </style>
