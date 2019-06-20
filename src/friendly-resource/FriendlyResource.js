@@ -8,6 +8,7 @@ import Focus from '@/Focus'
 import SelectionHandler from '@/SelectionHandler'
 import Store from '@/store'
 import Icon from '@/Icon'
+import Scroll from '@/Scroll'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const MoveRelation = {
@@ -614,6 +615,7 @@ FriendlyResource.FriendlyResource.prototype.getIsExpanded = function () {
 FriendlyResource.FriendlyResource.prototype.collapse = function () {
     this.isExpanded = false;
     this.isCollapsed = true;
+    Scroll.centerBubbleForTreeIfApplicable(this);
     Store.dispatch("redraw");
 };
 
