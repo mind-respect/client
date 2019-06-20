@@ -318,7 +318,7 @@ Vertex.prototype._shouldAddLeft = function (isToTheLeft) {
 Vertex.prototype.buildChildrenIndex = function () {
     let childrenIndex = {};
     let index = 0;
-    this.visitAllImmediateChild(function (child) {
+    this.getImmediateChild().forEach((child) => {
         if (child.isRelation()) {
             let otherVertex = child.getOtherVertex(
                 this
@@ -329,18 +329,18 @@ Vertex.prototype.buildChildrenIndex = function () {
                 otherVertex
             );
         } else if (child.isGroupRelation()) {
-            var grandChildIndex = child.buildChildrenIndex();
-            Object.keys(grandChildIndex).sort(function (a, b) {
+            let grandChildIndex = child.buildChildrenIndex();
+            Object.keys(grandChildIndex).sort((a, b) => {
                 return grandChildIndex[a].index - grandChildIndex[b].index;
-            }).forEach(function (vertexUri) {
+            }).forEach((vertexUri) => {
                 setChildVertexIndex.bind(this)(vertexUri, child.isToTheLeft(), child);
-            }.bind(this));
+            });
         }
-    }.bind(this));
+    });
     return childrenIndex;
 
     function setChildVertexIndex(childVertexUri, isToTheLeft, child) {
-        let previousValue = this.model().getChildrenIndex()[childVertexUri];
+        let previousValue = this.getChildrenIndex()[childVertexUri];
         if (!this.isCenterBubble() && previousValue) {
             isToTheLeft = previousValue.toTheLeft;
         }

@@ -37,7 +37,7 @@ VertexController.prototype.addChildCanDo = function () {
     return this.isSingleAndOwned() && !this.model().isPristine();
 };
 
-VertexController.prototype.addChild = function () {
+VertexController.prototype.addChild = function (index) {
     let triple;
     let promise = this.model().isCenter ? Promise.resolve() : this.expand();
     return promise.then(() => {
@@ -46,7 +46,11 @@ VertexController.prototype.addChild = function () {
         );
     }).then((_triple) => {
         triple = _triple;
-        this.model().addChild(triple.edge);
+        this.model().addChild(
+            triple.edge,
+            undefined,
+            index
+        );
         Vue.nextTick(() => {
             SelectionHandler.setToSingle(triple.destination);
             GraphElementService.changeChildrenIndex(
@@ -191,7 +195,9 @@ VertexController.prototype.addSibling = function () {
         GraphElementType.Vertex,
         GraphElementType.GroupRelation
     ]);
-    return parent.getController().addChild();
+    return parent.getController().addChild(
+        this.model().getIndexInTree() + 1
+    );
 };
 
 VertexController.prototype.removeManyIsPossible = true;

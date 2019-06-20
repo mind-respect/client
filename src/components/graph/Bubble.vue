@@ -29,7 +29,7 @@
                 <v-spacer v-if="isLeft"></v-spacer>
                 <div v-if="!isCollapsed || isCenter">
                     <div :class="{
-                   'blur-overlay':(bubble.isEditFlow || isBubbleLoading) && bubble.isVertexType()
+                   'blur-overlay':false && bubble.isVertexType()
                 }"
                     >
                         <Children
@@ -289,7 +289,7 @@
                 </div>
                 <div v-if="!isCollapsed || isCenter">
                     <div :class="{
-                   'blur-overlay':(bubble.isEditFlow || isBubbleLoading) && bubble.isVertexType()
+                   'blur-overlay':false && bubble.isVertexType()
                 }"
                     >
                         <Children :bubble="bubble"
