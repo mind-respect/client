@@ -43,7 +43,7 @@ const Scroll = {
                 if (bubble.isCenter) {
                     offset = 650;
                 } else if (bubble.isToTheLeft()) {
-                    offset = 1200 - element.offsetWidth;
+                    offset = 900 - element.offsetWidth;
                 } else {
                     offset = 200 + SideMenu.getWidth();
                 }
