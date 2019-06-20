@@ -47,9 +47,9 @@ const Scroll = {
                 if (bubble.isCenter) {
                     offset = 650;
                 } else if (bubble.isToTheLeft()) {
-                    offset = 900 - element.offsetWidth;
+                    offset = Math.max(900 - element.offsetWidth, 0);
                 } else {
-                    offset = 200 + SideMenu.getWidth() - (element.offsetWidth / 6)
+                    offset = Math.max(200 + SideMenu.getWidth() - (element.offsetWidth / 6), 0)
                 }
                 let position = Math.abs(offset * screen.width / 1366) + xOffset;
                 return position * -1;
