@@ -42,7 +42,7 @@ api.buildServerFormatFromUi = function (vertexUi) {
             ),
             includedEdges: {},
             includedVertices: {},
-            isPublic: vertexUi.getModel().isPublic(),
+            isPublic: vertexUi.model().isPublic(),
             numberOfConnectedEdges: vertexUi.connectedEdges().length,
             suggestions: {}
         }
@@ -171,13 +171,6 @@ Vertex.prototype.makeCenter = function () {
     this.parentBubble = this;
     this.isExpanded = true;
     this.direction = "center"
-};
-
-Vertex.prototype.getParentVertex = function () {
-    if (this.isCenter) {
-        return this;
-    }
-    return this.getParentBubble().getOtherVertex(this);
 };
 
 Vertex.prototype.getRelationWithUiParent = function () {
@@ -347,7 +340,7 @@ Vertex.prototype.buildChildrenIndex = function () {
     return childrenIndex;
 
     function setChildVertexIndex(childVertexUri, isToTheLeft, child) {
-        let previousValue = this.getModel().getChildrenIndex()[childVertexUri];
+        let previousValue = this.model().getChildrenIndex()[childVertexUri];
         if (!this.isCenterBubble() && previousValue) {
             isToTheLeft = previousValue.toTheLeft;
         }

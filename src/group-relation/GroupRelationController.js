@@ -49,26 +49,26 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
         parentVertex
     ).then((_triple) => {
         triple = _triple;
-        let addIdentifiers = Promise.all(this.getModel().getIdentifiers().map(function (identifier) {
+        let addIdentifiers = Promise.all(this.model().getIdentifiers().map(function (identifier) {
             identifier.makeSameAs();
             return triple.edge.getController().addIdentification(
                 identifier
             );
         })).then(() => {
-            this.getModel().addChild(triple.edge)
+            this.model().addChild(triple.edge)
         });
         let promises = [
             addIdentifiers,
             EdgeService.updateLabel(
                 triple.edge,
-                this.getModel().getIdentification().getLabel()
+                this.model().getIdentification().getLabel()
             ).then(() => {
                 triple.edge.setLabel(
-                    this.getModel().getIdentification().getLabel()
+                    this.model().getIdentification().getLabel()
                 );
             })
         ];
-        if (parentVertex.getModel().isPublic()) {
+        if (parentVertex.model().isPublic()) {
             promises.push(
                 triple.destination.getController().makePublic()
             );
@@ -77,7 +77,7 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
     }).then(() => {
         Vue.nextTick(() => {
             saveIndex === false ? Promise.resolve() : GraphElementService.changeChildrenIndex(
-                this.getModel().getParentVertex()
+                this.model().getParentVertex()
             );
             if (saveIndex) {
                 SelectionHandler.setToSingle(triple.destination);
@@ -117,7 +117,7 @@ GroupRelationController.prototype.becomeParent = function (graphElementUi) {
         do {
             promises.push(
                 movedEdge.getController().addIdentifiers(
-                    parentGroupRelation.getModel().getIdentifiers()
+                    parentGroupRelation.model().getIdentifiers()
                 )
             );
             parentGroupRelation = parentGroupRelation.getParentBubble();
@@ -127,9 +127,9 @@ GroupRelationController.prototype.becomeParent = function (graphElementUi) {
 
 GroupRelationController.prototype.becomeExParent = function (movedEdge) {
     let promises = [];
-    let previousParentGroupRelation = this.getModel().getGreatestGroupRelationAncestor();
+    let previousParentGroupRelation = this.model().getGreatestGroupRelationAncestor();
     previousParentGroupRelation.getModel().getIdentifiersAtAnyDepth().forEach(function (identifier) {
-        identifier = movedEdge.getModel().getIdentifierHavingExternalUri(
+        identifier = movedEdge.model().getIdentifierHavingExternalUri(
             identifier.getExternalResourceUri()
         );
         if (identifier) {

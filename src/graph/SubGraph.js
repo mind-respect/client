@@ -54,6 +54,7 @@ api.SubGraph.prototype.add = function (graphElement) {
         this.edges.push(graphElement);
         let destinationVertex = graphElement.getDestinationVertex();
         destinationVertex.parentBubble = graphElement;
+        destinationVertex.parentVertex = graphElement.parentVertex;
         this.add(
             destinationVertex
         );

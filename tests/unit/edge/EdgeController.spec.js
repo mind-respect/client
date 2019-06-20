@@ -25,14 +25,14 @@ describe("EdgeController", () => {
             let threeBubblesScenario = await new ThreeScenario();
             let bubble1 = threeBubblesScenario.getBubble1InTree();
             expect(
-                bubble1.getModel().getNumberOfConnectedEdges()
+                bubble1.model().getNumberOfConnectedEdges()
             ).toBe(
                 2
             );
             let relation1 = bubble1.getNextBubble();
             await relation1.getController().remove(true);
             expect(
-                bubble1.getModel().getNumberOfConnectedEdges()
+                bubble1.model().getNumberOfConnectedEdges()
             ).toBe(
                 1
             );
@@ -75,7 +75,7 @@ describe("EdgeController", () => {
             let relation1 = TestUtil.getChildWithLabel(bubble1, "r1");
             let tag = TestUtil.dummyIdentifier();
             tag.setLabel("moustache")
-            relation1.getModel().addIdentification(tag);
+            relation1.model().addIdentification(tag);
             await new EdgeController.RelationController(
                 relation1
             ).addChild();
@@ -120,7 +120,7 @@ describe("EdgeController", () => {
             let tested = false;
             await relationUnderGroupRelation.getController().addChild().then((triple) => {
                 expect(
-                    triple.edge.getModel().getIdentifiers().length
+                    triple.edge.model().getIdentifiers().length
                 ).toBe(2);
                 tested = true;
             });
@@ -342,7 +342,7 @@ describe("EdgeController", () => {
             );
             let identifier = TestUtil.dummyIdentifier();
             identifier.setLabel("some identifier");
-            r1.getModel().addIdentification(
+            r1.model().addIdentification(
                 identifier
             );
             await r1.getController().addChild();
@@ -358,7 +358,7 @@ describe("EdgeController", () => {
                 "some identifier"
             );
             expect(
-                newGroupRelation.getModel().getIdentifiers().length
+                newGroupRelation.model().getIdentifiers().length
             ).toBe(1);
         });
         it("includes previous vertex in group relation model vertices", async () => {
@@ -427,15 +427,15 @@ describe("EdgeController", () => {
                 centerBubble,
                 "r1"
             );
-            r1.getModel().addIdentification(
+            r1.model().addIdentification(
                 TestUtil.dummyIdentifier()
             );
             expect(
-                r2.getModel().getIdentifiers().length
+                r2.model().getIdentifiers().length
             ).toBe(0);
             await b3.getController().moveUnderParent(r1);
             expect(
-                r2.getModel().getIdentifiers().length
+                r2.model().getIdentifiers().length
             ).toBe(1);
         });
         it("adds the relation's identifier to the child relation", async () => {
@@ -451,11 +451,11 @@ describe("EdgeController", () => {
                 "r1"
             );
             expect(
-                r2.getModel().getIdentifiersIncludingSelf().length
+                r2.model().getIdentifiersIncludingSelf().length
             ).toBe(1);
             await b3.getController().moveUnderParent(r1);
             expect(
-                r2.getModel().getIdentifiersIncludingSelf().length
+                r2.model().getIdentifiersIncludingSelf().length
             ).toBe(2);
         });
 

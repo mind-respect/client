@@ -17,7 +17,7 @@ describe("GroupRelationController", () => {
         it("gives all it's identifiers to the new relation when adding a child", async () => {
             let scenario = await new GraphWithSimilarRelationsScenario();
             let possessionInTree = scenario.getPossessionGroupRelation();
-            possessionInTree.getModel().addIdentification(
+            possessionInTree.model().addIdentification(
                 TestUtil.dummyIdentifier()
             );
             let testWasMade = false;
@@ -34,8 +34,8 @@ describe("GroupRelationController", () => {
         it("makes new child public if parent vertex is public", async () => {
             let scenario = await new GraphWithSimilarRelationsScenario();
             let possessionInTree = scenario.getPossessionGroupRelation();
-            possessionInTree.getParentVertex().getModel().makePublic();
-            possessionInTree.getModel().addIdentification(
+            possessionInTree.getParentVertex().model().makePublic();
+            possessionInTree.model().addIdentification(
                 TestUtil.dummyIdentifier()
             );
             let testWasMade = false;
@@ -53,12 +53,12 @@ describe("GroupRelationController", () => {
             let scenario = await new GraphWithSimilarRelationsScenario();
             let possessionInTree = scenario.getPossessionGroupRelation();
             let nbVerticesBefore = Object.keys(
-                possessionInTree.getModel().getVertices()
+                possessionInTree.model().getVertices()
             ).length;
             await possessionInTree.getController().addChild();
             expect(
                 Object.keys(
-                    possessionInTree.getModel().getVertices()
+                    possessionInTree.model().getVertices()
                 ).length
             ).toBe(nbVerticesBefore + 1);
         });

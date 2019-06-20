@@ -8,6 +8,7 @@ import VertexServerFormatBuilder from '@/vertex/VertexServerFormatBuilder'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Store from '@/store'
 import Vue from 'vue'
+import I18n from '@/I18n'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -91,6 +92,10 @@ api.Edge.prototype.updateSourceOrDestination = function (vertex) {
     } else {
         console.warn("trying to update non related source or destination vertex to " + this.getLabel())
     }
+};
+
+api.Edge.prototype.getWhenEmptyLabel = function () {
+    return I18n.i18next.t("edge:default");
 };
 
 api.Edge.prototype.replaceRelatedVertex = function (relatedVertex, newVertex) {

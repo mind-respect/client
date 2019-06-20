@@ -145,7 +145,7 @@ describe('VertexController', () => {
         GraphServiceMock.getForCentralBubbleUri(
             scenario.getSubGraphForB2()
         );
-        b2.getModel().makePublic();
+        b2.model().makePublic();
         let hasVisited = false;
         await b2.getController().addChild().then(function (triple) {
             hasVisited = true;
@@ -260,7 +260,7 @@ describe('VertexController', () => {
             hasVisited = true;
             let relation = triple.destination.getParentBubble();
             expect(
-                relation.getModel().hasIdentifications()
+                relation.model().hasIdentifications()
             ).toBeTruthy();
         });
         expect(
@@ -270,7 +270,7 @@ describe('VertexController', () => {
     it("does not load the surround graph when expanding a collapsed vertex", async () => {
         let scenario = await new ThreeScenario();
         let b2 = scenario.getBubble2InTree();
-        let nbCalls = GraphServiceMock.getGraphSpy.mock.calls.length ;
+        let nbCalls = GraphServiceMock.getGraphSpy.mock.calls.length;
         expect(
             b2.getController().expandCanDo()
         ).toBeTruthy()
@@ -338,7 +338,7 @@ describe('VertexController', () => {
     it("does not make public already public vertices when making a collection public", async () => {
         let scenario = await new ThreeScenario();
         let b2 = scenario.getBubble2InTree();
-        b2.getModel().makePublic();
+        b2.model().makePublic();
         let hasCalledService = false;
         let nbVerticesToMakePublic = 0;
         Mock.getSpy(
@@ -364,9 +364,9 @@ describe('VertexController', () => {
     it("does not make private already private vertices when making a collection private", async () => {
         let scenario = await new ThreeScenario();
         let b1 = scenario.getBubble1InTree();
-        b1.getModel().makePublic();
+        b1.model().makePublic();
         let b3 = scenario.getBubble3InTree();
-        b3.getModel().makePublic();
+        b3.model().makePublic();
         let hasCalledService = false;
         let nbVerticesToMakePrivate = 0;
         Mock.getSpy(
@@ -392,13 +392,13 @@ describe('VertexController', () => {
     it("makes model be private when making private", async () => {
         let scenario = await new ThreeScenario();
         let b1 = scenario.getBubble1InTree();
-        b1.getModel().makePublic();
+        b1.model().makePublic();
         expect(
-            b1.getModel().isPublic()
+            b1.model().isPublic()
         ).toBeTruthy();
         await b1.getController().makePrivate();
         expect(
-            b1.getModel().isPublic()
+            b1.model().isPublic()
         ).toBeFalsy();
     });
     describe("convertToDistantBubbleWithUri", function () {
@@ -540,7 +540,7 @@ describe('VertexController', () => {
             let singleChildScenario = await new SingleChildScenario();
             let parent = singleChildScenario.getParentInTree();
             let relation = parent.getNextBubble();
-            relation.getModel().addIdentification(
+            relation.model().addIdentification(
                 TestUtil.dummyIdentifier()
             );
             let child = relation.getNextBubble();
@@ -552,7 +552,7 @@ describe('VertexController', () => {
             );
             relation = parent.getNextBubble();
             expect(
-                relation.getModel().hasIdentifications()
+                relation.model().hasIdentifications()
             ).toBeTruthy();
         });
         xit("reviews other instances display", function () {
@@ -577,10 +577,10 @@ describe('VertexController', () => {
                 newChildOfB2.getOtherInstanceButton().hasClass("hidden")
             ).toBeTruthy();
             expect(newChildOfB2.getController().convertToDistantBubbleWithUriCanDo(
-                b3.getModel().getUri()
+                b3.model().getUri()
             )).toBeTruthy();
             newChildOfB2.getController().convertToDistantBubbleWithUri(
-                b3.getModel().getUri()
+                b3.model().getUri()
             );
             expect(
                 b3.getOtherInstanceButton().hasClass("hidden")
@@ -626,11 +626,11 @@ describe('VertexController', () => {
             let scenario = await new ThreeScenario();
             let b1 = scenario.getBubble1InTree();
             expect(
-                b1.getModel().getNumberOfChild()
+                b1.model().getNumberOfChild()
             ).toBe(2);
             await b1.getController().addChild();
             expect(
-                b1.getModel().getNumberOfChild()
+                b1.model().getNumberOfChild()
             ).toBe(3);
         });
         it("sets to zero the number of connected edges to the destination vertex", async () => {
@@ -638,7 +638,7 @@ describe('VertexController', () => {
             let b1 = scenario.getBubble1InTree();
             let triple = await b1.getController().addChild();
             expect(
-                triple.destination.getModel().getNumberOfChild()
+                triple.destination.model().getNumberOfChild()
             ).toBe(0);
         });
     });
@@ -649,11 +649,11 @@ describe('VertexController', () => {
             let b1 = scenario.getBubble1InTree();
             let childVertex = b1.getNextBubble().getNextBubble();
             expect(
-                b1.getModel().getNumberOfChild()
+                b1.model().getNumberOfChild()
             ).toBe(2);
             await childVertex.getController().addSibling();
             expect(
-                b1.getModel().getNumberOfChild()
+                b1.model().getNumberOfChild()
             ).toBe(3);
         });
     });
@@ -668,11 +668,11 @@ describe('VertexController', () => {
             });
             await bubble2.getController().moveUnderParent(newChild);
             expect(
-                newChild.getModel().getNumberOfChild()
+                newChild.model().getNumberOfChild()
             ).toBe(1);
             newChild.collapse();
             expect(
-                newChild.getModel().getNumberOfChild()
+                newChild.model().getNumberOfChild()
             ).toBe(1);
         });
         xit("can become parent of a group relation", async () => {

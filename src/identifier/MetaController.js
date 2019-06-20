@@ -23,7 +23,7 @@ function MetaController(metas) {
 MetaController.prototype = new GraphElementController.GraphElementController();
 
 MetaController.prototype.loadGraph = function (metaAsBubble) {
-    let uri = this.getModel().getUri();
+    let uri = this.model().getUri();
     return GraphService.getForCentralBubbleUri(uri).then((response) => {
         let metaSubGraph = MetaGraph.fromServerFormatAndCenterUri(
             response.data,
@@ -176,7 +176,7 @@ MetaController.prototype.identifyCanDo = function () {
 };
 
 MetaController.prototype.wikipediaLinksCanShowInLabel = function () {
-    return this.getModel().getWikipediaLink().then(function (hasLink) {
+    return this.model().getWikipediaLink().then(function (hasLink) {
         return hasLink;
     });
 };
@@ -191,7 +191,7 @@ MetaController.prototype.convertToDistantBubbleWithUri = function (distantTagUri
         return Promise.reject();
     }
     this.getUi().beforeConvertToDistantBubbleWithUri();
-    return MetaService.mergeTo(this.getModel(), distantTagUri).then(function () {
+    return MetaService.mergeTo(this.model(), distantTagUri).then(function () {
         this.getUi().mergeTo(distantTagUri);
         return GraphDisplayer.displayForMetaWithUri(
             distantTagUri

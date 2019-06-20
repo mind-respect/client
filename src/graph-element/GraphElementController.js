@@ -40,26 +40,26 @@ GraphElementController.prototype.getUiArray = function () {
     }
     return this.graphElements;
 };
-GraphElementController.prototype.getModel = function () {
-    return this.getUi().getModel();
+GraphElementController.prototype.model = function () {
+    return this.graphElements;
 };
 GraphElementController.prototype.getModelArray = function () {
     return this.getUiArray().map(function (ui) {
-        return ui.getModel();
+        return ui.model();
     });
 };
 GraphElementController.prototype.noteCanDo = function () {
     return this.isSingle() && (
-        this.isOwned() || this.getModel().hasComment()
+        this.isOwned() || this.model().hasComment()
     );
 };
 
 GraphElementController.prototype.setLabel = function (newLabel) {
-    this.getUi().getModel().setLabel(
+    this.getUi().model().setLabel(
         newLabel
     );
     return FriendlyResourceService.updateLabel(
-        this.getModel(),
+        this.model(),
         newLabel
     );
 };
@@ -99,7 +99,7 @@ GraphElementController.prototype.centerCanDo = function () {
 
 GraphElementController.prototype.center = function () {
     router.push(
-        this.getModel().uri().url()
+        this.model().uri().url()
     );
 };
 
@@ -113,8 +113,8 @@ GraphElementController.prototype.identifyHideIfDisabled = function () {
 
 GraphElementController.prototype.identifyCanDo = function () {
     return this.isSingle() && (
-        (this.isOwned() && !this.getModel().hasIdentifications()) ||
-        this.getModel().getIdentifiers().length === 1
+        (this.isOwned() && !this.model().hasIdentifications()) ||
+        this.model().getIdentifiers().length === 1
     );
 };
 
@@ -123,7 +123,7 @@ GraphElementController.prototype.identifyWhenManyHideIfDisabled = function () {
 };
 
 GraphElementController.prototype.identifyWhenManyCanDo = function () {
-    return this.isSingle() && this.getModel().getIdentifiers().length > 1;
+    return this.isSingle() && this.model().getIdentifiers().length > 1;
 };
 
 GraphElementController.prototype.identifyWhenMany = GraphElementController.prototype.identify = function () {
@@ -140,7 +140,7 @@ GraphElementController.prototype.accept = function () {
         this.getUi(),
         comparedWithLabel
     ).then(function () {
-        this.getUi().getModel().setLabel(comparedWithLabel);
+        this.getUi().model().setLabel(comparedWithLabel);
         this.getUi().labelUpdateHandle();
     }.bind(this));
 };
@@ -159,7 +159,7 @@ GraphElementController.prototype.expand = function (avoidCenter, avoidExpandChil
         this.getUi().expand(avoidCenter);
         var expandChildCalls = [];
         this.getUi().visitClosestChildVertices(function (childVertex) {
-            if (childVertex.getModel().hasOnlyOneHiddenChild()) {
+            if (childVertex.model().hasOnlyOneHiddenChild()) {
                 expandChildCalls.push(
                     childVertex.getController().expand(true, true, true)
                 );
@@ -196,10 +196,10 @@ GraphElementController.prototype.collapseCanDo = function () {
 };
 
 GraphElementController.prototype.collapse = function () {
-    this.getModel().defineScrollPosition();
+    this.model().defineScrollPosition();
     this.getUi().collapse();
     Vue.nextTick(() => {
-        Scroll.goToGraphElement(this.getModel());
+        Scroll.goToGraphElement(this.model());
     })
 };
 
@@ -238,7 +238,7 @@ GraphElementController.prototype._pasteText = function (event) {
     let separator = "" === this.getUi().getLabel().trim() ?
         "" : " ";
     this.setLabel(
-        this.getModel().getLabel() + separator + clipText
+        this.model().getLabel() + separator + clipText
     );
     Vue.nextTick(() => {
         this.getUi().focus();
@@ -331,10 +331,10 @@ GraphElementController.prototype._canMoveUnderParent = function (parent, forceLe
     let isParentVertex = this.getUi().getParentVertex().isSameBubble(parent);
     let isParentBubble = this.getUi().getParentBubble().isSameBubble(parent);
     if (isParentVertex || isParentBubble || this.getUi().isBubbleAChild(parent)) {
-        if (forceLeft === true && !this.getModel().isToTheLeft()) {
+        if (forceLeft === true && !this.model().isToTheLeft()) {
             return true;
         }
-        if (forceLeft === false && this.getModel().isToTheLeft()) {
+        if (forceLeft === false && this.model().isToTheLeft()) {
             return true;
         }
         return false
@@ -448,7 +448,7 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
         GraphElementService.changeChildrenIndex(
             previousParentVertex
         );
-        SelectionHandler.setToSingle(this.getModel());
+        SelectionHandler.setToSingle(this.model());
     });
 };
 
@@ -526,11 +526,11 @@ GraphElementController.prototype.addIdentifiers = function (identifiers) {
 };
 
 GraphElementController.prototype.addIdentification = function (identifier) {
-    if (this.getModel().hasIdentification(identifier)) {
+    if (this.model().hasIdentification(identifier)) {
         return Promise.resolve()
     }
     return TagService.add(
-        this.getModel(),
+        this.model(),
         identifier
     ).then((identifications) => {
         return Promise.all(
@@ -538,7 +538,7 @@ GraphElementController.prototype.addIdentification = function (identifier) {
                 return identifier.getUrl();
             })
         ).then(() => {
-            this.getModel().addIdentifications(
+            this.model().addIdentifications(
                 identifications
             );
             return identifications;
@@ -562,19 +562,19 @@ GraphElementController.prototype.remove = function (skipConfirmation) {
 GraphElementController.prototype.removeDo = async function () {
     await this.isSingle() ?
         GraphElementService.remove(
-            this.getModel()
+            this.model()
         ) :
         GraphElementService.removeCollection(
             this.getModelArray()
         );
     let nextSibling;
     if (this.isSingle()) {
-        nextSibling = this.getModel().getNextSibling();
+        nextSibling = this.model().getNextSibling();
     }
     this.getModelArray().forEach(function (bubble) {
         bubble.remove();
     });
-    if (nextSibling && !nextSibling.isSameUri(this.getModel())) {
+    if (nextSibling && !nextSibling.isSameUri(this.model())) {
         SelectionHandler.setToSingle(nextSibling);
     } else {
         SelectionHandler.removeAll();
@@ -582,12 +582,12 @@ GraphElementController.prototype.removeDo = async function () {
 };
 
 GraphElementController.prototype.removeIdentifier = function (identifier) {
-    this.getModel().removeIdentifier(
+    this.model().removeIdentifier(
         identifier
     );
     return new Promise((resolve) => {
         TagService.remove(
-            this.getModel(),
+            this.model(),
             identifier
         ).then(() => {
             resolve();
@@ -606,7 +606,7 @@ GraphElementController.prototype.removeIdentifier = function (identifier) {
     });
 };
 GraphElementController.prototype.selectTreeCanDo = function () {
-    return this.isSingleAndOwned() && !this.getModel().isLeaf();
+    return this.isSingleAndOwned() && !this.model().isLeaf();
 };
 
 GraphElementController.prototype.selectTree = function () {

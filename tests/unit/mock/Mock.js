@@ -56,6 +56,9 @@ api.applyDefault = function () {
             put: jest.fn(() => {
                 return Promise.resolve();
             }),
+            delete: jest.fn(() => {
+                return Promise.resolve();
+            }),
             interceptors: {
                 response: {
                     use: jest.fn(() => {

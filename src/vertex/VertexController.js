@@ -16,6 +16,7 @@ import LoadingFlow from '@/LoadingFlow'
 import Scroll from '@/Scroll'
 import Vue from 'vue'
 import Store from '@/store'
+import CurrentSubGraph from "../graph/CurrentSubGraph";
 
 const api = {};
 
@@ -33,32 +34,32 @@ function VertexController(vertices) {
 VertexController.prototype = new GraphElementController.GraphElementController();
 
 VertexController.prototype.addChildCanDo = function () {
-    return this.isSingleAndOwned() && !this.getModel().isPristine();
+    return this.isSingleAndOwned() && !this.model().isPristine();
 };
 
 VertexController.prototype.addChild = function () {
     let triple;
-    let promise = this.getModel().isCenter ? Promise.resolve() : this.expand();
+    let promise = this.model().isCenter ? Promise.resolve() : this.expand();
     return promise.then(() => {
         return VertexService.addTuple(
-            this.getModel()
+            this.model()
         );
     }).then((_triple) => {
         triple = _triple;
-        this.getModel().addChild(triple.edge);
+        this.model().addChild(triple.edge);
         Vue.nextTick(() => {
             SelectionHandler.setToSingle(triple.destination);
             GraphElementService.changeChildrenIndex(
-                this.getModel()
+                this.model()
             );
         });
         Store.dispatch("redraw");
-        if (ShareLevel.PRIVATE === this.getModel().getModel().getShareLevel()) {
+        if (ShareLevel.PRIVATE === this.model().model().getShareLevel()) {
             triple.destination.setShareLevel(ShareLevel.PRIVATE);
         } else {
             //not returning promise to allow faster process
             triple.destination.getController().setShareLevel(
-                this.getModel().getShareLevel()
+                this.model().getShareLevel()
             );
         }
         return triple;
@@ -72,21 +73,21 @@ VertexController.prototype.convertToRelationCanDo = function () {
     if (!this.getUi().isExpanded) {
         return false;
     }
-    if (this.getModel().isLabelEmpty()) {
+    if (this.model().isLabelEmpty()) {
         return false;
     }
-    var numberOfChild = this.getModel().getNumberOfChild();
+    var numberOfChild = this.model().getNumberOfChild();
     if (numberOfChild >= 2) {
         return false;
     }
     var parentBubble = this.getUi().getParentBubble();
 
-    if (!parentBubble.isRelation() || !parentBubble.getModel().isPristine()) {
+    if (!parentBubble.isRelation() || !parentBubble.model().isPristine()) {
         return false;
     }
     if (numberOfChild === 1) {
         var childRelation = this.getUi().getNextBubble();
-        return childRelation.isRelation() && childRelation.getModel().isPristine();
+        return childRelation.isRelation() && childRelation.model().isPristine();
     }
     return true;
 };
@@ -94,9 +95,9 @@ VertexController.prototype.convertToRelationCanDo = function () {
 VertexController.prototype.convertToRelation = function () {
     let parentRelation = this.getUi().getParentBubble();
     let promises = [];
-    let label = this.getModel().getLabel();
+    let label = this.model().getLabel();
     let toSelect;
-    if (this.getModel().getNumberOfChild() === 1) {
+    if (this.model().getNumberOfChild() === 1) {
         var childRelation = this.getUi().getNextBubble();
         promises.push(
             childRelation.getController().setLabel(
@@ -135,16 +136,16 @@ VertexController.prototype.convertToGroupRelationCanDo = function () {
     if (!this.getUi().isExpanded) {
         return false;
     }
-    if (this.getModel().isLabelEmpty()) {
+    if (this.model().isLabelEmpty()) {
         return false;
     }
-    var numberOfChild = this.getModel().getNumberOfChild();
+    var numberOfChild = this.model().getNumberOfChild();
     if (numberOfChild <= 1) {
         return false;
     }
     var allChildAreEmptyRelations = true;
     this.getUi().visitAllImmediateChild(function (child) {
-        if (!child.isRelation() || !child.getModel().isPristine()) {
+        if (!child.isRelation() || !child.model().isPristine()) {
             allChildAreEmptyRelations = false;
         }
     });
@@ -152,13 +153,13 @@ VertexController.prototype.convertToGroupRelationCanDo = function () {
         return false;
     }
     var parentBubble = this.getUi().getParentBubble();
-    return parentBubble.isRelation() && parentBubble.getModel().isPristine();
+    return parentBubble.isRelation() && parentBubble.model().isPristine();
 };
 
 VertexController.prototype.convertToGroupRelation = function () {
     var parentRelation = this.getUi().getParentBubble();
     var promise = parentRelation.getController().setLabel(
-        this.getModel().getLabel()
+        this.model().getLabel()
     );
     this.getUi().visitClosestChildOfType(GraphElementType.Vertex, function (childRelation) {
         promise = promise.then(function () {
@@ -180,13 +181,13 @@ VertexController.prototype.convertToGroupRelation = function () {
 };
 
 VertexController.prototype.addSiblingCanDo = function () {
-    return this.isSingleAndOwned() && !this.getModel().isCenter &&
+    return this.isSingleAndOwned() && !this.model().isCenter &&
         !this.getUi().getParentBubble().getParentBubble().isMeta() &&
-        !this.getModel().isPristine();
+        !this.model().isPristine();
 };
 
 VertexController.prototype.addSibling = function () {
-    let parent = this.getModel().getClosestAncestorInTypes([
+    let parent = this.model().getClosestAncestorInTypes([
         GraphElementType.Vertex,
         GraphElementType.GroupRelation
     ]);
@@ -222,7 +223,7 @@ VertexController.prototype.makePrivateManyIsPossible = true;
 VertexController.prototype.makePrivateCanDo = function () {
     return this.isOwned() && (
         (this.isMultiple() && !this._areAllElementsPrivate()) || (
-            this.isSingle() && this.getUi().getModel().isPublic()
+            this.isSingle() && this.getUi().model().isPublic()
         )
     );
 };
@@ -230,9 +231,9 @@ VertexController.prototype.makePrivateCanDo = function () {
 VertexController.prototype.makePrivate = function () {
     if (this.isSingle()) {
         VertexService.makePrivate(
-            this.getModel()
+            this.model()
         ).then(() => {
-            this.getModel().makePrivate();
+            this.model().makePrivate();
         });
     } else {
         let publicVertices = [];
@@ -257,7 +258,7 @@ VertexController.prototype.makePrivate = function () {
 VertexController.prototype.makePublicCanDo = function () {
     return this.isOwned() && (
         (this.isMultiple() && !this._areAllElementsPublic()) || (
-            this.isSingle() && !this.getUi().getModel().isPublic()
+            this.isSingle() && !this.getUi().model().isPublic()
         )
     );
 };
@@ -284,12 +285,12 @@ VertexController.prototype._areAllElementsFriendsOnly = function () {
 VertexController.prototype._areAllElementsInShareLevels = function (shareLevels) {
     if (this.isSingle()) {
         return shareLevels.indexOf(
-            this.getModel().getShareLevel()
+            this.model().getShareLevel()
         ) !== -1;
     }
     return this.getUi().every(function (ui) {
         return shareLevels.indexOf(
-            ui.getModel().getShareLevel()
+            ui.model().getShareLevel()
         ) !== -1;
     });
 };
@@ -299,7 +300,7 @@ VertexController.prototype.makePublic = function () {
         return VertexService.makePublic(
             this.getUi()
         ).then(() => {
-            this.getModel().makePublic();
+            this.model().makePublic();
         });
     } else {
         let privateVertices = [];
@@ -354,11 +355,11 @@ VertexController.prototype.makePublic = function () {
 
 VertexController.prototype.setShareLevel = function (shareLevel) {
     this.getUiArray().forEach(function (vertexUi) {
-        if (vertexUi.getModel().isPublic()) {
-            vertexUi.getParentVertex().getModel().decrementNbPublicNeighbors();
+        if (vertexUi.model().isPublic()) {
+            vertexUi.getParentVertex().model().decrementNbPublicNeighbors();
         }
-        if (vertexUi.getModel().isFriendsOnly()) {
-            vertexUi.getParentVertex().getModel().decrementNbFriendNeigbors();
+        if (vertexUi.model().isFriendsOnly()) {
+            vertexUi.getParentVertex().model().decrementNbFriendNeigbors();
         }
     });
     let promise = this.isMultiple() ?
@@ -370,12 +371,12 @@ VertexController.prototype.setShareLevel = function (shareLevel) {
     return promise.then(() => {
         this.getUiArray().forEach(function (vertexUi) {
             if (ShareLevel.isPublic(shareLevel)) {
-                vertexUi.getParentVertex().getModel().incrementNbPublicNeighbors();
+                vertexUi.getParentVertex().model().incrementNbPublicNeighbors();
             }
             if (shareLevel === ShareLevel.FRIENDS) {
-                vertexUi.getParentVertex().getModel().incrementNbFriendNeighbors();
+                vertexUi.getParentVertex().model().incrementNbFriendNeighbors();
             }
-            vertexUi.getModel().setShareLevel(shareLevel.toUpperCase());
+            vertexUi.model().setShareLevel(shareLevel.toUpperCase());
         });
     });
 };
@@ -400,7 +401,7 @@ VertexController.prototype.becomeParent = function (child) {
             this.getUi()
         );
         Vue.nextTick(() => {
-            GraphElementService.changeChildrenIndex(this.getModel());
+            GraphElementService.changeChildrenIndex(this.model());
         });
     });
 
@@ -408,9 +409,9 @@ VertexController.prototype.becomeParent = function (child) {
         promises.push(
             movedEdge.getController().replaceParentVertex(
                 this.getUi()
-            ).then(()=>{
+            ).then(() => {
                 movedEdge.moveToParent(
-                    this.getModel()
+                    this.model()
                 )
             })
         );
@@ -526,25 +527,25 @@ VertexController.prototype.group = function () {
     // );
 };
 VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isChildExpand) {
-    if (!this.getModel().isCenter && !this.getModel().canExpand()) {
-        this.getModel().isExpanded = true;
+    if (!this.model().isCenter && !this.model().canExpand()) {
+        this.model().isExpanded = true;
         return Promise.resolve();
     }
     let promise = Promise.resolve();
     LoadingFlow.enterNoSpinner();
-    this.getModel().loading = false;
+    this.model().loading = false;
     avoidExpandChild = avoidExpandChild || false;
     isChildExpand = isChildExpand || false;
-    this.getModel().beforeExpand();
-    if (!this.getModel().isExpanded) {
-        if (!this.getModel().isCollapsed) {
+    this.model().beforeExpand();
+    if (!this.model().isExpanded) {
+        if (!this.model().isCollapsed) {
             promise = this.subGraphController.load().then(() => {
                 if (avoidExpandChild) {
                     return true;
                 }
                 let expandChildCalls = [];
                 this.getUi().visitClosestChildVertices(function (childVertex) {
-                    if (childVertex.getModel().hasOnlyOneHiddenChild()) {
+                    if (childVertex.model().hasOnlyOneHiddenChild()) {
                         expandChildCalls.push(
                             childVertex.getController().expand(true, true, true)
                         );
@@ -554,7 +555,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
             });
         }
     } else {
-        this.getModel().loading = false;
+        this.model().loading = false;
         promise = this.expandDescendantsIfApplicable();
     }
     return promise.then(function () {
@@ -562,7 +563,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
         Vue.nextTick(() => {
             LoadingFlow.leave();
             Store.dispatch("redraw");
-            Scroll.goToGraphElement(this.getModel());
+            Scroll.goToGraphElement(this.model());
         });
     }.bind(this));
 };
@@ -589,19 +590,19 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
     if (!this.convertToDistantBubbleWithUriCanDo(distantVertexUri)) {
         return Promise.reject();
     }
-    // this.getUi().beforeConvertToDistantBubbleWithUri();
-    let parentVertex = this.getModel().getParentVertex();
-    return VertexService.mergeTo(this.getModel(), distantVertexUri).then(() => {
-        this.getModel().remove();
+    return VertexService.mergeTo(this.model(), distantVertexUri).then(() => {
+        this.model().setUri(distantVertexUri);
         return SubGraphController.withVertex(
-            parentVertex
+            this.model()
         ).loadForParentIsAlreadyOnMap();
-    }).then(() => {
-        parentVertex.visitClosestChildVertices((childVertex) => {
-            if (childVertex.getUri() === distantVertexUri) {
-                childVertex.getController().expand();
-            }
-        });
+    }).then((subGraph) => {
+        this.model().setLabel(
+            subGraph.getVertexWithUri(distantVertexUri).getLabel()
+        );
+        GraphElementService.changeChildrenIndex(
+            this.model().getParentVertex()
+        );
+        Store.dispatch("redraw");
     });
 };
 

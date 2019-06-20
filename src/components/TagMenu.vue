@@ -162,7 +162,7 @@
                 let identifier = Identification.fromSearchResult(
                     this.selectedSearchResult
                 );
-                if (this.selected.getModel().hasIdentification(identifier)) {
+                if (this.selected.model().hasIdentification(identifier)) {
                     return false;
                 }
                 identifier.makeGeneric();

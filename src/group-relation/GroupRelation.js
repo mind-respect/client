@@ -451,7 +451,7 @@ GroupRelation.prototype.buildChildrenIndex = function () {
     let index = 0;
     if (this.getNumberOfChild() === 0) {
         this.getModel().getSortedVerticesArrayAtAnyDepth(
-            this.getParentVertex().getModel().getChildrenIndex()
+            this.getParentVertex().model().getChildrenIndex()
         ).forEach(function (childVertex) {
             setChildVertexIndex(childVertex.getUri());
         });
@@ -459,8 +459,8 @@ GroupRelation.prototype.buildChildrenIndex = function () {
         this.visitAllImmediateChild(function (child) {
             if (child.isRelation()) {
                 setChildVertexIndex(
-                    child.getModel().getOtherVertex(
-                        this.getParentVertex().getModel()
+                    child.model().getOtherVertex(
+                        this.getParentVertex().model()
                     ).getUri()
                 );
             } else if (child.isGroupRelation()) {

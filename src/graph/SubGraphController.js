@@ -38,29 +38,29 @@ SubGraphController.prototype.loadForParentIsAlreadyOnMap = function () {
 
 SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
     return GraphService.getForCentralBubbleUri(
-        this.getModel().getUri()
+        this.model().getUri()
     ).then(function (response) {
         let serverGraph = response.data;
-        this.getModel().nbRelationsWithGrandParent = this._removeRelationWithGrandParentAndChildFromServerGraph(serverGraph);
-        if (!serverGraph.vertices[this.getModel().getUri()]) {
+        this.model().nbRelationsWithGrandParent = this._removeRelationWithGrandParentAndChildFromServerGraph(serverGraph);
+        if (!serverGraph.vertices[this.model().getUri()]) {
             return Promise.reject();
         }
         TreeDisplayerCommon.setUiTreeInfoToVertices(
             serverGraph,
-            this.getModel().getUri()
+            this.model().getUri()
         );
         let graph = SubGraph.withFacadeAndCenterUri(
             serverGraph,
-            this.getModel().getUri()
+            this.model().getUri()
         );
         let parentAsCenter = graph.center;
         let modelToAddChild;
-        if (this.getModel().isCenter && !isParentAlreadyOnMap) {
+        if (this.model().isCenter && !isParentAlreadyOnMap) {
             parentAsCenter.makeCenter();
             modelToAddChild = parentAsCenter;
             CurrentSubGraph.get().add(modelToAddChild);
         } else {
-            modelToAddChild = this.getModel();
+            modelToAddChild = this.model();
         }
         let childrenIndex = parentAsCenter.getChildrenIndex();
         let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
@@ -125,16 +125,16 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
 };
 
 SubGraphController.prototype._removeRelationWithGrandParentAndChildFromServerGraph = function (serverGraph) {
-    if (this.getModel().isCenter) {
+    if (this.model().isCenter) {
         return 0;
     }
-    let parentRelation = this.getModel().getRelationWithUiParent();
+    let parentRelation = this.model().getRelationWithUiParent();
     let relationWithGrandParentUri = parentRelation.getUri();
-    let grandParent = this.getModel().getParentVertex();
+    let grandParent = this.model().getParentVertex();
     let grandParentUriToCompare = grandParent.getUri();
     let nbRelationsWithGrandParent = 0;
     let alreadyPresentChildEdgesUri = [];
-    this.getModel().visitClosestChildRelations(function (edge) {
+    this.model().visitClosestChildRelations(function (edge) {
         alreadyPresentChildEdgesUri.push(edge.getUri());
     });
     serverGraph.edges = getFilteredEdges();

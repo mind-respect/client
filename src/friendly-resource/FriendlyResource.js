@@ -37,7 +37,7 @@ const FriendlyResource = {
         return {
             uri: friendlyResourceUi.getUri(),
             label: friendlyResourceUi.text(),
-            comment: friendlyResourceUi.getModel().getComment()
+            comment: friendlyResourceUi.model().getComment()
         };
     },
     buildObjectWithUriAndLabel: function (uri, label) {
@@ -409,7 +409,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
                 otherBubble.getController().expand();
             }
             let identification = otherBubble.getIdentification();
-            if (this.getModel().hasIdentification(identification)) {
+            if (this.hasIdentification(identification)) {
                 this.revertIdentificationIntegration(identification);
             }
         }
@@ -818,7 +818,7 @@ FriendlyResource.FriendlyResource.prototype._buildImages = function () {
         );
 };
 
-FriendlyResource.FriendlyResource.prototype.getModel = function () {
+FriendlyResource.FriendlyResource.prototype.model = function () {
     return this;
 };
 

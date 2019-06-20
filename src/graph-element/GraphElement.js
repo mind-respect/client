@@ -40,7 +40,7 @@ const GraphElement = {
                 graphElementUi
             ),
             identifications: Identification.getServerFormatArrayFromFacadeArray(
-                graphElementUi.getModel().getIdentifiers()
+                graphElementUi.model().getIdentifiers()
             )
         }
     },
