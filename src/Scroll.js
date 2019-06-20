@@ -25,13 +25,13 @@ const Scroll = {
     },
     goToGraphElement: function (bubble) {
         let onlyScrollLeft = false;
-        if (bubble.isScrollPositionDefined()) {
-            onlyScrollLeft = true;
-            let rect = bubble.getHtml().getBoundingClientRect();
-            let scrollTop = rect.top - bubble.scrollRect.top;
-            document.scrollingElement.scrollTop += scrollTop;
-            bubble.resetScrollPosition();
-        }
+        // if (bubble.isScrollPositionDefined()) {
+        //     onlyScrollLeft = true;
+        //     let rect = bubble.getHtml().getBoundingClientRect();
+        //     let scrollTop = rect.top - bubble.scrollRect.top;
+        //     document.scrollingElement.scrollTop += scrollTop;
+        //     bubble.resetScrollPosition();
+        // }
         let element = bubble.getHtml();
         if (!bubble.isCenter) {
             element = element.closest(".vertices-children-container");
