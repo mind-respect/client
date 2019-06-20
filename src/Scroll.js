@@ -100,14 +100,14 @@ const Scroll = {
             false
         );
     },
-    centerBubbleForTreeOrNotIfApplicable: function (bubble, isForTree) {
+    centerBubbleForTreeOrNotIfApplicable: function (bubble) {
         Vue.nextTick(function () {
             setTimeout(function () {
                 let element = bubble.getLabelHtml();
                 if (!element) {
                     return;
                 }
-                if (isForTree && !bubble.isCenter && bubble.getNumberOfChild() > 0) {
+                if (!bubble.isCenter && bubble.getNumberOfChild() > 0) {
                     element = element.closest(".vertices-children-container");
                 }
                 if (!Scroll.isElementFullyOnScreen(element)) {
