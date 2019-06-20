@@ -567,15 +567,27 @@ GraphElementController.prototype.removeDo = async function () {
         GraphElementService.removeCollection(
             this.getModelArray()
         );
-    let nextSibling;
+    let isCenterRemoved = this.getModelArray().some((bubble) => {
+        return bubble.isCenter;
+    });
+    if (isCenterRemoved) {
+        router.push(
+            "/"
+        );
+        return;
+    }
+    let bubbleToSelect;
     if (this.isSingle()) {
-        nextSibling = this.model().getNextSibling();
+        bubbleToSelect = this.model().getNextSibling();
+        if (bubbleToSelect.isSameUri(this.model())) {
+            bubbleToSelect = this.model().getParentVertexOrGroupRelation();
+        }
     }
     this.getModelArray().forEach(function (bubble) {
         bubble.remove();
     });
-    if (nextSibling && !nextSibling.isSameUri(this.model())) {
-        SelectionHandler.setToSingle(nextSibling);
+    if (bubbleToSelect) {
+        SelectionHandler.setToSingle(bubbleToSelect);
     } else {
         SelectionHandler.removeAll();
     }

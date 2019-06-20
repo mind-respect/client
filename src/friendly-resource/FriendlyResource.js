@@ -667,7 +667,7 @@ FriendlyResource.FriendlyResource.prototype.getIndexInTree = function () {
 FriendlyResource.FriendlyResource.prototype._getIndexInTreeInTypes = function (graphElementTypes) {
     let index = -1;
     let currentIndex = -1;
-    let parent = this.getClosestParentGroupRelationOrVertex();
+    let parent = this.getParentVertexOrGroupRelation();
     let children = parent.getClosestChildrenInTypes(graphElementTypes);
     children.forEach((bubble) => {
         currentIndex++;
@@ -678,12 +678,12 @@ FriendlyResource.FriendlyResource.prototype._getIndexInTreeInTypes = function (g
     return index;
 };
 
-FriendlyResource.FriendlyResource.prototype.getClosestParentGroupRelationOrVertex = function () {
+FriendlyResource.FriendlyResource.prototype.getParentVertexOrGroupRelation = function () {
     return this.getClosestAncestorInTypes([
         GraphElementType.Vertex,
         GraphElementType.GroupRelation
     ]);
-}
+};
 
 FriendlyResource.FriendlyResource.prototype.getClosestAncestorInTypes = function (types) {
     let parentBubble = this.getParentBubble();
