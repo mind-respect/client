@@ -24,14 +24,18 @@ const Scroll = {
         }
     },
     goToGraphElement: function (bubble) {
+        let onlyScrollLeft = false;
         if (bubble.isScrollPositionDefined()) {
+            onlyScrollLeft = true;
             let rect = bubble.getHtml().getBoundingClientRect();
             let scrollTop = rect.top - bubble.scrollRect.top;
             document.scrollingElement.scrollTop += scrollTop;
             bubble.resetScrollPosition();
-            return;
         }
         let element = bubble.getHtml();
+        if (!bubble.isCenter) {
+            element = element.closest(".vertices-children-container");
+        }
         let xOffset = SideMenu.getWidth() / 2.5;
         let options = {
             container: 'body',
@@ -45,7 +49,7 @@ const Scroll = {
                 } else if (bubble.isToTheLeft()) {
                     offset = 900 - element.offsetWidth;
                 } else {
-                    offset = 200 + SideMenu.getWidth();
+                    offset = 200 + SideMenu.getWidth() - (element.offsetWidth / 6)
                 }
                 let position = Math.abs(offset * screen.width / 1366) + xOffset;
                 return position * -1;
@@ -55,7 +59,14 @@ const Scroll = {
             onStart: function (element) {
                 // scrolling started
             },
-            onDone: function (element) {
+            onCancel: function () {
+                // scrolling has been interrupted
+            },
+            x: true,
+            y: false
+        };
+        if (!onlyScrollLeft) {
+            options.onDone = function (element) {
                 options.x = false;
                 options.y = true;
                 options.offset = function () {
@@ -67,12 +78,7 @@ const Scroll = {
                     250,
                     options
                 )
-            },
-            onCancel: function () {
-                // scrolling has been interrupted
-            },
-            x: true,
-            y: false
+            };
         }
         VueScrollTo.scrollTo(
             element,
@@ -102,7 +108,7 @@ const Scroll = {
                     return;
                 }
                 if (isForTree && !bubble.isCenter && bubble.getNumberOfChild() > 0) {
-                    element = element.parentElement;
+                    element = element.closest(".vertices-children-container");
                 }
                 if (!Scroll.isElementFullyOnScreen(element)) {
                     Scroll.goToGraphElement(bubble)

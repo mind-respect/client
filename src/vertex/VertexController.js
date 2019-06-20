@@ -568,8 +568,10 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
         this.getUi().expand(avoidCenter, isChildExpand);
         Vue.nextTick(() => {
             LoadingFlow.leave();
-            Store.dispatch("redraw");
-            Scroll.goToGraphElement(this.model());
+            if (!avoidCenter) {
+                Scroll.centerBubbleForTreeIfApplicable(this.model());
+                Store.dispatch("redraw");
+            }
         });
     }.bind(this));
 };
