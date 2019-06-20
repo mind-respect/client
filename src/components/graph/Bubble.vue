@@ -35,13 +35,8 @@
                         <Children
                                 :bubble="bubble"
                                 direction="left"
-                                  v-if="
-                                        isLeft && !isCenter &&
-                                          (
-                                            (bubble.isVertexType() && bubble.rightBubbles.length > 0) ||
-                                            (bubble.isGroupRelation() && bubble._sortedImmediateChild && bubble._sortedImmediateChild.length > 0) ||
-                                            bubble.isEdge()
-                                          )
+                                v-if="
+                                        isLeft && !isCenter && canShowChildren
                                       "
                         >
                         </Children>
@@ -200,7 +195,7 @@
                         </div>
                         <ChildNotice :bubble="bubble"
                                      class=""
-                                     v-if="canExpand"></ChildNotice>
+                                     v-if="canExpand && !canShowChildren"></ChildNotice>
                     </div>
                     <div
                             class="vertex-drop-arrow-top-bottom-drop bottom-vertex-drop-arrow-drop"
@@ -289,7 +284,7 @@
                         </div>
                         <ChildNotice :bubble="bubble"
                                      class=""
-                                     v-if="canExpand"></ChildNotice>
+                                     v-if="canExpand && !canShowChildren"></ChildNotice>
                     </div>
                 </div>
                 <div v-if="!isCollapsed || isCenter">
@@ -300,12 +295,7 @@
                         <Children :bubble="bubble"
                                   direction="right"
                                   v-if="
-                                      !isLeft && !isCenter &&
-                                      (
-                                        (bubble.isVertexType() && bubble.rightBubbles.length > 0) ||
-                                        (bubble.isGroupRelation() && bubble._sortedImmediateChild && bubble._sortedImmediateChild.length > 0) ||
-                                        bubble.isEdge()
-                                      )
+                                      !isLeft && !isCenter && canShowChildren
                                       "
                         >
                         </Children>
@@ -381,6 +371,11 @@
             this.loaded = true;
         },
         computed: {
+            canShowChildren: function () {
+                return (this.bubble.isVertexType() && this.bubble.rightBubbles.length > 0) ||
+                    (this.bubble.isGroupRelation() && this.bubble._sortedImmediateChild && this.bubble._sortedImmediateChild.length > 0) ||
+                    this.bubble.isEdge();
+            },
             _sortedImmediateChild: function () {
                 return this.bubble._sortedImmediateChild;
             },
@@ -501,18 +496,16 @@
             },
             leaveEditFlow: function () {
                 this.bubble.isEditFlow = false;
-                this.bubble.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
                 this.bubble.setLabel(labelHtml.innerHTML);
                 FriendlyResourceService.updateLabel(this.bubble);
-                if(this.isCenter){
+                if (this.isCenter) {
                     document.title = this.bubble.getTextOrDefault() + " | MindRespect";
                 }
                 this.$store.dispatch("redraw");
             },
             focus: function () {
-                this.bubble.isEditFlow = true;
                 this.bubble.isEditFlow = true;
                 this.$store.dispatch("redraw");
             },
