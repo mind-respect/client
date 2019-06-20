@@ -33,7 +33,7 @@ const Scroll = {
         //     bubble.resetScrollPosition();
         // }
         let element = bubble.getHtml();
-        if (!bubble.isCenter) {
+        if (!bubble.isCenter && !bubble.isToTheLeft()) {
             element = element.closest(".vertices-children-container");
         }
         let xOffset = SideMenu.getWidth() / 2.5;
@@ -47,7 +47,7 @@ const Scroll = {
                 if (bubble.isCenter) {
                     offset = 650;
                 } else if (bubble.isToTheLeft()) {
-                    offset = Math.min(SideMenu.getWidth() + (element.offsetWidth / 6), screen.width - SideMenu.getWidth()) / 4;
+                    offset = Math.max(900 - element.offsetWidth, 0);
                 } else {
                     offset = Math.max(200 + SideMenu.getWidth() - (element.offsetWidth / 6), 0)
                 }
@@ -106,9 +106,6 @@ const Scroll = {
                 let element = bubble.getLabelHtml();
                 if (!element) {
                     return;
-                }
-                if (!bubble.isCenter && bubble.getNumberOfChild() > 0) {
-                    element = element.closest(".vertices-children-container");
                 }
                 if (!Scroll.isElementFullyOnScreen(element)) {
                     Scroll.goToGraphElement(bubble)

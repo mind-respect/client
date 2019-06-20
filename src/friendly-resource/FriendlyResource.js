@@ -381,7 +381,7 @@ FriendlyResource.FriendlyResource.prototype.getNextSibling = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpand = function () {
-    let nbChild = Store.state.isViewOnly && this.isVertex() ? this.getNbPublicNeighbors() - 1 : this.getNumberOfChild();
+    let nbChild = this.getNumberOfChild();
     return !this.isCenter && !this.isExpanded && nbChild > 0;
 };
 
@@ -636,6 +636,17 @@ FriendlyResource.FriendlyResource.prototype.visitExpandableDescendants = functio
     });
 };
 
+FriendlyResource.FriendlyResource.prototype.getDescendants = function () {
+    return this.getImmediateChild().reduce((children, child) => {
+        children.push(child);
+        if (child.isLeaf()) {
+            return children;
+        } else {
+            return children.concat(child.getDescendants());
+        }
+    }, []);
+};
+
 FriendlyResource.FriendlyResource.prototype.visitDescendants = function (visitor) {
     this.visitAllImmediateChild(function (child) {
         visitor(child);
@@ -700,20 +711,12 @@ FriendlyResource.FriendlyResource.prototype.getClosestAncestorInTypes = function
 };
 
 FriendlyResource.FriendlyResource.prototype.hasAnExpandedChild = function () {
-    var hasAnExpandedChild = false;
-    this.visitClosestChildVertices(function (vertexUi) {
-        if (vertexUi.getNumberOfChild() > 0) {
-            hasAnExpandedChild = true;
+    return this.getDescendants().some((descendant) => {
+        if (descendant.isInTypes([GraphElementType.Vertex, GraphElementType.GroupRelation])) {
+            return descendant.getNumberOfChild() > 0 && descendant.isExpanded;
         }
+        return false;
     });
-    this.visitAllImmediateChild(function (child) {
-        if (child.isGroupRelation()) {
-            if (child.getNumberOfChild() > 0) {
-                hasAnExpandedChild = true;
-            }
-        }
-    });
-    return hasAnExpandedChild;
 };
 
 FriendlyResource.FriendlyResource.prototype.getClosestChildVertices = function () {

@@ -9,6 +9,7 @@ import I18n from '@/I18n'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Vue from 'vue'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
+import Store from '@/store'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -97,7 +98,14 @@ Vertex.prototype.getNumberOfConnectedEdges = function () {
 
 Vertex.prototype.getNumberOfChild = function (isLeft) {
     let children = this.getImmediateChild(isLeft);
-    return children.length ? children.length : Math.max(this.getNumberOfConnectedEdges() - 1, 0);
+    return children.length ? children.length : Math.max(
+        (
+            Store.state.isViewOnly ?
+                this.getNbPublicNeighbors() - 1 :
+                this.getNumberOfConnectedEdges() - 1
+        ),
+        0
+    );
 };
 
 
