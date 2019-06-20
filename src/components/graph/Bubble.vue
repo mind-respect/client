@@ -29,7 +29,7 @@
                 <v-spacer v-if="isLeft"></v-spacer>
                 <div v-if="!isCollapsed || isCenter">
                     <div :class="{
-                   'blur-overlay':(isEditFlow || isBubbleLoading) && bubble.isVertexType()
+                   'blur-overlay':(bubble.isEditFlow || isBubbleLoading) && bubble.isVertexType()
                 }"
                     >
                         <Children
@@ -289,7 +289,7 @@
                 </div>
                 <div v-if="!isCollapsed || isCenter">
                     <div :class="{
-                   'blur-overlay':(isEditFlow || isBubbleLoading) && bubble.isVertexType()
+                   'blur-overlay':(bubble.isEditFlow || isBubbleLoading) && bubble.isVertexType()
                 }"
                     >
                         <Children :bubble="bubble"
@@ -492,6 +492,7 @@
                 if (this.isEditFlow) {
                     return;
                 }
+                this.bubble.isEditFlow = true;
                 this.bubble.focus(event);
             },
             leaveEditFlow: function () {

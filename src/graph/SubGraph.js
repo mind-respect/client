@@ -52,11 +52,11 @@ api.SubGraph = function (graph, centerUri, buildFacade) {
 api.SubGraph.prototype.add = function (graphElement) {
     if (graphElement.isEdge()) {
         this.edges.push(graphElement);
-        let destinationVertex = graphElement.getDestinationVertex();
-        destinationVertex.parentBubble = graphElement;
-        destinationVertex.parentVertex = graphElement.parentVertex;
+        let endVertex = graphElement.isInverse() ? graphElement.getSourceVertex() : graphElement.getDestinationVertex();
+        endVertex.parentBubble = graphElement;
+        endVertex.parentVertex = graphElement.parentVertex;
         this.add(
-            destinationVertex
+            endVertex
         );
     } else if (graphElement.isVertex()) {
         if (graphElement.isCenter) {

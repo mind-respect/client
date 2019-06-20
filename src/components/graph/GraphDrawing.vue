@@ -31,7 +31,6 @@
             this.isLeft = this.center.isToTheLeft();
             this.isCenter = this.center.isCenter;
             if (!this.center.getImmediateChild) {
-                debugger;
                 return;
             }
             this.children = this.center.getImmediateChild();
@@ -40,7 +39,7 @@
         methods: {
             showWhenChildrenLoaded: function (center) {
                 if (!this.children) {
-                    console.warn("no immediate child ? el id " + center.getId())
+                    console.warn("no immediate child ? el id " + center.getId());
                     return false
                 }
                 if (this.children.length === 0) {
