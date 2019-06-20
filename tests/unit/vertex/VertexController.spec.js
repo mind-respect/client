@@ -604,7 +604,7 @@ describe('VertexController', () => {
             'r31'
         ).getNextBubble();
         expect(
-            b31.text()
+            b31.getLabel()
         ).toBe("b31");
         expect(
             b31.isExpanded

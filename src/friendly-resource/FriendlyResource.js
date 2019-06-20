@@ -665,17 +665,23 @@ FriendlyResource.FriendlyResource.prototype.getIndexInTree = function () {
 FriendlyResource.FriendlyResource.prototype._getIndexInTreeInTypes = function (graphElementTypes) {
     let index = -1;
     let currentIndex = -1;
-    this.getParentVertex().visitClosestChildInTypes(
-        graphElementTypes,
-        function (bubble) {
-            currentIndex++;
-            if (bubble.isSameBubble(this)) {
-                index = currentIndex;
-            }
-        }.bind(this)
-    );
+    let parent = this.getClosestParentGroupRelationOrVertex();
+    let children = parent.getClosestChildrenInTypes(graphElementTypes);
+    children.forEach((bubble) => {
+        currentIndex++;
+        if (bubble.isSameBubble(this)) {
+            index = currentIndex;
+        }
+    });
     return index;
 };
+
+FriendlyResource.FriendlyResource.prototype.getClosestParentGroupRelationOrVertex = function () {
+    return this.getClosestAncestorInTypes([
+        GraphElementType.Vertex,
+        GraphElementType.GroupRelation
+    ]);
+}
 
 FriendlyResource.FriendlyResource.prototype.getClosestAncestorInTypes = function (types) {
     let parentBubble = this.getParentBubble();

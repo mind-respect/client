@@ -544,7 +544,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
                     return true;
                 }
                 let expandChildCalls = [];
-                this.getUi().visitClosestChildVertices(function (childVertex) {
+                this.model().getClosestChildVertices().forEach((childVertex) => {
                     if (childVertex.model().hasOnlyOneHiddenChild()) {
                         expandChildCalls.push(
                             childVertex.getController().expand(true, true, true)

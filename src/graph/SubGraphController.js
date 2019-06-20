@@ -114,7 +114,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
             } else {
                 groupRelation.collapse();
             }
-        })
+        });
         return isChildrenIndexBuilt ? Promise.resolve(graph) :
             GraphElementService.changeChildrenIndex(
                 modelToAddChild

@@ -70,9 +70,13 @@ describe("GroupRelationController", () => {
                 possessionInTree.canExpand()
             ).toBeTruthy();
             let newChildVertex;
+            let nbChild = possessionInTree.getNumberOfChild();
             await possessionInTree.getController().addChild().then(function (triple) {
                 newChildVertex = triple.destination;
             });
+            expect(
+                possessionInTree.getNumberOfChild()
+            ).toBe(nbChild + 1);
             expect(
                 newChildVertex.getIndexInTree()
             ).toBe(
