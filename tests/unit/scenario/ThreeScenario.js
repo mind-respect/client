@@ -16,10 +16,10 @@ ThreeScenario.prototype.expandBubble2 = function (bubble2) {
 };
 
 ThreeScenario.prototype.expandBubble3 = function (bubble3) {
-    return GraphDisplayerAsRelativeTree.addChildTreeUsingGraph(
-        bubble3,
+    GraphServiceMock.getForCentralBubbleUri(
         this.getSubGraphForB3()
     );
+    return bubble3.getController().expand();
 };
 
 ThreeScenario.prototype.getBubble4InTree = function () {

@@ -32,11 +32,8 @@ const Scroll = {
         //     document.scrollingElement.scrollTop += scrollTop;
         //     bubble.resetScrollPosition();
         // }
-        let element = bubble.getHtml();
-        if (!bubble.isCenter && !bubble.isToTheLeft()) {
-            element = element.closest(".vertices-children-container");
-        }
-        let xOffset = SideMenu.getWidth() / 2.5;
+        let element = bubble.isCenter ? bubble.getLabelHtml() : bubble.getLabelHtml();
+        let sideMenuOffset = SideMenu.getWidth();
         let options = {
             container: 'body',
             easing: 'ease',
@@ -44,14 +41,35 @@ const Scroll = {
                 // let elementWidth = element.offsetWidth + (element.offsetWidth / 2)
                 // let screenCenter = screen.width / 2;
                 let offset;
+                let screenWidth = screen.width - sideMenuOffset;
+                let halfScreen = screenWidth / 2;
                 if (bubble.isCenter) {
-                    offset = 650;
-                } else if (bubble.isToTheLeft()) {
-                    offset = Math.max(900 - element.offsetWidth, 0);
+                    offset = halfScreen - element.offsetWidth;
                 } else {
-                    offset = Math.max(200 + SideMenu.getWidth() - (element.offsetWidth / 6), 0)
+                    let deepestBubble = bubble.getDeepestDescendant();
+                    if (deepestBubble.isSameBubble(bubble)) {
+                        offset = halfScreen - element.offsetWidth / 2;
+                    }else{
+                        let deepestElement = deepestBubble.getLabelHtml();
+                        let deepestRect = deepestElement.getBoundingClientRect();
+                        let deepestXPosition = bubble.isToTheLeft() ? deepestRect.left : deepestRect.right;
+                        deepestXPosition += window.pageXOffset;
+
+                        let elementRect = element.getBoundingClientRect();
+                        let elementXPosition = bubble.isToTheLeft() ? elementRect.left : elementRect.right;
+                        elementXPosition += window.pageXOffset;
+
+                        let difference = Math.abs(elementXPosition - deepestXPosition);
+
+                        if (bubble.isToTheLeft()) {
+                            offset = Math.min(halfScreen + difference / 2 - element.offsetWidth / 2, screenWidth - element.offsetWidth - 50);
+                        } else {
+                            let elementWidth = element.offsetWidth / 2;
+                            offset = Math.max(halfScreen - difference / 2 - elementWidth, 50)
+                        }
+                    }
                 }
-                let position = Math.abs(offset * screen.width / 1366) + xOffset;
+                let position = sideMenuOffset + offset;
                 return position * -1;
             },
             force: true,
@@ -103,7 +121,7 @@ const Scroll = {
     centerBubbleForTreeOrNotIfApplicable: function (bubble) {
         Vue.nextTick(function () {
             setTimeout(function () {
-                let element = bubble.getLabelHtml();
+                let element = bubble.getDeepestDescendant().getLabelHtml();
                 if (!element) {
                     return;
                 }

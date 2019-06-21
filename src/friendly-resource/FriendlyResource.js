@@ -790,6 +790,38 @@ FriendlyResource.FriendlyResource.prototype.visitAllImmediateChild = function (v
     });
 };
 
+FriendlyResource.FriendlyResource.prototype.getDeepestDescendant = function () {
+    if (this.isLeaf()) {
+        return this;
+    }
+    let depths = this.getDescendantsDepths();
+    let highestDepth = Object.keys(
+        depths
+    ).sort((a, b) => {
+        return b - a;
+    })[0];
+    return depths[highestDepth].sort((a, b) => {
+        return b.getLabel().length - a.getLabel().length;
+    })[0];
+};
+
+FriendlyResource.FriendlyResource.prototype.getDescendantsDepths = function (depth, depths) {
+    depth = depth || 0;
+    depths = depths || {};
+    depth++;
+    this.getImmediateChild().forEach((child) => {
+        if (!depths[depth]) {
+            depths[depth] = [];
+        }
+        depths[depth].push(child);
+        if (!child.isLeaf()) {
+            child.getDescendantsDepths(depth, depths);
+        }
+    });
+    return depths;
+};
+
+
 FriendlyResource.FriendlyResource.prototype.getJsonFormat = function () {
     var serverFormat = this.getServerFormat();
     serverFormat.images = this.getImagesServerFormat();
