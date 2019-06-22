@@ -368,15 +368,12 @@ FriendlyResource.FriendlyResource.prototype.getDownBubble = function () {
 FriendlyResource.FriendlyResource.prototype.getNextSibling = function () {
     let downBubble = this.getDownBubble();
     let upBubble = this.getUpBubble();
-    if (downBubble) {
-        if (downBubble.getParentBubble().isSame(this.getParentBubble())) {
-            return downBubble;
-        } else if (upBubble) {
-            return upBubble;
-        }
+    if (downBubble && downBubble.getParentVertexOrGroupRelation().isSame(this.getParentVertexOrGroupRelation())) {
         return downBubble;
-    } else {
+    } else if (upBubble && upBubble.getParentVertexOrGroupRelation().isSame(this.getParentVertexOrGroupRelation())) {
         return upBubble;
+    } else {
+        return this.getParentVertexOrGroupRelation();
     }
 };
 

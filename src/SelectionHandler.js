@@ -27,6 +27,12 @@ api.setToSingle = function (graphElement) {
     centerBubbleIfApplicable(graphElement);
 };
 
+api.isSelected = function (graphElement) {
+    return api.selected.some((selected) => {
+        return selected.getId() === graphElement.getId();
+    });
+};
+
 api._getSetterFromGraphElement = function (graphElement) {
     return graphElement.isEdge() ?
         api.setToSingleRelation :

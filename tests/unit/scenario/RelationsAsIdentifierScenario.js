@@ -15,8 +15,13 @@ RelationAsIdentifierScenario.prototype.getCenter = function () {
 RelationAsIdentifierScenario.prototype.getCenterBubbleUri = function () {
     return this.getCenter().getUri();
 };
+
 RelationAsIdentifierScenario.prototype.getCenterInTree = function () {
     return this.getVertexWithLabelInTree("center");
+};
+
+RelationAsIdentifierScenario.prototype.getB4InTree = function () {
+    return this.getVertexWithLabelInTree("b4");
 };
 
 export default RelationAsIdentifierScenario;

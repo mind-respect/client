@@ -119,7 +119,6 @@
                 CurrentSubGraph.set(graph);
                 this.center = center;
                 this.loaded = true;
-                await this.$nextTick();
                 SelectionHandler.setToSingle(this.center);
             }).catch((error) => {
                 console.error(error);

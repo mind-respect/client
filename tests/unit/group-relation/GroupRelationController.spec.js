@@ -3,6 +3,7 @@ import GraphWithSimilarRelationsScenario from "../scenario/GraphWithSimilarRelat
 import GroupRelationHavingAVertexChildWithOneChild from '../scenario/GroupRelationHavingAVertexChildWithOneChild'
 import GraphServiceMock from '../mock/GraphServiceMock'
 import TestUtil from '../util/TestUtil'
+import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
 
 
 describe("GroupRelationController", () => {

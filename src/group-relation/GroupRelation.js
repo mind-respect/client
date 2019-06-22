@@ -95,10 +95,21 @@ GroupRelation.prototype.removeChild = function (toRemove) {
             }
         }
     } else {
-        return this.removeTuple({
+        this.removeTuple({
             edge: toRemove,
             vertex: toRemove.destinationVertex
         })
+    }
+    if (this._sortedImmediateChild.length === 0) {
+        this.getParentBubble().removeChild(this);
+    }
+    if (this._sortedImmediateChild.length === 1) {
+        let parentBubble = this.getParentBubble();
+        let child = this.getImmediateChild()[0];
+        parentBubble.replaceChild(
+            this,
+            child
+        );
     }
 };
 

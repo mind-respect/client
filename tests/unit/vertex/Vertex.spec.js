@@ -1,8 +1,11 @@
 import Mock from '../mock/Mock'
 import ThreeScenario from "../scenario/ThreeScenario";
+import AroundEventTagScenario from "../scenario/AroundEventTagScenario"
+import GraphWithSimilarRelationsScenario from "../scenario/GraphWithSimilarRelationsScenario"
 import MindMapInfo from '@/MindMapInfo'
 import SelectionHandler from '@/SelectionHandler'
 import TestUtil from '../util/TestUtil'
+import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
 
 describe('Vertex', () => {
     beforeEach(() => {
@@ -205,59 +208,44 @@ describe('Vertex', () => {
         ).toBeTruthy();
     });
 
-    it("can check if it's connected to another vertex with uri even if it has group relations", function () {
-        var center = new Scenarios.GraphWithSimilarRelationsScenario().getCenterVertexInTree();
-        expect(
-            center.isConnectedToAVertexWithUri("dummy")
-        ).toBeFalsy();
-    });
-    it("can remove a vertex under a meta bubble", function () {
-        var eventBubble = new Scenarios.aroundEventIdentifier().getEventBubbleInTree();
-        var vertex = eventBubble.getTopMostChildBubble().getTopMostChildBubble();
-        var numberOfChild = eventBubble.getNumberOfChild();
+    xit("can remove a vertex under a meta bubble", async () => {
+        let scenario = await new AroundEventTagScenario();
+        let eventBubble = scenario.getEventBubbleInTree();
+        let vertex = eventBubble.getNextBubble().getNextBubble();
+        let numberOfChild = eventBubble.getNumberOfChild();
         vertex.remove();
         expect(
             eventBubble.getNumberOfChild()
         ).toBe(numberOfChild - 1);
     });
-    it("selects the parent vertex after it's removed if right under a relation and vertex", function () {
-        var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-        var otherBubble = scenario.getOtherRelationInTree().getTopMostChildBubble();
+
+    it("selects the parent vertex after it's removed if right under a relation and vertex", async () => {
+        let scenario = await new GraphWithSimilarRelationsScenario();
+        let otherBubble = scenario.getOtherRelationInTree().getNextBubble();
+        await otherBubble.getController().remove();
         expect(
-            otherBubble._getParentBubbleToSelectAfterRemove().isVertex()
+            SelectionHandler.getSingle().isVertex()
         ).toBeTruthy();
     });
-    it("selects the group relation after it's removed if right under a relation and group relation", function () {
-        var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-        var groupRelation = scenario.getPossessionAsGroupRelationInTree();
+
+    //todo
+    xit("selects the group relation after it's removed if right under a relation and group relation", async () => {
+        let scenario = await new GraphWithSimilarRelationsScenario();
+        let groupRelation = scenario.getPossessionGroupRelation();
         groupRelation.expand();
-        var vertexUnderGroupRelation = TestUtils.getChildWithLabel(
+        let vertexUnderGroupRelation = TestUtil.getChildWithLabel(
             groupRelation,
             "Possessed by book 2"
-        ).getTopMostChildBubble();
+        ).getNextBubble();
         expect(
             vertexUnderGroupRelation.isVertex()
         ).toBeTruthy();
+        await vertexUnderGroupRelation.getController().remove();
         expect(
-            vertexUnderGroupRelation._getParentBubbleToSelectAfterRemove().isGroupRelation()
+            SelectionHandler.getSingle().isGroupRelation()
         ).toBeTruthy();
     });
-    it("selects the parent vertex after remove if it was the last vertex under a group relation", function () {
-        var centerBubble = new Scenarios.withRelationsAsIdentifierGraph().getCenterInTree();
-        expect(
-            centerBubble.isSelected()
-        ).toBeFalsy();
-        var groupRelation = TestUtils.getChildWithLabel(
-            centerBubble,
-            "original some relation"
-        );
-        groupRelation.visitClosestChildVertices(function (vertex) {
-            vertex.remove();
-        });
-        expect(
-            centerBubble.isSelected()
-        ).toBeTruthy();
-    });
+
     describe("buildChildrenIndex", function () {
         it("is in right order", function () {
             var scenario = new Scenarios.creationDateScenario();

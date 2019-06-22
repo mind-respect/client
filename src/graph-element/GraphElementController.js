@@ -576,6 +576,7 @@ GraphElementController.prototype.removeDo = async function () {
         );
         return;
     }
+    let parentVertex = this.model().getParentVertex();
     let bubbleToSelect;
     if (this.isSingle()) {
         bubbleToSelect = this.model().getNextSibling();
@@ -591,6 +592,7 @@ GraphElementController.prototype.removeDo = async function () {
     } else {
         SelectionHandler.removeAll();
     }
+    GraphElementService.changeChildrenIndex(parentVertex);
 };
 
 GraphElementController.prototype.removeIdentifier = function (identifier) {

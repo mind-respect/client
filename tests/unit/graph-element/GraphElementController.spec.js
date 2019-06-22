@@ -3,23 +3,45 @@ import ThreeScenario from "../scenario/ThreeScenario";
 import SelectionHandler from '@/SelectionHandler'
 import TestUtil from '../util/TestUtil'
 import CreationDateScenario from "../scenario/CreationDateScenario";
+import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
 
 describe('GraphElementController', () => {
-    it("selects the parent vertex when removed", async () => {
-        let scenario = await new ThreeScenario();
-        let b1 = scenario.getBubble1InTree();
-        let b2 = TestUtil.getChildWithLabel(
-            b1,
-            "r1"
-        ).getNextBubble();
-        SelectionHandler.setToSingle(b2);
-        expect(
-            SelectionHandler.getSingle().isSameBubble(b1)
-        ).toBeFalsy();
-        await b2.getController().remove(true);
-        expect(
-            SelectionHandler.getSingle().isSameBubble(b1)
-        ).toBeTruthy();
+    describe("removeDo", ()=>{
+        it("selects the parent vertex when removed", async () => {
+            let scenario = await new ThreeScenario();
+            let b1 = scenario.getBubble1InTree();
+            let b2 = TestUtil.getChildWithLabel(
+                b1,
+                "r1"
+            ).getNextBubble();
+            SelectionHandler.setToSingle(b2);
+            expect(
+                SelectionHandler.getSingle().isSameBubble(b1)
+            ).toBeFalsy();
+            await b2.getController().remove(true);
+            expect(
+                SelectionHandler.getSingle().isSameBubble(b1)
+            ).toBeTruthy();
+        });
+
+        it("selects the parent vertex after remove if it was the last vertex under a group relation", async () => {
+            let scenario = await new RelationAsIdentifierScenario();
+            SelectionHandler.reset();
+            let centerBubble = scenario.getCenterInTree();
+            expect(
+                SelectionHandler.isSelected(centerBubble)
+            ).toBeFalsy();
+            let groupRelation = TestUtil.getChildWithLabel(
+                centerBubble,
+                "original some relation"
+            );
+            await Promise.all(groupRelation.getClosestChildVertices().map((vertex) => {
+                return vertex.getController().removeDo();
+            }));
+            expect(
+                SelectionHandler.isSelected(centerBubble)
+            ).toBeTruthy();
+        });
     });
     xit("updates model label when accepting comparison", function () {
         var scenario = new Scenarios.threeBubblesGraphFork();

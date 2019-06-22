@@ -361,6 +361,7 @@
             this.bubble.loading = false;
             this.bubble.isEditFlow = false;
             this.bubble.direction = this.direction;
+            this.checkIsSelected();
             this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
             this.isLeft = this.direction === "left";
             if (this.isCenter) {
