@@ -30,10 +30,10 @@
         mounted: function () {
             this.isLeft = this.center.isToTheLeft();
             this.isCenter = this.center.isCenter;
-            if (!this.center.getImmediateChild) {
+            if (!this.center.getNextChildren) {
                 return;
             }
-            this.children = this.center.getImmediateChild();
+            this.children = this.center.getNextChildren();
             this.showWhenChildrenLoaded(this.center);
         },
         methods: {

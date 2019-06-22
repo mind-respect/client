@@ -483,6 +483,33 @@ FriendlyResource.FriendlyResource.prototype.moveBelow = function (newSibling) {
     );
 };
 
+
+FriendlyResource.FriendlyResource.prototype.buildChildrenIndex = function (index) {
+    index = index || 0;
+    return this.getClosestChildrenInTypes(
+        [GraphElementType.Vertex, GraphElementType.GroupRelation],
+        true
+    ).reduce((childrenIndex, child) => {
+        if (child.isGroupRelation()) {
+            childrenIndex = Object.assign(childrenIndex, child.buildChildrenIndex(index));
+        } else {
+            // let previousValue = this.getChildrenIndex()[child.getUri()];
+            let isLeft = child.isToTheLeft();
+            // if (!this.isCenterBubble() && previousValue) {
+            //     isLeft = previousValue.toTheLeft;
+            // }
+            childrenIndex[child.getUri()] = {
+                index: index,
+                toTheLeft: isLeft,
+                label: child.getLabel(),
+                type: child.getGraphElementType()
+            };
+            index++;
+        }
+        return childrenIndex;
+    }, {});
+};
+
 FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDown) {
     if (this.isCenter) {
         return this;
@@ -491,13 +518,13 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
     let forkBubble = this.parentBubble;
     let childBubble = this;
     let distance = 0;
-    let forkBubbleNbChild = forkBubble.getImmediateChild(this.isToTheLeft()).length;
+    let forkBubbleNbChild = forkBubble.getNextChildren(this.isToTheLeft()).length;
     let childBubbleIndex = forkBubble.getChildIndex(childBubble);
     while (!forkBubble.isCenter && (forkBubbleNbChild < 2 || (isDown && (childBubbleIndex + 1) === forkBubbleNbChild) || (!isDown && childBubbleIndex === 0))) {
         distance++;
         childBubble = forkBubble;
         forkBubble = forkBubble.parentBubble;
-        forkBubbleNbChild = forkBubble.getImmediateChild(this.isToTheLeft()).length;
+        forkBubbleNbChild = forkBubble.getNextChildren(this.isToTheLeft()).length;
         childBubbleIndex = Math.max(
             forkBubble.getChildIndex(childBubble),
             0
@@ -551,7 +578,7 @@ FriendlyResource.FriendlyResource.prototype.replaceChild = function (existingChi
 
 FriendlyResource.FriendlyResource.prototype.getChildIndex = function (child) {
     let foundIndex = -1;
-    let children = this.getImmediateChild(child.isToTheLeft());
+    let children = this.getNextChildren(child.isToTheLeft());
     for (let i = 0; i < children.length; i++) {
         let childAtIndex = children[i];
         if (childAtIndex.getId() === child.getId()) {
@@ -563,7 +590,7 @@ FriendlyResource.FriendlyResource.prototype.getChildIndex = function (child) {
 
 FriendlyResource.FriendlyResource.prototype.getChildAtIndex = function (index, isToTheLeft) {
     let foundChild;
-    let children = this.getImmediateChild(isToTheLeft);
+    let children = this.getNextChildren(isToTheLeft);
     for (let i = 0; i < children.length; i++) {
         if (index === i) {
             foundChild = children[i];
@@ -617,7 +644,7 @@ FriendlyResource.FriendlyResource.prototype.collapse = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {
-    return this.getImmediateChild().some((child) => {
+    return this.getNextChildren().some((child) => {
         if (child.loading) {
             return false;
         }
@@ -634,7 +661,7 @@ FriendlyResource.FriendlyResource.prototype.visitExpandableDescendants = functio
 };
 
 FriendlyResource.FriendlyResource.prototype.getDescendants = function () {
-    return this.getImmediateChild().reduce((children, child) => {
+    return this.getNextChildren().reduce((children, child) => {
         children.push(child);
         if (child.isLeaf()) {
             return children;
@@ -748,15 +775,17 @@ FriendlyResource.FriendlyResource.prototype.visitClosestChildOfType = function (
     );
 };
 
-FriendlyResource.FriendlyResource.prototype.getClosestChildrenInTypes = function (types) {
-    return this.getImmediateChild().reduce((children, child) => {
+FriendlyResource.FriendlyResource.prototype.getClosestChildrenInTypes = function (types, getEvenIfCollapsed) {
+    let children = getEvenIfCollapsed ? this.getNextChildrenEvenIfCollapsed() : this.getNextChildren();
+    return children.reduce((children, child) => {
         if (child.isInTypes(types)) {
             children.push(child)
         } else if (child.isLeaf()) {
             return false;
         } else {
             let childOfRightType = child.getClosestChildrenInTypes(
-                types
+                types,
+                getEvenIfCollapsed
             );
             if (childOfRightType) {
                 return children.concat(childOfRightType);
@@ -780,7 +809,7 @@ FriendlyResource.FriendlyResource.prototype.visitClosestChildInTypes = function 
 };
 
 FriendlyResource.FriendlyResource.prototype.visitAllImmediateChild = function (visitor) {
-    this.getImmediateChild().filter((child) => {
+    this.getNextChildren().filter((child) => {
         return !child.loading;
     }).forEach(function (child) {
         visitor(child);
@@ -806,7 +835,7 @@ FriendlyResource.FriendlyResource.prototype.getDescendantsDepths = function (dep
     depth = depth || 0;
     depths = depths || {};
     depth++;
-    this.getImmediateChild().forEach((child) => {
+    this.getNextChildren().forEach((child) => {
         if (!depths[depth]) {
             depths[depth] = [];
         }

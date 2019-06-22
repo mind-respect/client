@@ -20,6 +20,8 @@ import CenterView from '@/views/Center.vue'
 
 import Bubble from '@/components/graph/Bubble.vue'
 
+import SelectionHandler from '@/SelectionHandler'
+
 const clonedeep = require('lodash.clonedeep')
 const api = {}
 
@@ -39,11 +41,10 @@ api.treeBuilder = new TreeBuilder(api.wrapper)
 
 Vue.use(Vuetify)
 
-api.Scenario = function () {
-    MindMapInfo._setIsViewOnly(false)
-};
+api.Scenario = function () {};
 
 api.Scenario.prototype.init = async function () {
+    MindMapInfo._setIsViewOnly(false)
     this.graph = this.getGraph();
     let center = this.getCenter();
     // console.log(this.graph.vertices[center.getUri()]);
@@ -64,7 +65,7 @@ api.Scenario.prototype.init = async function () {
             center.uri().url()
         );
     }
-    await this.nextTickPromise(1);
+    await this.nextTickPromise(5);
     return this;
 };
 api.Scenario.prototype.nextTickPromise = async function nextTickPromise(nbTicks) {

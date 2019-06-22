@@ -43,7 +43,7 @@ api.dummyIdentifier = function () {
 };
 
 api.getChildWithLabel = function (parent, label) {
-    let child = parent.getImmediateChild().filter((child) => {
+    let child = parent.getNextChildren().filter((child) => {
         return child.getLabel() === label;
     });
     if (child.length) {
@@ -56,7 +56,7 @@ api.hasChildWithLabel = function (parent, label) {
 };
 
 api.getChildWithLabelAndType = function (parent, label, graphElementType) {
-    let child = parent.getImmediateChild().filter((child) => {
+    let child = parent.getNextChildren().filter((child) => {
         return child.getLabel() === label && child.isInTypes([graphElementType])
     });
     if (child.length) {

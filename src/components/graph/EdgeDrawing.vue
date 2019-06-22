@@ -77,7 +77,7 @@
                 this.bubbleRect = element.getBoundingClientRect();
                 this.topPosition = this.topPositionCalculate();
                 this.bottomPosition = this.bottomPositionCalculate();
-                this.children = this.bubble.getImmediateChild(this.isLeft);
+                this.children = this.bubble.getNextChildren(this.isLeft);
                 if (this.bubble.isEdge()) {
                     this.loaded = true;
                 }

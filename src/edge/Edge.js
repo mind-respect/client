@@ -219,7 +219,7 @@ api.Edge.prototype.getLeftBubble = function () {
     }
 };
 
-api.Edge.prototype.getImmediateChild = function () {
+api.Edge.prototype.getNextChildrenEvenIfCollapsed = api.Edge.prototype.getNextChildren = function () {
     return [
         this.getOtherVertex(this.getParentVertex())
     ];

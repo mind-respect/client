@@ -97,7 +97,7 @@ Vertex.prototype.getNumberOfConnectedEdges = function () {
 };
 
 Vertex.prototype.getNumberOfChild = function (isLeft) {
-    let children = this.getImmediateChild(isLeft);
+    let children = this.getNextChildren(isLeft);
     return children.length ? children.length : Math.max(
         (
             Store.state.isViewOnly ?
@@ -234,7 +234,7 @@ Vertex.prototype.getLeftBubble = function (bottom) {
 
 Vertex.prototype.collapse = function () {
     if (this.isCenter) {
-        this.getImmediateChild().forEach(function (child) {
+        this.getNextChildren().forEach(function (child) {
             if (child.isEdge()) {
                 child.getOtherVertex(this).collapse()
             } else {
@@ -246,7 +246,7 @@ Vertex.prototype.collapse = function () {
     if (!this.isExpanded) {
         return;
     }
-    this.vertexServerFormat.vertex.numberOfConnectedEdges = this.getImmediateChild().length + 1;
+    this.vertexServerFormat.vertex.numberOfConnectedEdges = this.getNextChildren().length + 1;
     this.rightBubblesCollapsed = this.rightBubbles;
     this.leftBubblesCollapsed = this.leftBubbles;
     this.rightBubbles = [];
@@ -274,7 +274,8 @@ Vertex.prototype.expand = function (avoidCenter, isChildExpand) {
     }
 };
 
-Vertex.prototype.getImmediateChild = function (isToTheLeft) {
+//getNextChildrenEvenIfCollapsed = getNextChildren because we dont need it for vertices yet.
+Vertex.prototype.getNextChildrenEvenIfCollapsed = Vertex.prototype.getNextChildren = function (isToTheLeft) {
     if (this.isCollapsed) {
         return [];
     }
@@ -323,44 +324,6 @@ Vertex.prototype._shouldAddLeft = function (isToTheLeft) {
     return isToTheLeft;
 };
 
-Vertex.prototype.buildChildrenIndex = function () {
-    let childrenIndex = {};
-    let index = 0;
-    this.getImmediateChild().forEach((child) => {
-        if (child.isRelation()) {
-            let otherVertex = child.getOtherVertex(
-                this
-            );
-            setChildVertexIndex.bind(this)(
-                otherVertex.getUri(),
-                child.isToTheLeft(),
-                otherVertex
-            );
-        } else if (child.isGroupRelation()) {
-            let grandChildIndex = child.buildChildrenIndex();
-            Object.keys(grandChildIndex).sort((a, b) => {
-                return grandChildIndex[a].index - grandChildIndex[b].index;
-            }).forEach((vertexUri) => {
-                setChildVertexIndex.bind(this)(vertexUri, child.isToTheLeft(), child);
-            });
-        }
-    });
-    return childrenIndex;
-
-    function setChildVertexIndex(childVertexUri, isToTheLeft, child) {
-        let previousValue = this.getChildrenIndex()[childVertexUri];
-        if (!this.isCenterBubble() && previousValue) {
-            isToTheLeft = previousValue.toTheLeft;
-        }
-        childrenIndex[childVertexUri] = {
-            index: index,
-            toTheLeft: isToTheLeft,
-            label: child.getLabel(),
-            type: child.getGraphElementType()
-        };
-        index++;
-    }
-};
 
 Vertex.prototype.isMeta = function () {
     return this.getGraphElementType() === GraphElementType.Meta;

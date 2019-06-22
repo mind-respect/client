@@ -26,7 +26,7 @@ describe('VertexController', () => {
             );
             let emptyVertex = emptyRelation.getNextBubble();
             SelectionHandler.setToSingle(emptyVertex);
-            emptyVertex.getController().remove();
+            await emptyVertex.getController().remove();
             await scenario.nextTickPromise();
             expect(
                 centerBubble.getNumberOfChild()
@@ -46,7 +46,7 @@ describe('VertexController', () => {
             expect(
                 b2.getNumberOfChild()
             ).toBe(4);
-            SelectionHandler.reset();
+            SelectionHandler.removeAll();
             SelectionHandler.add(emptyVertex);
             SelectionHandler.add(emptyVertex2);
             await SelectionHandler.getController().remove();
@@ -211,14 +211,14 @@ describe('VertexController', () => {
         let scenario = await new ThreeScenario();
         let b3 = scenario.getBubble3InTree();
         expect(
-            b3.getImmediateChild().length
+            b3.getNextChildren().length
         ).toBe(0);
         GraphServiceMock.getForCentralBubbleUri(
             scenario.getSubGraphForB3()
         );
         await b3.getController().addChild();
         expect(
-            b3.getImmediateChild().length
+            b3.getNextChildren().length
         ).toBe(3);
     });
     it("puts the new bubble under the group relation when adding a sibling to the child of group relation", async () => {

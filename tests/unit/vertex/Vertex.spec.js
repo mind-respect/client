@@ -6,6 +6,7 @@ import MindMapInfo from '@/MindMapInfo'
 import SelectionHandler from '@/SelectionHandler'
 import TestUtil from '../util/TestUtil'
 import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
+import CreationDateScenario from "../scenario/CreationDateScenario";
 
 describe('Vertex', () => {
     beforeEach(() => {
@@ -247,21 +248,21 @@ describe('Vertex', () => {
     });
 
     describe("buildChildrenIndex", function () {
-        it("is in right order", function () {
-            var scenario = new Scenarios.creationDateScenario();
-            var b7 = scenario.getBubble7InTree();
-            scenario.expandBubble7(
+        it("is in right order", async () => {
+            let scenario = await new CreationDateScenario();
+            let b7 = scenario.getBubble7InTree();
+            await scenario.expandBubble7(
                 b7
             );
-            var childrenIndexes = b7.buildChildrenIndex();
-            var b71 = TestUtils.getChildWithLabel(
+            let b71 = TestUtil.getChildWithLabel(
                 b7,
                 "r71"
-            ).getTopMostChildBubble();
-            var b72 = TestUtils.getChildWithLabel(
+            ).getNextBubble();
+            let b72 = TestUtil.getChildWithLabel(
                 b7,
                 "r72"
-            ).getTopMostChildBubble();
+            ).getNextBubble();
+            let childrenIndexes = b7.buildChildrenIndex();
             expect(
                 childrenIndexes[b71.getUri()].index
             ).toBe(0);
@@ -269,42 +270,42 @@ describe('Vertex', () => {
                 childrenIndexes[b72.getUri()].index
             ).toBe(1);
         });
-        it("includes child vertices of inverse relations", function () {
-            var scenario = new Scenarios.creationDateScenario();
-            var b7 = scenario.getBubble7InTree();
-            scenario.expandBubble7(
+        it("includes child vertices of inverse relations", async () => {
+            let scenario = await new CreationDateScenario();
+            let b7 = scenario.getBubble7InTree();
+            await scenario.expandBubble7(
                 b7
             );
-            var childrenIndexes = b7.buildChildrenIndex();
-            var r71 = TestUtils.getChildWithLabel(
+            let r71 = TestUtil.getChildWithLabel(
                 b7,
                 "r71"
             );
             r71.inverse();
-            var b71 = r71.getTopMostChildBubble();
+            let childrenIndexes = b7.buildChildrenIndex();
+            let b71 = r71.getNextBubble();
             expect(
                 childrenIndexes.hasOwnProperty(b71.getUri())
             ).toBeTruthy()
         });
-        it("includes child vertices under group relations", function () {
-            var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-            var center = scenario.getCenterVertexInTree();
-            var groupRelation = TestUtils.getChildWithLabel(
+        it("includes child vertices under group relations", async () => {
+            let scenario = await new GraphWithSimilarRelationsScenario();
+            let center = scenario.getCenterVertexInTree();
+            let groupRelation = TestUtil.getChildWithLabel(
                 center,
                 "Possession"
             );
             groupRelation.expand();
-            var groupRelationUnder = groupRelation.getTopMostChildBubble();
+            let groupRelationUnder = groupRelation.getNextBubble();
             groupRelationUnder.expand();
-            var vertexUnderDeepGroupRelation = groupRelationUnder.getTopMostChildBubble().getTopMostChildBubble();
+            let vertexUnderDeepGroupRelation = groupRelationUnder.getNextBubble().getNextBubble();
             expect(
                 vertexUnderDeepGroupRelation.isVertex()
             ).toBeTruthy();
-            var vertexUnderGroupRelation = groupRelationUnder.getBubbleUnder().getTopMostChildBubble();
+            let vertexUnderGroupRelation = groupRelationUnder.getDownBubble().getNextBubble();
             expect(
                 vertexUnderGroupRelation.isVertex()
             ).toBeTruthy();
-            var childrenIndexes = center.buildChildrenIndex();
+            let childrenIndexes = center.buildChildrenIndex();
             expect(
                 childrenIndexes.hasOwnProperty(vertexUnderGroupRelation.getUri())
             ).toBeTruthy();
@@ -312,22 +313,21 @@ describe('Vertex', () => {
                 childrenIndexes.hasOwnProperty(vertexUnderDeepGroupRelation.getUri())
             ).toBeTruthy();
         });
-        it("includes child vertices under collapsed group relations", function () {
-            var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-            var centerVertex = scenario.getCenterVertexInTree();
-            var possession = TestUtils.getChildWithLabel(centerVertex, "Possession");
-            expect(
-                possession.getNumberOfChild()
-            ).toBe(0);
-            var secondLevelGroupRelation = possession.getTopMostChildBubble();
-            expect(
-                secondLevelGroupRelation.getNumberOfChild()
-            ).toBe(0);
+        it("includes child vertices under collapsed group relations", async () => {
+            let scenario = await new GraphWithSimilarRelationsScenario();
+            let centerVertex = scenario.getCenterVertexInTree();
+            let possession = TestUtil.getChildWithLabel(centerVertex, "Possession");
+            let secondLevelGroupRelation = TestUtil.getChildWithLabel(
+                possession,
+                "Possession of book 3"
+            );
+            possession.collapse();
+            secondLevelGroupRelation.collapse();
             expect(
                 secondLevelGroupRelation.isGroupRelation()
             ).toBeTruthy();
-            var deepVertex = secondLevelGroupRelation.getModel().getAnyVertex();
-            var childrenIndexes = centerVertex.buildChildrenIndex();
+            let deepVertex = secondLevelGroupRelation.getAnyVertex();
+            let childrenIndexes = centerVertex.buildChildrenIndex();
             expect(
                 Object.keys(childrenIndexes).length
             ).toBe(8);
@@ -335,29 +335,43 @@ describe('Vertex', () => {
                 childrenIndexes.hasOwnProperty(deepVertex.getUri())
             ).toBeTruthy()
         });
-        it("gives right order for center vertices", function () {
-            var scenario = new Scenarios.threeBubblesGraph();
-            var center = scenario.getBubble1InTree();
-            var b4Uri;
-            center.getController().addChild().then(function (tripleUi) {
-                b4Uri = tripleUi.destinationVertex().getUri();
-                tripleUi.destinationVertex().getModel().setLabel("b4");
+        it("gives right order for center vertices", async () => {
+            let scenario = await new ThreeScenario();
+            let center = scenario.getBubble1InTree();
+            let b4Uri;
+            await center.getController().addChild().then((tripleUi) => {
+                b4Uri = tripleUi.destination.getUri();
+                tripleUi.destination.setLabel("b4");
             });
-            var childrenIndexes = center.buildChildrenIndex();
+            let b2 = scenario.getBubble2InTree();
+            let b3 = scenario.getBubble3InTree();
+            let childrenIndexes = center.buildChildrenIndex();
+            let b2Index = childrenIndexes[
+                b2.getUri()
+                ];
             expect(
-                childrenIndexes[
-                    scenario.uriOfVertexWithLabel("b2")
-                    ].index
-            ).toBe(0);
-            expect(
-                childrenIndexes[
-                    scenario.uriOfVertexWithLabel("b3")
-                    ].index
+                b2Index.index
             ).toBe(1);
             expect(
-                childrenIndexes[
-                    b4Uri
-                    ].index
+                b2Index.toTheLeft
+            ).toBe(false);
+            let b3Index = childrenIndexes[
+                b3.getUri()
+                ];
+            expect(
+                b3Index.toTheLeft
+            ).toBe(true);
+            expect(
+                b3Index.index
+            ).toBe(0);
+            let b4Index = childrenIndexes[
+                b4Uri
+                ];
+            expect(
+                b4Index.toTheLeft
+            ).toBe(false);
+            expect(
+                b4Index.index
             ).toBe(2);
         });
     });
