@@ -5,7 +5,6 @@ import TestUtil from './util/TestUtil'
 import MindMapInfo from '@/MindMapInfo'
 import Command from '@/Command'
 import AppController from '@/AppController'
-import axios from "axios";
 
 describe("KeyboardActions", () => {
     it("adds a child when pressing tab key", async () => {
