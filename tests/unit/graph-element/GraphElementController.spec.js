@@ -1,6 +1,6 @@
 import Mock from '../mock/Mock'
 import ThreeScenario from "../scenario/ThreeScenario";
-import SelectionHandler from '@/SelectionHandler'
+import Selection from '@/Selection'
 import TestUtil from '../util/TestUtil'
 import CreationDateScenario from "../scenario/CreationDateScenario";
 import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
@@ -14,22 +14,22 @@ describe('GraphElementController', () => {
                 b1,
                 "r1"
             ).getNextBubble();
-            SelectionHandler.setToSingle(b2);
+            Selection.setToSingle(b2);
             expect(
-                SelectionHandler.getSingle().isSameBubble(b1)
+                Selection.getSingle().isSameBubble(b1)
             ).toBeFalsy();
             await b2.getController().remove(true);
             expect(
-                SelectionHandler.getSingle().isSameBubble(b1)
+                Selection.getSingle().isSameBubble(b1)
             ).toBeTruthy();
         });
 
         it("selects the parent vertex after remove if it was the last vertex under a group relation", async () => {
             let scenario = await new RelationAsIdentifierScenario();
-            SelectionHandler.reset();
+            Selection.reset();
             let centerBubble = scenario.getCenterInTree();
             expect(
-                SelectionHandler.isSelected(centerBubble)
+                Selection.isSelected(centerBubble)
             ).toBeFalsy();
             let groupRelation = TestUtil.getChildWithLabel(
                 centerBubble,
@@ -39,7 +39,7 @@ describe('GraphElementController', () => {
                 return vertex.getController().removeDo();
             }));
             expect(
-                SelectionHandler.isSelected(centerBubble)
+                Selection.isSelected(centerBubble)
             ).toBeTruthy();
         });
     });

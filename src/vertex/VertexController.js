@@ -4,7 +4,7 @@
 
 import VertexService from '@/vertex/VertexService'
 import EdgeService from '@/edge/EdgeService'
-import SelectionHandler from '@/SelectionHandler'
+import Selection from '@/Selection'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphElementController from '@/graph-element/GraphElementController'
 import GraphElementService from '@/graph-element/GraphElementService'
@@ -52,7 +52,7 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
             index
         );
         Vue.nextTick(() => {
-            SelectionHandler.setToSingle(triple.destination);
+            Selection.setToSingle(triple.destination);
             GraphElementService.changeChildrenIndex(
                 this.model()
             );
@@ -129,7 +129,7 @@ VertexController.prototype.convertToRelation = function () {
         toSelect = this.getUi();
     }
     return Promise.all(promises).then(() => {
-        SelectionHandler.setToSingle(toSelect);
+        Selection.setToSingle(toSelect);
     });
 };
 
@@ -180,7 +180,7 @@ VertexController.prototype.convertToGroupRelation = function () {
         return this.remove(true);
     }.bind(this));
     return promise.then(function () {
-        SelectionHandler.setToSingle(parentRelation);
+        Selection.setToSingle(parentRelation);
     });
 };
 

@@ -7,7 +7,7 @@ import EdgeService from '@/edge/EdgeService'
 import GraphElementController from '@/graph-element/GraphElementController'
 import GraphElementType from '@/graph-element/GraphElementType'
 import GraphElementService from '@/graph-element/GraphElementService'
-import SelectionHandler from '@/SelectionHandler'
+import Selection from '@/Selection'
 import Vue from 'vue'
 import Store from '@/store'
 
@@ -80,7 +80,7 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
                 this.model().getParentVertex()
             );
             if (saveIndex) {
-                SelectionHandler.setToSingle(triple.destination);
+                Selection.setToSingle(triple.destination);
                 Store.dispatch("redraw");
             }
         });

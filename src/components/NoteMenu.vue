@@ -10,7 +10,7 @@
 </template>
 
 <script>
-    import SelectionHandler from '@/SelectionHandler'
+    import Selection from '@/Selection'
     import I18n from '@/I18n'
 
     export default {
@@ -26,7 +26,7 @@
         },
         computed: {
             selected: function () {
-                return SelectionHandler.getSingle();
+                return Selection.getSingle();
             }
         }
     }

@@ -34,7 +34,7 @@
 </template>
 
 <script>
-    import SelectionHandler from '@/SelectionHandler'
+    import Selection from '@/Selection'
     import AppController from '@/AppController'
     import GraphController from '@/graph/GraphController'
     import Button from '@/components/graph/Button'
@@ -117,7 +117,7 @@
         },
         computed: {
             selection: function () {
-                return SelectionHandler.selected;
+                return Selection.selected;
             }
         },
         watch: {

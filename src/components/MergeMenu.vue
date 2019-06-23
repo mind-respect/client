@@ -41,7 +41,7 @@
     import SearchService from '@/search/SearchService'
     import SearchResultContent from '@/components/SearchResultContent'
     import SearchResultAction from '@/components/SearchResultAction'
-    import SelectionHandler from '@/SelectionHandler'
+    import Selection from '@/Selection'
 
     export default {
         name: "MergeMenu",
@@ -95,7 +95,7 @@
         },
         computed: {
             selected: function () {
-                return SelectionHandler.getSingle();
+                return Selection.getSingle();
             }
         }
     }

@@ -89,7 +89,7 @@
 </template>
 
 <script>
-    import SelectionHandler from '@/SelectionHandler'
+    import Selection from '@/Selection'
     import I18n from '@/I18n'
     import VertexService from '@/vertex/VertexService'
 
@@ -125,7 +125,7 @@
         },
         computed: {
             selected: function () {
-                return SelectionHandler.getSelectedElements();
+                return Selection.getSelectedElements();
             },
             isRemoveFlow: function () {
                 return this.$store.state.isRemoveFlow;
@@ -156,7 +156,7 @@
         },
         methods: {
             remove: async function () {
-                await SelectionHandler.getController().removeDo();
+                await Selection.getController().removeDo();
                 this.$store.dispatch("redraw");
                 this.removeDialog = false;
             }

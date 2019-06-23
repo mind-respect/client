@@ -32,7 +32,7 @@
 </template>
 
 <script>
-    import SelectionHandler from '@/SelectionHandler'
+    import Selection from '@/Selection'
     import I18n from '@/I18n'
     import GraphElementService from '@/graph-element/GraphElementService'
     import GraphUi from '@/graph/GraphUi'
@@ -63,7 +63,7 @@
         },
         computed: {
             bubble: function () {
-                return SelectionHandler.getSingle();
+                return Selection.getSingle();
             },
             isDescriptionFlow: function () {
                 return this.$store.state.isDescriptionFlow;

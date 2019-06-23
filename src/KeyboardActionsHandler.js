@@ -3,7 +3,7 @@
  */
 
 import Store from '@/store'
-import SelectionHandler from '@/SelectionHandler'
+import Selection from '@/Selection'
 import MindMapInfo from '@/MindMapInfo'
 import UiUtils from '@/UiUtils'
 import GraphDisplayer from '@/graph/GraphDisplayer'
@@ -87,10 +87,10 @@ api.init = function () {
 export default api;
 
 function pasteHandler(event) {
-    if (!SelectionHandler.isSingle()) {
+    if (!Selection.isSingle()) {
         return;
     }
-    var selectedElement = SelectionHandler.getSingle();
+    var selectedElement = Selection.getSingle();
     if (selectedElement.isEditFlow) {
         return;
     }
@@ -125,8 +125,8 @@ function keyDownHandler(event) {
     let feature = actionSet[event.which];
     if (feature === undefined) {
         let isPasting = isCombineKeyPressed && vKeyNumber && event.which;
-        if (!isPasting && event.which !== api._ctrlKeyNumber && !MindMapInfo.isViewOnly() && SelectionHandler.isSingle()) {
-            let selectedElement = SelectionHandler.getSingle();
+        if (!isPasting && event.which !== api._ctrlKeyNumber && !MindMapInfo.isViewOnly() && Selection.isSingle()) {
+            let selectedElement = Selection.getSingle();
             if (!MindMapInfo.isViewOnly()) {
                 let labelHtml = selectedElement.getLabelHtml();
                 labelHtml.contentEditable = "true";
@@ -154,7 +154,7 @@ function executeFeature(feature, event) {
     if (feature.isForAppController) {
         controller = GraphDisplayer.getAppController();
     } else {
-        controller = SelectionHandler.getController();
+        controller = Selection.getController();
     }
     if (controller[feature.action] === undefined) {
         return;

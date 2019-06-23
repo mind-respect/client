@@ -20,7 +20,7 @@ import CenterView from '@/views/Center.vue'
 
 import Bubble from '@/components/graph/Bubble.vue'
 
-import SelectionHandler from '@/SelectionHandler'
+import Selection from '@/Selection'
 
 const clonedeep = require('lodash.clonedeep')
 const api = {}

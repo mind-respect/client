@@ -6,7 +6,7 @@ import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import MindMapInfo from '@/MindMapInfo'
 import Command from '@/Command'
-import SelectionHandler from '@/SelectionHandler'
+import Selection from '@/Selection'
 import Store from '@/store'
 import router from '@/router'
 import Scroll from '@/Scroll'
@@ -448,7 +448,7 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
         GraphElementService.changeChildrenIndex(
             previousParentVertex
         );
-        SelectionHandler.setToSingle(this.model());
+        Selection.setToSingle(this.model());
     });
 };
 
@@ -587,9 +587,9 @@ GraphElementController.prototype.removeDo = async function () {
         bubble.remove();
     });
     if (bubbleToSelect) {
-        SelectionHandler.setToSingle(bubbleToSelect);
+        Selection.setToSingle(bubbleToSelect);
     } else {
-        SelectionHandler.removeAll();
+        Selection.removeAll();
     }
     if (this.isSingle()) {
         GraphElementService.changeChildrenIndex(this.model().getParentVertex());
@@ -648,7 +648,7 @@ GraphElementController.prototype.isOwned = function () {
 
 GraphElementController.prototype.deselect = function () {
     if (this.isMultiple() || this.getUi().isCenterBubble()) {
-        SelectionHandler.removeAll();
+        Selection.removeAll();
     }
 };
 

@@ -6,7 +6,7 @@ import Vue from 'vue'
 import GraphElementController from '@/graph-element/GraphElementController'
 import EdgeService from '@/edge/EdgeService'
 import GraphElementType from '@/graph-element/GraphElementType'
-import SelectionHandler from '@/SelectionHandler'
+import Selection from '@/Selection'
 import GroupRelation from '@/group-relation/GroupRelation'
 import GraphElementService from '@/graph-element/GraphElementService'
 import Store from '@/store'
@@ -31,7 +31,7 @@ EdgeController.prototype.addChildCanDo = function () {
 EdgeController.prototype.addChild = async function () {
     let newGroupRelation = this._convertToGroupRelation();
     let triple;
-    SelectionHandler.removeAll();
+    Selection.removeAll();
     return newGroupRelation.getController().addChild(false).then((_triple) => {
         triple = _triple;
         return triple.edge.getController().addIdentifiers(
@@ -48,7 +48,7 @@ EdgeController.prototype.addChild = async function () {
                 this.model().getParentVertex()
             );
             setTimeout(function () {
-                SelectionHandler.setToSingle(triple.destination);
+                Selection.setToSingle(triple.destination);
                 Store.dispatch("redraw");
             }, 300)
         });
@@ -59,7 +59,7 @@ EdgeController.prototype.addChild = async function () {
 EdgeController.prototype.addSibling = function () {
     return this.model().getNextBubble().getController().addSibling().then(function (triple) {
         Vue.nextTick(function () {
-            SelectionHandler.setToSingle(
+            Selection.setToSingle(
                 triple.edge
             );
         })
@@ -72,7 +72,7 @@ EdgeController.prototype.addSiblingCanDo = function () {
 
 EdgeController.prototype.becomeParent = function (adoptedChild) {
     let promises = [];
-    SelectionHandler.removeAll();
+    Selection.removeAll();
     let newGroupRelation = this._convertToGroupRelation();
     let parentBubble = this.model().getParentBubble();
     newGroupRelation.addChild(adoptedChild);

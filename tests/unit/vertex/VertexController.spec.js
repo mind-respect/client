@@ -6,7 +6,7 @@ import SingleChildScenario from '../scenario/SingleChildScenario'
 import AutomaticExpandScenario from "../scenario/AutomaticExpandScenario";
 import TestUtil from '../util/TestUtil'
 import MindMapInfo from '@/MindMapInfo'
-import SelectionHandler from '@/SelectionHandler'
+import Selection from '@/Selection'
 import VertexController from '@/vertex/VertexController'
 
 describe('VertexController', () => {
@@ -25,7 +25,7 @@ describe('VertexController', () => {
                 ''
             );
             let emptyVertex = emptyRelation.getNextBubble();
-            SelectionHandler.setToSingle(emptyVertex);
+            Selection.setToSingle(emptyVertex);
             await emptyVertex.getController().remove();
             await scenario.nextTickPromise();
             expect(
@@ -46,10 +46,10 @@ describe('VertexController', () => {
             expect(
                 b2.getNumberOfChild()
             ).toBe(4);
-            SelectionHandler.removeAll();
-            SelectionHandler.add(emptyVertex);
-            SelectionHandler.add(emptyVertex2);
-            await SelectionHandler.getController().remove();
+            Selection.removeAll();
+            Selection.add(emptyVertex);
+            Selection.add(emptyVertex2);
+            await Selection.getController().remove();
             await scenario.nextTickPromise();
             expect(
                 b2.getNumberOfChild()
@@ -131,7 +131,7 @@ describe('VertexController', () => {
         let hasVisited = false;
         await b2.getController().addChild().then(function (triple) {
             hasVisited = true;
-            SelectionHandler.getSingle().isSameBubble(
+            Selection.getSingle().isSameBubble(
                 triple.destination
             )
         });

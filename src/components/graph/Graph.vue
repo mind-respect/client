@@ -69,7 +69,7 @@
     import GraphDrawing from '@/components/graph/GraphDrawing'
     import MainMenus from '@/components/graph/MainMenus'
     import ListView from '@/components/ListView'
-    import SelectionHandler from '@/SelectionHandler'
+    import Selection from '@/Selection'
     import SubGraphController from '@/graph/SubGraphController'
     import Vertex from '@/vertex/Vertex'
     import Meta from '@/identifier/Meta'
@@ -103,7 +103,7 @@
         },
         mounted: function () {
             CurrentSubGraph.set(SubGraph.empty());
-            SelectionHandler.removeAll();
+            Selection.removeAll();
             let centerUri = MindMapInfo.getCenterBubbleUri();
             let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : Vertex.withUri(centerUri);
             center.makeCenter();
@@ -119,7 +119,7 @@
                 CurrentSubGraph.set(graph);
                 this.center = center;
                 this.loaded = true;
-                SelectionHandler.setToSingle(this.center);
+                Selection.setToSingle(this.center);
             }).catch((error) => {
                 console.error(error);
                 this.$router.push("/")

@@ -1,6 +1,6 @@
 import Mock from '../mock/Mock'
 import ThreeScenario from "../scenario/ThreeScenario";
-import SelectionHandler from '@/SelectionHandler'
+import Selection from '@/Selection'
 import TestUtil from '../util/TestUtil'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 

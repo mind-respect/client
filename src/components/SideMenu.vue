@@ -5,12 +5,12 @@
             value="true"
             fixed
             :width="mainWidth"
-            :mini-variant="!SelectionHandler.isSingle() || $store.state.isSideMenuCollapsed"
+            :mini-variant="!Selection.isSingle() || $store.state.isSideMenuCollapsed"
             :mini-variant-width="mainNavMiniWidth"
     >
         <v-layout fill-height>
             <v-navigation-drawer
-                    v-if="SelectionHandler.isSingle()"
+                    v-if="Selection.isSingle()"
                     :mini-variant="$store.state.isSideMenuCollapsed"
                     mini-variant-width="50"
                     :width="menuWidth"
@@ -22,7 +22,7 @@
                     <v-card-title class="subheading" v-if="!$store.state.isSideMenuCollapsed">
                         <div class="grey--text">
                             {{$t('side:creationDate')}}
-                            {{formatDate(SelectionHandler.getSingle().getCreationDate())}}
+                            {{formatDate(Selection.getSingle().getCreationDate())}}
                         </div>
                         <v-spacer></v-spacer>
                         <v-btn @click="collapse" icon>
@@ -85,7 +85,7 @@
     import BubbleButtons from '@/components/graph/BubbleButtons'
     import DateUtil from '@/DateUtil'
     import I18n from '@/I18n'
-    import SelectionHandler from '@/SelectionHandler'
+    import Selection from '@/Selection'
     import SideMenu from '@/SideMenu'
     import KeyboardActionsHandler from '@/KeyboardActionsHandler'
 
@@ -109,7 +109,7 @@
                 "merge": "Fusion"
             });
             return {
-                SelectionHandler: SelectionHandler,
+                Selection: Selection,
                 tabMenu: null,
                 isStretched: false,
                 items: [
@@ -120,10 +120,10 @@
         },
         computed: {
             selected: () => {
-                return SelectionHandler.getSingle();
+                return Selection.getSingle();
             },
             isSingle: () => {
-                return SelectionHandler.isSingle();
+                return Selection.isSingle();
             },
             menuWidth: function () {
                 return this.isStretched ? 340 : 340;
@@ -132,7 +132,7 @@
                 return this.isStretched ? SideMenu.EXPANDED_WIDTH : SideMenu.EXPANDED_WIDTH;
             },
             mainNavMiniWidth: function () {
-                return SelectionHandler.isSingle() ? SideMenu.MINI_WIDTH : 60;
+                return Selection.isSingle() ? SideMenu.MINI_WIDTH : 60;
             }
         },
         methods: {

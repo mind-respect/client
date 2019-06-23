@@ -23,7 +23,7 @@
 </template>
 
 <script>
-    import SelectionHandler from '@/SelectionHandler'
+    import Selection from '@/Selection'
     import Button from '@/components/graph/Button'
 
     export default {
@@ -37,7 +37,7 @@
                     {
                         action: "addChild",
                         icon: function () {
-                            return SelectionHandler.getSingle().isToTheLeft() ?
+                            return Selection.getSingle().isToTheLeft() ?
                                 "arrow_back" :
                                 "arrow_forward"
                         }
@@ -161,10 +161,10 @@
         props: ['isInSideMenu'],
         computed: {
             copyContent: function () {
-                return SelectionHandler.getSingle().getLabel()
+                return Selection.getSingle().getLabel()
             },
             selected: function(){
-                return SelectionHandler.getSingle();
+                return Selection.getSingle();
             }
         }
     }

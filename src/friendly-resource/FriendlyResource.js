@@ -5,7 +5,7 @@ import Image from '@/image/Image'
 import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Focus from '@/Focus'
-import SelectionHandler from '@/SelectionHandler'
+import Selection from '@/Selection'
 import Store from '@/store'
 import Icon from '@/Icon'
 import Scroll from '@/Scroll'
@@ -275,12 +275,12 @@ FriendlyResource.FriendlyResource.prototype.deselect = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.selectTree = function () {
-    SelectionHandler.add(
+    Selection.add(
         this
     );
     this.visitDescendants(function (descendant) {
         if (descendant.isVertex()) {
-            SelectionHandler.add(
+            Selection.add(
                 descendant
             );
         }
@@ -339,11 +339,11 @@ FriendlyResource.FriendlyResource.prototype.isInTypes = function (types) {
 };
 
 FriendlyResource.FriendlyResource.prototype.travelLeft = function () {
-    SelectionHandler.setToSingle(this.getLeftBubble())
+    Selection.setToSingle(this.getLeftBubble())
 };
 
 FriendlyResource.FriendlyResource.prototype.travelRight = function () {
-    SelectionHandler.setToSingle(this.getRightBubble())
+    Selection.setToSingle(this.getRightBubble())
 };
 
 // FriendlyResource.FriendlyResource.prototype.isSingleSelected = function () {
@@ -351,11 +351,11 @@ FriendlyResource.FriendlyResource.prototype.travelRight = function () {
 // };
 
 FriendlyResource.FriendlyResource.prototype.travelDown = function () {
-    SelectionHandler.setToSingle(this.getDownBubble())
+    Selection.setToSingle(this.getDownBubble())
 };
 
 FriendlyResource.FriendlyResource.prototype.travelUp = function () {
-    SelectionHandler.setToSingle(this.getUpBubble())
+    Selection.setToSingle(this.getUpBubble())
 };
 
 FriendlyResource.FriendlyResource.prototype.getUpBubble = function () {

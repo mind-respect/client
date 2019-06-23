@@ -40,7 +40,7 @@
 
 <script>
     import UiUtils from '@/UiUtils'
-    import SelectionHandler from '@/SelectionHandler'
+    import Selection from '@/Selection'
 
     export default {
         name: "Button",
@@ -63,7 +63,7 @@
             contentClass: function () {
                 if (this.isInSideMenu) {
                     let contentClass = "side-button-tooltip ";
-                    contentClass += this.$store.state.isSideMenuCollapsed || !SelectionHandler.isSingle() ?
+                    contentClass += this.$store.state.isSideMenuCollapsed || !Selection.isSingle() ?
                         "side-button-collapsed-margin" :
                         "side-button-expanded-margin";
                     return contentClass;
@@ -74,7 +74,7 @@
                 return this.isInTopMenu || this.isInSideMenu;
             },
             bubble: function () {
-                return SelectionHandler.isSingle() ? SelectionHandler.getSingle() : {};
+                return Selection.isSingle() ? Selection.getSingle() : {};
             }
         },
         methods: {
@@ -106,7 +106,7 @@
                 if (button.controller) {
                     return button.controller;
                 }
-                return SelectionHandler.getController();
+                return Selection.getController();
             },
             canActionBePossiblyMade: function (action, controller) {
                 return controller[

@@ -3,7 +3,7 @@ import ThreeScenario from "../scenario/ThreeScenario";
 import AroundEventTagScenario from "../scenario/AroundEventTagScenario"
 import GraphWithSimilarRelationsScenario from "../scenario/GraphWithSimilarRelationsScenario"
 import MindMapInfo from '@/MindMapInfo'
-import SelectionHandler from '@/SelectionHandler'
+import Selection from '@/Selection'
 import TestUtil from '../util/TestUtil'
 import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
 import CreationDateScenario from "../scenario/CreationDateScenario";
@@ -225,7 +225,7 @@ describe('Vertex', () => {
         let otherBubble = scenario.getOtherRelationInTree().getNextBubble();
         await otherBubble.getController().remove();
         expect(
-            SelectionHandler.getSingle().isVertex()
+            Selection.getSingle().isVertex()
         ).toBeTruthy();
     });
 
@@ -243,7 +243,7 @@ describe('Vertex', () => {
         ).toBeTruthy();
         await vertexUnderGroupRelation.getController().remove();
         expect(
-            SelectionHandler.getSingle().isGroupRelation()
+            Selection.getSingle().isGroupRelation()
         ).toBeTruthy();
     });
 

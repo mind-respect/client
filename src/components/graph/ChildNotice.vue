@@ -42,7 +42,7 @@
 <script>
     import Scroll from '@/Scroll'
     import Vue from 'vue'
-    import SelectionHandler from '@/SelectionHandler'
+    import Selection from '@/Selection'
     import Store from '@/store'
     import UiUtils from '@/UiUtils'
 
@@ -61,7 +61,7 @@
                     Vue.nextTick(function () {
                         this.loading = this.bubble.loading = false;
                     }.bind(this))
-                    SelectionHandler.setToSingle(this.bubble);
+                    Selection.setToSingle(this.bubble);
                     Store.dispatch("redraw");
                 }.bind(this));
             }

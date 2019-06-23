@@ -76,7 +76,7 @@
     import SearchResultContent from '@/components/SearchResultContent'
     import SearchResultAction from '@/components/SearchResultAction'
     import I18n from '@/I18n'
-    import SelectionHandler from '@/SelectionHandler'
+    import Selection from '@/Selection'
     import SearchService from '@/search/SearchService'
     import Identification from '@/identifier/Identification'
 
@@ -112,7 +112,7 @@
         },
         computed: {
             selected: function () {
-                return SelectionHandler.getSingle();
+                return Selection.getSingle();
             },
             isTagFlow: function () {
                 return this.$store.state.isTagFlow;

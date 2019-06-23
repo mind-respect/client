@@ -315,7 +315,7 @@
 </template>
 
 <script>
-    import SelectionHandler from '@/SelectionHandler'
+    import Selection from '@/Selection'
     import UiUtils from '@/UiUtils'
     import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
     import KeyCode from 'keycode-js';
@@ -444,7 +444,7 @@
                 let font = CurrentSubGraph.get().center.getFont();
                 return "font-family:" + font.family;
             },
-            selected: () => SelectionHandler.selected,
+            selected: () => Selection.selected,
             relationPlaceholder: function () {
                 return this.bubble.isGroupRelation() || this.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
             },
@@ -459,7 +459,7 @@
             rightClick: function (event) {
                 event.preventDefault();
                 this.showMenu = true;
-                SelectionHandler.setToSingle(this.bubble)
+                Selection.setToSingle(this.bubble)
             },
             click: function (event) {
                 event.stopPropagation();
@@ -476,12 +476,12 @@
                 GraphUi.enableDragScroll();
                 if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
                     if (this.bubble.isSelected) {
-                        SelectionHandler.remove(this.bubble);
+                        Selection.remove(this.bubble);
                     } else {
-                        SelectionHandler.add(this.bubble);
+                        Selection.add(this.bubble);
                     }
                 } else {
-                    SelectionHandler.setToSingle(
+                    Selection.setToSingle(
                         this.bubble
                     );
                 }
@@ -519,7 +519,7 @@
             },
             checkIsSelected: function () {
                 let found = false;
-                SelectionHandler.getSelectedBubbles().forEach((selected) => {
+                Selection.getSelectedBubbles().forEach((selected) => {
                     if (selected.getUri() === this.bubble.getUri()) {
                         found = true;
                     }
@@ -534,7 +534,7 @@
             },
             dragStart: function (event) {
                 // event.preventDefault();
-                SelectionHandler.removeAll();
+                Selection.removeAll();
                 // debugger;
                 event.target.style.opacity = .5;
                 event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
