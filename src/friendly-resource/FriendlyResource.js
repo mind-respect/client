@@ -268,6 +268,10 @@ FriendlyResource.FriendlyResource.prototype.select = function () {
 FriendlyResource.FriendlyResource.prototype.deselect = function () {
     this.isSelected = false;
     this.isSingleSelected = false;
+    this.blur();
+};
+
+FriendlyResource.FriendlyResource.prototype.blur = function () {
     let label = this.getLabelHtml();
     if (label) {
         label.blur();

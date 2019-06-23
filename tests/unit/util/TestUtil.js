@@ -1,6 +1,7 @@
 import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
 import Identification from '@/identifier/Identification'
+import $ from 'jquery'
 
 const api = {};
 api.generateVertex = function () {
@@ -62,6 +63,50 @@ api.getChildWithLabelAndType = function (parent, label, graphElementType) {
     if (child.length) {
         return child[0]
     }
+};
+
+api.pressCtrlPlusKey = function (char) {
+    api.pressKey(
+        char, {ctrlKey: true}
+    );
+};
+
+api.pressKey = function (char, options) {
+    api.pressKeyCode(
+        char.charCodeAt(0),
+        options
+    );
+};
+api.pressKeyCode = function (keyCode, options) {
+    api._pressKeyCodeInContainer(
+        keyCode,
+        $("body"),
+        options
+    );
+};
+api.pressEnterInBubble = function (bubble) {
+    api._pressKeyCodeInContainer(
+        13,
+        bubble.getLabel(),
+        {}
+    );
+};
+api.pressKeyInBubble = function (char, bubble) {
+    bubble.getLabel().append(char);
+    api._pressKeyCodeInContainer(
+        char.charCodeAt(0),
+        bubble.getLabel(),
+        {}
+    );
+};
+
+api._pressKeyCodeInContainer = function (keyCode, container, options) {
+    var event = $.Event("keydown");
+    if (options !== undefined) {
+        $.extend(event, options);
+    }
+    event.which = event.keyCode = keyCode;
+    container.trigger(event);
 };
 
 export default api;

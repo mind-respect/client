@@ -2,7 +2,7 @@ import Mock from './mock/Mock'
 import ThreeScenario from "./scenario/ThreeScenario";
 import Selection from '@/Selection'
 
-describe("Selection", function () {
+describe("Selection", () => {
     it("can tell if only one vertex is selected", async () => {
         let scenario = await new ThreeScenario();
         let b2 = scenario.getBubble2InTree();
