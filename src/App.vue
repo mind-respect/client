@@ -177,7 +177,7 @@
     import LoadingFlow from '@/LoadingFlow'
     import Store from '@/store'
     import Vue from 'vue'
-    import KeyboardActionsHandler from '@/KeyboardActionsHandler'
+    import KeyboardActions from '@/KeyboardActions'
     import Search from '@/components/Search'
     import VueClipboard from 'vue-clipboard2'
     import I18n from '@/I18n'
@@ -385,9 +385,9 @@
                     this.forgotPasswordDialog = true;
                 }
                 if (this.$route.name === "Center") {
-                    KeyboardActionsHandler.enable();
+                    KeyboardActions.enable();
                 } else {
-                    KeyboardActionsHandler.disable();
+                    KeyboardActions.disable();
                 }
             },
             loginDialog: function () {

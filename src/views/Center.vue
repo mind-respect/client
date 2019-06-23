@@ -13,7 +13,7 @@
     import GraphDisplayerFactory from '@/graph/GraphDisplayerFactory'
     import Graph from '@/components/graph/Graph'
     import GraphUi from '@/graph/GraphUi'
-    import KeyboardActionsHandler from '@/KeyboardActionsHandler'
+    import KeyboardActions from '@/KeyboardActions'
     import GraphElement from '@/graph-element/GraphElement'
 
     export default {
@@ -35,8 +35,8 @@
             GraphElement.initMenuHandlerGetters();
             GraphUi.initDragScroll();
             GraphUi.enableDragScroll();
-            KeyboardActionsHandler.init();
-            KeyboardActionsHandler.enable();
+            KeyboardActions.init();
+            KeyboardActions.enable();
         },
         computed: {
             graphCenterUri: function () {

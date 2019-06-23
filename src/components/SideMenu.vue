@@ -87,7 +87,7 @@
     import I18n from '@/I18n'
     import Selection from '@/Selection'
     import SideMenu from '@/SideMenu'
-    import KeyboardActionsHandler from '@/KeyboardActionsHandler'
+    import KeyboardActions from '@/KeyboardActions'
 
     export default {
         name: "SideMenu",
@@ -137,10 +137,10 @@
         },
         methods: {
             focus: function () {
-                KeyboardActionsHandler.disable();
+                KeyboardActions.disable();
             },
             blur: function () {
-                KeyboardActionsHandler.enable();
+                KeyboardActions.enable();
             },
             formatDate: function (date) {
                 return DateUtil.fromNow(date);
