@@ -3,7 +3,7 @@ import ThreeScenario from "../scenario/ThreeScenario";
 import MindMapInfo from '@/MindMapInfo'
 import EdgeController from '@/edge/EdgeController'
 import TestUtil from '../util/TestUtil'
-import GraphWithSimilarRelationsScenario from "../scenario/GraphWithSimilarRelationsScenario";
+import SimilarRelationsScenario from "../scenario/SimilarRelationsScenario";
 
 describe("EdgeController", () => {
     describe("remove", function () {
@@ -87,8 +87,8 @@ describe("EdgeController", () => {
         });
 
         it("adds new relation under the group relation when adding a child to a relation under a group relation", async () => {
-            let scenario = await new GraphWithSimilarRelationsScenario();
-            let centerVertex = scenario.getCenterVertexInTree();
+            let scenario = await new SimilarRelationsScenario();
+            let centerVertex = scenario.getCenterInTree();
             expect(
                 centerVertex.getNumberOfChild()
             ).toBe(
@@ -110,7 +110,7 @@ describe("EdgeController", () => {
         });
 
         it("adds all the identifiers of the relation to the the new child relation when adding a child", async () => {
-            let scenario = await new GraphWithSimilarRelationsScenario();
+            let scenario = await new SimilarRelationsScenario();
             let groupRelation = scenario.getPossessionGroupRelation();
             groupRelation.expand();
             let relationUnderGroupRelation = TestUtil.getChildWithLabel(
@@ -282,10 +282,10 @@ describe("EdgeController", () => {
         ).toBe(1);
     });
     it("can add a child to a relation under a group relation", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
         groupRelation.expand();
-        let centerBubble = scenario.getCenterVertexInTree();
+        let centerBubble = scenario.getCenterInTree();
         let centerBubbleNumberOfChild = centerBubble.getNumberOfChild();
         let relationUnderGroupRelation = TestUtil.getChildWithLabel(
             groupRelation,
@@ -310,7 +310,7 @@ describe("EdgeController", () => {
         ).toBe(centerBubbleNumberOfChild);
     });
     it("does not hide the new group relation when adding a child to a relation under a group relation", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
         groupRelation.expand();
         let relationUnderGroupRelation = TestUtil.getChildWithLabel(
@@ -362,8 +362,8 @@ describe("EdgeController", () => {
             ).toBe(1);
         });
         it("includes previous vertex in group relation model vertices", async () => {
-            let scenario = await new GraphWithSimilarRelationsScenario();
-            let center = scenario.getCenterVertexInTree();
+            let scenario = await new SimilarRelationsScenario();
+            let center = scenario.getCenterInTree();
             await scenario.getOtherRelationInTree().getController().addChild();
             let newGroupRelation = TestUtil.getChildWithLabel(
                 center,
@@ -376,8 +376,8 @@ describe("EdgeController", () => {
             ).toBe(2);
         });
         xit("can add child to a relation under a group relation where the external uri is this relation's uri", async () => {
-            let scenario = await new GraphWithSimilarRelationsScenario();
-            let center = scenario.getCenterVertexInTree();
+            let scenario = await new SimilarRelationsScenario();
+            let center = scenario.getCenterInTree();
             await center.getController().addChild().then(async (tripleUi) => {
                 let newEdge = tripleUi.edge;
                 tripleUi.destination.getController().setLabel("top vertex");
@@ -496,7 +496,7 @@ describe("EdgeController", () => {
         });
         xit("can become parent of a group relation", function () {
             var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-            var center = scenario.getCenterVertexInTree();
+            var center = scenario.getCenterInTree();
             var groupRelation = scenario.getPossessionAsGroupRelationInTree();
             var otherRelation = TestUtils.getChildWithLabel(
                 center,

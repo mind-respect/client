@@ -1,6 +1,6 @@
 import Mock from '../mock/Mock'
 import ThreeScenario from "../scenario/ThreeScenario"
-import GraphWithSimilarRelationsScenario from "../scenario/GraphWithSimilarRelationsScenario";
+import SimilarRelationsScenario from "../scenario/SimilarRelationsScenario";
 import Selection from '@/Selection'
 
 describe("GraphElement", () => {
@@ -273,8 +273,8 @@ describe("GraphElement", () => {
 
 
     it("can get descendants of a bubble where there is a group relation", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
-        let center = scenario.getCenterVertexInTree();
+        let scenario = await new SimilarRelationsScenario();
+        let center = scenario.getCenterInTree();
         Selection.reset();
         expect(
             Selection.getNbSelectedRelations()

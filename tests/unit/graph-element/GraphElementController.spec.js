@@ -127,7 +127,7 @@ describe('GraphElementController', () => {
         });
         it("returns true when center vertex has an expanded group relation child", function () {
             var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-            var centerBubble = scenario.getCenterVertexInTree();
+            var centerBubble = scenario.getCenterInTree();
             var groupRelation = scenario.getPossessionAsGroupRelationInTree();
             expect(
                 centerBubble.getController().collapseCanDo()
@@ -150,7 +150,7 @@ describe('GraphElementController', () => {
             var grandParent = otherBubble.getParentBubble().getParentBubble();
             expect(
                 grandParent.isSameUri(
-                    scenario.getCenterVertexInTree()
+                    scenario.getCenterInTree()
                 )
             ).toBeTruthy();
         });

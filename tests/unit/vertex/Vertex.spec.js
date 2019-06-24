@@ -1,7 +1,7 @@
 import Mock from '../mock/Mock'
 import ThreeScenario from "../scenario/ThreeScenario";
 import AroundEventTagScenario from "../scenario/AroundEventTagScenario"
-import GraphWithSimilarRelationsScenario from "../scenario/GraphWithSimilarRelationsScenario"
+import SimilarRelationsScenario from "../scenario/SimilarRelationsScenario"
 import MindMapInfo from '@/MindMapInfo'
 import Selection from '@/Selection'
 import TestUtil from '../util/TestUtil'
@@ -221,7 +221,7 @@ describe('Vertex', () => {
     });
 
     it("selects the parent vertex after it's removed if right under a relation and vertex", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let otherBubble = scenario.getOtherRelationInTree().getNextBubble();
         await otherBubble.getController().remove();
         expect(
@@ -231,7 +231,7 @@ describe('Vertex', () => {
 
     //todo
     xit("selects the group relation after it's removed if right under a relation and group relation", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
         groupRelation.expand();
         let vertexUnderGroupRelation = TestUtil.getChildWithLabel(
@@ -288,8 +288,8 @@ describe('Vertex', () => {
             ).toBeTruthy()
         });
         it("includes child vertices under group relations", async () => {
-            let scenario = await new GraphWithSimilarRelationsScenario();
-            let center = scenario.getCenterVertexInTree();
+            let scenario = await new SimilarRelationsScenario();
+            let center = scenario.getCenterInTree();
             let groupRelation = TestUtil.getChildWithLabel(
                 center,
                 "Possession"
@@ -314,8 +314,8 @@ describe('Vertex', () => {
             ).toBeTruthy();
         });
         it("includes child vertices under collapsed group relations", async () => {
-            let scenario = await new GraphWithSimilarRelationsScenario();
-            let centerVertex = scenario.getCenterVertexInTree();
+            let scenario = await new SimilarRelationsScenario();
+            let centerVertex = scenario.getCenterInTree();
             let possession = TestUtil.getChildWithLabel(centerVertex, "Possession");
             let secondLevelGroupRelation = TestUtil.getChildWithLabel(
                 possession,

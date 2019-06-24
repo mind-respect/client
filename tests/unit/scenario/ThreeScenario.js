@@ -2,7 +2,7 @@ import Scenario from './Scenario'
 import GraphServiceMock from "../mock/GraphServiceMock";
 
 let ThreeScenario = function () {
-    this.dataKey = "threeBubblesGraph.getGraph";
+    this.dataKey = "three.getGraph";
     return this.init();
 };
 
@@ -27,12 +27,12 @@ ThreeScenario.prototype.getBubble4InTree = function () {
 };
 ThreeScenario.prototype.getSubGraphForB2 = function () {
     return Scenario.getTestData(
-        "threeBubblesGraph.subGraphForB2"
+        "three.subGraphForB2"
     );
 };
 ThreeScenario.prototype.getSubGraphForB3 = function () {
     return Scenario.getTestData(
-        "threeBubblesGraph.subGraphForB3"
+        "three.subGraphForB3"
     );
 };
 
@@ -44,9 +44,6 @@ ThreeScenario.prototype.getCenterBubbleUri = function () {
     return this.vertexWithLabelInServerGraph("b1").getUri();
 };
 
-ThreeScenario.prototype.getR1Uri = function () {
-    return uriOfEdgeWithLabel(this.getGraph(), "r1");
-};
 ThreeScenario.prototype.getBubble1 = function () {
     return this.vertexWithLabelInServerGraph("b1")
 };

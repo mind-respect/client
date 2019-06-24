@@ -1,5 +1,5 @@
 import Mock from '../mock/Mock'
-import GraphWithSimilarRelationsScenario from "../scenario/GraphWithSimilarRelationsScenario";
+import SimilarRelationsScenario from "../scenario/SimilarRelationsScenario";
 import RelationWithMultipleIdentifiersScenario from "../scenario/RelationWithMultipleIdentifiersScenario";
 import RelationsAsIdentifierScenario from '../scenario/RelationsAsIdentifierScenario'
 import ThreeScenario from "../scenario/ThreeScenario"
@@ -17,7 +17,7 @@ describe("GroupRelation", function () {
     // groupRelation = GroupRelation.usingIdentification(possession);
 
     it("has identification", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let possession = scenario.getPossession();
         let groupRelation = GroupRelation.usingIdentification(
             possession
@@ -27,7 +27,7 @@ describe("GroupRelation", function () {
         );
     });
     it("can tell if it has multiple vertices", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let groupRelation = GroupRelation.usingIdentification(
             scenario.getPossession()
         );
@@ -47,7 +47,7 @@ describe("GroupRelation", function () {
         ).toBeTruthy();
     });
     it("can return the number of vertices", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let groupRelation = GroupRelation.usingIdentification(
             scenario.getPossession()
         );
@@ -77,7 +77,7 @@ describe("GroupRelation", function () {
         ).toBe(2);
     });
     it("can integrate a group relation to a greater depth than 1", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let possessionGroupRelation = scenario.getPossessionGroupRelation();
         possessionGroupRelation.expand();
         let possessionOfBook3Relation = TestUtil.getChildWithLabel(
@@ -93,7 +93,7 @@ describe("GroupRelation", function () {
         ).toBe(2);
     });
     it("sets the right label for a group relation at a greater depth than 1", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let possessionGroupRelation = scenario.getPossessionGroupRelation();
         possessionGroupRelation.expand();
         let possessionOfBook3Relation = TestUtil.getChildWithLabel(
@@ -137,7 +137,7 @@ describe("GroupRelation", function () {
     });
 
     it("can expand and collapse", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let possessionInTree = scenario.getPossessionGroupRelation();
         possessionInTree.expand();
         expect(
@@ -154,7 +154,7 @@ describe("GroupRelation", function () {
     });
 
     it("does not duplicate children when expanding while already expanded", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let possessionInTree = scenario.getPossessionGroupRelation();
         possessionInTree.getController().expand();
         expect(
@@ -171,7 +171,7 @@ describe("GroupRelation", function () {
 
 
     it("has the label of the identification", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
         expect(
             groupRelation.getLabel()
@@ -195,8 +195,8 @@ describe("GroupRelation", function () {
 
     //todo
     xit('moves a relation under a "group relation" if newly added identification is related to a group relation', async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
-        let centerBubble = scenario.getCenterVertexInTree();
+        let scenario = await new SimilarRelationsScenario();
+        let centerBubble = scenario.getCenterInTree();
         expect(
             centerBubble.getNumberOfChild()
         ).toBe(4);
@@ -237,8 +237,8 @@ describe("GroupRelation", function () {
 
     //todo
     xit("moves a relation to the group-relation's parent if the identification related to the group-relation is removed from the relation", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
-        let centerBubble = scenario.getCenterVertexInTree();
+        let scenario = await new SimilarRelationsScenario();
+        let centerBubble = scenario.getCenterInTree();
         expect(
             centerBubble.getNumberOfChild()
         ).toBe(4);
@@ -283,8 +283,8 @@ describe("GroupRelation", function () {
 
     //todo
     xit("does not move a relation to the group relation's parent if the group relation is not related to the removed identification", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
-        let centerBubble = scenario.getCenterVertexInTree();
+        let scenario = await new SimilarRelationsScenario();
+        let centerBubble = scenario.getCenterInTree();
 
         let possessionGroupRelation = TestUtil.getChildWithLabel(
             centerBubble,
@@ -473,7 +473,7 @@ describe("GroupRelation", function () {
 
     //todo
     xit("doesn't create a group-relation when adding to a relation an identification that exists at the same level if its already under group relation", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
         groupRelation.expand();
         expect(
@@ -530,7 +530,7 @@ describe("GroupRelation", function () {
     });
 
     it("sets identifications", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let possessionInTree = scenario.getPossessionGroupRelation();
         expect(
             possessionInTree.hasIdentifications()

@@ -1,5 +1,5 @@
 import Mock from '../mock/Mock'
-import GraphWithSimilarRelationsScenario from "../scenario/GraphWithSimilarRelationsScenario";
+import SimilarRelationsScenario from "../scenario/SimilarRelationsScenario";
 import GroupRelationHavingAVertexChildWithOneChild from '../scenario/GroupRelationHavingAVertexChildWithOneChild'
 import GraphServiceMock from '../mock/GraphServiceMock'
 import TestUtil from '../util/TestUtil'
@@ -8,7 +8,7 @@ import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScena
 
 describe("GroupRelationController", () => {
     it("can identify", async () => {
-        let scenario = await new GraphWithSimilarRelationsScenario();
+        let scenario = await new SimilarRelationsScenario();
         let possessionInTree = scenario.getPossessionGroupRelation();
         expect(
             possessionInTree.getController().identifyCanDo()
@@ -16,7 +16,7 @@ describe("GroupRelationController", () => {
     });
     describe("addChild", function () {
         it("gives all it's identifiers to the new relation when adding a child", async () => {
-            let scenario = await new GraphWithSimilarRelationsScenario();
+            let scenario = await new SimilarRelationsScenario();
             let possessionInTree = scenario.getPossessionGroupRelation();
             possessionInTree.model().addIdentification(
                 TestUtil.dummyIdentifier()
@@ -33,7 +33,7 @@ describe("GroupRelationController", () => {
             ).toBeTruthy();
         });
         it("makes new child public if parent vertex is public", async () => {
-            let scenario = await new GraphWithSimilarRelationsScenario();
+            let scenario = await new SimilarRelationsScenario();
             let possessionInTree = scenario.getPossessionGroupRelation();
             possessionInTree.getParentVertex().model().makePublic();
             possessionInTree.model().addIdentification(
@@ -51,7 +51,7 @@ describe("GroupRelationController", () => {
             ).toBeTruthy();
         });
         it("updates child in model", async () => {
-            let scenario = await new GraphWithSimilarRelationsScenario();
+            let scenario = await new SimilarRelationsScenario();
             let possessionInTree = scenario.getPossessionGroupRelation();
             let nbVerticesBefore = Object.keys(
                 possessionInTree.model().getVertices()
@@ -64,7 +64,7 @@ describe("GroupRelationController", () => {
             ).toBe(nbVerticesBefore + 1);
         });
         it("adds new child at the bottom of the others when not expanded", async () => {
-            let scenario = await new GraphWithSimilarRelationsScenario();
+            let scenario = await new SimilarRelationsScenario();
             let possessionInTree = scenario.getPossessionGroupRelation();
             possessionInTree.collapse();
             expect(
@@ -109,8 +109,8 @@ describe("GroupRelationController", () => {
     });
     describe("becomeParent", function () {
         it("can become parent of an edge", async () => {
-            let scenario = await new GraphWithSimilarRelationsScenario();
-            let center = scenario.getCenterVertexInTree();
+            let scenario = await new SimilarRelationsScenario();
+            let center = scenario.getCenterInTree();
             let groupRelation = scenario.getPossessionGroupRelation();
             let otherRelation = TestUtil.getChildWithLabel(
                 center,
@@ -132,8 +132,8 @@ describe("GroupRelationController", () => {
             ).toBeTruthy();
         });
         it("can become parent of a group relation", async () => {
-            let scenario = await new GraphWithSimilarRelationsScenario();
-            let center = scenario.getCenterVertexInTree();
+            let scenario = await new SimilarRelationsScenario();
+            let center = scenario.getCenterInTree();
             let groupRelation = scenario.getPossessionGroupRelation();
             let otherGroupRelation = TestUtil.getChildWithLabel(
                 center,

@@ -1,7 +1,7 @@
 import Scenario from './Scenario'
 
 let SingleChildScenario = function () {
-    this.dataKey = "threeBubblesGraph.subGraphForParent";
+    this.dataKey = "three.subGraphForParent";
     return this.init();
 };
 
@@ -21,13 +21,13 @@ SingleChildScenario.prototype.getParentInTree = function () {
 
 SingleChildScenario.prototype.getB1RelatedToParentGraph = function () {
     return Scenario.getTestData(
-        "threeBubblesGraph.subGraphOfB1RelatedToParent"
+        "three.subGraphOfB1RelatedToParent"
     );
 };
 
 SingleChildScenario.prototype.getSubGraphOfB1OnceMergedWithSingleChild = function () {
     return Scenario.getTestData(
-        "threeBubblesGraph.subGraphOfB1OnceMergedWithSingleChild"
+        "three.subGraphOfB1OnceMergedWithSingleChild"
     );
 };
 SingleChildScenario.prototype.getB1Uri = function () {
