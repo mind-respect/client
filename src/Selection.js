@@ -84,10 +84,14 @@ api.handleSelectionManagementClick = function (event) {
 };
 
 api.getNbSelectedVertices = function () {
-    return api.selected.length;
+    return api.selected.filter((selected) => {
+        return selected.isVertex();
+    }).length;
 };
 api.getNbSelectedRelations = function () {
-    return api.selected.length;
+    return api.selected.filter((selected) => {
+        return selected.isRelation();
+    }).length;
 };
 api.getOneOrArrayOfSelected = function () {
     return 1 === api.getNbSelected() ?

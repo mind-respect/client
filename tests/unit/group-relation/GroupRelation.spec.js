@@ -546,5 +546,4 @@ describe("GroupRelation", function () {
             true
         ).toBeTruthy();
     });
-
 });
