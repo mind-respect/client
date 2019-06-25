@@ -275,15 +275,15 @@ Vertex.prototype.expand = function (avoidCenter, isChildExpand) {
 };
 
 //getNextChildrenEvenIfCollapsed = getNextChildren because we dont need it for vertices yet.
-Vertex.prototype.getNextChildrenEvenIfCollapsed = Vertex.prototype.getNextChildren = function (isToTheLeft) {
+Vertex.prototype.getNextChildrenEvenIfCollapsed = Vertex.prototype.getNextChildren = function (toTheLeft) {
     if (this.isCollapsed) {
         return [];
     }
     if (this.isCenter) {
-        if (isToTheLeft === undefined) {
+        if (toTheLeft === undefined) {
             return this.leftBubbles.concat(this.rightBubbles);
         } else {
-            return isToTheLeft ? this.leftBubbles : this.rightBubbles;
+            return toTheLeft ? this.leftBubbles : this.rightBubbles;
         }
     } else {
         return this.rightBubbles;

@@ -77,8 +77,8 @@ api.SubGraph.prototype.add = function (graphElement) {
                 this.vertices[triple.vertex.getUri()] = triple.vertex;
                 triple.edge.parentBubble = graphElement;
                 triple.edge.parentVertex = graphElement.parentVertex;
-                triple.edge.setSourceVertex(graphElement.parentVertex)
-                triple.edge.setDestinationVertex(triple.vertex);
+                triple.edge.updateSourceOrDestination(graphElement.parentVertex);
+                triple.edge.updateSourceOrDestination(triple.vertex);
                 return this.add(triple.edge);
             })
         })

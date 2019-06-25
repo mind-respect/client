@@ -1,5 +1,5 @@
 import Mock from '../mock/Mock'
-import SimilarRelationsScenario from "../scenario/SimilarRelationsScenario";
+import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import TreeDisplayerCommon from '@/graph/TreeDisplayerCommon'
 import RelationWithMultipleIdentifiersScenario from "../scenario/RelationWithMultipleIdentifiersScenario";
 import Identification from '@/identifier/Identification'
@@ -166,7 +166,7 @@ describe("TreeDisplayerCommon", function () {
     });
 
     async function defineSimilarRelationsScenarioVariables() {
-        similarRelationsScenario = await new SimilarRelationsScenario();
+        similarRelationsScenario = await new GroupRelationsScenario();
         similarRelationsScenario.graph = graph = similarRelationsScenario.getGraph();
         centerVertex = similarRelationsScenario.getCenter();
         possession = similarRelationsScenario.getPossession();

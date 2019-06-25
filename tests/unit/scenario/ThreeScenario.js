@@ -47,7 +47,7 @@ ThreeScenario.prototype.getCenterBubbleUri = function () {
 ThreeScenario.prototype.getBubble1 = function () {
     return this.vertexWithLabelInServerGraph("b1")
 };
-ThreeScenario.prototype.getBubble1InTree = function () {
+ThreeScenario.prototype.getCenterInTree = ThreeScenario.prototype.getBubble1InTree = function () {
     return this.getVertexWithLabelInTree("b1");
 };
 ThreeScenario.prototype.getBubble2InTree = function () {

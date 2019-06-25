@@ -3,7 +3,7 @@ import ThreeScenario from "../scenario/ThreeScenario";
 import MindMapInfo from '@/MindMapInfo'
 import EdgeController from '@/edge/EdgeController'
 import TestUtil from '../util/TestUtil'
-import SimilarRelationsScenario from "../scenario/SimilarRelationsScenario";
+import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 
 describe("EdgeController", () => {
     describe("remove", function () {
@@ -87,7 +87,7 @@ describe("EdgeController", () => {
         });
 
         it("adds new relation under the group relation when adding a child to a relation under a group relation", async () => {
-            let scenario = await new SimilarRelationsScenario();
+            let scenario = await new GroupRelationsScenario();
             let centerVertex = scenario.getCenterInTree();
             expect(
                 centerVertex.getNumberOfChild()
@@ -110,7 +110,7 @@ describe("EdgeController", () => {
         });
 
         it("adds all the identifiers of the relation to the the new child relation when adding a child", async () => {
-            let scenario = await new SimilarRelationsScenario();
+            let scenario = await new GroupRelationsScenario();
             let groupRelation = scenario.getPossessionGroupRelation();
             groupRelation.expand();
             let relationUnderGroupRelation = TestUtil.getChildWithLabel(
@@ -282,7 +282,7 @@ describe("EdgeController", () => {
         ).toBe(1);
     });
     it("can add a child to a relation under a group relation", async () => {
-        let scenario = await new SimilarRelationsScenario();
+        let scenario = await new GroupRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
         groupRelation.expand();
         let centerBubble = scenario.getCenterInTree();
@@ -310,7 +310,7 @@ describe("EdgeController", () => {
         ).toBe(centerBubbleNumberOfChild);
     });
     it("does not hide the new group relation when adding a child to a relation under a group relation", async () => {
-        let scenario = await new SimilarRelationsScenario();
+        let scenario = await new GroupRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
         groupRelation.expand();
         let relationUnderGroupRelation = TestUtil.getChildWithLabel(
@@ -362,7 +362,7 @@ describe("EdgeController", () => {
             ).toBe(1);
         });
         it("includes previous vertex in group relation model vertices", async () => {
-            let scenario = await new SimilarRelationsScenario();
+            let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
             await scenario.getOtherRelationInTree().getController().addChild();
             let newGroupRelation = TestUtil.getChildWithLabel(
@@ -376,7 +376,7 @@ describe("EdgeController", () => {
             ).toBe(2);
         });
         xit("can add child to a relation under a group relation where the external uri is this relation's uri", async () => {
-            let scenario = await new SimilarRelationsScenario();
+            let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
             await center.getController().addChild().then(async (tripleUi) => {
                 let newEdge = tripleUi.edge;

@@ -1,7 +1,7 @@
 import Scenario from './Scenario'
 
 let GroupRelationHavingAVertexChildWithOneChild = function () {
-    this.dataKey = "graphWithHiddenSimilarRelations.b2Graph";
+    this.dataKey = "hiddenGroupRelations.b2Graph";
     return this.init();
 };
 
@@ -25,12 +25,12 @@ GroupRelationHavingAVertexChildWithOneChild.prototype.getCenterBubbleUri = funct
 };
 GroupRelationHavingAVertexChildWithOneChild.prototype.getShirt2Graph = function () {
     return Scenario.getTestData(
-        "graphWithHiddenSimilarRelations.shirt2Graph"
+        "hiddenGroupRelations.shirt2Graph"
     );
 };
 GroupRelationHavingAVertexChildWithOneChild.prototype.getShirt2VertexUri = function () {
     return Scenario.getTestData(
-        "graphWithHiddenSimilarRelations.shirt2BubbleUri"
+        "hiddenGroupRelations.shirt2BubbleUri"
     );
 };
 

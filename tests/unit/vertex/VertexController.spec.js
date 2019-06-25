@@ -1,7 +1,7 @@
 import Mock from '../mock/Mock'
 import GraphServiceMock from '../mock/GraphServiceMock'
 import ThreeScenario from "../scenario/ThreeScenario"
-import SimilarRelationsScenario from '../scenario/SimilarRelationsScenario'
+import GroupRelationsScenario from '../scenario/GroupRelationsScenario'
 import SingleChildScenario from '../scenario/SingleChildScenario'
 import AutomaticExpandScenario from "../scenario/AutomaticExpandScenario";
 import TestUtil from '../util/TestUtil'
@@ -222,7 +222,7 @@ describe('VertexController', () => {
         ).toBe(3);
     });
     it("puts the new bubble under the group relation when adding a sibling to the child of group relation", async () => {
-        let scenario = await new SimilarRelationsScenario();
+        let scenario = await new GroupRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
         expect(
             groupRelation.isGroupRelation()
@@ -242,7 +242,7 @@ describe('VertexController', () => {
         ).toBe(numberOfChild + 1);
     });
     it("sets identification to the new relation when adding a sibling to the child of group relation", async () => {
-        let scenario = await new SimilarRelationsScenario();
+        let scenario = await new GroupRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
         expect(
             groupRelation.isGroupRelation()
@@ -676,7 +676,7 @@ describe('VertexController', () => {
             ).toBe(1);
         });
         xit("can become parent of a group relation", async () => {
-            let scenario = await new SimilarRelationsScenario();
+            let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
             let groupRelation = scenario.getPossessionGroupRelation();
             let otherVertex = TestUtil.getChildWithLabel(
@@ -703,7 +703,7 @@ describe('VertexController', () => {
             ).toBeTruthy();
         });
         xit("does not remove the relation's tag when moving a group relation", async () => {
-            let scenario = await new SimilarRelationsScenario();
+            let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
             let groupRelation = scenario.getPossessionGroupRelation();
             let otherVertex = TestUtil.getChildWithLabel(
