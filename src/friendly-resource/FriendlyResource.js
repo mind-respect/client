@@ -421,8 +421,8 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
         otherBubble.addChild(this);
         otherBubble.isExpanded = true;
     } else {
-        let parentBubble = this.getParentBubble();
-        let otherParentBubble = otherBubble.getParentBubble();
+        let parentBubble = this.getParentVertex();
+        let otherParentBubble = otherBubble.getParentVertex();
         let temporarilyRemove = parentBubble.isSameBubble(otherParentBubble);
         parentBubble.removeChild(this, temporarilyRemove);
         let index = otherParentBubble.getChildIndex(otherBubble);
@@ -443,7 +443,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
     }
     this.direction = otherBubble.direction;
     if (this.isGroupRelation()) {
-        this.visitDescendants((child) =>{
+        this.visitDescendants((child) => {
             child.direction = otherBubble.direction;
         });
     }
@@ -495,7 +495,9 @@ FriendlyResource.FriendlyResource.prototype.buildChildrenIndex = function (index
         true
     ).reduce((childrenIndex, child) => {
         if (child.isGroupRelation()) {
-            childrenIndex = Object.assign(childrenIndex, child.buildChildrenIndex(index));
+            let groupRelationIndex = child.buildChildrenIndex(index);
+            index += Object.keys(groupRelationIndex).length;
+            childrenIndex = Object.assign(childrenIndex, groupRelationIndex);
         } else {
             // let previousValue = this.getChildrenIndex()[child.getUri()];
             let isLeft = child.isToTheLeft();

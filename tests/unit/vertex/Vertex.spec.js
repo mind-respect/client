@@ -303,6 +303,20 @@ describe('Vertex', () => {
                 )
             ).toBeTruthy();
         });
+        it("does not have duplicate indexes when moving a group relation", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let center = scenario.getCenterInTree();
+            let topBubble = scenario.getOtherRelationInTree().getNextBubble();
+            scenario.getPossessionGroupRelation().getController().moveAbove(topBubble);
+            let detailedIndex = center.buildChildrenIndex();
+            let indexArray = Object.values(detailedIndex).map((entry) => {
+                return entry.index;
+            });
+            let indexAsSet = [...new Set(indexArray)];
+            expect(
+                indexArray.length
+            ).toBe(indexAsSet.length)
+        });
         it("includes child vertices under group relations", async () => {
             let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
