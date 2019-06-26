@@ -439,4 +439,9 @@ describe('GraphElementController', () => {
             ).toBe(false);
         });
     });
+    describe("moveOneStepUp moveOneStepDown", () => {
+        xit("stays under it's group relation", () => {
+            expect(false).toBeTruthy();
+        })
+    })
 });

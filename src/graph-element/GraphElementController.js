@@ -255,8 +255,8 @@ GraphElementController.prototype._pasteBubble = function () {
     bubbleCutClipboard = undefined;
 };
 
-GraphElementController.prototype.moveUp = function () {
-    let bubbleAbove = this.getUi().getBubbleAbove();
+GraphElementController.prototype.moveOneStepUp = function () {
+    let bubbleAbove = this.getUi().getUpBubble();
     if (bubbleAbove.isSameBubble(this.getUi())) {
         return;
     }
@@ -274,8 +274,8 @@ GraphElementController.prototype.moveUp = function () {
 };
 
 
-GraphElementController.prototype.moveDown = function () {
-    let bubbleUnder = this.getUi().getBubbleUnder();
+GraphElementController.prototype.moveOneStepDown = function () {
+    let bubbleUnder = this.getUi().getDownBubble();
     if (bubbleUnder.isSameBubble(this.getUi())) {
         return;
     }
@@ -315,7 +315,7 @@ GraphElementController.prototype.moveAbove = function (otherEdge) {
     if (!this._canMoveAboveOrUnder(otherEdge)) {
         return Promise.resolve();
     }
-    let previousParentVertex = this.getUi().getParentVertex();
+    let previousParentVertex = this.model().getParentVertex();
     return this._moveTo(
         otherEdge,
         true,
@@ -388,9 +388,10 @@ GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previou
 };
 
 GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, previousParentVertex) {
-    let movedEdge = this.getUi().isVertex() ?
-        this.getUi().getParentBubble() :
-        this.getUi();
+    let model = this.model();
+    let movedEdge = model.isVertex() ?
+        model.getParentBubble() :
+        model;
     let promises = [];
     if (!otherEdge.getParentBubble().isSameUri(movedEdge.getParentBubble())) {
         promises.push(
@@ -398,13 +399,13 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
         );
     }
     if (isAbove) {
-        this.getUi().moveAbove(otherEdge);
+        model.moveAbove(otherEdge);
     } else {
-        this.getUi().moveBelow(otherEdge);
+        model.moveBelow(otherEdge);
     }
-    let parentBubble = otherEdge.getParentBubble();
-    if (parentBubble.isGroupRelation()) {
-        let identification = parentBubble.getIdentification();
+    let parentOfOtherBubble = otherEdge.getParentBubble();
+    if (parentOfOtherBubble.isGroupRelation()) {
+        let identification = parentOfOtherBubble.getIdentification();
         if (movedEdge.isGroupRelation()) {
             movedEdge.visitClosestChildRelations(function (relation) {
                 promises.push(
@@ -441,14 +442,13 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
         }
     }
     return Promise.all(promises).then(() => {
-
         GraphElementService.changeChildrenIndex(
             otherEdge.getParentVertex()
         );
         GraphElementService.changeChildrenIndex(
             previousParentVertex
         );
-        Selection.setToSingle(this.model());
+        Selection.setToSingle(model);
     });
 };
 

@@ -202,7 +202,7 @@ function defineNonCtrlPlusKeysAndTheirActions() {
 }
 
 function defineCtrlPlusKeysAndTheirActions() {
-    var actions = {};
+    let actions = {};
     actions[gArrowKeyNumber] = [{
         action: "identify"
     }, {
@@ -264,12 +264,12 @@ function defineCtrlPlusKeysAndTheirActions() {
         action: "zoomOut",
         isForAppController: true
     };
-    actions[upArrowKeyNumber] = {
-        action: "moveUp"
-    };
-    actions[downArrowKeyNumber] = {
-        action: "moveDown"
-    };
+    // actions[upArrowKeyNumber] = {
+    //     action: "moveUp"
+    // };
+    // actions[downArrowKeyNumber] = {
+    //     action: "moveDown"
+    // };
     actions[mKeyNumber] = {
         action: "merge"
     };

@@ -421,7 +421,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
         otherBubble.addChild(this);
         otherBubble.isExpanded = true;
     } else {
-        let parentBubble = this.getParentVertex();
+        let parentBubble = this.getParentVertexOrGroupRelation();
         let otherParentBubble = otherBubble.getParentVertex();
         let temporarilyRemove = parentBubble.isSameBubble(otherParentBubble);
         parentBubble.removeChild(this, temporarilyRemove);
