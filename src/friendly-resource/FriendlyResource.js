@@ -443,9 +443,9 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
     }
     this.direction = otherBubble.direction;
     if (this.isGroupRelation()) {
-        this.visitDescendants(function (child) {
+        this.visitDescendants((child) =>{
             child.direction = otherBubble.direction;
-        }.bind(this))
+        });
     }
     Store.dispatch("redraw");
     // this._resetIsToTheLeft();
@@ -821,7 +821,7 @@ FriendlyResource.FriendlyResource.prototype.visitAllImmediateChild = function (v
 };
 
 FriendlyResource.FriendlyResource.prototype.getDeepestDescendant = function () {
-    if (this.isLeaf()) {
+    if (this.isLeaf() || this.isCollapsed) {
         return this;
     }
     let depths = this.getDescendantsDepths();

@@ -60,7 +60,8 @@
         },
         data: function () {
             return {
-                loaded: false
+                loaded: false,
+                isLeft:null
             }
         },
         mounted: function () {

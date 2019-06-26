@@ -55,6 +55,7 @@ api.SubGraph.prototype.add = function (graphElement) {
         let endVertex = graphElement.isInverse() ? graphElement.getSourceVertex() : graphElement.getDestinationVertex();
         endVertex.parentBubble = graphElement;
         endVertex.parentVertex = graphElement.parentVertex;
+        endVertex.direction = graphElement.direction;
         this.add(
             endVertex
         );
@@ -69,12 +70,15 @@ api.SubGraph.prototype.add = function (graphElement) {
         );
         graphElement.sortedImmediateChild(graphElement.getParentVertex().getChildrenIndex()).forEach((child) => {
             if (child.isGroupRelation) {
+                child.direction = graphElement.direction;
                 child.parentVertex = graphElement.parentVertex;
                 child.parentBubble = graphElement;
                 return this.add(child);
             }
             Object.values(child).forEach((triple) => {
+                triple.vertex.direction = graphElement.direction;
                 this.vertices[triple.vertex.getUri()] = triple.vertex;
+                triple.edge.direction = graphElement.direction;
                 triple.edge.parentBubble = graphElement;
                 triple.edge.parentVertex = graphElement.parentVertex;
                 triple.edge.updateSourceOrDestination(graphElement.parentVertex);

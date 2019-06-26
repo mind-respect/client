@@ -189,7 +189,6 @@ Vertex.prototype.getRelationWithUiParent = function () {
 Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     let children;
     child.parentBubble = child.parentVertex = this;
-    CurrentSubGraph.get().add(child);
     if (this.isCenter) {
         if (this._shouldAddLeft(isToTheLeft)) {
             children = this.leftBubbles;
@@ -202,6 +201,7 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
         children = this.rightBubbles;
         child.direction = this.direction;
     }
+    CurrentSubGraph.get().add(child);
     if (index === undefined) {
         children.push(child)
     } else {

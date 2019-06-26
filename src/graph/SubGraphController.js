@@ -39,7 +39,7 @@ SubGraphController.prototype.loadForParentIsAlreadyOnMap = function () {
 SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
     return GraphService.getForCentralBubbleUri(
         this.model().getUri()
-    ).then(function (response) {
+    ).then((response) => {
         let serverGraph = response.data;
         this.model().nbRelationsWithGrandParent = this._removeRelationWithGrandParentAndChildFromServerGraph(serverGraph);
         if (!serverGraph.vertices[this.model().getUri()]) {
@@ -67,7 +67,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
         sortGroupRelationRootsByIsGroupRelationOrCreationDate(
             parentAsCenter.groupRelationRoots,
             childrenIndex
-        ).forEach(function (groupRelationRoot) {
+        ).forEach((groupRelationRoot) => {
             if (groupRelationRoot.isGroupRelation() && groupRelationRoot.isTrulyAGroupRelation()) {
                 let childIndex = childrenIndex[groupRelationRoot.getFirstVertex(childrenIndex).getUri()];
                 let addLeft;
@@ -81,33 +81,34 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
                 );
                 return;
             }
-            groupRelationRoot.sortedImmediateChild(parentAsCenter.getChildrenIndex()).forEach(function (child) {
-                Object.keys(child).forEach(function (uId) {
-                    let triple = child[uId];
-                    triple.edge.uiId = uId;
+            groupRelationRoot.sortedImmediateChild(parentAsCenter.getChildrenIndex()).forEach((child) => {
+                    Object.keys(child).forEach((uId) => {
+                        let triple = child[uId];
+                        triple.edge.uiId = uId;
 
-                    let childIndex = childrenIndex[triple.vertex.getUri()];
-                    let addLeft;
-                    if (childIndex !== undefined) {
-                        addLeft = childIndex.toTheLeft;
-                    }
-                    triple.edge.setSourceVertex(
-                        graph.getVertexWithUri(
-                            triple.edge.getSourceVertex().getUri()
+                        let childIndex = childrenIndex[triple.vertex.getUri()];
+                        let addLeft;
+                        if (childIndex !== undefined) {
+                            addLeft = childIndex.toTheLeft;
+                        }
+                        triple.edge.setSourceVertex(
+                            graph.getVertexWithUri(
+                                triple.edge.getSourceVertex().getUri()
+                            )
+                        );
+                        triple.edge.setDestinationVertex(
+                            graph.getVertexWithUri(
+                                triple.edge.getDestinationVertex().getUri()
+                            )
+                        );
+                        modelToAddChild.addChild(
+                            triple.edge,
+                            addLeft
                         )
-                    );
-                    triple.edge.setDestinationVertex(
-                        graph.getVertexWithUri(
-                            triple.edge.getDestinationVertex().getUri()
-                        )
-                    );
-                    modelToAddChild.addChild(
-                        triple.edge,
-                        addLeft
-                    )
-                }.bind(this));
-            }.bind(this));
-        }.bind(this));
+                    });
+                }
+            );
+        });
         graph.groupRelations.forEach((groupRelation) => {
             if (groupRelation.hasFewEnoughBubblesToExpand()) {
                 groupRelation.expand(true);
@@ -121,7 +122,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
             ).then(function () {
                 return graph;
             });
-    }.bind(this));
+    });
 };
 
 SubGraphController.prototype._removeRelationWithGrandParentAndChildFromServerGraph = function (serverGraph) {

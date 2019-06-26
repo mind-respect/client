@@ -287,6 +287,22 @@ describe('Vertex', () => {
                 childrenIndexes.hasOwnProperty(b71.getUri())
             ).toBeTruthy()
         });
+        it("includes child vertices of inverse relations under a group relation", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let parentVertex = scenario.getCenterInTree();
+            let inverseRelation = TestUtil.getChildWithLabel(
+                scenario.getPossessionGroupRelation(),
+                "Possessed by book 2"
+            );
+            expect(
+                inverseRelation.isInverse()
+            ).toBeTruthy();
+            expect(
+                parentVertex.buildChildrenIndex().hasOwnProperty(
+                    inverseRelation.getSourceVertex().getUri()
+                )
+            ).toBeTruthy();
+        });
         it("includes child vertices under group relations", async () => {
             let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
