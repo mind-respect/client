@@ -6,7 +6,7 @@ import CreationDateScenario from "../scenario/CreationDateScenario";
 import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
 
 describe('GraphElementController', () => {
-    describe("removeDo", ()=>{
+    describe("removeDo", () => {
         it("selects the parent vertex when removed", async () => {
             let scenario = await new ThreeScenario();
             let b1 = scenario.getBubble1InTree();
@@ -40,6 +40,22 @@ describe('GraphElementController', () => {
             }));
             expect(
                 Selection.isSelected(centerBubble)
+            ).toBeTruthy();
+        });
+        it("selects the parent vertex when relation is removed", async () => {
+            let scenario = await new ThreeScenario();
+            let b1 = scenario.getBubble1InTree();
+            let r1 = TestUtil.getChildWithLabel(
+                b1,
+                "r1"
+            );
+            Selection.setToSingle(r1);
+            expect(
+                Selection.isSelected(b1)
+            ).toBeFalsy();
+            await r1.getController().removeDo();
+            expect(
+                Selection.isSelected(b1)
             ).toBeTruthy();
         });
     });

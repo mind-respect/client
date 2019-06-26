@@ -128,7 +128,7 @@ GroupRelationController.prototype.becomeParent = function (graphElementUi) {
 GroupRelationController.prototype.becomeExParent = function (movedEdge) {
     let promises = [];
     let previousParentGroupRelation = this.model().getGreatestGroupRelationAncestor();
-    previousParentGroupRelation.getModel().getIdentifiersAtAnyDepth().forEach(function (identifier) {
+    previousParentGroupRelation.getIdentifiersAtAnyDepth().forEach(function (identifier) {
         identifier = movedEdge.model().getIdentifierHavingExternalUri(
             identifier.getExternalResourceUri()
         );
