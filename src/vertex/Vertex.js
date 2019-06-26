@@ -281,7 +281,7 @@ Vertex.prototype.getNextChildrenEvenIfCollapsed = Vertex.prototype.getNextChildr
     }
     if (this.isCenter) {
         if (toTheLeft === undefined) {
-            return this.leftBubbles.concat(this.rightBubbles);
+            return this.rightBubbles.concat(this.leftBubbles);
         } else {
             return toTheLeft ? this.leftBubbles : this.rightBubbles;
         }

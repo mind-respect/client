@@ -3,7 +3,9 @@ import ThreeScenario from "../../scenario/ThreeScenario";
 import GroupRelationsScenario from "../../scenario/GroupRelationsScenario";
 import HiddenGroupRelationsScenario from "../../scenario/HiddenGroupRelationsScenario";
 import TestUtil from '../../util/TestUtil'
-
+import DistantGraphScenario from "../../scenario/DistantGraphScenario";
+import CreationDateScenario from "../../scenario/CreationDateScenario";
+import ThreeLevelDeepGroupRelationScenario from "../../scenario/ThreeLevelDeepGroupRelationScenario";
 describe("Graph.vue", () => {
     it("distributes triples evenly to the right and left", async () => {
         let scenario = await new ThreeScenario();
@@ -60,7 +62,7 @@ describe("Graph.vue", () => {
         ).toBeTruthy();
     });
 
-    fit("preserves direction with parent vertex for expanded group relations", async () => {
+    it("preserves direction with parent vertex for expanded group relations", async () => {
         let scenario = await new GroupRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
         groupRelation.expand();
@@ -71,16 +73,16 @@ describe("Graph.vue", () => {
             scenario.getRelationWithBook2InTree().isInverse()
         ).toBeTruthy();
     });
-    it("removes hidden properties indicator when expanding group relation", function () {
-        var groupRelation = new Scenarios.GraphWithSimilarRelationsScenario().getPossessionAsGroupRelationInTree();
+    it("removes hidden properties indicator when expanding group relation", async () => {
+        let scenario = await new GroupRelationsScenario();
+        let groupRelation = scenario.getPossessionGroupRelation();
+        groupRelation.collapse();
         expect(
-            groupRelation.hasVisibleHiddenRelationsContainer()
+            groupRelation.canExpand()
         ).toBeTruthy();
-        GraphDisplayerAsRelativeTree.expandGroupRelation(
-            groupRelation
-        );
+        groupRelation.expand();
         expect(
-            groupRelation.hasVisibleHiddenRelationsContainer()
+            groupRelation.canExpand()
         ).toBeFalsy();
     });
     xit("contains all connected elements for included graph elements view", function () {
@@ -107,16 +109,18 @@ describe("Graph.vue", () => {
             mergeBubbleScenario.getBubble3()
         ).toBeDefined();
     });
-    it("can make a vertex connect to a distant vertex", function () {
-        connectDistantVertexTest(function (distantBubble) {
-            var connectedBubble = distantBubble.getTopMostChildBubble().getTopMostChildBubble();
-            expect(
-                connectedBubble.text()
-            ).toBe("b2");
-        });
+    xit("can make a vertex connect to a distant vertex", async () => {
+        await connectDistantVertexTest();
+
+        // function (distantBubble) {
+        //     var connectedBubble = distantBubble.getTopMostChildBubble().getTopMostChildBubble();
+        //     expect(
+        //         connectedBubble.text()
+        //     ).toBe("b2");
+        // }
     });
 
-    it("groups similar relations when connecting to a distant vertex, ", function () {
+    xit("groups similar relations when connecting to a distant vertex, ", function () {
         connectDistantVertexTest(function (distantBubble) {
             var connectedBubble = distantBubble.getTopMostChildBubble().getTopMostChildBubble();
             var tShirtBubble = new Scenarios.TreeQuerier(
@@ -127,7 +131,7 @@ describe("Graph.vue", () => {
             ).toBeTruthy();
         });
     });
-    it("shows child bubbles images of a distant vertex when connecting to a distant vertex", function () {
+    xit("shows child bubbles images of a distant vertex when connecting to a distant vertex", function () {
         connectDistantVertexTest(function (distantBubble) {
             var connectedBubble = distantBubble.getTopMostChildBubble().getTopMostChildBubble();
             expect(
@@ -135,7 +139,7 @@ describe("Graph.vue", () => {
             ).toBeTruthy();
         });
     });
-    it("selects new relation when connecting to a distant vertex", function () {
+    xit("selects new relation when connecting to a distant vertex", function () {
         connectDistantVertexTest(function (distantBubble) {
             var newRelation = distantBubble.getTopMostChildBubble();
             expect(
@@ -147,7 +151,7 @@ describe("Graph.vue", () => {
         });
     });
 
-    it("does not duplicate the hidden relation image of a child bubble when creating a distant relationship", function () {
+    xit("does not duplicate the hidden relation image of a child bubble when creating a distant relationship", function () {
         var graphWithHiddenSimilarRelationsScenario = new Scenarios.graphWithHiddenSimilarRelations();
         var bubble1 = graphWithHiddenSimilarRelationsScenario.getBubble1InTree();
         var bubble2 = TestUtils.getChildWithLabel(
@@ -175,7 +179,8 @@ describe("Graph.vue", () => {
         );
     });
 
-    it("contains all elements for deep circular graph", function () {
+    //todo
+    xit("contains all elements for deep circular graph", function () {
         var deepGraphWithCircularity = new Scenarios.deepGraphWithCircularity();
         expect(
             deepGraphWithCircularity.getBubble3InTree()
@@ -191,7 +196,8 @@ describe("Graph.vue", () => {
         ).toBeDefined();
     });
 
-    it("can have duplicate relations", function () {
+    //todo
+    xit("can have duplicate relations", function () {
         var duplicateRelationsScenario = new Scenarios.graphWithARelationInTwoSimilarRelationsGroup(),
             impact3InIndividualContext = duplicateRelationsScenario.getImpact3RelationInTheImpactOnTheIndividualContext(),
             impact3InSocietyContext = duplicateRelationsScenario.getImpact3RelationInTheImpactOnSocietyContext();
@@ -206,55 +212,22 @@ describe("Graph.vue", () => {
             impact3InSocietyContext.getId()
         );
     });
-    it("completes build of new graph elements when adding new edge and vertex", function () {
-        var parent = new Scenarios.threeBubblesGraph().getBubble1InTree();
-        var destinationVertex = TestUtils.generateVertex();
-        var edge = TestUtils.generateEdge(
-            parent.getUri(),
-            destinationVertex.getUri()
-        );
-        var spyOnVertexCompleteBuild = spyOn(VertexUiBuilder, "completeBuild");
-        var spyOnEdgeCompleteBuild = spyOn(EdgeUiBuilder, "afterChildBuilt");
-        GraphDisplayerAsRelativeTree.addEdgeAndVertex(
-            parent,
-            edge,
-            destinationVertex
-        );
-        expect(
-            spyOnEdgeCompleteBuild.calls.count()
-        ).toBe(1);
-        expect(
-            spyOnVertexCompleteBuild.calls.count()
-        ).toBe(1);
-    });
-    it("completes the build of a property after adding one", function () {
-        var schema = new Scenarios.getProjectSchema().getSchemaInTree();
-        var propertyUi = GraphDisplayerAsRelativeTree.addProperty(
-            GraphElement.withUri(
-                TestUtils.generateVertexUri()
-            ),
-            schema
-        );
-        expect(
-            propertyUi.getModel().getIdentifiers().length
-        ).toBe(0);
-    });
 
-    it("displays suggestions by default", function () {
+    xit("displays suggestions by default", function () {
         var centerBubble = new Scenarios.oneBubbleHavingSuggestionsGraph().getVertexUi();
         expect(
             centerBubble.getNumberOfChild() > 0
         ).toBeTruthy();
     });
 
-    it("also displays suggestions by default for children", function () {
+    xit("also displays suggestions by default for children", function () {
         var eventBubble = new Scenarios.oneBubbleHavingSuggestionsGraphNotCentered().getEventBubbleInTree();
         expect(
             eventBubble.getNumberOfChild() > 0
         ).toBeTruthy();
     });
 
-    it("does not display child suggestions if child has hidden relations", function () {
+    xit("does not display child suggestions if child has hidden relations", function () {
         var centerBubble = new Scenarios.withAcceptedSuggestionGraphNotCentered().getCenterBubbleInTree();
         var eventBubble = centerBubble.getTopMostChildBubble().getTopMostChildBubble();
         eventBubble.getHiddenRelationsContainer().show();
@@ -269,7 +242,7 @@ describe("Graph.vue", () => {
         ).toBeTruthy();
     });
 
-    it("displays child suggestions after expanding child tree", function () {
+    xit("displays child suggestions after expanding child tree", function () {
         var centerBubble = new Scenarios.withAcceptedSuggestionGraphNotCentered().getCenterBubbleInTree();
         var eventBubble = centerBubble.getTopMostChildBubble().getTopMostChildBubble();
         expect(
@@ -294,7 +267,7 @@ describe("Graph.vue", () => {
         ).toBeTruthy();
     });
 
-    it("does not display already accepted suggestions after expanding child tree", function () {
+    xit("does not display already accepted suggestions after expanding child tree", function () {
         var centerBubble = new Scenarios.withAcceptedSuggestionGraphNotCentered().getCenterBubbleInTree();
         var eventBubble = centerBubble.getTopMostChildBubble().getTopMostChildBubble();
         expect(
@@ -312,102 +285,102 @@ describe("Graph.vue", () => {
         ).toBe(3);
     });
 
-    it("sorts center bubble children in order of creation date", function () {
-        var scenario = new Scenarios.creationDateScenario();
-        var b1 = scenario.getBubble1InTree();
-        var centerBubble = CenterBubble.usingBubble(b1);
-        var toTheRightVertex = centerBubble.getToTheRightTopMostChild().getTopMostChildBubble();
+    it("sorts center bubble children in order of creation date", async () => {
+        let scenario = await new CreationDateScenario();
+        let b1 = scenario.getBubble1InTree();
+        let rightVertex = b1.getNextChildren(false)[0].getNextBubble();
         expect(
-            toTheRightVertex.text()
+            rightVertex.getLabel()
         ).toBe("b2");
-        var toTheLeftVertex = centerBubble.getToTheLeftTopMostChild().getTopMostChildBubble();
+        rightVertex = rightVertex.getDownBubble();
         expect(
-            toTheLeftVertex.text()
-        ).toBe("b3");
-        toTheRightVertex = toTheRightVertex.getBubbleUnder();
-        expect(
-            toTheRightVertex.text()
+            rightVertex.getLabel()
         ).toBe("b4");
-        toTheLeftVertex = toTheLeftVertex.getBubbleUnder();
+        rightVertex = rightVertex.getDownBubble();
         expect(
-            toTheLeftVertex.text()
-        ).toBe("To do");
-        toTheRightVertex = toTheRightVertex.getBubbleUnder();
-        expect(
-            toTheRightVertex.text()
+            rightVertex.getLabel()
         ).toBe("b5");
-        toTheLeftVertex = toTheLeftVertex.getBubbleUnder().getTopMostChildBubble();
+        rightVertex = rightVertex.getDownBubble();
         expect(
-            toTheLeftVertex.text()
-        ).toBe("b6");
-        toTheRightVertex = toTheRightVertex.getBubbleUnder();
-        expect(
-            toTheRightVertex.text()
+            rightVertex.getLabel()
         ).toBe("b7");
+        let leftVertex = b1.getNextChildren(true)[0].getNextBubble();
+        expect(
+            leftVertex.getLabel()
+        ).toBe("b3");
+        leftVertex = leftVertex.getDownBubble();
+        expect(
+            leftVertex.getLabel()
+        ).toBe("s1");
+        leftVertex = leftVertex.getDownBubble();
+        expect(
+            leftVertex.getLabel()
+        ).toBe("b6");
     });
 
-    it("sorts group relations with the earliest vertex's date", function () {
-        var scenario = new Scenarios.creationDateScenario();
-        var b1 = scenario.getBubble1InTree();
-        var r2 = TestUtils.getChildWithLabel(
+    it("sorts group relations with the earliest vertex's date", async () => {
+        let scenario = await new CreationDateScenario();
+        let b1 = scenario.getBubble1InTree();
+        let r2 = TestUtil.getChildWithLabel(
             b1,
             "r2"
         );
-        var groupRelation = r2.getBubbleUnder();
+        let groupRelation = r2.getDownBubble();
         expect(
-            groupRelation.text()
-        ).toBe("To do");
+            groupRelation.getLabel()
+        ).toBe("similar");
     });
 
-    it("sorts children of group relation in order of creation date", function () {
-        var groupRelation = new Scenarios.GraphWithSimilarRelationsScenario().getPossessionAsGroupRelationInTree();
+    it("sorts children of group relation in order of creation date", async () => {
+        let scenario = await new GroupRelationsScenario();
+        let groupRelation = scenario.getPossessionGroupRelation();
         expect(
             groupRelation.isGroupRelation()
         ).toBeTruthy();
         groupRelation.expand();
-        var book1 = TestUtils.getChildWithLabel(
+        let book1 = TestUtil.getChildWithLabel(
             groupRelation,
             "Possession of book 1"
-        ).getTopMostChildBubble();
+        ).getNextBubble();
         expect(
-            book1.text()
+            book1.getLabel()
         ).toBe("book 1");
-        var book2 = book1.getBubbleUnder();
+        let book2 = book1.getDownBubble();
         expect(
-            book2.text()
+            book2.getLabel()
         ).toBe("book 2");
     });
 
-    it("sorts non center bubble children in order of creation date", function () {
-        var scenario = new Scenarios.creationDateScenario();
-        var b1 = scenario.getBubble1InTree();
-        var b7 = TestUtils.getChildWithLabel(
+    it("sorts non center bubble children in order of creation date", async () => {
+        let scenario = await new CreationDateScenario();
+        let b1 = scenario.getBubble1InTree();
+        let b7 = TestUtil.getChildWithLabel(
             b1,
             "r6"
-        ).getTopMostChildBubble();
-        scenario.expandBubble7(
+        ).getNextBubble();
+        await scenario.expandBubble7(
             b7
         );
-        var childVertex = b7.getTopMostChildBubble().getTopMostChildBubble();
+        let childVertex = b7.getNextBubble().getNextBubble();
         expect(
-            childVertex.text()
+            childVertex.getLabel()
         ).toBe("b71");
-        childVertex = childVertex.getBubbleUnder();
+        childVertex = childVertex.getDownBubble();
         expect(
-            childVertex.text()
+            childVertex.getLabel()
         ).toBe("b72");
-        childVertex = childVertex.getBubbleUnder();
+        childVertex = childVertex.getDownBubble();
         expect(
-            childVertex.text()
+            childVertex.getLabel()
         ).toBe("b73");
-        childVertex = childVertex.getBubbleUnder();
+        childVertex = childVertex.getDownBubble();
         expect(
-            childVertex.text()
+            childVertex.getLabel()
         ).toBe("b74");
     });
 
-    it("setups to the left html correctly when adding new suggestion to vertex", function () {
-        var scenario = new Scenarios.threeBubblesGraphFork();
+    xit("setups to the left html correctly when adding new suggestion to vertex", async () => {
+        let scenario = new Scenarios.threeBubblesGraphFork();
         var b1Fork = scenario.getBubble1InTree();
         var relation = CenterBubble.usingBubble(
             b1Fork
@@ -439,7 +412,7 @@ describe("Graph.vue", () => {
         ).toBeGreaterThan(0);
     });
 
-    it("setups to the left html correctly for vertex suggestions", function () {
+    xit("setups to the left html correctly for vertex suggestions", function () {
         var centerVertex = new Scenarios.oneBubbleHavingSuggestionsGraph().getVertexUi();
         var suggestionVertex = TestUtils.getChildWithLabel(
             centerVertex,
@@ -455,21 +428,19 @@ describe("Graph.vue", () => {
         ).toBeGreaterThan(0);
     });
 
-    it("does not change the side of a relation if addding a child to it", function () {
-        var centerVertex = new Scenarios.threeBubblesGraph().getBubble1InTree();
-        var r3 = TestUtils.getChildWithLabel(
+    it("does not change the side of a relation if addding a child to it", async () => {
+        let scenario = await new ThreeScenario();
+        let centerVertex = scenario.getBubble1InTree();
+        let r3 = TestUtil.getChildWithLabel(
             centerVertex,
             "r2"
         );
-        var isR3ToTheLeft = r3.isToTheLeft();
-        MindMapInfo._setIsViewOnly(
-            false
-        );
+        let isR3ToTheLeft = r3.isToTheLeft();
         expect(
             r3.isGroupRelation()
         ).toBeFalsy();
-        r3.getController().addChild();
-        r3 = TestUtils.getChildWithLabel(
+        await r3.getController().addChild();
+        r3 = TestUtil.getChildWithLabel(
             centerVertex,
             "r2"
         );
@@ -539,23 +510,22 @@ describe("Graph.vue", () => {
         ).toBeTruthy();
     });
 
-    function connectDistantVertexTest(callback) {
-        var distantGraphScenario = new Scenarios.getDistantGraph();
-        var graphWithHiddenSimilarRelationsScenario = new Scenarios.graphWithHiddenSimilarRelations();
-        connectBubbleToDistantBubbleWithUriAndGraphWhenConnected(
-            distantGraphScenario.getBubbleInTree(),
+    async function connectDistantVertexTest() {
+        let distantGraphScenario = await new DistantGraphScenario();
+        let graphWithHiddenSimilarRelationsScenario = await new HiddenGroupRelationsScenario();
+        return connectBubbleToDistantBubbleWithUriAndGraphWhenConnected(
+            distantGraphScenario.getCenterInTree(),
             graphWithHiddenSimilarRelationsScenario.getBubble2().getUri(),
-            graphWithHiddenSimilarRelationsScenario.getB2GraphWhenConnectedToDistantBubble(),
-            callback
+            graphWithHiddenSimilarRelationsScenario.getB2GraphWhenConnectedToDistantBubble()
         );
     }
 
     function connectBubbleToDistantBubbleWithUriAndGraphWhenConnected(currentBubble, distantBubbleUri, graphOfDistantBubble, callback) {
-        Mock.setGetGraphFromService(
+        GraphServiceMock.getForCentralBubbleUri(
             graphOfDistantBubble
         );
         var hasVisitedCallback = false;
-        GraphDisplayerAsRelativeTree.connectVertexToVertexWithUri(
+        currentBubble.getController().GraphDisplayerAsRelativeTree.connectVertexToVertexWithUri(
             currentBubble,
             distantBubbleUri,
             function () {
@@ -568,14 +538,16 @@ describe("Graph.vue", () => {
         ).toBeTruthy();
     }
 
-    it("does not add suggestions if its view only", function () {
+    xit("does not add suggestions if its view only", function () {
         MindMapInfo._setIsViewOnly(true);
         var centerBubble = new Scenarios.oneBubbleHavingSuggestionsGraph().getVertexUi();
         expect(
             centerBubble.hasChildren()
         ).toBeFalsy();
     });
-    it("can expand child of meta center having a group relation as a child", function () {
+
+    //todo
+    xit("can expand child of meta center having a group relation as a child", function () {
         var scenario = new Scenarios.getMetaCenterChildHavingGroupRelation();
         var b1 = scenario.getB1InTree();
         expect(
@@ -593,13 +565,14 @@ describe("Graph.vue", () => {
             groupRelation.getNumberOfChild()
         ).toBe(2);
     });
-    it("can have three level deep group relation", function () {
-        var scenario = new Scenarios.threeLevelDeepGroupRelation();
-        var center = scenario.centerInTree();
+
+    it("can have three level deep group relation", async () => {
+        let scenario = await new ThreeLevelDeepGroupRelationScenario();
+        let center = scenario.getCenterInTree();
         expect(
             center.getNumberOfChild()
         ).toBe(1);
-        var region = TestUtils.getChildWithLabel(
+        let region = TestUtil.getChildWithLabel(
             center,
             "region"
         );
@@ -610,7 +583,7 @@ describe("Graph.vue", () => {
         expect(
             region.getNumberOfChild()
         ).toBe(1);
-        var subRegion = TestUtils.getChildWithLabel(
+        let subRegion = TestUtil.getChildWithLabel(
             region,
             "sub-region"
         );
@@ -618,7 +591,7 @@ describe("Graph.vue", () => {
         expect(
             subRegion.getNumberOfChild()
         ).toBe(2);
-        var subRegionA = TestUtils.getChildWithLabel(
+        let subRegionA = TestUtil.getChildWithLabel(
             subRegion,
             "sub-region-a"
         );
@@ -627,18 +600,18 @@ describe("Graph.vue", () => {
             subRegionA.getNumberOfChild()
         ).toBe(2);
         expect(
-            TestUtils.hasChildWithLabel(
+            TestUtil.hasChildWithLabel(
                 subRegionA,
                 "r1"
             )
         ).toBeTruthy();
         expect(
-            TestUtils.hasChildWithLabel(
+            TestUtil.hasChildWithLabel(
                 subRegionA,
                 "r2"
             )
         ).toBeTruthy();
-        var subRegionB = TestUtils.getChildWithLabel(
+        let subRegionB = TestUtil.getChildWithLabel(
             subRegion,
             "sub-region-b"
         );
@@ -647,13 +620,13 @@ describe("Graph.vue", () => {
             subRegionB.getNumberOfChild()
         ).toBe(2);
         expect(
-            TestUtils.hasChildWithLabel(
+            TestUtil.hasChildWithLabel(
                 subRegionB,
                 "r3"
             )
         ).toBeTruthy();
         expect(
-            TestUtils.hasChildWithLabel(
+            TestUtil.hasChildWithLabel(
                 subRegionB,
                 "r4"
             )

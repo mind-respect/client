@@ -381,7 +381,7 @@ describe('Vertex', () => {
                 ];
             expect(
                 b2Index.index
-            ).toBe(1);
+            ).toBe(0);
             expect(
                 b2Index.toTheLeft
             ).toBe(false);
@@ -393,7 +393,7 @@ describe('Vertex', () => {
             ).toBe(true);
             expect(
                 b3Index.index
-            ).toBe(0);
+            ).toBe(2);
             let b4Index = childrenIndexes[
                 b4Uri
                 ];
@@ -402,7 +402,7 @@ describe('Vertex', () => {
             ).toBe(false);
             expect(
                 b4Index.index
-            ).toBe(2);
+            ).toBe(1);
         });
     });
 });

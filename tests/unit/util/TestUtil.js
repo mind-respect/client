@@ -109,6 +109,14 @@ api._pressKeyCodeInContainer = function (keyCode, container, options) {
     container.trigger(event);
 };
 
+api.logChildren = function (bubble) {
+    console.log(
+        bubble.getNextChildren().map((a) => {
+            return a.getLabel();
+        })
+    );
+};
+
 export default api;
 
 function generateUuid() {
