@@ -34,6 +34,9 @@ EdgeController.prototype.addChild = async function () {
     Selection.removeAll();
     return newGroupRelation.getController().addChild(false).then((_triple) => {
         triple = _triple;
+        newGroupRelation.getIdentification().setUri(
+            triple.edge.getIdentifiers()[0].getUri()
+        );
         return triple.edge.getController().addIdentifiers(
             this.model().getIdentifiers()
         );
@@ -47,8 +50,8 @@ EdgeController.prototype.addChild = async function () {
             GraphElementService.changeChildrenIndex(
                 this.model().getParentVertex()
             );
+            Selection.setToSingle(triple.destination);
             setTimeout(function () {
-                Selection.setToSingle(triple.destination);
                 Store.dispatch("redraw");
             }, 300)
         });
@@ -119,7 +122,7 @@ EdgeController.prototype._convertToGroupRelation = function () {
         edge: this.model(),
         vertex: this.model().getDestinationVertex()
     };
-    let parentBubble = this.getUi().getParentBubble();
+    let parentBubble = this.model().getParentBubble();
     let groupRelationIdentifiers;
     if (parentBubble.isGroupRelation()) {
         if (parentBubble.model().hasIdentification(this.model().buildSelfIdentifier())) {

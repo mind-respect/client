@@ -214,6 +214,7 @@ GroupRelation.prototype.getGraphElementType = function () {
 GroupRelation.prototype.getIdentification = function () {
     return this.identifiers[0];
 };
+
 GroupRelation.prototype.getRelevantTags = GroupRelation.prototype.getIdentifiers = function () {
     return this.identifiers;
 };

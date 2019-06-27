@@ -5,6 +5,8 @@ import EdgeController from '@/edge/EdgeController'
 import TestUtil from '../util/TestUtil'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import Selection from '@/Selection'
+import GraphElementType from '@/graph-element/GraphElementType'
+import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
 
 describe("Edge", () => {
     it("can inverse", async () => {
@@ -61,7 +63,7 @@ describe("Edge", () => {
         ).toBe(b2.getUri());
     });
 
-    fit("unshrinks when moved away from group relation", async () => {
+    it("unshrinks when moved away from group relation", async () => {
         let scenario = await new GroupRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
         groupRelation.expand();
@@ -83,44 +85,46 @@ describe("Edge", () => {
             relationUnderGroupRelation.isShrinked()
         ).toBeFalsy();
     });
-    it("reviews edit button display when moved away from group relation to another group relation", function () {
-        var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-        var centerBubble = scenario.getCenterVertexInTree();
-        var groupRelation = scenario.getPossessionAsGroupRelationInTree();
+    it("reviews isShrinked when moved away from group relation to another group relation", async () => {
+        let scenario = await new GroupRelationsScenario();
+        let centerBubble = scenario.getCenterInTree();
+        let groupRelation = scenario.getPossessionGroupRelation();
         groupRelation.expand();
-        var relationUnderGroupRelation = groupRelation.getTopMostChildBubble().getBubbleUnder();
+        let relationUnderGroupRelation = groupRelation.getNextBubble().getDownBubble();
         expect(
             relationUnderGroupRelation.isRelation()
         ).toBeTruthy();
-        relationUnderGroupRelation.setText("Possession");
+        relationUnderGroupRelation.setLabel("Possession");
         expect(
-            relationUnderGroupRelation.isSetAsSameAsGroupRelation()
+            relationUnderGroupRelation.isShrinked()
         ).toBeTruthy();
-        var otherGroupRelation = TestUtils.getChildWithLabel(
+        let otherGroupRelation = TestUtil.getChildWithLabel(
             centerBubble,
             "original relation"
         );
         expect(
             otherGroupRelation.isGroupRelation()
         ).toBeTruthy();
-        relationUnderGroupRelation.getTopMostChildBubble().getController().moveUnderParent(
+        await relationUnderGroupRelation.getNextBubble().getController().moveUnderParent(
             otherGroupRelation
         );
         expect(
-            relationUnderGroupRelation.isSetAsSameAsGroupRelation()
+            relationUnderGroupRelation.isShrinked()
         ).toBeFalsy();
     });
-    it("sets the new group relation at the same index of the relation when adding a child", function () {
-        var centerBubble = new Scenarios.threeBubblesGraph().getCenterBubbleInTree();
-        centerBubble.getController().addChild();
-        centerBubble.getController().addChild();
-        var relation = centerBubble.getTopMostChildBubble();
-        var indexInTypes = [GraphElementType.Relation, GraphElementType.GroupRelation];
+
+    it("sets the new group relation at the same index of the relation when adding a child", async () => {
+        let scenario = await new ThreeScenario();
+        let centerBubble = scenario.getCenterBubbleInTree();
+        await centerBubble.getController().addChild();
+        await centerBubble.getController().addChild();
+        let relation = centerBubble.getNextBubble();
+        let indexInTypes = [GraphElementType.Relation, GraphElementType.GroupRelation];
         expect(
             relation._getIndexInTreeInTypes(indexInTypes)
         ).toBe(0);
-        relation.getController().addChild();
-        var newGroupRelation = TestUtils.getChildWithLabel(
+        await relation.getController().addChild();
+        let newGroupRelation = TestUtil.getChildWithLabel(
             centerBubble,
             relation.text()
         );
@@ -131,15 +135,17 @@ describe("Edge", () => {
             newGroupRelation._getIndexInTreeInTypes(indexInTypes)
         ).toBe(0);
     });
-    it("removes the parent group relation when removing the last relation under a group relation", function () {
-        var centerBubble = new Scenarios.withRelationsAsIdentifierGraph().getCenterInTree();
+
+    it("removes the parent group relation when removing the last relation under a group relation", async () => {
+        let scenario = await new RelationAsIdentifierScenario();
+        let centerBubble = scenario.getCenterInTree();
         expect(
-            TestUtils.hasChildWithLabel(
+            TestUtil.hasChildWithLabel(
                 centerBubble,
                 "original some relation"
             )
         ).toBeTruthy();
-        var groupRelation = TestUtils.getChildWithLabel(
+        let groupRelation = TestUtil.getChildWithLabel(
             centerBubble,
             "original some relation"
         );
@@ -147,35 +153,37 @@ describe("Edge", () => {
             vertex.remove();
         });
         expect(
-            TestUtils.hasChildWithLabel(
+            TestUtil.hasChildWithLabel(
                 centerBubble,
                 "original some relation"
             )
         ).toBeFalsy();
     });
-    it("removes the parent group relation when moving away the last relation under a group relation", function () {
-        var centerBubble = new Scenarios.withRelationsAsIdentifierGraph().getCenterInTree();
-        var bubbleNotUnderAGroupRelation = TestUtils.getChildWithLabel(
+
+    it("removes the parent group relation when moving away the last relation under a group relation", async () => {
+        let scenario = await new RelationAsIdentifierScenario();
+        let centerBubble = scenario.getCenterInTree();
+        let bubbleNotUnderAGroupRelation = TestUtil.getChildWithLabel(
             centerBubble,
             "some different relation"
-        ).getTopMostChildBubble();
-        expect(
-            TestUtils.hasChildWithLabel(
-                centerBubble,
-                "original some relation"
-            )
-        ).toBeTruthy();
-        var groupRelation = TestUtils.getChildWithLabel(
+        ).getNextBubble();
+
+        let originalSomeRelation = TestUtil.getChildWithLabel(
             centerBubble,
             "original some relation"
         );
-        groupRelation.visitClosestChildVertices(function (vertex) {
-            vertex.moveToParent(
-                bubbleNotUnderAGroupRelation
-            );
-        });
         expect(
-            TestUtils.hasChildWithLabel(
+            originalSomeRelation.isGroupRelation()
+        ).toBeTruthy();
+        let groupRelation = TestUtil.getChildWithLabel(
+            centerBubble,
+            "original some relation"
+        );
+        await Promise.all(groupRelation.getClosestChildVertices().map((vertex) => {
+            return vertex.getController().moveUnderParent(bubbleNotUnderAGroupRelation);
+        }));
+        expect(
+            TestUtil.hasChildWithLabel(
                 centerBubble,
                 "original some relation"
             )

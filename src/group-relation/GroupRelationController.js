@@ -104,11 +104,11 @@ GroupRelationController.prototype.becomeParent = function (graphElementUi) {
             uiChild
         );
     }
-    uiChild.moveToParent(this.getUi());
+    uiChild.moveToParent(this.model());
     return Promise.all(promises);
 
     function moveEdge(movedEdge) {
-        var parentGroupRelation = this.getUi();
+        let parentGroupRelation = this.model();
         promises.push(
             movedEdge.getController().replaceParentVertex(
                 this.getUi().getParentVertex()
@@ -129,9 +129,10 @@ GroupRelationController.prototype.becomeExParent = function (movedEdge) {
     let promises = [];
     let previousParentGroupRelation = this.model().getGreatestGroupRelationAncestor();
     previousParentGroupRelation.getIdentifiersAtAnyDepth().forEach((identifier) => {
-        identifier = movedEdge.model().getIdentifierHavingExternalUri(
-            identifier.getExternalResourceUri()
-        );
+        identifier = identifier.getExternalResourceUri() === movedEdge.getUri() ? identifier :
+            movedEdge.model().getIdentifierHavingExternalUri(
+                identifier.getExternalResourceUri()
+            );
         if (identifier) {
             promises.push(
                 movedEdge.getController().removeIdentifier(

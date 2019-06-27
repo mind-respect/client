@@ -1,5 +1,6 @@
 import Mock from '../mock/Mock'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
+import ThreeScenario from "../scenario/ThreeScenario";
 import GroupRelationHavingAVertexChildWithOneChild from '../scenario/GroupRelationHavingAVertexChildWithOneChild'
 import GraphServiceMock from '../mock/GraphServiceMock'
 import TestUtil from '../util/TestUtil'
@@ -153,6 +154,33 @@ describe("GroupRelationController", () => {
                     "original relation"
                 )
             ).toBeTruthy();
+        });
+    });
+    describe("becomeExParent", () => {
+        it("can exclude the original relation", async () => {
+            let scenario = await new ThreeScenario();
+            let center = scenario.getCenterInTree();
+            let r1 = TestUtil.getChildWithLabel(
+                center,
+                "r1"
+            );
+            await r1.getController().addChild();
+            let g1 = TestUtil.getChildWithLabel(
+                center,
+                "r1"
+            );
+            expect(
+                g1.isGroupRelation()
+            ).toBeTruthy();
+            r1 = g1.getNextBubble();
+            await r1.getController().moveAbove(scenario.getBubble3InTree());
+            r1 = TestUtil.getChildWithLabel(
+                center,
+                "r1"
+            );
+            expect(
+                r1.isGroupRelation()
+            ).toBeFalsy();
         });
     });
 });

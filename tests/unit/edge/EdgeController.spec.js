@@ -4,6 +4,7 @@ import MindMapInfo from '@/MindMapInfo'
 import EdgeController from '@/edge/EdgeController'
 import TestUtil from '../util/TestUtil'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
+import IdUri from '@/IdUri'
 
 describe("EdgeController", () => {
     describe("remove", function () {
@@ -53,10 +54,54 @@ describe("EdgeController", () => {
             ).toBeTruthy();
         });
 
+        it("sets self as uri", async () => {
+            let threeBubblesScenario = await new ThreeScenario();
+            let b1 = threeBubblesScenario.getBubble1InTree();
+            await b1.getController().addChild();
+            let newRelation = TestUtil.getChildWithLabel(
+                b1,
+                ""
+            );
+            await newRelation.getController().setLabel("new group");
+            await newRelation.getController().addChild();
+            let groupRelation = TestUtil.getChildWithLabel(
+                b1,
+                "new group"
+            );
+            let originalRelation = Object.values(groupRelation._sortedImmediateChild[0])[0].edge;
+            groupRelation = originalRelation.getParentBubble();
+            expect(
+                IdUri.isEdgeUri(
+                    groupRelation.getUri()
+                )
+            ).toBeFalsy();
+        });
+
+        it("adds self identifier to the original relation with appropriate uri", async () => {
+            let threeBubblesScenario = await new ThreeScenario();
+            let bubble1 = threeBubblesScenario.getBubble1InTree();
+            let relation1 = TestUtil.getChildWithLabel(bubble1, "r1");
+            let relation1Uri = relation1.getUri();
+            await new EdgeController.RelationController(
+                relation1
+            ).addChild();
+            let newGroupRelation = TestUtil.getChildWithLabel(bubble1, "r1");
+            relation1 = newGroupRelation.getNextBubble();
+            expect(
+                relation1.getIdentifiersIncludingSelf().length
+            ).toBe(1);
+            expect(
+                relation1.getUri()
+            ).toBe(relation1Uri);
+            let tagUri = newGroupRelation.getIdentification().getExternalResourceUri();
+            expect(
+                relation1.getIdentifiersIncludingSelf()[0].getUri()
+            ).toBe(tagUri);
+        });
+
         it("after adding a child, the new group relation has the original relation as an identifier", async () => {
             let threeBubblesScenario = await new ThreeScenario();
             let bubble1 = threeBubblesScenario.getBubble1InTree();
-            MindMapInfo._setIsViewOnly(false);
             let relation1 = TestUtil.getChildWithLabel(bubble1, "r1");
             let relation1Uri = relation1.getUri();
             await new EdgeController.RelationController(
@@ -68,6 +113,8 @@ describe("EdgeController", () => {
                 identifierExternalResourceUri
             ).toBe(relation1Uri);
         });
+
+
 
         it("when a relation has an identifier adding a child changes to a group relation where the identifier is not the relation but the identifier", async () => {
             let threeBubblesScenario = await new ThreeScenario();
