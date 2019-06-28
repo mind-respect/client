@@ -405,7 +405,7 @@ VertexController.prototype.becomeParent = function (child) {
 
     return Promise.all(promises).then(() => {
         uiChild.moveToParent(
-            this.getUi()
+            this.model()
         );
         Vue.nextTick(() => {
             GraphElementService.changeChildrenIndex(this.model());
@@ -414,13 +414,14 @@ VertexController.prototype.becomeParent = function (child) {
 
     function moveEdge(movedEdge) {
         promises.push(
-            movedEdge.getController().replaceParentVertex(
-                this.getUi()
-            ).then(() => {
-                movedEdge.moveToParent(
-                    this.model()
+            movedEdge.isInverse() ? EdgeService.changeDestinationVertex(
+                this.model(),
+                movedEdge
+                ) :
+                EdgeService.changeSourceVertex(
+                    this.model(),
+                    movedEdge
                 )
-            })
         );
         if (!child.isGroupRelation()) {
             promises.push(
@@ -546,7 +547,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
     this.model().beforeExpand();
     if (!this.model().isExpanded) {
         if (!this.model().isCollapsed) {
-            promise = this.subGraphController.load().then(() => {
+            promise = this.subGraphController.loadForParentIsAlreadyOnMap().then(() => {
                 if (avoidExpandChild) {
                     return true;
                 }

@@ -348,16 +348,16 @@ GraphElementController.prototype.moveUnderParent = function (parent, forceLeft) 
     }
     let previousParent;
     let moveUnderParentCommand = new Command.forExecuteUndoAndRedo(
-        function () {
+        () => {
             previousParent = this.getUi().getParentVertex();
             return parent.getController().becomeParent(this.getUi(), forceLeft);
-        }.bind(this),
-        function () {
+        },
+        () => {
             return previousParent.getController().becomeParent(this.getUi());
-        }.bind(this),
-        function () {
+        },
+        () => {
             return parent.getController().becomeParent(this.getUi());
-        }.bind(this)
+        }
     );
     return Command.executeCommand(
         moveUnderParentCommand

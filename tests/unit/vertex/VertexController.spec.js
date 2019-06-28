@@ -675,6 +675,28 @@ describe('VertexController', () => {
                 newChild.model().getNumberOfChild()
             ).toBe(1);
         });
+        it("keeps direction of existing children when moving under parent", async () => {
+            let scenario = await new ThreeScenario();
+            let b2 = scenario.getBubble2InTree();
+            await scenario.expandBubble2(b2);
+            expect(
+                b2.isToTheLeft()
+            ).toBeFalsy();
+            let b3 = scenario.getBubble3InTree();
+            await scenario.expandBubble3(b3);
+            let r3 = b3.getNextBubble();
+            expect(
+                r3.isToTheLeft()
+            ).toBeTruthy();
+            let vertexUnderB2 = b2.getNextBubble().getNextBubble();
+            await vertexUnderB2.getController().moveUnderParent(b3);
+            expect(
+                b3.isToTheLeft()
+            ).toBeTruthy();
+            expect(
+                r3.isToTheLeft()
+            ).toBeTruthy();
+        });
         xit("can become parent of a group relation", async () => {
             let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();

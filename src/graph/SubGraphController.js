@@ -62,6 +62,9 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
         } else {
             modelToAddChild = this.model();
         }
+        if (isParentAlreadyOnMap) {
+            graph.add(this.model())
+        }
         let childrenIndex = parentAsCenter.getChildrenIndex();
         let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
         sortGroupRelationRootsByIsGroupRelationOrCreationDate(

@@ -407,16 +407,12 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
     }
     if (MoveRelation.Parent === relation) {
         if (otherBubble.isGroupRelation()) {
-            if (!otherBubble.isExpanded) {
-                otherBubble.getController().expand();
-            }
+            otherBubble.expand();
             let identification = otherBubble.getIdentification();
             if (this.hasIdentification(identification)) {
                 this.revertIdentificationIntegration(identification);
             }
         }
-    }
-    if (MoveRelation.Parent === relation) {
         this.getParentBubble().removeChild(this);
         this.setSourceVertex(
             otherBubble
