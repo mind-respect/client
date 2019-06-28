@@ -156,7 +156,7 @@ GroupRelation.prototype._getNextChildrenCollapsedOrNot = function (getEvenIfColl
         return edges;
     }
     let children = this.isCollapsed && getEvenIfCollapsed ? this._sortedImmediateChildCollapsed : this._sortedImmediateChild;
-    if(!children){
+    if (!children) {
         return edges;
     }
     children.map(function (child) {
@@ -368,6 +368,15 @@ GroupRelation.prototype.addChild = function (graphElementUi, isToTheLeft, index)
             tuplesOfUri
         );
     }
+};
+
+
+GroupRelation.prototype.setSourceVertex = function (sourceVertex) {
+    this.getClosestChildrenOfType([GraphElementType.Relation]).forEach((child) => {
+        child.setSourceVertex(
+            sourceVertex
+        )
+    })
 };
 
 GroupRelation.prototype.addTuple = function (tuple) {

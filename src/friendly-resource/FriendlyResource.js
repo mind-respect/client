@@ -418,6 +418,9 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
     }
     if (MoveRelation.Parent === relation) {
         this.getParentBubble().removeChild(this);
+        this.setSourceVertex(
+            otherBubble
+        );
         otherBubble.addChild(this);
         otherBubble.isExpanded = true;
     } else {
@@ -425,9 +428,19 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
         let otherParentBubble = otherBubble.getParentVertex();
         let temporarilyRemove = parentBubble.isSameBubble(otherParentBubble);
         parentBubble.removeChild(this, temporarilyRemove);
+        this.direction = otherBubble.direction;
+        this.getDescendants().forEach((child) => {
+            child.direction = otherBubble.direction;
+        });
+
         let index = otherParentBubble.getChildIndex(otherBubble);
+        this.setSourceVertex(
+            otherParentBubble
+        );
         if (MoveRelation.Before === relation) {
-            otherParentBubble.addChild(this, otherBubble.isToTheLeft(),
+            otherParentBubble.addChild(
+                this,
+                otherBubble.isToTheLeft(),
                 index
             );
         } else {
@@ -440,12 +453,6 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
             //     toMove
             // );
         }
-    }
-    this.direction = otherBubble.direction;
-    if (this.isGroupRelation()) {
-        this.visitDescendants((child) => {
-            child.direction = otherBubble.direction;
-        });
     }
     Store.dispatch("redraw");
     // this._resetIsToTheLeft();

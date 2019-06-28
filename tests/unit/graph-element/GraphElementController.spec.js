@@ -443,5 +443,8 @@ describe('GraphElementController', () => {
         xit("stays under it's group relation", () => {
             expect(false).toBeTruthy();
         })
-    })
+    });
+    describe("_moveToExecute", () => {
+
+    });
 });

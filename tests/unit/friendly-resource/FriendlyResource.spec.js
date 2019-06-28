@@ -36,4 +36,64 @@ describe("FriendlyResource", () => {
             deepestDescendant.getLabel()
         ).toBe("long text")
     });
+    describe("moveTo", () => {
+        it("changes direction when moving to the other side", async () => {
+            let scenario = await new ThreeScenario();
+            let b2 = scenario.getBubble2InTree();
+            await scenario.expandBubble2(b2);
+            expect(
+                b2.isToTheLeft()
+            ).toBeFalsy();
+            let b3 = scenario.getBubble3InTree();
+            expect(
+                b3.isToTheLeft()
+            ).toBeTruthy();
+            let deepChild = b2.getNextBubble().getNextBubble();
+            expect(
+                deepChild.isToTheLeft()
+            ).toBeFalsy();
+            await deepChild.getController().moveAbove(b3);
+            expect(
+                deepChild.isToTheLeft()
+            ).toBeTruthy();
+        });
+        it("preserves the direction of the edge when moving", async () => {
+            let scenario = await new ThreeScenario();
+            let b2 = scenario.getBubble2InTree();
+            await scenario.expandBubble2(b2);
+            expect(
+                b2.isToTheLeft()
+            ).toBeFalsy();
+            let b3 = scenario.getBubble3InTree();
+            expect(
+                b3.isToTheLeft()
+            ).toBeTruthy();
+            let deepChild = b2.getNextBubble().getNextBubble();
+            expect(
+                deepChild.getParentBubble().isInverse()
+            ).toBeFalsy();
+            await deepChild.getController().moveAbove(b3);
+            expect(
+                deepChild.getParentBubble().isInverse()
+            ).toBeFalsy();
+        });
+        it("prevents duplicates when moving to the other side", async () => {
+            let scenario = await new ThreeScenario();
+            let center = scenario.getCenterInTree();
+            let numberOfChild = center.getNumberOfChild();
+            let b2 = scenario.getBubble2InTree();
+            await scenario.expandBubble2(b2);
+            expect(
+                b2.isToTheLeft()
+            ).toBeFalsy();
+            let b3 = scenario.getBubble3InTree();
+            expect(
+                b3.isToTheLeft()
+            ).toBeTruthy();
+            await b2.getController().moveAbove(b3);
+            expect(
+                center.getNumberOfChild()
+            ).toBe(numberOfChild);
+        });
+    })
 });
