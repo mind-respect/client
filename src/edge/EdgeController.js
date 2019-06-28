@@ -208,7 +208,7 @@ EdgeController.prototype.sourceVertex = function (sourceVertex) {
         );
     }
 };
-EdgeController.prototype.replaceParentVertex = function (newParentVertex) {
+EdgeController.prototype.replaceParentVertex = function (newParentVertex, preventChangingInModel) {
     if (newParentVertex.canExpand()) {
         return newParentVertex.getController().expand().then(doIt.bind(this));
     } else {
@@ -218,7 +218,9 @@ EdgeController.prototype.replaceParentVertex = function (newParentVertex) {
     function doIt() {
         let parentVertex = this.model().getParentVertex();
         // parentVertex.removeChild(this.getModel());
-        this.model().replaceRelatedVertex(parentVertex, newParentVertex);
+        if (!preventChangingInModel) {
+            this.model().replaceRelatedVertex(parentVertex, newParentVertex);
+        }
         // this.getModel().parentBubble = newParentVertex;
         // this.getModel().parentVertex = newParentVertex;
         // newParentVertex.addChild(this.getModel());

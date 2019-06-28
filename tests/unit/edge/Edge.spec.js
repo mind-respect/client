@@ -85,6 +85,7 @@ describe("Edge", () => {
             relationUnderGroupRelation.isShrinked()
         ).toBeFalsy();
     });
+
     it("reviews isShrinked when moved away from group relation to another group relation", async () => {
         let scenario = await new GroupRelationsScenario();
         let centerBubble = scenario.getCenterInTree();
@@ -104,6 +105,9 @@ describe("Edge", () => {
         );
         expect(
             otherGroupRelation.isGroupRelation()
+        ).toBeTruthy();
+        expect(
+            relationUnderGroupRelation.isInverse()
         ).toBeTruthy();
         await relationUnderGroupRelation.getNextBubble().getController().moveUnderParent(
             otherGroupRelation

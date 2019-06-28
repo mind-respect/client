@@ -22,16 +22,10 @@ describe("GroupRelationController", () => {
             possessionInTree.model().addIdentification(
                 TestUtil.dummyIdentifier()
             );
-            let testWasMade = false;
-            await possessionInTree.getController().addChild().then(function (triple) {
-                expect(
-                    triple.edge.getIdentifiers().length
-                ).toBe(2);
-                testWasMade = true;
-            });
+            let triple = await possessionInTree.getController().addChild();
             expect(
-                testWasMade
-            ).toBeTruthy();
+                triple.edge.getIdentifiers().length
+            ).toBe(2);
         });
         it("makes new child public if parent vertex is public", async () => {
             let scenario = await new GroupRelationsScenario();
@@ -40,15 +34,9 @@ describe("GroupRelationController", () => {
             possessionInTree.model().addIdentification(
                 TestUtil.dummyIdentifier()
             );
-            let testWasMade = false;
-            await possessionInTree.getController().addChild().then(function (triple) {
-                expect(
-                    triple.destination.isPublic()
-                ).toBeTruthy();
-                testWasMade = true;
-            });
+            let triple = await possessionInTree.getController().addChild()
             expect(
-                testWasMade
+                triple.destination.isPublic()
             ).toBeTruthy();
         });
         it("updates child in model", async () => {
@@ -73,9 +61,8 @@ describe("GroupRelationController", () => {
             ).toBeTruthy();
             let newChildVertex;
             let nbChild = possessionInTree.getNumberOfChild();
-            await possessionInTree.getController().addChild().then(function (triple) {
-                newChildVertex = triple.destination;
-            });
+            let triple = await possessionInTree.getController().addChild();
+            newChildVertex = triple.destination;
             expect(
                 possessionInTree.getNumberOfChild()
             ).toBe(nbChild + 1);

@@ -414,14 +414,10 @@ VertexController.prototype.becomeParent = function (child) {
 
     function moveEdge(movedEdge) {
         promises.push(
-            movedEdge.isInverse() ? EdgeService.changeDestinationVertex(
+            movedEdge.getController().replaceParentVertex(
                 this.model(),
-                movedEdge
-                ) :
-                EdgeService.changeSourceVertex(
-                    this.model(),
-                    movedEdge
-                )
+                true
+            )
         );
         if (!child.isGroupRelation()) {
             promises.push(

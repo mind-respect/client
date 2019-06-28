@@ -335,30 +335,35 @@ GroupRelation.prototype.getSingleEdge = function () {
     return verticesWithId[Object.keys(verticesWithId)[0]].edge;
 };
 
-GroupRelation.prototype.addChild = function (graphElementUi, isToTheLeft, index) {
-    if (graphElementUi.isGroupRelation()) {
+GroupRelation.prototype.addChild = function (child, isToTheLeft, index) {
+    if (child.isGroupRelation()) {
+        child.parentBubble = this;
+        child.getClosestChildrenOfType(GraphElementType.Relation).forEach((relation) => {
+            relation.parentVertex = this.parentVertex;
+        });
         if (index === undefined) {
-            this._sortedImmediateChild.push(graphElementUi);
+            this._sortedImmediateChild.push(child);
         } else {
             this._sortedImmediateChild.splice(
                 index,
                 0,
-                graphElementUi
+                child
             );
         }
+        CurrentSubGraph.get().add(child);
         return;
     }
-    let edge = graphElementUi.isEdge() ?
-        graphElementUi : graphElementUi.getParentBubble();
-    let vertex = graphElementUi.isVertex() ? graphElementUi : graphElementUi.getDestinationVertex();
+    let edge = child.isEdge() ?
+        child : child.getParentBubble();
+    let vertex = child.isVertex() ? child : child.getOtherVertex(this.getParentVertex())
+    edge.parentBubble = this;
+    vertex.parentVertex = edge.parentVertex = this.parentVertex;
     let tuple = {
         edge: edge,
         vertex: vertex
     };
     let tuplesOfUri = this.addTuple(tuple);
-    graphElementUi.parentBubble = this;
-    graphElementUi.parentVertex = this.parentVertex;
-    CurrentSubGraph.get().add(graphElementUi);
+    CurrentSubGraph.get().add(edge);
     if (index === undefined) {
         this._sortedImmediateChild.push(tuplesOfUri);
     } else {
@@ -372,12 +377,21 @@ GroupRelation.prototype.addChild = function (graphElementUi, isToTheLeft, index)
 
 
 GroupRelation.prototype.setSourceVertex = function (sourceVertex) {
-    this.getClosestChildrenOfType([GraphElementType.Relation]).forEach((child) => {
+    this.getClosestChildrenOfType(GraphElementType.Relation).forEach((child) => {
         child.setSourceVertex(
             sourceVertex
         )
-    })
+    });
 };
+
+GroupRelation.prototype.setSourceVertexOrDestinationIfInverse = function (vertex) {
+    this.getClosestChildrenOfType(GraphElementType.Relation).forEach((child) => {
+        child.setSourceVertexOrDestinationIfInverse(
+            vertex
+        )
+    });
+};
+
 
 GroupRelation.prototype.addTuple = function (tuple) {
     let tupleKey = tuple.vertex.getUri();

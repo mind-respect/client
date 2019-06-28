@@ -112,6 +112,14 @@ api.Edge.prototype.setSourceVertex = function (sourceVertex) {
     this.sourceVertex = sourceVertex;
 };
 
+api.Edge.prototype.setSourceVertexOrDestinationIfInverse = function (vertex) {
+    if(this.isInverse()){
+        this.setDestinationVertex(vertex);
+    }else{
+        this.setSourceVertex(vertex);
+    }
+};
+
 api.Edge.prototype.setDestinationVertex = function (destinationVertex) {
     this.destinationVertex = destinationVertex;
 };

@@ -79,7 +79,6 @@ describe('Vertex', () => {
     });
 
     it("does not have hidden relations if non owner and bubble does not have public neighbors", async () => {
-        MindMapInfo._setIsViewOnly(false);
         let scenario = await new ThreeScenario();
         let b2 = scenario.getBubble2InTree();
         let b3 = scenario.getBubble3InTree();
@@ -307,7 +306,7 @@ describe('Vertex', () => {
             let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
             let topBubble = scenario.getOtherRelationInTree().getNextBubble();
-            scenario.getPossessionGroupRelation().getController().moveAbove(topBubble);
+            await scenario.getPossessionGroupRelation().getController().moveAbove(topBubble);
             let detailedIndex = center.buildChildrenIndex();
             let indexArray = Object.values(detailedIndex).map((entry) => {
                 return entry.index;

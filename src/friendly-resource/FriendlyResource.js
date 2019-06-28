@@ -408,39 +408,38 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
     if (MoveRelation.Parent === relation) {
         if (otherBubble.isGroupRelation()) {
             otherBubble.expand();
-            let identification = otherBubble.getIdentification();
-            if (this.hasIdentification(identification)) {
-                this.revertIdentificationIntegration(identification);
-            }
+            // let identification = otherBubble.getIdentification();
+            // if (this.hasIdentification(identification)) {
+            //     this.revertIdentificationIntegration(identification);
+            // }
         }
         this.getParentBubble().removeChild(this);
-        this.setSourceVertex(
-            otherBubble
+        this.setSourceVertexOrDestinationIfInverse(
+            otherBubble.isVertex() ? otherBubble : otherBubble.getParentVertex()
         );
         otherBubble.addChild(this);
-        otherBubble.isExpanded = true;
     } else {
         let parentBubble = this.getParentVertexOrGroupRelation();
-        let otherParentBubble = otherBubble.getParentVertex();
-        let temporarilyRemove = parentBubble.isSameBubble(otherParentBubble);
+        let otherParentVertex = otherBubble.getParentVertex();
+        let temporarilyRemove = parentBubble.isSameBubble(otherParentVertex);
         parentBubble.removeChild(this, temporarilyRemove);
         this.direction = otherBubble.direction;
         this.getDescendants().forEach((child) => {
             child.direction = otherBubble.direction;
         });
 
-        let index = otherParentBubble.getChildIndex(otherBubble);
-        this.setSourceVertex(
-            otherParentBubble
+        let index = otherParentVertex.getChildIndex(otherBubble);
+        this.setSourceVertexOrDestinationIfInverse(
+            otherParentVertex
         );
         if (MoveRelation.Before === relation) {
-            otherParentBubble.addChild(
+            otherParentVertex.addChild(
                 this,
                 otherBubble.isToTheLeft(),
                 index
             );
         } else {
-            otherParentBubble.addChild(
+            otherParentVertex.addChild(
                 this,
                 otherBubble.isToTheLeft(),
                 index + 1

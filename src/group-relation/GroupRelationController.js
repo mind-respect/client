@@ -88,30 +88,32 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
     });
 };
 
-GroupRelationController.prototype.becomeParent = function (graphElementUi) {
+GroupRelationController.prototype.becomeParent = function (child) {
     let uiChild;
     let promises = [];
-    if (graphElementUi.isGroupRelation()) {
-        graphElementUi.expand();
-        graphElementUi.visitClosestChildOfType(
+    if (child.isGroupRelation()) {
+        child.expand();
+        child.getClosestChildrenOfType(
             GraphElementType.Relation,
             moveEdge.bind(this)
         );
-        uiChild = graphElementUi;
+        uiChild = child;
     } else {
-        uiChild = graphElementUi.isVertex() ? graphElementUi.getParentBubble() : graphElementUi;
+        uiChild = child.isVertex() ? child.getParentBubble() : child;
         moveEdge.bind(this)(
             uiChild
         );
     }
-    uiChild.moveToParent(this.model());
-    return Promise.all(promises);
+    return Promise.all(promises).then(() => {
+        uiChild.moveToParent(this.model());
+    });
 
     function moveEdge(movedEdge) {
         let parentGroupRelation = this.model();
         promises.push(
             movedEdge.getController().replaceParentVertex(
-                this.getUi().getParentVertex()
+                parentGroupRelation.getParentVertex(),
+                true
             )
         );
         do {
