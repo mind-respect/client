@@ -215,26 +215,29 @@ EdgeController.prototype.replaceParentVertex = function (newParentVertex, preven
         return doIt.bind(this)();
     }
 
-    function doIt() {
+    async function doIt() {
         let parentVertex = this.model().getParentVertex();
         // parentVertex.removeChild(this.getModel());
+        if (this.model().isInverse()) {
+            await EdgeService.changeDestinationVertex(
+                newParentVertex,
+                this.model()
+            );
+            return;
+        } else {
+            await EdgeService.changeSourceVertex(
+                newParentVertex,
+                this.model()
+            );
+        }
         if (!preventChangingInModel) {
             this.model().replaceRelatedVertex(parentVertex, newParentVertex);
         }
         // this.getModel().parentBubble = newParentVertex;
         // this.getModel().parentVertex = newParentVertex;
         // newParentVertex.addChild(this.getModel());
-        if (this.model().isSourceVertex(newParentVertex)) {
-            return EdgeService.changeSourceVertex(
-                newParentVertex,
-                this.model()
-            );
-        } else {
-            return EdgeService.changeDestinationVertex(
-                newParentVertex,
-                this.model()
-            )
-        }
+
+
     }
 };
 

@@ -1,5 +1,6 @@
 import Mock from '../mock/Mock'
 import ThreeScenario from "../scenario/ThreeScenario";
+import PublicPrivateScenario from "../scenario/PublicPrivateScenario";
 import MindMapInfo from '@/MindMapInfo'
 import EdgeController from '@/edge/EdgeController'
 import TestUtil from '../util/TestUtil'
@@ -192,5 +193,78 @@ describe("Edge", () => {
                 "original some relation"
             )
         ).toBeFalsy();
+    });
+    it("sets to private if both source and destination vertex are private", async () => {
+        let scenario = await new ThreeScenario();
+        let b1 = scenario.getBubble1InTree();
+        let b2 = scenario.getBubble2InTree();
+        expect(
+            b1.isPublic()
+        ).toBeFalsy();
+        expect(
+            b2.isPublic()
+        ).toBeFalsy();
+        let relation1 = TestUtil.getChildWithLabel(b1, "r1");
+        expect(
+            relation1.isPublic()
+        ).toBeFalsy();
+    });
+    it("sets to public if both source and destination vertex are public", async () => {
+        let scenario = await new PublicPrivateScenario();
+        let bubble1 = scenario.getBubble1();
+        let relation1 = TestUtil.getChildWithLabel(bubble1, "r1");
+        expect(
+            relation1.isPublic()
+        ).toBeTruthy();
+    });
+    it("sets to private if source or destination vertex is private", async () => {
+        let scenario = await new PublicPrivateScenario();
+        let bubble1 = scenario.getBubble1();
+        let relation2 = TestUtil.getChildWithLabel(bubble1, "r2");
+        expect(
+            relation2.isPublic()
+        ).toBeFalsy();
+    });
+    it("makes outgoing edge private when making vertex private", async () => {
+        let scenario = await new PublicPrivateScenario();
+        let bubble1 = scenario.getBubble1();
+        let relation1 = TestUtil.getChildWithLabel(bubble1, "r1");
+        expect(
+            relation1.isPublic()
+        ).toBeTruthy();
+        bubble1.makePrivate();
+        expect(
+            relation1.isPublic()
+        ).toBeFalsy();
+    });
+    it("makes incoming edge private when making vertex private", async () => {
+        let scenario = await new PublicPrivateScenario();
+        let bubble2 = scenario.getBubble2();
+        let relation1 = bubble2.getParentBubble();
+        expect(
+            relation1.isPublic()
+        ).toBeTruthy();
+        bubble2.makePrivate();
+        expect(
+            relation1.isPublic()
+        ).toBeFalsy();
+    });
+    it("makes edge public when making both vertices public", async () => {
+        let scenario = await new PublicPrivateScenario();
+        let bubble1 = scenario.getBubble1();
+        bubble1.makePrivate();
+        let relation2 = TestUtil.getChildWithLabel(bubble1, "r2");
+        let bubble2 = relation2.getNextBubble();
+        expect(
+            relation2.isPublic()
+        ).toBeFalsy();
+        bubble2.makePublic();
+        expect(
+            relation2.isPublic()
+        ).toBeFalsy();
+        bubble1.makePublic();
+        expect(
+            relation2.isPublic()
+        ).toBeTruthy();
     });
 });

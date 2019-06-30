@@ -189,7 +189,7 @@ FriendlyResource.FriendlyResource.prototype.getParentBubble = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.hasChildren = function () {
-    return this.getNumberOfChild() > 0;
+    return this.getNextChildren().length > 0;
 };
 
 FriendlyResource.FriendlyResource.prototype.getComment = function () {
@@ -372,9 +372,9 @@ FriendlyResource.FriendlyResource.prototype.getDownBubble = function () {
 FriendlyResource.FriendlyResource.prototype.getNextSibling = function () {
     let downBubble = this.getDownBubble();
     let upBubble = this.getUpBubble();
-    if (downBubble && downBubble.getParentVertexOrGroupRelation().isSame(this.getParentVertexOrGroupRelation())) {
+    if (downBubble && !downBubble.isCenter && !downBubble.isSameBubble(this) && downBubble.getParentVertexOrGroupRelation().isSame(this.getParentVertexOrGroupRelation())) {
         return downBubble;
-    } else if (upBubble && upBubble.getParentVertexOrGroupRelation().isSame(this.getParentVertexOrGroupRelation())) {
+    } else if (upBubble && !upBubble.isCenter && !upBubble.isSameBubble(this) && upBubble.getParentVertexOrGroupRelation().isSame(this.getParentVertexOrGroupRelation())) {
         return upBubble;
     } else {
         return this.getParentVertexOrGroupRelation();
@@ -589,8 +589,18 @@ FriendlyResource.FriendlyResource.prototype.getChildIndex = function (child) {
     let children = this.getNextChildren(child.isToTheLeft());
     for (let i = 0; i < children.length; i++) {
         let childAtIndex = children[i];
-        if (childAtIndex.getId() === child.getId()) {
-            foundIndex = i;
+        if (childAtIndex.getGraphElementType() === child.getGraphElementType()) {
+            if (childAtIndex.getId() === child.getId()) {
+                foundIndex = i;
+            }
+        } else {
+            let childrenOfType = childAtIndex.getClosestChildrenOfType(child.getGraphElementType());
+            let hasChild = childrenOfType.some((deepChild) => {
+                return deepChild.getId() === child.getId();
+            });
+            if (hasChild) {
+                foundIndex = i;
+            }
         }
     }
     return foundIndex;
@@ -789,7 +799,7 @@ FriendlyResource.FriendlyResource.prototype.getClosestChildrenInTypes = function
         if (child.isInTypes(types)) {
             children.push(child)
         } else if (child.isLeaf()) {
-            return false;
+            return [];
         } else {
             let childOfRightType = child.getClosestChildrenInTypes(
                 types,

@@ -35,7 +35,7 @@
                         </v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile @click="expandAll" :disabled="!canExpandAll()"
+                <v-list-tile @click="expandAll" :disabled="!canExpandAll"
                              v-if="isGraphRoute && $store.state.dragged === null">
                     <v-list-tile-action>
                         <v-icon class="">unfold_more</v-icon>
@@ -129,9 +129,6 @@
             expandAll: function () {
                 GraphController.expandAll();
             },
-            canExpandAll: function () {
-                return GraphController.expandAllCanDo();
-            },
             selectAllBubbles: function () {
                 GraphController.selectAllBubbles();
             },
@@ -174,6 +171,9 @@
         computed: {
             isGraphRoute: function () {
                 return this.$route.name === "Center"
+            },
+            canExpandAll: function () {
+                return GraphController.expandAllCanDo();
             }
         }
     }
