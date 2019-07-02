@@ -4,27 +4,32 @@
 
 <template>
     <div v-if="areChildrenLoaded && !center.isEditFlow" :key="center.uiId">
-        <EdgeDrawing :bubble="center" :isLeft="true" v-if="isLeft || isCenter"></EdgeDrawing>
-        <EdgeDrawing :bubble="center" :isLeft="false" v-if="!isLeft || isCenter"></EdgeDrawing>
-        <GraphDrawing
-                v-for="child in children"
-                :center="child"
-                :key="child.uiId"
-        ></GraphDrawing>
+        <svg
+                v-if="center.draw && !$store.state.isLoading"
+                style="position:absolute;overflow:visible; top:0; left:0; height:100%; width:100%;z-index:-1;"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg">
+            <path
+                    :d="svg"
+                    fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
+            />
+        </svg>
     </div>
 </template>
 
 <script>
-    import EdgeDrawing from '@/components/graph/EdgeDrawing'
+    import GraphDraw from '@/draw/GraphDraw'
 
     export default {
         name: "GraphDrawing",
-        components: {EdgeDrawing},
         props: ['center'],
         data: function () {
             return {
+                strokeColor: "#1a237e",
+                strokeWidth: "2",
                 areChildrenLoaded: false,
-                children: null
+                children: null,
+                svg: null
             }
         },
         mounted: function () {
@@ -45,6 +50,7 @@
                 if (this.children.length === 0) {
                     return;
                 }
+                this.svg = new GraphDraw(this.center).build();
                 this.areChildrenLoaded = true;
             }
         },
