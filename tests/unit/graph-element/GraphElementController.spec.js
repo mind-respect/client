@@ -4,6 +4,7 @@ import Selection from '@/Selection'
 import TestUtil from '../util/TestUtil'
 import CreationDateScenario from "../scenario/CreationDateScenario";
 import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
+import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 
 describe('GraphElementController', () => {
     describe("removeDo", () => {
@@ -439,9 +440,56 @@ describe('GraphElementController', () => {
             ).toBe(false);
         });
     });
-    describe("moveOneStepUp moveOneStepDown", () => {
-        xit("stays under it's group relation", () => {
-            expect(false).toBeTruthy();
+    describe("moveUpOneStep moveDownOneStep", () => {
+        it("can move one step up", async () => {
+            let scenario = await new CreationDateScenario();
+            let b7 = scenario.getBubble7InTree();
+            await scenario.expandBubble7(b7);
+            let b73 = TestUtil.getChildWithLabel(
+                b7,
+                "r73"
+            ).getNextBubble();
+            expect(
+                b73.getDownBubble().getLabel()
+            ).toBe("b74");
+            await b73.getController().moveUpOneStep();
+            expect(
+                b73.getDownBubble().getLabel()
+            ).toBe("b72");
+        });
+        it("can move one step down", async () => {
+            let scenario = await new CreationDateScenario();
+            let b7 = scenario.getBubble7InTree();
+            await scenario.expandBubble7(b7);
+            let b72 = TestUtil.getChildWithLabel(
+                b7,
+                "r72"
+            ).getNextBubble();
+            expect(
+                b72.getUpBubble().getLabel()
+            ).toBe("b71");
+            await b72.getController().moveDownOneStep();
+            expect(
+                b72.getUpBubble().getLabel()
+            ).toBe("b73");
+        });
+        it("can move under a group relation", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let possesion = scenario.getPossessionGroupRelation();
+            let book1 = possesion.getNextBubble().getNextBubble();
+            expect(
+                book1.getParentVertexOrGroupRelation().isGroupRelation()
+            ).toBeTruthy();
+            expect(
+                book1.getDownBubble().getLabel()
+            ).toBe("book 2");
+            await book1.getController().moveDownOneStep();
+            expect(
+                book1.getParentVertexOrGroupRelation().isGroupRelation()
+            ).toBeTruthy();
+            expect(
+                book1.getDownBubble().getLabel()
+            ).toBe("book 3");
         })
     });
     describe("_moveToExecute", () => {

@@ -13,11 +13,12 @@ const arrowHeadLength = 6;
 function EdgeDrawing(bubble, isLeft) {
     this.bubble = bubble;
     this.isLeft = isLeft;
-    this.loaded = false;
 }
 
 EdgeDrawing.prototype.build = function () {
-    this.redraw();
+    if (!this.redraw()) {
+        return "";
+    }
     let svg = "";
     if (this.isLeft && this.children.length > 1 && this.highestPosition && this.lowestPosition) {
         svg += this.topBottomLineAtLeft();
@@ -35,9 +36,8 @@ EdgeDrawing.prototype.redraw = function () {
         Vue.nextTick(() => {
             console.warn('null bubble html redraw');
             // this.redraw();
-            this.loaded = false;
         });
-        return;
+        return false;
     }
     this.zoomAdjust = Math.round((Store.state.zoom - 1) * 10);
     this.bubbleRect = element.getBoundingClientRect();
@@ -45,7 +45,7 @@ EdgeDrawing.prototype.redraw = function () {
     this.bottomPosition = this.bottomPositionCalculate();
     this.children = this.bubble.getNextChildren(this.isLeft);
     if (this.bubble.isEdge()) {
-        this.loaded = true;
+        return true;
     }
     if (this.children.length > 1) {
         this.highestChild = this.children[0];
@@ -53,7 +53,7 @@ EdgeDrawing.prototype.redraw = function () {
         this.highestPosition = this.getMiddleSidePosition(this.highestChild);
         this.lowestPosition = this.getMiddleSidePosition(this.lowestChild);
         if (!this.highestPosition || !this.lowestPosition) {
-            return;
+            return false;
         }
         this.isHighestInBetween = this.isChildInBetween(
             this.highestPosition
@@ -70,9 +70,9 @@ EdgeDrawing.prototype.redraw = function () {
         let isBottomClose = bottomDistance < (this.bubble.isCenter ? farDistanceForCenter : farDistanceStandard);
         this.lowestArcRadius = isBottomClose ? Math.min(bottomDistance, arcRadiusStandard) : arcRadiusStandard;
         this.lowestArcRadius = Math.max(this.lowestArcRadius, 0);
-        this.loaded = true;
+        return true;
     } else {
-        this.loaded = true;
+        return true;
     }
 };
 

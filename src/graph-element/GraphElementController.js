@@ -255,7 +255,7 @@ GraphElementController.prototype._pasteBubble = function () {
     bubbleCutClipboard = undefined;
 };
 
-GraphElementController.prototype.moveOneStepUp = function () {
+GraphElementController.prototype.moveUpOneStep = function () {
     let bubbleAbove = this.getUi().getUpBubble();
     if (bubbleAbove.isSameBubble(this.getUi())) {
         return;
@@ -274,10 +274,10 @@ GraphElementController.prototype.moveOneStepUp = function () {
 };
 
 
-GraphElementController.prototype.moveOneStepDown = function () {
-    let bubbleUnder = this.getUi().getDownBubble();
-    if (bubbleUnder.isSameBubble(this.getUi())) {
-        return;
+GraphElementController.prototype.moveDownOneStep = function () {
+    let bubbleUnder = this.model().getDownBubble();
+    if (bubbleUnder.isSameBubble(this.model())) {
+        return Promise.resolve();
     }
     if (bubbleUnder.isVertex()) {
         bubbleUnder = bubbleUnder.getParentBubble();
@@ -404,7 +404,8 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
         model.moveBelow(otherEdge);
     }
     let parentOfOtherBubble = otherEdge.getParentBubble();
-    if (parentOfOtherBubble.isGroupRelation()) {
+    let movedEdgeParentBubble = movedEdge.getParentBubble();
+    if (!parentOfOtherBubble.isSameBubble(movedEdgeParentBubble) && parentOfOtherBubble.isGroupRelation()) {
         let identification = parentOfOtherBubble.getIdentification();
         if (movedEdge.isGroupRelation()) {
             movedEdge.visitClosestChildRelations(function (relation) {

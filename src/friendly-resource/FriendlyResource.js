@@ -420,33 +420,30 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
         otherBubble.addChild(this);
     } else {
         let parentBubble = this.getParentVertexOrGroupRelation();
-        let otherParentVertex = otherBubble.getParentVertex();
-        let temporarilyRemove = parentBubble.isSameBubble(otherParentVertex);
+        let otherParentBubble = otherBubble.getParentVertexOrGroupRelation();
+        let temporarilyRemove = parentBubble.isSameBubble(otherParentBubble);
         parentBubble.removeChild(this, temporarilyRemove);
         this.direction = otherBubble.direction;
         this.getDescendants().forEach((child) => {
             child.direction = otherBubble.direction;
         });
 
-        let index = otherParentVertex.getChildIndex(otherBubble);
+        let index = otherParentBubble.getChildIndex(otherBubble);
         this.setSourceVertexOrDestinationIfInverse(
-            otherParentVertex
+            otherBubble.getParentVertex()
         );
         if (MoveRelation.Before === relation) {
-            otherParentVertex.addChild(
+            otherParentBubble.addChild(
                 this,
                 otherBubble.isToTheLeft(),
                 index
             );
         } else {
-            otherParentVertex.addChild(
+            otherParentBubble.addChild(
                 this,
                 otherBubble.isToTheLeft(),
                 index + 1
             );
-            // otherBubble.getTreeContainer().next(".clear-fix").after(
-            //     toMove
-            // );
         }
     }
     Store.dispatch("redraw");

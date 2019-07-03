@@ -264,12 +264,12 @@ function defineCtrlPlusKeysAndTheirActions() {
         action: "zoomOut",
         isForAppController: true
     };
-    // actions[upArrowKeyNumber] = {
-    //     action: "moveUp"
-    // };
-    // actions[downArrowKeyNumber] = {
-    //     action: "moveDown"
-    // };
+    actions[upArrowKeyNumber] = {
+        action: "moveUpOneStep"
+    };
+    actions[downArrowKeyNumber] = {
+        action: "moveDownOneStep"
+    };
     actions[mKeyNumber] = {
         action: "merge"
     };
