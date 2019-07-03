@@ -84,7 +84,7 @@ GroupRelation.prototype.hasFewEnoughBubblesToExpand = function () {
 // };
 
 
-GroupRelation.prototype.removeChild = function (toRemove) {
+GroupRelation.prototype.removeChild = function (toRemove, isTemporaryRemove) {
     if (toRemove.isGroupRelation()) {
         let l = this._sortedImmediateChild.length;
         while (l--) {
@@ -100,16 +100,18 @@ GroupRelation.prototype.removeChild = function (toRemove) {
             vertex: toRemove.destinationVertex
         })
     }
-    if (this._sortedImmediateChild.length === 0) {
-        this.getParentBubble().removeChild(this);
-    }
-    if (this._sortedImmediateChild.length === 1) {
-        let parentBubble = this.getParentBubble();
-        let child = this.getNextChildren()[0];
-        parentBubble.replaceChild(
-            this,
-            child
-        );
+    if (!isTemporaryRemove) {
+        if (this._sortedImmediateChild.length === 0) {
+            this.getParentBubble().removeChild(this);
+        }
+        if (this._sortedImmediateChild.length === 1) {
+            let parentBubble = this.getParentBubble();
+            let child = this.getNextChildren()[0];
+            parentBubble.replaceChild(
+                this,
+                child
+            );
+        }
     }
 };
 

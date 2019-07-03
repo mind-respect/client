@@ -256,12 +256,17 @@ GraphElementController.prototype._pasteBubble = function () {
 };
 
 GraphElementController.prototype.moveUpOneStep = function () {
-    let bubbleAbove = this.getUi().getUpBubble();
+    let bubbleAbove = this.model().getUpBubble();
     if (bubbleAbove.isSameBubble(this.getUi())) {
-        return;
+        return Promise.resolve();
     }
     if (bubbleAbove.isVertex()) {
         bubbleAbove = bubbleAbove.getParentBubble();
+    }
+    let parentFork = this.model().getParentFork();
+    let aboveParentFork = bubbleAbove.getParentFork();
+    if(parentFork.isGroupRelation() && !parentFork.isSameBubble(aboveParentFork)){
+        return Promise.resolve();
     }
     if (!bubbleAbove.getParentVertex().isSameBubble(this.getUi().getParentVertex())) {
         return this.moveBelow(
@@ -281,6 +286,11 @@ GraphElementController.prototype.moveDownOneStep = function () {
     }
     if (bubbleUnder.isVertex()) {
         bubbleUnder = bubbleUnder.getParentBubble();
+    }
+    let parentFork = this.model().getParentFork();
+    let belowParentFork = bubbleUnder.getParentFork();
+    if(parentFork.isGroupRelation() && !parentFork.isSameBubble(belowParentFork)){
+        return Promise.resolve();
     }
     if (!bubbleUnder.getParentVertex().isSameBubble(this.getUi().getParentVertex())) {
         return this.moveAbove(
@@ -581,7 +591,7 @@ GraphElementController.prototype.removeDo = async function () {
     if (this.isSingle()) {
         bubbleToSelect = this.model().getNextSibling();
         if (bubbleToSelect.isSameUri(this.model())) {
-            bubbleToSelect = this.model().getParentVertexOrGroupRelation();
+            bubbleToSelect = this.model().getParentFork();
         }
     }
     this.getModelArray().forEach(function (bubble) {

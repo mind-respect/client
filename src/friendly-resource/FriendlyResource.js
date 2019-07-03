@@ -9,7 +9,6 @@ import Selection from '@/Selection'
 import Store from '@/store'
 import Icon from '@/Icon'
 import Scroll from '@/Scroll'
-import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const MoveRelation = {
     "Parent": "parent",
@@ -372,12 +371,12 @@ FriendlyResource.FriendlyResource.prototype.getDownBubble = function () {
 FriendlyResource.FriendlyResource.prototype.getNextSibling = function () {
     let downBubble = this.getDownBubble();
     let upBubble = this.getUpBubble();
-    if (downBubble && !downBubble.isCenter && !downBubble.isSameBubble(this) && downBubble.getParentVertexOrGroupRelation().isSame(this.getParentVertexOrGroupRelation())) {
+    if (downBubble && !downBubble.isCenter && !downBubble.isSameBubble(this) && downBubble.getParentFork().isSame(this.getParentFork())) {
         return downBubble;
-    } else if (upBubble && !upBubble.isCenter && !upBubble.isSameBubble(this) && upBubble.getParentVertexOrGroupRelation().isSame(this.getParentVertexOrGroupRelation())) {
+    } else if (upBubble && !upBubble.isCenter && !upBubble.isSameBubble(this) && upBubble.getParentFork().isSame(this.getParentFork())) {
         return upBubble;
     } else {
-        return this.getParentVertexOrGroupRelation();
+        return this.getParentFork();
     }
 };
 
@@ -419,10 +418,10 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
         );
         otherBubble.addChild(this);
     } else {
-        let parentBubble = this.getParentVertexOrGroupRelation();
-        let otherParentBubble = otherBubble.getParentVertexOrGroupRelation();
-        let temporarilyRemove = parentBubble.isSameBubble(otherParentBubble);
-        parentBubble.removeChild(this, temporarilyRemove);
+        let parentBubble = this.getParentFork();
+        let otherParentBubble = otherBubble.getParentFork();
+        let isTemporaryRemove = parentBubble.isSameBubble(otherParentBubble);
+        parentBubble.removeChild(this, isTemporaryRemove);
         this.direction = otherBubble.direction;
         this.getDescendants().forEach((child) => {
             child.direction = otherBubble.direction;
@@ -447,18 +446,6 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
         }
     }
     Store.dispatch("redraw");
-    // this._resetIsToTheLeft();
-    // if (isOriginalToTheLeft === this.isToTheLeft()) {
-    //     return;
-    // }
-    // if (this.isToTheLeft()) {
-    //     this.convertToLeft();
-    // } else {
-    //     this.visitDescendants(function (descendant) {
-    //         descendant.convertToRight();
-    //     });
-    //     this.convertToRight();
-    // }
 };
 
 FriendlyResource.FriendlyResource.prototype.revertIdentificationIntegration = function (identifier) {
@@ -717,7 +704,7 @@ FriendlyResource.FriendlyResource.prototype.getIndexInTree = function () {
 FriendlyResource.FriendlyResource.prototype._getIndexInTreeInTypes = function (graphElementTypes) {
     let index = -1;
     let currentIndex = -1;
-    let parent = this.getParentVertexOrGroupRelation();
+    let parent = this.getParentFork();
     let children = parent.getClosestChildrenInTypes(graphElementTypes);
     children.forEach((bubble) => {
         currentIndex++;
@@ -728,7 +715,7 @@ FriendlyResource.FriendlyResource.prototype._getIndexInTreeInTypes = function (g
     return index;
 };
 
-FriendlyResource.FriendlyResource.prototype.getParentVertexOrGroupRelation = function () {
+FriendlyResource.FriendlyResource.prototype.getParentFork = function () {
     return this.getClosestAncestorInTypes([
         GraphElementType.Vertex,
         GraphElementType.GroupRelation

@@ -130,7 +130,7 @@ describe('GraphElementController', () => {
                 b2.getController().collapseCanDo()
             ).toBeTruthy();
         });
-        fit("returns true when center bubble has child vertices that are expanded", async () => {
+        it("returns true when center bubble has child vertices that are expanded", async () => {
             let scenario = await new ThreeScenario();
             let b1 = scenario.getBubble1InTree();
             expect(
@@ -142,7 +142,7 @@ describe('GraphElementController', () => {
                 b1.getController().collapseCanDo()
             ).toBeTruthy();
         });
-        it("returns true when center vertex has an expanded group relation child", function () {
+        xit("returns true when center vertex has an expanded group relation child", function () {
             var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
             var centerBubble = scenario.getCenterInTree();
             var groupRelation = scenario.getPossessionAsGroupRelationInTree();
@@ -478,19 +478,38 @@ describe('GraphElementController', () => {
             let possesion = scenario.getPossessionGroupRelation();
             let book1 = possesion.getNextBubble().getNextBubble();
             expect(
-                book1.getParentVertexOrGroupRelation().isGroupRelation()
+                book1.getParentFork().isGroupRelation()
             ).toBeTruthy();
             expect(
                 book1.getDownBubble().getLabel()
             ).toBe("book 2");
             await book1.getController().moveDownOneStep();
             expect(
-                book1.getParentVertexOrGroupRelation().isGroupRelation()
+                book1.getParentFork().isGroupRelation()
             ).toBeTruthy();
             expect(
                 book1.getDownBubble().getLabel()
             ).toBe("book 3");
-        })
+        });
+        it("keeps under a group relation", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let possession = scenario.getPossessionGroupRelation();
+            await scenario.getOtherRelationInTree().getNextBubble().getController().moveAbove(possession);
+            let book1 = possession.getNextBubble().getNextBubble();
+            expect(
+                book1.getParentFork().getLabel()
+            ).toBe("Possession");
+            expect(
+                book1.getDownBubble().getLabel()
+            ).toBe("book 2");
+            await book1.getController().moveUpOneStep();
+            expect(
+                book1.getParentFork().getLabel()
+            ).toBe("Possession");
+            expect(
+                book1.getDownBubble().getLabel()
+            ).toBe("book 2");
+        });
     });
     describe("_moveToExecute", () => {
 
