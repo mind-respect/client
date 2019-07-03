@@ -562,8 +562,8 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
         this.model().loading = false;
         promise = this.expandDescendantsIfApplicable();
     }
-    return promise.then(function () {
-        this.getUi().expand(avoidCenter, isChildExpand);
+    return promise.then(() => {
+        this.model().expand(avoidCenter, isChildExpand);
         Vue.nextTick(() => {
             LoadingFlow.leave();
             if (!avoidCenter) {
@@ -571,7 +571,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
                 Store.dispatch("redraw");
             }
         });
-    }.bind(this));
+    });
 };
 
 VertexController.prototype.convertToDistantBubbleWithUriCanDo = function (distantVertexUri) {

@@ -49,7 +49,7 @@ const Scroll = {
                     let deepestBubble = bubble.getDeepestDescendant();
                     if (deepestBubble.isSameBubble(bubble)) {
                         offset = halfScreen - element.offsetWidth / 2;
-                    }else{
+                    } else {
                         let deepestElement = deepestBubble.getLabelHtml();
                         let deepestRect = deepestElement.getBoundingClientRect();
                         let deepestXPosition = bubble.isToTheLeft() ? deepestRect.left : deepestRect.right;
@@ -118,10 +118,10 @@ const Scroll = {
             false
         );
     },
-    centerBubbleForTreeOrNotIfApplicable: function (bubble) {
-        Vue.nextTick(function () {
-            setTimeout(function () {
-                let element = bubble.getDeepestDescendant().getLabelHtml();
+    centerBubbleForTreeOrNotIfApplicable: function (bubble, isForTree) {
+        Vue.nextTick(() => {
+            setTimeout(() => {
+                let element = isForTree ? bubble.getDeepestDescendant().getLabelHtml() : bubble.getLabelHtml();
                 if (!element) {
                     return;
                 }
