@@ -543,7 +543,11 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
             bubbleAround = bubbleAround.getNextBubble();
         }
         if (bubbleAround.isGroupRelation()) {
-            bubbleAround = isDown ? bubbleAround.getFirstVertex(0) : bubbleAround.getLastVertex(0);
+            if(bubbleAround.canExpand()){
+                return bubbleAround;
+            }
+            let closestVertices = bubbleAround.getClosestChildrenOfType(GraphElementType.Vertex);
+            bubbleAround = isDown ? closestVertices[0] : closestVertices[closestVertices.length - 1];
         }
     }
 
@@ -552,7 +556,16 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
             bubbleAround = isDown ? bubbleAround.getNextBubble() : bubbleAround.getNextBottomBubble();
         }
         if (bubbleAround.isGroupRelation()) {
-            bubbleAround = isDown ? bubbleAround.getFirstEdge(0) : bubbleAround.getLastEdge(0);
+            if(bubbleAround.canExpand()){
+                return bubbleAround;
+            }
+            let closestEdges = bubbleAround.getClosestChildrenOfType(GraphElementType.Relation);
+            bubbleAround = isDown ? closestEdges[0] : closestEdges[closestEdges.length - 1];
+        }
+    }
+    if(this.isGroupRelation()){
+        if(bubbleAround.isEdge()){
+            bubbleAround = bubbleAround.getNextBubble();
         }
     }
     return bubbleAround;

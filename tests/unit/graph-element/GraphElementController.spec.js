@@ -5,6 +5,11 @@ import TestUtil from '../util/TestUtil'
 import CreationDateScenario from "../scenario/CreationDateScenario";
 import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
+import Command from '@/Command'
+import AppController from '@/AppController'
+import GraphServiceMock from '../mock/GraphServiceMock'
+import SameLevelRelationsWithMoreThanOneCommonMetaScenario
+    from "../scenario/SameLevelRelationsWithMoreThanOneCommonMetaScenario";
 
 describe('GraphElementController', () => {
     describe("removeDo", () => {
@@ -142,10 +147,15 @@ describe('GraphElementController', () => {
                 b1.getController().collapseCanDo()
             ).toBeTruthy();
         });
-        xit("returns true when center vertex has an expanded group relation child", function () {
-            var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-            var centerBubble = scenario.getCenterInTree();
-            var groupRelation = scenario.getPossessionAsGroupRelationInTree();
+        it("returns true when center vertex has an expanded group relation child", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let centerBubble = scenario.getCenterInTree();
+            TestUtil.getChildWithLabel(
+                centerBubble,
+                "original relation"
+            ).collapse();
+            let groupRelation = scenario.getPossessionGroupRelation();
+            groupRelation.collapse();
             expect(
                 centerBubble.getController().collapseCanDo()
             ).toBeFalsy();
@@ -156,150 +166,132 @@ describe('GraphElementController', () => {
         });
     });
     describe("moveAbove", function () {
-        it("can move a vertex above a group relation", function () {
-            var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-            var otherBubble = scenario.getOtherRelationInTree().getTopMostChildBubble();
-            var groupRelation = scenario.getPossessionAsGroupRelationInTree();
-            groupRelation.expand();
-            otherBubble.getController().moveAbove(
-                groupRelation
-            );
-            var grandParent = otherBubble.getParentBubble().getParentBubble();
-            expect(
-                grandParent.isSameUri(
-                    scenario.getCenterInTree()
-                )
-            ).toBeTruthy();
-        });
-
-        it("prevents from moving above self", function () {
-            var scenario = new Scenarios.threeBubblesGraph();
-            var b2 = scenario.getBubble2InTree();
+        it("prevents from moving above self", async () => {
+            let scenario = await new ThreeScenario();
+            let b2 = scenario.getBubble2InTree();
             Command._reset();
             expect(
                 Command.canUndo()
             ).toBeFalsy();
-            var r1 = b2.getParentBubble();
-            b2.getController().moveAbove(r1);
+            let r1 = b2.getParentBubble();
+            await b2.getController().moveAbove(r1);
             expect(
                 Command.canUndo()
             ).toBeFalsy();
         });
 
-        it("adds the group relation identifier to a vertex when moving around another vertex that is under a group relation", function () {
-            var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-            var otherBubbleEdge = scenario.getOtherRelationInTree();
-            var otherBubble = otherBubbleEdge.getTopMostChildBubble();
-            var groupRelation = scenario.getPossessionAsGroupRelationInTree();
+        it("adds the group relation identifier to a vertex when moving around another vertex that is under a group relation", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let otherBubbleEdge = scenario.getOtherRelationInTree();
+            let otherBubble = otherBubbleEdge.getNextBubble();
+            let groupRelation = scenario.getPossessionGroupRelation();
             groupRelation.expand();
-            var groupRelationChild = groupRelation.getTopMostChildBubble();
+            let groupRelationChild = groupRelation.getNextBubble();
             expect(
-                otherBubbleEdge.getModel().hasIdentifications()
+                otherBubbleEdge.hasIdentifications()
             ).toBeFalsy();
-            otherBubble.getController().moveAbove(
+            await otherBubble.getController().moveAbove(
                 groupRelationChild
             );
             expect(
-                otherBubbleEdge.getModel().hasIdentifications()
+                otherBubbleEdge.hasIdentifications()
             ).toBeTruthy();
         });
-        it("removes the identifier of the relation under the group relation when moving above another bubble", function () {
-            var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-            var groupRelation = scenario.getPossessionAsGroupRelationInTree();
+        it("removes the identifier of the relation under the group relation when moving above another bubble", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let groupRelation = scenario.getPossessionGroupRelation();
             groupRelation.expand();
-            var relationUnderGroupRelation = TestUtils.getChildWithLabel(
+            let relationUnderGroupRelation = TestUtil.getChildWithLabel(
                 groupRelation,
                 "Possession of book 1"
             );
             expect(
-                relationUnderGroupRelation.getModel().hasIdentification(
-                    groupRelation.getModel().getIdentification()
+                relationUnderGroupRelation.hasIdentification(
+                    groupRelation.getIdentification()
                 )
             ).toBeTruthy();
-            var vertex = relationUnderGroupRelation.getTopMostChildBubble();
-            vertex.getController().moveAbove(
-                scenario.getOtherRelationInTree().getTopMostChildBubble()
+            let vertex = relationUnderGroupRelation.getNextBubble();
+            await vertex.getController().moveAbove(
+                scenario.getOtherRelationInTree().getNextBubble()
             );
             expect(
-                relationUnderGroupRelation.getModel().hasIdentification(
-                    groupRelation.getModel().getIdentification()
+                relationUnderGroupRelation.hasIdentification(
+                    groupRelation.getIdentification()
                 )
             ).toBeFalsy();
         });
     });
 
     describe("moveBelow", function () {
-        it("prevents from moving below self", function () {
-            var scenario = new Scenarios.threeBubblesGraph();
-            var b2 = scenario.getBubble2InTree();
+        it("prevents from moving below self", async () => {
+            let scenario = await new ThreeScenario();
+            let b2 = scenario.getBubble2InTree();
             Command._reset();
             expect(
                 Command.canUndo()
             ).toBeFalsy();
-            var r1 = b2.getParentBubble();
-            b2.getController().moveBelow(r1);
+            let r1 = b2.getParentBubble();
+            await b2.getController().moveBelow(r1);
             expect(
                 Command.canUndo()
             ).toBeFalsy();
         });
-        it("can undo and redo", function () {
-            var scenario = new Scenarios.creationDateScenario();
-            var b7 = scenario.getBubble7InTree();
-            scenario.expandBubble7(b7);
+        it("can undo and redo", async () => {
+            let scenario = await new CreationDateScenario();
+            let b7 = scenario.getBubble7InTree();
+            await scenario.expandBubble7(b7);
             Command._reset();
-            var b72 = TestUtils.getChildWithLabel(
+            let b72 = TestUtil.getChildWithLabel(
                 b7,
                 "r72"
-            ).getTopMostChildBubble();
-            var b73 = TestUtils.getChildWithLabel(
+            ).getNextBubble();
+            let b73 = TestUtil.getChildWithLabel(
                 b7,
                 "r73"
-            ).getTopMostChildBubble();
-            expect(b73.getBubbleAbove().isSameBubble(
+            ).getNextBubble();
+            expect(b73.getUpBubble().isSameBubble(
                 b72
             )).toBeTruthy();
-            b72.getController().moveBelow(
+            await b72.getController().moveBelow(
                 b73.getParentBubble()
             );
-            expect(b72.getBubbleAbove().isSameBubble(
-                b73
-            )).toBeTruthy();
-            AppController.undo();
-            expect(b73.getBubbleAbove().isSameBubble(
-                b72
-            )).toBeTruthy();
-            AppController.redo();
-            expect(b72.getBubbleAbove().isSameBubble(
-                b73
-            )).toBeTruthy();
+            expect(
+                b72.getUpBubble().getLabel()
+            ).toBe("b73");
+            await AppController.undo();
+            expect(
+                b72.getUpBubble().getLabel()
+            ).toBe("b71");
+            await AppController.redo();
+            expect(
+                b72.getUpBubble().getLabel()
+            ).toBe("b73");
         });
 
-        it("can move a group relation below another vertex", function () {
-            var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-            var groupRelation = scenario.getPossessionAsGroupRelationInTree();
+        it("can move a group relation below another vertex", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let groupRelation = scenario.getPossessionGroupRelation();
             groupRelation.expand();
-            var otherVertex = scenario.getOtherRelationInTree().getTopMostChildBubble();
-            var deepVertex;
-            otherVertex.getController().addChild().then(function (tripleUi) {
-                deepVertex = tripleUi.destinationVertex();
-            });
+            let otherVertex = scenario.getOtherRelationInTree().getNextBubble();
+            let triple = await otherVertex.getController().addChild();
+            let deepVertex = triple.destination;
             expect(
-                deepVertex.getBubbleUnder().text()
-            ).toBe("");
-            groupRelation.getController().moveBelow(
+                deepVertex.getDownBubble().text()
+            ).toBe("b1");
+            await groupRelation.getController().moveBelow(
                 deepVertex
             );
             expect(
-                deepVertex.getBubbleUnder().text()
-            ).toBe("Possession");
+                deepVertex.getDownBubble().text()
+            ).toBe("book 1");
         });
     });
     describe("moveUnderParent", function () {
-        it("can undo and redo", function () {
-            var scenario = new Scenarios.threeBubblesGraph();
-            var b1 = scenario.getBubble1InTree();
-            var b2 = scenario.getBubble2InTree();
-            var b3 = scenario.getBubble3InTree();
+        it("can undo and redo", async () => {
+            let scenario = await new ThreeScenario();
+            let b1 = scenario.getBubble1InTree();
+            let b2 = scenario.getBubble2InTree();
+            let b3 = scenario.getBubble3InTree();
             expect(
                 b2.getParentVertex().isSameBubble(
                     b1
@@ -308,133 +300,140 @@ describe('GraphElementController', () => {
             GraphServiceMock.getForCentralBubbleUri(
                 scenario.getSubGraphForB3()
             );
-            b2.getController().moveUnderParent(b3);
+            await b2.getController().moveUnderParent(b3);
             expect(
                 b2.getParentVertex().isSameBubble(
                     b1
                 )
             ).toBeFalsy();
-            AppController.undo();
+            await AppController.undo();
             expect(
                 b2.getParentVertex().isSameBubble(
                     b1
                 )
             ).toBeTruthy();
-            AppController.redo();
+            await AppController.redo();
             expect(
                 b2.getParentVertex().isSameBubble(
                     b1
                 )
             ).toBeFalsy();
         });
-        it("removes the identifier of the relation under the group relation when moving under another bubble", function () {
-            var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-            var groupRelation = scenario.getPossessionAsGroupRelationInTree();
+        it("removes the identifier of the relation under the group relation when moving under another bubble", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let groupRelation = scenario.getPossessionGroupRelation();
             groupRelation.expand();
-            var relationUnderGroupRelation = TestUtils.getChildWithLabel(
+            let relationUnderGroupRelation = TestUtil.getChildWithLabel(
                 groupRelation,
                 "Possession of book 1"
             );
             expect(
-                relationUnderGroupRelation.getModel().hasIdentification(
-                    groupRelation.getModel().getIdentification()
+                relationUnderGroupRelation.hasIdentification(
+                    groupRelation.getIdentification()
                 )
             ).toBeTruthy();
-            var vertex = relationUnderGroupRelation.getTopMostChildBubble();
-            vertex.getController().moveUnderParent(
-                scenario.getOtherRelationInTree().getTopMostChildBubble()
+            let vertex = relationUnderGroupRelation.getNextBubble();
+            await vertex.getController().moveUnderParent(
+                scenario.getOtherRelationInTree().getNextBubble()
             );
             expect(
-                relationUnderGroupRelation.getModel().hasIdentification(
-                    groupRelation.getModel().getIdentification()
+                relationUnderGroupRelation.hasIdentification(
+                    groupRelation.getIdentification()
                 )
             ).toBeFalsy();
         });
-        it("removes all the identifier to the relation under the group relation when moving under another bubble", function () {
-            var scenario = new Scenarios.sameLevelRelationsWithMoreThanOneCommonMetaScenario();
-            var centerBubble = scenario.getCenterBubbleInTree();
-            var groupRelation = TestUtils.getChildWithLabel(
+        it("removes all the identifier to the relation under the group relation when moving under another bubble", async () => {
+            let scenario = await new SameLevelRelationsWithMoreThanOneCommonMetaScenario();
+            let centerBubble = scenario.getCenterInTree();
+            let groupRelation = TestUtil.getChildWithLabel(
                 centerBubble,
                 "Creator"
             );
-            var groupRelationUnderGroupRelation = groupRelation.getTopMostChildBubble();
-            var relationWithTwoIdentifiers = groupRelationUnderGroupRelation.getTopMostChildBubble();
+            let groupRelationUnderGroupRelation = TestUtil.getChildWithLabel(
+                groupRelation,
+                "Possession"
+            );
+            let relationWithTwoIdentifiers = groupRelationUnderGroupRelation.getNextBubble();
             expect(
-                relationWithTwoIdentifiers.getModel().getIdentifiers().length
+                relationWithTwoIdentifiers.getIdentifiers().length
             ).toBe(2);
-            var vertex = relationWithTwoIdentifiers.getTopMostChildBubble();
-            var otherBubble = TestUtils.getChildWithLabel(
+            let vertex = relationWithTwoIdentifiers.getNextBubble();
+            let otherBubble = TestUtil.getChildWithLabel(
                 centerBubble,
                 "other relation"
-            ).getTopMostChildBubble();
+            ).getNextBubble();
             expect(
                 otherBubble.isVertex()
             ).toBeTruthy();
-            vertex.getController().moveUnderParent(
+            await vertex.getController().moveUnderParent(
                 otherBubble
             );
             expect(
-                relationWithTwoIdentifiers.getModel().getIdentifiers().length
+                relationWithTwoIdentifiers.getIdentifiers().length
             ).toBe(0);
         });
-        it("adds all the identifier to the relation when moving under a group relation", function () {
-            var scenario = new Scenarios.sameLevelRelationsWithMoreThanOneCommonMetaScenario();
-            var centerBubble = scenario.getCenterBubbleInTree();
-            var otherRelation = TestUtils.getChildWithLabel(
+        it("adds all the identifier to the relation when moving under a group relation", async () => {
+            let scenario = await new SameLevelRelationsWithMoreThanOneCommonMetaScenario();
+            let centerBubble = scenario.getCenterInTree();
+            let otherRelation = TestUtil.getChildWithLabel(
                 centerBubble,
                 "other relation"
             );
             expect(
-                otherRelation.getModel().getIdentifiers().length
+                otherRelation.getIdentifiers().length
             ).toBe(0);
-            var groupRelation = TestUtils.getChildWithLabel(
+            let groupRelation = TestUtil.getChildWithLabel(
                 centerBubble,
                 "Creator"
             );
-            var groupRelationUnderGroupRelation = groupRelation.getTopMostChildBubble();
-            var otherBubble = otherRelation.getTopMostChildBubble();
-            otherBubble.getController().moveUnderParent(
+            let groupRelationUnderGroupRelation = TestUtil.getChildWithLabel(
+                groupRelation,
+                "Possession"
+            );
+            var otherBubble = otherRelation.getNextBubble();
+            await otherBubble.getController().moveUnderParent(
                 groupRelationUnderGroupRelation
             );
             expect(
-                otherRelation.getModel().getIdentifiers().length
+                otherRelation.getIdentifiers().length
             ).toBe(2);
         });
-        it("does not add the identifiers related to the child group relations when moving under a group relation", function () {
-            var scenario = new Scenarios.sameLevelRelationsWithMoreThanOneCommonMetaScenario();
-            var centerBubble = scenario.getCenterBubbleInTree();
-            var otherRelation = TestUtils.getChildWithLabel(
+
+        it("does not add the identifiers related to the child group relations when moving under a group relation", async () => {
+            let scenario = await new SameLevelRelationsWithMoreThanOneCommonMetaScenario();
+            let centerBubble = scenario.getCenterInTree();
+            let otherRelation = TestUtil.getChildWithLabel(
                 centerBubble,
                 "other relation"
             );
             expect(
-                otherRelation.getModel().getIdentifiers().length
+                otherRelation.getIdentifiers().length
             ).toBe(0);
-            var groupRelation = TestUtils.getChildWithLabel(
+            let groupRelation = TestUtil.getChildWithLabel(
                 centerBubble,
                 "Creator"
             );
-            var otherBubble = otherRelation.getTopMostChildBubble();
-            otherBubble.getController().moveUnderParent(
+            let otherBubble = otherRelation.getNextBubble();
+            await otherBubble.getController().moveUnderParent(
                 groupRelation
             );
             expect(
-                otherRelation.getModel().getIdentifiers().length
+                otherRelation.getIdentifiers().length
             ).toBe(1);
         });
     });
     describe("_canMoveUnderParent", function () {
-        it("return false if it's parent vertex", function () {
-            var scenario = new Scenarios.threeBubblesGraph();
-            var bubble1 = scenario.getBubble1InTree();
-            var bubble2 = scenario.getBubble2InTree();
+        it("return false if it's parent vertex", async () => {
+            let scenario = await new ThreeScenario();
+            let bubble1 = scenario.getBubble1InTree();
+            let bubble2 = scenario.getBubble2InTree();
             expect(
                 bubble2.getController()._canMoveUnderParent(bubble1)
             ).toBe(false);
         });
-        it("return false if it's parent relation", function () {
-            var scenario = new Scenarios.threeBubblesGraph();
-            var bubble2 = scenario.getBubble2InTree();
+        it("return false if it's parent relation", async () => {
+            let scenario = await new ThreeScenario();
+            let bubble2 = scenario.getBubble2InTree();
             expect(
                 bubble2.getController()._canMoveUnderParent(bubble2.getParentBubble())
             ).toBe(false);

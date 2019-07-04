@@ -265,7 +265,7 @@ GraphElementController.prototype.moveUpOneStep = function () {
     }
     let parentFork = this.model().getParentFork();
     let aboveParentFork = bubbleAbove.getParentFork();
-    if(parentFork.isGroupRelation() && !parentFork.isSameBubble(aboveParentFork)){
+    if (parentFork.isGroupRelation() && !parentFork.isSameBubble(aboveParentFork)) {
         return Promise.resolve();
     }
     if (!bubbleAbove.getParentVertex().isSameBubble(this.getUi().getParentVertex())) {
@@ -289,7 +289,7 @@ GraphElementController.prototype.moveDownOneStep = function () {
     }
     let parentFork = this.model().getParentFork();
     let belowParentFork = bubbleUnder.getParentFork();
-    if(parentFork.isGroupRelation() && !parentFork.isSameBubble(belowParentFork)){
+    if (parentFork.isGroupRelation() && !parentFork.isSameBubble(belowParentFork)) {
         return Promise.resolve();
     }
     if (!bubbleUnder.getParentVertex().isSameBubble(this.getUi().getParentVertex())) {
@@ -375,22 +375,24 @@ GraphElementController.prototype.moveUnderParent = function (parent, forceLeft) 
 };
 
 GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previousParentVertex) {
-    let previousIndex = this.getUi().getIndexInTree();
+    let previousIndex = this.model().getIndexInTree();
     let moveToCommand = new Command.forExecuteUndoAndRedo(
         () => {
             return this._moveToExecute(otherEdge, isAbove, previousParentVertex);
         },
         () => {
-            let edgeUnder = previousParentVertex.getChildOfTypeAtIndex(
-                GraphElementType.Relation,
-                previousIndex
-            );
+            let childAtIndex = previousParentVertex.getChildAtIndex(previousIndex);
+            if (!childAtIndex.isEdge()) {
+                childAtIndex.getClosestChildrenOfType(GraphElementType.Relation)
+            }
             return this._moveToExecute(
-                edgeUnder,
+                childAtIndex,
                 true,
-                this.getUi().getParentVertex()
+                this.model().getParentVertex()
             );
-        }
+        },() => {
+            return this._moveToExecute(otherEdge, isAbove, previousParentVertex);
+        },
     );
     return Command.executeCommand(
         moveToCommand
@@ -414,8 +416,7 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
         model.moveBelow(otherEdge);
     }
     let parentOfOtherBubble = otherEdge.getParentBubble();
-    let movedEdgeParentBubble = movedEdge.getParentBubble();
-    if (!parentOfOtherBubble.isSameBubble(movedEdgeParentBubble) && parentOfOtherBubble.isGroupRelation()) {
+    if (parentOfOtherBubble.isGroupRelation()) {
         let identification = parentOfOtherBubble.getIdentification();
         if (movedEdge.isGroupRelation()) {
             movedEdge.visitClosestChildRelations(function (relation) {

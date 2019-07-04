@@ -17,10 +17,10 @@ api.undoCanDo = function () {
     return Command.canUndo();
 };
 api.undo = function () {
-    Command.undo();
+    return Command.undo();
 };
 api.redo = function () {
-    Command.redo();
+    return Command.redo();
 };
 api.redoCanDo = function () {
     return Command.canRedo();

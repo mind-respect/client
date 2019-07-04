@@ -311,7 +311,7 @@ describe("Graph.vue", () => {
         leftVertex = leftVertex.getDownBubble();
         expect(
             leftVertex.getLabel()
-        ).toBe("s1");
+        ).toBe("To do");
         leftVertex = leftVertex.getDownBubble();
         expect(
             leftVertex.getLabel()
@@ -328,7 +328,7 @@ describe("Graph.vue", () => {
         let groupRelation = r2.getDownBubble();
         expect(
             groupRelation.getLabel()
-        ).toBe("similar");
+        ).toBe("To do");
     });
 
     it("sorts children of group relation in order of creation date", async () => {
