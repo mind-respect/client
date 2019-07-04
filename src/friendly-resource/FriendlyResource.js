@@ -82,28 +82,6 @@ const FriendlyResource = {
 FriendlyResource.FriendlyResource = function () {
 };
 
-FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceServerFormat) {
-    this.friendlyResourceServerFormat = friendlyResourceServerFormat;
-    this.draw = true;
-    this._images = this._buildImages();
-    if (friendlyResourceServerFormat.comment === undefined) {
-        friendlyResourceServerFormat.comment = "";
-    }
-    if (friendlyResourceServerFormat.label === undefined) {
-        this.friendlyResourceServerFormat.label = "";
-    }
-    this.uiId = IdUri.uuid();
-    this.uriFacade = new IdUri.IdUri(
-        this.getUri()
-    );
-    this.isSelected = false;
-    this.isSingleSelected = false;
-    this.loading = true;
-    this.isExpanded = false;
-    this.isCollapsed = false;
-    this.updateGraphElementType();
-    return this;
-};
 
 FriendlyResource.FriendlyResource.prototype.getId = function () {
     return this.uiId;
@@ -915,5 +893,28 @@ FriendlyResource.FriendlyResource.prototype.getParentVertex = function () {
 };
 FriendlyResource.FriendlyResource.prototype.getIcon = function () {
     return Icon.getForGraphElement(this);
+};
+
+FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceServerFormat) {
+    this.friendlyResourceServerFormat = friendlyResourceServerFormat;
+    this.draw = true;
+    this._images = this._buildImages();
+    if (friendlyResourceServerFormat.comment === undefined) {
+        friendlyResourceServerFormat.comment = "";
+    }
+    if (friendlyResourceServerFormat.label === undefined) {
+        this.friendlyResourceServerFormat.label = "";
+    }
+    this.uiId = IdUri.uuid();
+    this.uriFacade = new IdUri.IdUri(
+        this.getUri()
+    );
+    this.isSelected = false;
+    this.isSingleSelected = false;
+    this.loading = true;
+    this.isExpanded = false;
+    this.isCollapsed = false;
+    this.updateGraphElementType();
+    return this;
 };
 export default FriendlyResource;
