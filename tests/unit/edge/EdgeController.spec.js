@@ -506,7 +506,7 @@ describe("EdgeController", () => {
             ).toBe(2);
         });
 
-        xit("can become parent of a relation", async () => {
+        it("can become parent of a relation", async () => {
             let scenario = await new ThreeScenario();
             let centerBubble = scenario.getBubble1InTree();
             let r2 = TestUtil.getChildWithLabel(
@@ -524,12 +524,11 @@ describe("EdgeController", () => {
                 r1.getController()._canMoveUnderParent(r2)
             ).toBeTruthy();
             await r1.getController().moveUnderParent(r2);
-            await scenario.nextTickPromise(5);
             r2 = TestUtil.getChildWithLabel(
                 centerBubble,
                 "r2"
             );
-            expect(r2.isGroupRelation()).toBeTruthty();
+            expect(r2.isGroupRelation()).toBeTruthy();
             expect(
                 r2.getNumberOfChild()
             ).toBe(2);

@@ -205,6 +205,7 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     if (index === undefined) {
         children.push(child)
     } else {
+        index = Math.min(index, children.length - 1);
         children.splice(index, 0, child);
     }
 };

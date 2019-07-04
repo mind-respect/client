@@ -74,12 +74,16 @@ EdgeController.prototype.addSiblingCanDo = function () {
 };
 
 EdgeController.prototype.becomeParent = function (adoptedChild) {
+    if (adoptedChild.isVertex()) {
+        adoptedChild = adoptedChild.getParentBubble();
+    }
     let promises = [];
     Selection.removeAll();
+    adoptedChild.getParentFork().removeChild(adoptedChild);
     let newGroupRelation = this._convertToGroupRelation();
-    let parentBubble = this.model().getParentBubble();
+    let parentFork = this.model().getParentFork();
     newGroupRelation.addChild(adoptedChild);
-    parentBubble.replaceChild(
+    parentFork.replaceChild(
         this.model(),
         newGroupRelation
     );
@@ -94,7 +98,7 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
     } else {
         moveEdge.bind(this)(adoptedChild);
     }
-    return Promise.all(promises).then(function () {
+    return Promise.all(promises).then(() => {
         newGroupRelation.expand(true);
         Store.dispatch("redraw");
     });
@@ -108,10 +112,10 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
                 identifiers
             )
         );
-        this.model().getParentBubble().removeChild(movedEdge);
         promises.push(
             movedEdge.getController().replaceParentVertex(
-                this.getUi().getParentVertex()
+                this.model().getParentVertex(),
+                true
             )
         );
     }
@@ -147,6 +151,7 @@ EdgeController.prototype._convertToGroupRelation = function () {
     newGroupRelation.parentVertex = this.getUi().getParentVertex();
     newGroupRelation._sortedImmediateChild = newGroupRelation.sortedImmediateChild();
     newGroupRelation.isExpanded = true;
+    newGroupRelation.updateGraphElementType();
     return newGroupRelation;
 };
 
