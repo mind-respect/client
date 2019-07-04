@@ -559,7 +559,7 @@ GraphElementController.prototype.addIdentification = function (identifier) {
 };
 
 GraphElementController.prototype.remove = function (skipConfirmation) {
-    if (skipConfirmation) {
+    if (skipConfirmation === true) {
         return this.removeDo();
     }
     let selectedIsPristine = this.getUiArray().every((graphElement) => {

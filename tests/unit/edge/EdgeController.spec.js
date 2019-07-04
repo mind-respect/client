@@ -115,7 +115,6 @@ describe("EdgeController", () => {
         });
 
 
-
         it("when a relation has an identifier adding a child changes to a group relation where the identifier is not the relation but the identifier", async () => {
             let threeBubblesScenario = await new ThreeScenario();
             let bubble1 = threeBubblesScenario.getBubble1InTree();
@@ -422,6 +421,7 @@ describe("EdgeController", () => {
                 ).length
             ).toBe(2);
         });
+        //todo
         xit("can add child to a relation under a group relation where the external uri is this relation's uri", async () => {
             let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
@@ -540,28 +540,28 @@ describe("EdgeController", () => {
                 r1.getParentBubble().getLabel()
             ).toBe("r2");
         });
-        xit("can become parent of a group relation", function () {
-            var scenario = new Scenarios.GraphWithSimilarRelationsScenario();
-            var center = scenario.getCenterInTree();
-            var groupRelation = scenario.getPossessionAsGroupRelationInTree();
-            var otherRelation = TestUtils.getChildWithLabel(
+        it("can become parent of a group relation", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let center = scenario.getCenterInTree();
+            let groupRelation = scenario.getPossessionGroupRelation();
+            let otherRelation = TestUtil.getChildWithLabel(
                 center,
                 "other relation"
             );
             groupRelation.expand();
             expect(
-                TestUtils.hasChildWithLabel(
+                TestUtil.hasChildWithLabel(
                     otherRelation,
                     "Possession"
                 )
             ).toBeFalsy();
-            groupRelation.getController().moveUnderParent(otherRelation);
-            otherRelation = TestUtils.getChildWithLabel(
+            await groupRelation.getController().moveUnderParent(otherRelation);
+            otherRelation = TestUtil.getChildWithLabel(
                 center,
                 "other relation"
             );
             expect(
-                TestUtils.hasChildWithLabel(
+                TestUtil.hasChildWithLabel(
                     otherRelation,
                     "Possession"
                 )
