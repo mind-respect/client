@@ -242,13 +242,9 @@ FriendlyResource.FriendlyResource.prototype.isVertexType = function () {
     return this.type.isVertexType();
 };
 
-FriendlyResource.FriendlyResource.prototype.select = function () {
-    this.isSelected = true;
-};
+FriendlyResource.FriendlyResource.prototype.select = function () {};
 
 FriendlyResource.FriendlyResource.prototype.deselect = function () {
-    this.isSelected = false;
-    this.isSingleSelected = false;
     this.blur();
 };
 
@@ -282,15 +278,6 @@ FriendlyResource.FriendlyResource.prototype.makeLeft = function () {
 
 FriendlyResource.FriendlyResource.prototype.makeRight = function () {
     this.direction = "right";
-};
-
-FriendlyResource.FriendlyResource.prototype.makeSingleSelected = function () {
-    this.isSelected = true;
-    this.isSingleSelected = true;
-};
-
-FriendlyResource.FriendlyResource.prototype.removeSingleSelected = function () {
-    this.isSingleSelected = false;
 };
 
 FriendlyResource.FriendlyResource.prototype.beforeExpand = function () {
@@ -330,10 +317,6 @@ FriendlyResource.FriendlyResource.prototype.travelLeft = function () {
 FriendlyResource.FriendlyResource.prototype.travelRight = function () {
     Selection.setToSingle(this.getRightBubble())
 };
-
-// FriendlyResource.FriendlyResource.prototype.isSingleSelected = function () {
-//     return this.isSingleSelected;
-// };
 
 FriendlyResource.FriendlyResource.prototype.travelDown = function () {
     Selection.setToSingle(this.getDownBubble())
@@ -909,8 +892,6 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
     this.uriFacade = new IdUri.IdUri(
         this.getUri()
     );
-    this.isSelected = false;
-    this.isSingleSelected = false;
     this.loading = true;
     this.isExpanded = false;
     this.isCollapsed = false;

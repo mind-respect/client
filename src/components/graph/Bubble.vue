@@ -475,7 +475,7 @@
                 }
                 GraphUi.enableDragScroll();
                 if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
-                    if (this.bubble.isSelected) {
+                    if (this.isSelected) {
                         Selection.remove(this.bubble);
                     } else {
                         Selection.add(this.bubble);

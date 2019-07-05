@@ -23,7 +23,6 @@ api.setToSingle = function (graphElement) {
     // }
     api.removeAll();
     api.add(graphElement);
-    graphElement.makeSingleSelected();
     centerBubbleIfApplicable(graphElement);
 };
 
@@ -33,19 +32,12 @@ api.isSelected = function (graphElement) {
     });
 };
 
-api._getSetterFromGraphElement = function (graphElement) {
-    return graphElement.isEdge() ?
-        api.setToSingleRelation :
-        api.setToSingleVertex;
-};
-
 api.setToSingleRelation = function (relation) {
     if (api.getNbSelectedElements() === 1 && api.getSingle().getId() === relation.getId()) {
         return;
     }
     deselectAll();
     api.addRelation(relation);
-    relation.makeSingleSelected();
 };
 
 api.add = function (graphElement, onlyPrepare) {
@@ -58,9 +50,6 @@ api.addRelation = function (relation) {
 };
 
 api.addVertex = function (vertex) {
-    if (api.isSingle()) {
-        api.getSingle().removeSingleSelected();
-    }
     vertex.select();
     api.selected.push(vertex);
 };

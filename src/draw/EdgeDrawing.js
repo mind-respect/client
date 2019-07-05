@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Store from '@/store'
+import Selection from '@/Selection'
 
 const arcRadiusStandard = 20;
 const arcRadiusLeft = arcRadiusStandard * -1;
@@ -257,7 +258,7 @@ EdgeDrawing.prototype.getBubbleElement = function (bubble) {
     if (bubble.isGroupRelation()) {
         return bubble.getChip();
     }
-    if (bubble.isSame(this.bubble) && !bubble.isCenter && !bubble.isSelected) {
+    if (bubble.isSame(this.bubble) && !bubble.isCenter && !Selection.isSelected(bubble)) {
         return bubble.getHtml();
     } else {
         return bubble.getHtml();
@@ -316,7 +317,7 @@ EdgeDrawing.prototype.topPositionCalculate = function () {
     position.x += xAdjust;
     position.x = Math.round(position.x);
     let yAdjust;
-    if (this.bubble.isSelected || this.bubble.isCenter || !this.bubble.isVertex()) {
+    if (Selection.isSelected(this.bubble) || this.bubble.isCenter || !this.bubble.isVertex()) {
         yAdjust = this.isLeft ? -24 : -45;
     } else {
         yAdjust = this.isLeft ? -24 : -45;
@@ -344,7 +345,7 @@ EdgeDrawing.prototype.bottomPositionCalculate = function () {
     position.x += xAdjust;
     position.x = Math.round(position.x);
     let yAdjust;
-    if (this.bubble.isSelected || this.bubble.isCenter || !this.bubble.isVertex()) {
+    if (Selection.isSelected(this.bubble) || this.bubble.isCenter || !this.bubble.isVertex()) {
         yAdjust = this.isLeft ? -43 : -63;
     } else {
         yAdjust = this.isLeft ? -43 : -63;

@@ -390,8 +390,6 @@ GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previou
                 true,
                 this.model().getParentVertex()
             );
-        },() => {
-            return this._moveToExecute(otherEdge, isAbove, previousParentVertex);
         },
     );
     return Command.executeCommand(
@@ -637,7 +635,7 @@ GraphElementController.prototype.selectTreeCanDo = function () {
 };
 
 GraphElementController.prototype.selectTree = function () {
-    this.getUi().selectTree();
+    this.model().selectTree();
 };
 
 GraphElementController.prototype.isSingleAndOwned = function () {
