@@ -577,6 +577,7 @@ GraphElementController.prototype.removeDo = async function () {
         GraphElementService.removeCollection(
             this.getModelArray()
         );
+
     let isCenterRemoved = this.getModelArray().some((bubble) => {
         return bubble.isCenter;
     });
@@ -604,6 +605,7 @@ GraphElementController.prototype.removeDo = async function () {
     if (this.isSingle()) {
         GraphElementService.changeChildrenIndex(this.model().getParentVertex());
     }
+    Store.dispatch("redraw");
 };
 
 GraphElementController.prototype.removeIdentifier = function (identifier) {

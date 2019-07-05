@@ -157,7 +157,6 @@
         methods: {
             remove: async function () {
                 await Selection.getController().removeDo();
-                this.$store.dispatch("redraw");
                 this.removeDialog = false;
             }
         }
