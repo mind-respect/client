@@ -68,7 +68,6 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
                 isToTheLeft,
                 index
             );
-            triple.destination.makePrivate();
             return triple.destination.getController().setShareLevel(
                 parentVertex.getShareLevel()
             );

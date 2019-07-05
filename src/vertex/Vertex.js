@@ -57,6 +57,9 @@ Vertex.prototype = new GraphElement.GraphElement();
 
 Vertex.prototype.init = function (vertexServerFormat) {
     this.vertexServerFormat = vertexServerFormat;
+    if (!this.vertexServerFormat.vertex.shareLevel) {
+        this.makePrivate();
+    }
     this.vertexServerFormat.vertex.numberOfConnectedEdges = this.vertexServerFormat.vertex.numberOfConnectedEdges || 0;
     // this._suggestions = this._buildSuggestions();
     this.leftBubbles = [];
@@ -155,7 +158,7 @@ Vertex.prototype.isFriendsOnly = function () {
 };
 
 Vertex.prototype.getShareLevel = function () {
-    return this.vertexServerFormat.vertex.shareLevel.toUpperCase()
+    return this.vertexServerFormat.vertex.shareLevel.toUpperCase();
 };
 
 Vertex.prototype.makePrivate = function () {
