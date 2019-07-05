@@ -10,7 +10,6 @@ import GraphElementService from '@/graph-element/GraphElementService'
 import Selection from '@/Selection'
 import Vue from 'vue'
 import Store from '@/store'
-import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 api.GroupRelationController = GroupRelationController;
@@ -56,24 +55,24 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
     }
     return VertexService.addTuple(
         parentVertex
-    ).then(async (_triple) => {
+    ).then((_triple) => {
         triple = _triple;
-        let newVertex;
-        let addIdentifiers = Promise.all(this.model().getIdentifiers().map((identifier) => {
+        let addIdentifiers = Promise.all(this.model().getIdentifiers().map(function (identifier) {
             identifier.makeSameAs();
             return triple.edge.getController().addIdentification(
                 identifier
             );
-        }));
-        await addIdentifiers;
-        this.model().addChild(
-            triple.edge,
-            isToTheLeft,
-            index
-        )
-        newVertex = CurrentSubGraph.get().getVertexWithUri(
-            triple.destination.getUri()
-        );
+        })).then(() => {
+            this.model().addChild(
+                triple.edge,
+                isToTheLeft,
+                index
+            );
+            triple.destination.makePrivate();
+            return triple.destination.getController().setShareLevel(
+                parentVertex.getShareLevel()
+            );
+        });
         let promises = [
             addIdentifiers,
             EdgeService.updateLabel(
@@ -85,11 +84,6 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
                 );
             })
         ];
-        if (parentVertex.model().isPublic()) {
-            promises.push(
-                newVertex.getController().makePublic()
-            );
-        }
         return Promise.all(promises);
     }).then(() => {
         Vue.nextTick(() => {

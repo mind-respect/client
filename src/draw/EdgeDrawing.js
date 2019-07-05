@@ -149,12 +149,12 @@ EdgeDrawing.prototype.drawChildren = function () {
         }
         if (!childPosition) {
             this.loaded = false;
-            this.$nextTick(function () {
+            Vue.nextTick(() => {
                 console.warn('drawChildren null child position html redraw');
                 // this.redraw();
                 this.loaded = false;
-                this.$destroy();
-            }.bind(this));
+                // this.$destroy();
+            });
             return;
         }
         if (this.bubble.isEdge()) {
@@ -279,12 +279,12 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
     yAdjust += this.zoomAdjust;
     if (!element) {
         this.loaded = false;
-        this.$nextTick(function () {
+        Vue.nextTick(() => {
             console.warn('null child bubble html redraw');
             // this.redraw();
             this.loaded = false;
-            this.$destroy();
-        }.bind(this));
+            // this.$destroy();
+        });
         return;
     }
     let rect = element.getBoundingClientRect();
