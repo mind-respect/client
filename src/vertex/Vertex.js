@@ -155,7 +155,7 @@ Vertex.prototype.isFriendsOnly = function () {
 };
 
 Vertex.prototype.getShareLevel = function () {
-    return this.vertexServerFormat.vertex.shareLevel;
+    return this.vertexServerFormat.vertex.shareLevel.toUpperCase()
 };
 
 Vertex.prototype.makePrivate = function () {

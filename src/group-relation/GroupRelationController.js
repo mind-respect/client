@@ -10,6 +10,7 @@ import GraphElementService from '@/graph-element/GraphElementService'
 import Selection from '@/Selection'
 import Vue from 'vue'
 import Store from '@/store'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 api.GroupRelationController = GroupRelationController;
@@ -48,27 +49,31 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
     if (saveIndex === undefined) {
         saveIndex = true;
     }
-    let parentVertex = this.getUi().getParentVertex();
+    let parentVertex = this.model().getParentVertex();
     let triple;
-    if (this.getUi().canExpand()) {
+    if (this.model().canExpand()) {
         this.expand(true);
     }
     return VertexService.addTuple(
         parentVertex
-    ).then((_triple) => {
+    ).then(async (_triple) => {
         triple = _triple;
-        let addIdentifiers = Promise.all(this.model().getIdentifiers().map(function (identifier) {
+        let newVertex;
+        let addIdentifiers = Promise.all(this.model().getIdentifiers().map((identifier) => {
             identifier.makeSameAs();
             return triple.edge.getController().addIdentification(
                 identifier
             );
-        })).then(() => {
-            this.model().addChild(
-                triple.edge,
-                isToTheLeft,
-                index
-            )
-        });
+        }));
+        await addIdentifiers;
+        this.model().addChild(
+            triple.edge,
+            isToTheLeft,
+            index
+        )
+        newVertex = CurrentSubGraph.get().getVertexWithUri(
+            triple.destination.getUri()
+        );
         let promises = [
             addIdentifiers,
             EdgeService.updateLabel(
@@ -82,7 +87,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         ];
         if (parentVertex.model().isPublic()) {
             promises.push(
-                triple.destination.getController().makePublic()
+                newVertex.getController().makePublic()
             );
         }
         return Promise.all(promises);

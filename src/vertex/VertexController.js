@@ -314,28 +314,33 @@ VertexController.prototype.makePublic = function () {
 // };
 
 VertexController.prototype.setShareLevel = function (shareLevel) {
-    this.getUiArray().forEach((vertexUi) => {
+    let verticesToUpdate = this.getUiArray().filter((vertex) => {
+        return vertex.getShareLevel() !== shareLevel.toUpperCase()
+    }).map((vertex) => {
         if (ShareLevel.isPublic(shareLevel)) {
-            vertexUi.getParentVertex().incrementNbPublicNeighbors();
+            vertex.getParentVertex().incrementNbPublicNeighbors();
         }
         if (shareLevel === ShareLevel.FRIENDS) {
-            vertexUi.getParentVertex().incrementNbFriendNeighbors();
+            vertex.getParentVertex().incrementNbFriendNeighbors();
         }
-        vertexUi.setShareLevel(shareLevel);
-        if (vertexUi.model().isPublic()) {
-            vertexUi.getParentVertex().decrementNbPublicNeighbors();
+        vertex.setShareLevel(shareLevel);
+        if (vertex.model().isPublic()) {
+            vertex.getParentVertex().decrementNbPublicNeighbors();
         }
-        if (vertexUi.model().isFriendsOnly()) {
-            vertexUi.getParentVertex().decrementNbFriendNeigbors();
+        if (vertex.model().isFriendsOnly()) {
+            vertex.getParentVertex().decrementNbFriendNeigbors();
         }
+        return vertex;
     });
-    let promise = this.isMultiple() ?
+    if (verticesToUpdate.length === 0) {
+        return Promise.resolve();
+    }
+    return this.isMultiple() ?
         VertexService.setCollectionShareLevel(
-            shareLevel, this.model()
+            shareLevel, verticesToUpdate
         ) : VertexService.setShareLevel(
             shareLevel, this.model()
         );
-    return promise;
 };
 
 VertexController.prototype.becomeParent = function (child) {

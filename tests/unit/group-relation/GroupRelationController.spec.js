@@ -30,11 +30,11 @@ describe("GroupRelationController", () => {
         it("makes new child public if parent vertex is public", async () => {
             let scenario = await new GroupRelationsScenario();
             let possessionInTree = scenario.getPossessionGroupRelation();
-            possessionInTree.getParentVertex().model().makePublic();
-            possessionInTree.model().addIdentification(
+            possessionInTree.getParentVertex().makePublic();
+            possessionInTree.addIdentification(
                 TestUtil.dummyIdentifier()
             );
-            let triple = await possessionInTree.getController().addChild()
+            let triple = await possessionInTree.getController().addChild();
             expect(
                 triple.destination.isPublic()
             ).toBeTruthy();

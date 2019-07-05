@@ -8,6 +8,7 @@ import TestUtil from '../util/TestUtil'
 import MindMapInfo from '@/MindMapInfo'
 import Selection from '@/Selection'
 import VertexController from '@/vertex/VertexController'
+import VertexService from '@/vertex/VertexService'
 
 describe('VertexController', () => {
     beforeEach(() => {
@@ -335,16 +336,13 @@ describe('VertexController', () => {
             b3.isExpanded
         ).toBeTruthy();
     });
-    it("does not make public already public vertices when making a collection public", async () => {
+    it("does not make public already public vertices when making a collection public", async() => {
         let scenario = await new ThreeScenario();
         let b2 = scenario.getBubble2InTree();
         b2.model().makePublic();
         let hasCalledService = false;
         let nbVerticesToMakePublic = 0;
-        Mock.getSpy(
-            "VertexService",
-            "makeCollectionPublic"
-        ).mockImplementation((vertices) => {
+        jest.spyOn(VertexService, "setCollectionShareLevel").mockImplementation((shareLevel, vertices) => {
             hasCalledService = true;
             nbVerticesToMakePublic = vertices.length;
             return Promise.resolve();
@@ -369,10 +367,7 @@ describe('VertexController', () => {
         b3.model().makePublic();
         let hasCalledService = false;
         let nbVerticesToMakePrivate = 0;
-        Mock.getSpy(
-            "VertexService",
-            "makeCollectionPrivate"
-        ).mockImplementation((vertices) => {
+        jest.spyOn(VertexService, "setCollectionShareLevel").mockImplementation((shareLevel, vertices) => {
             hasCalledService = true;
             nbVerticesToMakePrivate = vertices.length;
             return Promise.resolve();
