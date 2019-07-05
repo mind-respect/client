@@ -738,4 +738,16 @@ describe("FriendlyResource", () => {
             ).toBeTruthy();
         });
     });
+    describe("selectTree", () => {
+        it("prevents select twice if already selected", async () => {
+            let scenario = await new ThreeScenario();
+            let b2 = scenario.getBubble2InTree();
+            await scenario.expandBubble2(b2);
+            Selection.setToSingle(b2);
+            b2.selectTree();
+            expect(
+                Selection.getNbSelected()
+            ).toBe(3);
+        });
+    });
 });

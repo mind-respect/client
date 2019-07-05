@@ -242,7 +242,8 @@ FriendlyResource.FriendlyResource.prototype.isVertexType = function () {
     return this.type.isVertexType();
 };
 
-FriendlyResource.FriendlyResource.prototype.select = function () {};
+FriendlyResource.FriendlyResource.prototype.select = function () {
+};
 
 FriendlyResource.FriendlyResource.prototype.deselect = function () {
     this.blur();
@@ -256,6 +257,7 @@ FriendlyResource.FriendlyResource.prototype.blur = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.selectTree = function () {
+    Selection.reset();
     Selection.add(
         this
     );

@@ -10,7 +10,9 @@ const api = {
 };
 
 api.reset = function () {
-    api.selected = [];
+    while (api.selected.length > 0) {
+        api.selected.pop();
+    }
 };
 
 
