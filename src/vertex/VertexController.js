@@ -191,10 +191,7 @@ VertexController.prototype.addSiblingCanDo = function () {
 };
 
 VertexController.prototype.addSibling = function () {
-    let parent = this.model().getClosestAncestorInTypes([
-        GraphElementType.Vertex,
-        GraphElementType.GroupRelation
-    ]);
+    let parent = this.model().getParentFork();
     return parent.getController().addChild(
         this.model().getIndexInTree() + 1,
         this.model().isToTheLeft()

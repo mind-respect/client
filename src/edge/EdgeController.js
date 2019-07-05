@@ -32,7 +32,7 @@ EdgeController.prototype.addChild = async function () {
     let newGroupRelation = this._convertToGroupRelation();
     let triple;
     Selection.removeAll();
-    return newGroupRelation.getController().addChild(false).then((_triple) => {
+    return newGroupRelation.getController().addChildWhenInTransition().then((_triple) => {
         triple = _triple;
         newGroupRelation.getIdentification().setUri(
             triple.edge.getIdentifiers()[0].getUri()
@@ -60,8 +60,8 @@ EdgeController.prototype.addChild = async function () {
 };
 
 EdgeController.prototype.addSibling = function () {
-    return this.model().getNextBubble().getController().addSibling().then(function (triple) {
-        Vue.nextTick(function () {
+    return this.model().getNextBubble().getController().addSibling().then((triple) => {
+        Vue.nextTick(() => {
             Selection.setToSingle(
                 triple.edge
             );

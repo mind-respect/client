@@ -36,7 +36,15 @@ GroupRelationController.prototype.centerCanDo = function () {
     return false;
 };
 
-GroupRelationController.prototype.addChild = function (saveIndex) {
+GroupRelationController.prototype.addChildWhenInTransition = function () {
+    return this.addChild(
+        undefined,
+        undefined,
+        false
+    )
+};
+
+GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveIndex) {
     if (saveIndex === undefined) {
         saveIndex = true;
     }
@@ -55,7 +63,11 @@ GroupRelationController.prototype.addChild = function (saveIndex) {
                 identifier
             );
         })).then(() => {
-            this.model().addChild(triple.edge)
+            this.model().addChild(
+                triple.edge,
+                isToTheLeft,
+                index
+            )
         });
         let promises = [
             addIdentifiers,

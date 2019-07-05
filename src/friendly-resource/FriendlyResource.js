@@ -261,7 +261,7 @@ FriendlyResource.FriendlyResource.prototype.selectTree = function () {
     Selection.add(
         this
     );
-    this.visitDescendants(function (descendant) {
+    this.getDescendants().forEach((descendant) => {
         if (descendant.isVertex()) {
             Selection.add(
                 descendant
@@ -398,6 +398,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
         this.setSourceVertexOrDestinationIfInverse(
             otherBubble.getParentVertex()
         );
+        debugger;
         if (MoveRelation.Before === relation) {
             otherParentBubble.addChild(
                 this,

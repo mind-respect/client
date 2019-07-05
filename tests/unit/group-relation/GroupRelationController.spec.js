@@ -72,6 +72,21 @@ describe("GroupRelationController", () => {
                 possessionInTree.getNumberOfChild()
             );
         });
+        it('adds new sibling under a vertex under a group relation', async () => {
+            let scenario = await new GroupRelationsScenario();
+            let groupRelation = scenario.getPossessionGroupRelation();
+            let book1 = groupRelation.getNextBubble().getNextBubble();
+            expect(
+                book1.getLabel()
+            ).toBe("book 1");
+            expect(
+                book1.getDownBubble().getLabel()
+            ).toBe("book 2");
+            await book1.getController().addSibling();
+            expect(
+                book1.getDownBubble().getLabel()
+            ).toBe("");
+        })
     });
 
     describe("expand", function () {
