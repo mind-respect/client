@@ -136,6 +136,7 @@
                                                      'in-label-icons-right': !isLeft && !isCenter,
                                                      'in-label-icons-left': isLeft && !isCenter
                                                     }"
+                                            :key="bubble.inLabelMenuKey"
                                     >
                                         <v-icon small color="secondary" v-if="isCenter">
                                             filter_center_focus
@@ -146,10 +147,10 @@
                                         <v-icon small color="secondary" v-if="hasIdentifications">
                                             label
                                         </v-icon>
-                                        <v-icon small color="secondary" v-if="isPrivate">
+                                        <v-icon small color="secondary" v-if="bubble.isPrivate()">
                                             lock
                                         </v-icon>
-                                        <v-icon small color="secondary" v-if="isPublic">
+                                        <v-icon small color="secondary" v-if="bubble.isPublic()">
                                             public
                                         </v-icon>
                                         <v-icon small color="secondary" v-if="isFriendsOnly">

@@ -233,29 +233,7 @@ VertexController.prototype.makePrivateCanDo = function () {
 };
 
 VertexController.prototype.makePrivate = function () {
-    if (this.isSingle()) {
-        VertexService.makePrivate(
-            this.model()
-        ).then(() => {
-            this.model().makePrivate();
-        });
-    } else {
-        let publicVertices = [];
-        this.getUi().forEach((vertex) => {
-            if (vertex.isPublic()) {
-                publicVertices.push(
-                    vertex
-                );
-            }
-        });
-        VertexService.makeCollectionPrivate(
-            publicVertices
-        ).then(function () {
-            publicVertices.forEach(function (vertex) {
-                vertex.makePrivate();
-            })
-        });
-    }
+    return this.setShareLevel(ShareLevel.PRIVATE);
 };
 
 
@@ -300,29 +278,7 @@ VertexController.prototype._areAllElementsInShareLevels = function (shareLevels)
 };
 
 VertexController.prototype.makePublic = function () {
-    if (this.isSingle()) {
-        return VertexService.makePublic(
-            this.getUi()
-        ).then(() => {
-            this.model().makePublic();
-        });
-    } else {
-        let privateVertices = [];
-        this.getUi().forEach((vertex) => {
-            if (!vertex.isPublic()) {
-                privateVertices.push(
-                    vertex
-                );
-            }
-        });
-        return VertexService.makeCollectionPublic(
-            privateVertices
-        ).then(function () {
-            privateVertices.forEach(function (vertex) {
-                vertex.makePublic()
-            });
-        });
-    }
+    return this.setShareLevel(ShareLevel.PUBLIC);
 };
 
 // VertexController.prototype.share = function () {
@@ -358,31 +314,28 @@ VertexController.prototype.makePublic = function () {
 // };
 
 VertexController.prototype.setShareLevel = function (shareLevel) {
-    this.getUiArray().forEach(function (vertexUi) {
+    this.getUiArray().forEach((vertexUi) => {
+        if (ShareLevel.isPublic(shareLevel)) {
+            vertexUi.getParentVertex().incrementNbPublicNeighbors();
+        }
+        if (shareLevel === ShareLevel.FRIENDS) {
+            vertexUi.getParentVertex().incrementNbFriendNeighbors();
+        }
+        vertexUi.setShareLevel(shareLevel);
         if (vertexUi.model().isPublic()) {
-            vertexUi.getParentVertex().model().decrementNbPublicNeighbors();
+            vertexUi.getParentVertex().decrementNbPublicNeighbors();
         }
         if (vertexUi.model().isFriendsOnly()) {
-            vertexUi.getParentVertex().model().decrementNbFriendNeigbors();
+            vertexUi.getParentVertex().decrementNbFriendNeigbors();
         }
     });
     let promise = this.isMultiple() ?
         VertexService.setCollectionShareLevel(
-            shareLevel, this.getUi()
+            shareLevel, this.model()
         ) : VertexService.setShareLevel(
-            shareLevel, this.getUi()
+            shareLevel, this.model()
         );
-    return promise.then(() => {
-        this.getUiArray().forEach(function (vertexUi) {
-            if (ShareLevel.isPublic(shareLevel)) {
-                vertexUi.getParentVertex().model().incrementNbPublicNeighbors();
-            }
-            if (shareLevel === ShareLevel.FRIENDS) {
-                vertexUi.getParentVertex().model().incrementNbFriendNeighbors();
-            }
-            vertexUi.model().setShareLevel(shareLevel.toUpperCase());
-        });
-    });
+    return promise;
 };
 
 VertexController.prototype.becomeParent = function (child) {

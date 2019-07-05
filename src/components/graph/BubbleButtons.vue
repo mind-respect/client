@@ -3,9 +3,9 @@
   -->
 
 <template>
-    <div v-if="selected">
+    <div v-if="selected" :key="menuKey">
         <span v-for="button in buttons" :key="button.action">
-            <Button :button="button" :isInSideMenu="isInSideMenu" v-if="!button.isCustom"></Button>
+            <Button :button="button" :isInSideMenu="isInSideMenu" v-if="!button.isCustom" @performed="forceRefresh"></Button>
             <Button :button="button" :isInSideMenu="isInSideMenu" v-if="button.isCustom && button.action === 'copy'">
                 <v-btn slot="button"
                        icon
@@ -25,6 +25,7 @@
 <script>
     import Selection from '@/Selection'
     import Button from '@/components/graph/Button'
+    import IdUri from '@/IdUri'
 
     export default {
         name: "BubbleButtons",
@@ -33,6 +34,7 @@
         },
         data: function () {
             return {
+                menuKey: IdUri.uuid(),
                 buttons: [
                     {
                         action: "addChild",
@@ -159,11 +161,16 @@
             }
         },
         props: ['isInSideMenu'],
+        methods: {
+            forceRefresh: function () {
+                this.menuKey = IdUri.uuid();
+            }
+        },
         computed: {
             copyContent: function () {
                 return Selection.getSingle().getLabel()
             },
-            selected: function(){
+            selected: function () {
                 return Selection.getSingle();
             }
         }

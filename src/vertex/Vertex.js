@@ -43,7 +43,7 @@ api.buildServerFormatFromUi = function (vertexUi) {
             ),
             includedEdges: {},
             includedVertices: {},
-            isPublic: vertexUi.model().isPublic(),
+            isPublic: vertexUi.isPublic(),
             numberOfConnectedEdges: vertexUi.connectedEdges().length,
             suggestions: {}
         }
@@ -167,7 +167,8 @@ Vertex.prototype.makePublic = function () {
 };
 
 Vertex.prototype.setShareLevel = function (shareLevel) {
-    this.vertexServerFormat.vertex.shareLevel = shareLevel;
+    this.vertexServerFormat.vertex.shareLevel = shareLevel.toUpperCase();
+    this.forceInLabelMenuUpdate();
 };
 
 Vertex.prototype.getGraphElementType = function () {

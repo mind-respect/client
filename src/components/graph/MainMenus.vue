@@ -4,17 +4,17 @@
 
 <template>
     <div v-if="loaded">
-<!--        <v-spacer></v-spacer>-->
-<!--        <v-toolbar flat fixed color="transparent" class="top-toolbar pl-1" height="36" dense right>-->
-<!--            <v-toolbar-side-icon></v-toolbar-side-icon>-->
-<!--            <v-toolbar-title>Title</v-toolbar-title>-->
-<!--            <v-spacer></v-spacer>-->
-<!--            <v-toolbar-items class="pa-0 mt-3">-->
-<!--                <div v-for="(button, i) in graphButtons" :key="button.action">-->
-<!--                    <Button :button="button" :isInSideMenu="true" :buttonIndex="i"></Button>-->
-<!--                </div>-->
-<!--            </v-toolbar-items>-->
-<!--        </v-toolbar>-->
+        <!--        <v-spacer></v-spacer>-->
+        <!--        <v-toolbar flat fixed color="transparent" class="top-toolbar pl-1" height="36" dense right>-->
+        <!--            <v-toolbar-side-icon></v-toolbar-side-icon>-->
+        <!--            <v-toolbar-title>Title</v-toolbar-title>-->
+        <!--            <v-spacer></v-spacer>-->
+        <!--            <v-toolbar-items class="pa-0 mt-3">-->
+        <!--                <div v-for="(button, i) in graphButtons" :key="button.action">-->
+        <!--                    <Button :button="button" :isInSideMenu="true" :buttonIndex="i"></Button>-->
+        <!--                </div>-->
+        <!--            </v-toolbar-items>-->
+        <!--        </v-toolbar>-->
         <!--        <v-navigation-drawer-->
         <!--                v-model="sideNavigation"-->
         <!--                :mini-variant.sync="mini"-->
@@ -48,9 +48,9 @@
         },
         mounted: function () {
             this.backgroundColor = CurrentSubGraph.get().center.getBackgroundColor();
-            setTimeout(function () {
+            setTimeout(() => {
                 this.loaded = true;
-            }.bind(this), 1000)
+            }, 1000)
         },
         methods: {
             changeBackgroundColor: function () {

@@ -877,9 +877,14 @@ FriendlyResource.FriendlyResource.prototype.model = function () {
 FriendlyResource.FriendlyResource.prototype.getParentVertex = function () {
     return this.parentVertex;
 };
+
 FriendlyResource.FriendlyResource.prototype.getIcon = function () {
     return Icon.getForGraphElement(this);
 };
+
+FriendlyResource.FriendlyResource.prototype.forceInLabelMenuUpdate = function(){
+    this.inLabelMenuKey = IdUri.uuid();
+}
 
 FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceServerFormat) {
     this.friendlyResourceServerFormat = friendlyResourceServerFormat;
@@ -892,6 +897,7 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
         this.friendlyResourceServerFormat.label = "";
     }
     this.uiId = IdUri.uuid();
+    this.forceInLabelMenuUpdate();
     this.uriFacade = new IdUri.IdUri(
         this.getUri()
     );

@@ -82,7 +82,9 @@
                 let controller = this.getController(button);
                 controller[
                     button.action
-                    ](event);
+                    ](event).then(() => {
+                    this.$emit("performed")
+                })
             },
             canDo: function (button) {
                 if (this.bubble.loading) {
