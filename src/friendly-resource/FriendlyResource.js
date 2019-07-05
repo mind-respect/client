@@ -398,7 +398,6 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
         this.setSourceVertexOrDestinationIfInverse(
             otherBubble.getParentVertex()
         );
-        debugger;
         if (MoveRelation.Before === relation) {
             otherParentBubble.addChild(
                 this,
@@ -677,23 +676,7 @@ FriendlyResource.FriendlyResource.prototype.isLeaf = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.getIndexInTree = function () {
-    return this._getIndexInTreeInTypes(
-        [this.getGraphElementType()]
-    );
-};
-
-FriendlyResource.FriendlyResource.prototype._getIndexInTreeInTypes = function (graphElementTypes) {
-    let index = -1;
-    let currentIndex = -1;
-    let parent = this.getParentFork();
-    let children = parent.getClosestChildrenInTypes(graphElementTypes);
-    children.forEach((bubble) => {
-        currentIndex++;
-        if (bubble.isSameBubble(this)) {
-            index = currentIndex;
-        }
-    });
-    return index;
+    return this.getParentFork().getChildIndex(this);
 };
 
 FriendlyResource.FriendlyResource.prototype.getParentFork = function () {
@@ -882,7 +865,7 @@ FriendlyResource.FriendlyResource.prototype.getIcon = function () {
     return Icon.getForGraphElement(this);
 };
 
-FriendlyResource.FriendlyResource.prototype.forceInLabelMenuUpdate = function(){
+FriendlyResource.FriendlyResource.prototype.forceInLabelMenuUpdate = function () {
     this.inLabelMenuKey = IdUri.uuid();
 }
 

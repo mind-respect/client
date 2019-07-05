@@ -750,4 +750,21 @@ describe("FriendlyResource", () => {
             ).toBe(3);
         });
     });
+    describe("getChildIndex", () => {
+        it("sets right index to vertex when there is an expanded group relation above", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let groupRelation = scenario.getPossessionGroupRelation();
+            groupRelation.expand();
+            let otherBubble = groupRelation.getDownBubble().getNextBubble();
+            expect(
+                otherBubble.isVertex()
+            ).toBeTruthy();
+            let childIndex = otherBubble.getParentVertex().getChildIndex(
+                otherBubble
+            );
+            expect(
+                childIndex
+            ).toBe(1);
+        })
+    });
 });

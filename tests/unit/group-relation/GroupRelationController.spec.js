@@ -69,7 +69,7 @@ describe("GroupRelationController", () => {
             expect(
                 newChildVertex.getIndexInTree()
             ).toBe(
-                possessionInTree.getNumberOfChild()
+                possessionInTree.getNumberOfChild() - 1
             );
         });
         it('adds new sibling under a vertex under a group relation', async () => {

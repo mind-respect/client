@@ -126,7 +126,7 @@ describe("Edge", () => {
         let relation = centerBubble.getNextBubble();
         let indexInTypes = [GraphElementType.Relation, GraphElementType.GroupRelation];
         expect(
-            relation._getIndexInTreeInTypes(indexInTypes)
+            relation.getIndexInTree(indexInTypes)
         ).toBe(0);
         await relation.getController().addChild();
         let newGroupRelation = TestUtil.getChildWithLabel(
@@ -137,7 +137,7 @@ describe("Edge", () => {
             newGroupRelation.isGroupRelation()
         ).toBeTruthy();
         expect(
-            newGroupRelation._getIndexInTreeInTypes(indexInTypes)
+            newGroupRelation.getIndexInTree(indexInTypes)
         ).toBe(0);
     });
 
