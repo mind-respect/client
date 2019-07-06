@@ -55,7 +55,7 @@ GraphElementController.prototype.noteCanDo = function () {
 };
 
 GraphElementController.prototype.setLabel = function (newLabel) {
-    this.getUi().model().setLabel(
+    this.model().setLabel(
         newLabel
     );
     return FriendlyResourceService.updateLabel(
@@ -73,28 +73,28 @@ GraphElementController.prototype.focusCanDo = function () {
 };
 
 GraphElementController.prototype.focus = function () {
-    this.getUi().focus();
+    this.model().focus();
 };
 
 GraphElementController.prototype.travelLeft = function () {
-    this.getUi().travelLeft();
+    this.model().travelLeft();
 };
 
 GraphElementController.prototype.travelRight = function () {
-    this.getUi().travelRight();
+    this.model().travelRight();
 };
 
 GraphElementController.prototype.travelUp = function () {
-    this.getUi().travelUp();
+    this.model().travelUp();
 };
 
 GraphElementController.prototype.travelDown = function () {
-    this.getUi().travelDown();
+    this.model().travelDown();
 };
 
 
 GraphElementController.prototype.centerCanDo = function () {
-    return this.isSingle() && !this.getUi().isCenterBubble();
+    return this.isSingle() && !this.model().isCenterBubble();
 };
 
 GraphElementController.prototype.center = function () {
@@ -135,30 +135,30 @@ GraphElementController.prototype.acceptCanDo = function () {
 };
 
 GraphElementController.prototype.accept = function () {
-    let comparedWithLabel = this.getUi().getComparedWith().getLabel();
+    let comparedWithLabel = this.model().getComparedWith().getLabel();
     return FriendlyResourceService.updateLabel(
-        this.getUi(),
+        this.model(),
         comparedWithLabel
     ).then(function () {
-        this.getUi().model().setLabel(comparedWithLabel);
-        this.getUi().labelUpdateHandle();
+        this.model().setLabel(comparedWithLabel);
+        this.model().labelUpdateHandle();
     }.bind(this));
 };
 
 GraphElementController.prototype.expandCanDo = function () {
     return this.isSingle() && (
-        this.getUi().canExpand.bind(this.getUi())() ||
-        this.getUi().canExpandDescendants() ||
-        this.getUi().isCollapsed
+        this.model().canExpand.bind(this.model())() ||
+        this.model().canExpandDescendants() ||
+        this.model().isCollapsed
     );
 };
 
 GraphElementController.prototype.expand = function (avoidCenter, avoidExpandChild, isChildExpand) {
     let promise = this.expandDescendantsIfApplicable();
     return promise.then(() => {
-        this.getUi().expand(avoidCenter);
+        this.model().expand(avoidCenter);
         var expandChildCalls = [];
-        this.getUi().visitClosestChildVertices(function (childVertex) {
+        this.model().visitClosestChildVertices(function (childVertex) {
             if (childVertex.model().hasOnlyOneHiddenChild()) {
                 expandChildCalls.push(
                     childVertex.getController().expand(true, true, true)
@@ -171,15 +171,15 @@ GraphElementController.prototype.expand = function (avoidCenter, avoidExpandChil
 
 GraphElementController.prototype.expandDescendantsIfApplicable = function () {
     let promise = Promise.resolve();
-    if (this.getUi().isCollapsed) {
+    if (this.model().isCollapsed) {
         return promise;
     }
-    if (!this.getUi().canExpandDescendants()) {
+    if (!this.model().canExpandDescendants()) {
         return promise;
     }
     let addChildTreeActions = [];
     let avoidCenter = true;
-    this.getUi().visitExpandableDescendants(function (expandableLeaf) {
+    this.model().visitExpandableDescendants(function (expandableLeaf) {
         addChildTreeActions.push(
             expandableLeaf.getController().expand(avoidCenter)
         );
@@ -197,22 +197,22 @@ GraphElementController.prototype.collapseCanDo = function () {
 
 GraphElementController.prototype.collapse = function () {
     this.model().defineScrollPosition();
-    this.getUi().collapse();
+    this.model().collapse();
     Vue.nextTick(() => {
         Scroll.goToGraphElement(this.model());
     })
 };
 
 GraphElementController.prototype.cutCanDo = function () {
-    return this.isSingleAndOwned() && !this.getUi().isCenterBubble() && (
-        undefined === bubbleCutClipboard || !this.getUi().isSameBubble(
+    return this.isSingleAndOwned() && !this.model().isCenterBubble() && (
+        undefined === bubbleCutClipboard || !this.model().isSameBubble(
             bubbleCutClipboard
         )
     );
 };
 
 GraphElementController.prototype.cut = function () {
-    bubbleCutClipboard = this.getUi();
+    bubbleCutClipboard = this.model();
 };
 
 GraphElementController.prototype.pasteCanDo = function () {
@@ -235,29 +235,29 @@ GraphElementController.prototype._pasteText = function (event) {
     } else if (typeof event === 'object' && event.clipboardData) {
         clipText = event.clipboardData.getData('text/plain');
     }
-    let separator = "" === this.getUi().getLabel().trim() ?
+    let separator = "" === this.model().getLabel().trim() ?
         "" : " ";
     this.setLabel(
         this.model().getLabel() + separator + clipText
     );
     Vue.nextTick(() => {
-        this.getUi().focus();
+        this.model().focus();
     });
 };
 
 GraphElementController.prototype._pasteBubble = function () {
-    if (!bubbleCutClipboard.getController()._canMoveUnderParent(this.getUi())) {
+    if (!bubbleCutClipboard.getController()._canMoveUnderParent(this.model())) {
         return;
     }
     bubbleCutClipboard.getController().moveUnderParent(
-        this.getUi()
+        this.model()
     );
     bubbleCutClipboard = undefined;
 };
 
 GraphElementController.prototype.moveUpOneStep = function () {
     let bubbleAbove = this.model().getUpBubble();
-    if (bubbleAbove.isSameBubble(this.getUi())) {
+    if (bubbleAbove.isSameBubble(this.model())) {
         return Promise.resolve();
     }
     if (bubbleAbove.isVertex()) {
@@ -268,7 +268,7 @@ GraphElementController.prototype.moveUpOneStep = function () {
     if (parentFork.isGroupRelation() && !parentFork.isSameBubble(aboveParentFork)) {
         return Promise.resolve();
     }
-    if (!bubbleAbove.getParentVertex().isSameBubble(this.getUi().getParentVertex())) {
+    if (!bubbleAbove.getParentVertex().isSameBubble(this.model().getParentVertex())) {
         return this.moveBelow(
             bubbleAbove
         );
@@ -292,7 +292,7 @@ GraphElementController.prototype.moveDownOneStep = function () {
     if (parentFork.isGroupRelation() && !parentFork.isSameBubble(belowParentFork)) {
         return Promise.resolve();
     }
-    if (!bubbleUnder.getParentVertex().isSameBubble(this.getUi().getParentVertex())) {
+    if (!bubbleUnder.getParentVertex().isSameBubble(this.model().getParentVertex())) {
         return this.moveAbove(
             bubbleUnder
         );
@@ -303,9 +303,9 @@ GraphElementController.prototype.moveDownOneStep = function () {
 };
 
 GraphElementController.prototype._canMoveAboveOrUnder = function (otherEdge) {
-    let graphElementToCompare = this.getUi().isVertex() ?
-        this.getUi().getParentBubble() :
-        this.getUi();
+    let graphElementToCompare = this.model().isVertex() ?
+        this.model().getParentBubble() :
+        this.model();
     return !graphElementToCompare.isSameUri(otherEdge);
 };
 
@@ -313,7 +313,7 @@ GraphElementController.prototype.moveBelow = function (otherEdge) {
     if (!this._canMoveAboveOrUnder(otherEdge)) {
         return Promise.resolve();
     }
-    let previousParentVertex = this.getUi().getParentVertex();
+    let previousParentVertex = this.model().getParentVertex();
     return this._moveTo(
         otherEdge,
         false,
@@ -334,13 +334,13 @@ GraphElementController.prototype.moveAbove = function (otherEdge) {
 };
 
 GraphElementController.prototype._canMoveUnderParent = function (parent, forceLeft) {
-    let newParentIsSelf = this.getUi().getUri() === parent.getUri();
+    let newParentIsSelf = this.model().getUri() === parent.getUri();
     if (newParentIsSelf) {
         return false;
     }
-    let isParentVertex = this.getUi().getParentVertex().isSameBubble(parent);
-    let isParentBubble = this.getUi().getParentBubble().isSameBubble(parent);
-    if (isParentVertex || isParentBubble || this.getUi().isBubbleAChild(parent)) {
+    let isParentVertex = this.model().getParentVertex().isSameBubble(parent);
+    let isParentBubble = this.model().getParentBubble().isSameBubble(parent);
+    if (isParentVertex || isParentBubble || this.model().isBubbleAChild(parent)) {
         if (forceLeft === true && !this.model().isToTheLeft()) {
             return true;
         }
@@ -359,14 +359,14 @@ GraphElementController.prototype.moveUnderParent = function (parent, forceLeft) 
     let previousParent;
     let moveUnderParentCommand = new Command.forExecuteUndoAndRedo(
         () => {
-            previousParent = this.getUi().getParentVertex();
-            return parent.getController().becomeParent(this.getUi(), forceLeft);
+            previousParent = this.model().getParentVertex();
+            return parent.getController().becomeParent(this.model(), forceLeft);
         },
         () => {
-            return previousParent.getController().becomeParent(this.getUi());
+            return previousParent.getController().becomeParent(this.model());
         },
         () => {
-            return parent.getController().becomeParent(this.getUi());
+            return parent.getController().becomeParent(this.model());
         }
     );
     return Command.executeCommand(
@@ -468,7 +468,7 @@ GraphElementController.prototype.mergeCanDo = function () {
 
 GraphElementController.prototype.merge = function () {
     // if (!isMergePopoverBuilt) {
-    //     this.getUi().getHtml().popoverLikeToolTip({
+    //     this.model().getHtml().popoverLikeToolTip({
     //         animation: false,
     //         html: true,
     //         title: $('<div>').append($.t("merge.title"), $('<br>'), $("<small>").text($.t("merge.instruction"))),
@@ -481,7 +481,7 @@ GraphElementController.prototype.merge = function () {
     //         }
     //     });
     // }
-    // this.getUi().getHtml().popover("show").popover("show");
+    // this.model().getHtml().popover("show").popover("show");
     // $('.popover-title').mousedown(function (event) {
     //     event.stopPropagation();
     // });
@@ -490,7 +490,7 @@ GraphElementController.prototype.merge = function () {
     //     $(this).focus();
     // });
     // if (!searchInput.isMrAutocompleteSetup()) {
-    //     var searchFetcher = this.getUi().isMeta() ?
+    //     var searchFetcher = this.model().isMeta() ?
     //         UserMapAutocompleteProvider.toFetchOwnTags :
     //         UserMapAutocompleteProvider.toFetchOnlyCurrentUserVerticesExcept;
     //     searchInput.mrAutocomplete({
@@ -501,11 +501,11 @@ GraphElementController.prototype.merge = function () {
     //             }
     //             this.convertToDistantBubbleWithUri(ui.item.uri);
     //             this.setLabel(ui.item.label);
-    //             this.getUi().getHtml().popover("hide");
+    //             this.model().getHtml().popover("hide");
     //         }.bind(this),
     //         resultsProviders: [
     //             searchFetcher(
-    //                 this.getUi(),
+    //                 this.model(),
     //                 {
     //                     noFilter: true,
     //                     additionalFilter: function (searchResults) {
@@ -659,7 +659,7 @@ GraphElementController.prototype.isOwned = function () {
 };
 
 GraphElementController.prototype.deselect = function () {
-    if (this.isMultiple() || this.getUi().isCenterBubble()) {
+    if (this.isMultiple() || this.model().isCenterBubble()) {
         Selection.removeAll();
     }
 };

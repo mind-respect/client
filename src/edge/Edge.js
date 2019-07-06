@@ -218,12 +218,9 @@ api.Edge.prototype.isInverse = function () {
 
 api.Edge.prototype.getLeftBubble = function () {
     if (this.isToTheLeft()) {
-        return this.destinationVertex;
+        return this.getNextBubble();
     } else {
-        if (this.parentBubble.isGroupRelation() && this.parentBubble.isTrulyAGroupRelation()) {
-            return this.parentBubble
-        }
-        return this.sourceVertex;
+        return this.getParentBubble();
     }
 };
 

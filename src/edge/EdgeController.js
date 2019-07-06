@@ -170,7 +170,7 @@ EdgeController.prototype.reverseToRightCanDo = function () {
 
 };
 EdgeController.prototype.reverseToRight = function () {
-    this.reverse();
+    return this.reverse();
 };
 
 EdgeController.prototype.reverseToLeftCanDo = function () {
@@ -181,11 +181,11 @@ EdgeController.prototype.reverseToLeftCanDo = function () {
 };
 
 EdgeController.prototype.reverseToLeft = function () {
-    this.reverse();
+    return this.reverse();
 };
 
 EdgeController.prototype.reverse = function () {
-    EdgeService.inverse(
+    return EdgeService.inverse(
         this.model()
     ).then(() => {
         this.model().inverse();
