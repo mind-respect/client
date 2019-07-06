@@ -450,7 +450,7 @@
                 return this.bubble.isGroupRelation() || this.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
             },
             isShrinked: function () {
-                if (this.isSelected || this.isLabelDragOver) {
+                if (this.isLabelDragOver) {
                     return false;
                 }
                 return this.bubble.isShrinked();

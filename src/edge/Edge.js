@@ -9,6 +9,7 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import Store from '@/store'
 import Vue from 'vue'
 import I18n from '@/I18n'
+import Selection from '@/Selection'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -113,9 +114,9 @@ api.Edge.prototype.setSourceVertex = function (sourceVertex) {
 };
 
 api.Edge.prototype.setSourceVertexOrDestinationIfInverse = function (vertex) {
-    if(this.isInverse()){
+    if (this.isInverse()) {
         this.setDestinationVertex(vertex);
-    }else{
+    } else {
         this.setSourceVertex(vertex);
     }
 };
@@ -145,10 +146,9 @@ api.Edge.prototype.deselect = function () {
     this._selectRedraw();
 };
 
-api.Edge.prototype._selectRedraw = function () {
-    Vue.nextTick(function () {
-        Store.dispatch("redraw");
-    });
+api.Edge.prototype._selectRedraw = async function () {
+    await Vue.nextTick();
+    Store.dispatch("redraw");
 };
 
 api.Edge.prototype.isPublic = function () {
@@ -242,6 +242,9 @@ api.Edge.prototype.isLeaf = function () {
 };
 
 api.Edge.prototype.isShrinked = function () {
+    if (Selection.isSelected(this)) {
+        return false;
+    }
     if (this.isLabelEmpty()) {
         return true;
     }
