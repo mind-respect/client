@@ -373,8 +373,8 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         );
     }
 
-    let elm = this.getHtml();
-    const first = elm.getBoundingClientRect();
+    // let elm = this.getHtml();
+    // const first = elm.getBoundingClientRect();
 
     if (MoveRelation.Parent === relation) {
         if (otherBubble.isGroupRelation()) {
@@ -419,27 +419,25 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
     }
 
     // await Vue.nextTick();
-    const last = elm.getBoundingClientRect();
-    const deltaX = first.left - last.left;
-    const deltaY = first.top - last.top;
-    // const deltaW = first.width / last.width;
-    // const deltaH = first.height / last.height;
-
-    elm.animate([{
-        transformOrigin: 'top left',
-        transform: `
-        translate(${deltaX}px, ${deltaY}px)   
-        `
-    }, {
-        transformOrigin: 'top left',
-        transform: 'none'
-    }], {
-        duration: 300,
-        easing: 'ease-in-out',
-        fill: 'both'
-    });
-
-
+    // const last = elm.getBoundingClientRect();
+    // const deltaX = first.left - last.left;
+    // const deltaY = first.top - last.top;
+    // // const deltaW = first.width / last.width;
+    // // const deltaH = first.height / last.height;
+    //
+    // elm.animate([{
+    //     transformOrigin: 'top left',
+    //     transform: `
+    //     translate(${deltaX}px, ${deltaY}px)
+    //     `
+    // }, {
+    //     transformOrigin: 'top left',
+    //     transform: 'none'
+    // }], {
+    //     duration: 300,
+    //     easing: 'ease-in-out',
+    //     fill: 'both'
+    // });
     Store.dispatch("redraw");
 };
 
