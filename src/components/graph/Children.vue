@@ -60,13 +60,11 @@
         },
         data: function () {
             return {
-                loaded: false,
-                isLeft:null
+                loaded: false
             }
         },
         mounted: function () {
             this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
-            this.isLeft = this.direction === "left";
             this.loaded = true;
         },
         methods: {},

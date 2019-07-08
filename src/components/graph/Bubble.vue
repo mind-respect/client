@@ -32,14 +32,17 @@
                    'blur-overlay':false && bubble.isVertexType()
                 }"
                     >
-                        <Children
-                                :bubble="bubble"
-                                direction="left"
-                                v-if="
+<!--                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"-->
+<!--                                    v-on:after-enter="afterChildrenAnimation">-->
+                            <Children
+                                    :bubble="bubble"
+                                    direction="left"
+                                    v-if="
                                         isLeft && !isCenter && canShowChildren
                                       "
-                        >
-                        </Children>
+                            >
+                            </Children>
+<!--                        </transition>-->
                     </div>
                 </div>
                 <div class='bubble-container v-center'
@@ -293,13 +296,16 @@
                    'blur-overlay':false && bubble.isVertexType()
                 }"
                     >
-                        <Children :bubble="bubble"
-                                  direction="right"
-                                  v-if="
+<!--                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"-->
+<!--                                    v-on:after-enter="afterChildrenAnimation">-->
+                            <Children :bubble="bubble"
+                                      direction="right"
+                                      v-if="
                                       !isLeft && !isCenter && canShowChildren
                                       "
-                        >
-                        </Children>
+                            >
+                            </Children>
+<!--                        </transition>-->
                     </div>
                 </div>
             </v-flex>
@@ -328,6 +334,7 @@
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import Color from '@/Color'
     import MindMapInfo from '@/MindMapInfo'
+    import Store from '@/store'
     import linkifyHtml from 'linkifyjs/html'
 
     export default {
@@ -457,6 +464,14 @@
             }
         },
         methods: {
+            beforeChildrenAnimation: async function () {
+                await this.$nextTick();
+                Store.dispatch("redraw");
+            },
+            afterChildrenAnimation: async function () {
+                await this.$nextTick();
+                Store.dispatch("redraw");
+            },
             rightClick: function (event) {
                 event.preventDefault();
                 this.showMenu = true;

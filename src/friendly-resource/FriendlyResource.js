@@ -9,6 +9,7 @@ import Selection from '@/Selection'
 import Store from '@/store'
 import Icon from '@/Icon'
 import Scroll from '@/Scroll'
+import Vue from 'vue'
 
 const MoveRelation = {
     "Parent": "parent",
@@ -352,7 +353,7 @@ FriendlyResource.FriendlyResource.prototype.canExpand = function () {
     return !this.isCenter && !this.isExpanded && nbChild > 0;
 };
 
-FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, relation) {
+FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble, relation) {
     // if(this.isGroupRelation()){
     //     this.visitClosestChildOfType(GraphElementType.Relation, function(childRelation){
     //         childRelation.moveTo(
@@ -371,6 +372,10 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
             relation
         );
     }
+
+    let elm = this.getHtml();
+    const first = elm.getBoundingClientRect();
+
     if (MoveRelation.Parent === relation) {
         if (otherBubble.isGroupRelation()) {
             otherBubble.expand();
@@ -412,6 +417,29 @@ FriendlyResource.FriendlyResource.prototype.moveTo = function (otherBubble, rela
             );
         }
     }
+
+    // await Vue.nextTick();
+    const last = elm.getBoundingClientRect();
+    const deltaX = first.left - last.left;
+    const deltaY = first.top - last.top;
+    // const deltaW = first.width / last.width;
+    // const deltaH = first.height / last.height;
+
+    elm.animate([{
+        transformOrigin: 'top left',
+        transform: `
+        translate(${deltaX}px, ${deltaY}px)   
+        `
+    }, {
+        transformOrigin: 'top left',
+        transform: 'none'
+    }], {
+        duration: 300,
+        easing: 'ease-in-out',
+        fill: 'both'
+    });
+
+
     Store.dispatch("redraw");
 };
 
@@ -528,11 +556,6 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
             }
             let closestEdges = bubbleAround.getClosestChildrenOfType(GraphElementType.Relation);
             bubbleAround = isDown ? closestEdges[0] : closestEdges[closestEdges.length - 1];
-        }
-    }
-    if (this.isGroupRelation()) {
-        if (bubbleAround.isEdge()) {
-            bubbleAround = bubbleAround.getNextBubble();
         }
     }
     return bubbleAround;

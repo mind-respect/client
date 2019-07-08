@@ -20,9 +20,9 @@
                 <v-card-title class="vh-center">
                     <h4 class="subheading white--text font-weight-bold text-xs-center">
                         {{$t('banner:desc')}}
-                        <a href="#" @click.prevent="Scroll.goToSection('mrLevel')" class="white--text">
+<!--                        <a href="#" @click.prevent="Scroll.goToSection('mrLevel')" class="white&#45;&#45;text">-->
                             {{$t('banner:desc2')}}
-                        </a>
+<!--                        </a>-->
                         {{$t('banner:desc3')}}
                     </h4>
                 </v-card-title>

@@ -201,7 +201,11 @@ api.Edge.prototype.getNextBubble = function () {
 };
 
 api.Edge.prototype.getRightBubble = function () {
-    return this.isToTheLeft() ? this.sourceVertex : this.destinationVertex;
+    if (this.isToTheLeft()) {
+        return this.getParentBubble()
+    } else {
+        return this.getNextBubble()
+    }
 };
 
 api.Edge.prototype.inverse = function () {
