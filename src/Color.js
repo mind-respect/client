@@ -1,11 +1,18 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 const Color = {
     DEFAULT_BACKGROUND_COLOR: "#1E87AF",
     getBackgroundColorForColor: function(color){
         var hsl = Color.hex2Hsl(color);
         return 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + 96 + '%)';
+    },
+    refreshBackgroundColor: function(){
+        let backgroundColor = CurrentSubGraph.get().center.getBackgroundColor();
+        document.getElementById("drawn_graph").style.background = "radial-gradient(rgba(0, 0, 0, 0) 15%, " + backgroundColor + " 100%"
+        let hsl = Color.hex2Hsl(backgroundColor);
+        Color.bubbleBackground = 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + 96 + '%)';
     },
     hex2Hsl: function (hex) {
         //https://stackoverflow.com/q/46432335

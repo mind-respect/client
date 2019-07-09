@@ -106,4 +106,19 @@ api.fontPicker = function () {
     Store.dispatch("setIsFontFlow", true);
 };
 
+api.refreshFont = function () {
+    let link = document.createElement("link");
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("type", "text/css");
+    let font = CurrentSubGraph.get().center.getFont();
+    link.setAttribute("href", "https://fonts.googleapis.com/css?family=" + font.family.replace(/ /g, '+'));
+    document.getElementsByTagName("head")[0].appendChild(link);
+    setTimeout(() => {
+        Vue.nextTick(() => {
+            Store.dispatch("redraw");
+        });
+    }, 750);
+};
+
+
 export default api;

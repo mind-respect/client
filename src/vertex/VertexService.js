@@ -10,6 +10,7 @@ import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
 import SubGraph from '@/graph/SubGraph'
 import axios from 'axios'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 api.createVertex = function () {
@@ -135,7 +136,7 @@ api.mergeTo = function (vertex, distantVertexUri) {
 
 api.saveColors = function (colors) {
     return Service.geApi().post(
-        SubGraph.graph.center.getUri() + '/colors',
+        CurrentSubGraph.get().center.getUri() + '/colors',
         colors
     );
 };
@@ -149,7 +150,7 @@ api.listFonts = function () {
 
 api.saveFont = function (font) {
     return Service.geApi().post(
-        SubGraph.graph.center.getUri() + '/font',
+        CurrentSubGraph.get().center.getUri() + '/font',
         font
     );
 };

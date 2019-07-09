@@ -73,11 +73,11 @@
     import RemoveDialog from '@/components/RemoveDialog'
     import DescriptionDialog from '@/components/DescriptionDialog'
     import FontDialog from '@/components/FontDialog'
-    import Store from '@/store'
     import Color from '@/Color'
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import SubGraph from '@/graph/SubGraph'
     import Scroll from '@/Scroll'
+    import AppController from '@/AppController'
 
 
     export default {
@@ -122,6 +122,8 @@
                     app.classList.add("mind-map");
                 }
                 await this.$nextTick();
+                Color.refreshBackgroundColor();
+                AppController.refreshFont();
                 Selection.setToSingle(this.center);
                 await this.$nextTick();
                 Scroll.goToGraphElement(this.center);
@@ -138,18 +140,6 @@
             }
         },
         computed: {
-            centerFont: function () {
-                if (!this.loaded) {
-                    return;
-                }
-                return this.center.graphElementServerFormat.font;
-            },
-            backgroundColor: function () {
-                if (!this.loaded) {
-                    return;
-                }
-                return this.center.graphElementServerFormat.colors.background;
-            },
             redraws: function () {
                 return this.$store.state.redraws;
             },
@@ -163,31 +153,6 @@
             redraws: async function () {
                 await this.$nextTick();
                 this.redrawKey = Math.random();
-            },
-            centerFont: function () {
-                if (!this.loaded) {
-                    return;
-                }
-                let link = document.createElement("link");
-                link.setAttribute("rel", "stylesheet")
-                link.setAttribute("type", "text/css")
-                let font = this.center.getFont();
-                link.setAttribute("href", "https://fonts.googleapis.com/css?family=" + font.family.replace(/ /g, '+'))
-                document.getElementsByTagName("head")[0].appendChild(link);
-                setTimeout(() => {
-                    this.$nextTick(() => {
-                        Store.dispatch("redraw");
-                    });
-                }, 750);
-            },
-            backgroundColor: function () {
-                if (!this.loaded) {
-                    return "";
-                }
-                let backgroundColor = this.center.getBackgroundColor();
-                this.backgroundColorStyle = "background:radial-gradient(rgba(0, 0, 0, 0) 15%, " + backgroundColor + " 100%";
-                let hsl = Color.hex2Hsl(backgroundColor);
-                Color.bubbleBackground = 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + 96 + '%)';
             }
         }
     }

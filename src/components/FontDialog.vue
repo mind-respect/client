@@ -71,6 +71,7 @@
     import VertexService from '@/vertex/VertexService'
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import GraphElement from '@/graph-element/GraphElement'
+    import AppController from '@/AppController'
 
     export default {
         name: "FontDialog",
@@ -144,6 +145,7 @@
                 VertexService.saveFont(font).then(() => {
                     this.dialog = false;
                 });
+                AppController.refreshFont();
             },
             saveDefault: function () {
                 this.font = GraphElement.DEFAULT_FONT.family;

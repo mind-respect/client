@@ -115,6 +115,7 @@
     import AuthenticateService from "@/service/AuthenticateService";
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import VertexService from '@/vertex/VertexService'
+    import Color from '@/Color'
 
     export default {
         name: "SettingsMenu",
@@ -151,6 +152,7 @@
                 VertexService.saveColors({
                     background: this.backgroundColor
                 });
+                Color.refreshBackgroundColor();
             },
             listAll: function () {
                 AppController.listAll();

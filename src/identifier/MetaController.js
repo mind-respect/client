@@ -47,7 +47,7 @@ MetaController.prototype.loadGraph = function (metaAsBubble) {
         metaAsBubble.setComment(metaCenter.getComment());
         let edgesBySourceVertex = buildEdgesGroupedBySourceVertex(metaSubGraph);
         let subGraph = metaSubGraph.getSubGraph();
-        subGraph.center = metaAsBubble;
+        CurrentSubGraph.get().center = metaAsBubble;
         Object.keys(edgesBySourceVertex).forEach(function (vertexUri) {
             let sourceVertexAndEdges = edgesBySourceVertex[vertexUri];
             let child;
