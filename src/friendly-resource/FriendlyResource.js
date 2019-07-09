@@ -417,7 +417,6 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             );
         }
     }
-
     // await Vue.nextTick();
     // const last = elm.getBoundingClientRect();
     // const deltaX = first.left - last.left;

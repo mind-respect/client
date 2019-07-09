@@ -20,9 +20,9 @@ api.setToSingle = function (graphElement) {
     if (!graphElement) {
         return;
     }
-    // if (api.isSingle() && api.getSingle().getId() === graphElement.getId()) {
-    //     return;
-    // }
+    if (api.isSingle() && api.getSingle().getId() === graphElement.getId()) {
+        return;
+    }
     api.removeAll();
     api.add(graphElement);
     centerBubbleIfApplicable(graphElement);

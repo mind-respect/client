@@ -44,7 +44,7 @@ const Scroll = {
                 let screenWidth = screen.width - sideMenuOffset;
                 let halfScreen = screenWidth / 2;
                 if (bubble.isCenter) {
-                    offset = halfScreen - element.offsetWidth;
+                    offset = halfScreen - element.offsetWidth / 2;
                 } else {
                     let deepestBubble = bubble.getDeepestDescendant();
                     if (deepestBubble.isSameBubble(bubble)) {

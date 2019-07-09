@@ -3,14 +3,13 @@
   -->
 
 <template>
-    <div v-if="loaded">
+    <v-layout v-if="loaded">
         <v-divider></v-divider>
         <MainMenus></MainMenus>
-        <div id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle">
-            <!--<div :style="'width:' + leftWidth() + 'px'"></div>-->
-            <div style="width:8000px;"></div>
-            <v-layout row class='root-vertex-super-container vh-center ma-5 pa-5' :style="zoomScale">
-                <v-flex grow class="vertices-children-container left-oriented" style="width:7000px;" :class="{
+        <div row id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle">
+            <v-layout row class='root-vertex-super-container vh-center' :style="zoomScale"
+                      @dragstart="preventUndesirableDragging">
+                <v-flex grow class="vertices-children-container left-oriented" :class="{
                     'blur-overlay': center.isEditFlow
                 }">
                     <v-layout row v-for="leftBubble in center.leftBubbles" :key="leftBubble.uiId">
@@ -25,13 +24,13 @@
                         </v-flex>
                     </v-layout>
                 </v-flex>
-                <v-flex grow class="vh-center">
+                <div class="vh-center">
                     <Bubble
                             :bubble="center"
                             direction="center"
                     ></Bubble>
-                </v-flex>
-                <v-flex grow class="vertices-children-container right-oriented" style="width:7000px;" :class="{
+                </div>
+                <v-flex grow class="vertices-children-container right-oriented" :class="{
                     'blur-overlay': center.isEditFlow
                 }">
                     <v-layout v-for="rightBubble in center.rightBubbles" :key="rightBubble.uiId">
@@ -47,7 +46,6 @@
                     </v-layout>
                 </v-flex>
             </v-layout>
-            <div style="width:8000px;"></div>
             <div class="svg-container" style="z-index:-1">
                 <transition name="fade">
                     <GraphDrawing :center="center" :key="redrawKey" v-if="redrawKey"></GraphDrawing>
@@ -58,8 +56,7 @@
         <DescriptionDialog></DescriptionDialog>
         <FontDialog></FontDialog>
         <ListView></ListView>
-    </div>
-    <!--<div :style="'width:' + rightWidth() + 'px'"></div>-->
+    </v-layout>
 </template>
 
 <script>
@@ -80,6 +77,7 @@
     import Color from '@/Color'
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import SubGraph from '@/graph/SubGraph'
+    import Scroll from '@/Scroll'
 
 
     export default {
@@ -119,38 +117,24 @@
                 CurrentSubGraph.set(graph);
                 this.center = center;
                 this.loaded = true;
+                let app = document.getElementById("app");
+                if (app) {
+                    app.classList.add("mind-map");
+                }
+                await this.$nextTick();
                 Selection.setToSingle(this.center);
+                await this.$nextTick();
+                Scroll.goToGraphElement(this.center);
             }).catch((error) => {
                 console.error(error);
                 this.$router.push("/")
             })
         },
         methods: {
-            rightWidth: function () {
-                return Math.max(
-                    this.nbBubblesLeft() - this.nbBubblesRight(),
-                    0
-                ) * 100;
-            },
-            leftWidth: function () {
-                return Math.max(
-                    this.nbBubblesRight() - this.nbBubblesLeft(),
-                    0
-                ) * 100;
-            },
-            nbBubblesLeft: function () {
-                let nbBubbles = 0;
-                this.center.leftBubbles.forEach(function (leftBubble) {
-                    nbBubbles += leftBubble.getNumberOfChildDeep();
-                });
-                return nbBubbles;
-            },
-            nbBubblesRight: function () {
-                let nbBubbles = 0;
-                this.center.rightBubbles.forEach(function (leftBubble) {
-                    nbBubbles += leftBubble.getNumberOfChildDeep();
-                });
-                return nbBubbles;
+            preventUndesirableDragging: function (event) {
+                if (!event.target.classList.contains("in-bubble-content")) {
+                    event.preventDefault();
+                }
             }
         },
         computed: {
@@ -211,15 +195,29 @@
 
 <style>
     #drawn_graph {
-        position: absolute;
-        padding: 50%;
-        top: 0;
-        left: 0;
+        /*position: absolute;*/
+        /*padding: 25%;*/
+        /*top: 0;*/
+        /*left: 0;*/
+        /*min-width: 100%;*/
+        /*min-height:100%;*/
+        /*display: flex;*/
+        /*justify-content: center;*/
+        /*align-items: center;*/
+        /*overflow-x: scroll;*/
+        padding: 0;
+        min-height: 100%;
         min-width: 100%;
+        z-index: 1;
+        position: relative;
+        /*padding: 100%;*/
+        top: 0;
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 1;
+        flex-shrink: 0;
+        padding-top: 10%;
+        padding-bottom: 10%;
     }
 
     [draggable=true] {
@@ -229,20 +227,28 @@
 
     .root-vertex-super-container {
         z-index: 3;
+        width: 100%;
+        height: 100%;
+        margin-left: 600px !important;
+        margin-right: 600px !important;
+        margin-top: 150px;
+        margin-bottom: 150px;
+        /*padding:25% !important;*/
     }
 
     .root-vertex-super-container > .vertices-children-container {
         /*max-width:inherit;*/
+
     }
 
     .root-vertex-super-container > .vertices-children-container.left-oriented {
         /*display: flex;*/
-        max-width: inherit;
+        /*max-width: inherit;*/
     }
 
     .root-vertex-super-container > .vertices-children-container.right-oriented {
         /*display: flex;*/
-        max-width: inherit;
+        /*max-width: inherit;*/
         /*padding-right:100%;*/
     }
 
@@ -254,4 +260,7 @@
         height: 100%;
     }
 
+    #app.mind-map {
+        background: none !important;
+    }
 </style>

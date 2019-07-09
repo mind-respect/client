@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div class="hidden-properties-container vh-center" @click="click">
+    <div class="hidden-properties-container vh-center unselectable" @click="click">
         <div class="hidden-properties-content bubble-size vh-center"
              :class="{
                 'reverse' : bubble.direction === 'left'

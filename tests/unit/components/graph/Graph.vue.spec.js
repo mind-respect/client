@@ -315,7 +315,7 @@ describe("Graph.vue", () => {
         leftVertex = leftVertex.getDownBubble();
         expect(
             leftVertex.getLabel()
-        ).toBe("b6");
+        ).toBe("r5");
     });
 
     it("sorts group relations with the earliest vertex's date", async () => {

@@ -25,24 +25,24 @@
         'vertex-tree-container': !isCenter,
         'bubble-container': isCenter
     }" :id="containerId">
-            <v-flex class="v-center drop-relative-container">
+            <v-flex grow class="v-center drop-relative-container">
                 <v-spacer v-if="isLeft"></v-spacer>
                 <div v-if="!isCollapsed || isCenter">
                     <div :class="{
                    'blur-overlay':false && bubble.isVertexType()
                 }"
                     >
-<!--                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"-->
-<!--                                    v-on:after-enter="afterChildrenAnimation">-->
-                            <Children
-                                    :bubble="bubble"
-                                    direction="left"
-                                    v-if="
+                        <!--                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"-->
+                        <!--                                    v-on:after-enter="afterChildrenAnimation">-->
+                        <Children
+                                :bubble="bubble"
+                                direction="left"
+                                v-if="
                                         isLeft && !isCenter && canShowChildren
                                       "
-                            >
-                            </Children>
-<!--                        </transition>-->
+                        >
+                        </Children>
+                        <!--                        </transition>-->
                     </div>
                 </div>
                 <div class='bubble-container v-center'
@@ -133,7 +133,7 @@
                                         :style="background"
                                 >
                                     <div
-                                            class="in-label-buttons text-xs-center mt-0"
+                                            class="in-label-buttons text-xs-center mt-0 unselectable"
                                             style="height:100%;"
                                             :class="{
                                                      'in-label-icons-right': !isLeft && !isCenter,
@@ -182,6 +182,9 @@
                                                     @keydown="keydown"
                                                     :style="labelFont"
                                                     ref="vertexLabel"
+                                                    :class="{
+                                                        'unselectable' : !isEditFlow
+                                                    }"
                                             ></div>
                                         </v-badge>
                                         <v-card :href="linkMenuHref" target="_blank">
@@ -282,6 +285,9 @@
                                          v-text="label"
                                          @keydown="keydown"
                                          :style="labelFont"
+                                         :class="{
+                                                        'unselectable' : !isEditFlow
+                                                    }"
                                     ></div>
                                 </v-chip>
                             </div>
@@ -296,16 +302,16 @@
                    'blur-overlay':false && bubble.isVertexType()
                 }"
                     >
-<!--                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"-->
-<!--                                    v-on:after-enter="afterChildrenAnimation">-->
-                            <Children :bubble="bubble"
-                                      direction="right"
-                                      v-if="
+                        <!--                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"-->
+                        <!--                                    v-on:after-enter="afterChildrenAnimation">-->
+                        <Children :bubble="bubble"
+                                  direction="right"
+                                  v-if="
                                       !isLeft && !isCenter && canShowChildren
                                       "
-                            >
-                            </Children>
-<!--                        </transition>-->
+                        >
+                        </Children>
+                        <!--                        </transition>-->
                     </div>
                 </div>
             </v-flex>
@@ -479,7 +485,8 @@
             },
             click: function (event) {
                 event.stopPropagation();
-                if (this.isEditFlow) {
+                if (this.bubble.isEditFlow) {
+                    this.linkMenu = false;
                     return;
                 }
                 if (event.target.tagName === "A") {
@@ -503,13 +510,15 @@
                 }
             },
             dblclick: function (event) {
+                event.stopPropagation();
                 if (MindMapInfo.isViewOnly()) {
                     return;
                 }
-                if (this.isEditFlow) {
+                if (this.bubble.isEditFlow) {
                     return;
                 }
                 this.bubble.isEditFlow = true;
+                GraphUi.disableDragScroll();
                 this.bubble.focus(event);
             },
             leaveEditFlow: function () {
@@ -521,10 +530,15 @@
                 if (this.isCenter) {
                     document.title = this.bubble.getTextOrDefault() + " | MindRespect";
                 }
+                GraphUi.enableDragScroll();
                 this.$store.dispatch("redraw");
             },
             focus: function () {
+                if (this.bubble.isEditFlow) {
+                    return;
+                }
                 this.bubble.isEditFlow = true;
+                GraphUi.disableDragScroll();
                 this.$store.dispatch("redraw");
             },
             keydown: function (event) {
@@ -543,7 +557,7 @@
                 this.isSelected = found;
             },
             mouseDown: function () {
-                if (this.isEditFlow) {
+                if (this.bubble.isEditFlow) {
                     return;
                 }
                 GraphUi.disableDragScroll();
