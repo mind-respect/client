@@ -230,7 +230,7 @@
         width: 100%;
         height: 100%;
         margin-left: 600px !important;
-        margin-right: 600px !important;
+        margin-right: 900px !important;
         margin-top: 150px;
         margin-bottom: 150px;
         /*padding:25% !important;*/
