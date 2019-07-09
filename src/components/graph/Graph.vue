@@ -185,7 +185,7 @@
                     return "";
                 }
                 let backgroundColor = this.center.getBackgroundColor();
-                this.backgroundColorStyle = "background:radial-gradient(rgba(0, 0, 0, 0) -10%, " + backgroundColor + " 100%";
+                this.backgroundColorStyle = "background:radial-gradient(rgba(0, 0, 0, 0) 10%, " + backgroundColor + " 100%";
                 let hsl = Color.hex2Hsl(backgroundColor);
                 Color.bubbleBackground = 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + 96 + '%)';
             }
