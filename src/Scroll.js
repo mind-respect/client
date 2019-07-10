@@ -4,12 +4,13 @@
 import VueScrollTo from 'vue-scrollto'
 import router from '@/router'
 import Vue from 'vue'
-import Store from '@/store'
 import SideMenu from '@/SideMenu'
 
 Vue.use(VueScrollTo);
 
 const IS_ON_SCREEN_RIGHT_THRESHOLD = 100;
+
+let cancelGraphElementScroll;
 
 const Scroll = {
     goToSection: function (elementId, route) {
@@ -98,11 +99,11 @@ const Scroll = {
                 )
             };
         }
-        VueScrollTo.scrollTo(
+        cancelGraphElementScroll = VueScrollTo.scrollTo(
             element,
             150,
             options
-        )
+        );
 // or alternatively inside your components you can use
 //         cancelScroll = Vue.$scrollTo(element, duration, options);
     },
@@ -118,18 +119,16 @@ const Scroll = {
             false
         );
     },
-    centerBubbleForTreeOrNotIfApplicable: function (bubble, isForTree) {
-        Vue.nextTick(() => {
-            setTimeout(() => {
-                let element = isForTree ? bubble.getDeepestDescendant().getLabelHtml() : bubble.getLabelHtml();
-                if (!element) {
-                    return;
-                }
-                if (!Scroll.isElementFullyOnScreen(element)) {
-                    Scroll.goToGraphElement(bubble)
-                }
-            }, 200)
-        });
+    centerBubbleForTreeOrNotIfApplicable: async function (bubble, isForTree) {
+        await Vue.nextTick();
+        let element = isForTree ? bubble.getDeepestDescendant().getLabelHtml() : bubble.getLabelHtml();
+        if (!element) {
+            return;
+        }
+
+        if (!Scroll.isElementFullyOnScreen(element)) {
+            Scroll.goToGraphElement(bubble)
+        }
     }
 
 };

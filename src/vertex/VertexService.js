@@ -8,7 +8,6 @@ import IdUri from '@/IdUri'
 import Service from '@/Service'
 import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
-import SubGraph from '@/graph/SubGraph'
 import axios from 'axios'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
