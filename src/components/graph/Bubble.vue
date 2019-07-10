@@ -49,9 +49,9 @@
                      :class="{
                 'vh-center':isCenter,
                 'left':!isLeft && !isCenter,
-                'pl-5': (isLeaf && isLeft) || (isCenter && bubble.leftBubbles.length === 0),
-                'pr-5': (isLeaf && !isLeft) || (isCenter && bubble.rightBubbles.length === 0),
-                'w-500': (isLeaf && isLeft)
+                'pl-5': (!isCenter && isLeaf && isLeft) || (isCenter && bubble.leftBubbles.length === 0),
+                'pr-5': (!isCenter && isLeaf && !isLeft) || (isCenter && bubble.rightBubbles.length === 0),
+                'w-500': (!isCenter && isLeaf && isLeft)
             }"
                      :id="bubble.uiId"
                 >
@@ -89,7 +89,7 @@
                             @contextmenu="rightClick"
                     ></div>
                     <div class="vertex-left-right-drop"
-                         v-if="isCenter || isLeft"
+                         v-if="(isCenter && bubble.leftBubbles.length === 0 ) || (!isCenter && isLeaf && !isLeft)"
                          @dragover="leftRightDragEnter"
                          @dragleave="leftRightDragLeave"
                          @drop="leftDrop"
@@ -235,7 +235,7 @@
                         </v-icon>
                     </div>
                     <div class="vertex-left-right-drop"
-                         v-if="isCenter || !isLeft"
+                         v-if="(isCenter && bubble.rightBubbles.length === 0 ) || (!isCenter && isLeaf && !isLeft)"
                          @dragover="leftRightDragEnter"
                          @dragleave="leftRightDragLeave"
                          @drop="rightDrop"

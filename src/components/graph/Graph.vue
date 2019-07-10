@@ -135,6 +135,7 @@
         methods: {
             preventUndesirableDragging: function (event) {
                 if (!event.target.classList.contains("in-bubble-content")) {
+                    console.warn("unwanted dragged occurred on " + event.target);
                     event.preventDefault();
                 }
             }
@@ -171,8 +172,8 @@
         /*align-items: center;*/
         /*overflow-x: scroll;*/
         padding: 0;
-        min-height: 100%;
-        min-width: 100%;
+        min-height: 200%;
+        min-width: 200%;
         z-index: 1;
         position: relative;
         /*padding: 100%;*/
@@ -181,8 +182,8 @@
         justify-content: center;
         align-items: center;
         flex-shrink: 0;
-        padding-top: 10%;
-        padding-bottom: 10%;
+        padding-top: 15%;
+        padding-bottom: 15%;
     }
 
     [draggable=true] {

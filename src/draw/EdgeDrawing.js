@@ -272,7 +272,12 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
         rect: null
     };
     let yAdjust = 0;
-    let element = isParent ? bubble.getHtml() : this.getBubbleElement(bubble);
+    let element;
+    if(isParent){
+        element = bubble.isCenter ? bubble.getHtml() : bubble.getHtml();
+    }else{
+        element = this.getBubbleElement(bubble);
+    }
     if (bubble.isEdge() && bubble.isShrinked()) {
         yAdjust = -10;
     }
