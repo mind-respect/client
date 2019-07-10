@@ -80,11 +80,15 @@
         methods: {
             performAction: function (button, event) {
                 let controller = this.getController(button);
-                controller[
+                let promise = controller[
                     button.action
-                    ](event).then(() => {
+                    ](event);
+                if (!promise || !promise.then) {
+                    promise = Promise.resolve();
+                }
+                promise.then(() => {
                     this.$emit("performed")
-                })
+                });
             },
             canDo: function (button) {
                 if (this.bubble.loading) {

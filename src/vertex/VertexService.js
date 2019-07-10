@@ -90,7 +90,7 @@ api.setShareLevel = function (shareLevel, vertex) {
     );
 };
 api.setCollectionShareLevel = function (shareLevel, vertices) {
-    return Service.geApi().post(
+    return Service.api().post(
         getVerticesUrl() + '/collection/share-level',
         {
             shareLevel: shareLevel,
