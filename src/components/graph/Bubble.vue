@@ -264,6 +264,7 @@
                              }"
                         >
                             <div class="label-container">
+<!--                                <span style="visibility: hidden;" v-if="isShrinked">{{$t('edge:default')}}</span>-->
                                 <v-chip color="secondary"
                                         small
                                         @dragover="labelDragEnter"
@@ -757,6 +758,8 @@
     .is-shrinked {
         height: 10px !important;
         width: 10px !important;
+        margin-left:21px !important;
+        margin-right:21px !important;
     }
 
     .label-drag-over {
