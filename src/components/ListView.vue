@@ -74,6 +74,9 @@
             },
             getEdgeLabel: function (item) {
                 let parentBubble = item.original.getParentBubble();
+                if(parentBubble.isEdge() && parentBubble.isShrinked()){
+                    return "";
+                }
                 return parentBubble.isEdge() && !parentBubble.isLabelEmpty() ?
                     "(" + parentBubble.getLabel() + ") " : "";
             },

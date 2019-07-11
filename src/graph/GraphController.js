@@ -30,7 +30,7 @@ api.compareCanDo = function () {
 // };
 
 api.selectAllBubbles = function () {
-    SubGraph.graph.center.selectTree();
+    CurrentSubGraph.get().center.selectTree();
 };
 
 api.getUi = function () {
