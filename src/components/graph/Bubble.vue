@@ -275,7 +275,8 @@
                                         dark
                                         transition="none"
                                         :class="{
-                                        'is-shrinked' : isShrinked
+                                        'is-shrinked' : isShrinked,
+                                        'empty-edge' : !isEditFlow && bubble.isLabelEmpty()
                                     }"
                                 >
                                     <div class="bubble-label white--text"
@@ -397,9 +398,6 @@
             },
             isNextBubbleExpanded: function () {
                 return this.bubble.getNextBubble().isExpanded;
-            },
-            label: function () {
-                return this.bubble.getFriendlyJson().label;
             },
             isInverse: function () {
                 return this.bubble.isInverse();
@@ -762,8 +760,17 @@
     .is-shrinked {
         height: 10px !important;
         width: 10px !important;
-        margin-left: 21px !important;
-        margin-right: 21px !important;
+    }
+
+    .left-oriented .empty-edge{
+        right:2px;
+    }
+    .empty-edge {
+        position: absolute;
+        top:-5px;
+    }
+    .v-chip--selected.empty-edge{
+        top:-10px;
     }
 
     .label-drag-over {
