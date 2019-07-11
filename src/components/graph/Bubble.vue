@@ -257,8 +257,8 @@
                              @dragend="dragEnd"
                              draggable="true"
                              :class="{
-                                'pl-5 pr-1': !bubble.isGroupRelation() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
-                                'pl-1 pr-5': !bubble.isGroupRelation() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
+                                'pl-5 pr-1': bubble.isRelation() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
+                                'pl-1 pr-5': bubble.isRelation() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
                                 'pl-4': (bubble.isGroupRelation() && !isLeft),
                                 'pr-4': (bubble.isGroupRelation() && isLeft)
                              }"
