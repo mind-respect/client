@@ -6,7 +6,13 @@
     <v-layout v-if="loaded">
         <v-divider></v-divider>
         <MainMenus></MainMenus>
-        <div row id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle">
+        <v-layout row v-if="$vuetify.breakpoint.mdAndDown" style="width:100%;">
+            <v-flex xs12>
+                <GraphList></GraphList>
+            </v-flex>
+        </v-layout>
+        <div row id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle"
+             v-if="$vuetify.breakpoint.lgAndUp">
             <v-layout row class='root-vertex-super-container vh-center' :style="zoomScale"
                       @dragstart="preventUndesirableDragging">
                 <v-flex grow class="vertices-children-container left-oriented" :class="{
@@ -66,6 +72,7 @@
     import GraphDrawing from '@/components/graph/GraphDrawing'
     import MainMenus from '@/components/graph/MainMenus'
     import ListView from '@/components/ListView'
+    import GraphList from "@/components/list/GraphList";
     import Selection from '@/Selection'
     import SubGraphController from '@/graph/SubGraphController'
     import Vertex from '@/vertex/Vertex'
@@ -83,6 +90,7 @@
     export default {
         name: "Graph",
         components: {
+            GraphList,
             Bubble,
             RemoveDialog,
             DescriptionDialog,

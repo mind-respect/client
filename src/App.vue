@@ -79,23 +79,28 @@
                         Français
                     </span>
                 </v-btn>
-                <v-btn :to="'/user/' + $store.state.user.username" v-if="$store.state.user" flat color="primary">
-                    <v-icon class="mr-2">
+                <v-btn :to="'/user/' + $store.state.user.username" v-if="$store.state.user" flat active-class="" :icon="$vuetify.breakpoint.mdAndDown">
+                    <v-icon :class="{
+                        'mr-2' : $vuetify.breakpoint.lgAndUp
+                    }">
                         filter_center_focus
                     </v-icon>
-                    {{$t('centers')}}
+                    <span v-if="$vuetify.breakpoint.lgAndUp">
+                        {{$t('centers')}}
+                    </span>
                 </v-btn>
                 <!--                <Button :button="undoButton" v-if="isGraphRoute"></Button>-->
                 <!--                <Button :button="redoButton" v-if="isGraphRoute"></Button>-->
-                <Button :button="zoomOutButton" v-if="isGraphRoute"></Button>
-                <Button :button="zoomInButton" v-if="isGraphRoute"></Button>
-                <Button :button="createVertexButton" :hightlight="true" v-if="$store.state.user"></Button>
+                <Button :button="zoomOutButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></Button>
+                <Button :button="zoomInButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></Button>
+                <Button :button="createVertexButton" :hightlight="true"
+                        v-if="$store.state.user && $vuetify.breakpoint.lgAndUp"></Button>
                 <SettingsMenu></SettingsMenu>
             </v-toolbar>
             <!--<router-link to="/">Home</router-link>-->
             <!--<router-link to="/about">About</router-link>-->
         </div>
-        <SideMenu v-if="isGraphRoute"></SideMenu>
+        <SideMenu v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></SideMenu>
         <v-content>
             <router-view></router-view>
         </v-content>

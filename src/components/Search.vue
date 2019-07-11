@@ -4,7 +4,7 @@
     <!--            search-->
     <!--        </v-btn>-->
     <v-autocomplete
-            v-if="$store.state.user"
+            v-if="$store.state.user && loaded"
             ref="search"
             prepend-icon="search"
             v-model="selectedSearchResult"
@@ -74,15 +74,24 @@
                 selectedSearchResult: null,
                 searchText: null,
                 loading: false,
+                loaded: false,
                 items: [],
-                menuProps: {
-                    "nudge-left": 50,
-                    "max-width": 800,
-                    "contentClass": "search-menu top-search"
-                },
+                menuProps: null,
                 readyToDisplay: false,
                 isFocusFLow: false
             };
+        },
+        mounted: function () {
+            let menuClass = "search-menu";
+            if (this.$vuetify.breakpoint.lgAndUp) {
+                menuClass += "search-menu top-search top-search-desktop";
+            }
+            this.menuProps = {
+                "nudge-left": 50,
+                "max-width": 800,
+                "contentClass": menuClass
+            };
+            this.loaded = true;
         },
         watch: {
             searchText: function (val) {
@@ -90,10 +99,10 @@
             }
         },
         methods: {
-            focus:()=>{
+            focus: () => {
                 GraphUi.disableDragScroll();
             },
-            blur:()=>{
+            blur: () => {
                 GraphUi.enableDragScroll();
             },
             selectSearchResult: function () {
@@ -129,8 +138,12 @@
         max-height: 105px;
     }
 
-    .top-search{
-        position:fixed;
-        left:32% !important;
+    .top-search {
+        position: fixed;
     }
+
+    .top-search-desktop {
+        left: 32% !important;
+    }
+
 </style>
