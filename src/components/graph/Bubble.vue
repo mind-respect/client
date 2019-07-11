@@ -275,8 +275,9 @@
                                         dark
                                         transition="none"
                                         :class="{
+                                        'is-inverse' : isInverse,
                                         'is-shrinked' : isShrinked,
-                                        'empty-edge' : !isEditFlow && bubble.isLabelEmpty()
+                                        'empty-edge' : bubble.isRelation() && !isEditFlow && bubble.isLabelEmpty()
                                     }"
                                 >
                                     <div class="bubble-label white--text"
@@ -762,15 +763,25 @@
         width: 10px !important;
     }
 
-    .left-oriented .empty-edge{
+    .left-oriented .empty-edge {
+        right: 2px;
+    }
+
+    .left-oriented .empty-edge.is-inverse{
+        left:2px;
+    }
+
+    .right-oriented .empty-edge.is-inverse{
         right:2px;
     }
+
     .empty-edge {
         position: absolute;
-        top:-5px;
+        top: -5px;
     }
-    .v-chip--selected.empty-edge{
-        top:-10px;
+
+    .v-chip--selected.empty-edge {
+        top: -10px;
     }
 
     .label-drag-over {
