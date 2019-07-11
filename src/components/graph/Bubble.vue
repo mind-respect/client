@@ -275,6 +275,7 @@
                                         dark
                                         transition="none"
                                         :class="{
+                                        'elevation-4': isSelected,
                                         'is-inverse' : isInverse,
                                         'is-shrinked' : isShrinked,
                                         'empty-edge' : bubble.isRelation() && !isEditFlow && bubble.isLabelEmpty()
