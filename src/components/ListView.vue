@@ -25,6 +25,7 @@
 <script>
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import GraphUi from '@/graph/GraphUi'
+    import GraphElementType from '@/graph-element/GraphElementType'
     import linkifyHtml from 'linkifyjs/html'
 
     export default {
@@ -47,7 +48,7 @@
             isListViewFlow: function () {
                 if (this.isListViewFlow) {
                     this.items = [
-                        this.vertexAsItem(CurrentSubGraph.get().center)
+                        this.forkAsItem(CurrentSubGraph.get().center)
                     ];
                     this.dialog = true;
                 }
@@ -62,12 +63,12 @@
             }
         },
         methods: {
-            vertexAsItem: function (vertex) {
+            forkAsItem: function (fork) {
                 return {
-                    id: vertex.getUri(),
-                    original: vertex,
-                    children: vertex.getClosestChildVertices().map((childVertex) => {
-                        return this.vertexAsItem(childVertex)
+                    id: fork.getUri(),
+                    original: fork,
+                    children: fork.getClosestChildrenInTypes(GraphElementType.Fork).map((childFork) => {
+                        return this.forkAsItem(childFork)
                     })
                 }
             },

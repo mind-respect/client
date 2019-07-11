@@ -748,6 +748,7 @@ FriendlyResource.FriendlyResource.prototype.visitClosestChildRelations = functio
     );
 };
 
+
 FriendlyResource.FriendlyResource.prototype.getClosestChildrenOfType = function (type) {
     return this.getClosestChildrenInTypes(
         [type]

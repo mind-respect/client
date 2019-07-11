@@ -42,6 +42,7 @@ EdgeController.prototype.addChild = async function () {
         );
     }).then(() => {
         let parentBubble = this.model().getParentBubble();
+        this.setLabel("");
         parentBubble.replaceChild(
             this.model(),
             newGroupRelation

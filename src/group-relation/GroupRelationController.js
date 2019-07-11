@@ -73,15 +73,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
             );
         });
         let promises = [
-            addIdentifiers,
-            EdgeService.updateLabel(
-                triple.edge,
-                this.model().getIdentification().getLabel()
-            ).then(() => {
-                triple.edge.setLabel(
-                    this.model().getIdentification().getLabel()
-                );
-            })
+            addIdentifiers
         ];
         return Promise.all(promises);
     }).then(() => {

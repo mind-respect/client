@@ -14,6 +14,10 @@ const api = {
     "GroupVertexUnderMeta": "group_vertex_under_meta"
 };
 
+api.Fork = [
+    api.Vertex, api.GroupRelation
+];
+
 api.GraphElementType = function (type) {
     this.type = type;
     this._isEdge = api.isEdge(type);
