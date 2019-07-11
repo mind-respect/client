@@ -345,7 +345,7 @@
     import Color from '@/Color'
     import MindMapInfo from '@/MindMapInfo'
     import Store from '@/store'
-    import linkifyHtml from 'linkifyjs/html'
+    import linkifyStr from 'linkifyjs/string'
 
     export default {
         name: "Bubble",
@@ -390,6 +390,11 @@
             this.loaded = true;
         },
         computed: {
+            label: function () {
+                let doc = new DOMParser().parseFromString(this.bubble.getFriendlyJson().label, 'text/html');
+                let text = doc.body.textContent || "";
+                return this.isEditFlow ? text : linkifyStr(text);
+            },
             canShowChildren: function () {
                 return (this.bubble.isVertexType() && this.bubble.rightBubbles.length > 0) ||
                     (this.bubble.isGroupRelation() && this.bubble._sortedImmediateChild && this.bubble._sortedImmediateChild.length > 0) ||
@@ -443,12 +448,6 @@
             },
             canExpand: function () {
                 return this.bubble.canExpand();
-            },
-            label: function () {
-                let doc = new DOMParser().parseFromString(this.bubble.getFriendlyJson().label, 'text/html');
-                let text = doc.body.textContent || "";
-                return this.isEditFlow ? text : linkifyHtml(text);
-
             },
             background: function () {
                 return this.isSelected && Color.bubbleBackground ?
