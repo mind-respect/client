@@ -401,7 +401,7 @@
                 return this.bubble.getNextBubble().isExpanded;
             },
             isInverse: function () {
-                return this.bubble.isInverse();
+                return this.bubble.isRelation() && this.bubble.isInverse();
             },
             hasIdentifications: function () {
                 return this.bubble.hasIdentifications();
@@ -767,12 +767,12 @@
         right: 2px;
     }
 
-    .left-oriented .empty-edge.is-inverse{
-        left:2px;
+    .left-oriented .empty-edge.is-inverse {
+        left: 2px;
     }
 
-    .right-oriented .empty-edge.is-inverse{
-        right:2px;
+    .right-oriented .empty-edge.is-inverse {
+        right: 2px;
     }
 
     .empty-edge {
