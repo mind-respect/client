@@ -46,7 +46,7 @@
                         </v-tooltip>
                         <v-spacer></v-spacer>
                         <v-tooltip v-if="isOwner" left>
-                            <v-btn icon float color="third" fab @click="createCenterVertex()" slot="activator" dark v-if="$vuetify.breakpoint.lgAndUp">
+                            <v-btn icon float color="third" fab @click="createCenterVertex()" slot="activator" dark>
                                 <v-icon large>add</v-icon>
                             </v-btn>
                             <span>{{$t('userhome:createInfo')}}</span>

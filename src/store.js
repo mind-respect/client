@@ -34,7 +34,7 @@ const Store = new Vuex.Store({
         isFontFlow: false,
         isTagFlow: false,
         redraws: Math.random(),
-        isSideMenuCollapsed: false,
+        isSideMenuCollapsed: true,
         isViewOnly: null
     },
     mutations: {

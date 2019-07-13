@@ -128,10 +128,11 @@ describe("Edge", () => {
         expect(
             relation.getIndexInTree(indexInTypes)
         ).toBe(0);
+        let relationText = relation.getLabel();
         await relation.getController().addChild();
         let newGroupRelation = TestUtil.getChildWithLabel(
             centerBubble,
-            relation.text()
+            relationText
         );
         expect(
             newGroupRelation.isGroupRelation()

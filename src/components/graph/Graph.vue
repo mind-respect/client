@@ -5,14 +5,12 @@
 <template>
     <v-layout v-if="loaded">
         <v-divider></v-divider>
-        <MainMenus></MainMenus>
-        <v-layout row v-if="$vuetify.breakpoint.mdAndDown" style="width:100%;">
-            <v-flex xs12>
-                <GraphList></GraphList>
-            </v-flex>
-        </v-layout>
-        <div row id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle"
-             v-if="$vuetify.breakpoint.lgAndUp">
+        <!--        <v-layout row v-if="$vuetify.breakpoint.mdAndDown" style="width:100%;">-->
+        <!--            <v-flex xs12>-->
+        <!--                <GraphList></GraphList>-->
+        <!--            </v-flex>-->
+        <!--        </v-layout>-->
+        <div row id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle">
             <v-layout row class='root-vertex-super-container vh-center' :style="zoomScale"
                       @dragstart="preventUndesirableDragging">
                 <v-flex grow class="vertices-children-container left-oriented" :class="{
@@ -70,7 +68,6 @@
     import IdUri from '@/IdUri'
     import Bubble from '@/components/graph/Bubble'
     import GraphDrawing from '@/components/graph/GraphDrawing'
-    import MainMenus from '@/components/graph/MainMenus'
     import ListView from '@/components/ListView'
     import GraphList from "@/components/list/GraphList";
     import Selection from '@/Selection'
@@ -85,6 +82,7 @@
     import SubGraph from '@/graph/SubGraph'
     import Scroll from '@/Scroll'
     import AppController from '@/AppController'
+    import Breakpoint from '@/Breakpoint'
 
 
     export default {
@@ -96,7 +94,6 @@
             DescriptionDialog,
             FontDialog,
             GraphDrawing,
-            MainMenus,
             ListView
         },
         data: function () {
@@ -108,6 +105,7 @@
             }
         },
         mounted: function () {
+            window.addEventListener('resize', this.handleResize);
             CurrentSubGraph.set(SubGraph.empty());
             Selection.removeAll();
             let centerUri = MindMapInfo.getCenterBubbleUri();
@@ -124,6 +122,7 @@
                 document.title = center.getTextOrDefault() + " | MindRespect";
                 CurrentSubGraph.set(graph);
                 this.center = center;
+                this.handleResize();
                 this.loaded = true;
                 let app = document.getElementById("app");
                 if (app) {
@@ -146,7 +145,17 @@
                     console.warn("unwanted dragged occurred on " + event.target);
                     event.preventDefault();
                 }
+            },
+            handleResize: function () {
+                this.redrawKey = Math.random();
+                if (Selection.isSingle()) {
+                    Scroll.centerBubbleIfApplicable(Selection.getSingle());
+                }
+                Breakpoint.set(this.$vuetify.breakpoint)
             }
+        },
+        beforeDestroy: function () {
+            window.removeEventListener('resize', this.handleResize)
         },
         computed: {
             redraws: function () {
@@ -162,6 +171,10 @@
             redraws: async function () {
                 await this.$nextTick();
                 this.redrawKey = Math.random();
+                await this.$nextTick();
+                setTimeout(() => {
+                    this.redrawKey = Math.random();
+                }, 150)
             }
         }
     }
@@ -178,7 +191,6 @@
         /*display: flex;*/
         /*justify-content: center;*/
         /*align-items: center;*/
-        /*overflow-x: scroll;*/
         padding: 0;
         min-height: 200%;
         min-width: 200%;

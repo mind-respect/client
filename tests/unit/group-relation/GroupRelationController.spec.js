@@ -175,10 +175,11 @@ describe("GroupRelationController", () => {
                 g1.isGroupRelation()
             ).toBeTruthy();
             r1 = g1.getNextBubble();
+            r1.setLabel("original r1 relation");
             await r1.getController().moveAbove(scenario.getBubble3InTree());
             r1 = TestUtil.getChildWithLabel(
                 center,
-                "r1"
+                "original r1 relation"
             );
             expect(
                 r1.isGroupRelation()

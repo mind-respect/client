@@ -24,6 +24,14 @@ function EdgeController(edges) {
 
 EdgeController.prototype = new GraphElementController.GraphElementController();
 
+EdgeController.prototype.expandCanDo = function () {
+    return false;
+};
+
+EdgeController.prototype.collapseCanDo = function () {
+    return false;
+};
+
 EdgeController.prototype.addChildCanDo = function () {
     return this.isSingleAndOwned();
 };

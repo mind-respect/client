@@ -16,7 +16,7 @@
                     style="z-index:4;"
             >
                 <v-toolbar-title>
-                    <router-link to="/welcome" class="no-style-link vh-center">
+                    <router-link to="/welcome" class="no-style-link vh-center mr-3">
                         <v-img
                                 :src="require('@/assets/logo-horizontal-black-small.png')"
                                 height="44"
@@ -79,7 +79,7 @@
                         Français
                     </span>
                 </v-btn>
-                <v-btn :to="'/user/' + $store.state.user.username" v-if="$store.state.user" flat active-class="" :icon="$vuetify.breakpoint.mdAndDown">
+                <v-btn :to="'/user/' + $store.state.user.username" v-if="$store.state.user && $vuetify.breakpoint.lgAndUp" flat active-class="" :icon="$vuetify.breakpoint.mdAndDown">
                     <v-icon :class="{
                         'mr-2' : $vuetify.breakpoint.lgAndUp
                     }">
@@ -91,8 +91,8 @@
                 </v-btn>
                 <!--                <Button :button="undoButton" v-if="isGraphRoute"></Button>-->
                 <!--                <Button :button="redoButton" v-if="isGraphRoute"></Button>-->
-                <Button :button="zoomOutButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></Button>
-                <Button :button="zoomInButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></Button>
+                <Button :button="zoomOutButton" v-if="isGraphRoute"></Button>
+                <Button :button="zoomInButton" v-if="isGraphRoute"></Button>
                 <Button :button="createVertexButton" :hightlight="true"
                         v-if="$store.state.user && $vuetify.breakpoint.lgAndUp"></Button>
                 <SettingsMenu></SettingsMenu>
@@ -100,7 +100,7 @@
             <!--<router-link to="/">Home</router-link>-->
             <!--<router-link to="/about">About</router-link>-->
         </div>
-        <SideMenu v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></SideMenu>
+        <SideMenu v-if="isGraphRoute"></SideMenu>
         <v-content>
             <router-view></router-view>
         </v-content>
@@ -170,14 +170,12 @@
 
 <script>
     import UserService from '@/service/UserService'
-    import AuthenticateService from "./service/AuthenticateService";
     import LoginForm from "@/components/home/LoginForm";
     import RegisterForm from "@/components/home/RegisterForm";
     import ForgotPasswordForm from '@/components/home/ForgotPasswordForm'
     import ChangePasswordForm from '@/components/home/ChangePasswordForm'
     import SideMenu from '@/components/SideMenu'
     import SettingsMenu from '@/components/SettingsMenu'
-    import Button from '@/components/graph/Button'
     import AppController from '@/AppController'
     import LoadingFlow from '@/LoadingFlow'
     import Store from '@/store'
@@ -200,7 +198,7 @@
             ForgotPasswordForm,
             ChangePasswordForm,
             Search,
-            Button
+            Button: () => import('@/components/graph/Button')
         },
         data: function () {
             I18n.i18next.addResources("en", "button", {
@@ -449,6 +447,18 @@
 </script>
 
 <style>
+    html{
+        overflow:hidden;
+        margin:0;
+        padding:0;
+        height: 100%;
+    }
+    body{
+        overflow: scroll;
+        margin:0;
+        padding:0;
+        height: 100%;
+    }
     .v-chip {
         transition: none;
     }

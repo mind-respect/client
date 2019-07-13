@@ -5,7 +5,7 @@
             offset-y
             content-class="settings-menu"
             v-if="$store.state.user !== undefined"
-            :close-on-content-click="false"
+            :close-on-content-click="$vuetify.breakpoint.mdAndDown"
     >
         <v-btn icon light slot="activator" class="mr-2">
             <v-icon>
@@ -32,6 +32,28 @@
                             <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.mdAndUp">
                                             Français
                                         </span>
+                        </v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile v-if="$store.state.user && $vuetify.breakpoint.mdAndDown" :to="'/user/' + $store.state.user.username" :disabled="$route.name === 'UserHome'">
+                    <v-list-tile-action>
+                        <v-icon>
+                            filter_center_focus
+                        </v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-content>
+                        <v-list-tile-title>
+                            {{$t('centers')}}
+                        </v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile v-if="$store.state.user && isGraphRoute && $vuetify.breakpoint.mdAndDown" @click="createVertex">
+                    <v-list-tile-action>
+                        <v-icon>add</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-content>
+                        <v-list-tile-title>
+                            {{$t('button:createVertex')}}
                         </v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
@@ -127,6 +149,9 @@
         mounted: function () {
         },
         methods: {
+            createVertex:function(){
+                AppController.createVertex();
+            },
             expandAll: function () {
                 GraphController.expandAll();
             },

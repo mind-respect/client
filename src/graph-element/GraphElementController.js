@@ -458,6 +458,8 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
         GraphElementService.changeChildrenIndex(
             previousParentVertex
         );
+        //I don't know why I have to Selection.reset() to select the same bubble.
+        Selection.reset();
         Selection.setToSingle(model);
     });
 };

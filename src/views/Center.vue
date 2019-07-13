@@ -37,6 +37,9 @@
             GraphUi.enableDragScroll();
             KeyboardActions.init();
             KeyboardActions.enable();
+            if (this.$vuetify.breakpoint.mdAndDown) {
+                this.$store.dispatch("setIsSideMenuCollapsed", true);
+            }
         },
         computed: {
             graphCenterUri: function () {

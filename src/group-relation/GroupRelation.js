@@ -6,6 +6,7 @@ import Identification from '@/identifier/Identification'
 import GraphElementType from '@/graph-element/GraphElementType'
 import GroupRelationController from '@/group-relation/GroupRelationController'
 import Vue from 'vue'
+import Store from '@/store'
 import FriendlyResource from "../friendly-resource/FriendlyResource";
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
@@ -173,7 +174,7 @@ GroupRelation.prototype._getNextChildrenCollapsedOrNot = function (getEvenIfColl
     return edges;
 }
 
-GroupRelation.prototype.expand = function (avoidCenter, isChildExpand) {
+GroupRelation.prototype.expand = async function (avoidCenter, isChildExpand) {
     FriendlyResource.FriendlyResource.prototype.expand.call(
         this,
         avoidCenter,
@@ -185,6 +186,8 @@ GroupRelation.prototype.expand = function (avoidCenter, isChildExpand) {
     }
     this.isExpanded = true;
     this.isCollapsed = false;
+    await Vue.nextTick();
+    Store.dispatch("redraw");
 };
 
 GroupRelation.prototype.collapse = function () {

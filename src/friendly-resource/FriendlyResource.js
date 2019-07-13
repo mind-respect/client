@@ -322,18 +322,18 @@ FriendlyResource.FriendlyResource.prototype.travelRight = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.travelDown = function () {
-    Selection.setToSingle(this.getDownBubble())
+    Selection.setToSingle(this.getDownBubble(true))
 };
 
 FriendlyResource.FriendlyResource.prototype.travelUp = function () {
-    Selection.setToSingle(this.getUpBubble())
+    Selection.setToSingle(this.getUpBubble(true))
 };
 
-FriendlyResource.FriendlyResource.prototype.getUpBubble = function () {
-    return this._getUpOrDownBubble(false);
+FriendlyResource.FriendlyResource.prototype.getUpBubble = function (isForTravel) {
+    return this._getUpOrDownBubble(false, isForTravel);
 };
-FriendlyResource.FriendlyResource.prototype.getDownBubble = function () {
-    return this._getUpOrDownBubble(true);
+FriendlyResource.FriendlyResource.prototype.getDownBubble = function (isForTravel) {
+    return this._getUpOrDownBubble(true, isForTravel);
 };
 
 FriendlyResource.FriendlyResource.prototype.getNextSibling = function () {
@@ -494,9 +494,12 @@ FriendlyResource.FriendlyResource.prototype.buildChildrenIndex = function (index
     }, {});
 };
 
-FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDown) {
+FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDown, isForTravel) {
     if (this.isCenter) {
         return this;
+    }
+    if(isForTravel === undefined){
+        isForTravel = false;
     }
     let indexAdjust = isDown ? 1 : -1;
     let forkBubble = this.parentBubble;
@@ -535,7 +538,7 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
             bubbleAround = bubbleAround.getNextBubble();
         }
         if (bubbleAround.isGroupRelation()) {
-            if (bubbleAround.canExpand()) {
+            if (bubbleAround.canExpand() || !isForTravel) {
                 return bubbleAround;
             }
             let closestVertices = bubbleAround.getClosestChildrenOfType(GraphElementType.Vertex);
@@ -548,7 +551,7 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
             bubbleAround = isDown ? bubbleAround.getNextBubble() : bubbleAround.getNextBottomBubble();
         }
         if (bubbleAround.isGroupRelation()) {
-            if (bubbleAround.canExpand()) {
+            if (bubbleAround.canExpand() || !isForTravel) {
                 return bubbleAround;
             }
             let closestEdges = bubbleAround.getClosestChildrenOfType(GraphElementType.Relation);

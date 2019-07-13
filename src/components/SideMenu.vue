@@ -65,7 +65,7 @@
                 </v-card>
             </v-navigation-drawer>
             <v-navigation-drawer
-                    value="true"
+                    :value="$vuetify.breakpoint.lgAndUp"
                     right
                     mini-variant
                     mini-variant-width="60"
@@ -132,6 +132,9 @@
                 return this.isStretched ? SideMenu.EXPANDED_WIDTH : SideMenu.EXPANDED_WIDTH;
             },
             mainNavMiniWidth: function () {
+                if(this.$vuetify.breakpoint.mdAndDown){
+                    return 0;
+                }
                 return Selection.isSingle() ? SideMenu.MINI_WIDTH : 60;
             }
         },

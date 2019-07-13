@@ -5,10 +5,12 @@ import VueScrollTo from 'vue-scrollto'
 import router from '@/router'
 import Vue from 'vue'
 import SideMenu from '@/SideMenu'
+import Breakpoint from '@/Breakpoint'
 
 Vue.use(VueScrollTo);
 
 const IS_ON_SCREEN_RIGHT_THRESHOLD = 100;
+const IS_ON_SCREEN_RIGHT_THRESHOLD_MOBILE = 0;
 
 let cancelGraphElementScroll;
 
@@ -35,6 +37,16 @@ const Scroll = {
         // }
         let element = bubble.isCenter ? bubble.getLabelHtml() : bubble.getLabelHtml();
         let sideMenuOffset = SideMenu.getWidth();
+        let widthPadding;
+        if (bubble.isCenter) {
+            widthPadding = 0;
+        }
+        if (bubble.isToTheLeft()) {
+            widthPadding = 25;
+        } else {
+            widthPadding = -25;
+        }
+        let elementWidth = element.offsetWidth + widthPadding;
         let options = {
             container: 'body',
             easing: 'ease',
@@ -45,11 +57,11 @@ const Scroll = {
                 let screenWidth = screen.width - sideMenuOffset;
                 let halfScreen = screenWidth / 2;
                 if (bubble.isCenter) {
-                    offset = halfScreen - element.offsetWidth / 2;
+                    offset = halfScreen - elementWidth / 2;
                 } else {
                     let deepestBubble = bubble.getDeepestDescendant();
                     if (deepestBubble.isSameBubble(bubble)) {
-                        offset = halfScreen - element.offsetWidth / 2;
+                        offset = halfScreen - elementWidth / 2;
                     } else {
                         let deepestElement = deepestBubble.getLabelHtml();
                         let deepestRect = deepestElement.getBoundingClientRect();
@@ -63,10 +75,9 @@ const Scroll = {
                         let difference = Math.abs(elementXPosition - deepestXPosition);
 
                         if (bubble.isToTheLeft()) {
-                            offset = Math.min(halfScreen + difference / 2 - element.offsetWidth / 2, screenWidth - element.offsetWidth - 50);
+                            offset = Math.min(halfScreen + difference / 2 - elementWidth / 2, screenWidth - elementWidth / 2);
                         } else {
-                            let elementWidth = element.offsetWidth / 2;
-                            offset = Math.max(halfScreen - difference / 2 - elementWidth, 50)
+                            offset = Math.max(halfScreen - difference / 2 - elementWidth / 2, 150)
                         }
                     }
                 }
@@ -120,13 +131,16 @@ const Scroll = {
         );
     },
     centerBubbleForTreeOrNotIfApplicable: async function (bubble, isForTree) {
+        if (!isForTree && Breakpoint.isMobile()) {
+            return;
+        }
         await Vue.nextTick();
         let element = isForTree ? bubble.getDeepestDescendant().getLabelHtml() : bubble.getLabelHtml();
         if (!element) {
             return;
         }
 
-        if (!Scroll.isElementFullyOnScreen(element)) {
+        if (!Scroll.isElementFullyOnScreen(element) && !bubble.isEditFlow) {
             Scroll.goToGraphElement(bubble)
         }
     }
@@ -142,7 +156,12 @@ Scroll.isElementFullyOnScreen = function (elem) {
         rect.top >= 0 &&
         rect.left - sideMenuWidth >= 0 &&
         rect.bottom <= windowHeight &&
-        rect.right + IS_ON_SCREEN_RIGHT_THRESHOLD <= windowWidth
+        rect.right + Scroll.getIsOnScreenRightThreshold() <= windowWidth
     );
 };
+
+Scroll.getIsOnScreenRightThreshold = function () {
+    return Breakpoint.isMobile() ? IS_ON_SCREEN_RIGHT_THRESHOLD_MOBILE : IS_ON_SCREEN_RIGHT_THRESHOLD;
+};
+
 export default Scroll;

@@ -26,13 +26,14 @@
         data: function () {
             return {
                 strokeColor: "#1a237e",
-                strokeWidth: "2",
+                strokeWidth: null,
                 areChildrenLoaded: false,
                 children: null,
                 svg: null
             }
         },
         mounted: function () {
+            this.strokeWidth = this.$vuetify.breakpoint.mdAndDown ? 1 : 2;
             this.isLeft = this.center.isToTheLeft();
             this.isCenter = this.center.isCenter;
             if (!this.center.getNextChildren) {

@@ -3,13 +3,16 @@
   -->
 
 <template>
-    <div v-if="loaded">
+    <div v-if="loaded" class="unselectable" :class="{
+            'mt-1 mb-1' : $vuetify.breakpoint.mdAndDown
+        }">
         <v-flex xs12>
             <v-flex xs12 class="pt-1 dotted-border-top"
                     @dragover="topDragEnter"
                     @dragleave="resetTopBottomDragOver"
                     @drop="topDrop"
                     @click="click"
+                    @mouseup="mouseup"
                     @dblclick="dblclick"
                     @contextmenu="rightClick"
                     v-if="(bubble.isEdge() || bubble.isGroupRelation()) && !isNextBubbleExpanded"
@@ -85,6 +88,7 @@
                             @dragleave="resetTopBottomDragOver"
                             @drop="topDrop"
                             @click="click"
+                            @mouseup="mouseup"
                             @dblclick="dblclick"
                             @contextmenu="rightClick"
                     ></div>
@@ -105,7 +109,7 @@
                 }"
                     >
                         <div class="image_container"></div>
-                        <div class="in-bubble-content-wrapper">
+                        <div class="in-bubble-content-wrapper unselectable">
                             <v-menu
                                     lazy
                                     v-model="showMenu"
@@ -116,14 +120,18 @@
                                     right
                                     color="white"
                                     offset-y
+                                    :open-on-click="false"
                             >
                                 <div
                                         slot="activator"
                                         class="in-bubble-content vh-center"
                                         :class="{
-                                            'reverse': isLeft
+                                            'reverse': isLeft,
+                                            'desktop': $vuetify.breakpoint.lgAndUp,
+                                            'mobile': $vuetify.breakpoint.mdAndDown
                                     }"
                                         @click="click"
+                                        @mouseup="mouseup"
                                         @dblclick="dblclick"
                                         @mousedown="mouseDown"
                                         @dragstart="dragStart"
@@ -207,6 +215,7 @@
                     <div
                             class="vertex-drop-arrow-top-bottom-drop bottom-vertex-drop-arrow-drop"
                             @click="click"
+                            @mouseup="mouseup"
                             @dblclick="dblclick"
                             @contextmenu="rightClick"
                             @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"
@@ -214,6 +223,7 @@
                     <div @dragover="bottomDragEnter"
                          @drop="bottomDrop"
                          @click="click"
+                         @mouseup="mouseup"
                          @dblclick="dblclick"
                          @contextmenu="rightClick"
                          class="arrowTopBottomContainer"
@@ -243,18 +253,20 @@
                     </div>
                     <div
                             v-if="bubble.isEdge() || bubble.isGroupRelation()"
-                            class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0"
+                            class="bubble relation graph-element relative pt-0 pb-0 mt-3 mb-0"
                             :class="{
                             'selected' : isSelected,
                             'reverse': isLeft && !isCenter
-                    }">
+                            }">
                         <div class="image_container"></div>
                         <div class="in-bubble-content"
                              @click="click"
+                             @mouseup="mouseup"
                              @dblclick="dblclick"
                              @mousedown="mouseDown"
                              @dragstart="dragStart"
                              @dragend="dragEnd"
+                             @contextmenu="rightClick"
                              draggable="true"
                              :class="{
                                 'pl-5 pr-1': bubble.isRelation() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
@@ -263,38 +275,55 @@
                                 'pr-4': (bubble.isGroupRelation() && isLeft)
                              }"
                         >
-                            <div class="label-container">
-                                <!--                                <span style="visibility: hidden;" v-if="isShrinked">{{$t('edge:default')}}</span>-->
-                                <v-chip color="secondary"
-                                        small
-                                        @dragover="labelDragEnter"
-                                        @dragleave="labelDragLeave"
-                                        @drop="labelDrop"
-                                        :selected="isSelected || isLabelDragOver"
-                                        class="pt-0 pb-0 mt-0 mb-0 ma-0 pa-0 label-chip"
-                                        dark
-                                        transition="none"
-                                        :class="{
+                            <v-menu
+                                    lazy
+                                    v-model="showMenu"
+                                    :value="isSelected"
+                                    max-width="250"
+                                    :nudge-width="250"
+                                    auto
+                                    right
+                                    color="white"
+                                    offset-y
+                                    class="pa-0 ma-0"
+                                    :open-on-click="false"
+                            >
+                                <div class="label-container" slot="activator">
+                                    <!--                                <span style="visibility: hidden;" v-if="isShrinked">{{$t('edge:default')}}</span>-->
+                                    <v-chip color="secondary"
+                                            small
+                                            @dragover="labelDragEnter"
+                                            @dragleave="labelDragLeave"
+                                            @drop="labelDrop"
+                                            :selected="isSelected || isLabelDragOver"
+                                            class="pt-0 pb-0 mt-0 mb-0 ma-0 pa-0 label-chip"
+                                            dark
+                                            transition="none"
+                                            :class="{
                                         'elevation-4': isSelected,
                                         'is-inverse' : isInverse,
                                         'is-shrinked' : isShrinked,
                                         'empty-edge' : bubble.isRelation() && !isEditFlow && bubble.isLabelEmpty()
                                     }"
-                                >
-                                    <div class="bubble-label white--text"
-                                         @blur="leaveEditFlow"
-                                         :data-placeholder="relationPlaceholder"
-                                         @focus="focus"
-                                         v-show="!isShrinked"
-                                         v-text="label"
-                                         @keydown="keydown"
-                                         :style="labelFont"
-                                         :class="{
+                                    >
+                                        <div class="bubble-label white--text"
+                                             @blur="leaveEditFlow"
+                                             :data-placeholder="relationPlaceholder"
+                                             @focus="focus"
+                                             v-show="!isShrinked"
+                                             v-text="label"
+                                             @keydown="keydown"
+                                             :style="labelFont"
+                                             :class="{
                                                         'unselectable' : !isEditFlow
                                                     }"
-                                    ></div>
-                                </v-chip>
-                            </div>
+                                        ></div>
+                                    </v-chip>
+                                </div>
+                                <div :style="background">
+                                    <BubbleButtons></BubbleButtons>
+                                </div>
+                            </v-menu>
                         </div>
                         <ChildNotice :bubble="bubble"
                                      class=""
@@ -478,8 +507,20 @@
                 await this.$nextTick();
                 Store.dispatch("redraw");
             },
+            mouseup: function (event) {
+                if (Selection.isSingle() && Selection.isSelected(this.bubble)) {
+                    setTimeout(() => {
+                        if (!this.bubble.isEditFlow) {
+                            this.showMenu = true;
+                        }
+                    }, 150)
+                }
+            },
             rightClick: function (event) {
                 event.preventDefault();
+                if (this.bubble.isEditFlow) {
+                    return;
+                }
                 this.showMenu = true;
                 Selection.setToSingle(this.bubble)
             },
@@ -511,6 +552,7 @@
             },
             dblclick: function (event) {
                 event.stopPropagation();
+                this.showMenu = false;
                 if (MindMapInfo.isViewOnly()) {
                     return;
                 }
@@ -568,7 +610,7 @@
                     event.preventDefault();
                     return;
                 }
-                Selection.removeAll();
+                // Selection.removeAll();
                 // debugger;
                 event.target.style.opacity = .5;
                 event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
@@ -905,11 +947,18 @@
     }
 
     .vertex .in-bubble-content {
-        max-width: 500px !important;
         height: 100%;
         position: relative;
         padding-top: 2px !important;
         padding-bottom: 2px !important;
+    }
+
+    .vertex .in-bubble-content.desktop {
+        max-width: 500px !important;
+    }
+
+    .vertex .in-bubble-content.mobile {
+        max-width: 300px !important;
     }
 
     .in-bubble-content-wrapper {

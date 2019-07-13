@@ -283,7 +283,7 @@ describe('GraphElementController', () => {
             );
             expect(
                 deepVertex.getDownBubble().text()
-            ).toBe("book 1");
+            ).toBe("Possession");
         });
     });
     describe("moveUnderParent", function () {
@@ -509,6 +509,24 @@ describe('GraphElementController', () => {
                 book1.getDownBubble().getLabel()
             ).toBe("book 2");
         });
+        it("moves around the group relation and does not go inside", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let possession = scenario.getPossessionGroupRelation();
+            let otherVertex = possession.getDownBubble().getNextBubble();
+            expect(
+                otherVertex.getLabel()
+            ).toBe("other bubble 2");
+            expect(
+                otherVertex.getParentFork().getLabel()
+            ).toBe("me");
+            expect(
+                otherVertex.getUpBubble().getLabel()
+            ).toBe("Possession");
+            await otherVertex.getController().moveUpOneStep();
+            expect(
+                otherVertex.getParentFork().getLabel()
+            ).toBe("me");
+        })
     });
     describe("_moveToExecute", () => {
 
