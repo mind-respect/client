@@ -23,7 +23,8 @@ WikidataService.search = function (term) {
                 description: searchResult.description,
                 getImageUrl: WikidataService.getImageUrl,
                 original: searchResult,
-                source: "wikidata"
+                source: "wikidata",
+                isCenter: false
             }
         })
     });

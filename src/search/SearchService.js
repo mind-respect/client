@@ -45,6 +45,7 @@ function formattedOwnResults(results) {
             url: searchResult.url,
             label: graphElement.getLabel(),
             description: graphElement.getComment(),
+            isCenter: facade.getNbVisits() > 0,
             getImageUrl: (searchResult) => {
                 let graphElement = searchResult.original.getGraphElement();
                 if (!graphElement.hasImages()) {
