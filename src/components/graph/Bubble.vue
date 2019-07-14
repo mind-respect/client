@@ -253,10 +253,12 @@
                     </div>
                     <div
                             v-if="bubble.isEdge() || bubble.isGroupRelation()"
-                            class="bubble relation graph-element relative pt-0 pb-0 mt-3 mb-0"
+                            class="bubble relation graph-element relative pt-0 pb-0 mb-0"
                             :class="{
                             'selected' : isSelected,
-                            'reverse': isLeft && !isCenter
+                            'reverse': isLeft && !isCenter,
+                            'mt-3': bubble.isEdge(),
+                            'mt-0': bubble.isGroupRelation()
                             }">
                         <div class="image_container"></div>
                         <div class="in-bubble-content"
