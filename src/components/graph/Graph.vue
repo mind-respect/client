@@ -83,6 +83,7 @@
     import Scroll from '@/Scroll'
     import AppController from '@/AppController'
     import Breakpoint from '@/Breakpoint'
+    import MetaController from '@/identifier/MetaController'
 
 
     export default {
@@ -112,7 +113,7 @@
             let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : Vertex.withUri(centerUri);
             center.makeCenter();
             let promise = center.isMeta() ?
-                center.getController().loadGraph(center) :
+                MetaController.withMeta(center).loadGraph(center) :
                 SubGraphController.withVertex(
                     center
                 ).load();

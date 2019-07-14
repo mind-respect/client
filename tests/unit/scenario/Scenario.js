@@ -2,7 +2,7 @@ import GraphServiceMock from '../mock/GraphServiceMock'
 import TreeBuilder from '../util/TreeBuilder'
 import TestData from '../util/js-test-data-client-side.json';
 import App from '@/App.vue'
-import {mount, createLocalVue} from '@vue/test-utils'
+import {createLocalVue, mount} from '@vue/test-utils'
 import VueRouter from 'vue-router'
 
 import router from '@/router'
@@ -12,15 +12,12 @@ import Edge from '@/edge/Edge'
 import Vuetify from 'vuetify'
 import I18n from '@/I18n'
 import Vue from 'vue'
-import TestUtil from '../util/TestUtil'
 import MindMapInfo from '@/MindMapInfo'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import IdUri from '@/IdUri'
 import CenterView from '@/views/Center.vue'
 
 import Bubble from '@/components/graph/Bubble.vue'
-
-import Selection from '@/Selection'
 
 const clonedeep = require('lodash.clonedeep')
 const api = {}
@@ -41,7 +38,8 @@ api.treeBuilder = new TreeBuilder(api.wrapper)
 
 Vue.use(Vuetify)
 
-api.Scenario = function () {};
+api.Scenario = function () {
+};
 
 api.Scenario.prototype.init = async function () {
     MindMapInfo._setIsViewOnly(false)
@@ -114,12 +112,25 @@ api.Scenario.prototype.getGroupRelationWithLabelInTree = function (label) {
 
 api.Scenario.prototype.vertexWithLabelInServerGraph = function (label, graph) {
     graph = graph || this.graph;
-    return api.vertexWithLabelInServerGraph(label, graph)
+    return api.vertexWithLabelInGraph(label, graph)
 };
 
 api.Scenario.prototype.edgeWithLabelInServerGraph = function (label) {
-    return api.edgeWithLabelInServerGraph(label, this.graph)
-}
+    return api.edgeWithLabelInGraph(label, this.graph)
+};
+
+api.Scenario.prototype.tagWithLabel = function (label) {
+    return api.tagWithLabelInGraph(
+        label,
+        this.graph
+    );
+};
+
+api.Scenario.prototype.tagWithLabelInTree = function (label) {
+    return CurrentSubGraph.get().tags.filter((tag) => {
+        return tag.getLabel() === label;
+    })[0];
+};
 
 api.Scenario.prototype.relationTagWithLabel = function (label) {
     let foundTag;
@@ -165,24 +176,46 @@ api.getTestData = function (key) {
     return data;
 };
 
-api.vertexWithLabelInServerGraph = function (label, graph) {
+api.getGraphElements = function (graph) {
+    return api.getVertices(graph).concat(
+        api.getEdges(graph)
+    );
+};
+
+api.getVertices = function (graph) {
     return Object.values(graph.vertices).map((vertexServer) => {
         let isFacadeBuilt = vertexServer.getLabel !== undefined;
         return isFacadeBuilt ? vertexServer : Vertex.fromServerFormat(vertexServer);
-    }).filter((vertex) => {
+    });
+};
+
+api.getEdges = function (graph) {
+    return Object.values(graph.edges).map((edge) => {
+        return Edge.fromServerFormat(edge);
+    });
+};
+
+api.vertexWithLabelInGraph = function (label, graph) {
+    return api.getVertices(graph).filter((vertex) => {
         if (vertex.getLabel() === label) {
             return vertex
         }
     })[0];
 };
 
-api.edgeWithLabelInServerGraph = function (label, graph) {
-    return Object.values(graph.edges).map((edge) => {
-        return Edge.fromServerFormat(edge);
-    }).filter((edge) => {
+api.edgeWithLabelInGraph = function (label, graph) {
+    return api.getEdges(graph).filter((edge) => {
         if (edge.getLabel() === label) {
             return edge
         }
+    })[0];
+};
+
+api.tagWithLabelInGraph = function (label, graph) {
+    return api.getGraphElements(graph).reduce((tags, graphElement) => {
+        return tags.concat(graphElement.getIdentifiers());
+    }, []).filter((tag) => {
+        return tag.getLabel() === label;
     })[0];
 };
 

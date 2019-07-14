@@ -9,18 +9,15 @@ let AroundEventTagScenario = function () {
 AroundEventTagScenario.prototype = new Scenario.Scenario();
 
 AroundEventTagScenario.prototype.getCenter = function () {
-    return this.vertexWithLabelInServerGraph("Event");
+    return this.tagWithLabel("Event");
 };
 
 AroundEventTagScenario.prototype.getCenterBubbleUri = function () {
-    return this.getIdentifierWithLabelInSubGraph(
-        "Event",
-        SubGraph.fromServerFormat(graph)
-    ).getUri();
+    return this.getCenter().getUri();
 };
 
 AroundEventTagScenario.prototype.getEventBubbleInTree = function () {
-    return this.getBubbleWithLabelInTree("Event");
+    return this.tagWithLabelInTree("Event");
 };
 
 AroundEventTagScenario.prototype.getEvent1 = function () {

@@ -18,7 +18,8 @@ api.empty = function () {
         {
             edges: [],
             vertices: {},
-            groupRelations: []
+            groupRelations: [],
+            tags: []
         },
         undefined,
         false
@@ -38,10 +39,12 @@ api.SubGraph = function (graph, centerUri, buildFacade) {
         this._buildVertices();
         this._buildEdges();
         this.groupRelations = [];
+        this.tags = [];
     } else {
         this.edges = graph.edges;
         this.vertices = graph.vertices;
         this.groupRelations = graph.groupRelations || [];
+        this.tags = graph.tags || [];
     }
     if (centerUri) {
         this.center = this.getVertexWithUri(centerUri)
@@ -50,6 +53,12 @@ api.SubGraph = function (graph, centerUri, buildFacade) {
 
 
 api.SubGraph.prototype.add = function (graphElement) {
+    if (graphElement.isCenter) {
+        graphElement.parentBubble = graphElement.parentVertex = graphElement;
+    }
+    if (graphElement.isMeta()) {
+        this.tags.push(graphElement);
+    }
     if (graphElement.isEdge()) {
         this.edges.push(graphElement);
         let endVertex = graphElement.isInverse() ? graphElement.getSourceVertex() : graphElement.getDestinationVertex();
@@ -60,9 +69,6 @@ api.SubGraph.prototype.add = function (graphElement) {
             endVertex
         );
     } else if (graphElement.isVertex()) {
-        if (graphElement.isCenter) {
-            graphElement.parentBubble = graphElement.parentVertex = graphElement;
-        }
         this.vertices[graphElement.getUri()] = graphElement;
     } else if (graphElement.isGroupRelation()) {
         this.groupRelations.push(

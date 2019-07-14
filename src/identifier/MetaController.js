@@ -9,8 +9,13 @@ import GraphService from '@/graph/GraphService'
 import MetaGraph from '@/identifier/MetaGraph'
 import Edge from '@/edge/Edge'
 import IdUri from '@/IdUri'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
+
+api.withMeta = function (meta) {
+    return new MetaController(meta);
+};
 
 function MetaController(metas) {
     this.metas = metas;
@@ -41,13 +46,14 @@ MetaController.prototype.loadGraph = function (metaAsBubble) {
                 return metaSubGraph;
             });
         }
-    }).then(function (metaSubGraph) {
+    }).then((metaSubGraph) => {
         let metaCenter = metaSubGraph.getMetaCenter();
         metaAsBubble.setLabel(metaCenter.getLabel());
         metaAsBubble.setComment(metaCenter.getComment());
         let edgesBySourceVertex = buildEdgesGroupedBySourceVertex(metaSubGraph);
         let subGraph = metaSubGraph.getSubGraph();
-        CurrentSubGraph.get().center = metaAsBubble;
+        subGraph.add(metaAsBubble);
+        subGraph.center = metaAsBubble;
         Object.keys(edgesBySourceVertex).forEach(function (vertexUri) {
             let sourceVertexAndEdges = edgesBySourceVertex[vertexUri];
             let child;
@@ -60,6 +66,9 @@ MetaController.prototype.loadGraph = function (metaAsBubble) {
                     IdUri.generateUuid(),
                     vertex.getUri(),
                     metaCenter.getUri()
+                );
+                metaAsBubble.addChild(
+                    child
                 );
             } else {
                 child = Edge.withLabelSelfSourceAndDestinationUri(
@@ -89,35 +98,35 @@ MetaController.prototype.loadGraph = function (metaAsBubble) {
                 //     groupVertexUi
                 // );
                 // edgeToGroupVertexUi.hideLabel();
-                // sourceVertexAndEdges.edges.forEach(function (edgeBetweenGroupAndDestination) {
-                //     edgeBetweenGroupAndDestination.setSourceVertex(
-                //         groupVertexUi.getModel()
-                //     );
-                //     var destinationVertex = subGraph.getVertexWithUri(
-                //         edgeBetweenGroupAndDestination.getDestinationVertex().getUri()
-                //     );
-                //     edgeBetweenGroupAndDestination.setDestinationVertex(
-                //         destinationVertex
-                //     );
-                //     var edgeBetweenGroupAndDestinationUi = graphUiBuilder.addEdge(
-                //         edgeBetweenGroupAndDestination,
-                //         groupVertexUi
-                //     );
-                //     var destinationVertexUi = graphUiBuilder.addVertex(
-                //         destinationVertex,
-                //         edgeBetweenGroupAndDestinationUi
-                //     );
-                //     graphUiBuilder.getEdgeUiBuilder().getClass().afterChildBuilt(
-                //         edgeBetweenGroupAndDestinationUi,
-                //         groupVertexUi,
-                //         destinationVertexUi
-                //     );
-                //     api._setupMetaEdgeUi(edgeBetweenGroupAndDestinationUi);
-                // });
+                sourceVertexAndEdges.edges.forEach(function (edgeBetweenGroupAndDestination) {
+                    edgeBetweenGroupAndDestination.setSourceVertex(
+                        vertex
+                    );
+                    let destinationVertex = subGraph.getVertexWithUri(
+                        edgeBetweenGroupAndDestination.getDestinationVertex().getUri()
+                    );
+                    edgeBetweenGroupAndDestination.setDestinationVertex(
+                        destinationVertex
+                    );
+                    vertex.addChild(edgeBetweenGroupAndDestination);
+                    // let edgeBetweenGroupAndDestinationUi = graphUiBuilder.addEdge(
+                    //     edgeBetweenGroupAndDestination,
+                    //     groupVertexUi
+                    // );
+                    // var destinationVertexUi = graphUiBuilder.addVertex(
+                    //     destinationVertex,
+                    //     edgeBetweenGroupAndDestinationUi
+                    // );
+                    // graphUiBuilder.getEdgeUiBuilder().getClass().afterChildBuilt(
+                    //     edgeBetweenGroupAndDestinationUi,
+                    //     groupVertexUi,
+                    //     destinationVertexUi
+                    // );
+                    // api._setupMetaEdgeUi(edgeBetweenGroupAndDestinationUi);
+                });
                 // if (groupVertexUi.getNumberOfHiddenRelations() > 1) {
                 //     groupVertexUi.collapse();
                 // }
-                return;
             }
         });
         return subGraph;
