@@ -84,7 +84,7 @@
         mounted: function () {
             let menuClass = "search-menu";
             if (this.$vuetify.breakpoint.lgAndUp) {
-                menuClass += "search-menu top-search top-search-desktop";
+                menuClass += " top-search top-search-desktop";
             }
             this.menuProps = {
                 "nudge-left": 50,

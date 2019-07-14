@@ -36,6 +36,9 @@ const Scroll = {
         //     bubble.resetScrollPosition();
         // }
         let element = bubble.isCenter ? bubble.getLabelHtml() : bubble.getLabelHtml();
+        if (!element) {
+            return;
+        }
         let sideMenuOffset = SideMenu.getWidth();
         let widthPadding;
         if (bubble.isCenter) {
