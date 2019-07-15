@@ -502,7 +502,7 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
     if (this.isCenter) {
         return this;
     }
-    if(isForTravel === undefined){
+    if (isForTravel === undefined) {
         isForTravel = false;
     }
     let indexAdjust = isDown ? 1 : -1;
@@ -699,7 +699,7 @@ FriendlyResource.FriendlyResource.prototype.getNumberOfChildDeep = function () {
 
 
 FriendlyResource.FriendlyResource.prototype.isLeaf = function () {
-    return this.getNumberOfChild() === 0 || this.canExpand();
+    return this.getNextChildren().length === 0;
 };
 
 FriendlyResource.FriendlyResource.prototype.getIndexInTree = function () {

@@ -443,7 +443,7 @@
                 return this.bubble.getNextBubble().isExpanded;
             },
             isInverse: function () {
-                return this.bubble.isRelation() && this.bubble.isInverse();
+                return this.bubble.isEdge() && this.bubble.isInverse();
             },
             hasIdentifications: function () {
                 return this.bubble.hasIdentifications();

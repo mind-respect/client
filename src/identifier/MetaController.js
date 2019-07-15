@@ -60,12 +60,12 @@ MetaController.prototype.loadGraph = function () {
                 sourceVertexAndEdges.sourceVertex.getUri()
             );
             if (sourceVertexAndEdges.edges.length === 0) {
-                child = new MetaRelation(centerBubble, vertex);
+                child = new MetaRelation(vertex, centerBubble);
                 centerBubble.addChild(
                     child
                 );
             } else {
-                child = new MetaRelation(centerBubble, vertex);
+                child = new MetaRelation(vertex, centerBubble);
                 centerBubble.addChild(
                     child
                 );
@@ -73,7 +73,7 @@ MetaController.prototype.loadGraph = function () {
                     let destinationVertex = subGraph.getVertexWithUri(
                         edgeBetweenGroupAndDestination.getDestinationVertex().getUri()
                     );
-                    let grandChild = new MetaRelation(vertex, destinationVertex);
+                    let grandChild = new MetaRelation(destinationVertex, vertex);
                     grandChild.setEdgeUri(
                         edgeBetweenGroupAndDestination.getUri()
                     );
@@ -81,6 +81,7 @@ MetaController.prototype.loadGraph = function () {
                     // api._setupMetaEdgeUi(edgeBetweenGroupAndDestinationUi);
                 });
                 if (vertex.getNumberOfChild() > 1) {
+                    vertex.expand();
                     vertex.collapse();
                 }
             }

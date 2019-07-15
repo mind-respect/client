@@ -1,8 +1,11 @@
 import Mock from '../mock/Mock'
 import AroundEventTagScenario from "../scenario/AroundEventTagScenario"
+import AroundTodoTagScenario from "../scenario/AroundTodoTagScenario"
 import MetaGraph from '@/identifier/MetaGraph'
 import GraphElementType from '@/graph-element/GraphElementType'
 import TestUtil from '../util/TestUtil'
+import Selection from '@/Selection'
+import KeyCode from 'keycode-js';
 
 describe("MetaGraph", () => {
     it("can get the meta center identifier", async () => {
@@ -45,98 +48,133 @@ describe("MetaGraph", () => {
         ).toBe("Event");
     });
 
-    xit("displays the related bubbles", async () => {
+    it("displays the related bubbles", async () => {
         let scenario = await new AroundEventTagScenario();
         let eventCenter = scenario.getEventBubbleInTree();
-        let event1 = TestUtil.getChildWithLabel(
-            eventCenter,
-            "e1"
-        ).getNextBubble();
-        expect(
-            event1.isVertex()
-        ).toBeTruthy();
-        let event2 = TestUtil.getChildWithLabel(
+        let event2 = TestUtil.getChildDeepWithLabel(
             eventCenter,
             "e2"
-        ).getNextBubble();
+        );
         expect(
             event2.isVertex()
         ).toBeTruthy();
+        let event3 = TestUtil.getChildDeepWithLabel(
+            eventCenter,
+            "e3"
+        );
+        expect(
+            event3.isVertex()
+        ).toBeTruthy();
     });
-    xit("builds relation of type meta", function () {
-        var eventBubble = new Scenarios.aroundEventIdentifier().getEventBubbleInTree();
-        var relation = eventBubble.getTopMostChildBubble();
+    it("builds relation of type meta", async () => {
+        let scenario = await new AroundEventTagScenario();
+        let eventBubble = scenario.getEventBubbleInTree();
+        let relation = eventBubble.getNextBubble();
         expect(
             relation.getGraphElementType()
         ).toBe(GraphElementType.MetaRelation);
     });
     //cant make test
-    xit("prevents from editing relations of type meta", function () {
-        var eventBubble = new Scenarios.aroundEventIdentifier().getEventBubbleInTree();
-        var relation = eventBubble.getTopMostChildBubble();
-        SelectionHandler.setToSingleRelation(
-            relation
+    it("prevents from editing relations of type meta", async () => {
+        let scenario = await new AroundEventTagScenario();
+        let eventBubble = scenario.getEventBubbleInTree();
+        let tagRelation = eventBubble.getNextBubble();
+        Selection.setToSingleRelation(
+            tagRelation
         );
         expect(
-            relation.text()
-        ).toBe("meta");
-        TestUtils.pressKeyInBubble("l", relation);
-        TestUtils.pressEnterInBubble(relation);
+            tagRelation.getLabel()
+        ).toBe("");
+        TestUtil.pressKey("l");
+        TestUtil.pressKeyCode(KeyCode.KEY_RETURN);
+        await scenario.nextTickPromise(1);
         expect(
-            relation.text()
-        ).toBe("meta");
+            tagRelation.getLabel()
+        ).toBe("");
     });
-    xit("inverts the meta relations", function () {
-        var eventMetaBubble = new Scenarios.aroundEventIdentifier().getEventBubbleInTree();
-        var relation = eventMetaBubble.getTopMostChildBubble();
-        var eventBubble = relation.getTopMostChildBubble();
+    it("inverts the meta relations", async () => {
+        let scenario = await new AroundEventTagScenario();
+        let eventMetaBubble = scenario.getEventBubbleInTree();
+        let tagRelation = eventMetaBubble.getNextBubble();
+        let eventBubble = tagRelation.getNextBubble();
         expect(
-            relation.isInverse()
+            tagRelation.isInverse()
         ).toBeTruthy();
         expect(
-            relation.getModel().getSourceVertex().getUri()
+            tagRelation.getSourceVertex().getUri()
         ).toBe(
-            eventBubble.getModel().getUri()
+            eventBubble.getUri()
         );
         expect(
-            relation.getModel().getDestinationVertex().getUri()
+            tagRelation.getDestinationVertex().getUri()
         ).toBe(
-            eventMetaBubble.getModel().getUri()
+            eventMetaBubble.getUri()
         );
     });
-    xit("groups tagged edges by source vertex", function () {
-        var toDoMetaBubble = new Scenarios.aroundTodoIdentifier().getTodoBubbleInTree();
+    it("groups tagged edges by source vertex", async () => {
+        let scenario = await new AroundTodoTagScenario();
+        let toDoMetaBubble = scenario.getCenterInTree();
         expect(
             toDoMetaBubble.getNumberOfChild()
         ).toBe(2);
-        expect(TestUtils.hasChildWithLabel(
+        expect(TestUtil.hasDeepChildWithLabel(
             toDoMetaBubble,
             "e1"
         )).toBeTruthy();
-        var sourceVertexAsGroupRelation = TestUtils.getChildWithLabel(
+        let sourceVertexAsGroupRelation = TestUtil.getChildDeepWithLabel(
             toDoMetaBubble,
             "e1"
-        ).getTopMostChildBubble();
+        );
+        expect(
+            sourceVertexAsGroupRelation.isVertex()
+        ).toBeTruthy();
         sourceVertexAsGroupRelation.expand();
         expect(
             sourceVertexAsGroupRelation.getNumberOfChild()
         ).toBe(2);
-        var e2 = TestUtils.getChildWithLabel(
-            sourceVertexAsGroupRelation,
-            "r1"
-        ).getTopMostChildBubble();
         expect(
-            e2.text()
-        ).toBe("e2");
+            TestUtil.hasDeepChildWithLabel(sourceVertexAsGroupRelation, "e2")
+        ).toBeTruthy();
     });
-    xit("collapses group source vertices", function () {
-        var toDoMetaBubble = new Scenarios.aroundTodoIdentifier().getTodoBubbleInTree();
-        var sourceVertexAsGroupRelation = TestUtils.getChildWithLabel(
+    it("prevents group source vertices to be leaves when they are expanded", async () => {
+        let scenario = await new AroundTodoTagScenario();
+        let toDoMetaBubble = scenario.getCenterInTree();
+        let sourceVertexAsGroupRelation = TestUtil.getChildDeepWithLabel(
             toDoMetaBubble,
             "e1"
-        ).getTopMostChildBubble();
+        );
         expect(
-            sourceVertexAsGroupRelation.isCollapsed()
+            sourceVertexAsGroupRelation.isVertex()
+        ).toBeTruthy();
+        expect(
+            sourceVertexAsGroupRelation.getNumberOfChild()
+        ).toBe(2);
+        expect(
+            sourceVertexAsGroupRelation.canExpand()
+        ).toBeTruthy();
+        expect(
+            sourceVertexAsGroupRelation.isLeaf()
+        ).toBeTruthy();
+        sourceVertexAsGroupRelation.expand();
+        expect(
+            sourceVertexAsGroupRelation.canExpand()
+        ).toBeFalsy();
+        expect(
+            sourceVertexAsGroupRelation.isLeaf()
+        ).toBeFalsy();
+    });
+    it("collapses group source vertices", async () => {
+        let scenario = await new AroundTodoTagScenario();
+        let toDoMetaBubble = scenario.getCenterInTree();
+        let sourceVertexAsGroupRelation = TestUtil.getChildDeepWithLabel(
+            toDoMetaBubble,
+            "e1"
+        );
+        expect(
+            sourceVertexAsGroupRelation.isVertex()
+        ).toBeTruthy();
+        expect(
+            sourceVertexAsGroupRelation.canExpand()
         ).toBeTruthy();
     });
     xit("has the number of tagged relations for source vertex groups", function () {

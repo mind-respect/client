@@ -52,9 +52,24 @@ api.getChildWithLabel = function (parent, label) {
     }
 };
 
+api.getChildDeepWithLabel = function (parent, label) {
+    let child = parent.getDescendants().filter((child) => {
+        return child.getLabel() === label;
+    });
+    if (child.length) {
+        return child[0]
+    }
+};
+
+
 api.hasChildWithLabel = function (parent, label) {
     return api.getChildWithLabel(parent, label) !== undefined;
 };
+
+api.hasDeepChildWithLabel = function (parent, label) {
+    return api.getChildDeepWithLabel(parent, label) !== undefined;
+};
+
 
 api.getChildWithLabelAndType = function (parent, label, graphElementType) {
     let child = parent.getNextChildren().filter((child) => {
