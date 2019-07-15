@@ -80,9 +80,9 @@ MetaController.prototype.loadGraph = function () {
                     vertex.addChild(grandChild);
                     // api._setupMetaEdgeUi(edgeBetweenGroupAndDestinationUi);
                 });
-                // if (groupVertexUi.getNumberOfHiddenRelations() > 1) {
-                //     groupVertexUi.collapse();
-                // }
+                if (vertex.getNumberOfChild() > 1) {
+                    vertex.collapse();
+                }
             }
         });
         return subGraph;

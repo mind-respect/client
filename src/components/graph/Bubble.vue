@@ -53,8 +53,7 @@
                 'vh-center':isCenter,
                 'left':!isLeft && !isCenter,
                 'pl-5': (!isCenter && isLeaf && isLeft) || (isCenter && bubble.leftBubbles.length === 0),
-                'pr-5': (!isCenter && isLeaf && !isLeft) || (isCenter && bubble.rightBubbles.length === 0),
-                'w-500': (!isCenter && isLeaf && isLeft)
+                'pr-5': (!isCenter && isLeaf && !isLeft) || (isCenter && bubble.rightBubbles.length === 0)
             }"
                      :id="bubble.uiId"
                 >
@@ -321,7 +320,7 @@
                                                         'unselectable' : !isEditFlow
                                                     }"
                                         ></div>
-                                        <v-icon v-if="bubble.isMetaRelation()" small class="bubble-label"
+                                        <v-icon v-if="bubble.isMetaRelation()" small class="bubble-label unselectable"
                                                 v-show="!isShrinked">label
                                         </v-icon>
                                     </v-chip>
@@ -903,10 +902,6 @@
 
     .in-label-buttons {
         top: 20%
-    }
-
-    .w-500 {
-        width: 500px;
     }
 
     .in-label-buttons-left {
