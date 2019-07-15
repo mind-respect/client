@@ -271,8 +271,8 @@
                              @contextmenu="rightClick"
                              draggable="true"
                              :class="{
-                                'pl-5 pr-1': bubble.isRelation() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
-                                'pl-1 pr-5': bubble.isRelation() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
+                                'pl-5 pr-1': bubble.isEdge() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
+                                'pl-1 pr-5': bubble.isEdge() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
                                 'pl-4': (bubble.isGroupRelation() && !isLeft),
                                 'pr-4': (bubble.isGroupRelation() && isLeft)
                              }"
@@ -292,7 +292,7 @@
                             >
                                 <div class="label-container" slot="activator">
                                     <!--                                <span style="visibility: hidden;" v-if="isShrinked">{{$t('edge:default')}}</span>-->
-                                    <v-chip color="secondary"
+                                    <v-chip :color="chipColor"
                                             small
                                             @dragover="labelDragEnter"
                                             @dragleave="labelDragLeave"
@@ -305,7 +305,7 @@
                                         'elevation-4': isSelected,
                                         'is-inverse' : isInverse,
                                         'is-shrinked' : isShrinked,
-                                        'empty-edge' : bubble.isRelation() && !isEditFlow && bubble.isLabelEmpty()
+                                        'empty-edge' : bubble.isEdge() && !isEditFlow && bubble.isLabelEmpty()
                                     }"
                                     >
                                         <div class="bubble-label white--text"
@@ -313,6 +313,7 @@
                                              :data-placeholder="relationPlaceholder"
                                              @focus="focus"
                                              v-show="!isShrinked"
+                                             v-if="!bubble.isMetaRelation()"
                                              v-text="label"
                                              @keydown="keydown"
                                              :style="labelFont"
@@ -320,6 +321,9 @@
                                                         'unselectable' : !isEditFlow
                                                     }"
                                         ></div>
+                                        <v-icon v-if="bubble.isMetaRelation()" small class="bubble-label"
+                                                v-show="!isShrinked">label
+                                        </v-icon>
                                     </v-chip>
                                 </div>
                                 <div :style="background">
@@ -403,13 +407,15 @@
                 isLeftRightDragOver: null,
                 showMenu: false,
                 linkMenu: false,
-                linkMenuHref: null
+                linkMenuHref: null,
+                chipColor: null
             }
         },
         mounted: async function () {
             this.bubble.loading = false;
             this.bubble.isEditFlow = false;
             this.bubble.direction = this.direction;
+            this.chipColor = this.bubble.isMetaRelation() ? "third" : "secondary";
             this.checkIsSelected();
             this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
             this.isLeft = this.direction === "left";
@@ -512,7 +518,7 @@
             mouseup: function (event) {
                 if (Selection.isSingle() && Selection.isSelected(this.bubble)) {
                     setTimeout(() => {
-                        if (!this.bubble.isEditFlow) {
+                        if (!this.bubble.isEditFlow && !this.linkMenu) {
                             this.showMenu = true;
                         }
                     }, 150)
@@ -555,10 +561,7 @@
             dblclick: function (event) {
                 event.stopPropagation();
                 this.showMenu = false;
-                if (MindMapInfo.isViewOnly()) {
-                    return;
-                }
-                if (this.bubble.isEditFlow) {
+                if (MindMapInfo.isViewOnly() || this.bubble.isEditFlow || this.bubble.isMetaRelation()) {
                     return;
                 }
                 this.bubble.isEditFlow = true;

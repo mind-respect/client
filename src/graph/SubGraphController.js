@@ -132,8 +132,8 @@ SubGraphController.prototype._removeRelationWithGrandParentAndChildFromServerGra
     if (this.model().isCenter) {
         return 0;
     }
-    let parentRelation = this.model().getRelationWithUiParent();
-    let relationWithGrandParentUri = parentRelation.getUri();
+    let parentRelation = this.model().getParentBubble();
+    let relationWithGrandParentUri = parentRelation.isMetaRelation() ? parentRelation.getEdgeUri() : parentRelation.getUri();
     let grandParent = this.model().getParentVertex();
     let grandParentUriToCompare = grandParent.getUri();
     let nbRelationsWithGrandParent = 0;

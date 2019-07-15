@@ -34,5 +34,8 @@ api.getAppController = function () {
 api.getMetaController = function () {
     return _implementation.getMetaController();
 };
+api.getMetaRelationController = function () {
+    return _implementation.getMetaRelationController();
+};
 
 export default api;

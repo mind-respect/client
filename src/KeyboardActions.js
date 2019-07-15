@@ -127,7 +127,7 @@ function keyDownHandler(event) {
         let isPasting = isCombineKeyPressed && vKeyNumber && event.which;
         if (!isPasting && event.which !== api._ctrlKeyNumber && !MindMapInfo.isViewOnly() && Selection.isSingle()) {
             let selectedElement = Selection.getSingle();
-            if (!MindMapInfo.isViewOnly()) {
+            if (!MindMapInfo.isViewOnly() && !selectedElement.isMetaRelation()) {
                 let labelHtml = selectedElement.getLabelHtml();
                 labelHtml.contentEditable = "true";
                 Focus.focusEnd(labelHtml);

@@ -16,7 +16,7 @@ api.fromServerFormat = function (serverFormat) {
 api.empty = function () {
     return new api.SubGraph(
         {
-            edges: [],
+            edges: {},
             vertices: {},
             groupRelations: [],
             tags: []
@@ -58,9 +58,8 @@ api.SubGraph.prototype.add = function (graphElement) {
     }
     if (graphElement.isMeta()) {
         this.tags.push(graphElement);
-    }
-    if (graphElement.isEdge()) {
-        this.edges.push(graphElement);
+    } else if (graphElement.isEdge()) {
+        this.edges[graphElement.getId()] = graphElement;
         let endVertex = graphElement.isInverse() ? graphElement.getSourceVertex() : graphElement.getDestinationVertex();
         endVertex.parentBubble = graphElement;
         endVertex.parentVertex = graphElement.parentVertex;
@@ -110,7 +109,7 @@ api.SubGraph.prototype.getVertexRelatedToIdentification = function (identificati
 };
 
 api.SubGraph.prototype.visitEdgesRelatedToVertex = function (vertex, visitor) {
-    this.edges.forEach((edge) => {
+    this.getEdges().forEach((edge) => {
         if (this.isRelatedToVertex(vertex)) {
             visitor(edge);
         }
@@ -137,16 +136,26 @@ api.SubGraph.prototype._buildEdges = function () {
     })
 };
 
+//@deprecated
 api.SubGraph.prototype.visitEdges = function (visitor) {
-    Object.keys(this.edges).forEach(function (key) {
+    Object.keys(this.edges).forEach((key) => {
         visitor(this.edges[key]);
-    }.bind(this));
+    });
 };
 
+api.SubGraph.prototype.getEdges = function () {
+    return Object.values(this.edges);
+};
+
+//@deprecated
 api.SubGraph.prototype.visitVertices = function (visitor) {
     Object.keys(this.vertices).forEach(function (key) {
         visitor(this.vertices[key]);
     }.bind(this));
+};
+
+api.SubGraph.prototype.getVertices = function () {
+    return Object.values(this.vertices);
 };
 
 api.SubGraph.prototype.visitGraphElements = function (visitor) {
@@ -159,7 +168,7 @@ api.SubGraph.prototype.getVertexWithUri = function (uri) {
 };
 
 api.SubGraph.prototype.getEdgeWithUri = function (uri) {
-    return this.edges.filter((edge) => {
+    return this.getEdges().filter((edge) => {
         return edge.getUri() === uri;
     })[0];
 };

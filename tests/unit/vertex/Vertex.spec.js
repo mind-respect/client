@@ -28,14 +28,6 @@ describe('Vertex', () => {
             ).toBe(1);
         });
     });
-    it("can return relation with ui parent", async () => {
-        let scenario = await new ThreeScenario();
-        let bubble2 = scenario.getBubble2InTree();
-        let relationWithParent = bubble2.getRelationWithUiParent();
-        expect(
-            relationWithParent.getUri()
-        ).toBe(scenario.getRelation1InTree().getUri());
-    });
     it("can visit immediate vertices child", async () => {
         let hasVisited = false;
         let scenario = await new ThreeScenario();

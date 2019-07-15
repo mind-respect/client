@@ -7,9 +7,7 @@ import MetaService from '@/identifier/MetaService'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphService from '@/graph/GraphService'
 import MetaGraph from '@/identifier/MetaGraph'
-import Edge from '@/edge/Edge'
-import IdUri from '@/IdUri'
-import CurrentSubGraph from '@/graph/CurrentSubGraph'
+import MetaRelation from '@/identifier/MetaRelation'
 
 const api = {};
 
@@ -27,7 +25,7 @@ function MetaController(metas) {
 
 MetaController.prototype = new GraphElementController.GraphElementController();
 
-MetaController.prototype.loadGraph = function (metaAsBubble) {
+MetaController.prototype.loadGraph = function () {
     let uri = this.model().getUri();
     return GraphService.getForCentralBubbleUri(uri).then((response) => {
         let metaSubGraph = MetaGraph.fromServerFormatAndCenterUri(
@@ -47,81 +45,39 @@ MetaController.prototype.loadGraph = function (metaAsBubble) {
             });
         }
     }).then((metaSubGraph) => {
-        let metaCenter = metaSubGraph.getMetaCenter();
-        metaAsBubble.setLabel(metaCenter.getLabel());
-        metaAsBubble.setComment(metaCenter.getComment());
+        let centerTag = metaSubGraph.getMetaCenter();
+        let centerBubble = this.model();
+        centerBubble.setLabel(centerTag.getLabel());
+        centerBubble.setComment(centerTag.getComment());
         let edgesBySourceVertex = buildEdgesGroupedBySourceVertex(metaSubGraph);
         let subGraph = metaSubGraph.getSubGraph();
-        subGraph.add(metaAsBubble);
-        subGraph.center = metaAsBubble;
-        Object.keys(edgesBySourceVertex).forEach(function (vertexUri) {
+        subGraph.add(centerBubble);
+        subGraph.center = centerBubble;
+        Object.keys(edgesBySourceVertex).forEach((vertexUri) => {
             let sourceVertexAndEdges = edgesBySourceVertex[vertexUri];
             let child;
             let vertex = subGraph.getVertexWithUri(
                 sourceVertexAndEdges.sourceVertex.getUri()
             );
             if (sourceVertexAndEdges.edges.length === 0) {
-                child = Edge.withLabelSelfSourceAndDestinationUri(
-                    vertex.getLabel(),
-                    IdUri.generateUuid(),
-                    vertex.getUri(),
-                    metaCenter.getUri()
-                );
-                metaAsBubble.addChild(
+                child = new MetaRelation(centerBubble, vertex);
+                centerBubble.addChild(
                     child
                 );
             } else {
-                child = Edge.withLabelSelfSourceAndDestinationUri(
-                    vertex.getLabel(),
-                    IdUri.generateUuid(),
-                    vertex.getUri(),
-                    metaCenter.getUri()
-                );
-                child.setSourceVertex(vertex);
-                child.setDestinationVertex(metaCenter);
-                metaAsBubble.addChild(
+                child = new MetaRelation(centerBubble, vertex);
+                centerBubble.addChild(
                     child
                 );
-                // var groupVertexUi = graphUiBuilder.addVertex(
-                //     vertex,
-                //     edgeToGroupVertexUi
-                // );
-                // graphUiBuilder.getVertexUiBuilder().getClass().completeBuild(
-                //     groupVertexUi
-                // );
-                // graphUiBuilder.setVertexUiBuilder(
-                //     previousVertexUiBuilder
-                // );
-                // graphUiBuilder.getEdgeUiBuilder().getClass().afterChildBuilt(
-                //     edgeToGroupVertexUi,
-                //     metaCenter,
-                //     groupVertexUi
-                // );
-                // edgeToGroupVertexUi.hideLabel();
                 sourceVertexAndEdges.edges.forEach(function (edgeBetweenGroupAndDestination) {
-                    edgeBetweenGroupAndDestination.setSourceVertex(
-                        vertex
-                    );
                     let destinationVertex = subGraph.getVertexWithUri(
                         edgeBetweenGroupAndDestination.getDestinationVertex().getUri()
                     );
-                    edgeBetweenGroupAndDestination.setDestinationVertex(
-                        destinationVertex
+                    let grandChild = new MetaRelation(vertex, destinationVertex);
+                    grandChild.setEdgeUri(
+                        edgeBetweenGroupAndDestination.getUri()
                     );
-                    vertex.addChild(edgeBetweenGroupAndDestination);
-                    // let edgeBetweenGroupAndDestinationUi = graphUiBuilder.addEdge(
-                    //     edgeBetweenGroupAndDestination,
-                    //     groupVertexUi
-                    // );
-                    // var destinationVertexUi = graphUiBuilder.addVertex(
-                    //     destinationVertex,
-                    //     edgeBetweenGroupAndDestinationUi
-                    // );
-                    // graphUiBuilder.getEdgeUiBuilder().getClass().afterChildBuilt(
-                    //     edgeBetweenGroupAndDestinationUi,
-                    //     groupVertexUi,
-                    //     destinationVertexUi
-                    // );
+                    vertex.addChild(grandChild);
                     // api._setupMetaEdgeUi(edgeBetweenGroupAndDestinationUi);
                 });
                 // if (groupVertexUi.getNumberOfHiddenRelations() > 1) {
@@ -137,7 +93,7 @@ function buildEdgesGroupedBySourceVertex(metaSubGraph) {
     let edgesBySourceVertex = {};
     let excludedDestinationVerticesUri = {};
     let subGraph = metaSubGraph.getSubGraph();
-    subGraph.visitEdges(function (edge) {
+    subGraph.getEdges().forEach((edge) => {
         if (!edge.hasIdentification(metaSubGraph.getMetaCenter())) {
             return;
         }
@@ -156,7 +112,7 @@ function buildEdgesGroupedBySourceVertex(metaSubGraph) {
         );
         excludedDestinationVerticesUri[edge.getDestinationVertex().getUri()] = true;
     });
-    Object.keys(edgesBySourceVertex).forEach(function (vertexUri) {
+    Object.keys(edgesBySourceVertex).forEach((vertexUri) => {
         let sourceVertexAndEdges = edgesBySourceVertex[vertexUri];
         let areDestinationVerticesGroupedBySourceVertex = sourceVertexAndEdges.edges.length > 1;
         if (!areDestinationVerticesGroupedBySourceVertex) {
@@ -168,7 +124,7 @@ function buildEdgesGroupedBySourceVertex(metaSubGraph) {
                 ] = true;
         });
     });
-    subGraph.visitVertices(function (vertex) {
+    subGraph.visitVertices((vertex) => {
         let isAVertexNotGroupedBySourceVertex = !edgesBySourceVertex[vertex.getUri()] && !excludedDestinationVerticesUri[vertex.getUri()];
         if (isAVertexNotGroupedBySourceVertex) {
             edgesBySourceVertex[vertex.getUri()] = {

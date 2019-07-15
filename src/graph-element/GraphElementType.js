@@ -26,6 +26,7 @@ api.GraphElementType = function (type) {
     this._isVertex = api.isVertex(type);
     this._isVertexType = api.isVertexType(type);
     this._isMeta = api.isMeta(type);
+    this._isMetaRelation = api.isMetaRelation(type);
 };
 
 api.GraphElementType.prototype.isEdge = function () {
@@ -52,6 +53,11 @@ api.GraphElementType.prototype.isMeta = function () {
     return this._isMeta;
 };
 
+api.GraphElementType.prototype.isMetaRelation = function () {
+    return this._isMetaRelation;
+};
+
+
 api.isEdge = function (type) {
     return api.isEdgeType(type);
 };
@@ -76,6 +82,10 @@ api.isVertexType = function (type) {
 
 api.isMeta = function (type) {
     return api.Meta === type;
+};
+
+api.isMetaRelation = function (type) {
+    return api.MetaRelation === type;
 };
 
 api.fromString = function (type) {

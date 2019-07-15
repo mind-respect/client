@@ -30,13 +30,13 @@ api.MetaGraph.prototype.getSubGraph = function () {
 
 api.MetaGraph.prototype._getMetaCenter = function () {
     let centerMeta;
-    this.subGraph.visitGraphElements(function (graphElement) {
-        graphElement.getIdentifiersIncludingSelf().forEach(function (identifier) {
+    this.subGraph.visitGraphElements((graphElement) => {
+        graphElement.getIdentifiersIncludingSelf().forEach((identifier) => {
             if (identifier.getUri() === this.centerUri) {
                 centerMeta = identifier;
             }
-        }.bind(this));
-    }.bind(this));
+        });
+    });
     return centerMeta;
 };
 api.MetaGraph.prototype.getCenterUri = function () {

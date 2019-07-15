@@ -15,6 +15,9 @@ function MetaRelationController(relations) {
 }
 
 MetaRelationController.prototype = new GraphElementController.GraphElementController();
+MetaRelationController.prototype.focusCanDo = function () {
+    return false;
+};
 MetaRelationController.prototype.centerCanDo = function () {
     return false;
 };

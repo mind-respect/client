@@ -34,12 +34,11 @@ UiTreeInfoBuilder.prototype.doIt = function () {
 };
 
 UiTreeInfoBuilder.prototype._setTreeInfoToVertices = function () {
-    this.edgesFacade.forEach(function (edge) {
-            this._updateTripleTreeInfoUsingEdge(
-                edge
-            );
-        }.bind(this)
-    );
+    this.edgesFacade.forEach((edge) => {
+        this._updateTripleTreeInfoUsingEdge(
+            edge
+        );
+    });
 };
 
 UiTreeInfoBuilder.prototype._buildRelationsOfVertices = function () {

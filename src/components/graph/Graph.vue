@@ -113,7 +113,7 @@
             let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : Vertex.withUri(centerUri);
             center.makeCenter();
             let promise = center.isMeta() ?
-                MetaController.withMeta(center).loadGraph(center) :
+                MetaController.withMeta(center).loadGraph() :
                 SubGraphController.withVertex(
                     center
                 ).load();

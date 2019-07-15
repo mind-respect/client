@@ -8,6 +8,7 @@ import EdgeController from '@/edge/EdgeController'
 import GraphController from '@/graph/GraphController'
 import AppController from '@/AppController'
 import MetaController from '@/identifier/MetaController'
+import MetaRelationController from '@/identifier/MetaRelationController'
 import GraphElementController from '@/graph-element/GraphElementController'
 const api = {};
 
@@ -35,6 +36,10 @@ api.getAppController = function () {
 };
 api.getMetaController = function () {
     return MetaController;
+};
+
+api.getMetaRelationController = function () {
+    return MetaRelationController;
 };
 
 export default api;

@@ -91,6 +91,7 @@ GraphElement.initMenuHandlerGetters = function () {
     controllerGetters[GraphElementType.Relation] = GraphDisplayer.getRelationMenuHandler;
     controllerGetters[GraphElementType.GroupRelation] = GraphDisplayer.getGroupRelationMenuHandler;
     controllerGetters[GraphElementType.Meta] = GraphDisplayer.getMetaController;
+    controllerGetters[GraphElementType.MetaRelation] = GraphDisplayer.getMetaRelationController;
 };
 
 GraphElement.GraphElement = function () {

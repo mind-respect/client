@@ -185,10 +185,6 @@ Vertex.prototype.makeCenter = function () {
     this.direction = "center"
 };
 
-Vertex.prototype.getRelationWithUiParent = function () {
-    return this.getParentBubble();
-};
-
 
 Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     let children;

@@ -57,13 +57,13 @@ api.Edge = function () {
 
 api.Edge.prototype = new GraphElement.GraphElement();
 
-api.Edge.prototype.init = function (edgeServerFormat) {
-    this.sourceVertex = FriendlyResource.fromServerFormat(
+api.Edge.prototype.init = function (edgeServerFormat, sourceVertex, destinationVertex) {
+    this.sourceVertex = sourceVertex ? sourceVertex : FriendlyResource.fromServerFormat(
         VertexServerFormatBuilder.getFriendlyResourceServerObject(
             edgeServerFormat.sourceVertex
         )
     );
-    this.destinationVertex = FriendlyResource.fromServerFormat(
+    this.destinationVertex = destinationVertex ? destinationVertex : FriendlyResource.fromServerFormat(
         VertexServerFormatBuilder.getFriendlyResourceServerObject(
             edgeServerFormat.destinationVertex
         )
