@@ -72,7 +72,6 @@
     import GraphList from "@/components/list/GraphList";
     import Selection from '@/Selection'
     import SubGraphController from '@/graph/SubGraphController'
-    import Vertex from '@/vertex/Vertex'
     import Meta from '@/identifier/Meta'
     import RemoveDialog from '@/components/RemoveDialog'
     import DescriptionDialog from '@/components/DescriptionDialog'
@@ -84,6 +83,7 @@
     import AppController from '@/AppController'
     import Breakpoint from '@/Breakpoint'
     import MetaController from '@/identifier/MetaController'
+    import GraphElement from "@/graph-element/GraphElement";
 
 
     export default {
@@ -110,8 +110,7 @@
             CurrentSubGraph.set(SubGraph.empty());
             Selection.removeAll();
             let centerUri = MindMapInfo.getCenterBubbleUri();
-            let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : Vertex.withUri(centerUri);
-            center.makeCenter();
+            let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : GraphElement.withUri(centerUri);
             let promise = center.isMeta() ?
                 MetaController.withMeta(center).loadGraph() :
                 SubGraphController.withVertex(

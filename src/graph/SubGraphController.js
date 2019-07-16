@@ -9,6 +9,7 @@ import Edge from '@/edge/Edge'
 import GraphElement from '@/graph-element/GraphElement'
 import GraphElementService from '@/graph-element/GraphElementService'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
+import IdUri from '@/IdUri'
 
 const api = {};
 
@@ -41,29 +42,34 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
         this.model().getUri()
     ).then((response) => {
         let serverGraph = response.data;
-        this.model().nbRelationsWithGrandParent = this._removeRelationWithGrandParentAndChildFromServerGraph(serverGraph);
-        if (!serverGraph.vertices[this.model().getUri()]) {
-            return Promise.reject();
+        if (isParentAlreadyOnMap) {
+            this.model().nbRelationsWithGrandParent = this._removeRelationWithGrandParentAndChildFromServerGraph(serverGraph);
+        }
+        let centerUri = this.model().getUri();
+        let isCenterEdge = IdUri.isEdgeUri(this.model().getUri());
+        if (isCenterEdge) {
+            let centerEdge = Edge.fromServerFormat(
+                serverGraph.edges[this.model().getUri()]
+            );
+            centerUri = centerEdge.getSourceVertex().getUri();
         }
         TreeDisplayerCommon.setUiTreeInfoToVertices(
             serverGraph,
-            this.model().getUri()
+            centerUri
         );
         let graph = SubGraph.withFacadeAndCenterUri(
             serverGraph,
-            this.model().getUri()
+            centerUri
         );
         let parentAsCenter = graph.center;
+        parentAsCenter.makeCenter();
         let modelToAddChild;
-        if (this.model().isCenter && !isParentAlreadyOnMap) {
-            parentAsCenter.makeCenter();
+        if (isParentAlreadyOnMap) {
+            modelToAddChild = this.model();
+            graph.add(this.model())
+        } else {
             modelToAddChild = parentAsCenter;
             CurrentSubGraph.get().add(modelToAddChild);
-        } else {
-            modelToAddChild = this.model();
-        }
-        if (isParentAlreadyOnMap) {
-            graph.add(this.model())
         }
         let childrenIndex = parentAsCenter.getChildrenIndex();
         let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;

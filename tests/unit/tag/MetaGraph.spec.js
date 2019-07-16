@@ -177,57 +177,61 @@ describe("MetaGraph", () => {
             sourceVertexAsGroupRelation.canExpand()
         ).toBeTruthy();
     });
-    xit("has the number of tagged relations for source vertex groups", function () {
-        var toDoMetaBubble = new Scenarios.aroundTodoIdentifier().getTodoBubbleInTree();
-        var sourceVertexAsGroupRelation = TestUtils.getChildWithLabel(
+    it("has the number of tagged relations for source vertex groups", async () => {
+        let scenario = await new AroundTodoTagScenario();
+        let toDoMetaBubble = scenario.getCenterInTree();
+        let sourceVertexAsGroupRelation = TestUtil.getChildDeepWithLabel(
             toDoMetaBubble,
             "e1"
-        ).getTopMostChildBubble();
+        );
         expect(
-            sourceVertexAsGroupRelation.getNumberOfHiddenRelations()
+            sourceVertexAsGroupRelation.getNumberOfChild()
         ).toBe(2);
     });
-    xit("excludes the source vertex in it's number of hidden child for a vertex under a source vertex", function () {
-        var toDoMetaBubble = new Scenarios.aroundTodoIdentifier().getTodoBubbleInTree();
-        var sourceVertexAsGroupRelation = TestUtils.getChildWithLabel(
+    it("excludes the source vertex in it's number of hidden child for a vertex under a source vertex", async () => {
+        let scenario = await new AroundTodoTagScenario();
+        let toDoMetaBubble = scenario.getCenterInTree();
+        let sourceVertexAsGroupRelation = TestUtil.getChildDeepWithLabel(
             toDoMetaBubble,
             "e1"
-        ).getTopMostChildBubble();
-        var e2 = TestUtils.getChildWithLabel(
+        );
+        sourceVertexAsGroupRelation.expand();
+        let e2 = TestUtil.getChildDeepWithLabel(
             sourceVertexAsGroupRelation,
-            "r1"
-        ).getTopMostChildBubble();
+            "e2"
+        );
         expect(
-            e2.getNumberOfHiddenRelations()
-        ).toBe(0);
+            e2.getNumberOfChild()
+        ).toBe(1);
     });
-    xit("excludes the source vertex in it's child for a vertex under a source vertex", function () {
-        var aroundTodoScenario = new Scenarios.aroundTodoIdentifier();
-        var toDoMetaBubble = aroundTodoScenario.getTodoBubbleInTree();
-        var sourceVertexAsGroupRelation = TestUtils.getChildWithLabel(
+    it("excludes the source vertex in it's child for a vertex under a source vertex", async () => {
+        let scenario = await new AroundTodoTagScenario();
+        let toDoMetaBubble = scenario.getCenterInTree();
+        let sourceVertexAsGroupRelation = TestUtil.getChildDeepWithLabel(
             toDoMetaBubble,
             "e1"
-        ).getTopMostChildBubble();
-        var e3 = TestUtils.getChildWithLabel(
+        );
+        sourceVertexAsGroupRelation.expand();
+        let e3 = TestUtil.getChildDeepWithLabel(
             sourceVertexAsGroupRelation,
-            "r2"
-        ).getTopMostChildBubble();
+            "e3"
+        );
         expect(
-            e3.text()
+            e3.getLabel()
         ).toBe("e3");
         expect(
             e3.isVertex()
         ).toBeTruthy();
-        aroundTodoScenario.expandE3(
+        await scenario.expandE3(
             e3
         );
         expect(
             e3.getNumberOfChild()
         ).toBe(2);
         expect(
-            TestUtils.hasChildWithLabel(
+            TestUtil.hasDeepChildWithLabel(
                 e3,
-                "r2"
+                "e1"
             )
         ).toBeFalsy();
     });

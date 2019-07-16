@@ -321,8 +321,7 @@
                                                     }"
                                         ></div>
                                         <v-icon v-if="bubble.isMetaRelation()" small class="bubble-label unselectable"
-                                                v-show="!isShrinked">label
-                                        </v-icon>
+                                                v-show="!isShrinked">label</v-icon>
                                     </v-chip>
                                 </div>
                                 <div :style="background">
