@@ -187,6 +187,7 @@
                                                     v-html="label"
                                                     @focus="focus"
                                                     @keydown="keydown"
+                                                    @paste="paste"
                                                     :style="labelFont"
                                                     ref="vertexLabel"
                                                     :class="{
@@ -311,6 +312,7 @@
                                              @blur="leaveEditFlow"
                                              :data-placeholder="relationPlaceholder"
                                              @focus="focus"
+                                             @paste="paste"
                                              v-show="!isShrinked"
                                              v-if="!bubble.isMetaRelation()"
                                              v-text="label"
@@ -321,7 +323,8 @@
                                                     }"
                                         ></div>
                                         <v-icon v-if="bubble.isMetaRelation()" small class="bubble-label unselectable"
-                                                v-show="!isShrinked">label</v-icon>
+                                                v-show="!isShrinked">label
+                                        </v-icon>
                                     </v-chip>
                                 </div>
                                 <div :style="background">
@@ -513,6 +516,12 @@
                 await this.$nextTick();
                 Store.dispatch("redraw");
             },
+            paste: function (event) {
+                event.preventDefault();
+                //to prevent html to be pasted
+                let text = event.clipboardData.getData('Text');
+                window.document.execCommand('insertText', false, text);
+            },
             mouseup: function (event) {
                 if (Selection.isSingle() && Selection.isSelected(this.bubble)) {
                     setTimeout(() => {
@@ -582,6 +591,7 @@
                 if (this.bubble.isEditFlow) {
                     return;
                 }
+                this.showMenu = false;
                 this.bubble.isEditFlow = true;
                 GraphUi.disableDragScroll();
                 this.$store.dispatch("redraw");
