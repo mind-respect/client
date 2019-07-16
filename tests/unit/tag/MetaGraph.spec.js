@@ -126,7 +126,7 @@ describe("MetaGraph", () => {
             "e1"
         );
         expect(
-            sourceVertexAsGroupRelation.isVertex()
+            sourceVertexAsGroupRelation.isMetaGroupVertex()
         ).toBeTruthy();
         sourceVertexAsGroupRelation.expand();
         expect(
@@ -144,7 +144,7 @@ describe("MetaGraph", () => {
             "e1"
         );
         expect(
-            sourceVertexAsGroupRelation.isVertex()
+            sourceVertexAsGroupRelation.isMetaGroupVertex()
         ).toBeTruthy();
         expect(
             sourceVertexAsGroupRelation.getNumberOfChild()
@@ -171,7 +171,7 @@ describe("MetaGraph", () => {
             "e1"
         );
         expect(
-            sourceVertexAsGroupRelation.isVertex()
+            sourceVertexAsGroupRelation.isMetaGroupVertex()
         ).toBeTruthy();
         expect(
             sourceVertexAsGroupRelation.canExpand()

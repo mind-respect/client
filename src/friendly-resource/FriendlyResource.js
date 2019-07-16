@@ -242,6 +242,10 @@ FriendlyResource.FriendlyResource.prototype.isMetaRelation = function () {
     return this.type.isMetaRelation();
 };
 
+FriendlyResource.FriendlyResource.prototype.isMetaGroupVertex = function () {
+    return this.type.isMetaGroupVertex();
+};
+
 //@deprecated
 FriendlyResource.FriendlyResource.prototype.isVertexType = function () {
     return this.type.isVertexType();

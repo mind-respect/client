@@ -37,5 +37,8 @@ api.getMetaController = function () {
 api.getMetaRelationController = function () {
     return _implementation.getMetaRelationController();
 };
+api.getMetaGroupVertexController = function () {
+    return _implementation.getMetaGroupVertexController();
+};
 
 export default api;

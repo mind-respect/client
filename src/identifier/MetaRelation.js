@@ -1,7 +1,6 @@
 import Edge from '@/edge/Edge'
 import GraphElementType from '@/graph-element/GraphElementType'
 import IdUri from '@/IdUri'
-import FriendlyResource from "../friendly-resource/FriendlyResource";
 
 function MetaRelation(tag, destinationVertex) {
     Edge.Edge.apply(this);

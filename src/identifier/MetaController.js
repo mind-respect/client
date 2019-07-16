@@ -8,6 +8,7 @@ import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphService from '@/graph/GraphService'
 import MetaGraph from '@/identifier/MetaGraph'
 import MetaRelation from '@/identifier/MetaRelation'
+import MetaGroupVertex from '@/identifier/MetaGroupVertex'
 
 const api = {};
 
@@ -65,6 +66,9 @@ MetaController.prototype.loadGraph = function () {
                     child
                 );
             } else {
+                vertex = new MetaGroupVertex(
+                    vertex
+                );
                 child = new MetaRelation(vertex, centerBubble);
                 centerBubble.addChild(
                     child
