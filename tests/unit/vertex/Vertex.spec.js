@@ -142,28 +142,6 @@ describe('Vertex', () => {
             b2.getNumberOfChild()
         ).toBe(1);
     });
-    describe("mergeTo", function () {
-        /*todo*/
-        xit("also changes uri of connected edges source and destination vertices", function () {
-            var b1 = new Scenarios.threeBubblesGraph().getBubble1InTree();
-            var distantVertexUri = TestUtils.generateVertexUri();
-            var r1 = TestUtils.getChildWithLabel(
-                b1,
-                "r1"
-            );
-            expect(
-                r1.getSourceVertex().getUri()
-            ).not.toBe(distantVertexUri);
-            b1.mergeTo(distantVertexUri);
-            r1 = TestUtils.getChildWithLabel(
-                b1,
-                "r1"
-            );
-            expect(
-                r1.getSourceVertex().getUri()
-            ).toBe(distantVertexUri);
-        });
-    });
     xit("removes suggestions related to an identification when identification removed", function () {
         var vertexWithEventRelatedSuggestions = new Scenarios.oneBubbleHavingSuggestionsGraph().getVertexUi();
         expect(
@@ -200,7 +178,7 @@ describe('Vertex', () => {
         ).toBeTruthy();
     });
 
-    xit("can remove a vertex under a meta bubble", async () => {
+    it("can remove a vertex under a meta bubble", async () => {
         let scenario = await new AroundEventTagScenario();
         let eventBubble = scenario.getEventBubbleInTree();
         let vertex = eventBubble.getNextBubble().getNextBubble();
@@ -220,23 +198,6 @@ describe('Vertex', () => {
         ).toBeTruthy();
     });
 
-    //todo
-    xit("selects the group relation after it's removed if right under a relation and group relation", async () => {
-        let scenario = await new GroupRelationsScenario();
-        let groupRelation = scenario.getPossessionGroupRelation();
-        groupRelation.expand();
-        let vertexUnderGroupRelation = TestUtil.getChildWithLabel(
-            groupRelation,
-            "Possessed by book 2"
-        ).getNextBubble();
-        expect(
-            vertexUnderGroupRelation.isVertex()
-        ).toBeTruthy();
-        await vertexUnderGroupRelation.getController().remove();
-        expect(
-            Selection.getSingle().isGroupRelation()
-        ).toBeTruthy();
-    });
 
     describe("buildChildrenIndex", function () {
         it("is in right order", async () => {

@@ -550,6 +550,22 @@ describe('VertexController', () => {
                 relation.model().hasIdentifications()
             ).toBeTruthy();
         });
+        it("concatenates bubbles label", async () => {
+            let singleChildScenario = await new SingleChildScenario();
+            let parent = singleChildScenario.getParentInTree();
+            let child = parent.getNextBubble().getNextBubble();
+            child.setLabel("child label")
+            GraphServiceMock.getForCentralBubbleUri(
+                singleChildScenario.getSubGraphOfB1OnceMergedWithSingleChild()
+            );
+            await child.getController().convertToDistantBubbleWithUri(
+                singleChildScenario.getB1Uri()
+            );
+            child = parent.getNextBubble().getNextBubble();
+            expect(
+                child.getLabel()
+            ).toBe("child label b1");
+        });
         xit("reviews other instances display", function () {
             loadFixtures('graph-element-menu.html');
             var threeBubblesGraphScenario = new Scenarios.threeBubblesGraph();
@@ -692,7 +708,7 @@ describe('VertexController', () => {
                 r3.isToTheLeft()
             ).toBeTruthy();
         });
-        xit("can become parent of a group relation", async () => {
+        it("can become parent of a group relation", async () => {
             let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
             let groupRelation = scenario.getPossessionGroupRelation();
@@ -719,7 +735,7 @@ describe('VertexController', () => {
                 )
             ).toBeTruthy();
         });
-        xit("does not remove the relation's tag when moving a group relation", async () => {
+        it("does not remove the relation's tag when moving a group relation", async () => {
             let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
             let groupRelation = scenario.getPossessionGroupRelation();
