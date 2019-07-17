@@ -512,6 +512,25 @@ describe('VertexController', () => {
                 TestUtils.generateEdgeUri()
             )).toBeFalsy();
         });
+        it("also changes uri of connected edges source and destination vertices", async () =>{
+            let singleChildScenario = await new SingleChildScenario();
+            let parent = singleChildScenario.getParentInTree();
+            let relation = parent.getNextBubble();
+            expect(
+                relation.getDestinationVertex().getUri()
+            ).not.toBe(singleChildScenario.getB1Uri());
+            let child = relation.getNextBubble();
+            GraphServiceMock.getForCentralBubbleUri(
+                singleChildScenario.getSubGraphOfB1OnceMergedWithSingleChild()
+            );
+            await child.getController().convertToDistantBubbleWithUri(
+                singleChildScenario.getB1Uri()
+            );
+            relation = parent.getNextBubble();
+            expect(
+                relation.getDestinationVertex().getUri()
+            ).toBe(singleChildScenario.getB1Uri());
+        });
         it("keeps label of the relation when converting a bubble to a distant bubble", async () => {
             let singleChildScenario = await new SingleChildScenario();
             let parent = singleChildScenario.getParentInTree();
@@ -542,7 +561,7 @@ describe('VertexController', () => {
             GraphServiceMock.getForCentralBubbleUri(
                 singleChildScenario.getSubGraphOfB1OnceMergedWithSingleChild()
             );
-            child.getController().convertToDistantBubbleWithUri(
+            await child.getController().convertToDistantBubbleWithUri(
                 singleChildScenario.getB1Uri()
             );
             relation = parent.getNextBubble();
