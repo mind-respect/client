@@ -468,63 +468,6 @@ GraphElementController.prototype.mergeCanDo = function () {
     return false;
 };
 
-GraphElementController.prototype.merge = function () {
-    // if (!isMergePopoverBuilt) {
-    //     this.model().getHtml().popoverLikeToolTip({
-    //         animation: false,
-    //         html: true,
-    //         title: $('<div>').append($.t("merge.title"), $('<br>'), $("<small>").text($.t("merge.instruction"))),
-    //         placement: 'auto left',
-    //         container: '#drawn_graph',
-    //         trigger: "manual",
-    //         allowMultiplePopoverDisplayed: true,
-    //         content: function () {
-    //             return $("#merge-popover").html();
-    //         }
-    //     });
-    // }
-    // this.model().getHtml().popover("show").popover("show");
-    // $('.popover-title').mousedown(function (event) {
-    //     event.stopPropagation();
-    // });
-    // var searchInput = $('.popover').find("input").empty().mousedown(function (event) {
-    //     event.stopPropagation();
-    //     $(this).focus();
-    // });
-    // if (!searchInput.isMrAutocompleteSetup()) {
-    //     var searchFetcher = this.model().isMeta() ?
-    //         UserMapAutocompleteProvider.toFetchOwnTags :
-    //         UserMapAutocompleteProvider.toFetchOnlyCurrentUserVerticesExcept;
-    //     searchInput.mrAutocomplete({
-    //         select: function (event, ui) {
-    //             event.preventDefault();
-    //             if (event.keyCode === 13) {
-    //                 return;
-    //             }
-    //             this.convertToDistantBubbleWithUri(ui.item.uri);
-    //             this.setLabel(ui.item.label);
-    //             this.model().getHtml().popover("hide");
-    //         }.bind(this),
-    //         resultsProviders: [
-    //             searchFetcher(
-    //                 this.model(),
-    //                 {
-    //                     noFilter: true,
-    //                     additionalFilter: function (searchResults) {
-    //                         return searchResults.filter(function (searchResult) {
-    //                             return this.convertToDistantBubbleWithUriCanDo(
-    //                                 searchResult.uri
-    //                             );
-    //                         }.bind(this));
-    //                     }.bind(this)
-    //                 }
-    //             )
-    //         ]
-    //     });
-    // }
-    // searchInput.focus();
-};
-
 GraphElementController.prototype.becomeExParent = function () {
     return Promise.resolve();
 };

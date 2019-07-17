@@ -36,28 +36,29 @@
                                 centered
                                 next-icon=""
                                 color="transparent"
+                                v-if="noteCanDo || tagCanDo || mergeCanDo"
                         >
-                            <v-tab class="primary--text">
+                            <v-tab class="primary--text" v-if="noteCanDo">
                                 <!--                                <span class="grey&#45;&#45;text">{{$t('side:note')}}</span>-->
                                 <v-icon>note</v-icon>
                             </v-tab>
-                            <v-tab class="primary--text">
+                            <v-tab class="primary--text" v-if="tagCanDo">
                                 <!--                                <span class="grey&#45;&#45;text">{{$t('side:tags')}}</span>-->
                                 <v-icon>label</v-icon>
                             </v-tab>
-                            <v-tab class="primary--text">
+                            <v-tab class="primary--text" v-if="mergeCanDo">
                                 <!--                                <span class="grey&#45;&#45;text">{{$t('side:merge')}}</span>-->
                                 <v-icon>merge_type</v-icon>
                             </v-tab>
                         </v-tabs>
                         <v-tabs-items v-model="tabMenu" class="white">
-                            <v-tab-item>
+                            <v-tab-item v-if="noteCanDo">
                                 <NoteMenu></NoteMenu>
                             </v-tab-item>
-                            <v-tab-item>
+                            <v-tab-item v-if="tagCanDo">
                                 <TagMenu @focus="focus" @blur="blur"></TagMenu>
                             </v-tab-item>
-                            <v-tab-item>
+                            <v-tab-item v-if="mergeCanDo">
                                 <MergeMenu @focus="focus" @blur="blur"></MergeMenu>
                             </v-tab-item>
                         </v-tabs-items>
@@ -125,6 +126,15 @@
             isSingle: () => {
                 return Selection.isSingle();
             },
+            noteCanDo: function () {
+                return Selection.isSingle() && Selection.getSingle().getController().noteCanDo();
+            },
+            tagCanDo: function () {
+                return Selection.isSingle() && Selection.getSingle().getController().identifyCanDo();
+            },
+            mergeCanDo: function () {
+                return Selection.isSingle() && Selection.getSingle().getController().mergeCanDo();
+            },
             menuWidth: function () {
                 return this.isStretched ? 340 : 340;
             },
@@ -132,7 +142,7 @@
                 return this.isStretched ? SideMenu.EXPANDED_WIDTH : SideMenu.EXPANDED_WIDTH;
             },
             mainNavMiniWidth: function () {
-                if(this.$vuetify.breakpoint.mdAndDown){
+                if (this.$vuetify.breakpoint.mdAndDown) {
                     return 0;
                 }
                 return Selection.isSingle() ? SideMenu.MINI_WIDTH : 60;

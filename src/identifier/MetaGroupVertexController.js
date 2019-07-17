@@ -24,6 +24,10 @@ MetaGroupVertexController.prototype.removeCanDo = function () {
     return false;
 };
 
+MetaGroupVertexController.prototype.mergeCanDo = function () {
+    return false;
+};
+
 api.MetaGroupVertexController = MetaGroupVertexController;
 
 export default api;

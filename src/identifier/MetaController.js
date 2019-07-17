@@ -146,13 +146,6 @@ MetaController.prototype.identifyCanDo = function () {
     return false;
 };
 
-MetaController.prototype.wikipediaLinksCanShowInLabel = function () {
-    return this.model().getWikipediaLink().then(function (hasLink) {
-        return hasLink;
-    });
-};
-
-
 MetaController.prototype.convertToDistantBubbleWithUriCanDo = function () {
     return true;
 };
@@ -171,7 +164,7 @@ MetaController.prototype.convertToDistantBubbleWithUri = function (distantTagUri
 };
 
 MetaController.prototype.mergeCanDo = function () {
-    return true;
+    return false;
 };
 
 api.MetaController = MetaController;
