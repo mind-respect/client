@@ -48,6 +48,7 @@ MetaController.prototype.loadGraph = function () {
     }).then((metaSubGraph) => {
         let centerTag = metaSubGraph.getMetaCenter();
         let centerBubble = this.model();
+        centerBubble.makeCenter();
         centerBubble.setLabel(centerTag.getLabel());
         centerBubble.setComment(centerTag.getComment());
         let edgesBySourceVertex = buildEdgesGroupedBySourceVertex(metaSubGraph);
