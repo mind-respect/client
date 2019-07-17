@@ -62,14 +62,17 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
             centerUri
         );
         let parentAsCenter = graph.center;
-        parentAsCenter.makeCenter();
         let modelToAddChild;
         if (isParentAlreadyOnMap) {
             modelToAddChild = this.model();
+            modelToAddChild.setLabel(
+                parentAsCenter.getLabel()
+            );
             graph.add(this.model())
         } else {
+            parentAsCenter.makeCenter();
             modelToAddChild = parentAsCenter;
-            CurrentSubGraph.get().add(modelToAddChild);
+            graph.add(modelToAddChild);
         }
         let childrenIndex = parentAsCenter.getChildrenIndex();
         let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;

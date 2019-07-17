@@ -551,15 +551,19 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
     if (!this.convertToDistantBubbleWithUriCanDo(distantVertexUri)) {
         return Promise.reject();
     }
+    let beforeMergeLabel = this.model().getLabel();
     return VertexService.mergeTo(this.model(), distantVertexUri).then(() => {
         this.model().setUri(distantVertexUri);
         return SubGraphController.withVertex(
             this.model()
         ).loadForParentIsAlreadyOnMap();
-    }).then((subGraph) => {
-        this.model().setLabel(
-            subGraph.getVertexWithUri(distantVertexUri).getLabel()
-        );
+    }).then(() => {
+        let concatenatedLabel = beforeMergeLabel + " " + this.model().getLabel();
+        if (concatenatedLabel !== this.model().getLabel()) {
+            this.setLabel(
+                concatenatedLabel
+            );
+        }
         GraphElementService.changeChildrenIndex(
             this.model().getParentVertex()
         );
