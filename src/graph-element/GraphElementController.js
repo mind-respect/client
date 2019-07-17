@@ -616,7 +616,7 @@ GraphElementController.prototype.removeIdentifier = function (identifier) {
     );
     return new Promise((resolve) => {
         TagService.remove(
-            this.model(),
+            this.model().getUri(),
             identifier
         ).then(() => {
             resolve();

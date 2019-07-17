@@ -57,6 +57,7 @@
             </div>
         </div>
         <RemoveDialog></RemoveDialog>
+        <RemoveTagDialog></RemoveTagDialog>
         <DescriptionDialog></DescriptionDialog>
         <FontDialog></FontDialog>
         <ListView></ListView>
@@ -74,6 +75,7 @@
     import SubGraphController from '@/graph/SubGraphController'
     import Meta from '@/identifier/Meta'
     import RemoveDialog from '@/components/RemoveDialog'
+    import RemoveTagDialog from '@/components/RemoveTagDialog'
     import DescriptionDialog from '@/components/DescriptionDialog'
     import FontDialog from '@/components/FontDialog'
     import Color from '@/Color'
@@ -92,6 +94,7 @@
             GraphList,
             Bubble,
             RemoveDialog,
+            RemoveTagDialog,
             DescriptionDialog,
             FontDialog,
             GraphDrawing,

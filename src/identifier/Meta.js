@@ -33,11 +33,5 @@ Meta.prototype.init = function (uri) {
 Meta.prototype.getGraphElementType = function () {
     return GraphElementType.Meta;
 };
-Meta.prototype.hasHiddenRelations = function () {
-    return false;
-};
-Meta.prototype.getNumberOfHiddenRelations = function () {
-    return 0;
-};
 
 export default api;

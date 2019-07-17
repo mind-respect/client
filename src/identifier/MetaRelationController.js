@@ -3,6 +3,7 @@
  */
 
 import GraphElementController from '@/graph-element/GraphElementController'
+import Store from '@/store'
 
 const api = {};
 
@@ -28,6 +29,7 @@ MetaRelationController.prototype.removeCanDo = function () {
     return this.isOwned();
 };
 MetaRelationController.prototype.remove = function (skipConfirmation) {
+    Store.dispatch("setIsRemoveTagFlow", true)
     // if (skipConfirmation) {
     //     return doIt.bind(this)();
     // } else {

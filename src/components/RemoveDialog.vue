@@ -91,7 +91,6 @@
 <script>
     import Selection from '@/Selection'
     import I18n from '@/I18n'
-    import VertexService from '@/vertex/VertexService'
 
     export default {
         name: "RemoveDialog",

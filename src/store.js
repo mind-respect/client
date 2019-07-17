@@ -29,6 +29,7 @@ const Store = new Vuex.Store({
         areCentersInGridView: true,
         dragged: null,
         isRemoveFlow: false,
+        isRemoveTagFlow: false,
         isDescriptionFlow: false,
         isListViewFlow: false,
         isFontFlow: false,
@@ -71,6 +72,9 @@ const Store = new Vuex.Store({
         },
         setIsRemoveFlow: function (state, isRemoveFlow) {
             state.isRemoveFlow = isRemoveFlow;
+        },
+        setIsRemoveTagFlow: function (state, isRemoveTagFlow) {
+            state.isRemoveTagFlow = isRemoveTagFlow;
         },
         setIsDescriptionFlow: function (state, isDescriptionFlow) {
             state.isDescriptionFlow = isDescriptionFlow;
@@ -118,6 +122,9 @@ const Store = new Vuex.Store({
         },
         setIsRemoveFlow: function (action, isRemoveFlow) {
             action.commit('setIsRemoveFlow', isRemoveFlow);
+        },
+        setIsRemoveTagFlow: function(action, isRemoveTagFlow){
+            action.commit('setIsRemoveTagFlow', isRemoveTagFlow);
         },
         setIsDescriptionFlow: function (action, isDescriptionFlow) {
             action.commit('setIsDescriptionFlow', isDescriptionFlow);
