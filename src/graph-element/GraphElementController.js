@@ -58,6 +58,9 @@ GraphElementController.prototype.setLabel = function (newLabel) {
     this.model().setLabel(
         newLabel
     );
+    this.model().getDuplicates().forEach((duplicate) => {
+        duplicate.setLabel(newLabel)
+    });
     return FriendlyResourceService.updateLabel(
         this.model(),
         newLabel
@@ -66,6 +69,20 @@ GraphElementController.prototype.setLabel = function (newLabel) {
 
 GraphElementController.prototype.note = function () {
     Store.dispatch("setIsDescriptionFlow", true);
+};
+
+GraphElementController.prototype.noteDo = function (note) {
+    this.model().setComment(
+        note
+    );
+    this.model().getDuplicates().forEach((duplicate) => {
+        duplicate.setComment(note)
+    });
+    return GraphElementService.updateNote(
+        this.model()
+    ).then(() => {
+        Store.dispatch("redraw");
+    });
 };
 
 GraphElementController.prototype.focusCanDo = function () {

@@ -361,6 +361,10 @@ FriendlyResource.FriendlyResource.prototype.canExpand = function () {
     return !this.isCenter && !this.isExpanded && nbChild > 0;
 };
 
+FriendlyResource.FriendlyResource.prototype.getDuplicates = function () {
+    return [];
+};
+
 FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble, relation) {
     if (this.isGroupRelation()) {
         this.expand();

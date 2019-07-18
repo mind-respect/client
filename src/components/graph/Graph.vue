@@ -119,11 +119,11 @@
                 SubGraphController.withVertex(
                     center
                 ).load();
-            promise.then(async (graph) => {
-                let center = graph.center;
+            promise.then(async (_center) => {
+                let center = _center;
                 center.makeCenter();
                 document.title = center.getTextOrDefault() + " | MindRespect";
-                CurrentSubGraph.set(graph);
+                // CurrentSubGraph.set(graph);
                 this.center = center;
                 this.handleResize();
                 this.loaded = true;

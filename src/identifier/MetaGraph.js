@@ -30,7 +30,7 @@ api.MetaGraph.prototype.getSubGraph = function () {
 
 api.MetaGraph.prototype._getMetaCenter = function () {
     let centerMeta;
-    this.subGraph.visitGraphElements((graphElement) => {
+    this.subGraph.getGraphElements().forEach((graphElement) => {
         graphElement.getIdentifiersIncludingSelf().forEach((identifier) => {
             if (identifier.getUri() === this.centerUri) {
                 centerMeta = identifier;

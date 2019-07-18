@@ -9,6 +9,7 @@ import GraphService from '@/graph/GraphService'
 import MetaGraph from '@/identifier/MetaGraph'
 import MetaRelation from '@/identifier/MetaRelation'
 import MetaGroupVertex from '@/identifier/MetaGroupVertex'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 
@@ -53,7 +54,7 @@ MetaController.prototype.loadGraph = function () {
         centerBubble.setComment(centerTag.getComment());
         let edgesBySourceVertex = buildEdgesGroupedBySourceVertex(metaSubGraph);
         let subGraph = metaSubGraph.getSubGraph();
-        subGraph.add(centerBubble);
+        CurrentSubGraph.get().add(centerBubble);
         subGraph.center = centerBubble;
         Object.keys(edgesBySourceVertex).forEach((vertexUri) => {
             let sourceVertexAndEdges = edgesBySourceVertex[vertexUri];
@@ -74,7 +75,7 @@ MetaController.prototype.loadGraph = function () {
                 centerBubble.addChild(
                     child
                 );
-                sourceVertexAndEdges.edges.forEach(function (edgeBetweenGroupAndDestination) {
+                sourceVertexAndEdges.edges.forEach((edgeBetweenGroupAndDestination) => {
                     let destinationVertex = subGraph.getVertexWithUri(
                         edgeBetweenGroupAndDestination.getDestinationVertex().getUri()
                     );
@@ -91,7 +92,7 @@ MetaController.prototype.loadGraph = function () {
                 }
             }
         });
-        return subGraph;
+        return centerBubble;
     });
 };
 
@@ -130,7 +131,7 @@ function buildEdgesGroupedBySourceVertex(metaSubGraph) {
                 ] = true;
         });
     });
-    subGraph.visitVertices((vertex) => {
+    subGraph.getVertices().forEach((vertex) => {
         let isAVertexNotGroupedBySourceVertex = !edgesBySourceVertex[vertex.getUri()] && !excludedDestinationVerticesUri[vertex.getUri()];
         if (isAVertexNotGroupedBySourceVertex) {
             edgesBySourceVertex[vertex.getUri()] = {

@@ -173,9 +173,13 @@
                                             auto
                                             offset-y
                                     >
-                                        <v-badge color="third" slot="activator">
+                                        <v-badge color="third" slot="activator" :left="isLeft">
                                             <template v-slot:badge v-if="bubble.isMeta()">
                                                 <v-icon dark>label</v-icon>
+                                            </template>
+                                            <template v-slot:badge
+                                                      v-if="bubble.isVertex() && bubble.getNbDuplicates() > 0">
+                                                {{bubble.getNbDuplicates()}}
                                             </template>
                                             <div
                                                     class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
@@ -581,8 +585,7 @@
                 this.bubble.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
-                this.bubble.setLabel(labelHtml.innerHTML);
-                FriendlyResourceService.updateLabel(this.bubble);
+                this.bubble.getController().setLabel(labelHtml.innerHTML);
                 if (this.isCenter) {
                     document.title = this.bubble.getTextOrDefault() + " | MindRespect";
                 }

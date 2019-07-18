@@ -122,7 +122,7 @@ UiTreeInfoBuilder.prototype._initVertex = function (vertex) {
 };
 
 UiTreeInfoBuilder.prototype._updateRelationsIdentification = function (edge) {
-    var sourceVertex = this._vertexWithId(
+    let sourceVertex = this._vertexWithId(
         edge.getSourceVertex().getUri()
         ),
         destinationVertex = this._vertexWithId(

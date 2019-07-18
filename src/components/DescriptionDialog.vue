@@ -100,14 +100,9 @@
         },
         methods: {
             save: function () {
-                this.bubble.setComment(
-                    this.note
-                );
-                GraphElementService.updateNote(
-                    this.bubble
-                ).then(function () {
+                this.bubble.getController().noteDo(this.note).then(() => {
                     this.dialog = false;
-                }.bind(this))
+                })
             }
         }
     }

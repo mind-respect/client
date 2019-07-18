@@ -51,7 +51,6 @@ api.SubGraph = function (graph, centerUri, buildFacade) {
     }
 };
 
-
 api.SubGraph.prototype.add = function (graphElement) {
     if (graphElement.isCenter) {
         graphElement.parentBubble = graphElement.parentVertex = graphElement;
@@ -59,7 +58,7 @@ api.SubGraph.prototype.add = function (graphElement) {
     if (graphElement.isMeta()) {
         this.tags.push(graphElement);
     } else if (graphElement.isEdge()) {
-        this.edges[graphElement.getId()] = graphElement;
+        this.addEdge(graphElement);
         let endVertex = graphElement.isInverse() ? graphElement.getSourceVertex() : graphElement.getDestinationVertex();
         endVertex.parentBubble = graphElement;
         endVertex.parentVertex = graphElement.parentVertex;
@@ -68,7 +67,7 @@ api.SubGraph.prototype.add = function (graphElement) {
             endVertex
         );
     } else if (graphElement.isVertex()) {
-        this.vertices[graphElement.getUri()] = graphElement;
+        this.addVertex(graphElement);
     } else if (graphElement.isGroupRelation()) {
         this.groupRelations.push(
             graphElement
@@ -82,7 +81,7 @@ api.SubGraph.prototype.add = function (graphElement) {
             }
             Object.values(child).forEach((triple) => {
                 triple.vertex.direction = graphElement.direction;
-                this.vertices[triple.vertex.getUri()] = triple.vertex;
+                this.addVertex(triple.vertex);
                 triple.edge.direction = graphElement.direction;
                 triple.edge.parentBubble = graphElement;
                 triple.edge.parentVertex = graphElement.parentVertex;
@@ -92,34 +91,6 @@ api.SubGraph.prototype.add = function (graphElement) {
             })
         })
     }
-};
-
-api.SubGraph.prototype.getEdgeRelatedToIdentification = function (identification) {
-    return this._relatedToIdentificationForGraphElements(
-        identification,
-        this.edges
-    );
-};
-
-api.SubGraph.prototype.getVertexRelatedToIdentification = function (identification) {
-    return this._relatedToIdentificationForGraphElements(
-        identification,
-        this.vertices
-    );
-};
-
-api.SubGraph.prototype.visitEdgesRelatedToVertex = function (vertex, visitor) {
-    this.getEdges().forEach((edge) => {
-        if (this.isRelatedToVertex(vertex)) {
-            visitor(edge);
-        }
-    });
-};
-
-api.SubGraph.prototype.getAnyUri = function () {
-    return Object.keys(
-        this.vertices
-    )[0];
 };
 
 api.SubGraph.prototype._buildEdges = function () {
@@ -132,45 +103,66 @@ api.SubGraph.prototype._buildEdges = function () {
         facade.setDestinationVertex(
             this.getVertexWithUri(facade.getDestinationVertex().getUri())
         );
-        this.edges[facade.getUri()] = facade;
+        this.addEdge(facade);
     })
 };
 
-//@deprecated
-api.SubGraph.prototype.visitEdges = function (visitor) {
-    Object.keys(this.edges).forEach((key) => {
-        visitor(this.edges[key]);
+api.SubGraph.prototype.addVertex = function (vertex) {
+    if (this.vertices[vertex.getUri()] === undefined) {
+        this.vertices[vertex.getUri()] = [];
+    }
+    let isAlreadyThere = this.vertices[vertex.getUri()].some((_vertex) => {
+        return _vertex.getId() === vertex.getId();
     });
+    if (isAlreadyThere) {
+        return;
+    }
+    this.vertices[vertex.getUri()].push(vertex);
+};
+
+api.SubGraph.prototype.addEdge = function (edge) {
+    if (this.edges[edge.getUri()] === undefined) {
+        this.edges[edge.getUri()] = [];
+    }
+    let isAlreadyThere = this.edges[edge.getUri()].some((_edge) => {
+        return _edge.getId() === edge.getId();
+    });
+    if (isAlreadyThere) {
+        return;
+    }
+    this.edges[edge.getUri()].push(edge);
 };
 
 api.SubGraph.prototype.getEdges = function () {
-    return Object.values(this.edges);
-};
-
-//@deprecated
-api.SubGraph.prototype.visitVertices = function (visitor) {
-    Object.keys(this.vertices).forEach(function (key) {
-        visitor(this.vertices[key]);
-    }.bind(this));
+    let edges = Object.values(this.edges);
+    //use array flat() when node ^11 LTS gets out
+    return [].concat.apply([], edges)
 };
 
 api.SubGraph.prototype.getVertices = function () {
-    return Object.values(this.vertices);
+    let vertices = Object.values(this.vertices);
+    //use array flat() when node ^11 LTS gets out
+    return [].concat.apply([], vertices)
 };
 
-api.SubGraph.prototype.visitGraphElements = function (visitor) {
-    this.visitEdges(visitor);
-    this.visitVertices(visitor);
+api.SubGraph.prototype.getGraphElements = function () {
+    return this.getEdges().concat(this.getVertices());
 };
 
 api.SubGraph.prototype.getVertexWithUri = function (uri) {
-    return this.vertices[uri];
+    return this.vertices[uri][0];
+};
+
+api.SubGraph.prototype.getVerticesWithUri = function (uri) {
+    return this.vertices[uri] || [];
 };
 
 api.SubGraph.prototype.getEdgeWithUri = function (uri) {
-    return this.getEdges().filter((edge) => {
-        return edge.getUri() === uri;
-    })[0];
+    return this.edges[uri][0];
+};
+
+api.SubGraph.prototype.getEdgesWithUri = function (uri) {
+    return this.edges[uri] || [];
 };
 
 api.SubGraph.prototype.getGroupRelationWithUiId = function (uiId) {
@@ -187,14 +179,8 @@ api.SubGraph.prototype._buildVertices = function () {
     this.vertices = {};
     Object.values(this.serverFormat.vertices).forEach((vertex) => {
         let facade = Vertex.fromServerFormat(vertex);
-        this.vertices[facade.getUri()] = facade;
+        this.addVertex(facade);
     });
-};
-api.SubGraph.prototype._relatedToIdentificationForGraphElements = function (identification, graphElements) {
-    let related = graphElements.filter((graphElement) => {
-        return graphElement.isRelatedToIdentifier(identification)
-    });
-    return related.length > 0 ? related[0] : false;
 };
 
 export default api;

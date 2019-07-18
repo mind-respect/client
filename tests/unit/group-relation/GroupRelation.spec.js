@@ -156,7 +156,7 @@ describe("GroupRelation", function () {
     it("does not duplicate children when expanding while already expanded", async () => {
         let scenario = await new GroupRelationsScenario();
         let possessionInTree = scenario.getPossessionGroupRelation();
-        possessionInTree.getController().expand();
+        possessionInTree.expand();
         expect(
             possessionInTree.canExpandDescendants()
         ).toBeTruthy();

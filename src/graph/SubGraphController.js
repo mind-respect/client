@@ -57,22 +57,18 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
             serverGraph,
             centerUri
         );
-        let graph = SubGraph.withFacadeAndCenterUri(
-            serverGraph,
-            centerUri
-        );
-        let parentAsCenter = graph.center;
+        let parentAsCenter = serverGraph.vertices[centerUri];
         let modelToAddChild;
         if (isParentAlreadyOnMap) {
             modelToAddChild = this.model();
             modelToAddChild.setLabel(
                 parentAsCenter.getLabel()
             );
-            graph.add(this.model())
+            serverGraph.vertices[modelToAddChild.getUri()] = modelToAddChild;
         } else {
             parentAsCenter.makeCenter();
             modelToAddChild = parentAsCenter;
-            graph.add(modelToAddChild);
+            CurrentSubGraph.get().add(modelToAddChild);
         }
         let childrenIndex = parentAsCenter.getChildrenIndex();
         let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
@@ -86,7 +82,6 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
                 if (childIndex !== undefined) {
                     addLeft = childIndex.toTheLeft;
                 }
-                graph.groupRelations.push(groupRelationRoot);
                 modelToAddChild.addChild(
                     groupRelationRoot,
                     addLeft
@@ -104,14 +99,14 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
                             addLeft = childIndex.toTheLeft;
                         }
                         triple.edge.setSourceVertex(
-                            graph.getVertexWithUri(
+                            serverGraph.vertices[
                                 triple.edge.getSourceVertex().getUri()
-                            )
+                                ]
                         );
                         triple.edge.setDestinationVertex(
-                            graph.getVertexWithUri(
+                            serverGraph.vertices[
                                 triple.edge.getDestinationVertex().getUri()
-                            )
+                                ]
                         );
                         modelToAddChild.addChild(
                             triple.edge,
@@ -121,18 +116,18 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
                 }
             );
         });
-        graph.groupRelations.forEach((groupRelation) => {
+        CurrentSubGraph.get().groupRelations.forEach((groupRelation) => {
             if (groupRelation.hasFewEnoughBubblesToExpand()) {
                 groupRelation.expand(true);
             } else {
                 groupRelation.collapse();
             }
         });
-        return isChildrenIndexBuilt ? Promise.resolve(graph) :
+        return isChildrenIndexBuilt ? Promise.resolve(modelToAddChild) :
             GraphElementService.changeChildrenIndex(
                 modelToAddChild
             ).then(function () {
-                return graph;
+                return modelToAddChild;
             });
     });
 };

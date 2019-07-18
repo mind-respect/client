@@ -182,9 +182,23 @@ Vertex.prototype.makeCenter = function () {
     this.isCenter = true;
     this.parentBubble = this;
     this.isExpanded = true;
-    this.direction = "center"
+    this.direction = "center";
+    CurrentSubGraph.get().center = this;
 };
 
+Vertex.prototype.getDuplicates = function () {
+    return CurrentSubGraph.get().getVerticesWithUri(
+        this.getUri()
+    ).filter((vertex) => {
+        return vertex.getId() !== this.getId();
+    });
+};
+
+Vertex.prototype.getNbDuplicates = function () {
+    return CurrentSubGraph.get().getVerticesWithUri(
+        this.getUri()
+    ).length - 1;
+};
 
 Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     let children;

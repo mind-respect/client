@@ -10,6 +10,7 @@ import Store from '@/store'
 import Vue from 'vue'
 import I18n from '@/I18n'
 import Selection from '@/Selection'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -80,6 +81,21 @@ api.Edge.prototype.init = function (edgeServerFormat, sourceVertex, destinationV
     return this;
 };
 
+
+api.Edge.prototype.getDuplicates = function () {
+    return CurrentSubGraph.get().getEdgesWithUri(
+        this.getUri()
+    ).filter((edge)=>{
+        return edge.getId() !== this.getId();
+    });
+};
+
+
+api.Edge.prototype.getNbDuplicates = function () {
+    return CurrentSubGraph.get().getEdgeWithUri(
+        this.getUri()
+    ).length - 1;
+};
 
 api.Edge.prototype.getGraphElementType = function () {
     return GraphElementType.Relation;

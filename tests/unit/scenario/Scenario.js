@@ -83,7 +83,7 @@ api.Scenario.prototype.getGraph = function () {
 
 
 api.Scenario.prototype.getVertexWithLabelInTree = function (label) {
-    let foundVertex = Object.values(CurrentSubGraph.get().vertices).filter((vertex) => {
+    let foundVertex = Object.values(CurrentSubGraph.get().getVertices()).filter((vertex) => {
         if (vertex.getLabel() === label) {
             return vertex
         }
@@ -95,7 +95,7 @@ api.Scenario.prototype.getVertexWithLabelInTree = function (label) {
 };
 
 api.Scenario.prototype.getRelationWithLabelInTree = function (label) {
-    return Object.values(CurrentSubGraph.get().edges).filter((edge) => {
+    return Object.values(CurrentSubGraph.get().getEdges()).filter((edge) => {
         if (edge.getLabel() === label) {
             return edge
         }
@@ -134,7 +134,7 @@ api.Scenario.prototype.tagWithLabelInTree = function (label) {
 
 api.Scenario.prototype.relationTagWithLabel = function (label) {
     let foundTag;
-    let edge = Object.values(this.getGraph().edges).map((edgeServer) => {
+    Object.values(this.getGraph().edges).map((edgeServer) => {
         return Edge.fromServerFormat(edgeServer);
     }).forEach((edge) => {
         edge.getIdentifiers().forEach((tag) => {
@@ -177,26 +177,14 @@ api.getTestData = function (key) {
 };
 
 api.getGraphElements = function (graph) {
-    return api.getVertices(graph).concat(
-        api.getEdges(graph)
+    let formattedGraph = api.formatGraph(graph);
+    return api.getVertices(formattedGraph).concat(
+        api.getEdges(formattedGraph)
     );
 };
 
-api.getVertices = function (graph) {
-    return Object.values(graph.vertices).map((vertexServer) => {
-        let isFacadeBuilt = vertexServer.getLabel !== undefined;
-        return isFacadeBuilt ? vertexServer : Vertex.fromServerFormat(vertexServer);
-    });
-};
-
-api.getEdges = function (graph) {
-    return Object.values(graph.edges).map((edge) => {
-        return Edge.fromServerFormat(edge);
-    });
-};
-
 api.vertexWithLabelInGraph = function (label, graph) {
-    return api.getVertices(graph).filter((vertex) => {
+    return api.getVertices(api.formatGraph(graph)).filter((vertex) => {
         if (vertex.getLabel() === label) {
             return vertex
         }
@@ -204,7 +192,7 @@ api.vertexWithLabelInGraph = function (label, graph) {
 };
 
 api.edgeWithLabelInGraph = function (label, graph) {
-    return api.getEdges(graph).filter((edge) => {
+    return api.getEdges(api.formatGraph(graph)).filter((edge) => {
         if (edge.getLabel() === label) {
             return edge
         }
@@ -217,6 +205,55 @@ api.tagWithLabelInGraph = function (label, graph) {
     }, []).filter((tag) => {
         return tag.getLabel() === label;
     })[0];
+};
+
+api.formatGraph = function (graph) {
+    return {
+        edges: api._areGraphElementsInArray(graph.edges) ? graph.edges : api._convertGraphElementsToArray(graph.edges),
+        vertices: api._areGraphElementsInArray(graph.vertices) ? graph.vertices : api._convertGraphElementsToArray(graph.vertices)
+    }
+};
+
+api._convertGraphElementsToArray = function (graphElements) {
+    return Object.values(graphElements).reduce((graphElementsArray, graphElement) => {
+        let isFacadeBuilt = graphElement.getLabel !== undefined;
+        if (!isFacadeBuilt) {
+            graphElement = graphElement.vertex ? Vertex.fromServerFormat(graphElement) : Edge.fromServerFormat(graphElement);
+        }
+        if (graphElementsArray[graphElement.getUri()] === undefined) {
+            graphElementsArray[graphElement.getUri()] = [];
+        }
+        graphElementsArray[graphElement.getUri()].push(graphElement);
+        return graphElementsArray;
+    }, {})
+};
+
+api._areGraphElementsInArray = function (graphElementsObject) {
+    let vertices = Object.values(graphElementsObject);
+    if (vertices.length === 0) {
+        return true;
+    }
+    return Array.isArray(vertices[0]);
+};
+
+api.getVertices = function (graph) {
+    let vertices = Object.values(graph.vertices);
+    //use array flat() when node ^11 LTS gets out
+    return [].concat.apply([], vertices).map((vertexServer) => {
+        let isFacadeBuilt = vertexServer.getLabel !== undefined;
+        return isFacadeBuilt ? vertexServer : Vertex.fromServerFormat(vertexServer);
+    });
+};
+
+api.getEdges = function (graph) {
+    let edges = Object.values(graph.edges);
+    //use array flat() when node ^11 LTS gets out
+    return [].concat.apply([], edges).map((edge) => {
+        let isFacadeBuilt = edge.getLabel !== undefined;
+        return isFacadeBuilt ? edge : Edge.fromServerFormat(
+            edge
+        );
+    });
 };
 
 export default api;

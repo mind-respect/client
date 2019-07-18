@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div class="hidden-properties-container vh-center unselectable" @click="click">
+    <div class="hidden-properties-container vh-center unselectable" @click="click" v-if="loaded">
         <div class="hidden-properties-content bubble-size vh-center"
              :class="{
                 'reverse' : bubble.direction === 'left'
@@ -14,13 +14,13 @@
         >
             <span>
                 <v-tooltip
-                        :right="!bubble.isToTheLeft()"
-                        :left="bubble.isToTheLeft()"
+                        :right="!isLeft"
+                        :left="isLeft"
                         min-width="125"
                         open-delay="1000"
                         :content-class="tooltipContentClass"
                 >
-                    <v-badge :left="bubble.isToTheLeft()" color="secondary" slot="activator">
+                    <v-badge :left="isLeft" color="secondary" slot="activator">
                         <span slot="badge">
                             <span v-if="$store.state.isViewOnly && bubble.isVertex()">
                                 {{bubble.getNbPublicNeighbors() - 1}}
@@ -51,31 +51,37 @@
         props: ['bubble'],
         data: function () {
             return {
-                loading: false
-            }
-        },
-        methods: {
-            click: function () {
-                this.loading = this.bubble.loading = true;
-                this.bubble.getController().expand().then(function () {
-                    Vue.nextTick(function () {
-                        this.loading = this.bubble.loading = false;
-                    }.bind(this))
-                    Selection.setToSingle(this.bubble);
-                    Store.dispatch("redraw");
-                }.bind(this));
-            }
-        },
-        computed: {
-            tooltipKey: function () {
-                return UiUtils.isMacintosh() ? "tooltipForMac" : "tooltip";
-            },
-            tooltipContentClass: function(){
-                return this.bubble.isToTheLeft() ? "mr-5" : "ml-4"
+                loaded: false,
+                loading: false,
+                tooltipKey: UiUtils.isMacintosh() ? "tooltipForMac" : "tooltip",
+                isLeft: null,
+
             }
         },
         mounted: function () {
-
+            this.isLeft = this.bubble.isToTheLeft();
+            this.tooltipContentClass = this.isLeft ? "mr-5" : "ml-4";
+            this.loaded = true;
+        },
+        methods: {
+            click: function () {
+                let expandedDuplicate = this.bubble.getDuplicates().filter((duplicate) => {
+                    return duplicate.isExpanded;
+                });
+                if (expandedDuplicate.length) {
+                    Selection.setToSingle(expandedDuplicate[0]);
+                    Scroll.goToGraphElement(expandedDuplicate[0]);
+                    return;
+                }
+                this.loading = this.bubble.loading = true;
+                this.bubble.getController().expand().then(() => {
+                    Vue.nextTick(() => {
+                        this.loading = this.bubble.loading = false;
+                    });
+                    Selection.setToSingle(this.bubble);
+                    Store.dispatch("redraw");
+                });
+            }
         }
     }
 </script>
