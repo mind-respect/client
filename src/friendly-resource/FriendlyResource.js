@@ -362,15 +362,6 @@ FriendlyResource.FriendlyResource.prototype.canExpand = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble, relation) {
-    // if(this.isGroupRelation()){
-    //     this.visitClosestChildOfType(GraphElementType.Relation, function(childRelation){
-    //         childRelation.moveTo(
-    //             otherBubble,
-    //             relation
-    //         );
-    //     });
-    //     return;
-    // }
     if (this.isGroupRelation()) {
         this.expand();
     }
@@ -380,7 +371,6 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             relation
         );
     }
-
     // let elm = this.getHtml();
     // const first = elm.getBoundingClientRect();
 

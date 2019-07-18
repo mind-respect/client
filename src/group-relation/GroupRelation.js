@@ -129,20 +129,28 @@ GroupRelation.prototype.getGreatestGroupRelationAncestor = function () {
 };
 
 GroupRelation.prototype.getLeftBubble = function () {
-    return this.isToTheLeft() ? this.getFirstEdge(0) : this.parentBubble;
-};
-
-GroupRelation.prototype.isLeaf = function () {
-    return false;
+    if (this.isToTheLeft()) {
+        if (this.isCollapsed) {
+            return this;
+        }
+        return this.getFirstEdge(0);
+    }
+    return this.parentBubble;
 };
 
 GroupRelation.prototype.getRightBubble = function (bottom) {
     if (this.isToTheLeft()) {
         return this.parentBubble;
     }
+    if (this.isCollapsed) {
+        return this;
+    }
     return bottom ? this.getLastEdge(0) : this.getFirstEdge(0);
 };
 
+GroupRelation.prototype.isLeaf = function () {
+    return false;
+};
 
 GroupRelation.prototype.getNextChildrenEvenIfCollapsed = function () {
     return this._getNextChildrenCollapsedOrNot(true);

@@ -607,7 +607,7 @@
             checkIsSelected: function () {
                 let found = false;
                 Selection.getSelectedBubbles().forEach((selected) => {
-                    if (selected.getUri() === this.bubble.getUri()) {
+                    if (selected.getId() === this.bubble.getId()) {
                         found = true;
                     }
                 });
