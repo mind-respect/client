@@ -115,7 +115,10 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
                 }
             );
         });
-        CurrentSubGraph.get().groupRelations.forEach((groupRelation) => {
+        parentAsCenter.groupRelationRoots.forEach((groupRelation) => {
+            if (!groupRelation.isTrulyAGroupRelation()) {
+                return;
+            }
             if (groupRelation.hasFewEnoughBubblesToExpand()) {
                 groupRelation.expand(true);
             } else {
