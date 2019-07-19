@@ -5,8 +5,8 @@ import GroupRelationsScenario from "../scenario/GroupRelationsScenario"
 import MindMapInfo from '@/MindMapInfo'
 import Selection from '@/Selection'
 import TestUtil from '../util/TestUtil'
-import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
 import CreationDateScenario from "../scenario/CreationDateScenario";
+import CircularityScenario from "../scenario/CircularityScenario";
 
 describe('Vertex', () => {
     beforeEach(() => {
@@ -86,6 +86,27 @@ describe('Vertex', () => {
         ).toBeFalsy();
         expect(
             b3.canExpand()
+        ).toBeTruthy();
+    });
+    it("adds duplicate button if has duplicate", async () => {
+        let scenario = await new CircularityScenario();
+        let bubble1 = scenario.getCenterInTree();
+        expect(
+            bubble1.getNbDuplicates() > 0
+        ).toBeFalsy();
+        let bubble2 = scenario.getBubble2InTree();
+        await scenario.expandBubble2(bubble2);
+        let bubble3 = bubble2.getNextBubble().getNextBubble();
+        await scenario.expandBubble3(bubble3);
+        expect(
+            bubble1.getNbDuplicates() > 0
+        ).toBeTruthy();
+        expect(
+            bubble1.getNbDuplicates() > 0
+        ).toBeTruthy();
+        let bubble1Duplicate = bubble3.getNextBubble().getNextBubble();
+        expect(
+            bubble1Duplicate.getNbDuplicates() > 0
         ).toBeTruthy();
     });
     /*todo*/

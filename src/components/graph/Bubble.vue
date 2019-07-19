@@ -166,6 +166,10 @@
                                         <v-icon small color="secondary" v-if="isFriendsOnly">
                                             people
                                         </v-icon>
+                                        <small v-if="bubble.isVertex() && bubble.getNbDuplicates() > 0"
+                                               class="body-2 font-weight-bold" style="color:#1A237E;">
+                                            ×{{bubble.getNbDuplicates() + 1}}
+                                        </small>
                                     </div>
                                     <v-menu
                                             lazy
@@ -177,10 +181,10 @@
                                             <template v-slot:badge v-if="bubble.isMeta()">
                                                 <v-icon dark>label</v-icon>
                                             </template>
-                                            <template v-slot:badge
-                                                      v-if="bubble.isVertex() && bubble.getNbDuplicates() > 0">
-                                                {{bubble.getNbDuplicates()}}
-                                            </template>
+                                            <!--                                            <template v-slot:badge-->
+                                            <!--                                                      v-if="bubble.isVertex() && bubble.getNbDuplicates() > 0">-->
+                                            <!--                                                {{bubble.getNbDuplicates()}}-->
+                                            <!--                                            </template>-->
                                             <div
                                                     class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
                                                     @blur="leaveEditFlow"
@@ -821,7 +825,7 @@
     }
 
     .is-shrinked.empty-edge {
-        top:5px;
+        top: 5px;
     }
 
     .left-oriented .empty-edge {
@@ -993,11 +997,11 @@
         word-break: break-word;
     }
 
-    .in-label-icons-left i {
+    .in-label-icons-left i, .in-label-icons-left small {
         margin-left: 5px;
     }
 
-    .in-label-icons-right i {
+    .in-label-icons-right i, .in-label-icons-right small {
         margin-right: 5px;
     }
 </style>

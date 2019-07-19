@@ -1,3 +1,6 @@
+import Mock from '../../mock/Mock'
+import CircularityScenario from "../../scenario/CircularityScenario";
+
 describe('Bubble', () => {
     /*No suggestions for now*/
     xit("waits for suggestion to be integrated before handling autocomplete select", function () {
@@ -37,26 +40,25 @@ describe('Bubble', () => {
             buildAfterAutocompleteMenuSpy.calls.count()
         ).toBe(2);
     });
-    /*todo*/
-    xit("adds duplicate button if has duplicate", function () {
-        loadFixtures('graph-element-menu.html');
-        var bubble1 = graphWithCircularityScenario.getBubble1InTree();
+    xit("adds duplicate button if has duplicate", async () => {
+        let scenario = await new CircularityScenario();
+        let bubble1 = scenario.getBubble1InTree();
         expect(
-            bubble1.hasTheDuplicateButton()
+            bubble1.getNbDuplicates() > 1
         ).toBeFalsy();
-        var bubble2 = graphWithCircularityScenario.getBubble2InTree();
-        graphWithCircularityScenario.expandBubble2(bubble2);
-        var bubble3 = bubble2.getTopMostChildBubble().getTopMostChildBubble();
-        graphWithCircularityScenario.expandBubble3(bubble3);
+        let bubble2 = scenario.getBubble2InTree();
+        await scenario.expandBubble2(bubble2);
+        let bubble3 = bubble2.getNextBubble().getNextBubble();
+        await scenario.expandBubble3(bubble3);
         expect(
-            bubble1.hasTheDuplicateButton()
+            bubble1.getNbDuplicates() > 1
         ).toBeTruthy();
         expect(
-            bubble3.hasTheDuplicateButton()
+            bubble1.getNbDuplicates() > 1
         ).toBeTruthy();
-        var bubble1Duplicate = bubble3.getTopMostChildBubble().getTopMostChildBubble();
+        let bubble1Duplicate = bubble3.getNextBubble().getNextBubble();
         expect(
-            bubble1Duplicate.hasTheDuplicateButton()
+            bubble1Duplicate.getNbDuplicates() > 1
         ).toBeTruthy();
     });
     /*todo*/

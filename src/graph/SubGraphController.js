@@ -4,7 +4,6 @@
 import GraphElementController from '@/graph-element/GraphElementController'
 import GraphService from '@/graph/GraphService'
 import TreeDisplayerCommon from '@/graph/TreeDisplayerCommon'
-import SubGraph from '@/graph/SubGraph'
 import Edge from '@/edge/Edge'
 import GraphElement from '@/graph-element/GraphElement'
 import GraphElementService from '@/graph-element/GraphElementService'
@@ -154,9 +153,9 @@ SubGraphController.prototype._removeRelationWithGrandParentAndChildFromServerGra
     function getFilteredEdges() {
         let filteredEdges = {};
         Object.values(serverGraph.edges).forEach((edge) => {
-            let edgeFacade = Edge.fromServerFormat(
+            let edgeFacade = edge.getLabel === undefined ? Edge.fromServerFormat(
                 edge
-            );
+            ) : edge;
             let sourceAndDestinationId = [
                 edgeFacade.getSourceVertex().getUri(),
                 edgeFacade.getDestinationVertex().getUri()
