@@ -116,9 +116,14 @@ Vertex.prototype.decrementNumberOfConnectedEdges = function () {
     this.vertexServerFormat.vertex.numberOfConnectedEdges--;
 };
 
+Vertex.prototype.incrementNbConnectedEdges = function () {
+    this.vertexServerFormat.vertex.numberOfConnectedEdges++;
+};
+
 Vertex.prototype.incrementNbPublicNeighbors = function () {
     this.vertexServerFormat.vertex.nbPublicNeighbors++;
 };
+
 
 Vertex.prototype.decrementNbPublicNeighbors = function () {
     this.vertexServerFormat.vertex.nbPublicNeighbors--;

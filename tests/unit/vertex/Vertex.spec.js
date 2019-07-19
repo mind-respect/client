@@ -119,59 +119,30 @@ describe('Vertex', () => {
             bubble1Duplicate.getNbDuplicates() > 0
         ).toBeTruthy();
     });
-    /*todo*/
-    xit("returns one more hidden relations if immediate child of a meta", function () {
-        var scenario = new Scenarios.aroundEventIdentifier();
-        var eventCenter = scenario.getEventBubbleInTree();
-        var event2 = TestUtils.getChildWithLabel(
+
+    it("returns one more nb child if immediate child of a meta", async () => {
+        let scenario = await new AroundEventTagScenario();
+        let eventCenter = scenario.getEventBubbleInTree();
+        let event2 = TestUtil.getChildDeepWithLabel(
             eventCenter,
             "e2"
-        ).getTopMostChildBubble();
-        event2.getHiddenRelationsContainer().show();
+        ).getNextBubble();
         expect(
-            event2.getNumberOfHiddenRelations()
+            event2.getNumberOfChild()
         ).toBe(2);
-        MindMapInfo._setIsViewOnly(false);
         expect(
-            event2.hasHiddenRelations()
+            event2.canExpand()
         ).toBeTruthy();
-        var event1 = TestUtils.getChildWithLabel(
+        let event1 = TestUtil.getChildDeepWithLabel(
             eventCenter,
             "e1"
-        ).getTopMostChildBubble();
-        event1.getHiddenRelationsContainer().show();
+        ).getNextBubble();
         expect(
-            event1.getNumberOfHiddenRelations()
+            event1.getNumberOfChild()
         ).toBe(3);
         expect(
-            event1.hasHiddenRelations()
+            event1.canExpand()
         ).toBeTruthy();
-    });
-    /*todo*/
-    xit("adds to other instances", function () {
-        var graphWithCircularityScenario = new Scenarios.graphWithCircularityScenario();
-        var b1 = graphWithCircularityScenario.getBubble1InTree();
-        var b2 = TestUtils.getChildWithLabel(
-            b1,
-            "r1"
-        ).getTopMostChildBubble();
-        expect(
-            b2.getNumberOfChild()
-        ).toBe(0);
-        var bubble3 = TestUtils.getChildWithLabel(
-            b1,
-            "r3"
-        ).getTopMostChildBubble();
-        graphWithCircularityScenario.expandBubble3(bubble3);
-        var otherB2 = bubble3.getTopMostChildBubble().getTopMostChildBubble();
-        expect(
-            otherB2.text()
-        ).toBe("b2");
-        otherB2.getHiddenRelationsContainer().hide();
-        otherB2.getController().addChild();
-        expect(
-            b2.getNumberOfChild()
-        ).toBe(1);
     });
     xit("removes suggestions related to an identification when identification removed", function () {
         var vertexWithEventRelatedSuggestions = new Scenarios.oneBubbleHavingSuggestionsGraph().getVertexUi();

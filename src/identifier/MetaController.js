@@ -63,6 +63,7 @@ MetaController.prototype.loadGraph = function () {
                 sourceVertexAndEdges.sourceVertex.getUri()
             );
             if (sourceVertexAndEdges.edges.length === 0) {
+                vertex.incrementNbConnectedEdges();
                 child = new MetaRelation(vertex, centerBubble);
                 centerBubble.addChild(
                     child
