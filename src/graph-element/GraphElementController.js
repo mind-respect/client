@@ -558,6 +558,9 @@ GraphElementController.prototype.removeDo = async function () {
     }
     this.getModelArray().forEach(function (bubble) {
         bubble.remove();
+        bubble.getDuplicates().forEach((duplicate) => {
+            duplicate.remove();
+        });
     });
     if (bubbleToSelect) {
         Selection.setToSingle(bubbleToSelect);

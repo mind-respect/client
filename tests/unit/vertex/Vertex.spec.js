@@ -41,33 +41,43 @@ describe('Vertex', () => {
         });
         expect(hasVisited).toBeTruthy();
     });
-    /*todo*/
-    xit("can remove a vertex even if it has duplicates", function () {
-        MindMapInfo._setIsViewOnly(false);
-        var graphWithCircularityScenario = new Scenarios.graphWithCircularityScenario();
-        var bubble1 = graphWithCircularityScenario.getBubble1InTree();
-        var bubble1Duplicate = graphWithCircularityScenario.getBubble1Duplicate();
+    it("also removes duplicates when removing", async () => {
+        let scenario = await new CircularityScenario();
+        let b1 = scenario.getCenterInTree();
+        let b2 = TestUtil.getChildWithLabel(
+            b1,
+            "r1"
+        ).getNextBubble();
+        await scenario.expandBubble2(b2);
         expect(
-            TestUtils.isGraphElementUiRemoved(
-                bubble1
-            )
-        ).toBeFalsy();
-        expect(
-            TestUtils.isGraphElementUiRemoved(
-                bubble1Duplicate
-            )
-        ).toBeFalsy();
-        bubble1.remove();
-        expect(
-            TestUtils.isGraphElementUiRemoved(
-                bubble1
+            TestUtil.hasChildWithLabel(
+                b1,
+                "r3"
             )
         ).toBeTruthy();
         expect(
-            TestUtils.isGraphElementUiRemoved(
-                bubble1Duplicate
+            TestUtil.hasChildWithLabel(
+                b2,
+                "r2"
             )
         ).toBeTruthy();
+        let b3 = TestUtil.getChildWithLabel(
+            b2,
+            "r2"
+        ).getNextBubble();
+        await b3.getController().removeDo();
+        expect(
+            TestUtil.hasChildWithLabel(
+                b2,
+                "r2"
+            )
+        ).toBeFalsy();
+        expect(
+            TestUtil.hasChildWithLabel(
+                b1,
+                "r3"
+            )
+        ).toBeFalsy();
     });
 
     it("does not have hidden relations if non owner and bubble does not have public neighbors", async () => {
