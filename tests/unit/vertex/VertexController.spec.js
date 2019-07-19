@@ -336,7 +336,7 @@ describe('VertexController', () => {
             b3.isExpanded
         ).toBeTruthy();
     });
-    it("does not make public already public vertices when making a collection public", async() => {
+    it("does not make public already public vertices when making a collection public", async () => {
         let scenario = await new ThreeScenario();
         let b2 = scenario.getBubble2InTree();
         b2.model().makePublic();
@@ -512,7 +512,7 @@ describe('VertexController', () => {
                 TestUtils.generateEdgeUri()
             )).toBeFalsy();
         });
-        it("also changes uri of connected edges source and destination vertices", async () =>{
+        it("also changes uri of connected edges source and destination vertices", async () => {
             let singleChildScenario = await new SingleChildScenario();
             let parent = singleChildScenario.getParentInTree();
             let relation = parent.getNextBubble();
@@ -585,39 +585,36 @@ describe('VertexController', () => {
                 child.getLabel()
             ).toBe("child label b1");
         });
-        xit("reviews other instances display", function () {
-            loadFixtures('graph-element-menu.html');
-            var threeBubblesGraphScenario = new Scenarios.threeBubblesGraph();
-            var center = threeBubblesGraphScenario.getCenterBubbleInTree();
-            var b2 = threeBubblesGraphScenario.getBubble2InTree();
-            var newChildOfB2;
-            threeBubblesGraphScenario.expandBubble2(b2);
-            b2.getController().addChild().then(function (triple) {
-                newChildOfB2 = triple.destinationVertex();
-            });
-            threeBubblesGraphScenario.expandBubble2(b2);
+        it("reviews other instances display", async () => {
+            let scenario = await new ThreeScenario();
+            let b2 = scenario.getBubble2InTree();
+            await scenario.expandBubble2(b2);
+            let triple = await b2.getController().addChild();
+            let newChildOfB2 = triple.destination;
             GraphServiceMock.getForCentralBubbleUri(
-                threeBubblesGraphScenario.getSubGraphForB3()
+                scenario.getSubGraphForB3()
             );
-            var b3 = threeBubblesGraphScenario.getBubble3InTree();
+            let b3 = scenario.getBubble3InTree();
             expect(
-                b3.getOtherInstanceButton().hasClass("hidden")
-            ).toBeTruthy();
+                b3.getNbDuplicates()
+            ).toBe(0);
             expect(
-                newChildOfB2.getOtherInstanceButton().hasClass("hidden")
+                newChildOfB2.getNbDuplicates()
+            ).toBe(0);
+            expect(
+                newChildOfB2.getController().convertToDistantBubbleWithUriCanDo(
+                    b3.model().getUri()
+                )
             ).toBeTruthy();
-            expect(newChildOfB2.getController().convertToDistantBubbleWithUriCanDo(
-                b3.model().getUri()
-            )).toBeTruthy();
-            newChildOfB2.getController().convertToDistantBubbleWithUri(
+            await newChildOfB2.getController().convertToDistantBubbleWithUri(
                 b3.model().getUri()
             );
             expect(
-                b3.getOtherInstanceButton().hasClass("hidden")
-            ).toBeFalsy();
+                b3.getNbDuplicates()
+            ).toBe(1);
             expect(
-                newChildOfB2.getOtherInstanceButton().hasClass("hidden")
-            ).toBeFalsy();
+                newChildOfB2.getNbDuplicates()
+            ).toBe(1);
         });
     });
     it("automatically expands a child bubble having a single hidden relation when it's parent is expanded", async () => {

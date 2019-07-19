@@ -59,7 +59,7 @@
             this.tooltipContentClass = this.isLeft ? "mr-5" : "ml-4";
             this.nbChild = this.$store.state.isViewOnly && this.bubble.isVertex() ? this.bubble.getNbPublicNeighbors() - 1 : this.bubble.getNumberOfChild();
             if (this.nbChild > 9) {
-                this.nbChild = "+9";
+                this.nbChild = "9+";
             }
             this.loaded = true;
         },
