@@ -20,17 +20,9 @@
                         open-delay="1000"
                         :content-class="tooltipContentClass"
                 >
-                    <v-badge :left="isLeft" color="secondary" slot="activator">
-                        <span slot="badge">
-                            <span v-if="$store.state.isViewOnly && bubble.isVertex()">
-                                {{bubble.getNbPublicNeighbors() - 1}}
-                            </span>
-                            <span v-else>
-                                {{bubble.getNumberOfChild()}}
-                            </span>
-                        </span>
-                        <v-icon large color="third">bubble_chart</v-icon>
-                    </v-badge>
+                    <v-icon color="third" medium slot="activator">
+                        filter_{{nbChild}}
+                    </v-icon>
                     <span>{{$t('childNotice:' + tooltipKey)}}</span>
                 </v-tooltip>
             </span>
@@ -55,12 +47,17 @@
                 loading: false,
                 tooltipKey: UiUtils.isMacintosh() ? "tooltipForMac" : "tooltip",
                 isLeft: null,
+                nbChild: null
 
             }
         },
         mounted: function () {
             this.isLeft = this.bubble.isToTheLeft();
             this.tooltipContentClass = this.isLeft ? "mr-5" : "ml-4";
+            this.nbChild = this.$store.state.isViewOnly && this.bubble.isVertex() ? this.bubble.getNbPublicNeighbors() - 1 : this.bubble.getNumberOfChild();
+            if (this.nbChild > 9) {
+                this.nbChild = "9_plus";
+            }
             this.loaded = true;
         },
         methods: {
