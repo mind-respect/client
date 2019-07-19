@@ -257,12 +257,10 @@
                     </div>
                     <div
                             v-if="bubble.isEdge() || bubble.isGroupRelation()"
-                            class="bubble relation graph-element relative pt-0 pb-0 mb-0"
+                            class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0"
                             :class="{
                             'selected' : isSelected,
-                            'reverse': isLeft && !isCenter,
-                            'mt-3': bubble.isEdge(),
-                            'mt-0': bubble.isGroupRelation()
+                            'reverse': isLeft && !isCenter
                             }">
                         <div class="image_container"></div>
                         <div class="in-bubble-content"
@@ -374,7 +372,6 @@
 <script>
     import Selection from '@/Selection'
     import UiUtils from '@/UiUtils'
-    import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
     import KeyCode from 'keycode-js';
     import Children from '@/components/graph/Children'
     import ChildNotice from '@/components/graph/ChildNotice'
@@ -823,6 +820,10 @@
         width: 10px !important;
     }
 
+    .is-shrinked.empty-edge {
+        top:5px;
+    }
+
     .left-oriented .empty-edge {
         right: 2px;
     }
@@ -838,10 +839,6 @@
     .empty-edge {
         position: absolute;
         top: -5px;
-    }
-
-    .v-chip--selected.empty-edge {
-        top: -10px;
     }
 
     .label-drag-over {
