@@ -20,9 +20,12 @@
                         open-delay="1000"
                         :content-class="tooltipContentClass"
                 >
-                    <v-icon color="third" medium slot="activator">
-                        filter_{{nbChild}}
-                    </v-icon>
+                    <v-badge :left="isLeft" color="secondary" slot="activator">
+                        <span slot="badge">
+                            {{nbChild}}
+                        </span>
+                        <v-icon large color="third">bubble_chart</v-icon>
+                    </v-badge>
                     <span>{{$t('childNotice:' + tooltipKey)}}</span>
                 </v-tooltip>
             </span>
@@ -56,7 +59,7 @@
             this.tooltipContentClass = this.isLeft ? "mr-5" : "ml-4";
             this.nbChild = this.$store.state.isViewOnly && this.bubble.isVertex() ? this.bubble.getNbPublicNeighbors() - 1 : this.bubble.getNumberOfChild();
             if (this.nbChild > 9) {
-                this.nbChild = "9_plus";
+                this.nbChild = "+9";
             }
             this.loaded = true;
         },
