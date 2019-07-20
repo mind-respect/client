@@ -20,22 +20,29 @@ describe("Selection", () => {
         ).toBeTruthy();
     });
 
-    //todo
-    xit("gets only vertices if selected bubble is vertex", function () {
-        var scenario = new Scenarios.threeBubblesGraph();
-        var center = scenario.getBubble1InTree();
+    it("gets only vertices if selected bubble is vertex", async () => {
+        let scenario = await new ThreeScenario();
+        let center = scenario.getBubble1InTree();
         expect(
-            SelectionHandler.getNbSelectedRelations()
+            Selection.getSelectedElements().filter((selected) => {
+                return selected.isEdge();
+            }).length
         ).toBe(0);
         expect(
-            SelectionHandler.getNbSelectedVertices()
-        ).toBe(0);
+            Selection.getSelectedElements().filter((selected) => {
+                return selected.isVertex();
+            }).length
+        ).toBe(1);
         center.selectTree();
         expect(
-            SelectionHandler.getNbSelectedRelations()
+            Selection.getSelectedElements().filter((selected) => {
+                return selected.isEdge();
+            }).length
         ).toBe(0);
         expect(
-            SelectionHandler.getNbSelectedVertices()
+            Selection.getSelectedElements().filter((selected) => {
+                return selected.isVertex();
+            }).length
         ).toBe(3);
     });
 

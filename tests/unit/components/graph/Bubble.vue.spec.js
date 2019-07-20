@@ -40,25 +40,25 @@ describe('Bubble', () => {
             buildAfterAutocompleteMenuSpy.calls.count()
         ).toBe(2);
     });
-    xit("adds duplicate button if has duplicate", async () => {
+    it("adds duplicate button if has duplicate", async () => {
         let scenario = await new CircularityScenario();
-        let bubble1 = scenario.getBubble1InTree();
+        let bubble1 = scenario.getCenterInTree();
         expect(
-            bubble1.getNbDuplicates() > 1
+            bubble1.getNbDuplicates() > 0
         ).toBeFalsy();
         let bubble2 = scenario.getBubble2InTree();
         await scenario.expandBubble2(bubble2);
         let bubble3 = bubble2.getNextBubble().getNextBubble();
         await scenario.expandBubble3(bubble3);
         expect(
-            bubble1.getNbDuplicates() > 1
+            bubble1.getNbDuplicates() > 0
         ).toBeTruthy();
         expect(
-            bubble1.getNbDuplicates() > 1
+            bubble1.getNbDuplicates() > 0
         ).toBeTruthy();
         let bubble1Duplicate = bubble3.getNextBubble().getNextBubble();
         expect(
-            bubble1Duplicate.getNbDuplicates() > 1
+            bubble1Duplicate.getNbDuplicates() > 0
         ).toBeTruthy();
     });
     /*todo*/
@@ -192,40 +192,5 @@ describe('Bubble', () => {
         expect(
             hasLineBreak
         ).not.toBeNull();
-    });
-    /*todo*/
-    xit("hides the hidden neighbor properties indicator when the bubble has a duplicate bubble that is already expanded", function () {
-        var graphWithCircularityScenario = new Scenarios.graphWithCircularityScenario();
-        var bubble1 = graphWithCircularityScenario.getBubble1InTree();
-        var bubble2 = TestUtils.getChildWithLabel(
-            bubble1,
-            "r1"
-        ).getTopMostChildBubble();
-        graphWithCircularityScenario.expandBubble2(
-            bubble2
-        );
-        var bubble3 = bubble2.getTopMostChildBubble().getTopMostChildBubble();
-        graphWithCircularityScenario.expandBubble3(bubble3);
-        var bubble2AsChildOfB3 = TestUtils.getChildWithLabel(
-            bubble3,
-            "r3"
-        ).getTopMostChildBubble();
-        expect(
-            bubble2AsChildOfB3.hasVisibleHiddenRelationsContainer()
-        ).toBeFalsy();
-    });
-    /*todo*/
-    xit("displays hidden properties container if bubble has a duplicate that is also not expanded", function () {
-        var center = new Scenarios.centerWith2RelationsToSameChildScenario().getCenterInTree();
-        expect(
-            center.getNumberOfChild()
-        ).toBe(2);
-        var child = center.getTopMostChildBubble().getTopMostChildBubble();
-        expect(
-            child.hasOtherInstances()
-        ).toBeTruthy();
-        expect(
-            child.hasHiddenRelationsContainer()
-        ).toBeTruthy();
     });
 });

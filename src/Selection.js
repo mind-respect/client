@@ -121,7 +121,7 @@ api.getController = function () {
                 areAllElementsOfSameType = false;
             }
         });
-        var graphElementControllerClass = GraphDisplayer.getGraphElementMenuHandler();
+        let graphElementControllerClass = GraphDisplayer.getGraphElementMenuHandler();
         currentController = areAllElementsOfSameType ? anyElement.getControllerWithElements(
             api.getSelectedElements()
         ) : new graphElementControllerClass.GraphElementController(

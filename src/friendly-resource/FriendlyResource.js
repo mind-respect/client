@@ -361,6 +361,16 @@ FriendlyResource.FriendlyResource.prototype.canExpand = function () {
     return !this.isCenter && !this.isExpanded && nbChild > 0;
 };
 
+FriendlyResource.FriendlyResource.prototype.areDuplicatesExpanded = function () {
+    return this.getExpandedDuplicates().length > 0;
+};
+
+FriendlyResource.FriendlyResource.prototype.getExpandedDuplicates = function () {
+    return this.getDuplicates().filter((duplicate) => {
+        return duplicate.isExpanded;
+    });
+};
+
 FriendlyResource.FriendlyResource.prototype.getDuplicates = function () {
     return [];
 };
@@ -655,13 +665,13 @@ FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {
         if (child.loading) {
             return false;
         }
-        return child.canExpand() || child.canExpandDescendants();
+        return (child.canExpand() && !child.areDuplicatesExpanded()) || child.canExpandDescendants();
     });
 };
 
 FriendlyResource.FriendlyResource.prototype.visitExpandableDescendants = function (visitor) {
     this.visitDescendants(function (child) {
-        if (child.getNumberOfChild() > 0 && !child.isExpanded) {
+        if (child.canExpand() && !child.areDuplicatesExpanded()) {
             visitor(child);
         }
     });

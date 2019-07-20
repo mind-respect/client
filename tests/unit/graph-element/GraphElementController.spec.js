@@ -64,6 +64,20 @@ describe('GraphElementController', () => {
                 Selection.isSelected(b1)
             ).toBeTruthy();
         });
+        it("can still remove graph elements when a group relation is in the selection", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let center = scenario.getCenterInTree();
+            let groupRelation = scenario.getPossessionGroupRelation();
+            groupRelation.expand();
+            groupRelation.selectTree();
+            await Selection.getController().removeDo();
+            expect(
+                TestUtil.hasChildWithLabel(
+                    center,
+                    "Possession"
+                )
+            ).toBeFalsy();
+        });
     });
     xit("updates model label when accepting comparison", function () {
         var scenario = new Scenarios.threeBubblesGraphFork();

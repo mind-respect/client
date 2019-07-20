@@ -532,15 +532,21 @@ GraphElementController.prototype.remove = function (skipConfirmation) {
 };
 
 GraphElementController.prototype.removeDo = async function () {
+    let selection = this.getModelArray().filter((selected) => {
+        return selected.getController().removeCanDo();
+    });
+    if (selection.length === 0) {
+        return Promise.resolve();
+    }
     await this.isSingle() ?
         GraphElementService.remove(
             this.model()
         ) :
         GraphElementService.removeCollection(
-            this.getModelArray()
+            selection
         );
 
-    let isCenterRemoved = this.getModelArray().some((bubble) => {
+    let isCenterRemoved = selection.some((bubble) => {
         return bubble.isCenter;
     });
     if (isCenterRemoved) {
@@ -556,7 +562,7 @@ GraphElementController.prototype.removeDo = async function () {
             bubbleToSelect = this.model().getParentFork();
         }
     }
-    this.getModelArray().forEach(function (bubble) {
+    selection.forEach(function (bubble) {
         bubble.remove();
         bubble.getDuplicates().forEach((duplicate) => {
             duplicate.remove();

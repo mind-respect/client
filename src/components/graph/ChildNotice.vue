@@ -65,9 +65,7 @@
         },
         methods: {
             click: function () {
-                let expandedDuplicate = this.bubble.getDuplicates().filter((duplicate) => {
-                    return duplicate.isExpanded;
-                });
+                let expandedDuplicate = this.bubble.getExpandedDuplicates();
                 if (expandedDuplicate.length) {
                     Selection.setToSingle(expandedDuplicate[0]);
                     Scroll.goToGraphElement(expandedDuplicate[0]);

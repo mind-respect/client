@@ -6,6 +6,8 @@ import TestUtil from '../../util/TestUtil'
 import DistantGraphScenario from "../../scenario/DistantGraphScenario";
 import CreationDateScenario from "../../scenario/CreationDateScenario";
 import ThreeLevelDeepGroupRelationScenario from "../../scenario/ThreeLevelDeepGroupRelationScenario";
+import RelationIn2GroupRelationsScenario from "../../scenario/RelationIn2GroupRelationsScenario";
+
 describe("Graph.vue", () => {
     it("distributes triples evenly to the right and left", async () => {
         let scenario = await new ThreeScenario();
@@ -109,16 +111,6 @@ describe("Graph.vue", () => {
             mergeBubbleScenario.getBubble3()
         ).toBeDefined();
     });
-    xit("can make a vertex connect to a distant vertex", async () => {
-        await connectDistantVertexTest();
-
-        // function (distantBubble) {
-        //     var connectedBubble = distantBubble.getTopMostChildBubble().getTopMostChildBubble();
-        //     expect(
-        //         connectedBubble.text()
-        //     ).toBe("b2");
-        // }
-    });
 
     xit("groups similar relations when connecting to a distant vertex, ", function () {
         connectDistantVertexTest(function (distantBubble) {
@@ -196,11 +188,10 @@ describe("Graph.vue", () => {
         ).toBeDefined();
     });
 
-    //todo
-    xit("can have duplicate relations", function () {
-        var duplicateRelationsScenario = new Scenarios.graphWithARelationInTwoSimilarRelationsGroup(),
-            impact3InIndividualContext = duplicateRelationsScenario.getImpact3RelationInTheImpactOnTheIndividualContext(),
-            impact3InSocietyContext = duplicateRelationsScenario.getImpact3RelationInTheImpactOnSocietyContext();
+    fit("can have duplicate relations", async () => {
+        let scenario = await new RelationIn2GroupRelationsScenario();
+        let impact3InIndividualContext = scenario.getImpact3RelationInTheImpactOnTheIndividualContext();
+        let impact3InSocietyContext = scenario.getImpact3RelationInTheImpactOnSocietyContext();
         expect(
             impact3InIndividualContext.getUri()
         ).toBe(

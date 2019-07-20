@@ -26,11 +26,7 @@ RelationIn2GroupRelationsScenario.prototype.getImpact3RelationInTheImpactOnTheIn
 };
 
 RelationIn2GroupRelationsScenario.prototype.getImpact3RelationInTheImpactOnSocietyContext = function () {
-    let child = this.getSomeProjectInTree().getNextChildren().filter((child) => {
-        if (child.isGroupRelation()) {
-            return child;
-        }
-    });
+    let child = this.getSomeProjectInTree().getClosestChildrenOfType(GraphElementType.GroupRelation)[0];
     return TestUtil.getChildWithLabel(
         child,
         "impact 3"

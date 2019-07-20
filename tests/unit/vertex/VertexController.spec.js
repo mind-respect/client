@@ -170,44 +170,6 @@ describe('VertexController', () => {
             eventBubble.getTopMostChildBubble().isVisible()
         ).toBeFalsy();
     });
-    /*dont wanna test that*/
-    xit("changes in label privacy button when changing privacy of a collection of vertices", async () => {
-        loadFixtures('graph-element-menu.html');
-        MindMapInfo._setIsViewOnly(false);
-        var scenario = new Scenarios.threeBubblesGraph();
-        var bubble1 = scenario.getBubble1InTree();
-        bubble1.reviewInLabelButtonsVisibility();
-        expect(
-            bubble1.getPrivateButtonInBubbleContent().hasClass("hidden")
-        ).toBeFalsy();
-        expect(
-            bubble1.publicButtonInBubbleContent().hasClass("hidden")
-        ).toBeTruthy();
-        new VertexController.VertexController(
-            [
-                bubble1,
-                scenario.getBubble2InTree()
-            ]
-        ).makePublic();
-        expect(
-            bubble1.getPrivateButtonInBubbleContent().hasClass("hidden")
-        ).toBeTruthy();
-        expect(
-            bubble1.publicButtonInBubbleContent().hasClass("hidden")
-        ).toBeFalsy();
-        new VertexController.VertexController(
-            [
-                bubble1,
-                scenario.getBubble2InTree()
-            ]
-        ).makePrivate();
-        expect(
-            bubble1.getPrivateButtonInBubbleContent().hasClass("hidden")
-        ).toBeFalsy();
-        expect(
-            bubble1.publicButtonInBubbleContent().hasClass("hidden")
-        ).toBeTruthy();
-    });
     it("expands the bubble when adding child", async () => {
         let scenario = await new ThreeScenario();
         let b3 = scenario.getBubble3InTree();

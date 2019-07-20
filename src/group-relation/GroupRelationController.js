@@ -148,4 +148,8 @@ GroupRelationController.prototype.becomeExParent = function (movedEdge) {
     return Promise.all(promises);
 };
 
+GroupRelationController.prototype.removeCanDo = function () {
+    return false;
+};
+
 export default api;
