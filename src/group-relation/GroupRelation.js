@@ -24,7 +24,7 @@ api.usingIdentification = function (identification) {
     }
 };
 api.forTuplesAndIdentifier = function (tuples, identifier) {
-    var groupRelation = new GroupRelation(
+    let groupRelation = new GroupRelation(
         [identifier]
     );
     tuples.forEach(function (tuple) {
@@ -545,8 +545,8 @@ GroupRelation.prototype.integrateGroupRelationToTreeIfApplicable = function (gro
     if (groupRelation.isARelation() && this._containsAllTuplesOfGroupRelation(groupRelation)) {
         return true;
     }
-    var hasIntegrated = false;
-    var doWithTuplesAtThisDepth;
+    let hasIntegrated = false;
+    let doWithTuplesAtThisDepth;
     if (this._hasOneOfTheIdentifiers(groupRelation.getIdentifiers())) {
         doWithTuplesAtThisDepth = this.addTuple;
     } else if (groupRelation.isTrulyAGroupRelation() && this._doesOneOfTheChildHasIdentifiers(groupRelation.getIdentifiers())) {
@@ -556,16 +556,16 @@ GroupRelation.prototype.integrateGroupRelationToTreeIfApplicable = function (gro
         hasIntegrated = true;
     }
     if (doWithTuplesAtThisDepth) {
-        groupRelation.visitTuples(function (tuple) {
+        groupRelation.visitTuples((tuple) => {
             doWithTuplesAtThisDepth(tuple);
-        }.bind(this));
+        });
         hasIntegrated = true;
     }
     return hasIntegrated;
 };
 
 GroupRelation.prototype.integrateGroupRelationToChildGroupRelations = function (groupRelation) {
-    var hasIntegrated = false;
+    let hasIntegrated = false;
     this.getChildGroupRelations().forEach(function (childGroupRelation) {
         if (childGroupRelation.integrateGroupRelationToTreeIfApplicable(groupRelation)) {
             hasIntegrated = true;

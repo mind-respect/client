@@ -558,7 +558,7 @@ describe("FriendlyResource", () => {
                 )
             ).toBeTruthy();
         });
-        xit("can tell if one it has descendants with hidden relations", async () => {
+        it("can tell if one it has descendants with hidden relations", async () => {
             let scenario = await new ThreeScenario();
             let b1 = scenario.getBubble1InTree();
             b1.collapse();

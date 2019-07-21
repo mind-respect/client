@@ -16,9 +16,8 @@ api.setUiTreeInfoToVertices = function (serverGraph, centralVertexUri) {
 function UiTreeInfoBuilder(serverGraph, centralVertexUri) {
     this.serverGraph = serverGraph;
     this.vertices = serverGraph.vertices;
-    this.originalEdges = serverGraph.edges;
     this.centralBubble = this._vertexWithId(centralVertexUri);
-    this.edgesFacade = this._arrayOfEdgesHavingThoseRelatedToCenterVertexOnTop();
+    this.edgesFacade = this._edgesFacadeArray(serverGraph.edges);
     this.nonEnhancedEdges = {};
     this.allIdentifiers = {};
 }
@@ -86,9 +85,9 @@ UiTreeInfoBuilder.prototype._updateTripleTreeInfoUsingEdge = function (edge) {
     this._updateRelationsIdentification(edge);
 };
 
-UiTreeInfoBuilder.prototype._arrayOfEdgesHavingThoseRelatedToCenterVertexOnTop = function () {
+UiTreeInfoBuilder.prototype._edgesFacadeArray = function (originalEdges) {
     let edges = [];
-    Object.values(this.originalEdges).forEach((edge) => {
+    Object.values(originalEdges).forEach((edge) => {
             edges.push(
                 isGraphElementFacadeBuilt(edge) ? edge : Edge.fromServerFormat(
                     edge
@@ -96,23 +95,7 @@ UiTreeInfoBuilder.prototype._arrayOfEdgesHavingThoseRelatedToCenterVertexOnTop =
             );
         }
     );
-    edges.sort((edge1, edge2) => {
-        let edge1IsRelated = this._isEdgeRelatedToCenterVertex(edge1),
-            edge2IsRelated = this._isEdgeRelatedToCenterVertex(edge2);
-        if (edge1IsRelated === edge2IsRelated) {
-            return 0;
-        }
-        if (edge1IsRelated) {
-            return -1;
-        }
-        return 1;
-    });
     return edges;
-};
-
-UiTreeInfoBuilder.prototype._isEdgeRelatedToCenterVertex = function (edge) {
-    return edge.getSourceVertex().getUri() === this.centralVertexUri ||
-        edge.getDestinationVertex().getUri() === this.centralVertexUri;
 };
 
 UiTreeInfoBuilder.prototype._initVertex = function (vertex) {
