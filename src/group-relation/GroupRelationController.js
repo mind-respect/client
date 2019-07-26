@@ -90,7 +90,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
     });
 };
 
-GroupRelationController.prototype.setLabel = function(newLabel){
+GroupRelationController.prototype.setLabel = function (newLabel) {
     this.model().setLabel(
         newLabel
     );
@@ -102,6 +102,21 @@ GroupRelationController.prototype.setLabel = function(newLabel){
         tag,
         newLabel
     );
+};
+
+GroupRelationController.prototype.noteDo = function (note) {
+    this.model().setComment(
+        note
+    );
+    let tag = this.model().getIdentification();
+    tag.setComment(
+        note
+    );
+    return GraphElementService.updateNote(
+        tag
+    ).then(() => {
+        Store.dispatch("redraw");
+    });
 };
 
 GroupRelationController.prototype.becomeParent = function (child) {
@@ -121,7 +136,7 @@ GroupRelationController.prototype.becomeParent = function (child) {
     }
     return Promise.all(promises).then(() => {
         uiChild.moveToParent(this.model());
-        Vue.nextTick(()=>{
+        Vue.nextTick(() => {
             GraphElementService.changeChildrenIndex(
                 this.model().getParentVertex()
             );
