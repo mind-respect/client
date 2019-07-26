@@ -3,7 +3,7 @@
  */
 
 import VertexService from '@/vertex/VertexService'
-import EdgeService from '@/edge/EdgeService'
+import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import GraphElementController from '@/graph-element/GraphElementController'
 import GraphElementType from '@/graph-element/GraphElementType'
 import GraphElementService from '@/graph-element/GraphElementService'
@@ -88,6 +88,20 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         });
         return triple;
     });
+};
+
+GroupRelationController.prototype.setLabel = function(newLabel){
+    this.model().setLabel(
+        newLabel
+    );
+    let tag = this.model().getIdentification();
+    tag.setLabel(
+        newLabel
+    );
+    return FriendlyResourceService.updateLabel(
+        tag,
+        newLabel
+    );
 };
 
 GroupRelationController.prototype.becomeParent = function (child) {
