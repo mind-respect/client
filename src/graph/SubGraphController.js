@@ -90,7 +90,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
             }
         });
         let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
-        return isChildrenIndexBuilt && !MindMapInfo.isViewOnly() ? Promise.resolve(centerVertex) :
+        return isChildrenIndexBuilt || MindMapInfo.isViewOnly() ? Promise.resolve(centerVertex) :
             GraphElementService.changeChildrenIndex(
                 centerVertex
             ).then(() => {
