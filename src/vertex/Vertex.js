@@ -83,7 +83,7 @@ Vertex.prototype.init = function (vertexServerFormat) {
 Vertex.prototype.clone = function () {
     let vertex = new Vertex();
     vertex.init(
-        JSON.parse(JSON.stringify(this.vertexServerFormat)),
+        JSON.parse(JSON.stringify(this.vertexServerFormat))
     );
     return vertex;
 };

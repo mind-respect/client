@@ -109,7 +109,7 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
         this,
         graphElementServerFormat.friendlyResource
     );
-    if (this.graphElementServerFormat.childrenIndex) {
+    if (this.graphElementServerFormat.childrenIndex && typeof  this.graphElementServerFormat.childrenIndex === 'string') {
         this.graphElementServerFormat.childrenIndex = JSON.parse(
             this.graphElementServerFormat.childrenIndex
         );
