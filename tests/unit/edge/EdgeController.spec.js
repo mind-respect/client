@@ -54,7 +54,7 @@ describe("EdgeController", () => {
             ).toBeTruthy();
         });
 
-        it("sets self as uri", async () => {
+        it("sets self as external uri", async () => {
             let threeBubblesScenario = await new ThreeScenario();
             let b1 = threeBubblesScenario.getBubble1InTree();
             await b1.getController().addChild();
@@ -68,13 +68,20 @@ describe("EdgeController", () => {
                 b1,
                 "new group"
             );
-            let originalRelation = Object.values(groupRelation._sortedImmediateChild[0])[0].edge;
+            let originalRelation = groupRelation.getNextChildren()[0];
+            expect(
+                originalRelation.isEdge()
+            ).toBeTruthy();
             groupRelation = originalRelation.getParentBubble();
+            expect(groupRelation.isGroupRelation()).toBeTruthy();
             expect(
                 IdUri.isEdgeUri(
                     groupRelation.getUri()
                 )
             ).toBeFalsy();
+            expect(
+                groupRelation.getIdentification().getExternalResourceUri()
+            ).toBe(originalRelation.getUri());
         });
 
         it("adds self identifier to the original relation with appropriate uri", async () => {
@@ -137,9 +144,7 @@ describe("EdgeController", () => {
             let centerVertex = scenario.getCenterInTree();
             expect(
                 centerVertex.getNumberOfChild()
-            ).toBe(
-                4
-            );
+            ).toBe(4);
             let groupRelation = TestUtil.getChildWithLabel(
                 centerVertex,
                 "Possession"
@@ -163,16 +168,10 @@ describe("EdgeController", () => {
                 groupRelation,
                 "Possessed by book 2"
             );
-            let tested = false;
-            await relationUnderGroupRelation.getController().addChild().then((triple) => {
-                expect(
-                    triple.edge.model().getIdentifiers().length
-                ).toBe(2);
-                tested = true;
-            });
+            let triple = await relationUnderGroupRelation.getController().addChild();
             expect(
-                tested
-            ).toBeTruthy();
+                triple.edge.model().getIdentifiers().length
+            ).toBe(2);
         });
 
         it("does not duplicate relations under the new group relation", async () => {
@@ -416,9 +415,7 @@ describe("EdgeController", () => {
                 "other relation"
             );
             expect(
-                Object.keys(
-                    newGroupRelation.getVertices()
-                ).length
+                newGroupRelation.getNumberOfChild()
             ).toBe(2);
         });
         //todo

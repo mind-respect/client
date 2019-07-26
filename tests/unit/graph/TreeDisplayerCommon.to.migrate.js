@@ -15,7 +15,7 @@ describe("TreeDisplayerCommon", function () {
         graph,
         centerVertex,
         possession;
-    it("groups similar relations", async () => {
+    xit("groups similar relations", async () => {
         await defineSimilarRelationsScenarioVariables();
         expect(centerVertex.groupRelationRoots).toBeUndefined();
         TreeDisplayerCommon.setUiTreeInfoToVertices(
@@ -36,7 +36,7 @@ describe("TreeDisplayerCommon", function () {
         expect(numberOfGroupedRelations.length).toBe(4);
     });
 
-    it("creates only one group relation when different relations have multiple identifiers that are the same", async () => {
+    xit("creates only one group relation when different relations have multiple identifiers that are the same", async () => {
         await defineSimilarRelationsScenarioVariables();
         let relationWithMultipleIdentifiersScenario = await new RelationWithMultipleIdentifiersScenario();
         let graph = relationWithMultipleIdentifiersScenario.getGraph();
@@ -52,7 +52,7 @@ describe("TreeDisplayerCommon", function () {
         ).toBe(3);
     });
 
-    it("relations with no identifications are grouped by relation uri", async () => {
+    xit("relations with no identifications are grouped by relation uri", async () => {
         await defineSimilarRelationsScenarioVariables();
         let otherRelation = similarRelationsScenario.getOtherRelation();
         TreeDisplayerCommon.setUiTreeInfoToVertices(
@@ -70,7 +70,7 @@ describe("TreeDisplayerCommon", function () {
         ).toBeTruthy();
     });
 
-    it("vertices include inverse relations", async () => {
+    xit("vertices include inverse relations", async () => {
         let scenario = await new InverseRelationScenario();
         let graph = scenario.getGraph();
         let centerVertex = scenario.getCenterInTree();
@@ -118,7 +118,7 @@ describe("TreeDisplayerCommon", function () {
         );
     });
 
-    it("handles relations that are in 2 groups", async () => {
+    xit("handles relations that are in 2 groups", async () => {
         let scenario = await new RelationIn2GroupRelationsScenario();
         let centerBubble = scenario.getSomeProjectInTree();
         expect(
@@ -143,14 +143,14 @@ describe("TreeDisplayerCommon", function () {
         ).toBeTruthy();
     });
 
-    it("can handle a special case", async () => {
+    xit("can handle a special case", async () => {
         var scenario = await new GroupRelationSpecialCaseScenario();
         scenario.getCenterInTree();
         //testing true to be truthy to test if there is no js error at this point
         expect(true).toBeTruthy();
     });
 
-    it("does not duplicate relations on the same level sharing more than one common meta", async () => {
+    xit("does not duplicate relations on the same level sharing more than one common meta", async () => {
         let scenario = await new SameLevelRelationsWithMoreThanOneCommonMetaScenario();
         let centerBubble = scenario.getCenterInTree();
         let groupRelation = TestUtil.getChildWithLabel(

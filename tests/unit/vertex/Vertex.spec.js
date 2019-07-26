@@ -306,11 +306,11 @@ describe('Vertex', () => {
                 "Possession of book 3"
             );
             possession.collapse();
+            let deepVertex = secondLevelGroupRelation.getNextChildren()[0].getDestinationVertex();
             secondLevelGroupRelation.collapse();
             expect(
                 secondLevelGroupRelation.isGroupRelation()
             ).toBeTruthy();
-            let deepVertex = secondLevelGroupRelation.getAnyVertex();
             let childrenIndexes = centerVertex.buildChildrenIndex();
             expect(
                 Object.keys(childrenIndexes).length
@@ -347,7 +347,7 @@ describe('Vertex', () => {
             ).toBe(true);
             expect(
                 b3Index.index
-            ).toBe(2);
+            ).toBe(1);
             let b4Index = childrenIndexes[
                 b4Uri
                 ];
@@ -356,7 +356,7 @@ describe('Vertex', () => {
             ).toBe(false);
             expect(
                 b4Index.index
-            ).toBe(1);
+            ).toBe(2);
         });
     });
 });

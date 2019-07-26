@@ -387,7 +387,6 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
     }
     // let elm = this.getHtml();
     // const first = elm.getBoundingClientRect();
-
     if (MoveRelation.Parent === relation) {
         if (otherBubble.isGroupRelation()) {
             otherBubble.expand();

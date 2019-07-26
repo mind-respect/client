@@ -10,6 +10,7 @@ import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Vue from 'vue'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import Store from '@/store'
+import GroupRelation from '@/group-relation/GroupRelation'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -61,7 +62,6 @@ Vertex.prototype.init = function (vertexServerFormat) {
         this.makePrivate();
     }
     this.vertexServerFormat.vertex.numberOfConnectedEdges = this.vertexServerFormat.vertex.numberOfConnectedEdges || 0;
-    // this._suggestions = this._buildSuggestions();
     this.leftBubbles = [];
     this.leftBubblesCollapsed = null;
     this.rightBubbles = [];
@@ -79,22 +79,15 @@ Vertex.prototype.init = function (vertexServerFormat) {
     return this;
 };
 
-Vertex.prototype.hasIncludedGraphElements = function () {
-    return Object.keys(this.getIncludedVertices()).length > 0;
+
+Vertex.prototype.clone = function () {
+    let vertex = new Vertex();
+    vertex.init(
+        JSON.parse(JSON.stringify(this.vertexServerFormat)),
+    );
+    return vertex;
 };
 
-Vertex.prototype.getIncludedVertices = function () {
-    return this._includedVertices;
-};
-Vertex.prototype.getIncludedEdges = function () {
-    return this._includedEdges;
-};
-Vertex.prototype.setSuggestions = function (suggestions) {
-    return this._suggestions = suggestions;
-};
-Vertex.prototype.getSuggestions = function () {
-    return this._suggestions;
-};
 Vertex.prototype.getNumberOfConnectedEdges = function () {
     return this.vertexServerFormat.vertex.numberOfConnectedEdges;
 };
@@ -301,7 +294,26 @@ Vertex.prototype.getNextChildrenEvenIfCollapsed = Vertex.prototype.getNextChildr
     }
     if (this.isCenter) {
         if (toTheLeft === undefined) {
-            return this.rightBubbles.concat(this.leftBubbles);
+            let nbLeft = this.leftBubbles.length;
+            let nbRight = this.rightBubbles.length;
+            let nbChild = nbLeft + nbRight;
+            let index = 0;
+            let rightIndex = 0;
+            let leftIndex = 0;
+            return [...Array(nbChild).keys()].map(() => {
+                let isRightTurn = index % 2 === 0;
+                index++;
+                if (isRightTurn && nbRight > rightIndex) {
+                    rightIndex++;
+                    return this.rightBubbles[rightIndex - 1];
+                } else if (nbLeft > leftIndex) {
+                    leftIndex++;
+                    return this.leftBubbles[leftIndex - 1];
+                } else {
+                    rightIndex++;
+                    return this.rightBubbles[rightIndex - 1];
+                }
+            });
         } else {
             return toTheLeft ? this.leftBubbles : this.rightBubbles;
         }
@@ -317,9 +329,11 @@ Vertex.prototype.remove = function () {
 Vertex.prototype.removeChild = function (child) {
     let childrenArray = this.isCenter && child.isToTheLeft() ? this.leftBubbles : this.rightBubbles;
     let l = childrenArray.length;
+    let hasDeleted = false;
     while (l--) {
         if (childrenArray[l].getId() === child.getId()) {
             childrenArray.splice(l, 1);
+            hasDeleted = true;
         }
     }
     this.decrementNumberOfConnectedEdges();
@@ -349,8 +363,75 @@ Vertex.prototype.isMeta = function () {
     return this.getGraphElementType() === GraphElementType.Meta;
 };
 
-Vertex.prototype.isImmediateChildOfGroupRelation = function () {
-    return this.parentBubble.parentBubble.isGroupRelation();
+
+Vertex.prototype.rebuildGroupRelations = function () {
+    let edgeByTags = this.getClosestChildrenOfType(GraphElementType.Relation).reduce((edgeByTags, edge) => {
+        edge.getIdentifiersIncludingSelf().forEach((tag) => {
+            if (edgeByTags[tag.getUri()] === undefined) {
+                edgeByTags[tag.getUri()] = {
+                    tag: tag,
+                    edges: []
+                };
+            }
+            edgeByTags[tag.getUri()].edges.push(edge);
+        });
+        return edgeByTags;
+    }, {});
+    let groupRelations = [];
+    Object.values(edgeByTags).forEach((_edgeByTags) => {
+        if (_edgeByTags.edges.length < 2) {
+            return;
+        }
+        let firstEdge = _edgeByTags.edges[0];
+        let index = firstEdge.getIndexInTree();
+        let groupRelation = GroupRelation.withTagAndChildren(
+            _edgeByTags.tag,
+            _edgeByTags.edges.map((edge) => {
+                let parentBubble = edge.getParentBubble();
+                if (parentBubble.isGroupRelation() && !parentBubble.hasIdentification(_edgeByTags.tag)) {
+                    edge = edge.clone();
+                    let endVertex = edge.getOtherVertex(this);
+                    endVertex = endVertex.clone();
+                    edge.updateSourceOrDestination(endVertex);
+                }
+                return edge;
+            })
+        );
+        groupRelation.children.forEach((childEdge) => {
+            this.removeChild(childEdge);
+        });
+        this.addChild(groupRelation, firstEdge.isToTheLeft(), index);
+        groupRelations.push(groupRelation);
+    });
+    groupRelations.forEach((groupRelation) => {
+        groupRelations.forEach((otherGroupRelation) => {
+            if (groupRelation.deleted || otherGroupRelation.deleted) {
+                return;
+            }
+            if (groupRelation.getId() === otherGroupRelation.getId()) {
+                return;
+            }
+            if (groupRelation.getParentBubble().getId() !== otherGroupRelation.getParentBubble().getId()) {
+                return;
+            }
+            if (groupRelation.shouldBeChildOfGroupRelation(otherGroupRelation)) {
+                if (groupRelation.getNumberOfChild() === otherGroupRelation.getNumberOfChild()) {
+                    otherGroupRelation.addIdentifications(groupRelation.getIdentifiers());
+                    groupRelation.getParentBubble().removeChild(groupRelation);
+                    groupRelation.deleted = true;
+                    return;
+                }
+                let index = groupRelation.getIndexInTree();
+                let isToTheLeft = groupRelation.isToTheLeft();
+                groupRelation.getParentBubble().removeChild(groupRelation);
+                otherGroupRelation.addChild(groupRelation, isToTheLeft, index);
+                groupRelation.getNextChildren().forEach((child) => {
+                    otherGroupRelation.removeChild(child);
+                });
+            }
+        })
+    });
+    return groupRelations;
 };
 
 api.Vertex = Vertex;

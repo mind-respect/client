@@ -20,7 +20,7 @@ describe("Edge", () => {
         expect(
             edge1.getSourceVertex().getUri()
         ).toBe(centerBubble.getUri());
-        let b2 = scenario.getBubble2();
+        let b2 = scenario.getBubble2InTree();
         expect(
             edge1.getDestinationVertex().getUri()
         ).toBe(b2.getUri());
@@ -38,7 +38,7 @@ describe("Edge", () => {
     it("can get child vertex in display", async () => {
         let scenario = await new ThreeScenario();
         let edge1 = scenario.getRelation1InTree();
-        let b2 = scenario.getBubble2();
+        let b2 = scenario.getBubble2InTree();
         expect(
             edge1.getNextBubble().getUri()
         ).toBe(b2.getUri());
@@ -47,7 +47,7 @@ describe("Edge", () => {
     it("can get child vertex in display even if inverse", async () => {
         let scenario = await new ThreeScenario();
         let edge1 = scenario.getRelation1InTree();
-        let b2 = scenario.getBubble2();
+        let b2 = scenario.getBubble2InTree();
         edge1.inverse();
         expect(
             edge1.getNextBubble().getUri()
@@ -57,7 +57,7 @@ describe("Edge", () => {
     it("can get child vertex in display even if inverse", async () => {
         let scenario = await new ThreeScenario();
         let edge1 = scenario.getRelation1InTree();
-        let b2 = scenario.getBubble2();
+        let b2 = scenario.getBubble2InTree();
         edge1.inverse();
         expect(
             edge1.getNextBubble().getUri()

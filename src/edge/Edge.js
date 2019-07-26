@@ -17,7 +17,7 @@ api.fromServerFormat = function (serverFormat) {
     return new api.Edge().init(serverFormat);
 };
 api.withLabelSelfSourceAndDestinationUri = function (label, uri, sourceUri, destinationUri) {
-    var edge = new api.Edge().init(
+    let edge = new api.Edge().init(
         api.buildObjectWithUriOfSelfSourceAndDestinationVertex(
             uri,
             sourceUri,
@@ -82,17 +82,27 @@ api.Edge.prototype.init = function (edgeServerFormat, sourceVertex, destinationV
 };
 
 
+api.Edge.prototype.clone = function () {
+    let edge = new api.Edge();
+    edge.init(
+        JSON.parse(JSON.stringify(this.edgeServerFormat)),
+        this.getSourceVertex(),
+        this.getDestinationVertex()
+    );
+    return edge;
+};
+
 api.Edge.prototype.getDuplicates = function () {
     return CurrentSubGraph.get().getEdgesWithUri(
         this.getUri()
-    ).filter((edge)=>{
+    ).filter((edge) => {
         return edge.getId() !== this.getId();
     });
 };
 
 
 api.Edge.prototype.getNbDuplicates = function () {
-    return CurrentSubGraph.get().getEdgeWithUri(
+    return CurrentSubGraph.get().getEdgesWithUri(
         this.getUri()
     ).length - 1;
 };
@@ -181,34 +191,10 @@ api.Edge.prototype.isFriendsOnly = function () {
         this.getDestinationVertex().isFriendsOnly();
 };
 
-api.Edge.prototype.isSourceVertex = function (vertex) {
-    return this.getSourceVertex().getUri() === vertex.getUri();
-};
-api.Edge.prototype.isDestinationVertex = function (vertex) {
-    return this.getDestinationVertex().getUri() === vertex.getUri();
-};
-api.Edge.prototype.isRelatedToVertex = function (vertex) {
-    return this.isSourceVertex(vertex) ||
-        this.isDestinationVertex(vertex);
-};
 api.Edge.prototype.getOtherVertex = function (vertex) {
-    if (vertex === undefined) {
-        debugger;
-    }
-    if (this.getSourceVertex() === undefined) {
-        debugger;
-    }
     return this.getSourceVertex().getUri() === vertex.getUri() ?
         this.getDestinationVertex() : this.getSourceVertex();
 };
-// api.Edge.prototype.isToTheLeft = function (centerVertex) {
-//     let childVertex = this.getOtherVertex(centerVertex);
-//     let childVertexIndex = centerVertex.getChildrenIndex()[childVertex.getUri()];
-//     if (childVertexIndex === undefined) {
-//         return undefined;
-//     }
-//     return childVertexIndex.toTheLeft;
-// };
 
 api.Edge.prototype.getNextBubble = function () {
     return this.isInverse() ?

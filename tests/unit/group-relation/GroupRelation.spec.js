@@ -26,46 +26,6 @@ describe("GroupRelation", function () {
             possession.getUri()
         );
     });
-    it("can tell if it has multiple vertices", async () => {
-        let scenario = await new GroupRelationsScenario();
-        let groupRelation = GroupRelation.usingIdentification(
-            scenario.getPossession()
-        );
-        groupRelation.addTuple({
-            vertex: scenario.getBook1(),
-            edge: TestUtil.generateEdge()
-        });
-        expect(
-            groupRelation.hasMultipleVertices()
-        ).toBeFalsy();
-        groupRelation.addTuple({
-            vertex: scenario.getBook2(),
-            edge: TestUtil.generateEdge()
-        });
-        expect(
-            groupRelation.hasMultipleVertices()
-        ).toBeTruthy();
-    });
-    it("can return the number of vertices", async () => {
-        let scenario = await new GroupRelationsScenario();
-        let groupRelation = GroupRelation.usingIdentification(
-            scenario.getPossession()
-        );
-        groupRelation.addTuple({
-            vertex: scenario.getBook1(),
-            edge: TestUtil.generateEdge()
-        });
-        expect(
-            groupRelation.getNumberOfVertices()
-        ).toBe(1);
-        groupRelation.addTuple({
-            vertex: scenario.getBook2(),
-            edge: TestUtil.generateEdge()
-        });
-        expect(
-            groupRelation.getNumberOfVertices()
-        ).toBe(2);
-    });
     it("can have multiple identifiers", async () => {
         let scenario = await new RelationWithMultipleIdentifiersScenario();
         let relationWithMultipleIdentifiers = scenario.getComputerScientistRelation();

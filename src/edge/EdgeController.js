@@ -37,6 +37,7 @@ EdgeController.prototype.addChildCanDo = function () {
 };
 
 EdgeController.prototype.addChild = async function () {
+    let previousParentFork = this.model().getParentFork();
     let newGroupRelation = this._convertToGroupRelation();
     let triple;
     Selection.removeAll();
@@ -49,9 +50,8 @@ EdgeController.prototype.addChild = async function () {
             this.model().getIdentifiers()
         );
     }).then(() => {
-        let parentBubble = this.model().getParentBubble();
         this.setLabel("");
-        parentBubble.replaceChild(
+        previousParentFork.replaceChild(
             this.model(),
             newGroupRelation
         );
@@ -88,9 +88,9 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
     }
     let promises = [];
     Selection.removeAll();
+    let parentFork = this.model().getParentFork();
     adoptedChild.getParentFork().removeChild(adoptedChild);
     let newGroupRelation = this._convertToGroupRelation();
-    let parentFork = this.model().getParentFork();
     newGroupRelation.addChild(adoptedChild);
     parentFork.replaceChild(
         this.model(),
@@ -131,10 +131,6 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
 };
 
 EdgeController.prototype._convertToGroupRelation = function () {
-    let tuple = {
-        edge: this.model(),
-        vertex: this.model().getDestinationVertex()
-    };
     let parentBubble = this.model().getParentBubble();
     let groupRelationIdentifiers;
     if (parentBubble.isGroupRelation()) {
@@ -155,12 +151,10 @@ EdgeController.prototype._convertToGroupRelation = function () {
     let newGroupRelation = GroupRelation.usingIdentifiers(
         groupRelationIdentifiers
     );
-    newGroupRelation.addTuple(tuple);
     newGroupRelation.parentBubble = parentBubble;
-    newGroupRelation.parentVertex = this.getUi().getParentVertex();
-    newGroupRelation._sortedImmediateChild = newGroupRelation.sortedImmediateChild();
+    newGroupRelation.parentVertex = this.model().getParentVertex();
+    newGroupRelation.addChild(this.model());
     newGroupRelation.isExpanded = true;
-    newGroupRelation.updateGraphElementType();
     return newGroupRelation;
 };
 
@@ -172,8 +166,8 @@ EdgeController.prototype.reverseToRightCanDo = function () {
     if (!this.isSingleAndOwned()) {
         return false;
     }
-    var isToTheLeft = this.edges.isToTheLeft();
-    var isInverse = this.edges.isInverse();
+    let isToTheLeft = this.model().isToTheLeft();
+    let isInverse = this.model().isInverse();
     return (isToTheLeft && !isInverse) ||
         (!isToTheLeft && isInverse);
 
@@ -253,16 +247,6 @@ EdgeController.prototype.replaceParentVertex = function (newParentVertex, preven
 
 
     }
-};
-
-EdgeController.prototype.setIsToTheLeftOrRight = function () {
-    return this.getUi().isToTheLeft() ?
-        EdgeService.setToTheLeft(
-            this.model()
-        ) :
-        EdgeService.setToTheRight(
-            this.model()
-        );
 };
 
 export default api;

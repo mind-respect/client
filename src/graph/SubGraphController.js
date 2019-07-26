@@ -3,12 +3,11 @@
  */
 import GraphElementController from '@/graph-element/GraphElementController'
 import GraphService from '@/graph/GraphService'
-import TreeDisplayerCommon from '@/graph/TreeDisplayerCommon'
-import Edge from '@/edge/Edge'
-import GraphElement from '@/graph-element/GraphElement'
 import GraphElementService from '@/graph-element/GraphElementService'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import IdUri from '@/IdUri'
+import Edge from '@/edge/Edge'
+import SubGraph from '@/graph/SubGraph'
 
 const api = {};
 
@@ -41,9 +40,6 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
         this.model().getUri()
     ).then((response) => {
         let serverGraph = response.data;
-        if (isParentAlreadyOnMap) {
-            this.model().nbRelationsWithGrandParent = this._removeRelationWithGrandParentAndChildFromServerGraph(serverGraph);
-        }
         let centerUri = this.model().getUri();
         let isCenterEdge = IdUri.isEdgeUri(this.model().getUri());
         if (isCenterEdge) {
@@ -52,144 +48,54 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
             );
             centerUri = centerEdge.getSourceVertex().getUri();
         }
-        TreeDisplayerCommon.setUiTreeInfoToVertices(
+        let subGraph = SubGraph.fromServerFormatAndCenterUri(
             serverGraph,
             centerUri
         );
-        let parentAsCenter = serverGraph.vertices[centerUri];
-        let modelToAddChild;
+        let centerFromServer = subGraph.getVertexWithUri(centerUri);
+        let centerVertex = isParentAlreadyOnMap ? this.model() : centerFromServer;
         if (isParentAlreadyOnMap) {
-            modelToAddChild = this.model();
-            modelToAddChild.setLabel(
-                parentAsCenter.getLabel()
+            centerVertex.setLabel(
+                centerFromServer.getLabel()
             );
-            serverGraph.vertices[modelToAddChild.getUri()] = modelToAddChild;
+            subGraph.vertices[centerVertex.getUri()] = [centerVertex];
         } else {
-            parentAsCenter.makeCenter();
-            modelToAddChild = parentAsCenter;
-            CurrentSubGraph.get().add(modelToAddChild);
+            centerVertex.makeCenter();
+            CurrentSubGraph.get().add(centerVertex);
         }
-        let childrenIndex = parentAsCenter.getChildrenIndex();
-        let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
-        sortGroupRelationRootsByIsGroupRelationOrCreationDate(
-            parentAsCenter.groupRelationRoots,
-            childrenIndex
-        ).forEach((groupRelationRoot) => {
-            if (groupRelationRoot.isGroupRelation() && groupRelationRoot.isTrulyAGroupRelation()) {
-                let childIndex = childrenIndex[groupRelationRoot.getFirstVertex(childrenIndex).getUri()];
-                let addLeft;
-                if (childIndex !== undefined) {
-                    addLeft = childIndex.toTheLeft;
-                }
-                modelToAddChild.addChild(
-                    groupRelationRoot,
-                    addLeft
-                );
+        let childrenIndex = centerVertex.getChildrenIndex();
+        let parentVertex = centerVertex.getParentVertex();
+        subGraph.sortedEdges().forEach((edge) => {
+            let endVertex = edge.getOtherVertex(centerVertex);
+            if (isParentAlreadyOnMap && parentVertex.getUri() === endVertex.getUri()) {
                 return;
             }
-            groupRelationRoot.sortedImmediateChild(parentAsCenter.getChildrenIndex()).forEach((child) => {
-                    Object.keys(child).forEach((uId) => {
-                        let triple = child[uId];
-                        triple.edge.uiId = uId;
-
-                        let childIndex = childrenIndex[triple.vertex.getUri()];
-                        let addLeft;
-                        if (childIndex !== undefined) {
-                            addLeft = childIndex.toTheLeft;
-                        }
-                        triple.edge.setSourceVertex(
-                            serverGraph.vertices[
-                                triple.edge.getSourceVertex().getUri()
-                                ]
-                        );
-                        triple.edge.setDestinationVertex(
-                            serverGraph.vertices[
-                                triple.edge.getDestinationVertex().getUri()
-                                ]
-                        );
-                        modelToAddChild.addChild(
-                            triple.edge,
-                            addLeft
-                        )
-                    });
-                }
-            );
+            let childIndex = childrenIndex[endVertex.getUri()];
+            let addLeft;
+            if (childIndex !== undefined) {
+                addLeft = childIndex.toTheLeft;
+            }
+            centerVertex.addChild(
+                edge,
+                addLeft
+            )
         });
-        parentAsCenter.groupRelationRoots.forEach((groupRelation) => {
-            if (!groupRelation.isTrulyAGroupRelation()) {
-                return;
-            }
+        let groupRelations = centerVertex.rebuildGroupRelations();
+        groupRelations.forEach((groupRelation) => {
             if (groupRelation.hasFewEnoughBubblesToExpand()) {
                 groupRelation.expand(true);
             } else {
                 groupRelation.collapse();
             }
         });
-        return isChildrenIndexBuilt ? Promise.resolve(modelToAddChild) :
+        let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
+        return isChildrenIndexBuilt ? Promise.resolve(centerVertex) :
             GraphElementService.changeChildrenIndex(
-                modelToAddChild
-            ).then(function () {
-                return modelToAddChild;
+                centerVertex
+            ).then(() => {
+                return centerVertex;
             });
     });
 };
-
-SubGraphController.prototype._removeRelationWithGrandParentAndChildFromServerGraph = function (serverGraph) {
-    if (this.model().isCenter) {
-        return 0;
-    }
-    let parentRelation = this.model().getParentBubble();
-    let relationWithGrandParentUri = parentRelation.isMetaRelation() ? parentRelation.getEdgeUri() : parentRelation.getUri();
-    let grandParent = this.model().getParentVertex();
-    let grandParentUriToCompare = grandParent.getUri();
-    let nbRelationsWithGrandParent = 0;
-    let alreadyPresentChildEdgesUri = [];
-    this.model().visitClosestChildRelations(function (edge) {
-        alreadyPresentChildEdgesUri.push(edge.getUri());
-    });
-    serverGraph.edges = getFilteredEdges();
-    if (1 === nbRelationsWithGrandParent) {
-        delete serverGraph.vertices[grandParentUriToCompare];
-    }
-    return nbRelationsWithGrandParent - 1;
-
-    function getFilteredEdges() {
-        let filteredEdges = {};
-        Object.values(serverGraph.edges).forEach((edge) => {
-            let edgeFacade = edge.getLabel === undefined ? Edge.fromServerFormat(
-                edge
-            ) : edge;
-            let sourceAndDestinationId = [
-                edgeFacade.getSourceVertex().getUri(),
-                edgeFacade.getDestinationVertex().getUri()
-            ];
-            if (sourceAndDestinationId.indexOf(grandParentUriToCompare) !== -1) {
-                nbRelationsWithGrandParent++;
-            }
-            let alreadyChildEdge = alreadyPresentChildEdgesUri.indexOf(
-                edgeFacade.getUri()
-            ) !== -1;
-            if (!alreadyChildEdge && relationWithGrandParentUri !== edgeFacade.getUri()) {
-                filteredEdges[
-                    edgeFacade.getUri()
-                    ] = edge;
-            }
-        });
-        return filteredEdges;
-    }
-};
-
-function sortGroupRelationRootsByIsGroupRelationOrCreationDate(groupRelationRoots, childrenIndex) {
-    return groupRelationRoots.sort(function (groupRelationA, groupRelationB) {
-            let vertexA = groupRelationA.getFirstVertex(childrenIndex);
-            let vertexB = groupRelationB.getFirstVertex(childrenIndex);
-            return GraphElement.sortCompare(
-                vertexA,
-                vertexB,
-                childrenIndex
-            );
-        }
-    );
-}
 
 export default api;

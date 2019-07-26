@@ -83,19 +83,6 @@ const IdUri = {
             uri.lastIndexOf("/") + 1
         );
     },
-    generateUuid: function () {
-        // http://stackoverflow.com/questions/6906916/collisions-when-generating-uuids-in-javascript
-        var buf = new Uint16Array(8);
-        crypto.getRandomValues(buf);
-        var S4 = function (num) {
-            var ret = num.toString(16);
-            while (ret.length < 4) {
-                ret = "0" + ret;
-            }
-            return ret;
-        };
-        return (S4(buf[0]) + S4(buf[1]) + "-" + S4(buf[2]) + "-" + S4(buf[3]) + "-" + S4(buf[4]) + "-" + S4(buf[5]) + S4(buf[6]) + S4(buf[7]));
-    },
     isGraphElementUriOwnedByCurrentUser: function (uri) {
         return UserService.authenticatedUserInCache().user_name ===
             IdUri.getOwnerFromUri(uri);

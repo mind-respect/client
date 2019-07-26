@@ -6,7 +6,7 @@ function MetaRelation(tag, destinationVertex) {
     Edge.Edge.apply(this);
     this.init(
         Edge.buildObjectWithUriOfSelfSourceAndDestinationVertex(
-            IdUri.generateUuid(),
+            IdUri.uuid(),
             tag.getUri(),
             destinationVertex.getUri()
         ),

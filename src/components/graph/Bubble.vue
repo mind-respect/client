@@ -442,11 +442,8 @@
             },
             canShowChildren: function () {
                 return (this.bubble.isVertexType() && this.bubble.rightBubbles.length > 0) ||
-                    (this.bubble.isGroupRelation() && this.bubble._sortedImmediateChild && this.bubble._sortedImmediateChild.length > 0) ||
+                    (this.bubble.isGroupRelation() && this.bubble.children && this.bubble.children.length > 0) ||
                     this.bubble.isEdge();
-            },
-            _sortedImmediateChild: function () {
-                return this.bubble._sortedImmediateChild;
             },
             isNextBubbleExpanded: function () {
                 return this.bubble.getNextBubble().isExpanded;

@@ -291,7 +291,7 @@ describe('GraphElementController', () => {
             let deepVertex = triple.destination;
             expect(
                 deepVertex.getDownBubble().text()
-            ).toBe("b1");
+            ).not.toBe("Possession");
             await groupRelation.getController().moveBelow(
                 deepVertex
             );
@@ -526,10 +526,19 @@ describe('GraphElementController', () => {
         it("moves around the group relation and does not go inside", async () => {
             let scenario = await new GroupRelationsScenario();
             let possession = scenario.getPossessionGroupRelation();
-            let otherVertex = possession.getDownBubble().getNextBubble();
+            let center = scenario.getCenterInTree();
+            let otherVertex = TestUtil.getChildWithLabel(
+                center,
+                "other relation"
+            ).getNextBubble();
             expect(
                 otherVertex.getLabel()
-            ).toBe("other bubble 2");
+            ).toBe("other bubble");
+            await otherVertex.getController().moveBelow(possession);
+            otherVertex = possession.getDownBubble().getNextBubble();
+            expect(
+                otherVertex.getLabel()
+            ).toBe("other bubble");
             expect(
                 otherVertex.getParentFork().getLabel()
             ).toBe("me");

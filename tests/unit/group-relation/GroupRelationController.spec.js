@@ -39,19 +39,6 @@ describe("GroupRelationController", () => {
                 triple.destination.isPublic()
             ).toBeTruthy();
         });
-        it("updates child in model", async () => {
-            let scenario = await new GroupRelationsScenario();
-            let possessionInTree = scenario.getPossessionGroupRelation();
-            let nbVerticesBefore = Object.keys(
-                possessionInTree.model().getVertices()
-            ).length;
-            await possessionInTree.getController().addChild();
-            expect(
-                Object.keys(
-                    possessionInTree.model().getVertices()
-                ).length
-            ).toBe(nbVerticesBefore + 1);
-        });
         it("adds new child at the bottom of the others when not expanded", async () => {
             let scenario = await new GroupRelationsScenario();
             let possessionInTree = scenario.getPossessionGroupRelation();
@@ -149,6 +136,9 @@ describe("GroupRelationController", () => {
                     "original relation"
                 )
             ).toBeFalsy();
+            expect(
+                otherGroupRelation.getController()._canMoveUnderParent(groupRelation)
+            ).toBeTruthy();
             await otherGroupRelation.getController().moveUnderParent(groupRelation);
             expect(
                 TestUtil.hasChildWithLabel(

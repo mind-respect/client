@@ -188,8 +188,10 @@ describe("Graph.vue", () => {
         ).toBeDefined();
     });
 
-    fit("can have duplicate relations", async () => {
+    //not sure I want duplicates in this case
+    xit("can have duplicate relations", async () => {
         let scenario = await new RelationIn2GroupRelationsScenario();
+        TestUtil.logChildren(scenario.getCenterInTree())
         let impact3InIndividualContext = scenario.getImpact3RelationInTheImpactOnTheIndividualContext();
         let impact3InSocietyContext = scenario.getImpact3RelationInTheImpactOnSocietyContext();
         expect(
@@ -563,21 +565,14 @@ describe("Graph.vue", () => {
         expect(
             center.getNumberOfChild()
         ).toBe(1);
-        let region = TestUtil.getChildWithLabel(
-            center,
-            "region"
-        );
-        expect(
-            region.isGroupRelation()
-        ).toBeTruthy();
-        region.expand();
-        expect(
-            region.getNumberOfChild()
-        ).toBe(1);
         let subRegion = TestUtil.getChildWithLabel(
-            region,
+            center,
             "sub-region"
         );
+        expect(
+            subRegion.isGroupRelation()
+        ).toBeTruthy();
+        subRegion.expand();
         subRegion.expand();
         expect(
             subRegion.getNumberOfChild()

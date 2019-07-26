@@ -4,12 +4,20 @@
 
 import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
+import GraphElement from '@/graph-element/GraphElement'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
     return new api.SubGraph(
         serverFormat,
         undefined,
+        true
+    );
+};
+api.fromServerFormatAndCenterUri = function (serverFormat, centerUri) {
+    return new api.SubGraph(
+        serverFormat,
+        centerUri,
         true
     );
 };
@@ -47,7 +55,7 @@ api.SubGraph = function (graph, centerUri, buildFacade) {
         this.tags = graph.tags || [];
     }
     if (centerUri) {
-        this.center = this.getVertexWithUri(centerUri)
+        this.centerUri = centerUri;
     }
 };
 
@@ -68,27 +76,20 @@ api.SubGraph.prototype.add = function (graphElement) {
         );
     } else if (graphElement.isVertex()) {
         this.addVertex(graphElement);
-    } else if (graphElement.isGroupRelation()) {
+    }
+
+    else if (graphElement.isGroupRelation()) {
         this.groupRelations.push(
             graphElement
         );
-        graphElement.sortedImmediateChild(graphElement.getParentVertex().getChildrenIndex()).forEach((child) => {
+        graphElement.getNextChildren().forEach((child) => {
+            child.direction = graphElement.direction;
+            child.parentVertex = graphElement.parentVertex;
+            child.parentBubble = graphElement;
             if (child.isGroupRelation) {
-                child.direction = graphElement.direction;
-                child.parentVertex = graphElement.parentVertex;
-                child.parentBubble = graphElement;
                 return this.add(child);
             }
-            Object.values(child).forEach((triple) => {
-                triple.vertex.direction = graphElement.direction;
-                this.addVertex(triple.vertex);
-                triple.edge.direction = graphElement.direction;
-                triple.edge.parentBubble = graphElement;
-                triple.edge.parentVertex = graphElement.parentVertex;
-                triple.edge.updateSourceOrDestination(graphElement.parentVertex);
-                triple.edge.updateSourceOrDestination(triple.vertex);
-                return this.add(triple.edge);
-            })
+            this.add(child);
         })
     }
 };
@@ -133,10 +134,45 @@ api.SubGraph.prototype.addEdge = function (edge) {
     this.edges[edge.getUri()].push(edge);
 };
 
+api.SubGraph.prototype.removeEdge = function (edge) {
+    this.removeVertex(edge.getNextBubble());
+    let edges = this.getEdgesWithUri(edge.getUri());
+    let l = edges.length;
+    while (l--) {
+        if (edges[l].getId() === edge.getId()) {
+            edges.splice(l, 1);
+        }
+    }
+};
+
+api.SubGraph.prototype.removeVertex = function (vertex) {
+    let vertices = this.getVerticesWithUri(vertex.getUri());
+    let l = vertices.length;
+    while (l--) {
+        if (vertices[l].getId() === vertex.getId()) {
+            vertices.splice(l, 1);
+        }
+    }
+};
+
 api.SubGraph.prototype.getEdges = function () {
     let edges = Object.values(this.edges);
     //use array flat() when node ^11 LTS gets out
     return [].concat.apply([], edges)
+};
+
+api.SubGraph.prototype.sortedEdges = function () {
+    let centerVertex = this.getCenter();
+    let childrenIndex = centerVertex.getChildrenIndex();
+    return this.getEdges().sort((a, b) => {
+        let vertexA = a.getOtherVertex(centerVertex);
+        let vertexB = b.getOtherVertex(centerVertex);
+        return GraphElement.sortCompare(
+            vertexA,
+            vertexB,
+            childrenIndex
+        );
+    });
 };
 
 api.SubGraph.prototype.getVertices = function () {
@@ -172,7 +208,7 @@ api.SubGraph.prototype.getGroupRelationWithUiId = function (uiId) {
 };
 
 api.SubGraph.prototype.getCenter = function () {
-    return this.getVertexWithUri(this.centerUri)
+    return this.getVertexWithUri(this.centerUri);
 };
 
 api.SubGraph.prototype._buildVertices = function () {

@@ -152,7 +152,7 @@ GraphElement.GraphElement.prototype.hasIdentifications = function () {
     return this.getIdentifiers().length > 0;
 };
 GraphElement.GraphElement.prototype.hasAllIdentifiers = function (identifiers) {
-    var has = true;
+    let has = true;
     identifiers.forEach(function (identifier) {
         if (!this.hasIdentification(identifier)) {
             has = false;
@@ -176,12 +176,12 @@ GraphElement.GraphElement.prototype.getIdentifiers = function () {
 GraphElement.GraphElement.prototype.getIdentifiersIncludingSelf = function () {
     let identifiers = [];
     let isSelfTagAlreadyIncluded = false;
-    this.identifiers.forEach(function (identifier) {
+    this.identifiers.forEach((identifier) => {
         if (identifier.getExternalResourceUri() === this.getUri()) {
             isSelfTagAlreadyIncluded = true;
         }
         identifiers.push(identifier);
-    }.bind(this));
+    });
     if (!isSelfTagAlreadyIncluded) {
         identifiers.push(
             this.buildSelfIdentifier()
@@ -254,11 +254,6 @@ GraphElement.GraphElement.prototype.buildTwiceSelfIdentifier = function () {
         this.getComment()
     );
     return identification;
-};
-
-GraphElement.GraphElement.prototype.isRelatedToIdentifier = function (identification) {
-    return identification.getExternalResourceUri() === this.getUri() ||
-        this.hasIdentification(identification);
 };
 
 GraphElement.GraphElement.prototype.addIdentifications = function (identifications) {

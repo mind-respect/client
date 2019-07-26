@@ -96,9 +96,8 @@ GroupRelationController.prototype.becomeParent = function (child) {
     if (child.isGroupRelation()) {
         child.expand();
         child.getClosestChildrenOfType(
-            GraphElementType.Relation,
-            moveEdge.bind(this)
-        );
+            GraphElementType.Relation
+        ).forEach(moveEdge.bind(this));
         uiChild = child;
     } else {
         uiChild = child.isVertex() ? child.getParentBubble() : child;
@@ -108,6 +107,11 @@ GroupRelationController.prototype.becomeParent = function (child) {
     }
     return Promise.all(promises).then(() => {
         uiChild.moveToParent(this.model());
+        Vue.nextTick(()=>{
+            GraphElementService.changeChildrenIndex(
+                this.model().getParentVertex()
+            );
+        })
     });
 
     function moveEdge(movedEdge) {

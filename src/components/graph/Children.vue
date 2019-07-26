@@ -28,22 +28,15 @@
             ></Bubble>
         </div>
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()">
-            <div v-for="child in bubble._sortedImmediateChild"
+            <div v-for="child in bubble.children"
                  :class="{
-                    'mt-4 mb-4' : bubble._sortedImmediateChild.length === 2,
-                    'mt-2 mb-2' : bubble._sortedImmediateChild.length > 2
+                    'mt-4 mb-4' : bubble.children.length === 2,
+                    'mt-2 mb-2' : bubble.children.length > 2
                  }"
             >
-                <Bubble v-if="child.isGroupRelation"
-                        :bubble="child"
+                <Bubble :bubble="child"
                         :direction="direction"
                 ></Bubble>
-                <div v-else v-for="(triple, uiId) in child">
-                    <Bubble
-                            :bubble="triple.edge"
-                            :direction="direction"
-                    ></Bubble>
-                </div>
             </div>
         </div>
     </div>
@@ -70,7 +63,7 @@
             this.loaded = true;
         },
         methods: {},
-        computed:{
+        computed: {
             isInverse: function () {
                 return this.bubble.isEdge() && this.bubble.isInverse();
             }

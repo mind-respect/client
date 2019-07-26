@@ -755,9 +755,11 @@ describe("FriendlyResource", () => {
             let scenario = await new GroupRelationsScenario();
             let groupRelation = scenario.getPossessionGroupRelation();
             groupRelation.expand();
-            let otherBubble = groupRelation.getDownBubble().getNextBubble();
+            let center = scenario.getCenterInTree();
+            let otherBubble = TestUtil.getChildWithLabel(center, "other relation").getNextBubble();
+            await otherBubble.getController().moveBelow(groupRelation);
             expect(
-                otherBubble.isVertex()
+                otherBubble.getUpBubble().isGroupRelation()
             ).toBeTruthy();
             let childIndex = otherBubble.getParentVertex().getChildIndex(
                 otherBubble
