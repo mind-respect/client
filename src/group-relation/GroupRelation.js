@@ -219,6 +219,7 @@ GroupRelation.prototype.addChild = function (child, isToTheLeft, index) {
                 child
             );
         }
+        CurrentSubGraph.get().add(child);
         return;
     }
     let edge = child.isEdge() ?
