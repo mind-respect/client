@@ -8,6 +8,7 @@ import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import IdUri from '@/IdUri'
 import Edge from '@/edge/Edge'
 import SubGraph from '@/graph/SubGraph'
+import MindMapInfo from '@/MindMapInfo'
 
 const api = {};
 
@@ -89,7 +90,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
             }
         });
         let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
-        return isChildrenIndexBuilt ? Promise.resolve(centerVertex) :
+        return isChildrenIndexBuilt && !MindMapInfo.isViewOnly() ? Promise.resolve(centerVertex) :
             GraphElementService.changeChildrenIndex(
                 centerVertex
             ).then(() => {
