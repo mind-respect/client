@@ -30,7 +30,7 @@
     }" :id="containerId">
             <v-flex grow class="v-center drop-relative-container">
                 <v-spacer v-if="isLeft"></v-spacer>
-                <div v-if="!isCollapsed || isCenter">
+                <div v-if="!bubble.isCollapsed || isCenter">
                     <div :class="{
                    'blur-overlay':false && bubble.isVertexType()
                 }"
@@ -41,7 +41,7 @@
                                 :bubble="bubble"
                                 direction="left"
                                 v-if="
-                                        isLeft && !isCenter && canShowChildren
+                                        isLeft && !isCenter && canShowChildren()
                                       "
                         >
                         </Children>
@@ -199,7 +199,7 @@
                                                     :style="labelFont"
                                                     ref="vertexLabel"
                                                     :class="{
-                                                        'unselectable' : !isEditFlow
+                                                        'unselectable' : !bubble.isEditFlow
                                                     }"
                                             ></div>
                                         </v-badge>
@@ -218,7 +218,7 @@
                         </div>
                         <ChildNotice :bubble="bubble"
                                      class=""
-                                     v-if="canExpand && !canShowChildren"></ChildNotice>
+                                     v-if="canExpand && !canShowChildren()"></ChildNotice>
                     </div>
                     <div
                             class="vertex-drop-arrow-top-bottom-drop bottom-vertex-drop-arrow-drop"
@@ -311,7 +311,7 @@
                                         'elevation-4': isSelected,
                                         'is-inverse' : isInverse,
                                         'is-shrinked' : isShrinked,
-                                        'empty-edge' : bubble.isEdge() && !isEditFlow && bubble.isLabelEmpty()
+                                        'empty-edge' : bubble.isEdge() && !bubble.isEditFlow && bubble.isLabelEmpty()
                                     }"
                                     >
                                         <div class="bubble-label white--text"
@@ -325,7 +325,7 @@
                                              @keydown="keydown"
                                              :style="labelFont"
                                              :class="{
-                                                        'unselectable' : !isEditFlow
+                                                        'unselectable' : !bubble.isEditFlow
                                                     }"
                                         ></div>
                                         <v-icon v-if="bubble.isMetaRelation()" small class="bubble-label unselectable"
@@ -340,10 +340,10 @@
                         </div>
                         <ChildNotice :bubble="bubble"
                                      class=""
-                                     v-if="canExpand && !canShowChildren"></ChildNotice>
+                                     v-if="canExpand && !canShowChildren()"></ChildNotice>
                     </div>
                 </div>
-                <div v-if="!isCollapsed || isCenter">
+                <div v-if="!bubble.isCollapsed || isCenter">
                     <div :class="{
                    'blur-overlay':false && bubble.isVertexType()
                 }"
@@ -353,7 +353,7 @@
                         <Children :bubble="bubble"
                                   direction="right"
                                   v-if="
-                                      !isLeft && !isCenter && canShowChildren
+                                      !isLeft && !isCenter && canShowChildren()
                                       "
                         >
                         </Children>
@@ -440,11 +440,6 @@
                 let text = doc.body.textContent || "";
                 return this.isEditFlow ? text : linkifyStr(text);
             },
-            canShowChildren: function () {
-                return (this.bubble.isVertexType() && this.bubble.rightBubbles.length > 0) ||
-                    (this.bubble.isGroupRelation() && this.bubble.children && this.bubble.children.length > 0) ||
-                    this.bubble.isEdge();
-            },
             isNextBubbleExpanded: function () {
                 return this.bubble.getNextBubble().isExpanded;
             },
@@ -466,15 +461,6 @@
                 return this.bubble.rightBubbles ?
                     this.bubble.rightBubbles :
                     [];
-            },
-            isCollapsed: function () {
-                return this.bubble.isCollapsed;
-            },
-            isBubbleLoading: function () {
-                return this.bubble.loading;
-            },
-            isEditFlow: function () {
-                return this.bubble.isEditFlow;
             },
             isPublic: function () {
                 return this.bubble.isPublic();
@@ -512,6 +498,11 @@
             }
         },
         methods: {
+            canShowChildren: function () {
+                return (this.bubble.isVertexType() && this.bubble.rightBubbles.length > 0) ||
+                    (this.bubble.isGroupRelation() && this.bubble.children && this.bubble.children.length > 0) ||
+                    this.bubble.isEdge();
+            },
             beforeChildrenAnimation: async function () {
                 await this.$nextTick();
                 Store.dispatch("redraw");

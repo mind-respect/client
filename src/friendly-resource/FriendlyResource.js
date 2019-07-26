@@ -633,9 +633,9 @@ FriendlyResource.FriendlyResource.prototype._getNextBubble = function (bottom) {
 };
 
 FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isChildExpand) {
-    if (this.isExpanded) {
-        return;
-    }
+    // if (this.isExpanded) {
+    //     return;
+    // }
     this.loading = false;
     this.isExpanded = true;
     this.isCollapsed = false;

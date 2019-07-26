@@ -140,24 +140,22 @@ GroupRelation.prototype._getNextChildrenCollapsedOrNot = function (getEvenIfColl
         return [];
     }
     let children = this.isCollapsed && getEvenIfCollapsed ? this.childrenCollapsed : this.children;
-    if (!children) {
+    if (children === undefined || children === null) {
         return [];
     }
     return children;
 };
 
 GroupRelation.prototype.expand = async function (avoidCenter, isChildExpand) {
+    if (this.childrenCollapsed !== null) {
+        this.children = this.childrenCollapsed;
+        this.childrenCollapsed = null;
+    }
     FriendlyResource.FriendlyResource.prototype.expand.call(
         this,
         avoidCenter,
         isChildExpand
     );
-    if (this.childrenCollapsed !== null) {
-        this.children = this.childrenCollapsed;
-        this.childrenCollapsed = null;
-    }
-    this.isExpanded = true;
-    this.isCollapsed = false;
     await Vue.nextTick();
     Store.dispatch("redraw");
 };
