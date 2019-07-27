@@ -94,8 +94,11 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
         while (l--) {
             let groupRelation = groupRelations[l];
             if (groupRelation.getNumberOfChild() < 2) {
-                if (groupRelation.getFirstEdge().isInGroupRelation) {
+                let firstEdge = groupRelation.getFirstEdge();
+                if (firstEdge.isInGroupRelation || firstEdge.isUnderVertex) {
                     groupRelations.splice(l, 1);
+                } else {
+                    firstEdge.isUnderVertex = true;
                 }
             } else {
                 groupRelation.children = groupRelation.children.map((edge) => {
