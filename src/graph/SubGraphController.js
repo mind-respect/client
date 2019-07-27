@@ -9,6 +9,9 @@ import IdUri from '@/IdUri'
 import Edge from '@/edge/Edge'
 import SubGraph from '@/graph/SubGraph'
 import MindMapInfo from '@/MindMapInfo'
+import GroupRelation from '@/group-relation/GroupRelation'
+import GraphElement from '@/graph-element/GraphElement'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 const api = {};
 
@@ -66,23 +69,109 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
         }
         let childrenIndex = centerVertex.getChildrenIndex();
         let parentVertex = centerVertex.getParentVertex();
-        subGraph.sortedEdges().forEach((edge) => {
+        let edgesInGroupRelations = subGraph.sortedEdges().reduce((groupRelations, edge) => {
             let endVertex = edge.getOtherVertex(centerVertex);
             if (isParentAlreadyOnMap && parentVertex.getUri() === endVertex.getUri()) {
+                return groupRelations;
+            }
+            edge.getIdentifiersIncludingSelf().forEach((tag) => {
+                if (groupRelations[tag.getUri()] === undefined) {
+                    let groupRelation = GroupRelation.withTagAndChildren(
+                        tag,
+                        []
+                    );
+                    groupRelation.parentBubble = groupRelation.parentVertex = centerVertex;
+                    groupRelations[tag.getUri()] = groupRelation;
+                }
+                groupRelations[tag.getUri()].addChild(edge);
+            });
+            return groupRelations;
+        }, {});
+        let groupRelations = Object.values(edgesInGroupRelations).sort((a, b) => {
+            return a.getNumberOfChild() - b.getNumberOfChild();
+        });
+        let l = groupRelations.length;
+        while (l--) {
+            let groupRelation = groupRelations[l];
+            if (groupRelation.getNumberOfChild() < 2) {
+                if (groupRelation.getFirstEdge().isInGroupRelation) {
+                    groupRelations.splice(l, 1);
+                }
+            } else {
+                groupRelation.children = groupRelation.children.map((edge) => {
+                    edge.isInGroupRelation = true;
+                    let parentBubble = edge.getParentBubble();
+                    if (parentBubble.getNumberOfChild() > 1 && !parentBubble.hasIdentification(groupRelation.getIdentification())) {
+                        edge = edge.clone();
+                        let endVertex = edge.getOtherVertex(centerVertex);
+                        endVertex = endVertex.clone();
+                        edge.updateSourceOrDestination(endVertex);
+                    }
+                    return edge;
+                });
+            }
+        }
+        groupRelations.forEach((groupRelation) => {
+            groupRelations.forEach((otherGroupRelation) => {
+                if (groupRelation.getNumberOfChild() < 2 || otherGroupRelation.getNumberOfChild() < 2) {
+                    return;
+                }
+                if (groupRelation.deleted || otherGroupRelation.deleted) {
+                    return;
+                }
+                if (groupRelation.getId() === otherGroupRelation.getId()) {
+                    return;
+                }
+                if (groupRelation.getParentBubble().getId() !== otherGroupRelation.getParentBubble().getId()) {
+                    return;
+                }
+                if (groupRelation.shouldBeChildOfGroupRelation(otherGroupRelation)) {
+                    if (groupRelation.getClosestChildrenOfType(GraphElementType.Relation).length === otherGroupRelation.getClosestChildrenOfType(GraphElementType.Relation).length) {
+                        otherGroupRelation.addIdentifications(groupRelation.getIdentifiers());
+                        groupRelation.getParentBubble().removeChild(groupRelation, true, true);
+                        otherGroupRelation.deleted = true;
+                        return;
+                    }
+                    let firstEdge = groupRelation.getFirstEdge();
+                    let index = 0;
+                    for (let i = 0; i < otherGroupRelation.children.length; i++) {
+                        if (otherGroupRelation.children[i].getUri() === firstEdge.getUri()) {
+                            index = i;
+                        }
+                    }
+                    let isToTheLeft = groupRelation.isToTheLeft();
+                    groupRelation.getParentBubble().removeChild(groupRelation, true, true);
+                    otherGroupRelation.addChild(groupRelation, isToTheLeft, index);
+                    groupRelation.children.forEach((child) => {
+                        otherGroupRelation.removeChild(child, true, true);
+                    });
+                }
+            })
+        });
+        groupRelations = groupRelations.filter((groupRelation) => {
+            return !groupRelation.deleted
+        });
+        api.sortedGroupRelations(groupRelations, childrenIndex, centerVertex).forEach((groupRelation) => {
+            if (groupRelation.getParentBubble().getId() !== centerVertex.getId()) {
                 return;
             }
+            let edge = groupRelation.getFirstEdge();
+            let endVertex = edge.getOtherVertex(centerVertex);
             let childIndex = childrenIndex[endVertex.getUri()];
             let addLeft;
             if (childIndex !== undefined) {
                 addLeft = childIndex.toTheLeft;
             }
             centerVertex.addChild(
-                edge,
+                groupRelation.getNumberOfChild() > 1 ? groupRelation : edge,
                 addLeft
             )
         });
-        let groupRelations = centerVertex.rebuildGroupRelations();
+
         groupRelations.forEach((groupRelation) => {
+            if (groupRelation.getNumberOfChild() < 2) {
+                return;
+            }
             if (groupRelation.hasFewEnoughBubblesToExpand()) {
                 groupRelation.expand(true);
             } else {
@@ -96,6 +185,20 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
             ).then(() => {
                 return centerVertex;
             });
+    });
+};
+
+api.sortedGroupRelations = function (groupRelations, childrenIndex, centerVertex) {
+    return groupRelations.sort((a, b) => {
+        let firstEdgeA = a.getFirstEdge();
+        let firstEdgeB = b.getFirstEdge();
+        let vertexA = firstEdgeA.getOtherVertex(centerVertex);
+        let vertexB = firstEdgeB.getOtherVertex(centerVertex);
+        return GraphElement.sortCompare(
+            vertexA,
+            vertexB,
+            childrenIndex
+        );
     });
 };
 

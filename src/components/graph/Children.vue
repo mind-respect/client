@@ -28,7 +28,7 @@
             ></Bubble>
         </div>
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()">
-            <div v-for="child in bubble.children"
+            <div v-for="child in bubble.children" :key="child.uiId"
                  :class="{
                     'mt-4 mb-4' : bubble.children.length === 2,
                     'mt-2 mb-2' : bubble.children.length > 2

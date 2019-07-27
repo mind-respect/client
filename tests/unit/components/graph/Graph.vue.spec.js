@@ -565,20 +565,19 @@ describe("Graph.vue", () => {
         expect(
             center.getNumberOfChild()
         ).toBe(1);
-        let subRegion = TestUtil.getChildWithLabel(
+        let region = TestUtil.getChildWithLabel(
             center,
-            "sub-region"
+            "region"
         );
         expect(
-            subRegion.isGroupRelation()
+            region.isGroupRelation()
         ).toBeTruthy();
-        subRegion.expand();
-        subRegion.expand();
+        region.expand();
         expect(
-            subRegion.getNumberOfChild()
+            region.getNumberOfChild()
         ).toBe(2);
         let subRegionA = TestUtil.getChildWithLabel(
-            subRegion,
+            region,
             "sub-region-a"
         );
         subRegionA.expand();
@@ -598,7 +597,7 @@ describe("Graph.vue", () => {
             )
         ).toBeTruthy();
         let subRegionB = TestUtil.getChildWithLabel(
-            subRegion,
+            region,
             "sub-region-b"
         );
         subRegionB.expand();

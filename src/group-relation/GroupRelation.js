@@ -49,6 +49,7 @@ function GroupRelation(tags, children) {
     this.setLabel(tag.getLabel());
     this.setComment(tag.getComment());
     this.addIdentifications(tags);
+    this.isExpanded = false;
 }
 
 GroupRelation.prototype = new GraphElement.GraphElement();
@@ -63,7 +64,7 @@ GroupRelation.prototype.hasFewEnoughBubblesToExpand = function () {
         nbChild < api.EXPAND_UNDER_NB_CHILD;
 };
 
-GroupRelation.prototype.removeChild = function (child, isTemporaryRemove) {
+GroupRelation.prototype.removeChild = function (child, isTemporary, isPreDisplay) {
     let l = this.children.length;
     let removedChild;
     while (l--) {
@@ -72,10 +73,10 @@ GroupRelation.prototype.removeChild = function (child, isTemporaryRemove) {
             this.children.splice(l, 1);
         }
     }
-    if (removedChild && removedChild.isEdge()) {
+    if (removedChild && removedChild.isEdge() && !isPreDisplay) {
         CurrentSubGraph.get().removeEdge(removedChild);
     }
-    if (!isTemporaryRemove) {
+    if (!isTemporary) {
         if (this.children.length === 0) {
             this.getParentBubble().removeChild(this);
         }
@@ -146,11 +147,24 @@ GroupRelation.prototype._getNextChildrenCollapsedOrNot = function (getEvenIfColl
     return children;
 };
 
+GroupRelation.prototype.getFirstEdge = function () {
+    let children = this.getNextChildrenEvenIfCollapsed();
+    let firstEdge = children.filter((child) => {
+        return child.isEdge();
+    })[0];
+    if (!firstEdge) {
+        return children[0].getFirstEdge();
+    }
+    return firstEdge;
+};
+
 GroupRelation.prototype.expand = async function (avoidCenter, isChildExpand) {
     if (this.childrenCollapsed !== null) {
         this.children = this.childrenCollapsed;
         this.childrenCollapsed = null;
     }
+    this.isExpanded = true;
+    this.isCollapsed = false;
     FriendlyResource.FriendlyResource.prototype.expand.call(
         this,
         avoidCenter,
@@ -197,11 +211,7 @@ GroupRelation.prototype.shouldBeChildOfGroupRelation = function (otherGroupRelat
     });
 };
 
-GroupRelation.prototype.getSortDate = function () {
-    return new Date(0);
-};
-
-GroupRelation.prototype.addChild = function (child, isToTheLeft, index) {
+GroupRelation.prototype.addChild = function (child, isToTheLeft, index, isPreDisplay) {
     if (child.isGroupRelation()) {
         child.parentBubble = this;
         child.parentVertex = this.getParentVertex();
@@ -217,14 +227,15 @@ GroupRelation.prototype.addChild = function (child, isToTheLeft, index) {
                 child
             );
         }
-        CurrentSubGraph.get().add(child);
+        if (!isPreDisplay) {
+            CurrentSubGraph.get().add(child);
+        }
         return;
     }
     let edge = child.isEdge() ?
         child : child.getParentBubble();
     edge.parentVertex = this.getParentVertex();
     edge.parentBubble = this;
-    CurrentSubGraph.get().add(edge);
     if (index === undefined) {
         this.children.push(edge);
     } else {
@@ -233,6 +244,9 @@ GroupRelation.prototype.addChild = function (child, isToTheLeft, index) {
             0,
             edge
         );
+    }
+    if (!isPreDisplay) {
+        CurrentSubGraph.get().add(edge);
     }
 };
 

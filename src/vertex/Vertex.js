@@ -10,7 +10,6 @@ import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Vue from 'vue'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import Store from '@/store'
-import GroupRelation from '@/group-relation/GroupRelation'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -326,14 +325,12 @@ Vertex.prototype.remove = function () {
     this.getParentBubble().remove();
 };
 
-Vertex.prototype.removeChild = function (child) {
+Vertex.prototype.removeChild = function (child, isTemporary, isPreDisplay) {
     let childrenArray = this.isCenter && child.isToTheLeft() ? this.leftBubbles : this.rightBubbles;
     let l = childrenArray.length;
-    let hasDeleted = false;
     while (l--) {
         if (childrenArray[l].getId() === child.getId()) {
             childrenArray.splice(l, 1);
-            hasDeleted = true;
         }
     }
     this.decrementNumberOfConnectedEdges();
@@ -361,77 +358,6 @@ Vertex.prototype._shouldAddLeft = function (isToTheLeft) {
 
 Vertex.prototype.isMeta = function () {
     return this.getGraphElementType() === GraphElementType.Meta;
-};
-
-
-Vertex.prototype.rebuildGroupRelations = function () {
-    let edgeByTags = this.getClosestChildrenOfType(GraphElementType.Relation).reduce((edgeByTags, edge) => {
-        edge.getIdentifiersIncludingSelf().forEach((tag) => {
-            if (edgeByTags[tag.getUri()] === undefined) {
-                edgeByTags[tag.getUri()] = {
-                    tag: tag,
-                    edges: []
-                };
-            }
-            edgeByTags[tag.getUri()].edges.push(edge);
-        });
-        return edgeByTags;
-    }, {});
-    let groupRelations = [];
-    Object.values(edgeByTags).forEach((_edgeByTags) => {
-        if (_edgeByTags.edges.length < 2) {
-            return;
-        }
-        let firstEdge = _edgeByTags.edges[0];
-        let index = firstEdge.getIndexInTree();
-        let groupRelation = GroupRelation.withTagAndChildren(
-            _edgeByTags.tag,
-            _edgeByTags.edges.map((edge) => {
-                let parentBubble = edge.getParentBubble();
-                if (parentBubble.isGroupRelation() && !parentBubble.hasIdentification(_edgeByTags.tag)) {
-                    edge = edge.clone();
-                    let endVertex = edge.getOtherVertex(this);
-                    endVertex = endVertex.clone();
-                    edge.updateSourceOrDestination(endVertex);
-                }
-                return edge;
-            })
-        );
-        groupRelation.children.forEach((childEdge) => {
-            this.removeChild(childEdge);
-        });
-        this.addChild(groupRelation, firstEdge.isToTheLeft(), index);
-        groupRelations.push(groupRelation);
-    });
-    groupRelations.forEach((groupRelation) => {
-        groupRelations.forEach((otherGroupRelation) => {
-            if (groupRelation.deleted || otherGroupRelation.deleted) {
-                return;
-            }
-            if (groupRelation.getId() === otherGroupRelation.getId()) {
-                return;
-            }
-            if (groupRelation.getParentBubble().getId() !== otherGroupRelation.getParentBubble().getId()) {
-                return;
-            }
-            if (groupRelation.shouldBeChildOfGroupRelation(otherGroupRelation)) {
-                if (groupRelation.getNumberOfChild() === otherGroupRelation.getNumberOfChild()) {
-                    otherGroupRelation.addIdentifications(groupRelation.getIdentifiers());
-                    groupRelation.getParentBubble().removeChild(groupRelation);
-                    groupRelation.deleted = true;
-                    return;
-                }
-                let index = groupRelation.getIndexInTree();
-                let isToTheLeft = groupRelation.isToTheLeft();
-                groupRelation.getParentBubble().removeChild(groupRelation);
-                otherGroupRelation.addChild(groupRelation, isToTheLeft, index);
-                groupRelation.getNextChildren().forEach((child) => {
-                    otherGroupRelation.removeChild(child);
-                });
-            }
-        })
-    });
-    return groupRelations;
 };
 
 api.Vertex = Vertex;

@@ -41,7 +41,7 @@
                                 :bubble="bubble"
                                 direction="left"
                                 v-if="
-                                        isLeft && !isCenter && canShowChildren()
+                                        isLeft && !isCenter && canShowChildren
                                       "
                         >
                         </Children>
@@ -218,7 +218,7 @@
                         </div>
                         <ChildNotice :bubble="bubble"
                                      class=""
-                                     v-if="canExpand && !canShowChildren()"></ChildNotice>
+                                     v-if="canExpand && !canShowChildren"></ChildNotice>
                     </div>
                     <div
                             class="vertex-drop-arrow-top-bottom-drop bottom-vertex-drop-arrow-drop"
@@ -329,8 +329,7 @@
                                                     }"
                                         ></div>
                                         <v-icon v-if="bubble.isMetaRelation()" small class="bubble-label unselectable"
-                                                v-show="!isShrinked">label
-                                        </v-icon>
+                                                v-show="!isShrinked">label</v-icon>
                                     </v-chip>
                                 </div>
                                 <div :style="background">
@@ -340,7 +339,7 @@
                         </div>
                         <ChildNotice :bubble="bubble"
                                      class=""
-                                     v-if="canExpand && !canShowChildren()"></ChildNotice>
+                                     v-if="canExpand && !canShowChildren"></ChildNotice>
                     </div>
                 </div>
                 <div v-if="!bubble.isCollapsed || isCenter">
@@ -353,7 +352,7 @@
                         <Children :bubble="bubble"
                                   direction="right"
                                   v-if="
-                                      !isLeft && !isCenter && canShowChildren()
+                                      !isLeft && !isCenter && canShowChildren
                                       "
                         >
                         </Children>
@@ -495,14 +494,14 @@
                     return false;
                 }
                 return this.bubble.isShrinked();
-            }
-        },
-        methods: {
+            },
             canShowChildren: function () {
                 return (this.bubble.isVertexType() && this.bubble.rightBubbles.length > 0) ||
                     (this.bubble.isGroupRelation() && this.bubble.children && this.bubble.children.length > 0) ||
                     this.bubble.isEdge();
-            },
+            }
+        },
+        methods: {
             beforeChildrenAnimation: async function () {
                 await this.$nextTick();
                 Store.dispatch("redraw");
