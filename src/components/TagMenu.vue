@@ -59,7 +59,7 @@
                         {{identifier.getIcon()}}
                     </v-icon>
                     <i class="fab fa-wikipedia-w mr-4" v-else></i>
-                    <v-list-tile-action>
+                    <v-list-tile-action v-if="!selected.isGroupRelation()">
                         <v-btn icon flat @click.native="removeIdentifier($event, identifier)">
                             <v-icon color="third">
                                 delete
