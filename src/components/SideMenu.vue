@@ -5,12 +5,11 @@
             value="true"
             fixed
             :width="mainWidth"
-            :mini-variant="!Selection.isSingle() || $store.state.isSideMenuCollapsed"
+            :mini-variant="$store.state.isSideMenuCollapsed"
             :mini-variant-width="mainNavMiniWidth"
     >
         <v-layout fill-height>
             <v-navigation-drawer
-                    v-if="Selection.isSingle()"
                     :mini-variant="$store.state.isSideMenuCollapsed"
                     mini-variant-width="50"
                     :width="menuWidth"
@@ -20,7 +19,7 @@
                         <v-icon>chevron_right</v-icon>
                     </v-btn>
                     <v-card-title class="subheading" v-if="!$store.state.isSideMenuCollapsed">
-                        <div class="grey--text">
+                        <div class="grey--text" v-if="isSingle">
                             {{$t('side:creationDate')}}
                             {{formatDate(Selection.getSingle().getCreationDate())}}
                         </div>
