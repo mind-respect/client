@@ -79,7 +79,9 @@
                         Français
                     </span>
                 </v-btn>
-                <v-btn :to="'/user/' + $store.state.user.username" v-if="$store.state.user && $vuetify.breakpoint.lgAndUp" flat active-class="" :icon="$vuetify.breakpoint.mdAndDown">
+                <v-btn :to="'/user/' + $store.state.user.username"
+                       v-if="$store.state.user && $vuetify.breakpoint.lgAndUp" flat active-class=""
+                       :icon="$vuetify.breakpoint.mdAndDown">
                     <v-icon :class="{
                         'mr-2' : $vuetify.breakpoint.lgAndUp
                     }">
@@ -447,18 +449,20 @@
 </script>
 
 <style>
-    html{
-        overflow:hidden;
-        margin:0;
-        padding:0;
+    html {
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
         height: 100%;
     }
-    body{
+
+    body {
         overflow: scroll;
-        margin:0;
-        padding:0;
+        margin: 0;
+        padding: 0;
         height: 100%;
     }
+
     .v-chip {
         transition: none;
     }
@@ -542,7 +546,7 @@
         cursor: grabbing;
     }
 
-    .reverse {
+    .reverse, .v-chip.reverse .v-chip__content {
         display: flex;
         flex-direction: row-reverse;
     }
