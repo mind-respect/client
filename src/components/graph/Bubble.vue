@@ -31,10 +31,7 @@
             <v-flex grow class="v-center drop-relative-container">
                 <v-spacer v-if="isLeft"></v-spacer>
                 <div v-if="!bubble.isCollapsed || isCenter">
-                    <div :class="{
-                   'blur-overlay':false && bubble.isVertexType()
-                }"
-                    >
+                    <div>
                         <!--                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"-->
                         <!--                                    v-on:after-enter="afterChildrenAnimation">-->
                         <Children
@@ -329,7 +326,8 @@
                                                     }"
                                         ></div>
                                         <v-icon v-if="bubble.isMetaRelation()" small class="bubble-label unselectable"
-                                                v-show="!isShrinked">label</v-icon>
+                                                v-show="!isShrinked">label
+                                        </v-icon>
                                     </v-chip>
                                 </div>
                                 <div :style="background">
@@ -343,10 +341,7 @@
                     </div>
                 </div>
                 <div v-if="!bubble.isCollapsed || isCenter">
-                    <div :class="{
-                   'blur-overlay':false && bubble.isVertexType()
-                }"
-                    >
+                    <div>
                         <!--                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"-->
                         <!--                                    v-on:after-enter="afterChildrenAnimation">-->
                         <Children :bubble="bubble"
@@ -384,7 +379,6 @@
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import Color from '@/Color'
     import MindMapInfo from '@/MindMapInfo'
-    import Store from '@/store'
     import linkifyStr from 'linkifyjs/string'
 
     export default {
@@ -504,11 +498,11 @@
         methods: {
             beforeChildrenAnimation: async function () {
                 await this.$nextTick();
-                Store.dispatch("redraw");
+                this.$store.dispatch("redraw");
             },
             afterChildrenAnimation: async function () {
                 await this.$nextTick();
-                Store.dispatch("redraw");
+                this.$store.dispatch("redraw");
             },
             paste: function (event) {
                 event.preventDefault();
@@ -566,6 +560,7 @@
                     return;
                 }
                 this.bubble.isEditFlow = true;
+                this.$store.dispatch("setIsEditFlow", true);
                 GraphUi.disableDragScroll();
                 this.bubble.focus(event);
             },
@@ -578,7 +573,7 @@
                     document.title = this.bubble.getTextOrDefault() + " | MindRespect";
                 }
                 GraphUi.enableDragScroll();
-                this.$store.dispatch("redraw");
+                this.$store.dispatch("setIsEditFlow", false);
             },
             focus: function () {
                 if (this.bubble.isEditFlow) {
@@ -587,7 +582,7 @@
                 this.showMenu = false;
                 this.bubble.isEditFlow = true;
                 GraphUi.disableDragScroll();
-                this.$store.dispatch("redraw");
+                this.$store.dispatch("setIsEditFlow", true);
             },
             keydown: function (event) {
                 if ([KeyCode.KEY_RETURN, KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {

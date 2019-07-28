@@ -34,6 +34,7 @@ const Store = new Vuex.Store({
         isListViewFlow: false,
         isFontFlow: false,
         isTagFlow: false,
+        isEditFlow: false,
         redraws: Math.random(),
         isSideMenuCollapsed: true,
         isViewOnly: null
@@ -85,6 +86,9 @@ const Store = new Vuex.Store({
         setIsTagFlow: function (state, isTagFlow) {
             state.isTagFlow = isTagFlow;
         },
+        setIsEditFlow: function (state, isEditFlow) {
+            state.isEditFlow = isEditFlow;
+        },
         redraw: function (state, spec) {
             state.redraws = {
                 refresh: Math.random(),
@@ -134,6 +138,9 @@ const Store = new Vuex.Store({
         },
         setIsTagFlow: function (action, isTagFlow) {
             action.commit('setIsTagFlow', isTagFlow);
+        },
+        setIsEditFlow: function (action, setIsEditFlow) {
+            action.commit('setIsEditFlow', setIsEditFlow);
         },
         redraw: function (action, spec) {
             action.commit('redraw', spec);

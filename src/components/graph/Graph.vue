@@ -13,9 +13,7 @@
         <div row id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle">
             <v-layout row class='root-vertex-super-container vh-center' :style="zoomScale"
                       @dragstart="preventUndesirableDragging">
-                <v-flex grow class="vertices-children-container left-oriented" :class="{
-                    'blur-overlay': center.isEditFlow
-                }">
+                <v-flex grow class="vertices-children-container left-oriented">
                     <v-layout row v-for="leftBubble in center.leftBubbles" :key="leftBubble.uiId">
                         <v-flex grow :class="{
                         'mt-3' : center.leftBubbles.length === 2 && center.leftBubbles[0].isEdge(),
@@ -34,9 +32,7 @@
                             direction="center"
                     ></Bubble>
                 </div>
-                <v-flex grow class="vertices-children-container right-oriented" :class="{
-                    'blur-overlay': center.isEditFlow
-                }">
+                <v-flex grow class="vertices-children-container right-oriented">
                     <v-layout v-for="rightBubble in center.rightBubbles" :key="rightBubble.uiId">
                         <v-flex grow :class="{
                             'mt-3' : center.rightBubbles.length === 2 && center.rightBubbles[0].isEdge(),
@@ -50,10 +46,10 @@
                     </v-layout>
                 </v-flex>
             </v-layout>
-            <div class="svg-container" style="z-index:-1">
-                <transition name="fade">
-                    <GraphDrawing :center="center" :key="redrawKey" v-if="redrawKey"></GraphDrawing>
-                </transition>
+            <div class="svg-container" style="z-index:-1" v-if="!$store.state.isEditFlow">
+                <!--                <transition name="fade">-->
+                <GraphDrawing :center="center" :key="redrawKey" v-if="redrawKey"></GraphDrawing>
+                <!--                </transition>-->
             </div>
         </div>
         <RemoveDialog></RemoveDialog>
