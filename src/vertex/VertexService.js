@@ -2,7 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import Triple from '@/triple/Triple'
-import UserService from '@/service/UserService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import IdUri from '@/IdUri'
 import Service from '@/Service'
@@ -13,12 +12,25 @@ import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 api.createVertex = function () {
-    return Service.api().post(getVerticesUrl());
+    return Service.api().post(IdUri.vertexBaseUri());
 };
 api.addTuple = function (vertex) {
-    return Service.geApi().post(
+    let newVertexId = IdUri.uuid();
+    let newEdgeId = IdUri.uuid();
+    let newVertex = Vertex.withUri(
+        "/service" + IdUri.vertexBaseUri() + "/" + newVertexId
+    );
+    let newEdge = Edge.withUriAndSourceAndDestinationVertex(
+        "/service" + IdUri.edgeBaseUri() + "/" + newEdgeId,
+        vertex,
+        newVertex
+    );
+    Service.geApi().post(
         vertex.getUri(),
-        {}
+        {
+            vertexId: newVertexId,
+            edgeId: newEdgeId
+        }
     ).then(function (response) {
         return Triple.fromEdgeAndSourceAndDestinationVertex(
             Edge.fromServerFormat(response.data.edge),
@@ -26,6 +38,13 @@ api.addTuple = function (vertex) {
             Vertex.fromServerFormat(response.data.end_vertex)
         );
     });
+    return Promise.resolve(
+        Triple.fromEdgeAndSourceAndDestinationVertex(
+            newEdge,
+            vertex,
+            newVertex
+        )
+    )
 };
 
 api.updateLabel = function (vertex, label) {
@@ -34,43 +53,7 @@ api.updateLabel = function (vertex, label) {
         label
     );
 };
-// api.getSuggestions = function (vertex) {
-//     return $.ajax({
-//         type: 'GET',
-//         url: vertex.getUri() + '/suggestions',
-//         dataType: 'json'
-//     }).then(function (jsonSuggestions) {
-//         var suggestions = Suggestion.fromServerArray(
-//             jsonSuggestions
-//         );
-//         vertex.setSuggestions(
-//             suggestions
-//         );
-//         EventBus.publish(
-//             '/event/ui/graph/vertex/suggestions/updated',
-//             [vertex, suggestions]
-//         );
-//     });
-// };
-// api.addSuggestions = function (vertex, suggestions) {
-//     return api.addSuggestionsAjax(
-//         vertex, suggestions
-//     ).then(function () {
-//         vertex.addSuggestions(suggestions);
-//         EventBus.publish(
-//             '/event/ui/graph/vertex/suggestions/updated',
-//             [vertex, suggestions]
-//         );
-//     });
-// };
-// api.addSuggestionsAjax = function (vertex, suggestions) {
-//     return $.ajax({
-//         type: 'POST',
-//         url: vertex.getUri() + '/suggestions',
-//         data: Suggestion.formatAllForServer(suggestions),
-//         contentType: 'application/json;charset=utf-8'
-//     });
-// };
+
 api.makePrivate = function (vertex) {
     return Service.geApi().delete(
         vertex.getUri() + '/public_access'
@@ -91,7 +74,7 @@ api.setShareLevel = function (shareLevel, vertex) {
 };
 api.setCollectionShareLevel = function (shareLevel, vertices) {
     return Service.api().post(
-        getVerticesUrl() + '/collection/share-level',
+        IdUri.vertexBaseUri() + '/collection/share-level',
         {
             shareLevel: shareLevel,
             verticesUri: verticesUriFromVertices(vertices)
@@ -100,33 +83,17 @@ api.setCollectionShareLevel = function (shareLevel, vertices) {
 };
 api.makeCollectionPrivate = function (vertices) {
     return Service.api().delete(
-        getVerticesUrl() + '/collection/public_access',
+        IdUri.vertexBaseUri() + '/collection/public_access',
         {data: verticesUriFromVertices(vertices)}
     );
 };
 api.makeCollectionPublic = function (vertices) {
     return Service.api().post(
-        getVerticesUrl() + '/collection/public_access',
+        IdUri.vertexBaseUri() + '/collection/public_access',
         verticesUriFromVertices(vertices)
     );
 };
-// api.group = function (graphElementsUris, callback) {
-//     return $.ajax({
-//         type: 'POST',
-//         url: getVerticesUrl() + '/group',
-//         data: JSON.stringify(graphElementsUris),
-//         contentType: 'application/json;charset=utf-8'
-//     }).then(function (data, textStatus, jqXHR) {
-//             var createdVertexUri = jqXHR.getResponseHeader("Location");
-//             var relativeUri = createdVertexUri.substring(
-//                 createdVertexUri.indexOf("/service")
-//             );
-//             callback(
-//                 relativeUri
-//             );
-//         }
-//     );
-// };
+
 api.mergeTo = function (vertex, distantVertexUri) {
     return Service.geApi().post(
         vertex.getUri() + '/mergeTo/' + IdUri.getGraphElementShortIdFromUri(distantVertexUri)
@@ -156,10 +123,6 @@ api.saveFont = function (font) {
 
 export default api;
 
-
-function getVerticesUrl() {
-    return UserService.currentUserUri() + "/graph/vertex";
-}
 
 function verticesUriFromVertices(vertices) {
     return vertices.map(function (vertex) {

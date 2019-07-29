@@ -1,6 +1,6 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
- */
+` */
 
 import UserService from '@/service/UserService'
 import GraphElementType from '@/graph-element/GraphElementType'
@@ -13,26 +13,8 @@ const IdUri = {
             (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
         )
     },
-    encodeUri: function (uri) {
-        return encodeURIComponent(
-            uri
-        );
-    },
-    decodeUri: function (uri) {
-        return decodeURIComponent(
-            uri
-        );
-    },
     currentUsernameInUrl: function () {
         return Router.history.current.params.username;
-    },
-    allCentralUrlForUsername: function (username) {
-        return "/user/" + username;
-    },
-    encodedUriFromGraphElementId: function (id) {
-        return encodeURIComponent(
-            IdUri.uriFromGraphElementId(id)
-        );
     },
     isSchemaUri: function (uri) {
         return uri.indexOf("/schema/") !== -1 &&
@@ -72,6 +54,12 @@ const IdUri = {
         return IdUri.removeDomainNameFromGraphElementUri(
             response.getResponseHeader("Location")
         );
+    },
+    vertexBaseUri: function () {
+        return UserService.currentUserUri() + "/graph/vertex";
+    },
+    edgeBaseUri: function () {
+        return UserService.currentUserUri() + "/graph/edge";
     },
     removeDomainNameFromGraphElementUri: function (uri) {
         return uri.substr(
@@ -121,12 +109,7 @@ const IdUri = {
     isUriOfAGraphElement: function (uri) {
         return uri.indexOf("/service/users") === 0;
     },
-    _getUsernameInUrl: function () {
-        return IdUri._getUrlParamAtIndex(1);
-    },
-    _getGraphElementShortIdFromUrl: function () {
-        return IdUri._getUrlParamAtIndex(4);
-    },
+
     _hasUsernameInUrl: function () {
         return Router.history.current.params.username !== undefined;
     },
@@ -151,16 +134,6 @@ const IdUri = {
             "/service/users",
             "/user"
         );
-    },
-    _hasParamAtIndex: function (index) {
-        return decodeURIComponent(
-            window.location.pathname
-        ).split("/").length >= index + 1;
-    },
-    _getUrlParamAtIndex: function (index) {
-        return decodeURIComponent(
-            window.location.pathname
-        ).split("/")[index + 1];
     }
 };
 

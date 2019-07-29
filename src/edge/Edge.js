@@ -27,6 +27,17 @@ api.withLabelSelfSourceAndDestinationUri = function (label, uri, sourceUri, dest
     edge.setLabel(label);
     return edge;
 };
+api.withUriAndSourceAndDestinationVertex = function (uri, sourceVertex, destinationVertex) {
+    return new api.Edge().init(
+        {
+            graphElement: GraphElement.buildObjectWithUri(
+                uri
+            )
+        },
+        sourceVertex,
+        destinationVertex
+    );
+};
 api.buildObjectWithUriOfSelfSourceAndDestinationVertex = function (uri, sourceVertexUri, destinationVertexUri) {
     return {
         graphElement: GraphElement.buildObjectWithUri(
