@@ -522,6 +522,7 @@
                 }
                 this.bubble.isEditFlow = true;
                 this.$store.dispatch("setIsEditFlow", true);
+                this.$store.dispatch("redraw");
                 GraphUi.disableDragScroll();
                 this.bubble.focus(event);
             },
@@ -535,6 +536,7 @@
                 }
                 GraphUi.enableDragScroll();
                 this.$store.dispatch("setIsEditFlow", false);
+                this.$store.dispatch("redraw");
             },
             focus: function () {
                 if (this.bubble.isEditFlow) {
@@ -544,6 +546,7 @@
                 this.bubble.isEditFlow = true;
                 GraphUi.disableDragScroll();
                 this.$store.dispatch("setIsEditFlow", true);
+                this.$store.dispatch("redraw");
             },
             keydown: function (event) {
                 if ([KeyCode.KEY_RETURN, KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {

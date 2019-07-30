@@ -46,7 +46,7 @@
                     </v-layout>
                 </v-flex>
             </v-layout>
-            <div class="svg-container" style="z-index:-1" v-if="!$store.state.isEditFlow">
+            <div class="svg-container" style="z-index:-1">
                 <!--                <transition name="fade">-->
                 <GraphDrawing :center="center" :key="redrawKey" v-if="redrawKey"></GraphDrawing>
                 <!--                </transition>-->
@@ -173,7 +173,7 @@
                 await this.$nextTick();
                 setTimeout(() => {
                     this.redrawKey = Math.random();
-                }, 150)
+                }, 250)
             }
         }
     }
