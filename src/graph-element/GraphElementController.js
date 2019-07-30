@@ -507,6 +507,13 @@ GraphElementController.prototype.addIdentification = function (identifier, force
                 return identifier.getUrl();
             })
         ).then(() => {
+            identifications.forEach((tag) => {
+                if (this.model().hasIdentification(tag)) {
+                    this.model().getIdentifierHavingExternalUri(tag.getExternalResourceUri()).setUri(
+                        tag.getUri()
+                    )
+                }
+            });
             this.model().addIdentifications(
                 identifications
             );

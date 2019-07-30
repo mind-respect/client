@@ -43,13 +43,13 @@ EdgeController.prototype.addChild = async function () {
     let triple;
     return newGroupRelation.getController().addChildWhenInTransition().then((_triple) => {
         triple = _triple;
-        newGroupRelation.getIdentification().setUri(
-            triple.edge.getIdentifiers()[0].getUri()
-        );
-        return triple.edge.getController().addIdentifiers(
+        triple.edge.addIdentifications(
             this.model().getIdentifiers()
         );
-    }).then(() => {
+        triple.edge.getController().addIdentifiers(
+            this.model().getIdentifiers(),
+            true
+        );
         this.setLabel("");
         previousParentFork.replaceChild(
             this.model(),
@@ -64,7 +64,7 @@ EdgeController.prototype.addChild = async function () {
                 Store.dispatch("redraw");
             }, 300)
         });
-        return triple
+        return triple;
     });
 };
 

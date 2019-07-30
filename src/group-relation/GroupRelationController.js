@@ -50,40 +50,52 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
     }
     let parentVertex = this.model().getParentVertex();
     if (this.model().canExpand()) {
-        this.expand(true);
+        this.model().expand(true);
     }
     let addTuple = VertexService.addTuple(
         parentVertex
     );
 
     let triple = addTuple.optimistic;
-    return addTuple.promise.then(() => {
-        return Promise.all(this.model().getIdentifiers().map((identifier) => {
-            identifier.makeSameAs();
-            return triple.edge.getController().addIdentification(
-                identifier
-            );
-        }));
-    }).then(() => {
-        this.model().addChild(
-            triple.edge,
-            isToTheLeft,
-            index
-        );
+
+    addTuple.promise.then(() => {
         triple.destination.getController().setShareLevel(
             parentVertex.getShareLevel()
         );
-        Vue.nextTick(() => {
-            saveIndex === false ? Promise.resolve() : GraphElementService.changeChildrenIndex(
-                this.model().getParentVertex()
-            );
-            if (saveIndex) {
-                Selection.setToSingle(triple.destination);
-                Store.dispatch("redraw");
-            }
-        });
-        return triple;
-    })
+        return Promise.all(this.model().getIdentifiers().map((identifier) => {
+            identifier.makeSameAs();
+            return triple.edge.getController().addIdentification(
+                identifier,
+                true
+            ).then((identifiers) => {
+                identifiers.forEach((tag) => {
+                    if (this.model().hasIdentification(tag)) {
+                        this.model().getIdentifierHavingExternalUri(tag.getExternalResourceUri()).setUri(
+                            tag.getUri()
+                        )
+                    }
+                })
+            });
+        }));
+    });
+    triple.edge.addIdentifications(
+        this.model().getIdentifiers()
+    );
+    this.model().addChild(
+        triple.edge,
+        isToTheLeft,
+        index
+    );
+    Vue.nextTick(() => {
+        saveIndex === false ? Promise.resolve() : GraphElementService.changeChildrenIndex(
+            this.model().getParentVertex()
+        );
+        if (saveIndex) {
+            Selection.setToSingle(triple.destination);
+            Store.dispatch("redraw");
+        }
+    });
+    return Promise.resolve(triple);
 };
 
 GroupRelationController.prototype.setLabel = function (newLabel) {
