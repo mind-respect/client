@@ -124,7 +124,8 @@
                                         :class="{
                                             'reverse': isLeft,
                                             'desktop': $vuetify.breakpoint.lgAndUp,
-                                            'mobile': $vuetify.breakpoint.mdAndDown
+                                            'mobile': $vuetify.breakpoint.mdAndDown,
+                                            'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
                                     }"
                                         @click="click"
                                         @mouseup="mouseup"
@@ -184,7 +185,9 @@
                             </v-menu>
                         </div>
                         <ChildNotice :bubble="bubble"
-                                     class=""
+                                     :class="{
+                                        'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
+                                     }"
                                      v-if="canExpand && !canShowChildren"></ChildNotice>
                     </div>
                     <div
@@ -247,7 +250,8 @@
                                 'pl-5 pr-1': bubble.isEdge() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
                                 'pl-1 pr-5': bubble.isEdge() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
                                 'pl-4': (bubble.isGroupRelation() && !isLeft),
-                                'pr-4': (bubble.isGroupRelation() && isLeft)
+                                'pr-4': (bubble.isGroupRelation() && isLeft),
+                                'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
                              }"
                         >
                             <v-menu
@@ -310,6 +314,9 @@
                         </div>
                         <ChildNotice :bubble="bubble"
                                      class=""
+                                     :class="{
+                                        'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
+                                     }"
                                      v-if="canExpand && !canShowChildren"></ChildNotice>
                     </div>
                 </div>
@@ -522,7 +529,6 @@
                 }
                 this.bubble.isEditFlow = true;
                 this.$store.dispatch("setIsEditFlow", true);
-                this.$store.dispatch("redraw");
                 GraphUi.disableDragScroll();
                 this.bubble.focus(event);
             },
@@ -536,7 +542,6 @@
                 }
                 GraphUi.enableDragScroll();
                 this.$store.dispatch("setIsEditFlow", false);
-                this.$store.dispatch("redraw");
             },
             focus: function () {
                 if (this.bubble.isEditFlow) {
@@ -546,7 +551,6 @@
                 this.bubble.isEditFlow = true;
                 GraphUi.disableDragScroll();
                 this.$store.dispatch("setIsEditFlow", true);
-                this.$store.dispatch("redraw");
             },
             keydown: function (event) {
                 if ([KeyCode.KEY_RETURN, KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {

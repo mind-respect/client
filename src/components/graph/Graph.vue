@@ -46,7 +46,7 @@
                     </v-layout>
                 </v-flex>
             </v-layout>
-            <div class="svg-container" style="z-index:-1">
+            <div class="svg-container" v-if="!$store.state.isEditFlow">
                 <!--                <transition name="fade">-->
                 <GraphDrawing :center="center" :key="redrawKey" v-if="redrawKey"></GraphDrawing>
                 <!--                </transition>-->
@@ -243,6 +243,7 @@
         left: 0;
         width: 100%;
         height: 100%;
+        z-index:-1;
     }
 
     #app.mind-map {
