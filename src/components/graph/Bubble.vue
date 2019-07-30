@@ -391,7 +391,8 @@
             this.bubble.isEditFlow = false;
             this.bubble.direction = this.direction;
             this.chipColor = this.bubble.isMetaRelation() ? "third" : "secondary";
-            this.isMetaRelated = this.bubble.isMetaRelation() || this.bubble.isMetaGroupVertex() || this.bubble.getParentBubble().isMetaRelation();
+            let parentBubble = this.bubble.getParentBubble();
+            this.isMetaRelated = this.bubble.isMetaRelation() || this.bubble.isMetaGroupVertex() || (parentBubble && parentBubble.isMetaRelation());
             this.checkIsSelected();
             this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
             this.isLeft = this.direction === "left";

@@ -574,7 +574,7 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
 
 FriendlyResource.FriendlyResource.prototype.replaceChild = function (existingChild, newChild) {
     let index = this.getChildIndex(existingChild);
-    this.removeChild(existingChild);
+    this.removeChild(existingChild, true);
     this.addChild(
         newChild,
         existingChild.isToTheLeft(),
