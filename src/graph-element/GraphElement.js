@@ -183,7 +183,7 @@ GraphElement.GraphElement.prototype.getIdentifiersIncludingSelf = function () {
         identifiers.push(identifier);
     });
     if (!isSelfTagAlreadyIncluded) {
-        identifiers.push(
+        identifiers.unshift(
             this.buildSelfIdentifier()
         );
     }

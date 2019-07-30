@@ -39,17 +39,8 @@ EdgeController.prototype.addChildCanDo = function () {
 EdgeController.prototype.addChild = async function () {
     let previousParentFork = this.model().getParentFork();
     let newGroupRelation = this._convertToGroupRelation();
-    let triple;
     Selection.removeAll();
-    return newGroupRelation.getController().addChildWhenInTransition().then((_triple) => {
-        triple = _triple;
-        newGroupRelation.getIdentification().setUri(
-            triple.edge.getIdentifiers()[0].getUri()
-        );
-        return triple.edge.getController().addIdentifiers(
-            this.model().getIdentifiers()
-        );
-    }).then(() => {
+    return newGroupRelation.getController().addChildWhenInTransition().then((triple) => {
         this.setLabel("");
         previousParentFork.replaceChild(
             this.model(),
@@ -136,12 +127,10 @@ EdgeController.prototype._convertToGroupRelation = function () {
     if (parentBubble.isGroupRelation()) {
         if (parentBubble.model().hasIdentification(this.model().buildSelfIdentifier())) {
             groupRelationIdentifiers = [
-                this.model().buildTwiceSelfIdentifier()
+                this.model().buildTwiceSelfIdentifier().concat(this.model().getIdentifiers())
             ];
         } else {
-            groupRelationIdentifiers = [
-                this.model().buildSelfIdentifier()
-            ];
+            groupRelationIdentifiers = this.model().getIdentifiersIncludingSelf();
         }
     } else {
         groupRelationIdentifiers = this.model().hasIdentifications() ?

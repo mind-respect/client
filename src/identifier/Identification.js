@@ -35,11 +35,6 @@ const Identification = {
     fromServerFormat: function (serverFormat) {
         return new Identification.Identification().init(serverFormat);
     },
-    fromFriendlyResourceServerFormat: function (serverFormat) {
-        return Identification.fromFriendlyResource(
-            FriendlyResource.fromServerFormat(serverFormat)
-        );
-    },
     fromFriendlyResource: function (friendlyResource) {
         let identification = new Identification.Identification().init({
             externalResourceUri: friendlyResource.getUri(),
@@ -143,22 +138,8 @@ Identification.Identification.prototype.makeSameAs = function () {
     );
     return this;
 };
-Identification.Identification.prototype.getFirstIdentificationToAGraphElement = function () {
-    return this.refersToAGraphElement() ?
-        this : false;
-};
 Identification.Identification.prototype.refersToAGraphElement = function () {
     return IdUri.isUriOfAGraphElement(
-        this.getExternalResourceUri()
-    );
-};
-Identification.Identification.prototype.refersToOwnedGraphElement = function () {
-    return this.refersToAGraphElement() && IdUri.isGraphElementUriOwnedByCurrentUser(
-        this.getExternalResourceUri()
-    );
-};
-Identification.Identification.prototype.refersToSchema = function () {
-    return IdUri.isSchemaUri(
         this.getExternalResourceUri()
     );
 };

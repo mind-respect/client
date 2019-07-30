@@ -491,15 +491,15 @@ GraphElementController.prototype.becomeExParent = function () {
 
 GraphElementController.prototype.addIdentifiers = function (identifiers) {
     let promises = [];
-    identifiers.forEach(function (identifier) {
+    identifiers.forEach((identifier) => {
         promises.push(this.addIdentification(identifier));
-    }.bind(this));
+    });
     return Promise.all(promises);
 };
 
-GraphElementController.prototype.addIdentification = function (identifier) {
-    if (this.model().hasIdentification(identifier)) {
-        return Promise.resolve()
+GraphElementController.prototype.addIdentification = function (identifier, force) {
+    if (this.model().hasIdentification(identifier) && !force) {
+        return Promise.resolve([identifier])
     }
     return TagService.add(
         this.model(),

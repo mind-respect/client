@@ -57,26 +57,30 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         parentVertex
     ).then((_triple) => {
         triple = _triple;
-        let addIdentifiers = Promise.all(this.model().getIdentifiers().map(function (identifier) {
-            identifier.makeSameAs();
-            return triple.edge.getController().addIdentification(
-                identifier
-            );
-        })).then(() => {
-            this.model().addChild(
-                triple.edge,
-                isToTheLeft,
-                index
-            );
-            return triple.destination.getController().setShareLevel(
+        VertexService.createPromise.then(() => {
+            triple.destination.getController().setShareLevel(
                 parentVertex.getShareLevel()
             );
+            return Promise.all(this.model().getIdentifiers().map((identifier) => {
+                identifier.makeSameAs();
+                return triple.edge.getController().addIdentification(
+                    identifier,
+                    true
+                ).then((identifiers) => {
+                    identifiers.forEach((tag) => {
+                        this.model().getIdentifierHavingExternalUri(tag.getExternalResourceUri()).setUri(
+                            tag.getUri()
+                        )
+                    });
+                })
+            }))
         });
-        let promises = [
-            addIdentifiers
-        ];
-        return Promise.all(promises);
-    }).then(() => {
+        triple.edge.addIdentifications(this.model().getIdentifiers());
+        this.model().addChild(
+            triple.edge,
+            isToTheLeft,
+            index
+        );
         Vue.nextTick(() => {
             saveIndex === false ? Promise.resolve() : GraphElementService.changeChildrenIndex(
                 this.model().getParentVertex()

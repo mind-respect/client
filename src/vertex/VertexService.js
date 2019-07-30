@@ -11,6 +11,9 @@ import axios from 'axios'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
+
+api.createPromise = Promise.resolve();
+
 api.createVertex = function () {
     return Service.api().post(IdUri.vertexBaseUri());
 };
@@ -25,13 +28,16 @@ api.addTuple = function (vertex) {
         vertex,
         newVertex
     );
-    Service.geApi().post(
-        vertex.getUri(),
-        {
-            vertexId: newVertexId,
-            edgeId: newEdgeId
-        }
-    ).then(function (response) {
+    api.createPromise.then(() => {
+        return Service.geApi().post(
+            vertex.getUri(),
+            {
+                vertexId: newVertexId,
+                edgeId: newEdgeId
+            }
+        );
+    }).then(function (response) {
+        api.createPromise = Promise.resolve();
         return Triple.fromEdgeAndSourceAndDestinationVertex(
             Edge.fromServerFormat(response.data.edge),
             vertex,
