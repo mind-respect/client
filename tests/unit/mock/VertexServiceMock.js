@@ -16,16 +16,18 @@ api.applyDefault = function () {
 api.addTuple = function () {
     return jest.spyOn(VertexService, "addTuple").mockImplementation((sourceVertex) => {
         let destinationVertex = TestUtil.generateVertex();
-        return Promise.resolve(
-            Triple.fromEdgeAndSourceAndDestinationVertex(
-                TestUtil.generateEdge(
-                    sourceVertex.getUri(),
-                    destinationVertex.getUri()
-                ),
-                sourceVertex,
-                destinationVertex
-            )
+        let triple = Triple.fromEdgeAndSourceAndDestinationVertex(
+            TestUtil.generateEdge(
+                sourceVertex.getUri(),
+                destinationVertex.getUri()
+            ),
+            sourceVertex,
+            destinationVertex
         );
+        return {
+            optimistic: triple,
+            promise: Promise.resolve(triple)
+        };
     })
 };
 

@@ -104,7 +104,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
                 groupRelation.children = groupRelation.children.map((edge) => {
                     edge.isInGroupRelation = true;
                     let parentBubble = edge.getParentBubble();
-                    if (parentBubble.getNumberOfChild() > 1 && !parentBubble.hasIdentification(groupRelation.getIdentification())) {
+                    if (parentBubble.getNumberOfChild() > 1 && !groupRelation.shouldBeChildOfGroupRelation(parentBubble)) {
                         edge = edge.clone();
                         let endVertex = edge.getOtherVertex(centerVertex);
                         endVertex = endVertex.clone();

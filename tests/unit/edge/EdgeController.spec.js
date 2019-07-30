@@ -170,7 +170,7 @@ describe("EdgeController", () => {
             );
             let triple = await relationUnderGroupRelation.getController().addChild();
             expect(
-                triple.edge.model().getIdentifiers().length
+                triple.edge.getIdentifiers().length
             ).toBe(2);
         });
 

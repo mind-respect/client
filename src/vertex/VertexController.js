@@ -38,14 +38,11 @@ VertexController.prototype.addChildCanDo = function () {
 };
 
 VertexController.prototype.addChild = function (index, isToTheLeft) {
-    let triple;
     let promise = this.model().isCenter ? Promise.resolve() : this.expand();
     return promise.then(() => {
-        return VertexService.addTuple(
+        let triple = VertexService.addTuple(
             this.model()
-        );
-    }).then((_triple) => {
-        triple = _triple;
+        ).optimistic;
         this.model().addChild(
             triple.edge,
             isToTheLeft,
@@ -67,7 +64,7 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
             );
         }
         return triple;
-    });
+    })
 };
 
 VertexController.prototype.convertToRelationCanDo = function () {

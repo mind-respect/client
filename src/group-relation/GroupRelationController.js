@@ -49,37 +49,29 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         saveIndex = true;
     }
     let parentVertex = this.model().getParentVertex();
-    let triple;
     if (this.model().canExpand()) {
         this.expand(true);
     }
-    return VertexService.addTuple(
+    let addTuple = VertexService.addTuple(
         parentVertex
-    ).then((_triple) => {
-        triple = _triple;
-        VertexService.createPromise.then(() => {
-            triple.destination.getController().setShareLevel(
-                parentVertex.getShareLevel()
+    );
+
+    let triple = addTuple.optimistic;
+    return addTuple.promise.then(() => {
+        return Promise.all(this.model().getIdentifiers().map((identifier) => {
+            identifier.makeSameAs();
+            return triple.edge.getController().addIdentification(
+                identifier
             );
-            return Promise.all(this.model().getIdentifiers().map((identifier) => {
-                identifier.makeSameAs();
-                return triple.edge.getController().addIdentification(
-                    identifier,
-                    true
-                ).then((identifiers) => {
-                    identifiers.forEach((tag) => {
-                        this.model().getIdentifierHavingExternalUri(tag.getExternalResourceUri()).setUri(
-                            tag.getUri()
-                        )
-                    });
-                })
-            }))
-        });
-        triple.edge.addIdentifications(this.model().getIdentifiers());
+        }));
+    }).then(() => {
         this.model().addChild(
             triple.edge,
             isToTheLeft,
             index
+        );
+        triple.destination.getController().setShareLevel(
+            parentVertex.getShareLevel()
         );
         Vue.nextTick(() => {
             saveIndex === false ? Promise.resolve() : GraphElementService.changeChildrenIndex(
@@ -91,7 +83,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
             }
         });
         return triple;
-    });
+    })
 };
 
 GroupRelationController.prototype.setLabel = function (newLabel) {

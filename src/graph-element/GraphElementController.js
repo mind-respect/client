@@ -129,10 +129,7 @@ GraphElementController.prototype.identifyHideIfDisabled = function () {
 };
 
 GraphElementController.prototype.identifyCanDo = function () {
-    return this.isSingle() && (
-        (this.isOwned() && !this.model().hasIdentifications()) ||
-        this.model().getIdentifiers().length === 1
-    );
+    return this.isSingle() && this.isOwned();
 };
 
 GraphElementController.prototype.identifyWhenManyHideIfDisabled = function () {

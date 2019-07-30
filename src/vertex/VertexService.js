@@ -28,29 +28,28 @@ api.addTuple = function (vertex) {
         vertex,
         newVertex
     );
-    api.createPromise.then(() => {
-        return Service.geApi().post(
-            vertex.getUri(),
-            {
-                vertexId: newVertexId,
-                edgeId: newEdgeId
-            }
-        );
-    }).then(function (response) {
-        api.createPromise = Promise.resolve();
+
+    let promise = Service.geApi().post(
+        vertex.getUri(),
+        {
+            vertexId: newVertexId,
+            edgeId: newEdgeId
+        }
+    ).then(function (response) {
         return Triple.fromEdgeAndSourceAndDestinationVertex(
             Edge.fromServerFormat(response.data.edge),
             vertex,
             Vertex.fromServerFormat(response.data.end_vertex)
         );
     });
-    return Promise.resolve(
-        Triple.fromEdgeAndSourceAndDestinationVertex(
+    return {
+        optimistic: Triple.fromEdgeAndSourceAndDestinationVertex(
             newEdge,
             vertex,
             newVertex
-        )
-    )
+        ),
+        promise: promise
+    };
 };
 
 api.updateLabel = function (vertex, label) {

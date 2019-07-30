@@ -143,6 +143,21 @@ describe("Graph.vue", () => {
         });
     });
 
+    it("considers vertices under deep group relations non duplicates when they are not", async ()=>{
+        let scenario = await new GroupRelationsScenario();
+        let groupRelation = scenario.getPossessionGroupRelation();
+        groupRelation.expand();
+        let deepGroupRelation = TestUtil.getChildWithLabel(
+            groupRelation,
+            "Possession of book 3"
+        );
+        deepGroupRelation.expand();
+        let deepVertex = deepGroupRelation.getNextBubble().getNextBubble();
+        expect(
+            deepVertex.getNbDuplicates()
+        ).toBe(0);
+    });
+
     xit("does not duplicate the hidden relation image of a child bubble when creating a distant relationship", function () {
         var graphWithHiddenSimilarRelationsScenario = new Scenarios.graphWithHiddenSimilarRelations();
         var bubble1 = graphWithHiddenSimilarRelationsScenario.getBubble1InTree();

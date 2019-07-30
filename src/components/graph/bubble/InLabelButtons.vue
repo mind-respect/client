@@ -5,7 +5,7 @@
             :class="{
                                                      'in-label-icons-right': !isLeft && !isCenter,
                                                      'in-label-icons-left': isLeft && !isCenter,
-                                                     'in-label-buttons-vertex mt-0' : bubble.isVertex(),
+                                                     'in-label-buttons-vertex mt-0' : bubble.isVertexType(),
                                                      'in-label-buttons-edge': bubble.isEdge() || bubble.isGroupRelation()
                                                     }"
             :key="bubble.inLabelMenuKey"
@@ -16,7 +16,7 @@
         <v-icon small :color="color" v-if="hasComment">
             note
         </v-icon>
-        <v-icon small :color="color" v-if="hasIdentifications">
+        <v-icon small :color="color" v-if="!bubble.isMeta() && hasIdentifications">
             label
         </v-icon>
         <v-icon small :color="color" v-if="bubble.isVertex() && bubble.isPrivate()">
@@ -45,7 +45,7 @@
             }
         },
         mounted: function () {
-            this.color = this.bubble.isVertex() ? "secondary" : "white";
+            this.color = this.bubble.isVertexType() ? "secondary" : "white";
         },
         computed: {
             hasIdentifications: function () {
