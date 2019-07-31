@@ -77,17 +77,17 @@ VertexController.prototype.convertToRelationCanDo = function () {
     if (this.model().isLabelEmpty()) {
         return false;
     }
-    var numberOfChild = this.model().getNumberOfChild();
+    let numberOfChild = this.model().getNumberOfChild();
     if (numberOfChild >= 2) {
         return false;
     }
-    var parentBubble = this.getUi().getParentBubble();
+    let parentBubble = this.getUi().getParentBubble();
 
     if (!parentBubble.isRelation() || !parentBubble.model().isPristine()) {
         return false;
     }
     if (numberOfChild === 1) {
-        var childRelation = this.getUi().getNextBubble();
+        let childRelation = this.getUi().getNextBubble();
         return childRelation.isRelation() && childRelation.model().isPristine();
     }
     return true;
@@ -99,7 +99,7 @@ VertexController.prototype.convertToRelation = function () {
     let label = this.model().getLabel();
     let toSelect;
     if (this.model().getNumberOfChild() === 1) {
-        var childRelation = this.getUi().getNextBubble();
+        let childRelation = this.getUi().getNextBubble();
         promises.push(
             childRelation.getController().setLabel(
                 label

@@ -135,23 +135,23 @@
                     //     ctrlShortcut: "I"
                     // },
                     {
-                        icon: "delete",
-                        action: "remove"
-                    },
-                    {
                         icon: "select_all",
                         action: "selectTree",
                         ctrlShortcut: "A"
                     },
                     {
-                        icon: "fa-arrows-h",
+                        icon: "arrow_right_alt",
                         action: "convertToRelation",
                         ctrlShortcut: "O"
                     },
                     {
-                        icon: "fa-arrows-h",
+                        icon: "arrow_right_alt",
                         action: "convertToGroupRelation",
                         ctrlShortcut: "O"
+                    },
+                    {
+                        icon: "delete",
+                        action: "remove"
                     },
                     {
                         icon: "fa-lightbulb-o",

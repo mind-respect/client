@@ -130,8 +130,8 @@
 
 <style>
     .side-button-tooltip {
-        margin-top: -40px;
         white-space: nowrap;
+        position:fixed;
     }
 
     .side-button-expanded-margin {
