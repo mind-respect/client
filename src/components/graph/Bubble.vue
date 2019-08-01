@@ -117,6 +117,7 @@
                                     color="white"
                                     offset-y
                                     :open-on-click="false"
+                                    :disabled="bubble.isEditFlow"
                             >
                                 <div
                                         slot="activator"
@@ -134,7 +135,7 @@
                                         @dragstart="dragStart"
                                         @dragend="dragEnd"
                                         @contextmenu="rightClick"
-                                        :draggable="!isCenter"
+                                        :draggable="!isCenter && !bubble.isEditFlow"
                                         :style="background"
                                 >
                                     <InLabelButtons :bubble="bubble" :isLeft="isLeft"
@@ -144,6 +145,7 @@
                                             v-model="linkMenu"
                                             auto
                                             offset-y
+                                            :disabled="bubble.isEditFlow"
                                     >
                                         <v-badge color="third" slot="activator" :left="isLeft">
                                             <template v-slot:badge v-if="bubble.isMeta()">
@@ -246,6 +248,7 @@
                              @dragend="dragEnd"
                              @contextmenu="rightClick"
                              draggable="true"
+                             :draggable="!bubble.isEditFlow"
                              :class="{
                                 'pl-5 pr-1': bubble.isEdge() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
                                 'pl-1 pr-5': bubble.isEdge() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
