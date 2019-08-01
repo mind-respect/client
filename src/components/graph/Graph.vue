@@ -173,7 +173,7 @@
                 await this.$nextTick();
                 setTimeout(() => {
                     this.redrawKey = Math.random();
-                }, 250)
+                }, 500)
             }
         }
     }
