@@ -41,12 +41,12 @@ EdgeController.prototype.addChild = async function () {
     let newGroupRelation = this._convertToGroupRelation();
     Selection.removeAll();
     let triple;
-    return newGroupRelation.getController().addChildWhenInTransition().then((_triple) => {
+    return newGroupRelation.controller().addChildWhenInTransition().then((_triple) => {
         triple = _triple;
         triple.edge.addIdentifications(
             this.model().getIdentifiers()
         );
-        triple.edge.getController().addIdentifiers(
+        triple.edge.controller().addIdentifiers(
             this.model().getIdentifiers(),
             true
         );
@@ -69,7 +69,7 @@ EdgeController.prototype.addChild = async function () {
 };
 
 EdgeController.prototype.addSibling = function () {
-    return this.model().getNextBubble().getController().addSibling().then((triple) => {
+    return this.model().getNextBubble().controller().addSibling().then((triple) => {
         Vue.nextTick(() => {
             Selection.setToSingle(
                 triple.edge
@@ -79,7 +79,7 @@ EdgeController.prototype.addSibling = function () {
 };
 
 EdgeController.prototype.addSiblingCanDo = function () {
-    return this.isSingle() && this.model().getNextBubble().getController().addSiblingCanDo();
+    return this.isSingle() && this.model().getNextBubble().controller().addSiblingCanDo();
 };
 
 EdgeController.prototype.becomeParent = function (adoptedChild) {
@@ -89,8 +89,9 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
     let promises = [];
     Selection.removeAll();
     let parentFork = this.model().getParentFork();
-    adoptedChild.getParentFork().removeChild(adoptedChild);
+    adoptedChild.getParentFork().removeChild(adoptedChild, false, true);
     let newGroupRelation = this._convertToGroupRelation();
+    adoptedChild.setParentVertex(this.model().getParentVertex());
     newGroupRelation.addChild(adoptedChild);
     parentFork.replaceChild(
         this.model(),
@@ -110,6 +111,10 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
     return Promise.all(promises).then(() => {
         newGroupRelation.expand(true);
         Store.dispatch("redraw");
+        GraphElementService.changeChildrenIndex(
+            this.model().getParentVertex()
+        );
+        return newGroupRelation;
     });
 
     function moveEdge(movedEdge) {
@@ -117,12 +122,12 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
             this.model().getIdentifiers() :
             this.model().getIdentifiersIncludingSelf();
         promises.push(
-            movedEdge.getController().addIdentifiers(
+            movedEdge.controller().addIdentifiers(
                 identifiers
             )
         );
         promises.push(
-            movedEdge.getController().replaceParentVertex(
+            movedEdge.controller().replaceParentVertex(
                 this.model().getParentVertex(),
                 true
             )
@@ -192,7 +197,7 @@ EdgeController.prototype.reverse = function () {
 };
 EdgeController.prototype.sourceVertex = function (sourceVertex) {
     if (!sourceVertex.isExpanded) {
-        return sourceVertex.getController().expand().then(doIt.bind(this));
+        return sourceVertex.controller().expand().then(doIt.bind(this));
     } else {
         return doIt.bind(this)();
     }
@@ -214,7 +219,7 @@ EdgeController.prototype.sourceVertex = function (sourceVertex) {
 };
 EdgeController.prototype.replaceParentVertex = function (newParentVertex, preventChangingInModel) {
     if (newParentVertex.canExpand()) {
-        return newParentVertex.getController().expand().then(doIt.bind(this));
+        return newParentVertex.controller().expand().then(doIt.bind(this));
     } else {
         return doIt.bind(this)();
     }

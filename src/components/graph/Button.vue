@@ -79,7 +79,7 @@
         },
         methods: {
             performAction: function (button, event) {
-                let controller = this.getController(button);
+                let controller = this.controller(button);
                 let promise = controller[
                     button.action
                     ](event);
@@ -94,7 +94,7 @@
                 if (this.bubble.loading) {
                     return false;
                 }
-                let controller = this.getController(button);
+                let controller = this.controller(button);
                 if (!this.canActionBePossiblyMade(button.action, controller)) {
                     return false;
                 }
@@ -108,11 +108,11 @@
                     controller
                 );
             },
-            getController: function (button) {
+            controller: function (button) {
                 if (button.controller) {
                     return button.controller;
                 }
-                return Selection.getController();
+                return Selection.controller();
             },
             canActionBePossiblyMade: function (action, controller) {
                 return controller[

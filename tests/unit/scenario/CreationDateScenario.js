@@ -25,7 +25,7 @@ CreationDateScenario.prototype.expandBubble7 = function (bubble7) {
     GraphServiceMock.getForCentralBubbleUri(
         getSurroundBubble7Graph()
     );
-    return bubble7.getController().expand();
+    return bubble7.controller().expand();
 };
 
 function getSurroundBubble7Graph() {

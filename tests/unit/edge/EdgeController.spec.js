@@ -5,6 +5,7 @@ import EdgeController from '@/edge/EdgeController'
 import TestUtil from '../util/TestUtil'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import IdUri from '@/IdUri'
+import ConvertVertexToGroupRelationScenario from "../scenario/ConvertVertexToGroupRelationScenario";
 
 describe("EdgeController", () => {
     describe("remove", function () {
@@ -31,7 +32,7 @@ describe("EdgeController", () => {
                 2
             );
             let relation1 = bubble1.getNextBubble();
-            await relation1.getController().remove(true);
+            await relation1.controller().remove(true);
             expect(
                 bubble1.model().getNumberOfConnectedEdges()
             ).toBe(
@@ -57,13 +58,13 @@ describe("EdgeController", () => {
         it("sets self as external uri", async () => {
             let threeBubblesScenario = await new ThreeScenario();
             let b1 = threeBubblesScenario.getBubble1InTree();
-            await b1.getController().addChild();
+            await b1.controller().addChild();
             let newRelation = TestUtil.getChildWithLabel(
                 b1,
                 ""
             );
-            await newRelation.getController().setLabel("new group");
-            await newRelation.getController().addChild();
+            await newRelation.controller().setLabel("new group");
+            await newRelation.controller().addChild();
             let groupRelation = TestUtil.getChildWithLabel(
                 b1,
                 "new group"
@@ -154,7 +155,7 @@ describe("EdgeController", () => {
                 groupRelation.getNumberOfChild()
             ).toBe(3);
             let relationUnderGroupRelation = groupRelation.getNextBubble();
-            await relationUnderGroupRelation.getController().addChild();
+            await relationUnderGroupRelation.controller().addChild();
             expect(
                 centerVertex.getNumberOfChild()
             ).toBe(4);
@@ -168,7 +169,7 @@ describe("EdgeController", () => {
                 groupRelation,
                 "Possessed by book 2"
             );
-            let triple = await relationUnderGroupRelation.getController().addChild();
+            let triple = await relationUnderGroupRelation.controller().addChild();
             expect(
                 triple.edge.getIdentifiers().length
             ).toBe(2);
@@ -178,10 +179,10 @@ describe("EdgeController", () => {
             let scenario = await new ThreeScenario();
             let center = scenario.getBubble1InTree();
             let newRelation;
-            await center.getController().addChild().then(function (tripleUi) {
+            await center.controller().addChild().then(function (tripleUi) {
                 newRelation = tripleUi.edge;
             });
-            await newRelation.getController().addChild();
+            await newRelation.controller().addChild();
             let newGroupRelation = TestUtil.getChildWithLabel(
                 center,
                 ""
@@ -306,7 +307,7 @@ describe("EdgeController", () => {
             "r2"
         );
         await scenario.expandBubble2(b2);
-        await r2.getController().replaceParentVertex(
+        await r2.controller().replaceParentVertex(
             b2
         );
         expect(
@@ -315,8 +316,8 @@ describe("EdgeController", () => {
         expect(
             changeDestinationVertexSpy.mock.calls.length
         ).toBe(0);
-        await r2.getController().reverse();
-        await r2.getController().replaceParentVertex(
+        await r2.controller().reverse();
+        await r2.controller().replaceParentVertex(
             b1
         );
         expect(
@@ -339,7 +340,7 @@ describe("EdgeController", () => {
         expect(
             relationUnderGroupRelation.isGroupRelation()
         ).toBeFalsy();
-        await relationUnderGroupRelation.getController().addChild();
+        await relationUnderGroupRelation.controller().addChild();
         let newGroupRelation = TestUtil.getChildWithLabel(
             groupRelation,
             "Possession of book 1"
@@ -365,7 +366,7 @@ describe("EdgeController", () => {
         expect(
             relationUnderGroupRelation.isGroupRelation()
         ).toBeFalsy();
-        await relationUnderGroupRelation.getController().addChild();
+        await relationUnderGroupRelation.controller().addChild();
         let newGroupRelation = TestUtil.getChildWithLabel(
             groupRelation,
             "Possession of book 1"
@@ -390,7 +391,7 @@ describe("EdgeController", () => {
             r1.model().addIdentification(
                 identifier
             );
-            await r1.getController().addChild();
+            await r1.controller().addChild();
             let newGroupRelation = TestUtil.getChildWithLabel(
                 centerBubble,
                 "some identifier"
@@ -409,7 +410,7 @@ describe("EdgeController", () => {
         it("includes previous vertex in group relation model vertices", async () => {
             let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
-            await scenario.getOtherRelationInTree().getController().addChild();
+            await scenario.getOtherRelationInTree().controller().addChild();
             let newGroupRelation = TestUtil.getChildWithLabel(
                 center,
                 "other relation"
@@ -422,11 +423,11 @@ describe("EdgeController", () => {
         xit("can add child to a relation under a group relation where the external uri is this relation's uri", async () => {
             let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
-            await center.getController().addChild().then(async (tripleUi) => {
+            await center.controller().addChild().then(async (tripleUi) => {
                 let newEdge = tripleUi.edge;
-                tripleUi.destination.getController().setLabel("top vertex");
-                newEdge.getController().setLabel("parent group relation");
-                return newEdge.getController().addChild();
+                tripleUi.destination.controller().setLabel("top vertex");
+                newEdge.controller().setLabel("parent group relation");
+                return newEdge.controller().addChild();
             });
             let parentGroupRelation = TestUtil.getChildWithLabel(
                 center,
@@ -434,14 +435,14 @@ describe("EdgeController", () => {
             );
             expect(parentGroupRelation.isGroupRelation()).toBeTruthy();
             let topMostEdge = parentGroupRelation.getNextBubble();
-            await topMostEdge.getController().setLabel("top most edge");
+            await topMostEdge.controller().setLabel("top most edge");
             expect(
                 topMostEdge.getUri()
             ).toBe(parentGroupRelation.getIdentification().getExternalResourceUri());
             expect(
                 parentGroupRelation.getNumberOfChild()
             ).toBe(2);
-            await topMostEdge.getController().addChild();
+            await topMostEdge.controller().addChild();
             expect(
                 parentGroupRelation.getNumberOfChild()
             ).toBe(2);
@@ -477,7 +478,7 @@ describe("EdgeController", () => {
             expect(
                 r2.model().getIdentifiers().length
             ).toBe(0);
-            await b3.getController().moveUnderParent(r1);
+            await b3.controller().moveUnderParent(r1);
             expect(
                 r2.model().getIdentifiers().length
             ).toBe(1);
@@ -497,7 +498,7 @@ describe("EdgeController", () => {
             expect(
                 r2.model().getIdentifiersIncludingSelf().length
             ).toBe(1);
-            await b3.getController().moveUnderParent(r1);
+            await b3.controller().moveUnderParent(r1);
             expect(
                 r2.model().getIdentifiersIncludingSelf().length
             ).toBe(2);
@@ -518,9 +519,9 @@ describe("EdgeController", () => {
                 "r1"
             );
             expect(
-                r1.getController()._canMoveUnderParent(r2)
+                r1.controller()._canMoveUnderParent(r2)
             ).toBeTruthy();
-            await r1.getController().moveUnderParent(r2);
+            await r1.controller().moveUnderParent(r2);
             r2 = TestUtil.getChildWithLabel(
                 centerBubble,
                 "r2"
@@ -552,7 +553,7 @@ describe("EdgeController", () => {
                     "Possession"
                 )
             ).toBeFalsy();
-            await groupRelation.getController().moveUnderParent(otherRelation);
+            await groupRelation.controller().moveUnderParent(otherRelation);
             otherRelation = TestUtil.getChildWithLabel(
                 center,
                 "other relation"
@@ -564,5 +565,40 @@ describe("EdgeController", () => {
                 )
             ).toBeTruthy();
         });
+        it("can become parent of one of its descendant", async ()=>{
+            let scenario = await new ConvertVertexToGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let relation = center.getNextBubble();
+            expect(
+                relation.isEdge()
+            ).toBeTruthy();
+            expect(
+                relation.getNumberOfChild()
+            ).toBe(1);
+            let b2 = await scenario.getExpandedB2();
+            let deepVertex = b2.getNextBubble().getNextBubble();
+            expect(
+                deepVertex.getLabel()
+            ).toBe("b3");
+            await deepVertex.controller().moveUnderParent(relation);
+            expect(
+                center.getNumberOfChild()
+            ).toBe(1);
+            let groupRelation = center.getNextBubble();
+            expect(
+                groupRelation.isGroupRelation()
+            ).toBeTruthy();
+            expect(
+                groupRelation.getNumberOfChild()
+            ).toBe(2);
+            b2 = groupRelation.getNextBubble().getNextBubble();
+            expect(
+                b2.getLabel()
+            ).toBe("b2");
+            let b3 = b2.getDownBubble();
+            expect(
+                b3.getLabel()
+            ).toBe("b3");
+        })
     });
 });

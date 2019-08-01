@@ -4,6 +4,7 @@ import ThreeScenario from "../scenario/ThreeScenario"
 import GroupRelationsScenario from '../scenario/GroupRelationsScenario'
 import SingleChildScenario from '../scenario/SingleChildScenario'
 import AutomaticExpandScenario from "../scenario/AutomaticExpandScenario";
+import ConvertVertexToGroupRelationScenario from '../scenario/ConvertVertexToGroupRelationScenario'
 import TestUtil from '../util/TestUtil'
 import MindMapInfo from '@/MindMapInfo'
 import Selection from '@/Selection'
@@ -11,15 +12,11 @@ import VertexController from '@/vertex/VertexController'
 import VertexService from '@/vertex/VertexService'
 
 describe('VertexController', () => {
-    beforeEach(() => {
-
-    });
-
     describe("remove", function () {
         it("skips confirmation when vertex is pristine", async () => {
             let scenario = await new ThreeScenario();
             let centerBubble = scenario.getBubble1InTree();
-            await centerBubble.getController().addChild();
+            await centerBubble.controller().addChild();
             let nbChild = centerBubble.getNumberOfChild();
             let emptyRelation = TestUtil.getChildWithLabel(
                 centerBubble,
@@ -27,7 +24,7 @@ describe('VertexController', () => {
             );
             let emptyVertex = emptyRelation.getNextBubble();
             Selection.setToSingle(emptyVertex);
-            await emptyVertex.getController().remove();
+            await emptyVertex.controller().remove();
             await scenario.nextTickPromise();
             expect(
                 centerBubble.getNumberOfChild()
@@ -37,12 +34,12 @@ describe('VertexController', () => {
             let scenario = await new ThreeScenario();
             let b2 = scenario.getBubble2InTree();
             await scenario.expandBubble2(b2);
-            await b2.getController().addChild();
+            await b2.controller().addChild();
             let emptyVertex = TestUtil.getChildWithLabel(
                 b2,
                 ''
             ).getNextBubble();
-            await b2.getController().addChild();
+            await b2.controller().addChild();
             let emptyVertex2 = emptyVertex.getDownBubble();
             expect(
                 b2.getNumberOfChild()
@@ -50,7 +47,7 @@ describe('VertexController', () => {
             Selection.removeAll();
             Selection.add(emptyVertex);
             Selection.add(emptyVertex2);
-            await Selection.getController().remove();
+            await Selection.controller().remove();
             await scenario.nextTickPromise();
             expect(
                 b2.getNumberOfChild()
@@ -64,10 +61,10 @@ describe('VertexController', () => {
             let someChild = bubble1.getNextBubble().getNextBubble();
             MindMapInfo._setIsViewOnly(false);
             expect(
-                someChild.getController().addSiblingCanDo()
+                someChild.controller().addSiblingCanDo()
             ).toBeTruthy();
             expect(
-                bubble1.getController().addSiblingCanDo()
+                bubble1.controller().addSiblingCanDo()
             ).toBeFalsy();
         });
         it("returns false if vertex is pristine", async () => {
@@ -79,15 +76,15 @@ describe('VertexController', () => {
                 'r1'
             ).getNextBubble();
             expect(
-                b2.getController().addSiblingCanDo()
+                b2.controller().addSiblingCanDo()
             ).toBeTruthy();
-            await centerBubble.getController().addChild();
+            await centerBubble.controller().addChild();
             let emptyVertex = TestUtil.getChildWithLabel(
                 centerBubble,
                 ''
             ).getNextBubble();
             expect(
-                emptyVertex.getController().addSiblingCanDo()
+                emptyVertex.controller().addSiblingCanDo()
             ).toBeFalsy();
         });
     });
@@ -96,7 +93,7 @@ describe('VertexController', () => {
         let bubble1 = scenario.getBubble1InTree();
         let numberOfChild = bubble1.getNumberOfChild();
         let someChild = bubble1.getNextBubble().getNextBubble();
-        await someChild.getController().addSibling();
+        await someChild.controller().addSibling();
         expect(
             bubble1.getNumberOfChild()
         ).toBe(numberOfChild + 1);
@@ -111,15 +108,15 @@ describe('VertexController', () => {
                 'r1'
             ).getNextBubble();
             expect(
-                b2.getController().addChildCanDo()
+                b2.controller().addChildCanDo()
             ).toBeTruthy();
-            await centerBubble.getController().addChild();
+            await centerBubble.controller().addChild();
             let emptyVertex = TestUtil.getChildWithLabel(
                 centerBubble,
                 ''
             ).getNextBubble();
             expect(
-                emptyVertex.getController().addChildCanDo()
+                emptyVertex.controller().addChildCanDo()
             ).toBeFalsy();
         });
     });
@@ -130,7 +127,7 @@ describe('VertexController', () => {
             scenario.getSubGraphForB2()
         );
         let hasVisited = false;
-        await b2.getController().addChild().then(function (triple) {
+        await b2.controller().addChild().then(function (triple) {
             hasVisited = true;
             Selection.getSingle().isSameBubble(
                 triple.destination
@@ -148,7 +145,7 @@ describe('VertexController', () => {
         );
         b2.model().makePublic();
         let hasVisited = false;
-        await b2.getController().addChild().then(function (triple) {
+        await b2.controller().addChild().then(function (triple) {
             hasVisited = true;
             expect(
                 triple.destination.isPublic()
@@ -165,7 +162,7 @@ describe('VertexController', () => {
         expect(
             eventBubble.getTopMostChildBubble().isVisible()
         ).toBeTruthy();
-        eventBubble.getController().suggestions();
+        eventBubble.controller().suggestions();
         expect(
             eventBubble.getTopMostChildBubble().isVisible()
         ).toBeFalsy();
@@ -179,7 +176,7 @@ describe('VertexController', () => {
         GraphServiceMock.getForCentralBubbleUri(
             scenario.getSubGraphForB3()
         );
-        await b3.getController().addChild();
+        await b3.controller().addChild();
         expect(
             b3.getNextChildren().length
         ).toBe(3);
@@ -199,7 +196,7 @@ describe('VertexController', () => {
             childBubble.isVertex()
         ).toBeTruthy();
         let numberOfChild = groupRelation.getNumberOfChild();
-        await childBubble.getController().addSibling();
+        await childBubble.controller().addSibling();
         expect(
             groupRelation.getNumberOfChild()
         ).toBe(numberOfChild + 1);
@@ -219,7 +216,7 @@ describe('VertexController', () => {
             childBubble.isVertex()
         ).toBeTruthy();
         let hasVisited = false;
-        await childBubble.getController().addSibling().then(function (triple) {
+        await childBubble.controller().addSibling().then(function (triple) {
             hasVisited = true;
             let relation = triple.destination.getParentBubble();
             expect(
@@ -235,7 +232,7 @@ describe('VertexController', () => {
         let b2 = scenario.getBubble2InTree();
         let nbCalls = GraphServiceMock.getGraphSpy.mock.calls.length;
         expect(
-            b2.getController().expandCanDo()
+            b2.controller().expandCanDo()
         ).toBeTruthy()
         await scenario.expandBubble2(b2);
         b2.collapse();
@@ -243,7 +240,7 @@ describe('VertexController', () => {
             GraphServiceMock.getGraphSpy.mock.calls.length
         ).toBe(nbCalls + 1);
         nbCalls = GraphServiceMock.getGraphSpy.mock.calls.length
-        await b2.getController().expand();
+        await b2.controller().expand();
         expect(
             GraphServiceMock.getGraphSpy.mock.calls.length
         ).toBe(nbCalls);
@@ -254,11 +251,11 @@ describe('VertexController', () => {
         GraphServiceMock.getForCentralBubbleUri(
             scenario.getSubGraphForB2()
         );
-        await b2.getController().expand();
+        await b2.controller().expand();
         expect(
             b2.getNumberOfChild()
         ).toBe(2);
-        await b2.getController().expand();
+        await b2.controller().expand();
         expect(
             b2.getNumberOfChild()
         ).toBe(2);
@@ -290,7 +287,7 @@ describe('VertexController', () => {
         GraphServiceMock.getForCentralBubbleUriMultiple(
             multipleGraphReturn
         );
-        await b1.getController().expand();
+        await b1.controller().expand();
         expect(
             b2.isExpanded
         ).toBeTruthy();
@@ -353,10 +350,60 @@ describe('VertexController', () => {
         expect(
             b1.model().isPublic()
         ).toBeTruthy();
-        await b1.getController().makePrivate();
+        await b1.controller().makePrivate();
         expect(
             b1.model().isPublic()
         ).toBeFalsy();
+    });
+    describe("convertToGroupRelation", () => {
+        it("changes to group relation", async () => {
+            let scenario = await new ConvertVertexToGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let b2 = await scenario.getExpandedB2();
+            expect(
+                b2.isGroupRelation()
+            ).toBeFalsy();
+            expect(
+                b2.controller().convertToGroupRelationCanDo()
+            ).toBeTruthy();
+            await b2.controller().convertToGroupRelation();
+            b2 = TestUtil.getChildWithLabel(
+                center,
+                "b2"
+            );
+            expect(
+                b2.isGroupRelation()
+            ).toBeTruthy();
+        });
+        it("has right children", async () => {
+            let scenario = await new ConvertVertexToGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let b2 = await scenario.getExpandedB2();
+            expect(
+                b2.getNumberOfChild()
+            ).toBe(3);
+            await b2.controller().convertToGroupRelation();
+            b2 = TestUtil.getChildWithLabel(
+                center,
+                "b2"
+            );
+            // b2.getNextChildren().forEach((child)=>{
+            //     console.log(child.getDestinationVertex().getLabel())
+            // });
+            let children = b2.getNextChildren();
+            expect(
+                children[0].getDestinationVertex().getLabel()
+            ).toBe("b3");
+            expect(
+                children[1].getDestinationVertex().getLabel()
+            ).toBe("b4");
+            expect(
+                children[2].getDestinationVertex().getLabel()
+            ).toBe("b5");
+            expect(
+                b2.getNumberOfChild()
+            ).toBe(3);
+        });
     });
     describe("convertToDistantBubbleWithUri", function () {
         it("can convert vertex to a distant vertex connected to the current parent vertex", async () => {
@@ -369,9 +416,9 @@ describe('VertexController', () => {
             let child = parent.getNextBubble().getNextBubble();
             let b1Uri = singleChildScenario.getB1Uri();
             expect(
-                child.getController().convertToDistantBubbleWithUriCanDo(b1Uri)
+                child.controller().convertToDistantBubbleWithUriCanDo(b1Uri)
             ).toBeTruthy();
-            await child.getController().convertToDistantBubbleWithUri(
+            await child.controller().convertToDistantBubbleWithUri(
                 singleChildScenario.getB1Uri()
             );
             let b1 = parent.getNextBubble().getNextBubble();
@@ -387,22 +434,22 @@ describe('VertexController', () => {
                 singleChildScenario.getSubGraphOfB1OnceMergedWithSingleChild()
             );
             let child = parent.getNextBubble().getNextBubble();
-            await child.getController().convertToDistantBubbleWithUri(
+            await child.controller().convertToDistantBubbleWithUri(
                 singleChildScenario.getB1Uri()
             );
             let newChild;
-            await parent.getController().addChild().then(function (triple) {
+            await parent.controller().addChild().then(function (triple) {
                 newChild = triple.destination;
             });
             expect(
                 newChild.getParentVertex().isSameBubble(parent)
             ).toBeTruthy();
             expect(
-                newChild.getController().convertToDistantBubbleWithUriCanDo(
+                newChild.controller().convertToDistantBubbleWithUriCanDo(
                     singleChildScenario.getB1Uri()
                 )
             ).toBeFalsy();
-            newChild.getController().convertToDistantBubbleWithUri(
+            newChild.controller().convertToDistantBubbleWithUri(
                 singleChildScenario.getB1Uri()
             ).then(function () {
                 fail("should not be able to add a relation to an already existing child");
@@ -416,18 +463,18 @@ describe('VertexController', () => {
                 singleChildScenario.getSubGraphOfB1OnceMergedWithSingleChild()
             );
             let child = parent.getNextBubble().getNextBubble();
-            await child.getController().convertToDistantBubbleWithUri(
+            await child.controller().convertToDistantBubbleWithUri(
                 singleChildScenario.getB1Uri()
             );
             let newChild;
-            await parent.getController().addChild().then(function (triple) {
+            await parent.controller().addChild().then(function (triple) {
                 newChild = triple.destination;
             });
             let newChildChild;
-            await newChild.getController().addChild().then(function (triple) {
+            await newChild.controller().addChild().then(function (triple) {
                 newChildChild = triple.destination;
             });
-            expect(newChildChild.getController().convertToDistantBubbleWithUriCanDo(
+            expect(newChildChild.controller().convertToDistantBubbleWithUriCanDo(
                 parent.getUri()
             )).toBeFalsy();
         });
@@ -436,14 +483,14 @@ describe('VertexController', () => {
             let singleChildScenario = await new SingleChildScenario();
             let parent = singleChildScenario.getParentInTree();
             let child = parent.getNextBubble().getNextBubble();
-            child.getController().convertToDistantBubbleWithUri(
+            child.controller().convertToDistantBubbleWithUri(
                 singleChildScenario.getB1Uri()
             );
             let newChild;
-            await parent.getController().addChild().then(function (triple) {
+            await parent.controller().addChild().then(function (triple) {
                 newChild = triple.destination;
             });
-            expect(newChild.getController().convertToDistantBubbleWithUriCanDo(
+            expect(newChild.controller().convertToDistantBubbleWithUriCanDo(
                 parent.getUri()
             )).toBeFalsy();
         });
@@ -452,7 +499,7 @@ describe('VertexController', () => {
             let singleChildScenario = await new SingleChildScenario();
             let parent = singleChildScenario.getParentInTree();
             let child = parent.getNextBubble().getNextBubble();
-            expect(child.getController().convertToDistantBubbleWithUriCanDo(
+            expect(child.controller().convertToDistantBubbleWithUriCanDo(
                 TestUtil.generateVertexUri("not-current-user")
             )).toBeFalsy();
         });
@@ -461,16 +508,16 @@ describe('VertexController', () => {
             MindMapInfo._setIsViewOnly(false);
             let singleChildScenario = new SingleChildScenario();
             let parent = singleChildScenario.getParentInTree();
-            expect(parent.getController().convertToDistantBubbleWithUriCanDo(
+            expect(parent.controller().convertToDistantBubbleWithUriCanDo(
                 new Scenarios.getProjectSchema().getCenterBubbleUri()
             )).toBeFalsy();
-            expect(parent.getController().convertToDistantBubbleWithUriCanDo(
+            expect(parent.controller().convertToDistantBubbleWithUriCanDo(
                 new Scenarios.getProjectSchema().getCenterBubbleUri()
             )).toBeFalsy();
-            expect(parent.getController().convertToDistantBubbleWithUriCanDo(
+            expect(parent.controller().convertToDistantBubbleWithUriCanDo(
                 new Scenarios.getKaraokeSchemaGraph().getLocationProperty().getUri()
             )).toBeFalsy();
-            expect(parent.getController().convertToDistantBubbleWithUriCanDo(
+            expect(parent.controller().convertToDistantBubbleWithUriCanDo(
                 TestUtils.generateEdgeUri()
             )).toBeFalsy();
         });
@@ -485,7 +532,7 @@ describe('VertexController', () => {
             GraphServiceMock.getForCentralBubbleUri(
                 singleChildScenario.getSubGraphOfB1OnceMergedWithSingleChild()
             );
-            await child.getController().convertToDistantBubbleWithUri(
+            await child.controller().convertToDistantBubbleWithUri(
                 singleChildScenario.getB1Uri()
             );
             relation = parent.getNextBubble();
@@ -504,7 +551,7 @@ describe('VertexController', () => {
             GraphServiceMock.getForCentralBubbleUri(
                 singleChildScenario.getSubGraphOfB1OnceMergedWithSingleChild()
             );
-            await child.getController().convertToDistantBubbleWithUri(
+            await child.controller().convertToDistantBubbleWithUri(
                 singleChildScenario.getB1Uri()
             );
             relation = parent.getNextBubble();
@@ -523,7 +570,7 @@ describe('VertexController', () => {
             GraphServiceMock.getForCentralBubbleUri(
                 singleChildScenario.getSubGraphOfB1OnceMergedWithSingleChild()
             );
-            await child.getController().convertToDistantBubbleWithUri(
+            await child.controller().convertToDistantBubbleWithUri(
                 singleChildScenario.getB1Uri()
             );
             relation = parent.getNextBubble();
@@ -539,7 +586,7 @@ describe('VertexController', () => {
             GraphServiceMock.getForCentralBubbleUri(
                 singleChildScenario.getSubGraphOfB1OnceMergedWithSingleChild()
             );
-            await child.getController().convertToDistantBubbleWithUri(
+            await child.controller().convertToDistantBubbleWithUri(
                 singleChildScenario.getB1Uri()
             );
             child = parent.getNextBubble().getNextBubble();
@@ -551,7 +598,7 @@ describe('VertexController', () => {
             let scenario = await new ThreeScenario();
             let b2 = scenario.getBubble2InTree();
             await scenario.expandBubble2(b2);
-            let triple = await b2.getController().addChild();
+            let triple = await b2.controller().addChild();
             let newChildOfB2 = triple.destination;
             GraphServiceMock.getForCentralBubbleUri(
                 scenario.getSubGraphForB3()
@@ -564,11 +611,11 @@ describe('VertexController', () => {
                 newChildOfB2.getNbDuplicates()
             ).toBe(0);
             expect(
-                newChildOfB2.getController().convertToDistantBubbleWithUriCanDo(
+                newChildOfB2.controller().convertToDistantBubbleWithUriCanDo(
                     b3.model().getUri()
                 )
             ).toBeTruthy();
-            await newChildOfB2.getController().convertToDistantBubbleWithUri(
+            await newChildOfB2.controller().convertToDistantBubbleWithUri(
                 b3.model().getUri()
             );
             expect(
@@ -586,7 +633,7 @@ describe('VertexController', () => {
         graphMocks[b3.getUri()] = scenario.getB3SubGraph();
         graphMocks[scenario.getB31Uri()] = scenario.getB31SubGraph();
         GraphServiceMock.getForCentralBubbleUriMultiple(graphMocks);
-        await b3.getController().expand();
+        await b3.controller().expand();
         // GraphServiceMock.getForCentralBubbleUri(scenario.getGraph())
         let b31 = TestUtil.getChildWithLabel(
             b3,
@@ -617,7 +664,7 @@ describe('VertexController', () => {
             expect(
                 b1.model().getNumberOfChild()
             ).toBe(2);
-            await b1.getController().addChild();
+            await b1.controller().addChild();
             expect(
                 b1.model().getNumberOfChild()
             ).toBe(3);
@@ -625,7 +672,7 @@ describe('VertexController', () => {
         it("sets to zero the number of connected edges to the destination vertex", async () => {
             let scenario = await new ThreeScenario();
             let b1 = scenario.getBubble1InTree();
-            let triple = await b1.getController().addChild();
+            let triple = await b1.controller().addChild();
             expect(
                 triple.destination.model().getNumberOfChild()
             ).toBe(0);
@@ -640,7 +687,7 @@ describe('VertexController', () => {
             expect(
                 b1.model().getNumberOfChild()
             ).toBe(2);
-            await childVertex.getController().addSibling();
+            await childVertex.controller().addSibling();
             expect(
                 b1.model().getNumberOfChild()
             ).toBe(3);
@@ -652,10 +699,10 @@ describe('VertexController', () => {
             let scenario = await new ThreeScenario();
             let bubble1 = scenario.getBubble1InTree();
             let bubble2 = scenario.getBubble2InTree();
-            let newChild = await bubble1.getController().addChild().then(function (triple) {
+            let newChild = await bubble1.controller().addChild().then(function (triple) {
                 return triple.destination;
             });
-            await bubble2.getController().moveUnderParent(newChild);
+            await bubble2.controller().moveUnderParent(newChild);
             expect(
                 newChild.model().getNumberOfChild()
             ).toBe(1);
@@ -678,7 +725,7 @@ describe('VertexController', () => {
                 r3.isToTheLeft()
             ).toBeTruthy();
             let vertexUnderB2 = b2.getNextBubble().getNextBubble();
-            await vertexUnderB2.getController().moveUnderParent(b3);
+            await vertexUnderB2.controller().moveUnderParent(b3);
             expect(
                 b3.isToTheLeft()
             ).toBeTruthy();
@@ -701,7 +748,7 @@ describe('VertexController', () => {
                     "Possession"
                 )
             ).toBeFalsy();
-            await groupRelation.getController().moveUnderParent(otherVertex);
+            await groupRelation.controller().moveUnderParent(otherVertex);
             otherVertex = TestUtil.getChildWithLabel(
                 center,
                 "other relation"
@@ -723,7 +770,7 @@ describe('VertexController', () => {
             ).getNextBubble();
             groupRelation.expand();
             let groupRelationNumberOfChild = groupRelation.getNumberOfChild();
-            await groupRelation.getController().moveUnderParent(otherVertex);
+            await groupRelation.controller().moveUnderParent(otherVertex);
             expect(
                 groupRelation.getNumberOfChild()
             ).toBe(groupRelationNumberOfChild);

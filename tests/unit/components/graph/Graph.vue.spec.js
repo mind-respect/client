@@ -23,8 +23,8 @@ describe("Graph.vue", () => {
     it("distributes new triples evenly to the right and left", async () => {
         let scenario = await new ThreeScenario();
         let bubble1 = scenario.getCenterInTree();
-        let triple1 = await bubble1.getController().addChild();
-        let triple2 = await bubble1.getController().addChild();
+        let triple1 = await bubble1.controller().addChild();
+        let triple2 = await bubble1.controller().addChild();
         await scenario.nextTickPromise();
         expect(
             triple1.edge.isToTheLeft()
@@ -259,7 +259,7 @@ describe("Graph.vue", () => {
         GraphServiceMock.getForCentralBubbleUri(
             new Scenarios.withAcceptedSuggestionGraph().getGraph()
         );
-        eventBubble.getController().expand();
+        eventBubble.controller().expand();
         expect(
             TestUtils.hasChildWithLabel(
                 eventBubble,
@@ -287,7 +287,7 @@ describe("Graph.vue", () => {
         expect(
             eventBubble.getNumberOfChild()
         ).toBe(0);
-        eventBubble.getController().expand();
+        eventBubble.controller().expand();
         expect(
             eventBubble.getNumberOfChild()
         ).toBe(3);
@@ -447,7 +447,7 @@ describe("Graph.vue", () => {
         expect(
             r3.isGroupRelation()
         ).toBeFalsy();
-        await r3.getController().addChild();
+        await r3.controller().addChild();
         r3 = TestUtil.getChildWithLabel(
             centerVertex,
             "r2"
@@ -533,7 +533,7 @@ describe("Graph.vue", () => {
             graphOfDistantBubble
         );
         var hasVisitedCallback = false;
-        currentBubble.getController().GraphDisplayerAsRelativeTree.connectVertexToVertexWithUri(
+        currentBubble.controller().GraphDisplayerAsRelativeTree.connectVertexToVertexWithUri(
             currentBubble,
             distantBubbleUri,
             function () {

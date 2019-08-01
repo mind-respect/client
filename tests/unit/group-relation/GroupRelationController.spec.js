@@ -12,7 +12,7 @@ describe("GroupRelationController", () => {
         let scenario = await new GroupRelationsScenario();
         let possessionInTree = scenario.getPossessionGroupRelation();
         expect(
-            possessionInTree.getController().identifyCanDo()
+            possessionInTree.controller().identifyCanDo()
         ).toBeTruthy();
     });
     describe("addChild", function () {
@@ -22,7 +22,7 @@ describe("GroupRelationController", () => {
             possessionInTree.model().addIdentification(
                 TestUtil.dummyIdentifier()
             );
-            let triple = await possessionInTree.getController().addChild();
+            let triple = await possessionInTree.controller().addChild();
             expect(
                 triple.edge.getIdentifiers().length
             ).toBe(2);
@@ -34,7 +34,7 @@ describe("GroupRelationController", () => {
             possessionInTree.addIdentification(
                 TestUtil.dummyIdentifier()
             );
-            let triple = await possessionInTree.getController().addChild();
+            let triple = await possessionInTree.controller().addChild();
             expect(
                 triple.destination.isPublic()
             ).toBeTruthy();
@@ -48,7 +48,7 @@ describe("GroupRelationController", () => {
             ).toBeTruthy();
             let newChildVertex;
             let nbChild = possessionInTree.getNumberOfChild();
-            let triple = await possessionInTree.getController().addChild();
+            let triple = await possessionInTree.controller().addChild();
             newChildVertex = triple.destination;
             expect(
                 possessionInTree.getNumberOfChild()
@@ -69,7 +69,7 @@ describe("GroupRelationController", () => {
             expect(
                 book1.getDownBubble().getLabel()
             ).toBe("book 2");
-            await book1.getController().addSibling();
+            await book1.controller().addSibling();
             expect(
                 book1.getDownBubble().getLabel()
             ).toBe("");
@@ -113,7 +113,7 @@ describe("GroupRelationController", () => {
                     "other relation"
                 )
             ).toBeFalsy();
-            await otherRelation.getController().moveUnderParent(groupRelation);
+            await otherRelation.controller().moveUnderParent(groupRelation);
             expect(
                 TestUtil.hasChildWithLabel(
                     groupRelation,
@@ -137,9 +137,9 @@ describe("GroupRelationController", () => {
                 )
             ).toBeFalsy();
             expect(
-                otherGroupRelation.getController()._canMoveUnderParent(groupRelation)
+                otherGroupRelation.controller()._canMoveUnderParent(groupRelation)
             ).toBeTruthy();
-            await otherGroupRelation.getController().moveUnderParent(groupRelation);
+            await otherGroupRelation.controller().moveUnderParent(groupRelation);
             expect(
                 TestUtil.hasChildWithLabel(
                     groupRelation,
@@ -156,7 +156,7 @@ describe("GroupRelationController", () => {
                 center,
                 "r1"
             );
-            await r1.getController().addChild();
+            await r1.controller().addChild();
             let g1 = TestUtil.getChildWithLabel(
                 center,
                 "r1"
@@ -166,7 +166,7 @@ describe("GroupRelationController", () => {
             ).toBeTruthy();
             r1 = g1.getNextBubble();
             r1.setLabel("original r1 relation");
-            await r1.getController().moveAbove(scenario.getBubble3InTree());
+            await r1.controller().moveAbove(scenario.getBubble3InTree());
             r1 = TestUtil.getChildWithLabel(
                 center,
                 "original r1 relation"

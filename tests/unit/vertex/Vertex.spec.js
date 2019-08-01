@@ -65,7 +65,7 @@ describe('Vertex', () => {
             b2,
             "r2"
         ).getNextBubble();
-        await b3.getController().removeDo();
+        await b3.controller().removeDo();
         expect(
             TestUtil.hasChildWithLabel(
                 b2,
@@ -185,7 +185,7 @@ describe('Vertex', () => {
         let eventBubble = scenario.getEventBubbleInTree();
         let vertex = eventBubble.getNextBubble().getNextBubble();
         let numberOfChild = eventBubble.getNumberOfChild();
-        vertex.remove();
+        await vertex.controller().removeDo();
         expect(
             eventBubble.getNumberOfChild()
         ).toBe(numberOfChild - 1);
@@ -194,7 +194,7 @@ describe('Vertex', () => {
     it("selects the parent vertex after it's removed if right under a relation and vertex", async () => {
         let scenario = await new GroupRelationsScenario();
         let otherBubble = scenario.getOtherRelationInTree().getNextBubble();
-        await otherBubble.getController().remove();
+        await otherBubble.controller().remove();
         expect(
             Selection.getSingle().isVertex()
         ).toBeTruthy();
@@ -261,7 +261,7 @@ describe('Vertex', () => {
             let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
             let topBubble = scenario.getOtherRelationInTree().getNextBubble();
-            await scenario.getPossessionGroupRelation().getController().moveAbove(topBubble);
+            await scenario.getPossessionGroupRelation().controller().moveAbove(topBubble);
             let detailedIndex = center.buildChildrenIndex();
             let indexArray = Object.values(detailedIndex).map((entry) => {
                 return entry.index;
@@ -323,7 +323,7 @@ describe('Vertex', () => {
             let scenario = await new ThreeScenario();
             let center = scenario.getBubble1InTree();
             let b4Uri;
-            await center.getController().addChild().then((tripleUi) => {
+            await center.controller().addChild().then((tripleUi) => {
                 b4Uri = tripleUi.destination.getUri();
                 tripleUi.destination.setLabel("b4");
             });

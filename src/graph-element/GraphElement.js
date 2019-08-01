@@ -352,7 +352,7 @@ GraphElement.GraphElement.prototype.getTextOrDefault = function () {
         text;
 };
 
-GraphElement.GraphElement.prototype.getController = function () {
+GraphElement.GraphElement.prototype.controller = function () {
     return this.getControllerWithElements(this);
 };
 

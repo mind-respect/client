@@ -35,7 +35,7 @@ describe("GraphElement", () => {
             bubble1Duplicate.getModel().hasIdentifications()
         ).toBeFalsy();
         karaokeIdentification.makeGeneric();
-        bubble1.getController().addIdentification(
+        bubble1.controller().addIdentification(
             karaokeIdentification
         );
         expect(

@@ -152,7 +152,7 @@
                         return promise;
                     } else {
                         bubble.remove();
-                        return bubble.getController().removeIdentifier(tag);
+                        return bubble.controller().removeIdentifier(tag);
                     }
                 }));
                 Store.dispatch("redraw");

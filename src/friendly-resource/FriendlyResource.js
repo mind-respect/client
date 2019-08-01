@@ -396,8 +396,9 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             // }
         }
         this.getParentBubble().removeChild(this);
-        this.setSourceVertexOrDestinationIfInverse(
-            otherBubble.isVertex() ? otherBubble : otherBubble.getParentVertex()
+        let parentVertex = otherBubble.isVertex() ? otherBubble : otherBubble.getParentVertex();
+        this.setParentVertex(
+            parentVertex
         );
         otherBubble.addChild(this);
     } else {
@@ -406,12 +407,8 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         let isTemporaryRemove = parentBubble.isSameBubble(otherParentBubble);
         parentBubble.removeChild(this, isTemporaryRemove);
         this.direction = otherBubble.direction;
-        this.getDescendants().forEach((child) => {
-            child.direction = otherBubble.direction;
-        });
-
         let index = otherParentBubble.getChildIndex(otherBubble);
-        this.setSourceVertexOrDestinationIfInverse(
+        this.setParentVertex(
             otherBubble.getParentVertex()
         );
         if (MoveRelation.Before === relation) {
@@ -578,7 +575,8 @@ FriendlyResource.FriendlyResource.prototype.replaceChild = function (existingChi
     this.addChild(
         newChild,
         existingChild.isToTheLeft(),
-        index
+        index,
+        true
     );
 };
 
@@ -716,7 +714,9 @@ FriendlyResource.FriendlyResource.prototype.getIndexInTree = function () {
 FriendlyResource.FriendlyResource.prototype.getParentFork = function () {
     return this.getClosestAncestorInTypes([
         GraphElementType.Vertex,
-        GraphElementType.GroupRelation
+        GraphElementType.GroupRelation,
+        GraphElementType.Meta,
+        GraphElementType.MetaGroupVertex
     ]);
 };
 

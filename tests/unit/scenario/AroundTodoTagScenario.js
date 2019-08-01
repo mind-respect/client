@@ -23,7 +23,7 @@ AroundTodoTagScenario.prototype.expandE3 = function (e3) {
             "centerMetaEventAndTodo.aroundE3"
         )
     );
-    return e3.getController().expand();
+    return e3.controller().expand();
 };
 
 export default AroundTodoTagScenario;

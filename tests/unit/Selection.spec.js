@@ -54,7 +54,7 @@ describe("Selection", () => {
             Selection.addVertex(b1);
             Selection.addVertex(b2);
             expect(
-                Selection.getController() instanceof VertexController.VertexController
+                Selection.controller() instanceof VertexController.VertexController
             ).toBeTruthy();
         });
         it("returns EdgeController when made of multiple relations", async () => {
@@ -72,7 +72,7 @@ describe("Selection", () => {
             Selection.add(r1);
             Selection.add(r2);
             expect(
-                Selection.getController() instanceof EdgeController.RelationController
+                Selection.controller() instanceof EdgeController.RelationController
             ).toBeTruthy();
         });
         it("returns GraphElementController when made of different graph elements", async () => {
@@ -85,7 +85,7 @@ describe("Selection", () => {
             Selection.add(b1);
             Selection.add(r1);
             expect(
-                Selection.getController() instanceof GraphElementController.GraphElementController
+                Selection.controller() instanceof GraphElementController.GraphElementController
             ).toBeTruthy();
         });
     });

@@ -126,13 +126,13 @@
                 return Selection.isSingle();
             },
             noteCanDo: function () {
-                return Selection.isSingle() && Selection.getSingle().getController().noteCanDo();
+                return Selection.isSingle() && Selection.getSingle().controller().noteCanDo();
             },
             tagCanDo: function () {
-                return Selection.isSingle() && Selection.getSingle().getController().identifyCanDo();
+                return Selection.isSingle() && Selection.getSingle().controller().identifyCanDo();
             },
             mergeCanDo: function () {
-                return Selection.isSingle() && Selection.getSingle().getController().mergeCanDo();
+                return Selection.isSingle() && Selection.getSingle().controller().mergeCanDo();
             },
             menuWidth: function () {
                 return this.isStretched ? 340 : 340;

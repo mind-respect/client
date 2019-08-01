@@ -20,6 +20,10 @@ MetaGroupVertexController.prototype.addChildCanDo = function () {
     return false;
 };
 
+MetaGroupVertexController.prototype.addSiblingCanDo = function () {
+    return false;
+};
+
 MetaGroupVertexController.prototype.removeCanDo = function () {
     return false;
 };

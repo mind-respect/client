@@ -23,7 +23,7 @@ CircularityScenario.prototype.expandBubble2 = function (bubble2) {
             "circularity.b2Graph"
         )
     );
-    return bubble2.getController().expand();
+    return bubble2.controller().expand();
 };
 
 CircularityScenario.prototype.expandBubble3 = function (bubble3) {
@@ -32,7 +32,7 @@ CircularityScenario.prototype.expandBubble3 = function (bubble3) {
             "circularity.b3Graph"
         )
     );
-    return bubble3.getController().expand();
+    return bubble3.controller().expand();
 };
 
 CircularityScenario.prototype.getBubble1Duplicate = async function () {

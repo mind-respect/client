@@ -159,6 +159,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
                 return;
             }
             let edge = groupRelation.getFirstEdge();
+            let child = groupRelation.getNumberOfChild() > 1 ? groupRelation : edge;
             let endVertex = edge.getOtherVertex(centerVertex);
             let childIndex = childrenIndex[endVertex.getUri()];
             let addLeft;
@@ -166,9 +167,11 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
                 addLeft = childIndex.toTheLeft;
             }
             centerVertex.addChild(
-                groupRelation.getNumberOfChild() > 1 ? groupRelation : edge,
+                child,
                 addLeft
-            )
+            );
+            child.parentVertex = child.parentBubble = centerVertex;
+            CurrentSubGraph.get().add(child);
         });
 
         groupRelations.forEach((groupRelation) => {

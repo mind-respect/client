@@ -72,14 +72,14 @@ describe("Edge", () => {
             groupRelation,
             "Possession of book 1"
         );
-        await relationUnderGroupRelation.getController().setLabel(
+        await relationUnderGroupRelation.controller().setLabel(
             groupRelation.text()
         );
         expect(
             relationUnderGroupRelation.isShrinked()
         ).toBeTruthy();
         let otherBubble = scenario.getOtherRelationInTree().getNextBubble();
-        await relationUnderGroupRelation.getNextBubble().getController().moveUnderParent(
+        await relationUnderGroupRelation.getNextBubble().controller().moveUnderParent(
             otherBubble
         );
         expect(
@@ -110,7 +110,7 @@ describe("Edge", () => {
         expect(
             relationUnderGroupRelation.isInverse()
         ).toBeTruthy();
-        await relationUnderGroupRelation.getNextBubble().getController().moveUnderParent(
+        await relationUnderGroupRelation.getNextBubble().controller().moveUnderParent(
             otherGroupRelation
         );
         expect(
@@ -121,15 +121,15 @@ describe("Edge", () => {
     it("sets the new group relation at the same index of the relation when adding a child", async () => {
         let scenario = await new ThreeScenario();
         let centerBubble = scenario.getCenterBubbleInTree();
-        await centerBubble.getController().addChild();
-        await centerBubble.getController().addChild();
+        await centerBubble.controller().addChild();
+        await centerBubble.controller().addChild();
         let relation = centerBubble.getNextBubble();
         let indexInTypes = [GraphElementType.Relation, GraphElementType.GroupRelation];
         expect(
             relation.getIndexInTree(indexInTypes)
         ).toBe(0);
         let relationText = relation.getLabel();
-        await relation.getController().addChild();
+        await relation.controller().addChild();
         let newGroupRelation = TestUtil.getChildWithLabel(
             centerBubble,
             relationText
@@ -186,7 +186,7 @@ describe("Edge", () => {
             "original some relation"
         );
         await Promise.all(groupRelation.getClosestChildVertices().map((vertex) => {
-            return vertex.getController().moveUnderParent(bubbleNotUnderAGroupRelation);
+            return vertex.controller().moveUnderParent(bubbleNotUnderAGroupRelation);
         }));
         expect(
             TestUtil.hasChildWithLabel(

@@ -10,6 +10,7 @@ import GraphElementService from '@/graph-element/GraphElementService'
 import Selection from '@/Selection'
 import Vue from 'vue'
 import Store from '@/store'
+import CurrentSubGraph from "../graph/CurrentSubGraph";
 
 const api = {};
 api.GroupRelationController = GroupRelationController;
@@ -59,12 +60,12 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
     let triple = addTuple.optimistic;
 
     addTuple.promise.then(() => {
-        triple.destination.getController().setShareLevel(
+        triple.destination.controller().setShareLevel(
             parentVertex.getShareLevel()
         );
         return Promise.all(this.model().getIdentifiers().map((identifier) => {
             identifier.makeSameAs();
-            return triple.edge.getController().addIdentification(
+            return triple.edge.controller().addIdentification(
                 identifier,
                 true
             ).then((identifiers) => {
@@ -86,6 +87,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         isToTheLeft,
         index
     );
+    CurrentSubGraph.get().add(triple.edge);
     Vue.nextTick(() => {
         saveIndex === false ? Promise.resolve() : GraphElementService.changeChildrenIndex(
             this.model().getParentVertex()
@@ -154,14 +156,14 @@ GroupRelationController.prototype.becomeParent = function (child) {
     function moveEdge(movedEdge) {
         let parentGroupRelation = this.model();
         promises.push(
-            movedEdge.getController().replaceParentVertex(
+            movedEdge.controller().replaceParentVertex(
                 parentGroupRelation.getParentVertex(),
                 true
             )
         );
         do {
             promises.push(
-                movedEdge.getController().addIdentifiers(
+                movedEdge.controller().addIdentifiers(
                     parentGroupRelation.model().getIdentifiers()
                 )
             );
@@ -180,7 +182,7 @@ GroupRelationController.prototype.becomeExParent = function (movedEdge) {
             );
         if (identifier) {
             promises.push(
-                movedEdge.getController().removeIdentifier(
+                movedEdge.controller().removeIdentifier(
                     identifier
                 )
             );

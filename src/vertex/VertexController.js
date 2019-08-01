@@ -48,6 +48,7 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
             isToTheLeft,
             index
         );
+        CurrentSubGraph.get().add(triple.edge);
         Vue.nextTick(() => {
             Selection.setToSingle(triple.destination);
             GraphElementService.changeChildrenIndex(
@@ -59,7 +60,7 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
             triple.destination.setShareLevel(ShareLevel.PRIVATE);
         } else {
             //not returning promise to allow faster process
-            triple.destination.getController().setShareLevel(
+            triple.destination.controller().setShareLevel(
                 this.model().getShareLevel()
             );
         }
@@ -68,13 +69,7 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
 };
 
 VertexController.prototype.convertToRelationCanDo = function () {
-    if (!this.isSingleAndOwned()) {
-        return false;
-    }
-    if (!this.getUi().isExpanded) {
-        return false;
-    }
-    if (this.model().isLabelEmpty()) {
+    if (!this.isSingleAndOwned() || this.model().canExpand() || this.model().isLabelEmpty() || this.model().hasIdentifications()) {
         return false;
     }
     let numberOfChild = this.model().getNumberOfChild();
@@ -83,12 +78,12 @@ VertexController.prototype.convertToRelationCanDo = function () {
     }
     let parentBubble = this.getUi().getParentBubble();
 
-    if (!parentBubble.isRelation() || !parentBubble.model().isPristine()) {
+    if (!parentBubble.isRelation() || !parentBubble.isPristine()) {
         return false;
     }
     if (numberOfChild === 1) {
-        let childRelation = this.getUi().getNextBubble();
-        return childRelation.isRelation() && childRelation.model().isPristine();
+        let childRelation = this.model().getNextBubble();
+        return childRelation.isRelation() && childRelation.isPristine();
     }
     return true;
 };
@@ -101,12 +96,12 @@ VertexController.prototype.convertToRelation = function () {
     if (this.model().getNumberOfChild() === 1) {
         let childRelation = this.getUi().getNextBubble();
         promises.push(
-            childRelation.getController().setLabel(
+            childRelation.controller().setLabel(
                 label
             )
         );
         promises.push(
-            childRelation.getController().moveBelow(
+            childRelation.controller().moveBelow(
                 parentRelation
             )
         );
@@ -116,7 +111,7 @@ VertexController.prototype.convertToRelation = function () {
         toSelect = childRelation;
     } else {
         promises.push(
-            parentRelation.getController().setLabel(
+            parentRelation.controller().setLabel(
                 label
             )
         );
@@ -127,57 +122,50 @@ VertexController.prototype.convertToRelation = function () {
     }
     return Promise.all(promises).then(() => {
         Selection.setToSingle(toSelect);
+        Store.dispatch("redraw");
     });
 };
 
 VertexController.prototype.convertToGroupRelationCanDo = function () {
-    if (!this.isSingleAndOwned()) {
+    if (!this.isSingleAndOwned() || this.model().canExpand() || this.model().isLabelEmpty() || this.model().hasIdentifications()) {
         return false;
     }
-    if (!this.getUi().isExpanded) {
-        return false;
-    }
-    if (this.model().isLabelEmpty()) {
-        return false;
-    }
-    var numberOfChild = this.model().getNumberOfChild();
+    let numberOfChild = this.model().getNumberOfChild();
     if (numberOfChild <= 1) {
         return false;
     }
-    var allChildAreEmptyRelations = true;
-    this.getUi().visitAllImmediateChild(function (child) {
-        if (!child.isRelation() || !child.model().isPristine()) {
-            allChildAreEmptyRelations = false;
-        }
+    let allChildAreEmptyRelations = this.model().getNextChildren().every((child) => {
+        return child.isRelation() && child.isPristine()
     });
     if (!allChildAreEmptyRelations) {
         return false;
     }
-    var parentBubble = this.getUi().getParentBubble();
-    return parentBubble.isRelation() && parentBubble.model().isPristine();
+
+    let parentBubble = this.model().getParentBubble();
+    return parentBubble.isRelation() && parentBubble.isPristine();
 };
 
-VertexController.prototype.convertToGroupRelation = function () {
-    var parentRelation = this.getUi().getParentBubble();
-    var promise = parentRelation.getController().setLabel(
-        this.model().getLabel()
-    );
-    this.getUi().visitClosestChildOfType(GraphElementType.Vertex, function (childRelation) {
-        promise = promise.then(function () {
-            parentRelation = this.getUi().getParentBubble();
-            if (parentRelation.getParentBubble().isGroupRelation()) {
-                parentRelation = parentRelation.getParentBubble();
-            }
-            return childRelation.getController().moveUnderParent(
+VertexController.prototype.convertToGroupRelation = async function () {
+    let parentRelation = this.model().getParentBubble();
+    let children = this.model().getClosestChildrenOfType(GraphElementType.Relation);
+    parentRelation.setLabel(this.model().getLabel());
+    parentRelation = await children[0].controller().moveUnderParent(parentRelation);
+    let promises = [];
+    let l = 1;
+    while (l < children.length) {
+        let childRelation = children[l];
+        promises.push(
+            childRelation.controller().moveUnderParent(
                 parentRelation
-            );
-        }.bind(this));
-    }.bind(this));
-    promise = promise.then(function () {
-        return this.remove(true);
-    }.bind(this));
-    return promise.then(function () {
+            )
+        );
+        l++;
+    }
+    return Promise.all(promises).then(() => {
+        return this.removeDo(true);
+    }).then(() => {
         Selection.setToSingle(parentRelation);
+        GraphElementService.changeChildrenIndex(parentRelation.getParentVertex());
     });
 };
 
@@ -189,7 +177,7 @@ VertexController.prototype.addSiblingCanDo = function () {
 
 VertexController.prototype.addSibling = function () {
     let parent = this.model().getParentFork();
-    return parent.getController().addChild(
+    return parent.controller().addChild(
         this.model().getIndexInTree() + 1,
         this.model().isToTheLeft()
     );
@@ -366,14 +354,14 @@ VertexController.prototype.becomeParent = function (child) {
 
     function moveEdge(movedEdge) {
         promises.push(
-            movedEdge.getController().replaceParentVertex(
+            movedEdge.controller().replaceParentVertex(
                 this.model(),
                 true
             )
         );
         if (!child.isGroupRelation()) {
             promises.push(
-                movedEdge.getParentBubble().getController().becomeExParent(movedEdge)
+                movedEdge.getParentBubble().controller().becomeExParent(movedEdge)
             );
         }
     }
@@ -503,7 +491,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
                 this.model().getClosestChildVertices().forEach((childVertex) => {
                     if (childVertex.model().hasOnlyOneHiddenChild()) {
                         expandChildCalls.push(
-                            childVertex.getController().expand(true, true, true)
+                            childVertex.controller().expand(true, true, true)
                         );
                     }
                 });

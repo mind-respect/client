@@ -12,14 +12,14 @@ ThreeScenario.prototype.expandBubble2 = function (bubble2) {
     GraphServiceMock.getForCentralBubbleUri(
         this.getSubGraphForB2()
     );
-    return bubble2.getController().expand();
+    return bubble2.controller().expand();
 };
 
 ThreeScenario.prototype.expandBubble3 = function (bubble3) {
     GraphServiceMock.getForCentralBubbleUri(
         this.getSubGraphForB3()
     );
-    return bubble3.getController().expand();
+    return bubble3.controller().expand();
 };
 
 ThreeScenario.prototype.getBubble4InTree = function () {

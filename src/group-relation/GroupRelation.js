@@ -3,11 +3,9 @@
  */
 import GraphElement from '@/graph-element/GraphElement'
 import GraphElementType from '@/graph-element/GraphElementType'
-import GroupRelationController from '@/group-relation/GroupRelationController'
 import Vue from 'vue'
 import Store from '@/store'
 import FriendlyResource from "../friendly-resource/FriendlyResource";
-import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import IdUri from '@/IdUri'
 
 const api = {};
@@ -64,7 +62,7 @@ GroupRelation.prototype.hasFewEnoughBubblesToExpand = function () {
         nbChild < api.EXPAND_UNDER_NB_CHILD;
 };
 
-GroupRelation.prototype.removeChild = function (child, isTemporary, isPreDisplay) {
+GroupRelation.prototype.removeChild = function (child, isTemporary) {
     let l = this.children.length;
     let removedChild;
     while (l--) {
@@ -72,9 +70,6 @@ GroupRelation.prototype.removeChild = function (child, isTemporary, isPreDisplay
             removedChild = this.children[l];
             this.children.splice(l, 1);
         }
-    }
-    if (removedChild && removedChild.isEdge() && !isPreDisplay) {
-        CurrentSubGraph.get().removeEdge(removedChild);
     }
     if (!isTemporary) {
         if (this.children.length === 0) {
@@ -186,15 +181,6 @@ GroupRelation.prototype.collapse = function () {
     );
 };
 
-GroupRelation.prototype.getController = function () {
-    return new GroupRelationController.GroupRelationController(this);
-};
-
-GroupRelation.prototype.getControllerWithElements = function (elements) {
-    return new GroupRelationController.GroupRelationController(
-        elements
-    );
-};
 
 GroupRelation.prototype.getGraphElementType = function () {
     return GraphElementType.GroupRelation;
@@ -211,7 +197,7 @@ GroupRelation.prototype.shouldBeChildOfGroupRelation = function (otherGroupRelat
     });
 };
 
-GroupRelation.prototype.addChild = function (child, isToTheLeft, index, isPreDisplay) {
+GroupRelation.prototype.addChild = function (child, isToTheLeft, index) {
     if (child.isGroupRelation()) {
         child.parentBubble = this;
         child.parentVertex = this.getParentVertex();
@@ -226,9 +212,6 @@ GroupRelation.prototype.addChild = function (child, isToTheLeft, index, isPreDis
                 0,
                 child
             );
-        }
-        if (!isPreDisplay) {
-            CurrentSubGraph.get().add(child);
         }
         return;
     }
@@ -245,9 +228,6 @@ GroupRelation.prototype.addChild = function (child, isToTheLeft, index, isPreDis
             edge
         );
     }
-    if (!isPreDisplay) {
-        CurrentSubGraph.get().add(edge);
-    }
 };
 
 
@@ -259,9 +239,9 @@ GroupRelation.prototype.setSourceVertex = function (sourceVertex) {
     });
 };
 
-GroupRelation.prototype.setSourceVertexOrDestinationIfInverse = function (vertex) {
+GroupRelation.prototype.setParentVertex = function (vertex) {
     this.getClosestChildrenOfType(GraphElementType.Relation).forEach((child) => {
-        child.setSourceVertexOrDestinationIfInverse(
+        child.setParentVertex(
             vertex
         )
     });

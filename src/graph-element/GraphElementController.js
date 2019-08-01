@@ -12,6 +12,7 @@ import router from '@/router'
 import Scroll from '@/Scroll'
 import Vue from 'vue'
 import TagService from '@/identifier/TagService'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 let bubbleCutClipboard,
@@ -175,7 +176,7 @@ GraphElementController.prototype.expand = function (avoidCenter, avoidExpandChil
         this.model().visitClosestChildVertices(function (childVertex) {
             if (childVertex.model().hasOnlyOneHiddenChild()) {
                 expandChildCalls.push(
-                    childVertex.getController().expand(true, true, true)
+                    childVertex.controller().expand(true, true, true)
                 );
             }
         });
@@ -195,7 +196,7 @@ GraphElementController.prototype.expandDescendantsIfApplicable = function () {
     let avoidCenter = true;
     this.model().visitExpandableDescendants(function (expandableLeaf) {
         addChildTreeActions.push(
-            expandableLeaf.getController().expand(avoidCenter)
+            expandableLeaf.controller().expand(avoidCenter)
         );
     });
     promise = Promise.all(addChildTreeActions);
@@ -260,10 +261,10 @@ GraphElementController.prototype._pasteText = function (event) {
 };
 
 GraphElementController.prototype._pasteBubble = function () {
-    if (!bubbleCutClipboard.getController()._canMoveUnderParent(this.model())) {
+    if (!bubbleCutClipboard.controller()._canMoveUnderParent(this.model())) {
         return;
     }
-    bubbleCutClipboard.getController().moveUnderParent(
+    bubbleCutClipboard.controller().moveUnderParent(
         this.model()
     );
     bubbleCutClipboard = undefined;
@@ -324,6 +325,9 @@ GraphElementController.prototype._canMoveAboveOrUnder = function (otherEdge) {
 };
 
 GraphElementController.prototype.moveBelow = function (otherEdge) {
+    if (otherEdge.isVertex()) {
+        otherEdge = otherEdge.getParentBubble();
+    }
     if (!this._canMoveAboveOrUnder(otherEdge)) {
         return Promise.resolve();
     }
@@ -336,6 +340,9 @@ GraphElementController.prototype.moveBelow = function (otherEdge) {
 };
 
 GraphElementController.prototype.moveAbove = function (otherEdge) {
+    if (otherEdge.isVertex()) {
+        otherEdge = otherEdge.getParentBubble();
+    }
     if (!this._canMoveAboveOrUnder(otherEdge)) {
         return Promise.resolve();
     }
@@ -374,13 +381,13 @@ GraphElementController.prototype.moveUnderParent = function (parent, forceLeft) 
     let moveUnderParentCommand = new Command.forExecuteUndoAndRedo(
         () => {
             previousParent = this.model().getParentVertex();
-            return parent.getController().becomeParent(this.model(), forceLeft);
+            return parent.controller().becomeParent(this.model(), forceLeft);
         },
         () => {
-            return previousParent.getController().becomeParent(this.model());
+            return previousParent.controller().becomeParent(this.model());
         },
         () => {
-            return parent.getController().becomeParent(this.model());
+            return parent.controller().becomeParent(this.model());
         }
     );
     return Command.executeCommand(
@@ -419,7 +426,7 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
     let promises = [];
     if (!otherEdge.getParentBubble().isSameUri(movedEdge.getParentBubble())) {
         promises.push(
-            movedEdge.getParentBubble().getController().becomeExParent(movedEdge)
+            movedEdge.getParentBubble().controller().becomeExParent(movedEdge)
         );
     }
     if (isAbove) {
@@ -433,14 +440,14 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
         if (movedEdge.isGroupRelation()) {
             movedEdge.visitClosestChildRelations(function (relation) {
                 promises.push(
-                    relation.getController().addIdentification(
+                    relation.controller().addIdentification(
                         identification
                     )
                 );
             });
         } else {
             promises.push(
-                movedEdge.getController().addIdentification(
+                movedEdge.controller().addIdentification(
                     identification
                 )
             );
@@ -452,15 +459,16 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
             movedEdge.expand();
             movedEdge.visitClosestChildRelations(function (relationUi) {
                 promises.push(
-                    relationUi.getController().replaceParentVertex(
+                    relationUi.controller().replaceParentVertex(
                         otherEdge.getParentVertex()
                     )
                 );
             });
         } else {
             promises.push(
-                movedEdge.getController().replaceParentVertex(
-                    otherEdge.getParentVertex()
+                movedEdge.controller().replaceParentVertex(
+                    otherEdge.getParentVertex(),
+                    true
                 )
             );
         }
@@ -535,11 +543,11 @@ GraphElementController.prototype.remove = function (skipConfirmation) {
     Store.dispatch("setIsRemoveFlow", true);
 };
 
-GraphElementController.prototype.removeDo = async function () {
-    let selection = this.getModelArray().filter((selected) => {
-        return selected.getController().removeCanDo();
+GraphElementController.prototype.removeDo = async function (skipSelect) {
+    let graphElements = this.getModelArray().filter((selected) => {
+        return selected.controller().removeCanDo();
     });
-    if (selection.length === 0) {
+    if (graphElements.length === 0) {
         return Promise.resolve();
     }
     await this.isSingle() ?
@@ -547,10 +555,10 @@ GraphElementController.prototype.removeDo = async function () {
             this.model()
         ) :
         GraphElementService.removeCollection(
-            selection
+            graphElements
         );
 
-    let isCenterRemoved = selection.some((bubble) => {
+    let isCenterRemoved = graphElements.some((bubble) => {
         return bubble.isCenter;
     });
     if (isCenterRemoved) {
@@ -560,16 +568,26 @@ GraphElementController.prototype.removeDo = async function () {
         return;
     }
     let bubbleToSelect;
-    if (this.isSingle()) {
+    if (this.isSingle() && !skipSelect) {
         bubbleToSelect = this.model().getNextSibling();
         if (bubbleToSelect.isSameUri(this.model())) {
             bubbleToSelect = this.model().getParentFork();
         }
     }
-    selection.forEach(function (bubble) {
+    graphElements.forEach(function (bubble) {
         bubble.remove();
+        if (bubble.isVertex()) {
+            CurrentSubGraph.get().removeVertex(bubble);
+        } else if (bubble.isEdge()) {
+            CurrentSubGraph.get().removeEdge(bubble);
+        }
         bubble.getDuplicates().forEach((duplicate) => {
             duplicate.remove();
+            if (bubble.isVertex()) {
+                CurrentSubGraph.get().removeVertex(bubble);
+            } else if (bubble.isEdge()) {
+                CurrentSubGraph.get().removeEdge(bubble);
+            }
         });
     });
     if (bubbleToSelect) {

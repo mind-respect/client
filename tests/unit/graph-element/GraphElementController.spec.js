@@ -8,8 +8,7 @@ import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import Command from '@/Command'
 import AppController from '@/AppController'
 import GraphServiceMock from '../mock/GraphServiceMock'
-import SameLevelRelationsWithMoreThanOneCommonMetaScenario
-    from "../scenario/SameLevelRelationsWithMoreThanOneCommonMetaScenario";
+import SameLevelRelationsWithMoreThanOneCommonMetaScenario from "../scenario/SameLevelRelationsWithMoreThanOneCommonMetaScenario";
 
 describe('GraphElementController', () => {
     describe("removeDo", () => {
@@ -24,7 +23,7 @@ describe('GraphElementController', () => {
             expect(
                 Selection.getSingle().isSameBubble(b1)
             ).toBeFalsy();
-            await b2.getController().remove(true);
+            await b2.controller().remove(true);
             expect(
                 Selection.getSingle().isSameBubble(b1)
             ).toBeTruthy();
@@ -42,7 +41,7 @@ describe('GraphElementController', () => {
                 "original some relation"
             );
             await Promise.all(groupRelation.getClosestChildVertices().map((vertex) => {
-                return vertex.getController().removeDo();
+                return vertex.controller().removeDo();
             }));
             expect(
                 Selection.isSelected(centerBubble)
@@ -59,7 +58,7 @@ describe('GraphElementController', () => {
             expect(
                 Selection.isSelected(b1)
             ).toBeFalsy();
-            await r1.getController().removeDo();
+            await r1.controller().removeDo();
             expect(
                 Selection.isSelected(b1)
             ).toBeTruthy();
@@ -70,7 +69,7 @@ describe('GraphElementController', () => {
             let groupRelation = scenario.getPossessionGroupRelation();
             groupRelation.expand();
             groupRelation.selectTree();
-            await Selection.getController().removeDo();
+            await Selection.controller().removeDo();
             expect(
                 TestUtil.hasChildWithLabel(
                     center,
@@ -92,7 +91,7 @@ describe('GraphElementController', () => {
         expect(
             b1Fork.getModel().getLabel()
         ).toBe("potatoe");
-        b1Fork.getController().accept();
+        b1Fork.controller().accept();
         expect(
             b1Fork.getModel().getLabel()
         ).toBe("b1");
@@ -106,18 +105,18 @@ describe('GraphElementController', () => {
                 "r6"
             ).getNextBubble();
             expect(
-                b7.getController().collapseCanDo()
+                b7.controller().collapseCanDo()
             ).toBeFalsy();
             await scenario.expandBubble7(b7);
             expect(
-                b7.getController().collapseCanDo()
+                b7.controller().collapseCanDo()
             ).toBeTruthy();
         });
         it("shows the expand button to bubbles having hidden relations", async () => {
             let scenario = await new ThreeScenario();
             let b2 = scenario.getBubble2InTree();
             expect(
-                b2.getController().expandCanDo()
+                b2.controller().expandCanDo()
             ).toBeTruthy();
         });
         it("does not show the expand bubbles button when there are no descendants to expand", async () => {
@@ -127,7 +126,7 @@ describe('GraphElementController', () => {
                 b2
             );
             expect(
-                b2.getController().expandCanDo()
+                b2.controller().expandCanDo()
             ).toBeFalsy();
         });
         it("does not show the collapse button to bubbles having the hidden relations container", async () => {
@@ -137,7 +136,7 @@ describe('GraphElementController', () => {
                 b2.canExpand()
             ).toBeTruthy();
             expect(
-                b2.getController().collapseCanDo()
+                b2.controller().collapseCanDo()
             ).toBeFalsy();
             await scenario.expandBubble2(
                 b2
@@ -146,19 +145,19 @@ describe('GraphElementController', () => {
                 b2.canExpand()
             ).toBeFalsy();
             expect(
-                b2.getController().collapseCanDo()
+                b2.controller().collapseCanDo()
             ).toBeTruthy();
         });
         it("returns true when center bubble has child vertices that are expanded", async () => {
             let scenario = await new ThreeScenario();
             let b1 = scenario.getBubble1InTree();
             expect(
-                b1.getController().collapseCanDo()
+                b1.controller().collapseCanDo()
             ).toBeFalsy();
             let b2 = scenario.getBubble2InTree();
             await scenario.expandBubble2(b2);
             expect(
-                b1.getController().collapseCanDo()
+                b1.controller().collapseCanDo()
             ).toBeTruthy();
         });
         it("returns true when center vertex has an expanded group relation child", async () => {
@@ -171,11 +170,11 @@ describe('GraphElementController', () => {
             let groupRelation = scenario.getPossessionGroupRelation();
             groupRelation.collapse();
             expect(
-                centerBubble.getController().collapseCanDo()
+                centerBubble.controller().collapseCanDo()
             ).toBeFalsy();
             groupRelation.expand();
             expect(
-                centerBubble.getController().collapseCanDo()
+                centerBubble.controller().collapseCanDo()
             ).toBeTruthy();
         });
     });
@@ -188,7 +187,7 @@ describe('GraphElementController', () => {
                 Command.canUndo()
             ).toBeFalsy();
             let r1 = b2.getParentBubble();
-            await b2.getController().moveAbove(r1);
+            await b2.controller().moveAbove(r1);
             expect(
                 Command.canUndo()
             ).toBeFalsy();
@@ -204,7 +203,7 @@ describe('GraphElementController', () => {
             expect(
                 otherBubbleEdge.hasIdentifications()
             ).toBeFalsy();
-            await otherBubble.getController().moveAbove(
+            await otherBubble.controller().moveAbove(
                 groupRelationChild
             );
             expect(
@@ -225,7 +224,7 @@ describe('GraphElementController', () => {
                 )
             ).toBeTruthy();
             let vertex = relationUnderGroupRelation.getNextBubble();
-            await vertex.getController().moveAbove(
+            await vertex.controller().moveAbove(
                 scenario.getOtherRelationInTree().getNextBubble()
             );
             expect(
@@ -245,7 +244,7 @@ describe('GraphElementController', () => {
                 Command.canUndo()
             ).toBeFalsy();
             let r1 = b2.getParentBubble();
-            await b2.getController().moveBelow(r1);
+            await b2.controller().moveBelow(r1);
             expect(
                 Command.canUndo()
             ).toBeFalsy();
@@ -266,7 +265,7 @@ describe('GraphElementController', () => {
             expect(b73.getUpBubble().isSameBubble(
                 b72
             )).toBeTruthy();
-            await b72.getController().moveBelow(
+            await b72.controller().moveBelow(
                 b73.getParentBubble()
             );
             expect(
@@ -287,12 +286,18 @@ describe('GraphElementController', () => {
             let groupRelation = scenario.getPossessionGroupRelation();
             groupRelation.expand();
             let otherVertex = scenario.getOtherRelationInTree().getNextBubble();
-            let triple = await otherVertex.getController().addChild();
+            expect(
+                otherVertex.getParentVertex().getLabel()
+            ).toBe("me")
+            let triple = await otherVertex.controller().addChild();
             let deepVertex = triple.destination;
             expect(
                 deepVertex.getDownBubble().text()
             ).not.toBe("Possession");
-            await groupRelation.getController().moveBelow(
+            expect(
+                deepVertex.isVertex()
+            ).toBeTruthy();
+            await groupRelation.controller().moveBelow(
                 deepVertex
             );
             expect(
@@ -314,7 +319,7 @@ describe('GraphElementController', () => {
             GraphServiceMock.getForCentralBubbleUri(
                 scenario.getSubGraphForB3()
             );
-            await b2.getController().moveUnderParent(b3);
+            await b2.controller().moveUnderParent(b3);
             expect(
                 b2.getParentVertex().isSameBubble(
                     b1
@@ -347,7 +352,7 @@ describe('GraphElementController', () => {
                 )
             ).toBeTruthy();
             let vertex = relationUnderGroupRelation.getNextBubble();
-            await vertex.getController().moveUnderParent(
+            await vertex.controller().moveUnderParent(
                 scenario.getOtherRelationInTree().getNextBubble()
             );
             expect(
@@ -379,7 +384,7 @@ describe('GraphElementController', () => {
             expect(
                 otherBubble.isVertex()
             ).toBeTruthy();
-            await vertex.getController().moveUnderParent(
+            await vertex.controller().moveUnderParent(
                 otherBubble
             );
             expect(
@@ -405,7 +410,7 @@ describe('GraphElementController', () => {
                 "Possession"
             );
             var otherBubble = otherRelation.getNextBubble();
-            await otherBubble.getController().moveUnderParent(
+            await otherBubble.controller().moveUnderParent(
                 groupRelationUnderGroupRelation
             );
             expect(
@@ -428,7 +433,7 @@ describe('GraphElementController', () => {
                 "Creator"
             );
             let otherBubble = otherRelation.getNextBubble();
-            await otherBubble.getController().moveUnderParent(
+            await otherBubble.controller().moveUnderParent(
                 groupRelation
             );
             expect(
@@ -442,14 +447,14 @@ describe('GraphElementController', () => {
             let bubble1 = scenario.getBubble1InTree();
             let bubble2 = scenario.getBubble2InTree();
             expect(
-                bubble2.getController()._canMoveUnderParent(bubble1)
+                bubble2.controller()._canMoveUnderParent(bubble1)
             ).toBe(false);
         });
         it("return false if it's parent relation", async () => {
             let scenario = await new ThreeScenario();
             let bubble2 = scenario.getBubble2InTree();
             expect(
-                bubble2.getController()._canMoveUnderParent(bubble2.getParentBubble())
+                bubble2.controller()._canMoveUnderParent(bubble2.getParentBubble())
             ).toBe(false);
         });
     });
@@ -465,7 +470,7 @@ describe('GraphElementController', () => {
             expect(
                 b73.getDownBubble().getLabel()
             ).toBe("b74");
-            await b73.getController().moveUpOneStep();
+            await b73.controller().moveUpOneStep();
             expect(
                 b73.getDownBubble().getLabel()
             ).toBe("b72");
@@ -481,7 +486,7 @@ describe('GraphElementController', () => {
             expect(
                 b72.getUpBubble().getLabel()
             ).toBe("b71");
-            await b72.getController().moveDownOneStep();
+            await b72.controller().moveDownOneStep();
             expect(
                 b72.getUpBubble().getLabel()
             ).toBe("b73");
@@ -496,7 +501,7 @@ describe('GraphElementController', () => {
             expect(
                 book1.getDownBubble().getLabel()
             ).toBe("book 2");
-            await book1.getController().moveDownOneStep();
+            await book1.controller().moveDownOneStep();
             expect(
                 book1.getParentFork().isGroupRelation()
             ).toBeTruthy();
@@ -507,7 +512,7 @@ describe('GraphElementController', () => {
         it("keeps under a group relation", async () => {
             let scenario = await new GroupRelationsScenario();
             let possession = scenario.getPossessionGroupRelation();
-            await scenario.getOtherRelationInTree().getNextBubble().getController().moveAbove(possession);
+            await scenario.getOtherRelationInTree().getNextBubble().controller().moveAbove(possession);
             let book1 = possession.getNextBubble().getNextBubble();
             expect(
                 book1.getParentFork().getLabel()
@@ -515,7 +520,7 @@ describe('GraphElementController', () => {
             expect(
                 book1.getDownBubble().getLabel()
             ).toBe("book 2");
-            await book1.getController().moveUpOneStep();
+            await book1.controller().moveUpOneStep();
             expect(
                 book1.getParentFork().getLabel()
             ).toBe("Possession");
@@ -534,7 +539,7 @@ describe('GraphElementController', () => {
             expect(
                 otherVertex.getLabel()
             ).toBe("other bubble");
-            await otherVertex.getController().moveBelow(possession);
+            await otherVertex.controller().moveBelow(possession);
             otherVertex = possession.getDownBubble().getNextBubble();
             expect(
                 otherVertex.getLabel()
@@ -545,7 +550,7 @@ describe('GraphElementController', () => {
             expect(
                 otherVertex.getUpBubble().getLabel()
             ).toBe("Possession");
-            await otherVertex.getController().moveUpOneStep();
+            await otherVertex.controller().moveUpOneStep();
             expect(
                 otherVertex.getParentFork().getLabel()
             ).toBe("me");

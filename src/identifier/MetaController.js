@@ -68,6 +68,7 @@ MetaController.prototype.loadGraph = function () {
                 centerBubble.addChild(
                     child
                 );
+                CurrentSubGraph.get().add(child);
             } else {
                 vertex = new MetaGroupVertex(
                     vertex
@@ -85,6 +86,7 @@ MetaController.prototype.loadGraph = function () {
                         edgeBetweenGroupAndDestination.getUri()
                     );
                     vertex.addChild(grandChild);
+                    CurrentSubGraph.get().add(grandChild);
                     // api._setupMetaEdgeUi(edgeBetweenGroupAndDestinationUi);
                 });
                 if (vertex.getNumberOfChild() > 1) {

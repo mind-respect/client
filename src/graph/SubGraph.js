@@ -71,13 +71,10 @@ api.SubGraph.prototype.add = function (graphElement) {
         endVertex.parentBubble = graphElement;
         endVertex.parentVertex = graphElement.parentVertex;
         endVertex.direction = graphElement.direction;
-        this.add(
-            endVertex
-        );
+        this.addVertex(endVertex);
     } else if (graphElement.isVertex()) {
         this.addVertex(graphElement);
     }
-
     else if (graphElement.isGroupRelation()) {
         this.groupRelations.push(
             graphElement
@@ -86,9 +83,6 @@ api.SubGraph.prototype.add = function (graphElement) {
             child.direction = graphElement.direction;
             child.parentVertex = graphElement.parentVertex;
             child.parentBubble = graphElement;
-            if (child.isGroupRelation) {
-                return this.add(child);
-            }
             this.add(child);
         })
     }

@@ -150,12 +150,15 @@ api.Edge.prototype.setSourceVertex = function (sourceVertex) {
     this.sourceVertex = sourceVertex;
 };
 
-api.Edge.prototype.setSourceVertexOrDestinationIfInverse = function (vertex) {
+api.Edge.prototype.setParentVertex = function (vertex) {
     if (this.isInverse()) {
         this.setDestinationVertex(vertex);
+        this.getSourceVertex().parentVertex = vertex;
     } else {
         this.setSourceVertex(vertex);
+        this.getDestinationVertex().parentVertex = vertex;
     }
+    this.parentVertex = vertex;
 };
 
 api.Edge.prototype.setDestinationVertex = function (destinationVertex) {

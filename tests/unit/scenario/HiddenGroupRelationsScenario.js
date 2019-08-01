@@ -34,7 +34,7 @@ HiddenGroupRelationsScenario.prototype.expandBubble2 = function (bubble2) {
     let shirt2 = Scenario.vertexWithLabelInGraph("shirt2", b2Graph);
     multiple[shirt2.getUri()] = Scenario.getTestData("hiddenGroupRelations.shirt2Graph");
     GraphServiceMock.getForCentralBubbleUriMultiple(multiple);
-    return bubble2.getController().expand();
+    return bubble2.controller().expand();
 };
 HiddenGroupRelationsScenario.prototype.getB2GraphWhenConnectedToDistantBubble = function () {
     return Scenario.getTestData(

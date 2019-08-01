@@ -212,7 +212,6 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
         children = this.rightBubbles;
         child.direction = this.direction;
     }
-    CurrentSubGraph.get().add(child);
     if (index === undefined) {
         children.push(child)
     } else {
@@ -325,15 +324,18 @@ Vertex.prototype.remove = function () {
     this.getParentBubble().remove();
 };
 
-Vertex.prototype.removeChild = function (child, isTemporary, isPreDisplay) {
+Vertex.prototype.removeChild = function (child, isTemporary) {
     let childrenArray = this.isCenter && child.isToTheLeft() ? this.leftBubbles : this.rightBubbles;
+    let removedChild;
     let l = childrenArray.length;
     while (l--) {
         if (childrenArray[l].getId() === child.getId()) {
-            childrenArray.splice(l, 1);
+            removedChild = childrenArray.splice(l, 1);
         }
     }
-    this.decrementNumberOfConnectedEdges();
+    if (removedChild && child.isEdge()) {
+        this.decrementNumberOfConnectedEdges();
+    }
 };
 
 api.getWhenEmptyLabel = function () {

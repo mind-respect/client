@@ -100,7 +100,7 @@
         },
         methods: {
             save: function () {
-                this.bubble.getController().noteDo(this.note).then(() => {
+                this.bubble.controller().noteDo(this.note).then(() => {
                     this.dialog = false;
                 })
             }

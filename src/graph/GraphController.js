@@ -14,11 +14,11 @@ api.expandAllCanDo = function () {
     if (!center) {
         return false;
     }
-    return center.getController().expandCanDo();
+    return center.controller().expandCanDo();
 };
 
 api.expandAll = function () {
-    CurrentSubGraph.get().center.getController().expand();
+    CurrentSubGraph.get().center.controller().expand();
 };
 
 api.compareCanDo = function () {

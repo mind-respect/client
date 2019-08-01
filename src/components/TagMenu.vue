@@ -190,13 +190,13 @@
                 return identifier;
             },
             identify: function (identifier) {
-                return this.selected.getController().addIdentification(
+                return this.selected.controller().addIdentification(
                     identifier
                 );
             },
             removeIdentifier: function ($event, identifier) {
                 $event.preventDefault();
-                this.selected.getController().removeIdentifier(identifier);
+                this.selected.controller().removeIdentifier(identifier);
             },
             defineUrls: function () {
                 return Promise.all(

@@ -13,7 +13,7 @@ describe("SubGraphController", () => {
         let b3 = scenario.getBubble3InTree();
         await scenario.expandBubble3(b3);
         let vertexUnderB2 = b2.getNextBubble().getNextBubble();
-        await vertexUnderB2.getController().moveUnderParent(b3);
+        await vertexUnderB2.controller().moveUnderParent(b3);
         let r3 = b3.getNextBubble();
         let b4 = r3.getNextBubble();
         expect(

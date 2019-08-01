@@ -35,11 +35,11 @@ describe('ChildNotice', () => {
     xit("refreshes number of connected relations", function () {
         var b1 = new Scenarios.threeBubblesGraph().getBubble1InTree();
         var newVertex;
-        b1.getController().addChild().then(function (triple) {
+        b1.controller().addChild().then(function (triple) {
             newVertex = triple.destinationVertex();
-            return newVertex.getController().addChild();
+            return newVertex.controller().addChild();
         }).then(function () {
-            return newVertex.getController().addChild();
+            return newVertex.controller().addChild();
         }).then(function () {
             newVertex.collapse();
             newVertex.getHiddenRelationsContainer().getHtml();

@@ -72,7 +72,7 @@
                     return;
                 }
                 this.loading = this.bubble.loading = true;
-                this.bubble.getController().expand().then(() => {
+                this.bubble.controller().expand().then(() => {
                     Vue.nextTick(() => {
                         this.loading = this.bubble.loading = false;
                     });

@@ -536,7 +536,7 @@
                 this.bubble.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
-                this.bubble.getController().setLabel(labelHtml.innerHTML);
+                this.bubble.controller().setLabel(labelHtml.innerHTML);
                 if (this.isCenter) {
                     document.title = this.bubble.getTextOrDefault() + " | MindRespect";
                 }
@@ -635,7 +635,7 @@
                 if (dragged === null) {
                     return;
                 }
-                dragged.getController().moveUnderParent(
+                dragged.controller().moveUnderParent(
                     this.bubble,
                     forceLeft
                 );
@@ -654,7 +654,7 @@
                 //     console.log("drop denied")
                 //     return;
                 // }")
-                return dragged.getController()[method](edge);
+                return dragged.controller()[method](edge);
             },
             topDrop: function (event) {
                 event.preventDefault();

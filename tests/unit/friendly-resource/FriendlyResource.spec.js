@@ -148,14 +148,14 @@ describe("FriendlyResource", () => {
             let scenario = await new ThreeScenario();
             let b1 = scenario.getBubble1InTree();
             let b2 = scenario.getBubble2InTree();
-            let triple = await b1.getController().addChild();
+            let triple = await b1.controller().addChild();
             let underB2 = triple.destination;
             await scenario.expandBubble2(b2);
-            await b2.getController().addChild();
-            triple = await b2.getController().addChild();
+            await b2.controller().addChild();
+            triple = await b2.controller().addChild();
             let bottomBubbleUnderB2 = triple.destination;
-            await underB2.getController().addChild();
-            await underB2.getController().addChild();
+            await underB2.controller().addChild();
+            await underB2.controller().addChild();
             let topBubbleUnderB2 = underB2.getNextBubble().getNextBubble();
             let bubbleAbove = topBubbleUnderB2.getUpBubble();
             expect(
@@ -198,7 +198,7 @@ describe("FriendlyResource", () => {
             let b2 = scenario.getBubble2InTree();
             await scenario.expandBubble2(b2);
             let childVertex = b2.getNextBubble().getNextBubble();
-            await childVertex.getController().addChild();
+            await childVertex.controller().addChild();
             let grandChild = childVertex.getNextBubble().getNextBubble();
             expect(
                 grandChild.getDownBubble().getId()
@@ -210,7 +210,7 @@ describe("FriendlyResource", () => {
             let b2 = scenario.getBubble2InTree();
             await scenario.expandBubble2(b2);
             let child = b2.getNextBubble().getDownBubble().getNextBubble();
-            await child.getController().addChild();
+            await child.controller().addChild();
             expect(
                 child.getDownBubble().getId()
             ).toBe(child.getId());
@@ -278,7 +278,7 @@ describe("FriendlyResource", () => {
         expect(
             idea.hasImages()
         ).toBeTruthy();
-        idea.getController().expand();
+        idea.controller().expand();
         var ideaFor1 = TestUtils.getChildWithLabel(idea, "idea for 1");
         var ideaFor2 = TestUtils.getChildWithLabel(idea, "idea for 2");
         expect(
@@ -356,7 +356,7 @@ describe("FriendlyResource", () => {
                 idea.hasImages()
             ).toBeTruthy();
             idea.getGroupRelation().getIdentification().makeGeneric();
-            otherRelation.getController().addIdentification(
+            otherRelation.controller().addIdentification(
                 idea.getGroupRelation().getIdentification()
             );
             expect(
@@ -383,7 +383,7 @@ describe("FriendlyResource", () => {
                     "Possession"
                 )
             ).toBeFalsy();
-            await groupRelation.getController().moveUnderParent(otherRelation);
+            await groupRelation.controller().moveUnderParent(otherRelation);
             otherRelation = TestUtil.getChildWithLabel(
                 center,
                 "other relation"
@@ -411,7 +411,7 @@ describe("FriendlyResource", () => {
             expect(
                 deepChild.isToTheLeft()
             ).toBeFalsy();
-            await deepChild.getController().moveAbove(b3);
+            await deepChild.controller().moveAbove(b3);
             expect(
                 deepChild.isToTheLeft()
             ).toBeTruthy();
@@ -431,7 +431,7 @@ describe("FriendlyResource", () => {
             expect(
                 deepChild.getParentBubble().isInverse()
             ).toBeFalsy();
-            await deepChild.getController().moveAbove(b3);
+            await deepChild.controller().moveAbove(b3);
             expect(
                 deepChild.getParentBubble().isInverse()
             ).toBeFalsy();
@@ -449,7 +449,7 @@ describe("FriendlyResource", () => {
             expect(
                 b3.isToTheLeft()
             ).toBeTruthy();
-            await b2.getController().moveAbove(b3);
+            await b2.controller().moveAbove(b3);
             expect(
                 center.getNumberOfChild()
             ).toBe(numberOfChild);
@@ -496,7 +496,7 @@ describe("FriendlyResource", () => {
             expect(
                 b73.getDownBubble().getLabel()
             ).toBe("b74");
-            await b73.getController().moveAbove(
+            await b73.controller().moveAbove(
                 b72
             );
             await scenario.nextTickPromise();
@@ -535,7 +535,7 @@ describe("FriendlyResource", () => {
             expect(
                 b72.getDownBubble().text()
             ).not.toBe("b74");
-            await b72.getController().moveBelow(
+            await b72.controller().moveBelow(
                 b73
             );
             expect(
@@ -550,7 +550,7 @@ describe("FriendlyResource", () => {
             let otherBubble = scenario.getOtherRelationInTree().getNextBubble();
             let groupRelation = scenario.getPossessionGroupRelation();
             groupRelation.expand();
-            await otherBubble.getController().moveAbove(groupRelation);
+            await otherBubble.controller().moveAbove(groupRelation);
             let grandParent = otherBubble.getParentBubble().getParentBubble();
             expect(
                 grandParent.isSameUri(
@@ -644,7 +644,7 @@ describe("FriendlyResource", () => {
         it("selects above sibling when available after it's removed", async () => {
             let scenario = await new ThreeScenario();
             let bubble1 = scenario.getBubble1InTree();
-            let triple = await bubble1.getController().addChild();
+            let triple = await bubble1.controller().addChild();
             let newVertex = triple.destination;
             expect(
                 newVertex.getUpBubble().text()
@@ -655,7 +655,7 @@ describe("FriendlyResource", () => {
                 Selection.isSelected(bubble2)
             ).toBeFalsy();
             newVertex.setLabel("new vertex");
-            await newVertex.getController().removeDo();
+            await newVertex.controller().removeDo();
             expect(
                 Selection.getSingle().getLabel()
             ).toBe("b2");
@@ -666,7 +666,7 @@ describe("FriendlyResource", () => {
         it("selects bubble under when available after it's removed", async () => {
             let scenario = await new ThreeScenario();
             let bubble1 = scenario.getBubble1InTree();
-            let triple = await bubble1.getController().addChild();
+            let triple = await bubble1.controller().addChild();
             let newVertex = triple.destination;
             expect(
                 newVertex.getUpBubble().getLabel()
@@ -676,7 +676,7 @@ describe("FriendlyResource", () => {
             expect(
                 Selection.isSelected(newVertex)
             ).toBeFalsy();
-            await bubble2.getController().removeDo();
+            await bubble2.controller().removeDo();
             expect(
                 Selection.isSelected(newVertex)
             ).toBeTruthy();
@@ -689,7 +689,7 @@ describe("FriendlyResource", () => {
             expect(
                 Selection.isSelected(bubble1)
             ).toBeFalsy();
-            await bubble2.getController().removeDo();
+            await bubble2.controller().removeDo();
             expect(
                 Selection.isSelected(bubble1)
             ).toBeTruthy();
@@ -698,18 +698,18 @@ describe("FriendlyResource", () => {
             let scenario = await new ThreeScenario();
             let b1 = scenario.getBubble1InTree();
             let b2 = scenario.getBubble2InTree();
-            let triple = await b1.getController().addChild();
+            let triple = await b1.controller().addChild();
             let underB2 = triple.destination;
             await scenario.expandBubble2(b2);
-            await b2.getController().addChild();
-            await b2.getController().addChild();
-            await underB2.getController().addChild();
+            await b2.controller().addChild();
+            await b2.controller().addChild();
+            await underB2.controller().addChild();
             let childOfBubbleUnderB2 = underB2.getNextBubble().getNextBubble();
             Selection.setToSingle(childOfBubbleUnderB2);
             expect(
                 Selection.isSelected(underB2)
             ).toBeFalsy();
-            await childOfBubbleUnderB2.getController().removeDo();
+            await childOfBubbleUnderB2.controller().removeDo();
             expect(
                 Selection.isSelected(underB2)
             ).toBeTruthy();
@@ -732,7 +732,7 @@ describe("FriendlyResource", () => {
             expect(
                 Selection.isSelected(vertexUnder)
             ).toBeFalsy();
-            await vertexAbove.getController().removeDo();
+            await vertexAbove.controller().removeDo();
             expect(
                 Selection.isSelected(vertexUnder)
             ).toBeTruthy();
@@ -757,7 +757,7 @@ describe("FriendlyResource", () => {
             groupRelation.expand();
             let center = scenario.getCenterInTree();
             let otherBubble = TestUtil.getChildWithLabel(center, "other relation").getNextBubble();
-            await otherBubble.getController().moveBelow(groupRelation);
+            await otherBubble.controller().moveBelow(groupRelation);
             expect(
                 otherBubble.getUpBubble().isGroupRelation()
             ).toBeTruthy();

@@ -155,7 +155,7 @@
         },
         methods: {
             remove: async function () {
-                await Selection.getController().removeDo();
+                await Selection.controller().removeDo();
                 this.removeDialog = false;
             }
         }

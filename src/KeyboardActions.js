@@ -154,7 +154,7 @@ function executeFeature(feature, event) {
     if (feature.isForAppController) {
         controller = GraphDisplayer.getAppController();
     } else {
-        controller = Selection.getController();
+        controller = Selection.controller();
     }
     if (controller[feature.action] === undefined) {
         return;

@@ -71,7 +71,7 @@ describe("GroupRelation", function () {
         let scenario = await new ThreeScenario();
         let bubble1 = scenario.getCenterBubbleInTree();
         let r1 = bubble1.getNextBubble();
-        await r1.getController().addChild();
+        await r1.controller().addChild();
         let groupRelation = bubble1.getNextBubble();
         expect(
             groupRelation.isGroupRelation()
@@ -176,7 +176,7 @@ describe("GroupRelation", function () {
             TestUtil.generateVertexUri(),
             "dummy identification"
         );
-        await otherRelation.getController().addIdentification(dummyIdentifier);
+        await otherRelation.controller().addIdentification(dummyIdentifier);
         expect(
             centerBubble.getNumberOfChild()
         ).toBe(4);
@@ -184,7 +184,7 @@ describe("GroupRelation", function () {
             possessionGroupRelation.getNumberOfChild()
         ).toBe(3);
 
-        await otherRelation.getController().addIdentification(
+        await otherRelation.controller().addIdentification(
             possessionGroupRelation.getIdentification()
         );
         expect(
@@ -218,8 +218,8 @@ describe("GroupRelation", function () {
             TestUtil.generateVertexUri(),
             "dummy identification"
         );
-        await otherRelation.getController().addIdentification(dummyIdentifier);
-        await otherRelation.getController().removeIdentifier(dummyIdentifier);
+        await otherRelation.controller().addIdentification(dummyIdentifier);
+        await otherRelation.controller().removeIdentifier(dummyIdentifier);
         expect(
             centerBubble.getNumberOfChild()
         ).toBe(4);
@@ -230,7 +230,7 @@ describe("GroupRelation", function () {
             possessionGroupRelation,
             "Possession of book 1"
         );
-        possessionRelation.getController().removeIdentifier(
+        possessionRelation.controller().removeIdentifier(
             possessionGroupRelation.getIdentification()
         );
         expect(
@@ -300,12 +300,12 @@ describe("GroupRelation", function () {
         relation1.model().addIdentification(
             someIdentification
         );
-        await relation1.getController().addIdentification(someIdentification);
+        await relation1.controller().addIdentification(someIdentification);
         let relation2 = TestUtil.getChildWithLabel(centerBubble, "r2");
         relation2.model().addIdentification(
             someIdentification
         );
-        await relation2.getController().addIdentification(someIdentification);
+        await relation2.controller().addIdentification(someIdentification);
         expect(TestUtil.hasChildWithLabel(
             centerBubble,
             "some identification"
@@ -349,7 +349,7 @@ describe("GroupRelation", function () {
         await relation1.model().addIdentification(
             identificationToRelation2.makeSameAs()
         );
-        await relation1.getController().addIdentification(identificationToRelation2);
+        await relation1.controller().addIdentification(identificationToRelation2);
         r2ChildOfCenterBubble = TestUtil.getChildWithLabel(centerBubble, "r2");
         expect(
             r2ChildOfCenterBubble.isGroupRelation()
@@ -382,7 +382,7 @@ describe("GroupRelation", function () {
         );
         let relation1 = TestUtil.getChildWithLabel(centerBubble, "r1");
         identificationToRelation2.makeSameAs();
-        await relation1.getController().addIdentification(
+        await relation1.controller().addIdentification(
             identificationToRelation2
         );
         r2ChildOfCenterBubble = TestUtil.getChildWithLabel(centerBubble, "r2");
@@ -400,7 +400,7 @@ describe("GroupRelation", function () {
     xit("sets the group relation label and comment correctly when identifying a relation to a new relation that exists at the same level", async () => {
         let scenario = await new ThreeScenario();
         var centerBubble = scenario.getBubble1InTree();
-        await centerBubble.getController().addChild();
+        await centerBubble.controller().addChild();
         let newRelation = TestUtil.getChildWithLabel(centerBubble, "");
         newRelation.setText("new relation");
         newRelation.getLabel().blur();
@@ -412,7 +412,7 @@ describe("GroupRelation", function () {
         relation1.model().addIdentification(
             identificationToNewRelation
         );
-        await relation1.getController().addIdentification(identificationToNewRelation);
+        await relation1.controller().addIdentification(identificationToNewRelation);
         expect(
             TestUtil.hasChildWithLabel(
                 centerBubble,
@@ -439,7 +439,7 @@ describe("GroupRelation", function () {
         expect(
             groupRelation.getNumberOfChild()
         ).toBe(3);
-        await groupRelation.getController().addChild();
+        await groupRelation.controller().addChild();
         expect(
             groupRelation.getNumberOfChild()
         ).toBe(4);
@@ -501,7 +501,7 @@ describe("GroupRelation", function () {
         let eventBubble = scenario.getEventBubbleInTree();
         let metaRelation = eventBubble.getNextBubble();
         metaRelation.remove();
-        metaRelation.getController().removeIdentifier(metaRelation.model())
+        metaRelation.controller().removeIdentifier(metaRelation.model())
         expect(
             true
         ).toBeTruthy();

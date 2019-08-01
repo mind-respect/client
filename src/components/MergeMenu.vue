@@ -82,12 +82,12 @@
                 });
             },
             selectSearchResult: function () {
-                this.selected.getController().convertToDistantBubbleWithUri(
+                this.selected.controller().convertToDistantBubbleWithUri(
                     this.selectedSearchResult.uri
                 );
             },
             filter: function (item, searchText, itemText) {
-                if (!this.selected.getController().convertToDistantBubbleWithUriCanDo(item.uri)) {
+                if (!this.selected.controller().convertToDistantBubbleWithUriCanDo(item.uri)) {
                     return false;
                 }
                 return itemText.toLowerCase().indexOf(searchText.toLowerCase()) > -1;

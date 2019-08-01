@@ -105,13 +105,13 @@ api.isEmpty = function () {
     return 0 === api.getNbSelected();
 };
 
-api.getController = function () {
+api.controller = function () {
     let nbSelectedGraphElements = api.getNbSelected();
     let currentController;
     if (0 === nbSelectedGraphElements) {
         currentController = GraphDisplayer.getGraphMenuHandler();
     } else if (1 === nbSelectedGraphElements) {
-        currentController = api.getSingle().getController();
+        currentController = api.getSingle().controller();
     } else {
         let anyElement = api.getSingle();
         let anyElementType = anyElement.getGraphElementType();
