@@ -10,6 +10,7 @@ import GraphElementServiceMock from './GraphElementServiceMock'
 import TagServiceMock from './TagServiceMock'
 import UserServiceMock from './UserServiceMock'
 import EdgeServiceMock from './EdgeServiceMock'
+import FriendlyResource from '@/friendly-resource/FriendlyResource'
 
 const crypto = require('crypto');
 
@@ -67,6 +68,9 @@ api.applyDefault = function () {
                 }
             }
         }
+    });
+    jest.spyOn(FriendlyResource.FriendlyResource.prototype, "focus").mockImplementation((event) => {
+        //do nothing
     });
     api.spies["UserService"] = UserServiceMock.applyDefault();
     api.spies["VertexService"] = VertexServiceMock.applyDefault();

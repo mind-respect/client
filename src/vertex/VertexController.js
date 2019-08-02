@@ -54,7 +54,8 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
             GraphElementService.changeChildrenIndex(
                 this.model()
             );
-            Store.dispatch("redraw");
+            triple.destination.focus();
+            //would need to redraw but focus hides drawing
         });
         if (ShareLevel.PRIVATE === this.model().model().getShareLevel()) {
             triple.destination.setShareLevel(ShareLevel.PRIVATE);

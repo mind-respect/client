@@ -60,9 +60,8 @@ EdgeController.prototype.addChild = async function () {
                 this.model().getParentVertex()
             );
             Selection.setToSingle(triple.destination);
-            setTimeout(function () {
-                Store.dispatch("redraw");
-            }, 300)
+            triple.destination.focus();
+            //would need to redraw but focus hides drawing
         });
         return triple;
     });
