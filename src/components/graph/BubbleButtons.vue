@@ -92,7 +92,7 @@
                         ctrlShortcut: "P"
                     },
                     {
-                        icon: "lock_open",
+                        icon: "public",
                         action: "makePublic",
                         ctrlShortcut: "P"
                     },

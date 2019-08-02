@@ -4,6 +4,7 @@
 
 import GraphElement from '@/graph-element/GraphElement'
 import Icon from '@/Icon'
+import ShareLevel from '@/vertex/ShareLevel'
 import DateUtil from '@/DateUtil'
 import IdUri from '@/IdUri'
 
@@ -48,6 +49,17 @@ CenterGraphElement.prototype.getNumberOfVisits = function () {
 CenterGraphElement.prototype.getLastCenterDate = function () {
     return new Date(this.centerGraphElementServerFormat.lastCenterDate);
 };
+
+CenterGraphElement.prototype.getShareLevel = function () {
+    return this.centerGraphElementServerFormat.shareLevel;
+};
+
+CenterGraphElement.prototype.getShareIcon = function () {
+    return ShareLevel.getIcon(
+        this.getShareLevel()
+    );
+};
+
 CenterGraphElement.prototype.getContext = function () {
     return this.centerGraphElementServerFormat.context;
 };
@@ -72,7 +84,7 @@ CenterGraphElement.prototype.getIcon = function () {
     return Icon.getForUri(this.getUri());
 };
 
-CenterGraphElement.prototype.getGraphElementType = function(){
+CenterGraphElement.prototype.getGraphElementType = function () {
     return IdUri.getGraphElementTypeFromUri(this.getUri())
 };
 

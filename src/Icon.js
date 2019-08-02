@@ -35,4 +35,5 @@ Icon.getForGraphElementType = function (graphElementType) {
             return "panorama_fish_eye";
     }
 };
+
 export default Icon;

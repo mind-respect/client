@@ -19,14 +19,8 @@
         <v-icon small :color="color" v-if="!bubble.isMeta() && hasIdentifications">
             label
         </v-icon>
-        <v-icon small :color="color" v-if="bubble.isVertex() && bubble.isPrivate()">
-            lock
-        </v-icon>
-        <v-icon small :color="color" v-if="bubble.isVertex() && bubble.isPublic()">
-            public
-        </v-icon>
-        <v-icon small :color="color" v-if="bubble.isVertex() && bubble.isFriendsOnly()">
-            people
+        <v-icon small :color="color" v-if="bubble.isVertex()">
+            {{shareIcon}}
         </v-icon>
         <small v-if="bubble.isVertex() && bubble.getNbDuplicates() > 0"
                class="body-2 font-weight-bold" style="color:#1A237E;">
@@ -36,6 +30,8 @@
 </template>
 
 <script>
+    import ShareLevel from '@/vertex/ShareLevel'
+
     export default {
         name: "InLabelButtons",
         props: ['bubble', 'isCenter', 'isLeft'],
@@ -53,6 +49,9 @@
             },
             hasComment: function () {
                 return this.bubble.hasComment();
+            },
+            shareIcon: function () {
+                return ShareLevel.getIcon(this.bubble.getShareLevel());
             }
         }
     }
@@ -64,7 +63,7 @@
     }
 
     .in-label-buttons-edge {
-        margin-top:13px;
+        margin-top: 13px;
     }
 
     .in-label-buttons-left {

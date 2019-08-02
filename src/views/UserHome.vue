@@ -70,7 +70,8 @@
                     }">
                         <v-card-text class="pt-0">
                             <v-tooltip v-if="isOwner" left>
-                                <v-btn icon color="third" fab @click="createCenterVertex()" slot="activator" dark top absolute right class="mr-4" style="z-index:0;">
+                                <v-btn icon color="third" fab @click="createCenterVertex()" slot="activator" dark top
+                                       absolute right class="mr-4" style="z-index:0;">
                                     <v-icon large>add</v-icon>
                                 </v-btn>
                                 <span>{{$t('userhome:createInfo')}}</span>
@@ -93,8 +94,12 @@
                                             <v-list-tile @click="go($event, center.uri().url())">
                                                 <v-list-tile-content>
                                                     <v-list-tile-title class="subheading font-weight-bold">
-                                                        <v-icon class="mr-2" color="secondary" v-if="center.showIcon()">
+                                                        <v-icon class="mr-2" color="secondary" v-if="center.showIcon()"
+                                                                small>
                                                             {{center.getIcon()}}
+                                                        </v-icon>
+                                                        <v-icon color="secondary" small>
+                                                            {{center.getShareIcon()}}
                                                         </v-icon>
                                                         {{center.getLabel()}}
                                                         <small class="grey--text font-weight-normal font-italic mr-1 right"
