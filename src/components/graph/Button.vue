@@ -63,7 +63,7 @@
             contentClass: function () {
                 if (this.isInSideMenu) {
                     let contentClass = "side-button-tooltip ";
-                    contentClass += this.$store.state.isSideMenuCollapsed || !Selection.isSingle() ?
+                    contentClass += this.$store.state.isSideMenuCollapsed ?
                         "side-button-collapsed-margin" :
                         "side-button-expanded-margin";
                     return contentClass;

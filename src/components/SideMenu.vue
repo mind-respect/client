@@ -12,7 +12,7 @@
             <v-navigation-drawer
                     :mini-variant="$store.state.isSideMenuCollapsed"
                     mini-variant-width="50"
-                    :width="menuWidth"
+                    width="340"
             >
                 <v-card class="" flat>
                     <v-btn @click="expand" icon v-if="$store.state.isSideMenuCollapsed" class="mt-4">
@@ -111,11 +111,11 @@
             return {
                 Selection: Selection,
                 tabMenu: null,
-                isStretched: false,
                 items: [
                     {title: 'Home', icon: 'dashboard'},
                     {title: 'About', icon: 'question_answer'}
-                ]
+                ],
+                mainWidth: SideMenu.EXPANDED_WIDTH
             }
         },
         computed: {
@@ -134,17 +134,11 @@
             mergeCanDo: function () {
                 return Selection.isSingle() && Selection.getSingle().controller().mergeCanDo();
             },
-            menuWidth: function () {
-                return this.isStretched ? 340 : 340;
-            },
-            mainWidth: function () {
-                return this.isStretched ? SideMenu.EXPANDED_WIDTH : SideMenu.EXPANDED_WIDTH;
-            },
             mainNavMiniWidth: function () {
                 if (this.$vuetify.breakpoint.mdAndDown) {
                     return 0;
                 }
-                return Selection.isSingle() ? SideMenu.MINI_WIDTH : 60;
+                return SideMenu.MINI_WIDTH;
             }
         },
         methods: {
