@@ -8,6 +8,7 @@ import TestUtil from '../util/TestUtil'
 import Identification from '@/identifier/Identification'
 import IdUri from '@/IdUri'
 import CreationDateScenario from "../scenario/CreationDateScenario";
+import ConvertVertexToGroupRelationScenario from "../scenario/ConvertVertexToGroupRelationScenario";
 
 describe("GroupRelation", function () {
     // scenario = new Scenarios.GraphWithSimilarRelationsScenario();
@@ -506,4 +507,33 @@ describe("GroupRelation", function () {
             true
         ).toBeTruthy();
     });
+
+    describe("removeChild", () => {
+        it("sets remaining relation having empty label with removed group relation's label", async () => {
+            let scenario = await new ConvertVertexToGroupRelationScenario();
+            let b2 = await scenario.getExpandedB2();
+            await b2.controller().convertToGroupRelation();
+            let center = scenario.getCenterInTree();
+            b2 = TestUtil.getChildWithLabel(
+                center,
+                "b2"
+            );
+            b2.removeChild(b2.getNextBubble());
+            expect(
+                b2.getNextBubble().getDownBubble().getLabel()
+            ).toBe("");
+            b2.removeChild(b2.getNextBubble());
+            expect(TestUtil.hasChildWithLabel(
+                center,
+                "b2"
+            )).toBeTruthy();
+            b2 = TestUtil.getChildWithLabel(
+                center,
+                "b2"
+            );
+            expect(
+                b2.isEdge()
+            ).toBeTruthy();
+        })
+    })
 });
