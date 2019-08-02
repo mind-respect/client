@@ -45,13 +45,6 @@
                             {{$t('userhome:toGrid')}}
                         </v-tooltip>
                         <v-spacer></v-spacer>
-                        <v-tooltip v-if="isOwner" left>
-                            <v-btn icon float color="third" fab @click="createCenterVertex()" slot="activator" dark>
-                                <v-icon large>add</v-icon>
-                            </v-btn>
-                            <span>{{$t('userhome:createInfo')}}</span>
-                        </v-tooltip>
-
                         <v-btn color="secondary" v-if="!isOwner && !isWaitingFriendship && !isConfirmedFriend" float
                                @click="addFriend()">
                             <v-icon class="mr-2">
@@ -76,6 +69,12 @@
                         'vh-center': !loaded
                     }">
                         <v-card-text class="pt-0">
+                            <v-tooltip v-if="isOwner" left>
+                                <v-btn icon color="third" fab @click="createCenterVertex()" slot="activator" dark top absolute right class="mr-4" style="z-index:0;">
+                                    <v-icon large>add</v-icon>
+                                </v-btn>
+                                <span>{{$t('userhome:createInfo')}}</span>
+                            </v-tooltip>
                             <v-layout row wrap v-if="!loaded">
                                 <v-flex xs12 class="vh-center">
                                     <v-progress-circular size="64" indeterminate color="third"></v-progress-circular>

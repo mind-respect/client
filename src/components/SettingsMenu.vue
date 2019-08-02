@@ -26,7 +26,7 @@
                         </v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile v-if="$store.state.user && isGraphRoute && $vuetify.breakpoint.mdAndDown" @click="createVertex">
+                <v-list-tile v-if="$store.state.user && $vuetify.breakpoint.mdAndDown" @click="createVertex">
                     <v-list-tile-action>
                         <v-icon>add</v-icon>
                     </v-list-tile-action>

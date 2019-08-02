@@ -133,6 +133,9 @@
                 Selection.setToSingle(this.center);
                 await this.$nextTick();
                 Scroll.goToGraphElement(this.center);
+                if(center.getNumberOfChild() === 0 && center.isLabelEmpty()){
+                    center.focus();
+                }
             }).catch((error) => {
                 console.error(error);
                 this.$router.push("/")

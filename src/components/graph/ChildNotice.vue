@@ -21,7 +21,7 @@
                         :content-class="tooltipContentClass"
                 >
                     <div slot="activator" class="vh-center" style="height:100%;">
-                        <v-icon large color="secondary" class="ma-0 pa-0">{{icon}}</v-icon>
+                        <v-icon color="secondary" class="ma-0 pa-0">unfold_more</v-icon>
                     </div>
                     <div :class="{
                         'reverse': isLeft
@@ -57,14 +57,12 @@
                 loading: false,
                 tooltipKey: UiUtils.isMacintosh() ? "tooltipForMac" : "tooltip",
                 isLeft: null,
-                nbChild: null,
-                icon: null
+                nbChild: null
             }
         },
         mounted: function () {
             this.isLeft = this.bubble.isToTheLeft();
             this.tooltipContentClass = this.isLeft ? "mr-3" : "ml-2";
-            this.icon = this.isLeft ? "arrow_left" : "arrow_right";
             this.nbChild = this.$store.state.isViewOnly && this.bubble.isVertex() ? this.bubble.getNbPublicNeighbors() - 1 : this.bubble.getNumberOfChild();
             if (this.nbChild > 9) {
                 this.nbChild = "9+";
