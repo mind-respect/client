@@ -72,9 +72,6 @@ GroupRelation.prototype.removeChild = function (child, isTemporary) {
         }
     }
     if (!isTemporary) {
-        if (this.children.length === 0) {
-            this.getParentBubble().removeChild(this);
-        }
         if (this.children.length === 1) {
             let parentBubble = this.getParentBubble();
             let child = this.getNextChildren()[0];
@@ -82,6 +79,12 @@ GroupRelation.prototype.removeChild = function (child, isTemporary) {
                 this,
                 child
             );
+            if(child.isLabelEmpty()){
+                child.controller().setLabel(this.getLabel())
+            }
+        }
+        if (this.children.length === 0) {
+            this.getParentBubble().removeChild(this);
         }
     }
 };
