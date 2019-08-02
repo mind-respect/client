@@ -63,6 +63,11 @@ CenterGraphElement.prototype.getNbReferences = function () {
 CenterGraphElement.prototype.lastVisit = function () {
     return DateUtil.fromNow(this.getLastCenterDate());
 };
+
+CenterGraphElement.prototype.showIcon = function () {
+    return !IdUri.isVertexUri(this.getUri())
+};
+
 CenterGraphElement.prototype.getIcon = function () {
     return Icon.getForUri(this.getUri());
 };

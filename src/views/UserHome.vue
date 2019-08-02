@@ -94,7 +94,7 @@
                                             <v-list-tile @click="go($event, center.uri().url())">
                                                 <v-list-tile-content>
                                                     <v-list-tile-title class="subheading font-weight-bold">
-                                                        <v-icon class="mr-2" color="secondary">
+                                                        <v-icon class="mr-2" color="secondary" v-if="center.showIcon()">
                                                             {{center.getIcon()}}
                                                         </v-icon>
                                                         {{center.getLabel()}}
