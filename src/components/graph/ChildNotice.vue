@@ -17,18 +17,23 @@
                         :right="!isLeft"
                         :left="isLeft"
                         min-width="125"
-                        open-delay="1000"
+                        open-delay="0"
                         :content-class="tooltipContentClass"
                 >
-                    <div slot="activator" class="vh-center" style="height:100%;" :class="{
-                        'reverse': isLeft
-                    }">
-                        <v-avatar color="secondary" size="18" :left="isLeft" style="height:100%;">
-                            <span class="white--text body-2">{{nbChild}}</span>
-                        </v-avatar>
+                    <div slot="activator" class="vh-center" style="height:100%;">
                         <v-icon large color="secondary" class="ma-0 pa-0">{{icon}}</v-icon>
                     </div>
-                    <span>{{$t('childNotice:' + tooltipKey)}}</span>
+                    <div :class="{
+                        'reverse': isLeft
+                    }">
+                        <v-avatar color="secondary" size="18" :left="isLeft" style="height:100%;" :class="{
+                            'mr-2' : !isLeft,
+                            'ml-2' : isLeft
+                        }">
+                            <span class="white--text body-2">{{nbChild}}</span>
+                        </v-avatar>
+                        <span>{{$t('childNotice:' + tooltipKey)}}</span>
+                    </div>
                 </v-tooltip>
             </span>
         </div>
@@ -58,7 +63,7 @@
         },
         mounted: function () {
             this.isLeft = this.bubble.isToTheLeft();
-            this.tooltipContentClass = this.isLeft ? "mr-5" : "ml-4";
+            this.tooltipContentClass = this.isLeft ? "mr-3" : "ml-2";
             this.icon = this.isLeft ? "arrow_left" : "arrow_right";
             this.nbChild = this.$store.state.isViewOnly && this.bubble.isVertex() ? this.bubble.getNbPublicNeighbors() - 1 : this.bubble.getNumberOfChild();
             if (this.nbChild > 9) {
