@@ -23,10 +23,10 @@
                     <div slot="activator" class="vh-center" style="height:100%;" :class="{
                         'reverse': isLeft
                     }">
-                        <v-avatar color="third" size="18" :left="isLeft" style="height:100%;">
+                        <v-avatar color="secondary" size="18" :left="isLeft" style="height:100%;">
                             <span class="white--text body-2">{{nbChild}}</span>
                         </v-avatar>
-                        <v-icon large color="third" class="ma-0 pa-0">{{icon}}</v-icon>
+                        <v-icon large color="secondary" class="ma-0 pa-0">{{icon}}</v-icon>
                     </div>
                     <span>{{$t('childNotice:' + tooltipKey)}}</span>
                 </v-tooltip>
