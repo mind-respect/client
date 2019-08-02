@@ -7,6 +7,7 @@ import Icon from '@/Icon'
 import ShareLevel from '@/vertex/ShareLevel'
 import DateUtil from '@/DateUtil'
 import IdUri from '@/IdUri'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 export default {
     fromServerFormat: function (centersServerFormat) {
@@ -55,6 +56,9 @@ CenterGraphElement.prototype.getShareLevel = function () {
 };
 
 CenterGraphElement.prototype.getShareIcon = function () {
+    if (this.getGraphElementType() === GraphElementType.Meta) {
+        return "lock";
+    }
     return ShareLevel.getIcon(
         this.getShareLevel()
     );
