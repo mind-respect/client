@@ -14,27 +14,6 @@
         </v-btn>
         <v-card>
             <v-list>
-                <v-list-tile @click="switchLanguage()">
-                    <v-list-tile-action>
-                        <v-icon class="">public</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title>
-                                        <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.smAndDown">
-                                            EN
-                                        </span>
-                            <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.mdAndUp">
-                                            English
-                                        </span>
-                            <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.smAndDown">
-                                            FR
-                                        </span>
-                            <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.mdAndUp">
-                                            Français
-                                        </span>
-                        </v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
                 <v-list-tile v-if="$store.state.user && $vuetify.breakpoint.mdAndDown" :to="'/user/' + $store.state.user.username" :disabled="$route.name === 'UserHome'">
                     <v-list-tile-action>
                         <v-icon>
@@ -106,6 +85,27 @@
                     <v-list-tile-content>
                         <v-list-tile-title>
                             {{$t('button:listAll')}}
+                        </v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile @click="switchLanguage()">
+                    <v-list-tile-action>
+                        <v-icon class="">public</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-content>
+                        <v-list-tile-title>
+                                        <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.smAndDown">
+                                            EN
+                                        </span>
+                            <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.mdAndUp">
+                                            English
+                                        </span>
+                            <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.smAndDown">
+                                            FR
+                                        </span>
+                            <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.mdAndUp">
+                                            Français
+                                        </span>
                         </v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
