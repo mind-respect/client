@@ -20,12 +20,14 @@
                         open-delay="1000"
                         :content-class="tooltipContentClass"
                 >
-                    <v-badge :left="isLeft" color="secondary" slot="activator">
-                        <span slot="badge">
-                            {{nbChild}}
-                        </span>
-                        <v-icon large color="third">bubble_chart</v-icon>
-                    </v-badge>
+                    <div slot="activator" class="vh-center" style="height:100%;" :class="{
+                        'reverse': isLeft
+                    }">
+                        <v-avatar color="third" size="18" :left="isLeft" style="height:100%;">
+                            <span class="white--text body-2">{{nbChild}}</span>
+                        </v-avatar>
+                        <v-icon large color="third" class="ma-0 pa-0">{{icon}}</v-icon>
+                    </div>
                     <span>{{$t('childNotice:' + tooltipKey)}}</span>
                 </v-tooltip>
             </span>
@@ -50,13 +52,14 @@
                 loading: false,
                 tooltipKey: UiUtils.isMacintosh() ? "tooltipForMac" : "tooltip",
                 isLeft: null,
-                nbChild: null
-
+                nbChild: null,
+                icon: null
             }
         },
         mounted: function () {
             this.isLeft = this.bubble.isToTheLeft();
             this.tooltipContentClass = this.isLeft ? "mr-5" : "ml-4";
+            this.icon = this.isLeft ? "arrow_left" : "arrow_right";
             this.nbChild = this.$store.state.isViewOnly && this.bubble.isVertex() ? this.bubble.getNbPublicNeighbors() - 1 : this.bubble.getNumberOfChild();
             if (this.nbChild > 9) {
                 this.nbChild = "9+";
@@ -92,11 +95,6 @@
         cursor: pointer;
         font-size: 22px;
         font-weight: bold;
-        color: red;
     }
 
-    /*.right-oriented .hidden-properties-container{*/
-    /*position:absolute;*/
-    /*top:30%;*/
-    /*}*/
 </style>
