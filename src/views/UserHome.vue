@@ -94,14 +94,14 @@
                                             <v-list-tile @click="go($event, center.uri().url())">
                                                 <v-list-tile-content>
                                                     <v-list-tile-title class="subheading font-weight-bold">
-                                                        <v-icon class="mr-2" color="secondary" v-if="center.showIcon()"
+                                                        {{center.getLabel()}}
+                                                        <v-icon class="ml-1 mb-1 right" color="secondary" v-if="center.showIcon()"
                                                                 small>
                                                             {{center.getIcon()}}
                                                         </v-icon>
-                                                        <v-icon color="secondary" small>
+                                                        <v-icon class="ml-3 mb-1 right" color="secondary" small>
                                                             {{center.getShareIcon()}}
                                                         </v-icon>
-                                                        {{center.getLabel()}}
                                                         <small class="grey--text font-weight-normal font-italic mr-1 right"
                                                                v-if="$vuetify.breakpoint.mdAndUp">
                                                             {{center.lastVisit()}}
