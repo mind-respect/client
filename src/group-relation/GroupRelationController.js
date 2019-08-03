@@ -45,6 +45,17 @@ GroupRelationController.prototype.addChildWhenInTransition = function () {
     )
 };
 
+GroupRelationController.prototype.addSiblingCanDo = function () {
+    return this.isSingleAndOwned() && this.model().getParentFork().controller().addChildCanDo();
+};
+
+GroupRelationController.prototype.addSibling = function () {
+    return this.model().getParentFork().controller().addChild(
+        this.model().getIndexInTree() + 1,
+        this.model().isToTheLeft()
+    );
+};
+
 GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveIndex) {
     if (saveIndex === undefined) {
         saveIndex = true;
