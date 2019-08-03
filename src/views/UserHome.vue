@@ -95,11 +95,11 @@
                                                 <v-list-tile-content>
                                                     <v-list-tile-title class="subheading font-weight-bold">
                                                         {{center.getLabel()}}
-                                                        <v-icon class="ml-1 mb-1 right" color="secondary" v-if="center.showIcon()"
+                                                        <v-icon class="ml-1 mb-1 right" color="grey" v-if="center.showIcon()"
                                                                 small>
                                                             {{center.getIcon()}}
                                                         </v-icon>
-                                                        <v-icon class="ml-3 mb-1 right" color="secondary" small>
+                                                        <v-icon class="ml-3 mb-1 right" color="grey" small>
                                                             {{center.getShareIcon()}}
                                                         </v-icon>
                                                         <small class="grey--text font-weight-normal font-italic mr-1 right"
