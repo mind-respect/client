@@ -475,6 +475,7 @@ FriendlyResource.FriendlyResource.prototype.moveBelow = function (newSibling) {
 
 
 FriendlyResource.FriendlyResource.prototype.buildChildrenIndex = function (index) {
+    let whileCenterContextLeftRightIndex = this.isCenter ? {} : this.getChildrenIndex();
     index = index || 0;
     return this.getClosestChildrenInTypes(
         [GraphElementType.Vertex, GraphElementType.GroupRelation],
@@ -485,11 +486,8 @@ FriendlyResource.FriendlyResource.prototype.buildChildrenIndex = function (index
             index += Object.keys(groupRelationIndex).length;
             childrenIndex = Object.assign(childrenIndex, groupRelationIndex);
         } else {
-            // let previousValue = this.getChildrenIndex()[child.getUri()];
-            let isLeft = child.isToTheLeft();
-            // if (!this.isCenterBubble() && previousValue) {
-            //     isLeft = previousValue.toTheLeft;
-            // }
+            let leftRightIndexWhileCenter = whileCenterContextLeftRightIndex[child.getUri()];
+            let isLeft = leftRightIndexWhileCenter ? leftRightIndexWhileCenter.toTheLeft : child.isToTheLeft();
             childrenIndex[child.getUri()] = {
                 index: index,
                 toTheLeft: isLeft,
