@@ -61,7 +61,7 @@ function pasteHandler(event) {
     if (!Selection.isSingle()) {
         return;
     }
-    var selectedElement = Selection.getSingle();
+    let selectedElement = Selection.getSingle();
     if (selectedElement.isEditFlow) {
         return;
     }
@@ -121,7 +121,7 @@ function keyDownHandler(event) {
 }
 
 function executeFeature(feature, event) {
-    var controller;
+    let controller;
     if (feature.isForAppController) {
         controller = GraphDisplayer.getAppController();
     } else {
@@ -130,7 +130,7 @@ function executeFeature(feature, event) {
     if (controller[feature.action] === undefined) {
         return;
     }
-    var canDoValidator = controller[feature.action + "CanDo"];
+    let canDoValidator = controller[feature.action + "CanDo"];
     if (canDoValidator !== undefined && !canDoValidator.call(controller)) {
         return;
     }
@@ -160,7 +160,7 @@ function defineNonCtrlPlusKeysAndTheirActions() {
     actions[KeyCode.KEY_DOWN] = {
         action: "travelDown"
     };
-    actions[KeyCode.KEY_ENTER] = {
+    actions[KeyCode.KEY_RETURN] = {
         action: "addSibling"
     };
     actions[KeyCode.KEY_ESCAPE] = {

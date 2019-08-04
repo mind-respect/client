@@ -75,7 +75,8 @@
                     },
                     {
                         icon: "label",
-                        action: "identify"
+                        action: "identify",
+                        ctrlShortcut: "G"
                     },
                     // {
                     //     icon: "label",
