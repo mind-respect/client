@@ -368,67 +368,6 @@ VertexController.prototype.becomeParent = function (child) {
     }
 };
 
-
-// VertexController.prototype.subElementsCanDo = function () {
-//     return this.isSingle() && this.getModel().hasIncludedGraphElements();
-// };
-
-// VertexController.prototype.subElements = function () {
-//     IncludedGraphElementsMenu.ofVertex(
-//         this.vertices
-//     ).create();
-// };
-
-// VertexController.prototype.suggestionsCanDo = function () {
-//     return this.isSingleAndOwned() && this.vertices.hasSuggestions();
-// };
-
-// VertexController.prototype.suggestions = function () {
-//     var suggestionMethod = this.vertices.areSuggestionsShown() ?
-//         "hide" : "show";
-//     this.vertices.visitAllImmediateChild(function (child) {
-//         if (child.isSuggestion()) {
-//             child[suggestionMethod]();
-//         }
-//     });
-// };
-
-// VertexController.prototype.createVertexFromSchema = function (schema) {
-//     var newVertex;
-//     var deferred = $.Deferred();
-//     VertexService.createVertex().then(
-//         addIdentification
-//     ).then(
-//         addSuggestions
-//     ).then(function () {
-//         deferred.resolve(
-//             newVertex
-//         );
-//     });
-//     return deferred;
-//
-//     function addIdentification(newVertexServerFormat) {
-//         newVertex = Vertex.fromServerFormat(
-//             newVertexServerFormat
-//         );
-//         var identification = Identification.fromFriendlyResource(
-//             schema
-//         );
-//         identification.makeGeneric();
-//         return GraphElementService.addIdentification(
-//             newVertex,
-//             identification
-//         );
-//     }
-//
-//     function addSuggestions() {
-//         return SchemaSuggestion.addSchemaSuggestionsIfApplicable(
-//             newVertex,
-//             schema.getUri()
-//         );
-//     }
-// };
-
 VertexController.prototype.copyCanDo = function () {
     return !this.isSingle() || !this.getUi().isLabelEmpty();
 };
@@ -437,42 +376,8 @@ VertexController.prototype.copy = function () {
 
 };
 
-VertexController.prototype.groupCanDo = function () {
-    return this.isGroupAndOwned();
-};
-VertexController.prototype.group = function () {
-    // var selectedGraphElements = {
-    //     edges: {},
-    //     vertices: {}
-    // };
-    // EdgeUi.visitAllEdges(function (edge) {
-    //     var sourceVertex = edge.getSourceVertex();
-    //     var destinationVertex = edge.getDestinationVertex();
-    //     var isSourceVertexSelected = sourceVertex.isSelected();
-    //     var isDestinationVertexSelected = destinationVertex.isSelected();
-    //     if (isSourceVertexSelected) {
-    //         selectedGraphElements.vertices[
-    //             sourceVertex.getUri()
-    //             ] = "";
-    //     }
-    //     if (isDestinationVertexSelected) {
-    //         selectedGraphElements.vertices[
-    //             destinationVertex.getUri()
-    //             ] = "";
-    //     }
-    //     if (isSourceVertexSelected && isDestinationVertexSelected) {
-    //         selectedGraphElements.edges[
-    //             edge.getUri()
-    //             ] = "";
-    //     }
-    // });
-    // VertexService.group(
-    //     selectedGraphElements,
-    //     GraphDisplayer.displayUsingCentralBubbleUri
-    // );
-};
 VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isChildExpand) {
-    if (!this.model().isCenter && !this.model().canExpand()) {
+    if (!this.expandCanDo()) {
         this.model().isExpanded = true;
         return Promise.resolve();
     }
@@ -490,7 +395,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
                 }
                 let expandChildCalls = [];
                 this.model().getClosestChildVertices().forEach((childVertex) => {
-                    if (childVertex.model().hasOnlyOneHiddenChild()) {
+                    if (childVertex.getNumberOfChild() === 1) {
                         expandChildCalls.push(
                             childVertex.controller().expand(true, true, true)
                         );
@@ -507,7 +412,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
         this.model().expand(avoidCenter, isChildExpand);
         Vue.nextTick(() => {
             LoadingFlow.leave();
-            if (!avoidCenter) {
+            if (avoidCenter !== true) {
                 Scroll.centerBubbleForTreeIfApplicable(this.model());
                 Store.dispatch("redraw");
             }

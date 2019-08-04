@@ -656,19 +656,14 @@ FriendlyResource.FriendlyResource.prototype.collapse = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {
-    return this.getNextChildren().some((child) => {
-        if (child.loading) {
-            return false;
-        }
-        return (child.canExpand() && !child.areDuplicatesExpanded()) || child.canExpandDescendants();
+    return this.getDescendants().some((descendant) => {
+        return descendant.canExpand() && !descendant.areDuplicatesExpanded();
     });
 };
 
-FriendlyResource.FriendlyResource.prototype.visitExpandableDescendants = function (visitor) {
-    this.visitDescendants(function (child) {
-        if (child.canExpand() && !child.areDuplicatesExpanded()) {
-            visitor(child);
-        }
+FriendlyResource.FriendlyResource.prototype.getExpandableDescendants = function () {
+    return this.getDescendants().filter((descendant) => {
+        return descendant.canExpand() && !descendant.areDuplicatesExpanded();
     });
 };
 

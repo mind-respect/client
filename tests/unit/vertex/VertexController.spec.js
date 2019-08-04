@@ -260,40 +260,77 @@ describe('VertexController', () => {
             b2.getNumberOfChild()
         ).toBe(2);
     });
-    it("expands expandable descendants when expanding already expanded bubble", async () => {
-        let scenario = await new ThreeScenario();
-        let b1 = scenario.getCenterBubbleInTree();
-        let b2 = TestUtil.getChildWithLabel(
-            b1,
-            "r1"
-        ).getNextBubble();
-        expect(
-            b2.isExpanded
-        ).toBeFalsy();
-        let b3 = TestUtil.getChildWithLabel(
-            b1,
-            "r1"
-        ).getNextBubble();
-        expect(
-            b3.isExpanded
-        ).toBeFalsy();
-        let multipleGraphReturn = {};
-        multipleGraphReturn[
-            scenario.getBubble2InTree().getUri()
-            ] = scenario.getSubGraphForB2();
-        multipleGraphReturn[
-            scenario.getBubble3InTree().getUri()
-            ] = scenario.getSubGraphForB3();
-        GraphServiceMock.getForCentralBubbleUriMultiple(
-            multipleGraphReturn
-        );
-        await b1.controller().expand();
-        expect(
-            b2.isExpanded
-        ).toBeTruthy();
-        expect(
-            b3.isExpanded
-        ).toBeTruthy();
+    describe("expand", () => {
+        it("expands expandable descendants when expanding already expanded bubble", async () => {
+            let scenario = await new ThreeScenario();
+            let b1 = scenario.getCenterBubbleInTree();
+            let b2 = TestUtil.getChildWithLabel(
+                b1,
+                "r1"
+            ).getNextBubble();
+            expect(
+                b2.isExpanded
+            ).toBeFalsy();
+            let b3 = TestUtil.getChildWithLabel(
+                b1,
+                "r1"
+            ).getNextBubble();
+            expect(
+                b3.isExpanded
+            ).toBeFalsy();
+            let multipleGraphReturn = {};
+            multipleGraphReturn[
+                scenario.getBubble2InTree().getUri()
+                ] = scenario.getSubGraphForB2();
+            multipleGraphReturn[
+                scenario.getBubble3InTree().getUri()
+                ] = scenario.getSubGraphForB3();
+            GraphServiceMock.getForCentralBubbleUriMultiple(
+                multipleGraphReturn
+            );
+            await b1.controller().expand();
+            expect(
+                b2.isExpanded
+            ).toBeTruthy();
+            expect(
+                b3.isExpanded
+            ).toBeTruthy();
+        });
+        it("expands expandable descendants", async () => {
+            let scenario = await new ThreeScenario();
+            let b2 = scenario.getBubble2InTree();
+            await scenario.expandBubble2(b2);
+            expect(
+                b2.getNextChildren().length
+            ).toBe(2);
+            let b2Child = b2.getNextBubble().getNextBubble();
+            await b2Child.controller().addChild();
+            await b2Child.controller().addChild();
+            b2Child.collapse();
+            expect(
+                b2Child.getNextChildren().length
+            ).toBe(0);
+            expect(
+                b2Child.getNumberOfConnectedEdges()
+            ).toBe(3);
+            expect(
+                b2Child.getNumberOfChild()
+            ).toBe(2);
+            expect(
+                b2Child.canExpand()
+            ).toBeTruthy();
+            expect(
+                b2Child.areDuplicatesExpanded()
+            ).toBeFalsy();
+            b2Child.setLabel("b2 child");
+            expect(
+                b2.canExpandDescendants()
+            ).toBeTruthy();
+            await b2.controller().expand();
+            expect(
+                b2Child.getNextChildren().length
+            ).toBe(2);
+        });
     });
     it("does not make public already public vertices when making a collection public", async () => {
         let scenario = await new ThreeScenario();

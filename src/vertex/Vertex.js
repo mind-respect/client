@@ -137,10 +137,6 @@ Vertex.prototype.decrementNbFriendNeigbors = function () {
     this.vertexServerFormat.vertex.nbFriendNeighbors--;
 };
 
-Vertex.prototype.hasOnlyOneHiddenChild = function () {
-    return 2 === this.getNumberOfConnectedEdges();
-};
-
 Vertex.prototype.isPublic = function () {
     return this.getShareLevel() === ShareLevel.PUBLIC ||
         this.getShareLevel() === ShareLevel.PUBLIC_WITH_LINK;
@@ -198,6 +194,7 @@ Vertex.prototype.getNbDuplicates = function () {
 };
 
 Vertex.prototype.addChild = function (child, isToTheLeft, index) {
+    this.isExpanded = true;
     let children;
     child.parentBubble = child.parentVertex = this;
     if (this.isCenter) {
@@ -262,11 +259,9 @@ Vertex.prototype.collapse = function () {
     this.leftBubblesCollapsed = this.leftBubbles;
     this.rightBubbles = [];
     this.leftBubbles = [];
-    Vue.nextTick(function () {
-        FriendlyResource.FriendlyResource.prototype.collapse.call(
-            this
-        );
-    }.bind(this));
+    FriendlyResource.FriendlyResource.prototype.collapse.call(
+        this
+    );
 };
 
 Vertex.prototype.expand = function (avoidCenter, isChildExpand) {

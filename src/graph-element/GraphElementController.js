@@ -154,9 +154,8 @@ GraphElementController.prototype.accept = function () {
 
 GraphElementController.prototype.expandCanDo = function () {
     return this.isSingle() && (
-        this.model().canExpand.bind(this.model())() ||
-        this.model().canExpandDescendants() ||
-        this.model().isCollapsed
+        this.model().canExpand() ||
+        this.model().canExpandDescendants()
     );
 };
 
@@ -166,7 +165,7 @@ GraphElementController.prototype.expand = function (avoidCenter, avoidExpandChil
         this.model().expand(avoidCenter);
         var expandChildCalls = [];
         this.model().visitClosestChildVertices(function (childVertex) {
-            if (childVertex.model().hasOnlyOneHiddenChild()) {
+            if (childVertex.getNumberOfChild() === 1) {
                 expandChildCalls.push(
                     childVertex.controller().expand(true, true, true)
                 );
@@ -184,15 +183,12 @@ GraphElementController.prototype.expandDescendantsIfApplicable = function () {
     if (!this.model().canExpandDescendants()) {
         return promise;
     }
-    let addChildTreeActions = [];
     let avoidCenter = true;
-    this.model().visitExpandableDescendants(function (expandableLeaf) {
-        addChildTreeActions.push(
-            expandableLeaf.controller().expand(avoidCenter)
-        );
-    });
-    promise = Promise.all(addChildTreeActions);
-    return promise;
+    return Promise.all(
+        this.model().getExpandableDescendants().map((expandableLeaf) => {
+            return expandableLeaf.controller().expand(avoidCenter);
+        })
+    );
 };
 
 GraphElementController.prototype.collapseCanDo = function () {
