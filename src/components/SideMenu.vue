@@ -25,7 +25,7 @@
                     <v-card-title class="subheading" v-if="$store.state.sideMenuFlow !== false">
                         <div class="grey--text" v-if="isSingle">
                             {{$t('side:creationDate')}}
-                            {{formatDate(Selection.getSingle().getCreationDate())}}
+                            {{formatDate(creationDate)}}
                         </div>
                         <v-spacer></v-spacer>
                         <v-btn @click="collapse" icon>
@@ -114,8 +114,8 @@
                 "merge": "Fusion"
             });
             return {
-                Selection: Selection,
                 tabMenu: null,
+                Selection: Selection,
                 items: [
                     {title: 'Home', icon: 'dashboard'},
                     {title: 'About', icon: 'question_answer'}
@@ -124,8 +124,8 @@
             }
         },
         computed: {
-            selected: () => {
-                return Selection.getSingle();
+            creationDate: function(){
+                return Selection.getSingle().getCreationDate()
             },
             isSingle: () => {
                 return Selection.isSingle();

@@ -139,13 +139,13 @@ function executeFeature(feature, event) {
 
 function defineNonCtrlPlusKeysAndTheirActions() {
     let actions = {};
-    actions[KeyCode.tab] = {
+    actions[KeyCode.KEY_TAB] = {
         action: "addChild"
     };
-    actions[KeyCode.delete] = {
+    actions[KeyCode.KEY_DELETE] = {
         action: "remove"
     };
-    actions[KeyCode.backspace] = {
+    actions[KeyCode.KEY_BACK_SPACE] = {
         action: "remove"
     };
     actions[KeyCode.KEY_LEFT] = {
