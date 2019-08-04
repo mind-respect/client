@@ -8,42 +8,13 @@ import MindMapInfo from '@/MindMapInfo'
 import UiUtils from '@/UiUtils'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import Focus from '@/Focus'
+import KeyCode from 'keycode-js';
+
 
 const api = {};
-let tabKeyNumber = 9,
-    leftArrowKeyNumber = 37,
-    rightArrowKeyNumber = 39,
-    upArrowKeyNumber = 38,
-    downArrowKeyNumber = 40,
-    gArrowKeyNumber = 71,
-    deleteKeyNumber = 46,
-    backspaceKeyNumber = 8,
-    escapeKeyNumber = 27,
-    spacebarKeyNumber = 32,
-    enterKeyCode = 13,
-    aKeyNumber = 65,
-    dKeyNumber = 68,
-    eKeyNumber = 69,
-    fKeyNumber = 70,
-    hKeyNumber = 72,
-    iKeyNumber = 73,
-    pKeyNumber = 80,
-    sKeyNumber = 83,
-    zeroKeyNumber = 48,
-    xKeyNumber = 88,
-    vKeyNumber = 86,
-    yKeyNumber = 89,
-    zKeyNumber = 90,
-    oKeyNumber = 79,
-    mKeyNumber = 77,
-    plusKeyNumber = 107,
-    minusKeyNumber = 109,
-    plusKeyNumberMac = 187,
-    minusKeyNumberMac = 189,
-    bKeyNumber = 66,
-    lKeyNumber = 76,
-    nonCtrlPlusActions = defineNonCtrlPlusKeysAndTheirActions(),
-    ctrlPlusActions = defineCtrlPlusKeysAndTheirActions();
+
+let nonCtrlPlusActions = defineNonCtrlPlusKeysAndTheirActions();
+let ctrlPlusActions = defineCtrlPlusKeysAndTheirActions();
 
 api._ctrlKeyNumber = UiUtils.isMacintosh() ? 91 : 17;
 
@@ -73,7 +44,7 @@ api.init = function () {
     function wheelZoomHandle(event) {
         let isCtrl = UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey;
         if (isCtrl) {
-            if(redrawTimeout){
+            if (redrawTimeout) {
                 clearTimeout(redrawTimeout);
             }
             redrawTimeout = setTimeout(() => {
@@ -111,7 +82,7 @@ function keyDownHandler(event) {
     ].indexOf(target.tagName) === -1;
     let isCombineKeyPressed = UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey;
     if (isWorkingOnSomething) {
-        if (event.keyCode === escapeKeyNumber) {
+        if (event.keyCode === KeyCode.KEY_ESCAPE) {
             target.blur();
         }
         return;
@@ -124,7 +95,7 @@ function keyDownHandler(event) {
         nonCtrlPlusActions;
     let feature = actionSet[event.which];
     if (feature === undefined) {
-        let isPasting = isCombineKeyPressed && vKeyNumber && event.which;
+        let isPasting = isCombineKeyPressed && KeyCode.KEY_V && event.which;
         if (!isPasting && event.which !== api._ctrlKeyNumber && !MindMapInfo.isViewOnly() && Selection.isSingle()) {
             let selectedElement = Selection.getSingle();
             if (!MindMapInfo.isViewOnly() && !selectedElement.isMetaRelation()) {
@@ -167,35 +138,35 @@ function executeFeature(feature, event) {
 }
 
 function defineNonCtrlPlusKeysAndTheirActions() {
-    var actions = {};
-    actions[tabKeyNumber] = {
+    let actions = {};
+    actions[KeyCode.tab] = {
         action: "addChild"
     };
-    actions[deleteKeyNumber] = {
+    actions[KeyCode.delete] = {
         action: "remove"
     };
-    actions[backspaceKeyNumber] = {
+    actions[KeyCode.backspace] = {
         action: "remove"
     };
-    actions[leftArrowKeyNumber] = {
+    actions[KeyCode.KEY_LEFT] = {
         action: "travelLeft"
     };
-    actions[rightArrowKeyNumber] = {
+    actions[KeyCode.KEY_RIGHT] = {
         action: "travelRight"
     };
-    actions[upArrowKeyNumber] = {
+    actions[KeyCode.KEY_UP] = {
         action: "travelUp"
     };
-    actions[downArrowKeyNumber] = {
+    actions[KeyCode.KEY_DOWN] = {
         action: "travelDown"
     };
-    actions[enterKeyCode] = {
+    actions[KeyCode.KEY_ENTER] = {
         action: "addSibling"
     };
-    actions[escapeKeyNumber] = {
+    actions[KeyCode.KEY_ESCAPE] = {
         action: "deselect"
     };
-    actions[spacebarKeyNumber] = {
+    actions[KeyCode.KEY_SPACE] = {
         action: "focus"
     };
     return actions;
@@ -203,85 +174,77 @@ function defineNonCtrlPlusKeysAndTheirActions() {
 
 function defineCtrlPlusKeysAndTheirActions() {
     let actions = {};
-    actions[gArrowKeyNumber] = [{
+    actions[KeyCode.KEY_G] = [{
         action: "identify"
     }, {
         action: "identifyWhenMany"
     }];
-    actions[aKeyNumber] = {
+    actions[KeyCode.KEY_A] = {
         action: "selectTree"
     };
-    actions[eKeyNumber] = {
+    actions[KeyCode.KEY_E] = {
         action: "expand"
     };
-    actions[sKeyNumber] = {
+    actions[KeyCode.KEY_S] = {
         action: "suggestions"
     };
-    actions[iKeyNumber] = {
+    actions[KeyCode.KEY_I] = {
         action: "reverse"
     };
-    actions[dKeyNumber] = {
+    actions[KeyCode.KEY_D] = {
         action: "note"
     };
-    actions[zeroKeyNumber] = {
+    actions[KeyCode.KEY_0] = {
         action: "center"
     };
-    actions[hKeyNumber] = {
+    actions[KeyCode.KEY_H] = {
         action: "collapse"
     };
-    actions[xKeyNumber] = {
+    actions[KeyCode.KEY_X] = {
         action: "cut"
     };
-    actions[yKeyNumber] = {
+    actions[KeyCode.KEY_Y] = {
         action: "redo",
         isForAppController: true
     };
-    actions[zKeyNumber] = {
+    actions[KeyCode.KEY_Z] = {
         action: "undo",
         isForAppController: true
     };
-    actions[pKeyNumber] = {
+    actions[KeyCode.KEY_P] = {
         action: "togglePublicPrivate"
     };
-    actions[oKeyNumber] = [{
+    actions[KeyCode.KEY_O] = [{
         action: "convertToRelation"
     }, {
         action: "convertToGroupRelation"
     }];
-    actions[plusKeyNumber] = {
+    actions[KeyCode.KEY_ADD] = {
         action: "zoomIn",
         isForAppController: true
     };
-    actions[plusKeyNumberMac] = {
-        action: "zoomIn",
-        isForAppController: true
-    };
-    actions[minusKeyNumber] = {
+    actions[KeyCode.KEY_SUBTRACT] = {
         action: "zoomOut",
         isForAppController: true
     };
-    actions[minusKeyNumberMac] = {
-        action: "zoomOut",
-        isForAppController: true
-    };
-    actions[upArrowKeyNumber] = {
+    actions[KeyCode.KEY_UP] = {
         action: "moveUpOneStep"
     };
-    actions[downArrowKeyNumber] = {
+    actions[KeyCode.KEY_DOWN] = {
         action: "moveDownOneStep"
     };
-    actions[mKeyNumber] = {
+    actions[KeyCode.KEY_M] = {
         action: "merge"
     };
-    actions[fKeyNumber] = {
+    actions[KeyCode.KEY_F] = {
         action: "find",
         isForAppController: true
     };
-    actions[bKeyNumber] = {
+    actions[KeyCode.KEY_B] = {
         action: "createVertex",
         isForAppController: true
     };
-    actions[lKeyNumber] = {
+    actions[KeyCode.KEY_L] = {
         action: "list"
     };
     return actions;

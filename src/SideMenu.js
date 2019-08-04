@@ -8,7 +8,7 @@ const api = {
         if (Breakpoint.isMobile()) {
             return 0;
         }
-        return Store.state.isSideMenuCollapsed ? api.MINI_WIDTH : api.EXPANDED_WIDTH;
+        return Store.state.sideMenuFlow ? api.EXPANDED_WIDTH : api.MINI_WIDTH ;
     }
 };
 export default api;

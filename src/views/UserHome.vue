@@ -71,7 +71,9 @@
                         <v-card-text class="pt-0">
                             <v-tooltip v-if="isOwner" left>
                                 <v-btn icon color="third" fab @click="createCenterVertex()" slot="activator" dark top
-                                       absolute right class="mr-4" style="z-index:0;">
+                                       absolute right class="mr-4 right" style="z-index:0;" :class="{
+                                        'add-button-desktop' : $vuetify.breakpoint.mdAndUp
+                                       }">
                                     <v-icon large>add</v-icon>
                                 </v-btn>
                                 <span>{{$t('userhome:createInfo')}}</span>
@@ -474,6 +476,10 @@
         height: 90px;
         /*padding-left:10px;*/
         /*padding-right:10px;*/
+    }
+
+    .add-button-desktop{
+        margin-top:-25px;
     }
 
 </style>

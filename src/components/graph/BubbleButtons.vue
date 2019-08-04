@@ -73,10 +73,10 @@
                         icon: "photo",
                         action: "images"
                     },
-                    // {
-                    //     icon: "label",
-                    //     action: "identify"
-                    // },
+                    {
+                        icon: "label",
+                        action: "identify"
+                    },
                     // {
                     //     icon: "label",
                     //     action: "identifyWhenMany",
@@ -129,11 +129,11 @@
                         icon: "fa-expand",
                         action: "subElements"
                     },
-                    // {
-                    //     icon: "merge_type",
-                    //     action: "merge",
-                    //     ctrlShortcut: "I"
-                    // },
+                    {
+                        icon: "merge_type",
+                        action: "merge",
+                        ctrlShortcut: "M"
+                    },
                     {
                         icon: "select_all",
                         action: "selectTree",

@@ -17,7 +17,7 @@ const Store = new Vuex.Store({
                 "user",
                 "locale",
                 "zoom",
-                "isSideMenuCollapsed",
+                "sideMenuFlow",
                 "areCentersInGridView"
             ]
         })
@@ -36,7 +36,7 @@ const Store = new Vuex.Store({
         isTagFlow: false,
         isEditFlow: false,
         redraws: Math.random(),
-        isSideMenuCollapsed: true,
+        sideMenuFlow: false,
         isViewOnly: null
     },
     mutations: {
@@ -98,8 +98,8 @@ const Store = new Vuex.Store({
         zoom: function (state, zoom) {
             state.zoom = zoom;
         },
-        setIsSideMenuCollapsed: function (state, isSideMenuCollapsed) {
-            state.isSideMenuCollapsed = isSideMenuCollapsed;
+        setSideMenuFlow: function (state, sideMenuFlow) {
+            state.sideMenuFlow = sideMenuFlow;
         },
         setIsListViewFlow: function (state, isListViewFlow) {
             state.isListViewFlow = isListViewFlow;
@@ -148,8 +148,8 @@ const Store = new Vuex.Store({
         zoom: function (action, zoom) {
             action.commit('zoom', zoom);
         },
-        setIsSideMenuCollapsed: function (action, isSideMenuCollapsed) {
-            action.commit('setIsSideMenuCollapsed', isSideMenuCollapsed);
+        setSideMenuFlow: function (action, sideMenuFlow) {
+            action.commit('setSideMenuFlow', sideMenuFlow);
         },
         setIsListViewFlow: function (action, isListViewFlow) {
             action.commit('setIsListViewFlow', isListViewFlow);

@@ -5,20 +5,24 @@
             value="true"
             fixed
             :width="mainWidth"
-            :mini-variant="$store.state.isSideMenuCollapsed"
+            :mini-variant="$store.state.sideMenuFlow === false"
             :mini-variant-width="mainNavMiniWidth"
+            touchless
     >
         <v-layout fill-height>
             <v-navigation-drawer
-                    :mini-variant="$store.state.isSideMenuCollapsed"
+                    :mini-variant="$store.state.sideMenuFlow === false"
                     mini-variant-width="50"
-                    width="340"
+                    :width="menuWidth"
+                    :value="$vuetify.breakpoint.lgAndUp || $store.state.sideMenuFlow !== false"
+                    stateless
+                    touchless
             >
                 <v-card class="" flat>
-                    <v-btn @click="expand" icon v-if="$store.state.isSideMenuCollapsed" class="mt-4">
+                    <v-btn @click="expand" icon v-if="$store.state.sideMenuFlow === false" class="mt-4">
                         <v-icon>chevron_right</v-icon>
                     </v-btn>
-                    <v-card-title class="subheading" v-if="!$store.state.isSideMenuCollapsed">
+                    <v-card-title class="subheading" v-if="$store.state.sideMenuFlow !== false">
                         <div class="grey--text" v-if="isSingle">
                             {{$t('side:creationDate')}}
                             {{formatDate(Selection.getSingle().getCreationDate())}}
@@ -28,7 +32,7 @@
                             <v-icon>chevron_left</v-icon>
                         </v-btn>
                     </v-card-title>
-                    <div v-if="!$store.state.isSideMenuCollapsed">
+                    <div v-if="$store.state.sideMenuFlow !== false">
                         <v-tabs
                                 v-model="tabMenu"
                                 grow
@@ -65,7 +69,8 @@
                 </v-card>
             </v-navigation-drawer>
             <v-navigation-drawer
-                    :value="$vuetify.breakpoint.lgAndUp"
+                    v-if="$vuetify.breakpoint.mdAndUp"
+                    :value="true"
                     right
                     mini-variant
                     mini-variant-width="60"
@@ -139,6 +144,12 @@
                     return 0;
                 }
                 return SideMenu.MINI_WIDTH;
+            },
+            menuWidth: function () {
+                return this.$vuetify.breakpoint.mdAndDown ? this.mainWidth : 340;
+            },
+            sideMenuFlow: function () {
+                return this.$store.state.sideMenuFlow;
             }
         },
         methods: {
@@ -152,11 +163,22 @@
                 return DateUtil.fromNow(date);
             },
             collapse: function () {
-                this.$store.dispatch("setIsSideMenuCollapsed", true);
+                this.$store.dispatch("setSideMenuFlow", false);
             },
             expand: function () {
-                this.$store.dispatch("setIsSideMenuCollapsed", false);
+                this.$store.dispatch("setSideMenuFlow", 0);
             }
+        },
+        watch: {
+            tabMenu: function () {
+                this.$store.dispatch("setSideMenuFlow", this.tabMenu);
+            },
+            sideMenuFlow: function () {
+                this.tabMenu = this.$store.state.sideMenuFlow
+            }
+        },
+        mounted: function () {
+            this.tabMenu = this.$vuetify.breakpoint.mdAndDown ? false : this.$store.state.sideMenuFlow;
         }
     }
 </script>

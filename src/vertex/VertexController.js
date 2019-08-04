@@ -562,6 +562,11 @@ VertexController.prototype.mergeCanDo = function () {
     return this.isSingle() && this.isOwned();
 };
 
+VertexController.prototype.merge = function () {
+    Store.dispatch("setSideMenuFlow", 2);
+    return Promise.resolve();
+};
+
 VertexController.prototype._relateToDistantVertexWithUri = function (distantVertexUri) {
     return EdgeService.addToFarVertex(this.getUi(), distantVertexUri).then(() => {
         return GraphDisplayer.connectVertexToVertexWithUri(

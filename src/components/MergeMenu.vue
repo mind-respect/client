@@ -2,7 +2,7 @@
     <v-card flat>
         <v-card-text class="pt-0 pb-0">
             <v-autocomplete
-                    ref="search"
+                    ref="mergeSearch"
                     v-model="selectedSearchResult"
                     attach="#mergeMenu"
                     :items="items"
@@ -42,6 +42,7 @@
     import SearchResultContent from '@/components/SearchResultContent'
     import SearchResultAction from '@/components/SearchResultAction'
     import Selection from '@/Selection'
+    import Breakpoint from "@/Breakpoint";
 
     export default {
         name: "MergeMenu",
@@ -85,6 +86,10 @@
                 this.selected.controller().convertToDistantBubbleWithUri(
                     this.selectedSearchResult.uri
                 );
+                this.$refs.mergeSearch.reset();
+                if (Breakpoint.isMobile()) {
+                    this.$store.dispatch("setSideMenuFlow", false);
+                }
             },
             filter: function (item, searchText, itemText) {
                 if (!this.selected.controller().convertToDistantBubbleWithUriCanDo(item.uri)) {

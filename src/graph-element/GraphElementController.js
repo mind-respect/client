@@ -15,8 +15,7 @@ import TagService from '@/identifier/TagService'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
-let bubbleCutClipboard,
-    identificationBaseEventBusKey = "/event/ui/graph/identification/";
+let bubbleCutClipboard;
 
 api.GraphElementController = GraphElementController;
 
@@ -125,16 +124,8 @@ GraphElementController.prototype.visitOtherInstancesCanDo = function () {
     return false;
 };
 
-GraphElementController.prototype.identifyHideIfDisabled = function () {
-    return true;
-};
-
 GraphElementController.prototype.identifyCanDo = function () {
     return this.isSingle() && this.isOwned();
-};
-
-GraphElementController.prototype.identifyWhenManyHideIfDisabled = function () {
-    return true;
 };
 
 GraphElementController.prototype.identifyWhenManyCanDo = function () {
@@ -142,7 +133,8 @@ GraphElementController.prototype.identifyWhenManyCanDo = function () {
 };
 
 GraphElementController.prototype.identifyWhenMany = GraphElementController.prototype.identify = function () {
-    Store.dispatch("setIsTagFlow", true);
+    Store.dispatch("setSideMenuFlow", 1);
+    return Promise.resolve();
 };
 
 GraphElementController.prototype.acceptCanDo = function () {
@@ -611,17 +603,9 @@ GraphElementController.prototype.removeIdentifier = function (identifier) {
             identifier
         ).then(() => {
             resolve();
-            // this.getModel().applyToOtherInstances(function (otherUi) {
-            //     otherUi.getModel().removeIdentifier(
-            //         identifier
-            //     );
-            //     otherUi.removeIdentifier(identifier);
-            // });
-            // let eventBusKey = identificationBaseEventBusKey + "removed";
-            // EventBus.publish(
-            //     eventBusKey,
-            //     [this.getModel(), identifier]
-            // );
+            this.model().getDuplicates().forEach((duplicate) => {
+                duplicate.removeIdentifier(identifier);
+            });
         });
     });
 };
@@ -655,14 +639,6 @@ GraphElementController.prototype.deselect = function () {
     if (this.isMultiple() || this.model().isCenterBubble()) {
         Selection.removeAll();
     }
-};
-
-GraphElementController.prototype.listManyIsPossible = true;
-
-GraphElementController.prototype.listSingleIsPossible = false;
-
-GraphElementController.prototype.listCanDo = function () {
-    return this.isMultiple();
 };
 
 export default api;
