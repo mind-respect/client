@@ -15,7 +15,7 @@
                     item-text="label"
                     return-object
                     :menu-props="menuProps"
-                    :loading="loading"
+                    :searchLoading="searchLoading"
                     @change="selectSearchResult()"
                     cache-items
                     hide-no-data
@@ -39,9 +39,11 @@
         <v-card flat class="pt-0">
             <v-card-text class="pt-0" id="tagMenu"></v-card-text>
         </v-card>
-        <v-card min-height="150" flat class="pt-0">
+        <v-card min-height="150" flat class="pt-0 text-xs-center">
+            <v-progress-circular indeterminate color="third" v-if="tagLoading"></v-progress-circular>
             <v-list subheader three-line>
-                <v-list-tile v-for="identifier in identifiersByLatest" :key="identifier.externalResourceUri" :href="identifier.url" target="_blank">
+                <v-list-tile v-for="identifier in identifiersByLatest" :key="identifier.externalResourceUri"
+                             :href="identifier.url" target="_blank">
                     <v-list-tile-action v-if="identifier.hasImages()">
                         <v-img :src="identifier.getImage().urlForSmall" max-height="90"></v-img>
                     </v-list-tile-action>
@@ -97,7 +99,8 @@
             });
             return {
                 dialog: false,
-                loading: false,
+                searchLoading: false,
+                tagLoading: false,
                 selectedSearchResult: null,
                 search: null,
                 identifier: null,
@@ -152,13 +155,14 @@
         },
         methods: {
             querySelections(term) {
-                this.loading = true;
+                this.searchLoading = true;
                 SearchService.tags(term).then((results) => {
                     this.items = results;
-                    this.loading = false;
+                    this.searchLoading = false;
                 });
             },
             selectSearchResult: function () {
+                this.tagLoading = true;
                 let identifier = Identification.fromSearchResult(
                     this.selectedSearchResult
                 );
@@ -170,7 +174,9 @@
                     if (imageUrl) {
                         identifier.addImage(imageUrl);
                     }
-                    this.identify(identifier);
+                    return this.identify(identifier);
+                }).then(() => {
+                    this.tagLoading = false;
                 });
                 // var self = this;
                 // SchemaSuggestion.addSchemaSuggestionsIfApplicable(
