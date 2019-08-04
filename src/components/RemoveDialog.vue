@@ -137,12 +137,14 @@
             isRemoveFlow: function () {
                 if (this.$store.state.isRemoveFlow) {
                     this.removeDialog = true;
-                    this.$nextTick(() => {
-                        const element = this.$refs.enterRemoveInput;
+                    if(this.$vuetify.breakpoint.lgAndUp){
                         this.$nextTick(() => {
-                            element.focus()
+                            const element = this.$refs.enterRemoveInput;
+                            this.$nextTick(() => {
+                                element.focus()
+                            });
                         });
-                    })
+                    }
                 } else {
                     this.removeDialog = false;
                 }

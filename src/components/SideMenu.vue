@@ -2,7 +2,8 @@
     <v-navigation-drawer
             stateless
             style="margin-top:42px;"
-            value="true"
+            :value="true"
+            v-if="$vuetify.breakpoint.mdAndUp || (!isSingle || $store.state.sideMenuFlow !== false)"
             fixed
             :width="mainWidth"
             :mini-variant="$store.state.sideMenuFlow === false"
@@ -14,7 +15,8 @@
                     :mini-variant="$store.state.sideMenuFlow === false"
                     mini-variant-width="50"
                     :width="menuWidth"
-                    :value="$vuetify.breakpoint.lgAndUp || $store.state.sideMenuFlow !== false"
+                    :value="true"
+                    v-if="$vuetify.breakpoint.lgAndUp || $store.state.sideMenuFlow !== false"
                     stateless
                     touchless
             >
@@ -69,7 +71,7 @@
                 </v-card>
             </v-navigation-drawer>
             <v-navigation-drawer
-                    v-if="$vuetify.breakpoint.mdAndUp"
+                    v-if="$vuetify.breakpoint.mdAndUp || !isSingle"
                     :value="true"
                     right
                     mini-variant
@@ -93,6 +95,7 @@
     import Selection from '@/Selection'
     import SideMenu from '@/SideMenu'
     import KeyboardActions from '@/KeyboardActions'
+    import BreakPoint from "../Breakpoint";
 
     export default {
         name: "SideMenu",
@@ -120,11 +123,11 @@
                     {title: 'Home', icon: 'dashboard'},
                     {title: 'About', icon: 'question_answer'}
                 ],
-                mainWidth: SideMenu.EXPANDED_WIDTH
+                mainWidth: SideMenu.EXPANDED_WIDTH,
             }
         },
         computed: {
-            creationDate: function(){
+            creationDate: function () {
                 return Selection.getSingle().getCreationDate()
             },
             isSingle: () => {
@@ -139,17 +142,14 @@
             mergeCanDo: function () {
                 return Selection.isSingle() && Selection.getSingle().controller().mergeCanDo();
             },
-            mainNavMiniWidth: function () {
-                if (this.$vuetify.breakpoint.mdAndDown) {
-                    return 0;
-                }
-                return SideMenu.MINI_WIDTH;
-            },
             menuWidth: function () {
                 return this.$vuetify.breakpoint.mdAndDown ? this.mainWidth : 340;
             },
             sideMenuFlow: function () {
                 return this.$store.state.sideMenuFlow;
+            },
+            mainNavMiniWidth: function () {
+                return this.$vuetify.breakpoint.mdAndDown ? 60 : SideMenu.MINI_WIDTH;
             }
         },
         methods: {
