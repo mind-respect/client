@@ -501,7 +501,7 @@
         text-decoration: none;
     }
 
-    .vh-center{
+    .vh-center {
         display: flex;
         align-items: center;
         justify-content: center;

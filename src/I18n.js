@@ -39,7 +39,9 @@ export default {
                         centers: "Centers",
                         confirm: "Confirm",
                         save: "Save",
-                        cancel: "Cancel"
+                        cancel: "Cancel",
+                        copy: "copy",
+                        copied: "copied"
                     }
                 },
                 fr: {
@@ -59,7 +61,9 @@ export default {
                         centers: "Centres",
                         confirm: "Confirmer",
                         save: "Sauvegarder",
-                        cancel: "Annuler"
+                        cancel: "Annuler",
+                        copy: "copier",
+                        copied: "copié"
                     }
                 }
             }

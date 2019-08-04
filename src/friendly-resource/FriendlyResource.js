@@ -710,12 +710,7 @@ FriendlyResource.FriendlyResource.prototype.getIndexInTree = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.getParentFork = function () {
-    return this.getClosestAncestorInTypes([
-        GraphElementType.Vertex,
-        GraphElementType.GroupRelation,
-        GraphElementType.Meta,
-        GraphElementType.MetaGroupVertex
-    ]);
+    return this.getClosestAncestorInTypes(GraphElementType.Fork);
 };
 
 FriendlyResource.FriendlyResource.prototype.getClosestAncestorInTypes = function (types) {

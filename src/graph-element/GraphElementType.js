@@ -15,7 +15,7 @@ const api = {
 };
 
 api.Fork = [
-    api.Vertex, api.GroupRelation
+    api.Vertex, api.GroupRelation, api.Meta, api.MetaGroupVertex
 ];
 
 api.GraphElementType = function (type) {
