@@ -251,8 +251,13 @@ FriendlyResource.FriendlyResource.prototype.isVertexType = function () {
     return this.type.isVertexType();
 };
 
+FriendlyResource.FriendlyResource.prototype.select = function () {
+    this.isSelected = true;
+};
+
 FriendlyResource.FriendlyResource.prototype.deselect = function () {
     this.blur();
+    this.isSelected = false;
 };
 
 FriendlyResource.FriendlyResource.prototype.blur = function () {
@@ -263,17 +268,17 @@ FriendlyResource.FriendlyResource.prototype.blur = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.selectTree = function () {
-    Selection.reset();
-    Selection.add(
-        this
-    );
+    Selection.removeAll();
+    let selected = [];
+    selected.push(this);
     this.getDescendants().forEach((descendant) => {
         if (descendant.isVertex()) {
-            Selection.add(
+            selected.push(
                 descendant
             );
         }
     });
+    Selection.setSelected(selected);
 };
 
 FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {
@@ -907,6 +912,7 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
     this.loading = true;
     this.isExpanded = false;
     this.isCollapsed = false;
+    this.isSelected = false;
     this.updateGraphElementType();
     return this;
 };

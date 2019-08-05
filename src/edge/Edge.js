@@ -171,13 +171,6 @@ api.Edge.prototype.getDestinationVertex = function () {
     return this.destinationVertex;
 };
 
-api.Edge.prototype.deselect = function () {
-    FriendlyResource.FriendlyResource.prototype.deselect.call(
-        this
-    );
-    this._selectRedraw();
-};
-
 api.Edge.prototype.isPublic = function () {
     return this.getSourceVertex().isPublic() &&
         this.getDestinationVertex().isPublic();
