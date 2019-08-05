@@ -469,7 +469,7 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
             previousParentVertex
         );
         //I don't know why I have to Selection.reset() to select the same bubble.
-        Selection.reset();
+        Selection.removeAll();
         Selection.setToSingle(model);
     });
 };
@@ -581,7 +581,7 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
     if (bubbleToSelect) {
         Selection.setToSingle(bubbleToSelect);
     } else {
-        Selection.reset();
+        Selection.removeAll();
     }
     if (this.isSingle()) {
         GraphElementService.changeChildrenIndex(this.model().getParentVertex());

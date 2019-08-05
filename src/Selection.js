@@ -21,9 +21,15 @@ api.setToSingle = function (graphElement) {
     if (api.isSingle() && Store.state.selected[0].id === graphElement.getId()) {
         return;
     }
+    api.getSelectedElements().forEach((selected) => {
+        if (selected) {
+            selected.deselect();
+        }
+    });
     Store.dispatch("setSelected", [
         api._storeFormat(graphElement)
     ]);
+    graphElement.isSelected = true;
     centerBubbleIfApplicable(graphElement);
 };
 
@@ -33,10 +39,21 @@ api.isSelected = function (graphElement) {
     });
 };
 
-api.add = function (graphElement, onlyPrepare) {
+api.add = function (graphElement) {
+    graphElement.select();
     Store.dispatch(
         "addSelected",
         api._storeFormat(graphElement)
+    );
+};
+
+api.setSelected = function (graphElements) {
+    Store.dispatch(
+        "setSelected",
+        graphElements.map((graphElement) => {
+            graphElement.select();
+            return api._storeFormat(graphElement);
+        })
     );
 };
 
@@ -47,7 +64,9 @@ api.remove = function (toDeselect) {
 
 api.removeAll = function () {
     api.getSelectedElements().forEach(function (selected) {
-        selected.deselect();
+        if (selected) {
+            selected.deselect();
+        }
     });
     Store.dispatch("setSelected", []);
 };
