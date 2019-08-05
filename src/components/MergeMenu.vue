@@ -41,11 +41,11 @@
     import SearchService from '@/search/SearchService'
     import SearchResultContent from '@/components/SearchResultContent'
     import SearchResultAction from '@/components/SearchResultAction'
-    import Selection from '@/Selection'
     import Breakpoint from "@/Breakpoint";
 
     export default {
         name: "MergeMenu",
+        props:['bubble'],
         components: {
             SearchResultContent,
             SearchResultAction
@@ -83,7 +83,7 @@
                 });
             },
             selectSearchResult: function () {
-                this.selected.controller().convertToDistantBubbleWithUri(
+                this.bubble.controller().convertToDistantBubbleWithUri(
                     this.selectedSearchResult.uri
                 );
                 this.$refs.mergeSearch.reset();
@@ -92,15 +92,10 @@
                 }
             },
             filter: function (item, searchText, itemText) {
-                if (!this.selected.controller().convertToDistantBubbleWithUriCanDo(item.uri)) {
+                if (!this.bubble.controller().convertToDistantBubbleWithUriCanDo(item.uri)) {
                     return false;
                 }
                 return itemText.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
-            }
-        },
-        computed: {
-            selected: function () {
-                return Selection.getSingle();
             }
         }
     }

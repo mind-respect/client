@@ -2,86 +2,64 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import GraphDisplayer from '@/graph/GraphDisplayer'
 import Scroll from '@/Scroll'
+import Store from '@/store'
+import CurrentSubGraph from "@/graph/CurrentSubGraph";
+import GraphElementType from '@/graph-element/GraphElementType'
+import GraphElement from '@/graph-element/GraphElement'
 
-const api = {
-    selected: []
-};
+const api = {};
 
 api.reset = function () {
-    while (api.selected.length > 0) {
-        api.selected.pop();
-    }
+    Store.dispatch("setSelected", []);
 };
-
 
 api.setToSingle = function (graphElement) {
     if (!graphElement) {
         return;
     }
-    if (api.isSingle() && api.getSingle().getId() === graphElement.getId()) {
+    if (api.isSingle() && Store.state.selected[0].id === graphElement.getId()) {
         return;
     }
-    api.removeAll();
-    api.add(graphElement);
+    Store.dispatch("setSelected", [
+        api._storeFormat(graphElement)
+    ]);
     centerBubbleIfApplicable(graphElement);
 };
 
 api.isSelected = function (graphElement) {
-    return api.selected.some((selected) => {
-        return selected.getId() === graphElement.getId();
+    return Store.state.selected.some((selected) => {
+        return selected.id === graphElement.getId();
     });
 };
 
-api.setToSingleRelation = function (relation) {
-    if (api.getNbSelectedElements() === 1 && api.getSingle().getId() === relation.getId()) {
-        return;
-    }
-    deselectAll();
-    api.addRelation(relation);
-};
-
 api.add = function (graphElement, onlyPrepare) {
-    onlyPrepare = onlyPrepare || false;
-    api.addVertex(graphElement, onlyPrepare);
+    Store.dispatch(
+        "addSelected",
+        api._storeFormat(graphElement)
+    );
 };
 
-api.addRelation = function (relation) {
-    api.addVertex(relation);
-};
-
-api.addVertex = function (vertex) {
-    vertex.select();
-    api.selected.push(vertex);
-};
-api.remove = api.removeVertex = function (vertex) {
-    deselectGraphElement(vertex, api.selected);
-};
-api.removeRelation = function (relation) {
-    deselectGraphElement(relation, api.selected);
+api.remove = function (toDeselect) {
+    toDeselect.deselect();
+    Store.dispatch("removeSelected", api._storeFormat(toDeselect));
 };
 
 api.removeAll = function () {
-    deselectAll();
-};
-
-api.getSelectedVertices = function () {
-    return api.selected;
-};
-
-api.handleSelectionManagementClick = function (event) {
-    event.preventDefault();
+    api.getSelectedElements().forEach(function (selected) {
+        selected.deselect();
+    });
+    Store.dispatch("setSelected", []);
 };
 
 api.getNbSelectedVertices = function () {
-    return api.selected.filter((selected) => {
-        return selected.isVertex();
+    return Store.state.selected.filter((selected) => {
+        return GraphElementType.isVertex(selected.type);
     }).length;
 };
 api.getNbSelectedRelations = function () {
-    return api.selected.filter((selected) => {
-        return selected.isRelation();
+    return Store.state.selected.filter((selected) => {
+        return GraphElementType.isRelation(selected.type);
     }).length;
 };
 api.getOneOrArrayOfSelected = function () {
@@ -92,10 +70,32 @@ api.getSingle = function () {
     return api.getSelectedBubbles()[0];
 };
 api.getSelectedElements = api.getSelectedBubbles = function () {
-    return api.selected;
+    return Store.state.selected.map((selected) => {
+        if (GraphElementType.isEdgeType(selected.type)) {
+            return CurrentSubGraph.get().getEdgeWithUriAndId(
+                selected.uri,
+                selected.id
+            );
+        }
+        switch (selected.type) {
+            case GraphElementType.Vertex :
+                return CurrentSubGraph.get().getVertexWithUriAndId(
+                    selected.uri,
+                    selected.id
+                );
+            case GraphElementType.GroupRelation :
+                return CurrentSubGraph.get().getGroupRelationWithUiId(
+                    selected.id
+                );
+            case GraphElementType.Meta:
+                return CurrentSubGraph.get().tags[0];
+            default:
+                return CurrentSubGraph.get().otherGraphElements[selected.id];
+        }
+    });
 };
 api.getNbSelected = api.getNbSelectedElements = function () {
-    return api.selected.length;
+    return Store.state.selected.length;
 };
 api.isSingle = function () {
     return 1 === api.getNbSelectedElements();
@@ -106,31 +106,18 @@ api.isEmpty = function () {
 };
 
 api.controller = function () {
-    let nbSelectedGraphElements = api.getNbSelected();
-    let currentController;
-    if (0 === nbSelectedGraphElements) {
-        currentController = GraphDisplayer.getGraphMenuHandler();
-    } else if (1 === nbSelectedGraphElements) {
-        currentController = api.getSingle().controller();
-    } else {
-        let anyElement = api.getSingle();
-        let anyElementType = anyElement.getGraphElementType();
-        let areAllElementsOfSameType = true;
-        api.getSelectedElements().forEach(function (selectedElement) {
-            if (selectedElement.getGraphElementType() !== anyElementType) {
-                areAllElementsOfSameType = false;
-            }
-        });
-        let graphElementControllerClass = GraphDisplayer.getGraphElementMenuHandler();
-        currentController = areAllElementsOfSameType ? anyElement.getControllerWithElements(
-            api.getSelectedElements()
-        ) : new graphElementControllerClass.GraphElementController(
-            api.getSelectedElements()
-        );
-    }
-    return currentController;
+    return GraphElement.wrapElementsInController(
+        this.getSelectedElements()
+    );
 };
 
+api._storeFormat = function (graphElement) {
+    return {
+        type: graphElement.getGraphElementType(),
+        uri: graphElement.getUri(),
+        id: graphElement.getId()
+    }
+};
 
 export default api;
 
@@ -138,22 +125,3 @@ function centerBubbleIfApplicable(bubble) {
     Scroll.centerBubbleIfApplicable(bubble);
 }
 
-function deselectAll() {
-    api.getSelectedElements().forEach(function (selected) {
-        selected.deselect();
-    });
-    for (let i = api.selected.length; i > 0; i--) {
-        api.selected.pop();
-    }
-}
-
-function deselectGraphElement(toDeselect, graphElements) {
-    toDeselect.deselect();
-    var uriToRemove = toDeselect.getUri();
-    for (var i = graphElements.length - 1; i >= 0; i--) {
-        if (uriToRemove === graphElements[i].getUri()) {
-            graphElements.splice(i, 1);
-            return;
-        }
-    }
-}

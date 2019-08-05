@@ -40,11 +40,10 @@
 
 <script>
     import UiUtils from '@/UiUtils'
-    import Selection from '@/Selection'
 
     export default {
         name: "Button",
-        props: ['button', 'hightlight', 'isInTopMenu', 'isInSideMenu', 'buttonIndex'],
+        props: ['button', 'hightlight', 'isInTopMenu', 'isInSideMenu', 'buttonIndex', 'controller'],
         data: function () {
             return {
                 ctrlKey: UiUtils.isMacintosh() ? "⌘" : "ctrl",
@@ -64,7 +63,7 @@
                 if (this.isInSideMenu) {
                     let contentClass = "side-button-tooltip ";
                     contentClass += this.$store.state.sideMenuFlow === false ?
-                        "side-button-collapsed-margin":
+                        "side-button-collapsed-margin" :
                         "side-button-expanded-margin";
                     return contentClass;
                 }
@@ -72,14 +71,11 @@
             },
             isInMainMenu: function () {
                 return this.isInTopMenu || this.isInSideMenu;
-            },
-            bubble: function () {
-                return Selection.isSingle() ? Selection.getSingle() : {};
             }
         },
         methods: {
             performAction: function (button, event) {
-                let controller = this.controller(button);
+                let controller = this.getController(button);
                 let promise = controller[
                     button.action
                     ](event);
@@ -91,14 +87,11 @@
                 });
             },
             canDo: function (button) {
-                if (this.bubble.loading) {
-                    return false;
-                }
-                let controller = this.controller(button);
+                let controller = this.getController(button);
                 if (!this.canActionBePossiblyMade(button.action, controller)) {
                     return false;
                 }
-                var methodToCheckIfActionCanBePerformedForElements = controller[
+                let methodToCheckIfActionCanBePerformedForElements = controller[
                 button.action + "CanDo"
                     ];
                 if (undefined === methodToCheckIfActionCanBePerformedForElements) {
@@ -108,11 +101,11 @@
                     controller
                 );
             },
-            controller: function (button) {
+            getController: function (button) {
                 if (button.controller) {
                     return button.controller;
                 }
-                return Selection.controller();
+                return this.controller;
             },
             canActionBePossiblyMade: function (action, controller) {
                 return controller[
@@ -131,7 +124,7 @@
 <style>
     .side-button-tooltip {
         white-space: nowrap;
-        position:fixed;
+        position: fixed;
     }
 
     .side-button-expanded-margin {

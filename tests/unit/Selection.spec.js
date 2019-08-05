@@ -14,7 +14,7 @@ describe("Selection", () => {
         expect(
             Selection.isSingle()
         ).toBeFalsy();
-        Selection.addVertex(b2);
+        Selection.add(b2);
         expect(
             Selection.isSingle()
         ).toBeTruthy();
@@ -51,8 +51,8 @@ describe("Selection", () => {
             let scenario = await new ThreeScenario();
             let b1 = scenario.getBubble1InTree();
             let b2 = scenario.getBubble2InTree();
-            Selection.addVertex(b1);
-            Selection.addVertex(b2);
+            Selection.add(b1);
+            Selection.add(b2);
             expect(
                 Selection.controller() instanceof VertexController.VertexController
             ).toBeTruthy();

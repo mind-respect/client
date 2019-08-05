@@ -61,7 +61,7 @@
                         {{identifier.getIcon()}}
                     </v-icon>
                     <i class="fab fa-wikipedia-w mr-4" v-else></i>
-                    <v-list-tile-action v-if="!selected.isGroupRelation()">
+                    <v-list-tile-action v-if="!bubble.isGroupRelation()">
                         <v-btn icon flat @click.native="removeIdentifier($event, identifier)">
                             <v-icon color="third">
                                 delete
@@ -75,15 +75,16 @@
 </template>
 
 <script>
+    import Selection from '@/Selection'
     import SearchResultContent from '@/components/SearchResultContent'
     import SearchResultAction from '@/components/SearchResultAction'
     import I18n from '@/I18n'
-    import Selection from '@/Selection'
     import SearchService from '@/search/SearchService'
     import Identification from '@/identifier/Identification'
 
     export default {
         name: "TagMenu",
+        props:['bubble'],
         components: {
             SearchResultContent,
             SearchResultAction
@@ -114,14 +115,11 @@
             this.$store.dispatch("setIsTagFlow", false)
         },
         computed: {
-            selected: function () {
-                return Selection.getSingle();
-            },
             isTagFlow: function () {
                 return this.$store.state.isTagFlow;
             },
             identifiersByLatest: function () {
-                return this.selected.getIdentifiers().sort((a, b) => {
+                return this.bubble.getIdentifiers().sort((a, b) => {
                     return b.getCreationDate() - a.getCreationDate();
                 })
             }
@@ -135,8 +133,8 @@
                     this.defineUrls().then(() => {
                         this.dialog = true;
                         this.$nextTick(() => {
-                            // if(this.selected.getIdentifiers().length === 0){
-                            //     this.search = this.selected.getLabel();
+                            // if(this.bubble.getIdentifiers().length === 0){
+                            //     this.search = this.bubble.getLabel();
                             // }
                             // this.$nextTick(()=>{
                             this.$refs.search.focus();
@@ -166,7 +164,7 @@
                 let identifier = Identification.fromSearchResult(
                     this.selectedSearchResult
                 );
-                if (this.selected.model().hasIdentification(identifier)) {
+                if (this.bubble.model().hasIdentification(identifier)) {
                     return false;
                 }
                 identifier.makeGeneric();
@@ -196,17 +194,17 @@
                 return identifier;
             },
             identify: function (identifier) {
-                return this.selected.controller().addIdentification(
+                return this.bubble.controller().addIdentification(
                     identifier
                 );
             },
             removeIdentifier: function ($event, identifier) {
                 $event.preventDefault();
-                this.selected.controller().removeIdentifier(identifier);
+                this.bubble.controller().removeIdentifier(identifier);
             },
             defineUrls: function () {
                 return Promise.all(
-                    this.selected.getIdentifiers().map((identifier) => {
+                    this.bubble.getIdentifiers().map((identifier) => {
                         return identifier.getUrl();
                     })
                 );

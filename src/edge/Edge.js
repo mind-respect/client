@@ -7,7 +7,6 @@ import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import VertexServerFormatBuilder from '@/vertex/VertexServerFormatBuilder'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Store from '@/store'
-import Vue from 'vue'
 import I18n from '@/I18n'
 import Selection from '@/Selection'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
@@ -172,23 +171,11 @@ api.Edge.prototype.getDestinationVertex = function () {
     return this.destinationVertex;
 };
 
-api.Edge.prototype.select = function () {
-    FriendlyResource.FriendlyResource.prototype.select.call(
-        this
-    );
-    this._selectRedraw();
-};
-
 api.Edge.prototype.deselect = function () {
     FriendlyResource.FriendlyResource.prototype.deselect.call(
         this
     );
     this._selectRedraw();
-};
-
-api.Edge.prototype._selectRedraw = async function () {
-    await Vue.nextTick();
-    Store.dispatch("redraw");
 };
 
 api.Edge.prototype.isPublic = function () {

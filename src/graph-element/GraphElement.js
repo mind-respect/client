@@ -98,6 +98,52 @@ GraphElement.initMenuHandlerGetters = function () {
 GraphElement.GraphElement = function () {
 };
 
+GraphElement.wrapElementsInController = function (elements) {
+    let nbSelectedGraphElements = elements.length;
+    if (0 === nbSelectedGraphElements) {
+        return GraphDisplayer.getGraphMenuHandler();
+    } else if (1 === nbSelectedGraphElements) {
+        return elements[0].controller();
+    } else {
+        let anyElementType = elements[0].getGraphElementType();
+        let areAllElementsOfSameType = elements.every((element) => {
+            return element.getGraphElementType() === anyElementType;
+        });
+        if (areAllElementsOfSameType) {
+            return GraphElement.getControllerWithTypeAndElements(
+                anyElementType,
+                elements
+            );
+        }
+        let graphElementControllerClass = GraphDisplayer.getGraphElementMenuHandler();
+        return new graphElementControllerClass.GraphElementController(
+            elements
+        );
+    }
+};
+
+GraphElement._getControllerNameFromType = function (type) {
+    let controllerName = "";
+    let nameParts = type.split("_");
+    nameParts.forEach(function (namePart) {
+        controllerName += namePart.charAt(0).toUpperCase() + namePart.substr(1);
+    });
+    return controllerName + "Controller";
+};
+
+GraphElement.getControllerWithTypeAndElements = function (type, elements) {
+    let controller = GraphElement._getControllerClassFromType(type);
+    return new controller[
+        GraphElement._getControllerNameFromType(type)
+        ](elements);
+};
+
+GraphElement._getControllerClassFromType = function (graphElementType) {
+    return controllerGetters[
+        graphElementType
+        ]();
+};
+
 GraphElement.GraphElement.prototype = new FriendlyResource.FriendlyResource();
 
 GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
@@ -109,7 +155,7 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
         this,
         graphElementServerFormat.friendlyResource
     );
-    if (this.graphElementServerFormat.childrenIndex && typeof  this.graphElementServerFormat.childrenIndex === 'string') {
+    if (this.graphElementServerFormat.childrenIndex && typeof this.graphElementServerFormat.childrenIndex === 'string') {
         this.graphElementServerFormat.childrenIndex = JSON.parse(
             this.graphElementServerFormat.childrenIndex
         );
@@ -357,25 +403,10 @@ GraphElement.GraphElement.prototype.controller = function () {
 };
 
 GraphElement.GraphElement.prototype.getControllerWithElements = function (elements) {
-    let controller = this._getControllerClass();
+    let controller = GraphElement._getControllerClassFromType(this.getGraphElementType());
     return new controller[
-        this._getControllerName()
+        GraphElement._getControllerNameFromType(this.getGraphElementType())
         ](elements);
-};
-
-GraphElement.GraphElement.prototype._getControllerName = function () {
-    let controllerName = "";
-    let nameParts = this.getGraphElementType().split("_");
-    nameParts.forEach(function (namePart) {
-        controllerName += namePart.charAt(0).toUpperCase() + namePart.substr(1);
-    });
-    return controllerName + "Controller";
-};
-
-GraphElement.GraphElement.prototype._getControllerClass = function () {
-    return controllerGetters[
-        this.getGraphElementType()
-        ]();
 };
 
 // GraphElement.GraphElement.prototype._buildWikidataLinks = function () {

@@ -581,7 +581,7 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
     if (bubbleToSelect) {
         Selection.setToSingle(bubbleToSelect);
     } else {
-        Selection.removeAll();
+        Selection.reset();
     }
     if (this.isSingle()) {
         GraphElementService.changeChildrenIndex(this.model().getParentVertex());

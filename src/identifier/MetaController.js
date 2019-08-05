@@ -73,10 +73,12 @@ MetaController.prototype.loadGraph = function () {
                 vertex = new MetaGroupVertex(
                     vertex
                 );
+                CurrentSubGraph.get().add(vertex);
                 child = new MetaRelation(vertex, centerBubble);
                 centerBubble.addChild(
                     child
                 );
+                CurrentSubGraph.get().add(child);
                 sourceVertexAndEdges.edges.forEach((edgeBetweenGroupAndDestination) => {
                     let destinationVertex = subGraph.getVertexWithUri(
                         edgeBetweenGroupAndDestination.getDestinationVertex().getUri()

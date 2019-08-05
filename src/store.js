@@ -37,7 +37,8 @@ const Store = new Vuex.Store({
         isEditFlow: false,
         redraws: Math.random(),
         sideMenuFlow: false,
-        isViewOnly: null
+        isViewOnly: null,
+        selected: []
     },
     mutations: {
         setUser: function (state, user) {
@@ -106,6 +107,21 @@ const Store = new Vuex.Store({
         },
         setIsViewOnly: function (state, isViewOnly) {
             state.isViewOnly = isViewOnly;
+        },
+        setSelected: function (state, selected) {
+            state.selected = selected;
+        },
+        addSelected: function (state, selected) {
+            state.selected.push(selected);
+        },
+        removeSelected: function (state, toRemove) {
+            let l = state.selected.length;
+            while (l--) {
+                let selected = state.selected[l];
+                if (selected.id === toRemove.id) {
+                    state.selected.splice(l, 1)
+                }
+            }
         }
     },
     actions: {
@@ -127,7 +143,7 @@ const Store = new Vuex.Store({
         setIsRemoveFlow: function (action, isRemoveFlow) {
             action.commit('setIsRemoveFlow', isRemoveFlow);
         },
-        setIsRemoveTagFlow: function(action, isRemoveTagFlow){
+        setIsRemoveTagFlow: function (action, isRemoveTagFlow) {
             action.commit('setIsRemoveTagFlow', isRemoveTagFlow);
         },
         setIsDescriptionFlow: function (action, isDescriptionFlow) {
@@ -156,6 +172,15 @@ const Store = new Vuex.Store({
         },
         setIsViewOnly: function (action, isViewOnly) {
             action.commit('setIsViewOnly', isViewOnly);
+        },
+        setSelected: function (action, selected) {
+            action.commit('setSelected', selected);
+        },
+        addSelected: function (action, selected) {
+            action.commit('addSelected', selected);
+        },
+        removeSelected: function (action, selected) {
+            action.commit('removeSelected', selected);
         }
     }
 });

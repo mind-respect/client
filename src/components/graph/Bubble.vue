@@ -109,7 +109,7 @@
                             <v-menu
                                     lazy
                                     v-model="showMenu"
-                                    :value="isSelected"
+                                    :value="isSelected && $store.state.selected.length === 1"
                                     max-width="250"
                                     :nudge-width="250"
                                     auto
@@ -145,7 +145,7 @@
                                             v-model="linkMenu"
                                             auto
                                             offset-y
-                                            :disabled="bubble.isEditFlow"
+                                            :disabled="bubble.isEditFlow || $store.state.selected.length > 1"
                                     >
                                         <v-badge color="third" slot="activator" :left="isLeft">
                                             <template v-slot:badge v-if="bubble.isMeta()">
@@ -182,7 +182,7 @@
                                     </v-menu>
                                 </div>
                                 <div :style="background">
-                                    <BubbleButtons></BubbleButtons>
+                                    <BubbleButtons v-if="$store.state.selected.length === 1 && this.isSelected"></BubbleButtons>
                                 </div>
                             </v-menu>
                         </div>
@@ -260,7 +260,7 @@
                             <v-menu
                                     lazy
                                     v-model="showMenu"
-                                    :value="isSelected"
+                                    :value="isSelected && $store.state.selected.length === 1"
                                     max-width="250"
                                     :nudge-width="250"
                                     auto
@@ -311,7 +311,7 @@
                                     </v-chip>
                                 </div>
                                 <div :style="background">
-                                    <BubbleButtons></BubbleButtons>
+                                    <BubbleButtons v-if="$store.state.selected.length === 1 && this.isSelected"></BubbleButtons>
                                 </div>
                             </v-menu>
                         </div>
@@ -450,7 +450,9 @@
                 let font = CurrentSubGraph.get().center.getFont();
                 return "font-family:" + font.family;
             },
-            selected: () => Selection.selected,
+            selected: function () {
+                return this.$store.state.selected;
+            },
             relationPlaceholder: function () {
                 return this.bubble.isGroupRelation() || this.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
             },
@@ -562,13 +564,9 @@
                 }
             },
             checkIsSelected: function () {
-                let found = false;
-                Selection.getSelectedBubbles().forEach((selected) => {
-                    if (selected.getId() === this.bubble.getId()) {
-                        found = true;
-                    }
+                this.isSelected = this.$store.state.selected.some((selected) => {
+                    return selected.id === this.bubble.getId()
                 });
-                this.isSelected = found;
             },
             mouseDown: function () {
                 if (this.bubble.isEditFlow) {

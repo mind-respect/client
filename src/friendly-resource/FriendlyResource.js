@@ -251,9 +251,6 @@ FriendlyResource.FriendlyResource.prototype.isVertexType = function () {
     return this.type.isVertexType();
 };
 
-FriendlyResource.FriendlyResource.prototype.select = function () {
-};
-
 FriendlyResource.FriendlyResource.prototype.deselect = function () {
     this.blur();
 };

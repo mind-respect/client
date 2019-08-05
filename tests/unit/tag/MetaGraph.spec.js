@@ -79,7 +79,7 @@ describe("MetaGraph", () => {
         let scenario = await new AroundEventTagScenario();
         let eventBubble = scenario.getEventBubbleInTree();
         let tagRelation = eventBubble.getNextBubble();
-        Selection.setToSingleRelation(
+        Selection.setToSingle(
             tagRelation
         );
         expect(

@@ -100,7 +100,7 @@
         mounted: function () {
             window.addEventListener('resize', this.handleResize);
             CurrentSubGraph.set(SubGraph.empty());
-            Selection.removeAll();
+            Selection.reset();
             let centerUri = MindMapInfo.getCenterBubbleUri();
             let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : GraphElement.withUri(centerUri);
             let promise = center.isMeta() ?
@@ -165,10 +165,6 @@
             redraws: async function () {
                 await this.$nextTick();
                 this.redrawKey = Math.random();
-                await this.$nextTick();
-                setTimeout(() => {
-                    this.redrawKey = Math.random();
-                }, 500)
             }
         }
     }

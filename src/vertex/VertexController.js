@@ -443,7 +443,9 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
         return Promise.reject();
     }
     let beforeMergeLabel = this.model().getLabel();
-    return VertexService.mergeTo(this.model(), distantVertexUri).then(() => {
+    return this.expand(true).then(() => {
+        return VertexService.mergeTo(this.model(), distantVertexUri);
+    }).then(() => {
         this.model().setUri(distantVertexUri);
         CurrentSubGraph.get().add(this.model());
         return SubGraphController.withVertex(

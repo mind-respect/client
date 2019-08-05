@@ -34,7 +34,6 @@
 <script>
     import Selection from '@/Selection'
     import I18n from '@/I18n'
-    import GraphElementService from '@/graph-element/GraphElementService'
     import GraphUi from '@/graph/GraphUi'
     import KeyboardActions from '@/KeyboardActions'
 
@@ -55,16 +54,14 @@
             return {
                 dialog: false,
                 note: "",
-                editorOptions: {}
+                editorOptions: {},
+                bubble: null
             }
         },
         mounted: function () {
             this.$store.dispatch("setIsDescriptionFlow", false)
         },
         computed: {
-            bubble: function () {
-                return Selection.getSingle();
-            },
             isDescriptionFlow: function () {
                 return this.$store.state.isDescriptionFlow;
             }
@@ -72,16 +69,17 @@
         watch: {
             isDescriptionFlow: function () {
                 if (this.$store.state.isDescriptionFlow) {
+                    this.bubble = Selection.getSingle();
                     this.dialog = true;
                     this.note = this.bubble.getComment();
                     this.editorOptions.placeholder = this.$t('desc:title') + " \"" + this.bubble.getLabelOrDefault() + "\""
-                    this.$nextTick(function () {
-                        setTimeout(function () {
+                    this.$nextTick(() => {
+                        setTimeout(() => {
                             this.$refs.editor.quill.setSelection(
                                 this.note.length
                             );
-                        }.bind(this), 300)
-                    }.bind(this))
+                        }, 300)
+                    });
 
                 } else {
                     this.dialog = false;
@@ -89,7 +87,7 @@
             },
             dialog: function () {
                 if (this.dialog === false) {
-                    this.$store.dispatch("setIsDescriptionFlow", false)
+                    this.$store.dispatch("setIsDescriptionFlow", false);
                     GraphUi.enableDragScroll();
                     KeyboardActions.enable();
                 } else {

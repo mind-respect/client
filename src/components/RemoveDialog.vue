@@ -44,12 +44,12 @@
                     </v-list>
                 </v-tooltip>
                 <v-list>
-                    <v-subheader v-if="isMultipleFlow && false">
+                    <v-subheader v-if="$store.state.selected.length > 1 && false">
                         {{$t('remove:multiple')}}
                     </v-subheader>
                     <v-list-tile
                             v-for="bubble in selected"
-                            :key="selected.uiId"
+                            :key="bubble.uiId"
                     >
                         <v-list-tile-action>
                             <v-icon>
@@ -70,7 +70,7 @@
                     <v-btn color="secondary" class="ml-2" @click="remove" type="submit">
                         <v-icon class="mr-2">delete</v-icon>
                         {{$t('remove:confirm')}}
-                        <span v-if="isMultipleFlow" class="ml-2">
+                        <span v-if="$store.state.selected.length > 1" class="ml-2">
                             {{$t('remove:multiple_confirm_suffix')}}
                         </span>
                     </v-btn>
@@ -91,6 +91,7 @@
 <script>
     import Selection from '@/Selection'
     import I18n from '@/I18n'
+    import GraphElement from '@/graph-element/GraphElement'
 
     export default {
         name: "RemoveDialog",
@@ -116,28 +117,24 @@
                 "cancel": "Annuler"
             });
             return {
-                removeDialog: false
+                removeDialog: false,
+                selected: null
             }
         },
         mounted: function () {
             this.$store.dispatch("setIsRemoveFlow", false)
         },
         computed: {
-            selected: function () {
-                return Selection.getSelectedElements();
-            },
             isRemoveFlow: function () {
                 return this.$store.state.isRemoveFlow;
-            },
-            isMultipleFlow: function () {
-                return this.selected.length > 1;
             }
         },
         watch: {
             isRemoveFlow: function () {
                 if (this.$store.state.isRemoveFlow) {
+                    this.selected = Selection.getSelectedElements();
                     this.removeDialog = true;
-                    if(this.$vuetify.breakpoint.lgAndUp){
+                    if (this.$vuetify.breakpoint.lgAndUp) {
                         this.$nextTick(() => {
                             const element = this.$refs.enterRemoveInput;
                             this.$nextTick(() => {
@@ -157,7 +154,7 @@
         },
         methods: {
             remove: async function () {
-                await Selection.controller().removeDo();
+                await GraphElement.wrapElementsInController(this.selected).removeDo();
                 this.removeDialog = false;
             }
         }

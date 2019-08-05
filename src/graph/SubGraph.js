@@ -42,6 +42,7 @@ api.withFacadeAndCenterUri = function (serverFacade, centerUri) {
 };
 
 api.SubGraph = function (graph, centerUri, buildFacade) {
+    this.otherGraphElements = {};
     if (buildFacade) {
         this.serverFormat = graph;
         this._buildVertices();
@@ -71,11 +72,10 @@ api.SubGraph.prototype.add = function (graphElement) {
         endVertex.parentBubble = graphElement;
         endVertex.parentVertex = graphElement.parentVertex;
         endVertex.direction = graphElement.direction;
-        this.addVertex(endVertex);
+        this.add(endVertex);
     } else if (graphElement.isVertex()) {
         this.addVertex(graphElement);
-    }
-    else if (graphElement.isGroupRelation()) {
+    } else if (graphElement.isGroupRelation()) {
         this.groupRelations.push(
             graphElement
         );
@@ -85,6 +85,8 @@ api.SubGraph.prototype.add = function (graphElement) {
             child.parentBubble = graphElement;
             this.add(child);
         })
+    }else{
+        this.otherGraphElements[graphElement.getId()] = graphElement;
     }
 };
 
@@ -183,12 +185,24 @@ api.SubGraph.prototype.getVertexWithUri = function (uri) {
     return this.vertices[uri][0];
 };
 
+api.SubGraph.prototype.getVertexWithUriAndId = function (uri, id) {
+    return this.getVerticesWithUri(uri).filter((vertex) => {
+        return vertex.getId() === id;
+    })[0];
+};
+
 api.SubGraph.prototype.getVerticesWithUri = function (uri) {
     return this.vertices[uri] || [];
 };
 
 api.SubGraph.prototype.getEdgeWithUri = function (uri) {
     return this.edges[uri][0];
+};
+
+api.SubGraph.prototype.getEdgeWithUriAndId = function (uri, id) {
+    return this.getEdgesWithUri(uri).filter((edge) => {
+        return edge.getId() === id;
+    })[0];
 };
 
 api.SubGraph.prototype.getEdgesWithUri = function (uri) {

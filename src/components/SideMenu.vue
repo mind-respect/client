@@ -58,13 +58,13 @@
                         </v-tabs>
                         <v-tabs-items v-model="tabMenu" class="white">
                             <v-tab-item v-if="noteCanDo">
-                                <NoteMenu></NoteMenu>
+                                <NoteMenu :bubble="selected"></NoteMenu>
                             </v-tab-item>
                             <v-tab-item v-if="tagCanDo">
-                                <TagMenu @focus="focus" @blur="blur"></TagMenu>
+                                <TagMenu @focus="focus" @blur="blur" :bubble="selected"></TagMenu>
                             </v-tab-item>
                             <v-tab-item v-if="mergeCanDo">
-                                <MergeMenu @focus="focus" @blur="blur"></MergeMenu>
+                                <MergeMenu @focus="focus" @blur="blur" :bubble="selected"></MergeMenu>
                             </v-tab-item>
                         </v-tabs-items>
                     </div>
@@ -118,7 +118,6 @@
             });
             return {
                 tabMenu: null,
-                Selection: Selection,
                 items: [
                     {title: 'Home', icon: 'dashboard'},
                     {title: 'About', icon: 'question_answer'}
@@ -127,8 +126,11 @@
             }
         },
         computed: {
+            selected: function () {
+                return Selection.getSingle();
+            },
             creationDate: function () {
-                return Selection.getSingle().getCreationDate()
+                return Selection.getSingle().getCreationDate();
             },
             isSingle: () => {
                 return Selection.isSingle();

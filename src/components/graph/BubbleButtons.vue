@@ -3,10 +3,13 @@
   -->
 
 <template>
-    <div v-if="selected" :key="menuKey">
+    <div :key="menuKey"
+         v-if="menuKey && $store.state.selected.length > 0 && ($store.state.selected.length > 1 || !single.loading)">
         <span v-for="button in buttons" :key="button.action">
-            <Button :button="button" :isInSideMenu="isInSideMenu" v-if="!button.isCustom" @performed="forceRefresh"></Button>
-            <Button :button="button" :isInSideMenu="isInSideMenu" v-if="button.isCustom && button.action === 'copy'">
+            <Button :button="button" :controller="controller" :isInSideMenu="isInSideMenu" v-if="!button.isCustom"
+                    @performed="forceRefresh"></Button>
+            <Button :button="button" :isInSideMenu="isInSideMenu" :controller="controller"
+                    v-if="button.isCustom && button.action === 'copy'">
                 <v-btn slot="button"
                        icon
                        flat
@@ -34,7 +37,8 @@
         },
         data: function () {
             return {
-                menuKey: IdUri.uuid(),
+                menuKey: null,
+                single: null,
                 buttons: [
                     {
                         action: "addChild",
@@ -167,12 +171,21 @@
                 this.menuKey = IdUri.uuid();
             }
         },
+        mounted: function () {
+            this.single = Selection.getSingle();
+            if (!this.single) {
+                this.single = {
+                    loading: true
+                }
+            }
+            this.menuKey = IdUri.uuid();
+        },
         computed: {
             copyContent: function () {
-                return Selection.getSingle().getLabel()
+                return this.single.getLabel()
             },
-            selected: function () {
-                return Selection.getSingle();
+            controller: function () {
+                return Selection.controller();
             }
         }
     }

@@ -102,7 +102,7 @@
             <!--<router-link to="/">Home</router-link>-->
             <!--<router-link to="/about">About</router-link>-->
         </div>
-        <SideMenu v-if="isGraphRoute"></SideMenu>
+        <SideMenu v-if="isGraphRoute && $store.state.selected.length > 0"></SideMenu>
         <v-content>
             <router-view></router-view>
         </v-content>
