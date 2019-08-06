@@ -122,7 +122,8 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
             this.model().getIdentifiersIncludingSelf();
         promises.push(
             movedEdge.controller().addIdentifiers(
-                identifiers
+                identifiers,
+                true
             )
         );
         promises.push(

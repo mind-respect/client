@@ -429,14 +429,16 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
             movedEdge.visitClosestChildRelations(function (relation) {
                 promises.push(
                     relation.controller().addIdentification(
-                        identification
+                        identification,
+                        true
                     )
                 );
             });
         } else {
             promises.push(
                 movedEdge.controller().addIdentification(
-                    identification
+                    identification,
+                    true
                 )
             );
         }
@@ -482,17 +484,28 @@ GraphElementController.prototype.becomeExParent = function () {
     return Promise.resolve();
 };
 
-GraphElementController.prototype.addIdentifiers = function (identifiers) {
+GraphElementController.prototype.addIdentifiers = function (identifiers, preventMoving) {
     let promises = [];
     identifiers.forEach((identifier) => {
-        promises.push(this.addIdentification(identifier));
+        promises.push(this.addIdentification(identifier, preventMoving));
     });
     return Promise.all(promises);
 };
 
-GraphElementController.prototype.addIdentification = function (identifier, force) {
+GraphElementController.prototype.addIdentification = function (identifier, preventMoving, force) {
     if (this.model().hasIdentification(identifier) && !force) {
         return Promise.resolve([identifier])
+    }
+    if (!preventMoving) {
+        let siblingWithSameIdentifier = this.model().getParentFork().getNextChildren().filter((sibling) => {
+            return sibling.hasIdentification(identifier) && sibling.getId() !== this.model().getId()
+        });
+        if (siblingWithSameIdentifier.length) {
+            return this.moveUnderParent(siblingWithSameIdentifier[0]).then((groupRelation)=>{
+                Selection.setToSingle(groupRelation);
+                return groupRelation.getIdentifiers();
+            });
+        }
     }
     return TagService.add(
         this.model(),

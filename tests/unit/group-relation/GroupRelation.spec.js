@@ -154,8 +154,7 @@ describe("GroupRelation", function () {
         ).toBeTruthy();
     });
 
-    //todo
-    xit('moves a relation under a "group relation" if newly added identification is related to a group relation', async () => {
+    it('moves a relation under a "group relation" if newly added identification is related to a group relation', async () => {
         let scenario = await new GroupRelationsScenario();
         let centerBubble = scenario.getCenterInTree();
         expect(
@@ -196,7 +195,6 @@ describe("GroupRelation", function () {
         ).toBe(4);
     });
 
-    //todo
     xit("moves a relation to the group-relation's parent if the identification related to the group-relation is removed from the relation", async () => {
         let scenario = await new GroupRelationsScenario();
         let centerBubble = scenario.getCenterInTree();
@@ -328,8 +326,7 @@ describe("GroupRelation", function () {
         )).toBeFalsy();
     });
 
-    //todo
-    xit("creates a group-relation when identifying a relation to a relation that exists at the same level", async () => {
+    it("creates a group-relation when identifying a relation to a relation that exists at the same level", async () => {
         let scenario = await new ThreeScenario();
         let centerBubble = scenario.getBubble1InTree();
         expect(TestUtil.hasChildWithLabel(
@@ -347,9 +344,6 @@ describe("GroupRelation", function () {
             r2ChildOfCenterBubble.model()
         );
         let relation1 = TestUtil.getChildWithLabel(centerBubble, "r1");
-        await relation1.model().addIdentification(
-            identificationToRelation2.makeSameAs()
-        );
         await relation1.controller().addIdentification(identificationToRelation2);
         r2ChildOfCenterBubble = TestUtil.getChildWithLabel(centerBubble, "r2");
         expect(
@@ -397,22 +391,17 @@ describe("GroupRelation", function () {
         ).toBe(GraphElementType.Meta);
     });
 
-    //todo
-    xit("sets the group relation label and comment correctly when identifying a relation to a new relation that exists at the same level", async () => {
+    it("sets the group relation label and comment correctly when identifying a relation to a new relation that exists at the same level", async () => {
         let scenario = await new ThreeScenario();
         var centerBubble = scenario.getBubble1InTree();
         await centerBubble.controller().addChild();
         let newRelation = TestUtil.getChildWithLabel(centerBubble, "");
-        newRelation.setText("new relation");
-        newRelation.getLabel().blur();
-        newRelation.model().setComment("some comment");
+        await newRelation.controller().setLabel("new relation");
+        newRelation.setComment("some comment");
         let identificationToNewRelation = Identification.fromFriendlyResource(
-            newRelation.model()
+            newRelation
         );
         let relation1 = TestUtil.getChildWithLabel(centerBubble, "r1");
-        relation1.model().addIdentification(
-            identificationToNewRelation
-        );
         await relation1.controller().addIdentification(identificationToNewRelation);
         expect(
             TestUtil.hasChildWithLabel(
@@ -428,22 +417,8 @@ describe("GroupRelation", function () {
             newGroupRelation.isGroupRelation()
         ).toBeTruthy();
         expect(
-            newGroupRelation.model().getComment()
+            newGroupRelation.getComment()
         ).toBe("some comment");
-    });
-
-    //todo
-    xit("doesn't create a group-relation when adding to a relation an identification that exists at the same level if its already under group relation", async () => {
-        let scenario = await new GroupRelationsScenario();
-        let groupRelation = scenario.getPossessionGroupRelation();
-        groupRelation.expand();
-        expect(
-            groupRelation.getNumberOfChild()
-        ).toBe(3);
-        await groupRelation.controller().addChild();
-        expect(
-            groupRelation.getNumberOfChild()
-        ).toBe(4);
     });
 
     it("expands the group relation if there's few siblings", async () => {

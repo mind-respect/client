@@ -78,6 +78,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
             identifier.makeSameAs();
             return triple.edge.controller().addIdentification(
                 identifier,
+                true,
                 true
             ).then((identifiers) => {
                 identifiers.forEach((tag) => {
@@ -162,7 +163,8 @@ GroupRelationController.prototype.becomeParent = function (child) {
             GraphElementService.changeChildrenIndex(
                 this.model().getParentVertex()
             );
-        })
+        });
+        return this.model();
     });
 
     function moveEdge(movedEdge) {
@@ -176,7 +178,8 @@ GroupRelationController.prototype.becomeParent = function (child) {
         do {
             promises.push(
                 movedEdge.controller().addIdentifiers(
-                    parentGroupRelation.model().getIdentifiers()
+                    parentGroupRelation.model().getIdentifiers(),
+                    true
                 )
             );
             parentGroupRelation = parentGroupRelation.getParentBubble();
