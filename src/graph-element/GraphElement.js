@@ -183,14 +183,14 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
 
 
 GraphElement.GraphElement.prototype.removeIdentifier = function (identifierToRemove) {
-    var i = 0;
-    this.identifiers.forEach(function (identifier) {
+    let l = this.identifiers.length;
+    while (l--) {
+        let identifier = this.identifiers[l];
         if (identifier.getUri() === identifierToRemove.getUri()) {
-            this.identifiers.splice(i, 1);
+            this.identifiers.splice(l, 1);
             return false;
         }
-        i++;
-    }.bind(this));
+    }
     return this.identifiers;
 };
 

@@ -198,7 +198,8 @@ GroupRelationController.prototype.becomeExParent = function (movedEdge) {
         if (identifier) {
             promises.push(
                 movedEdge.controller().removeIdentifier(
-                    identifier
+                    identifier,
+                    true
                 )
             );
         }

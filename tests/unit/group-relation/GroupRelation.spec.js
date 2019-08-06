@@ -9,6 +9,7 @@ import Identification from '@/identifier/Identification'
 import IdUri from '@/IdUri'
 import CreationDateScenario from "../scenario/CreationDateScenario";
 import ConvertVertexToGroupRelationScenario from "../scenario/ConvertVertexToGroupRelationScenario";
+import GraphElementType from '@/graph-element/GraphElementType'
 
 describe("GroupRelation", function () {
     // scenario = new Scenarios.GraphWithSimilarRelationsScenario();
@@ -195,7 +196,7 @@ describe("GroupRelation", function () {
         ).toBe(4);
     });
 
-    xit("moves a relation to the group-relation's parent if the identification related to the group-relation is removed from the relation", async () => {
+    it("moves a relation to the group-relation's parent if the identification related to the group-relation is removed from the relation", async () => {
         let scenario = await new GroupRelationsScenario();
         let centerBubble = scenario.getCenterInTree();
         expect(
@@ -240,8 +241,7 @@ describe("GroupRelation", function () {
         ).toBe(2);
     });
 
-    //todo
-    xit("does not move a relation to the group relation's parent if the group relation is not related to the removed identification", async () => {
+    it("does not move a relation to the group relation's parent if the group relation is not related to the removed identification", async () => {
         let scenario = await new GroupRelationsScenario();
         let centerBubble = scenario.getCenterInTree();
 
@@ -274,8 +274,8 @@ describe("GroupRelation", function () {
         ).toBe(3);
     });
 
-    //todo
-    xit("creates a group-relation when adding an identification to a relation shared with another relation at the same level", async () => {
+
+    it("creates a group-relation when adding an identification to a relation shared with another relation at the same level", async () => {
         let scenario = await new ThreeScenario();
         let centerBubble = scenario.getBubble1InTree();
         expect(TestUtil.hasChildWithLabel(
@@ -296,14 +296,8 @@ describe("GroupRelation", function () {
             "some identification"
         );
         let relation1 = TestUtil.getChildWithLabel(centerBubble, "r1");
-        relation1.model().addIdentification(
-            someIdentification
-        );
         await relation1.controller().addIdentification(someIdentification);
         let relation2 = TestUtil.getChildWithLabel(centerBubble, "r2");
-        relation2.model().addIdentification(
-            someIdentification
-        );
         await relation2.controller().addIdentification(someIdentification);
         expect(TestUtil.hasChildWithLabel(
             centerBubble,

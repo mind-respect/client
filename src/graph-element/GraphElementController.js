@@ -501,7 +501,7 @@ GraphElementController.prototype.addIdentification = function (identifier, preve
             return sibling.hasIdentification(identifier) && sibling.getId() !== this.model().getId()
         });
         if (siblingWithSameIdentifier.length) {
-            return this.moveUnderParent(siblingWithSameIdentifier[0]).then((groupRelation)=>{
+            return this.moveUnderParent(siblingWithSameIdentifier[0]).then((groupRelation) => {
                 Selection.setToSingle(groupRelation);
                 return groupRelation.getIdentifiers();
             });
@@ -602,10 +602,17 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
     Store.dispatch("redraw");
 };
 
-GraphElementController.prototype.removeIdentifier = function (identifier) {
+GraphElementController.prototype.removeIdentifier = function (identifier, preventMoving) {
+    if (!this.model().hasIdentification(identifier)) {
+        return Promise.resolve();
+    }
     this.model().removeIdentifier(
         identifier
     );
+    let parentBubble = this.model().getParentBubble();
+    if (!preventMoving && parentBubble.isGroupRelation() && parentBubble.hasIdentification(identifier)) {
+        return this.moveBelow(parentBubble);
+    }
     return new Promise((resolve) => {
         TagService.remove(
             this.model().getUri(),
