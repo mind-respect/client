@@ -123,23 +123,36 @@ describe("Graph.vue", () => {
             ).toBeTruthy();
         });
     });
-    xit("shows child bubbles images of a distant vertex when connecting to a distant vertex", function () {
-        connectDistantVertexTest(function (distantBubble) {
-            var connectedBubble = distantBubble.getTopMostChildBubble().getTopMostChildBubble();
-            expect(
-                connectedBubble.hasImagesMenu()
-            ).toBeTruthy();
+
+    describe("connectToDistantVertex", async()=>{
+        xit("shows child bubbles images of a distant vertex when connecting to a distant vertex", function () {
+            connectDistantVertexTest(function (distantBubble) {
+                var connectedBubble = distantBubble.getTopMostChildBubble().getTopMostChildBubble();
+                expect(
+                    connectedBubble.hasImagesMenu()
+                ).toBeTruthy();
+            });
         });
-    });
-    xit("selects new relation when connecting to a distant vertex", function () {
-        connectDistantVertexTest(function (distantBubble) {
-            var newRelation = distantBubble.getTopMostChildBubble();
-            expect(
-                newRelation.isRelation()
-            ).toBeTruthy();
-            expect(
-                newRelation.isSelected()
-            ).toBeTruthy();
+
+        it("shows child bubbles images of a distant vertex when connecting to a distant vertex", function () {
+            connectDistantVertexTest(function (distantBubble) {
+                var connectedBubble = distantBubble.getTopMostChildBubble().getTopMostChildBubble();
+                expect(
+                    connectedBubble.hasImagesMenu()
+                ).toBeTruthy();
+            });
+        });
+
+        xit("selects new relation when connecting to a distant vertex", function () {
+            connectDistantVertexTest(function (distantBubble) {
+                var newRelation = distantBubble.getTopMostChildBubble();
+                expect(
+                    newRelation.isRelation()
+                ).toBeTruthy();
+                expect(
+                    newRelation.isSelected()
+                ).toBeTruthy();
+            });
         });
     });
 

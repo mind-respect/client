@@ -67,6 +67,15 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
             centerVertex.makeCenter();
             CurrentSubGraph.get().add(centerVertex);
         }
+        if (isParentAlreadyOnMap) {
+            let hasModifiedChildrenIndex = centerVertex.integrateChildrenIndex(centerFromServer.getChildrenIndex());
+            if (hasModifiedChildrenIndex) {
+                GraphElementService.saveChildrenIndex(
+                    centerVertex,
+                    centerVertex.getChildrenIndex()
+                )
+            }
+        }
         let childrenIndex = centerVertex.getChildrenIndex();
         let parentVertex = centerVertex.getParentVertex();
         let edgesInGroupRelations = subGraph.sortedEdges().reduce((groupRelations, edge) => {

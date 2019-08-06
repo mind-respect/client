@@ -103,6 +103,17 @@ Vertex.prototype.getNumberOfChild = function (isLeft) {
     );
 };
 
+Vertex.prototype.resetChildren = function () {
+    let subGraph = CurrentSubGraph.get();
+    this.getNextChildrenEvenIfCollapsed().forEach((child) => {
+        subGraph.remove(child);
+    });
+    this.leftBubbles = [];
+    this.rightBubbles = [];
+    this.leftBubblesCollapsed = [];
+    this.rightBubblesCollapsed = [];
+};
+
 
 Vertex.prototype.decrementNumberOfConnectedEdges = function () {
     this.vertexServerFormat.vertex.numberOfConnectedEdges--;
@@ -280,7 +291,15 @@ Vertex.prototype.expand = function (avoidCenter, isChildExpand) {
     }
 };
 
-//getNextChildrenEvenIfCollapsed = getNextChildren because we dont need it for vertices yet.
+Vertex.prototype.getNextChildrenEvenIfCollapsed = function (isToTheLeft) {
+    if (this.isCollapsed) {
+        return this.leftBubblesCollapsed.concat(this.rightBubblesCollapsed);
+    } else {
+        return this.getNextChildren(isToTheLeft);
+    }
+};
+
+
 Vertex.prototype.getNextChildrenEvenIfCollapsed = Vertex.prototype.getNextChildren = function (toTheLeft) {
     if (this.isCollapsed) {
         return [];

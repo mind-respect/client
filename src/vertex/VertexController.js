@@ -447,9 +447,10 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
         return Promise.reject();
     }
     let beforeMergeLabel = this.model().getLabel();
-    return this.expand(true).then(() => {
-        return VertexService.mergeTo(this.model(), distantVertexUri);
-    }).then(() => {
+    return VertexService.mergeTo(this.model(), distantVertexUri).then(() => {
+        this.model().loading = true;
+        this.model().resetChildren();
+        this.model().expand();
         this.model().setUri(distantVertexUri);
         CurrentSubGraph.get().add(this.model());
         return SubGraphController.withVertex(
@@ -465,9 +466,10 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
         GraphElementService.changeChildrenIndex(
             this.model().getParentVertex()
         );
+        this.model().loading = false;
         Store.dispatch("redraw");
     });
-};
+}
 
 VertexController.prototype.mergeCanDo = function () {
     return this.isSingle() && this.isOwned();

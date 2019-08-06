@@ -51,21 +51,6 @@ describe("KeyboardActions", () => {
         }, 0);
     });
 
-    //todo
-    xit("calls identification method when pressing ctrl+g", async () => {
-        let scenario = await new ThreeScenario();
-        let bubble1 = scenario.getBubble1InTree();
-        Selection.setToSingle(bubble1);
-        let actionSpy = spyOn(VertexController.VertexController.prototype, "identify");
-        expect(
-            actionSpy
-        ).not.toHaveBeenCalled();
-        TestUtil.pressCtrlPlusKey("G");
-        expect(
-            actionSpy
-        ).toHaveBeenCalled();
-    });
-
     it("does not focus when pressing control only", async () => {
         let scenario = await new ThreeScenario();
         let bubble1 = scenario.getBubble1InTree();

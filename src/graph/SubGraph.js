@@ -85,7 +85,7 @@ api.SubGraph.prototype.add = function (graphElement) {
             child.parentBubble = graphElement;
             this.add(child);
         })
-    }else{
+    } else {
         this.otherGraphElements[graphElement.getId()] = graphElement;
     }
 };
@@ -130,8 +130,30 @@ api.SubGraph.prototype.addEdge = function (edge) {
     this.edges[edge.getUri()].push(edge);
 };
 
+api.SubGraph.prototype.remove = function (graphElement) {
+    if (graphElement.isEdge()) {
+        this.removeEdge(graphElement);
+    } else if (graphElement.isVertex()) {
+        this.removeVertex(graphElement);
+    } else if (graphElement.isGroupRelation()) {
+        this.removeGroupRelation(graphElement);
+    }
+};
+
+api.SubGraph.prototype.removeGroupRelation = function (groupRelation) {
+    let l = this.groupRelations.length;
+    while (l--) {
+        if (groupRelation[l].getId() === groupRelation.getId()) {
+            this.groupRelations.splice(l, 1);
+            groupRelation.getNextChildren().forEach((child) => {
+                this.remove(child)
+            });
+        }
+    }
+};
+
 api.SubGraph.prototype.removeEdge = function (edge) {
-    this.removeVertex(edge.getNextBubble());
+    this.remove(edge.getNextBubble());
     let edges = this.getEdgesWithUri(edge.getUri());
     let l = edges.length;
     while (l--) {

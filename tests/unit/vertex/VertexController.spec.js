@@ -619,7 +619,7 @@ describe('VertexController', () => {
             let singleChildScenario = await new SingleChildScenario();
             let parent = singleChildScenario.getParentInTree();
             let child = parent.getNextBubble().getNextBubble();
-            child.setLabel("child label")
+            child.setLabel("child label");
             GraphServiceMock.getForCentralBubbleUri(
                 singleChildScenario.getSubGraphOfB1OnceMergedWithSingleChild()
             );
@@ -662,6 +662,33 @@ describe('VertexController', () => {
                 newChildOfB2.getNbDuplicates()
             ).toBe(1);
         });
+    });
+    /*
+    getSubGraphOfB1OnceMergedWithSingleChild would have to return a graph where "single child" has children for this test pass
+    */
+    xit("has right number of children when both vertices have child", async () => {
+        let singleChildScenario = await new SingleChildScenario();
+        let parent = singleChildScenario.getParentInTree();
+        let child = parent.getNextBubble().getNextBubble();
+        child.setLabel("child label");
+        GraphServiceMock.getForCentralBubbleUri(
+            singleChildScenario.getSubGraphOfB1OnceMergedWithSingleChild()
+        );
+        let triple = await child.controller().addChild();
+        triple.edge.setLabel("child edge 1");
+        triple = await child.controller().addChild();
+        triple.edge.setLabel("child edge 2");
+        expect(
+            child.getNumberOfChild()
+        ).toBe(2);
+        await child.controller().convertToDistantBubbleWithUri(
+            singleChildScenario.getB1Uri()
+        );
+        child = parent.getNextBubble().getNextBubble();
+        TestUtil.logChildren(child);
+        expect(
+            child.getNumberOfChild()
+        ).toBe(4);
     });
     it("automatically expands a child bubble having a single hidden relation when it's parent is expanded", async () => {
         let scenario = await new AutomaticExpandScenario();

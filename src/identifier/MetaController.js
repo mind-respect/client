@@ -161,12 +161,12 @@ MetaController.prototype.convertToDistantBubbleWithUri = function (distantTagUri
         return Promise.reject();
     }
     this.getUi().beforeConvertToDistantBubbleWithUri();
-    return MetaService.mergeTo(this.model(), distantTagUri).then(function () {
+    return MetaService.mergeTo(this.model(), distantTagUri).then(() => {
         this.getUi().mergeTo(distantTagUri);
         return GraphDisplayer.displayForMetaWithUri(
             distantTagUri
         );
-    }.bind(this));
+    });
 };
 
 MetaController.prototype.mergeCanDo = function () {

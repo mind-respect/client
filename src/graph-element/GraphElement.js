@@ -344,7 +344,7 @@ GraphElement.GraphElement.prototype.getSortDate = function () {
 
 GraphElement.GraphElement.prototype.getIndex = function (parentChildrenIndex) {
     if (!parentChildrenIndex[this.getUri()]) {
-        return -1;
+        return 9999999;
     }
     return parentChildrenIndex[this.getUri()].index;
 };
@@ -371,6 +371,20 @@ GraphElement.GraphElement.prototype.getFont = function () {
 
 GraphElement.GraphElement.prototype.getChildrenIndex = function () {
     return this.graphElementServerFormat.childrenIndex || {};
+};
+
+GraphElement.GraphElement.prototype.integrateChildrenIndex = function (secondary) {
+    let primary = this.getChildrenIndex();
+    let nbPrimary = Object.keys(primary).length;
+    let hasModified = false;
+    Object.entries(secondary).forEach((secondaryEntry) => {
+        if (!primary.hasOwnProperty(secondaryEntry[0])) {
+            secondaryEntry[1].index += nbPrimary;
+            primary[secondaryEntry[0]] = secondaryEntry[1];
+            hasModified = true;
+        }
+    });
+    return hasModified;
 };
 
 GraphElement.GraphElement.prototype.setChildrenIndex = function (childrenIndex) {
