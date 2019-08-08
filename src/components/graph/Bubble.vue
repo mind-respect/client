@@ -182,7 +182,8 @@
                                     </v-menu>
                                 </div>
                                 <div :style="background">
-                                    <BubbleButtons v-if="$store.state.selected.length === 1 && this.isSelected"></BubbleButtons>
+                                    <BubbleButtons
+                                            v-if="$store.state.selected.length === 1 && this.isSelected"></BubbleButtons>
                                 </div>
                             </v-menu>
                         </div>
@@ -311,7 +312,8 @@
                                     </v-chip>
                                 </div>
                                 <div :style="background">
-                                    <BubbleButtons v-if="$store.state.selected.length === 1 && this.isSelected"></BubbleButtons>
+                                    <BubbleButtons
+                                            v-if="$store.state.selected.length === 1 && this.isSelected"></BubbleButtons>
                                 </div>
                             </v-menu>
                         </div>
@@ -380,7 +382,6 @@
         data: function () {
             return {
                 containerId: "",
-                isSelected: false,
                 loaded: false,
                 isLabelDragOver: false,
                 dragOverLabelTimeout: undefined,
@@ -403,7 +404,6 @@
             this.chipColor = this.bubble.isMetaRelation() ? "third" : "secondary";
             let parentBubble = this.bubble.getParentBubble();
             this.isMetaRelated = this.bubble.isMetaRelation() || this.bubble.isMetaGroupVertex() || (parentBubble && parentBubble.isMetaRelation());
-            this.checkIsSelected();
             this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
             this.isLeft = this.direction === "left";
             if (this.isCenter) {
@@ -466,6 +466,12 @@
                 return (this.bubble.isVertexType() && this.bubble.rightBubbles.length > 0) ||
                     (this.bubble.isGroupRelation() && this.bubble.children && this.bubble.children.length > 0) ||
                     this.bubble.isEdge();
+            },
+            isSelected: function () {
+                let id = this.bubble.getId();
+                return this.$store.state.selected.some((selected) => {
+                    return selected.id === id;
+                });
             }
         },
         methods: {
@@ -562,11 +568,6 @@
                     event.preventDefault();
                     return this.bubble.getLabelHtml().blur();
                 }
-            },
-            checkIsSelected: function () {
-                this.isSelected = this.$store.state.selected.some((selected) => {
-                    return selected.id === this.bubble.getId()
-                });
             },
             mouseDown: function () {
                 if (this.bubble.isEditFlow) {
@@ -733,9 +734,6 @@
             }
         },
         watch: {
-            selected: function () {
-                this.checkIsSelected();
-            },
             showMenu: function () {
                 GraphUi.enableDragScroll();
             },
@@ -744,7 +742,6 @@
                     this.showMenu = false;
                 }
             }
-
         }
     }
 </script>
