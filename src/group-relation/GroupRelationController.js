@@ -71,7 +71,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
     let triple = addTuple.optimistic;
 
     addTuple.promise.then(() => {
-        triple.destination.controller().setShareLevel(
+        triple.destination.controller().setShareLevelDo(
             parentVertex.getShareLevel()
         );
         return Promise.all(this.model().getIdentifiers().map((identifier) => {

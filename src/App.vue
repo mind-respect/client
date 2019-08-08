@@ -245,7 +245,7 @@
                 "list": "See the selection as a list",
                 "listAll": "See as list",
                 "fontPicker": "Font picker",
-                "share": "Share",
+                "setShareLevel": "Share",
                 "createVertex": "Create a new bubble"
             });
             I18n.i18next.addResources("fr", "button", {
@@ -290,7 +290,7 @@
                 "list": "Voir la sélection sous forme de liste",
                 "listAll": "Voir en liste",
                 "fontPicker": "Polices",
-                "share": "Partager",
+                "setShareLevel": "Partager",
                 "createVertex": "Créer une nouvelle bulle"
             });
             return {

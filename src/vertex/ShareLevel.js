@@ -18,6 +18,8 @@ api.getIcon = function(shareLevel){
             return "lock";
         case api.PUBLIC:
             return "public";
+        case api.PUBLIC_WITH_LINK:
+            return "public";
         case api.FRIENDS :
             return "people";
     }

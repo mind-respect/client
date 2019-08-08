@@ -3,9 +3,7 @@
  */
 
 import VertexService from '@/vertex/VertexService'
-import EdgeService from '@/edge/EdgeService'
 import Selection from '@/Selection'
-import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphElementController from '@/graph-element/GraphElementController'
 import GraphElementService from '@/graph-element/GraphElementService'
 import IdUri from '@/IdUri'
@@ -61,7 +59,7 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
             triple.destination.setShareLevel(ShareLevel.PRIVATE);
         } else {
             //not returning promise to allow faster process
-            triple.destination.controller().setShareLevel(
+            triple.destination.controller().setShareLevelDo(
                 this.model().getShareLevel()
             );
         }
@@ -219,7 +217,7 @@ VertexController.prototype.makePrivateCanDo = function () {
 };
 
 VertexController.prototype.makePrivate = function () {
-    return this.setShareLevel(ShareLevel.PRIVATE);
+    return this.setShareLevelDo(ShareLevel.PRIVATE);
 };
 
 
@@ -229,6 +227,12 @@ VertexController.prototype.makePublicCanDo = function () {
             this.isSingle() && !this.getUi().model().isPublic()
         )
     );
+};
+
+VertexController.prototype._areAllElementsPublicWithLink = function () {
+    return this._areAllElementsInShareLevels([
+        ShareLevel.PUBLIC_WITH_LINK
+    ]);
 };
 
 VertexController.prototype._areAllElementsPublic = function () {
@@ -264,42 +268,19 @@ VertexController.prototype._areAllElementsInShareLevels = function (shareLevels)
 };
 
 VertexController.prototype.makePublic = function () {
-    return this.setShareLevel(ShareLevel.PUBLIC);
+    return this.setShareLevelDo(ShareLevel.PUBLIC);
 };
 
-// VertexController.prototype.share = function () {
-//     var $shareMenu = $("#share-menu");
-//     var $shareList = $("#share-list").empty();
-//     var $copyShareLink = $("#copy-share-link");
-//     this.getUiArray().forEach(function (bubble) {
-//         $shareList.append(
-//             $("<li>").text(bubble.text())
-//         );
-//     });
-//     $shareMenu.find(".multiple-flow")[
-//         this.isMultiple() ? 'removeClass' : 'addClass'
-//         ]("hidden");
-//     $copyShareLink[this.isMultiple() ? 'addClass' : 'removeClass'](
-//         "hidden"
-//     );
-//     var $radios = $shareMenu.find("input[name=shareLevel]");
-//     if (this._areAllElementsPrivate()) {
-//         $radios.val(["private"]);
-//         $copyShareLink.prop('disabled', true);
-//     } else if (this._areAllElementsFriendsOnly()) {
-//         $radios.val(["friends"]);
-//     } else if (this._areAllElementsInShareLevels([ShareLevel.PUBLIC_WITH_LINK])) {
-//         $radios.val(["public_with_link"]);
-//     }
-//     else if (this._areAllElementsInShareLevels([ShareLevel.PUBLIC])) {
-//         $radios.val(["public"]);
-//     } else {
-//         $radios.val([""]);
-//     }
-//     $shareMenu.modal();
-// };
+VertexController.prototype.setShareLevel = function () {
+    Store.dispatch("setSideMenuFlow", 3);
+    return Promise.resolve();
+};
 
-VertexController.prototype.setShareLevel = function (shareLevel) {
+VertexController.prototype.setShareLevelCanDo = function () {
+    return this.isOwned();
+};
+
+VertexController.prototype.setShareLevelDo = function (shareLevel) {
     let verticesToUpdate = this.getUiArray().filter((vertex) => {
         return vertex.getShareLevel() !== shareLevel.toUpperCase()
     }).map((vertex) => {
@@ -469,7 +450,7 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
         this.model().loading = false;
         Store.dispatch("redraw");
     });
-}
+};
 
 VertexController.prototype.mergeCanDo = function () {
     return this.isSingle() && this.isOwned();
@@ -478,15 +459,6 @@ VertexController.prototype.mergeCanDo = function () {
 VertexController.prototype.merge = function () {
     Store.dispatch("setSideMenuFlow", 2);
     return Promise.resolve();
-};
-
-VertexController.prototype._relateToDistantVertexWithUri = function (distantVertexUri) {
-    return EdgeService.addToFarVertex(this.getUi(), distantVertexUri).then(() => {
-        return GraphDisplayer.connectVertexToVertexWithUri(
-            this.getUi(),
-            distantVertexUri
-        );
-    });
 };
 
 api.VertexController = VertexController;

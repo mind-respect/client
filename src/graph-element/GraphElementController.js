@@ -657,4 +657,8 @@ GraphElementController.prototype.deselect = function () {
     }
 };
 
+GraphElementController.prototype.setShareLevelCanDo = function () {
+    return false;
+};
+
 export default api;

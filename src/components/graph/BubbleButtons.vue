@@ -88,10 +88,6 @@
                     //     ctrlShortcut: "G"
                     // },
                     {
-                        icon: "people",
-                        action: "share"
-                    },
-                    {
                         icon: "lock",
                         action: "makePrivate",
                         ctrlShortcut: "P"
@@ -100,6 +96,10 @@
                         icon: "public",
                         action: "makePublic",
                         ctrlShortcut: "P"
+                    },
+                    {
+                        icon: "share",
+                        action: "setShareLevel"
                     },
                     {
                         icon: "file_copy",

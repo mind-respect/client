@@ -41,30 +41,40 @@
                                 centered
                                 next-icon=""
                                 color="transparent"
-                                v-if="noteCanDo || tagCanDo || mergeCanDo"
                         >
-                            <v-tab class="primary--text" v-if="noteCanDo">
-                                <!--                                <span class="grey&#45;&#45;text">{{$t('side:note')}}</span>-->
+                            <v-tab class="primary--text">
                                 <v-icon>note</v-icon>
                             </v-tab>
-                            <v-tab class="primary--text" v-if="tagCanDo">
-                                <!--                                <span class="grey&#45;&#45;text">{{$t('side:tags')}}</span>-->
+                            <v-tab class="primary--text">
                                 <v-icon>label</v-icon>
                             </v-tab>
-                            <v-tab class="primary--text" v-if="mergeCanDo">
-                                <!--                                <span class="grey&#45;&#45;text">{{$t('side:merge')}}</span>-->
+                            <v-tab class="primary--text">
                                 <v-icon>merge_type</v-icon>
+                            </v-tab>
+                            <v-tab class="primary--text">
+                                <v-icon>share</v-icon>
                             </v-tab>
                         </v-tabs>
                         <v-tabs-items v-model="tabMenu" class="white">
-                            <v-tab-item v-if="noteCanDo">
-                                <NoteMenu :bubble="selected"></NoteMenu>
+                            <v-tab-item>
+                                <p v-if="!noteCanDo" class="pt-3 grey--text text-xs-center">
+                                    {{$t('side:noteCantDo')}}</p>
+                                <NoteMenu :bubble="selected" v-if="noteCanDo"></NoteMenu>
                             </v-tab-item>
-                            <v-tab-item v-if="tagCanDo">
-                                <TagMenu @focus="focus" @blur="blur" :bubble="selected"></TagMenu>
+                            <v-tab-item>
+                                <p v-if="!tagCanDo" class="pt-3 grey--text text-xs-center">{{$t('side:tagCantDo')}}</p>
+                                <TagMenu @focus="focus" @blur="blur" :bubble="selected" v-if="tagCanDo"></TagMenu>
                             </v-tab-item>
-                            <v-tab-item v-if="mergeCanDo">
-                                <MergeMenu @focus="focus" @blur="blur" :bubble="selected"></MergeMenu>
+                            <v-tab-item>
+                                <p v-if="!mergeCanDo" class="pt-3 grey--text text-xs-center">
+                                    {{$t('side:mergeCantDo')}}</p>
+                                <MergeMenu @focus="focus" @blur="blur" :bubble="selected" v-if="mergeCanDo"></MergeMenu>
+                            </v-tab-item>
+                            <v-tab-item>
+                                <p v-if="!shareCanDo" class="pt-3 grey--text text-xs-center">
+                                    {{$t('side:shareCantDo')}}</p>
+                                <ShareMenu @focus="focus" @blur="blur"
+                                           v-if="shareCanDo"></ShareMenu>
                             </v-tab-item>
                         </v-tabs-items>
                     </div>
@@ -89,6 +99,7 @@
     import NoteMenu from '@/components/NoteMenu'
     import TagMenu from '@/components/TagMenu'
     import MergeMenu from '@/components/MergeMenu'
+    import ShareMenu from '@/components/ShareMenu'
     import BubbleButtons from '@/components/graph/BubbleButtons'
     import DateUtil from '@/DateUtil'
     import I18n from '@/I18n'
@@ -103,18 +114,27 @@
             NoteMenu,
             TagMenu,
             MergeMenu,
+            ShareMenu,
             BubbleButtons
         },
         data: () => {
             I18n.i18next.addResources("en", "side", {
                 "creationDate": "Created",
                 "tags": "Tags",
-                "merge": "Merge"
+                "merge": "Merge",
+                "noteCantDo": "Note not available",
+                "tagCantDo": "Tags not available",
+                "mergeCantDo": "Merge not available",
+                "shareCantDo": "Share is not available"
             });
             I18n.i18next.addResources("fr", "side", {
                 "creationDate": "Créé",
                 "tags": "Étiquettes",
-                "merge": "Fusion"
+                "merge": "Fusion",
+                "noteCantDo": "Note non disponible",
+                "tagCantDo": "Étiquettes non disponible",
+                "mergeCantDo": "Fusion non disponible",
+                "shareCantDo": "Partage non disponible"
             });
             return {
                 tabMenu: null,
@@ -143,6 +163,9 @@
             },
             mergeCanDo: function () {
                 return Selection.isSingle() && Selection.getSingle().controller().mergeCanDo();
+            },
+            shareCanDo: function () {
+                return Selection.controller().setShareLevelCanDo();
             },
             menuWidth: function () {
                 return this.$vuetify.breakpoint.mdAndDown ? this.mainWidth : 340;
