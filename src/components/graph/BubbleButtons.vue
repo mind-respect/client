@@ -62,7 +62,6 @@
                     },
                     {
                         icon: "unfold_less",
-                        iconClass: "fa-strike",
                         action: "collapse",
                         ctrlShortcut: "H"
                     },
@@ -115,7 +114,7 @@
                         ctrlShortcut: "X"
                     },
                     {
-                        icon: "fa-paste",
+                        icon: "content_paste",
                         action: "paste",
                         ctrlShortcut: "V"
                     },

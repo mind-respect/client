@@ -20,8 +20,8 @@
                     stateless
                     touchless
             >
-                <v-card class="" flat>
-                    <v-btn @click="expand" small icon v-if="$store.state.sideMenuFlow === false" class="mt-6">
+                <v-card flat class="text-center">
+                    <v-btn @click="expand" small icon v-if="$store.state.sideMenuFlow === false" class="mt-6 text-center">
                         <v-icon>chevron_right</v-icon>
                     </v-btn>
                     <v-card-title class="subtitle-1" v-if="$store.state.sideMenuFlow !== false">
@@ -34,7 +34,7 @@
                             <v-icon>chevron_left</v-icon>
                         </v-btn>
                     </v-card-title>
-                    <div v-if="$store.state.sideMenuFlow !== false">
+                    <div v-if="$store.state.sideMenuFlow !== false" class="text-left">
                         <v-tabs
                                 v-model="tabMenu"
                                 grow

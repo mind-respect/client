@@ -170,7 +170,7 @@
                                                 </v-badge>
                                             </template>
                                             <v-card :href="linkMenuHref" target="_blank">
-                                                <v-card-title>
+                                                <v-card-title class="body-1">
                                                     <v-icon class="mr-2">share</v-icon>
                                                     {{$t('vertex:openLink')}}
                                                 </v-card-title>
