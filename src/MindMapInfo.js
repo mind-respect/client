@@ -18,12 +18,7 @@ api.defaultVertexUri = function () {
 api.isCenterBubbleUriDefinedInUrl = function () {
     return IdUri.getGraphElementUriInUrl() !== undefined;
 };
-api.isLandingPageFlow = function () {
-    return "landing" === mrFlow;
-};
-api.isSchemaListFlow = function () {
-    return "schemaList" === mrFlow;
-};
+
 api.getCenterBubbleUri = function () {
     return IdUri.getGraphElementUriInUrl();
 };
