@@ -1,11 +1,11 @@
 <template>
     <v-card flat @click="$store.dispatch('setIsDescriptionFlow', true)" hover>
-        <v-card-title class="pt-3 pb-0 subheading">
-            <span class="pt-0 grey--text body-1 text-xs-center" v-if="bubble.getComment() === ''">
+        <v-card-title class="pt-4 pb-0 subtitle-1">
+            <span class="pt-0 grey--text body-1 text-center" v-if="bubble.getComment() === ''">
                 {{$t('noteMenu:noNote')}}
             </span>
         </v-card-title>
-        <v-card-text v-html="bubble.getComment()" class="pt-0"></v-card-text>
+        <v-card-text v-html="bubble.getComment()" class="pt-0" style="color:inherit"></v-card-text>
     </v-card>
 </template>
 

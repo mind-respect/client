@@ -15,39 +15,10 @@
  */
 .bubble {
   z-index: 5;
-  display: table;
-  /*.label to override bootstrap*/
-  white-space: nowrap;
-  position: relative;
   min-width: 0;
   margin: 0 0 0 0; }
-  .bubble.dragged {
-    background-color: transparent; }
-  .bubble > *, .bubble .label {
-    display: table-cell;
-    vertical-align: middle; }
-  .bubble.view-only .arrow:before {
-    left: 0; }
   .bubble .in-bubble-content {
-    position: relative;
     z-index: 3; }
-    .bubble .in-bubble-content .in-label-buttons {
-      display: inline-block;
-      white-space: nowrap; }
-      .bubble .in-bubble-content .in-label-buttons button {
-        width: 37px;
-        height: 37px;
-        height: auto;
-        display: inline-block;
-        background: none;
-        border: none;
-        box-shadow: none;
-        font-size: 20px;
-        margin: -6px; }
-        .bubble .in-bubble-content .in-label-buttons button[data-action=makePublic] i:before {
-          content: "\f023"; }
-        .bubble .in-bubble-content .in-label-buttons button[data-action=makePrivate] i:before {
-          content: "\f09c"; }
   .bubble.edit {
     user-select: text;
     cursor: text; }
@@ -55,12 +26,7 @@
       content: ""; }
   .bubble .bubble-label {
     text-align: center;
-    color: black;
-    outline: 0 solid transparent;
-    border: none;
-    width: auto;
-    display: table-cell;
-    white-space: pre; }
+    color: black; }
     .bubble .bubble-label:empty:not(:focus) {
       color: grey;
       max-width: 100%; }
@@ -68,8 +34,6 @@
         content: attr(data-placeholder);
         font-style: italic;
         font-size: calc(1em); }
-    .bubble .bubble-label del {
-      text-decoration: none; }
     .bubble .bubble-label[contenteditable='true']:before {
       content: "\feff "; }
   .bubble.selected {
@@ -87,16 +51,6 @@
     text-align: right; }
     .bubble .image_container:empty {
       min-width: 0; }
-  .bubble .edge-label {
-    display: inline; }
-  .bubble .connector {
-    position: absolute;
-    height: 22px;
-    border-top: calc(1px + 0.1em) solid #3a87ad;
-    top: calc(50% - 2px);
-    width: 32px;
-    left: -22px;
-    z-index: -1; }
 
 /*
  * Copyright Vincent Blouin under the GPL License version 3

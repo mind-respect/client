@@ -33,7 +33,6 @@ const Store = new Vuex.Store({
         isDescriptionFlow: false,
         isListViewFlow: false,
         isFontFlow: false,
-        isTagFlow: false,
         isEditFlow: false,
         redraws: Math.random(),
         sideMenuFlow: false,
@@ -83,9 +82,6 @@ const Store = new Vuex.Store({
         },
         setIsFontFlow: function (state, isFontFlow) {
             state.isFontFlow = isFontFlow;
-        },
-        setIsTagFlow: function (state, isTagFlow) {
-            state.isTagFlow = isTagFlow;
         },
         setIsEditFlow: function (state, isEditFlow) {
             state.isEditFlow = isEditFlow;
@@ -151,9 +147,6 @@ const Store = new Vuex.Store({
         },
         setIsFontFlow: function (action, isFontFlow) {
             action.commit('setIsFontFlow', isFontFlow);
-        },
-        setIsTagFlow: function (action, isTagFlow) {
-            action.commit('setIsTagFlow', isTagFlow);
         },
         setIsEditFlow: function (action, setIsEditFlow) {
             action.commit('setIsEditFlow', setIsEditFlow);

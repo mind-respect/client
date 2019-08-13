@@ -29,21 +29,21 @@
             <SearchResultContent :item="item"></SearchResultContent>
             <SearchResultAction :item="item"></SearchResultAction>
         </template>
-        <v-list-tile slot="no-data" @click="createCenterVertex">
-            <v-list-tile-content>
-                <v-list-tile-title>
+        <v-list-item slot="no-data" @click="createCenterVertex">
+            <v-list-item-content>
+                <v-list-item-title>
                     {{$t('noSearchResults')}}
-                </v-list-tile-title>
-                <v-list-tile-sub-title class="">
+                </v-list-item-title>
+                <v-list-item-subtitle class="">
                     {{$t('create')}} "{{searchText}}"
-                </v-list-tile-sub-title>
-            </v-list-tile-content>
-            <v-list-tile-action>
+                </v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action>
                 <v-icon>
                     add
                 </v-icon>
-            </v-list-tile-action>
-        </v-list-tile>
+            </v-list-item-action>
+        </v-list-item>
     </v-autocomplete>
     <!--    </div>-->
 </template>
@@ -132,7 +132,7 @@
 </script>
 
 <style>
-    .search-menu .v-list__tile {
+    .search-menu .v-list__item {
         height: auto;
         min-height: 48px;
         max-height: 105px;

@@ -513,7 +513,7 @@ GraphElementController.prototype.addIdentification = function (identifier, preve
     ).then((identifications) => {
         return Promise.all(
             identifications.map((identifier) => {
-                return identifier.getUrl();
+                return identifier.buildExternalUrls();
             })
         ).then(() => {
             identifications.forEach((tag) => {

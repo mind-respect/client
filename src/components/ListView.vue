@@ -3,9 +3,9 @@
         <v-dialog v-model="dialog" width="900">
             <v-card>
                 <v-card-title class="pb-0">
-                    <v-btn flat small color="secondary"
+                    <v-btn text small color="secondary"
                            @click="copy()">
-                        <v-icon class="mr-2">file_copy</v-icon>
+                        <v-icon class="mr-2">content_copy</v-icon>
                         {{$t('copy')}}
                     </v-btn>
                     <v-spacer></v-spacer>
@@ -94,7 +94,7 @@
             },
             forkAsItem: function (fork) {
                 return {
-                    id: fork.getUri(),
+                    id: fork.getId(),
                     original: fork,
                     children: fork.getClosestChildrenInTypes(GraphElementType.Fork).map((childFork) => {
                         return this.forkAsItem(childFork)

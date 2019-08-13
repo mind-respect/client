@@ -26,17 +26,18 @@ const api = {}
 const localVue = createLocalVue();
 localVue.use(VueRouter)
 const vueI18nExt = I18n.setup();
+
+Vue.use(Vuetify)
+const vuetify = new Vuetify();
 api.wrapper = mount(App, {
     localVue,
     router,
     store,
-    Vuetify,
+    vuetify,
     i18n: vueI18nExt,
 });
 
 api.treeBuilder = new TreeBuilder(api.wrapper)
-
-Vue.use(Vuetify)
 
 api.Scenario = function () {
 };

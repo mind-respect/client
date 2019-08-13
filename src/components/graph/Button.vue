@@ -13,20 +13,22 @@
             max-width="400"
             :content-class="contentClass"
     >
-        <slot name="button" v-if="$slots.button" slot="activator"></slot>
-        <v-btn
-                v-else
-                flat
-                icon
-                :color="color"
-                slot="activator"
-                @click="performAction(button, $event)"
-                :disabled="button.disableNotHide && !canDo(button)"
-        >
-            <v-icon :class="button.iconClass" :large="hightlight">
-                {{getIcon(button)}}
-            </v-icon>
-        </v-btn>
+        <template v-slot:activator="{ on }">
+            <slot name="button" v-if="$slots.button"></slot>
+            <v-btn
+                    v-else
+                    icon
+                    large
+                    class="ma-1"
+                    :color="color"
+                    @click="performAction(button, $event)"
+                    :disabled="button.disableNotHide && !canDo(button)"
+            >
+                <v-icon :class="button.iconClass" :large="hightlight">
+                    {{getIcon(button)}}
+                </v-icon>
+            </v-btn>
+        </template>
         <slot name="tooltipContent" v-if="$slots.tooltipContent"></slot>
         <span v-else>
                 {{$t('button:' + button.action)}}

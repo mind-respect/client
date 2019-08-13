@@ -25,31 +25,31 @@
                 ></v-autocomplete>
                 <v-card flat v-if="!loaded">
                     <v-card-text class="vh-center">
-                        <v-layout row wrap class="vh-center">
+                        <v-layout wrap class="vh-center">
                             <v-flex xs12 class="vh-center">
                                 <v-progress-circular size="64" indeterminate color="third"></v-progress-circular>
                             </v-flex>
                         </v-layout>
                     </v-card-text>
                 </v-card>
-                <v-card-text v-if="loaded && Object.keys(friends).length === 0" class="text-xs-center headline grey--text">
+                <v-card-text v-if="loaded && Object.keys(friends).length === 0" class="text-center headline grey--text">
                     {{$t('friends:noFriends')}}
                 </v-card-text>
                 <v-list v-if="loaded && Object.keys(friends).length > 0">
                     <v-subheader inset>
                         {{$t('friends:friends')}}
                     </v-subheader>
-                    <v-list-tile v-for="friend in friends" :to="'/user/' + friend.username">
-                        <v-list-tile-action>
+                    <v-list-item v-for="friend in friends" :to="'/user/' + friend.username">
+                        <v-list-item-action>
                             <v-avatar class="text-uppercase teal white--text">{{friend.username.substring(0,2)}}
                             </v-avatar>
-                        </v-list-tile-action>
-                        <v-list-tile-content>
-                            <v-list-tile-title>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
                                 {{friend.username}}
-                            </v-list-tile-title>
-                        </v-list-tile-content>
-                    </v-list-tile>
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
                 </v-list>
             </v-card-text>
             <v-card-text>

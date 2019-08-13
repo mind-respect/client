@@ -16,9 +16,6 @@
             </v-card-title>
             <v-card-text class="pt-0">
                 <v-progress-linear v-if="!fonts" :indeterminate="true" color="secondary"></v-progress-linear>
-                <!--<v-layout row wrap v-if="fonts">-->
-                <!--<v-flex v-for="font in fonts" grow>-->
-                <!--</v-flex>-->
                 <v-autocomplete
                         attach="fontDialog"
                         v-if="fonts"
@@ -55,7 +52,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                        flat
+                        text
                         class="mr-2"
                         @click="dialog = false"
                 >

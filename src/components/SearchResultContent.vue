@@ -1,9 +1,9 @@
 <template>
-    <v-list-tile-content>
-        <v-list-tile-title>
+    <v-list-item-content>
+        <v-list-item-title>
             {{item.label}}
-        </v-list-tile-title>
-        <v-list-tile-sub-title>
+        </v-list-item-title>
+        <v-list-item-subtitle>
             <span v-if="item.source ==='wikidata'">
                 {{item.description}}
             </span>
@@ -18,8 +18,8 @@
                 {{item.original.somethingToDistinguish}}
             </span>
         </span>
-        </v-list-tile-sub-title>
-    </v-list-tile-content>
+        </v-list-item-subtitle>
+    </v-list-item-content>
 </template>
 
 <script>

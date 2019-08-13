@@ -5,14 +5,17 @@
 <template>
     <div :key="menuKey"
          v-if="menuKey && $store.state.selected.length > 0 && ($store.state.selected.length > 1 || !single.loading)">
-        <span v-for="button in buttons" :key="button.action">
+        <span v-for="button in buttons" :key="button.action" :class="{
+            'h-center': isInSideMenu
+        }">
             <Button :button="button" :controller="controller" :isInSideMenu="isInSideMenu" v-if="!button.isCustom"
                     @performed="forceRefresh"></Button>
             <Button :button="button" :isInSideMenu="isInSideMenu" :controller="controller"
-                    v-if="button.isCustom && button.action === 'copy'">
+                    v-if="button.isCustom && button.action === 'copy'" class="">
                 <v-btn slot="button"
                        icon
-                       flat
+                       color="primary"
+                       text
                        v-clipboard:copy="copyContent"
                 >
                     <v-icon>{{button.icon}}</v-icon>
@@ -102,12 +105,12 @@
                         action: "setShareLevel"
                     },
                     {
-                        icon: "file_copy",
+                        icon: "content_copy",
                         action: "copy",
                         isCustom: true
                     },
                     {
-                        icon: "fa-cut",
+                        icon: "content_cut",
                         action: "cut",
                         ctrlShortcut: "X"
                     },

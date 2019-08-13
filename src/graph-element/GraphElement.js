@@ -274,6 +274,13 @@ GraphElement.GraphElement.prototype.hasIdentification = function (identifierToTe
     })
 };
 
+GraphElement.GraphElement.prototype.hasTagRelatedToUri = function (uri) {
+    return this.getIdentifiersIncludingSelf().some((identifier) => {
+        return identifier.getExternalResourceUri() === uri ||
+            identifier.getUri() === uri;
+    })
+};
+
 
 GraphElement.GraphElement.prototype.buildSelfIdentifier = function () {
     let identification = Identification.fromFriendlyResource(

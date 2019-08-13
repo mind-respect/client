@@ -19,21 +19,21 @@
                     <v-subheader v-if="isMultipleFlow && false">
                         {{$t('removeTag:multiple')}}
                     </v-subheader>
-                    <v-list-tile
+                    <v-list-item
                             v-for="bubble in bubbles"
                             :key="bubble.uiId"
                     >
-                        <v-list-tile-action>
+                        <v-list-item-action>
                             <v-icon>
                                 label
                             </v-icon>
-                        </v-list-tile-action>
-                        <v-list-tile-content>
-                            <v-list-tile-title>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
                                 {{bubble.getLabelOrDefault()}}
-                            </v-list-tile-title>
-                        </v-list-tile-content>
-                    </v-list-tile>
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
                 </v-list>
             </v-card-text>
             <v-card-actions>
@@ -49,7 +49,7 @@
                 </form>
                 <v-spacer></v-spacer>
                 <v-btn
-                        flat
+                        text
                         class="mr-2"
                         @click="removeTagDialog = false"
                 >

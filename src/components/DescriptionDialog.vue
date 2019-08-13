@@ -5,7 +5,7 @@
 <template>
     <v-dialog v-model="dialog" v-if="isDescriptionFlow" width="900" persistent>
         <v-card>
-            <v-card-text class="">
+            <v-card-text class="" style="color:inherit">
                 <vue-editor
                         :key="bubble.uiId"
                         v-model="note"
@@ -20,7 +20,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                        flat
+                        text
                         class="mr-2"
                         @click="dialog = false"
                 >

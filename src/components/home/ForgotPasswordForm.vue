@@ -34,7 +34,6 @@
 
 <script>
     import I18n from '@/I18n'
-    import AuthenticateService from '@/service/AuthenticateService'
     import Rules from '@/Rules'
     import LoadingFlow from '@/LoadingFlow'
     import UserService from '@/service/UserService'

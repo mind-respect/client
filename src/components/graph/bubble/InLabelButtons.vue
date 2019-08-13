@@ -1,12 +1,11 @@
 <template>
     <div
-            class="in-label-buttons text-xs-center unselectable"
+            class="in-label-buttons text-center unselectable"
             style="height:100%;"
             :class="{
                                                      'in-label-icons-right': !isLeft && !isCenter,
-                                                     'in-label-icons-left': isLeft && !isCenter,
-                                                     'in-label-buttons-vertex mt-0' : bubble.isVertexType(),
-                                                     'in-label-buttons-edge': bubble.isEdge() || bubble.isGroupRelation()
+                                                     'in-label-buttons-vertex' : bubble.isVertexType(),
+                                                     'in-label-icons-left': isLeft && !isCenter
                                                     }"
             :key="bubble.inLabelMenuKey"
     >
@@ -58,12 +57,9 @@
 </script>
 
 <style>
-    .in-label-buttons-vertex {
-        top: 20%;
-    }
 
-    .in-label-buttons-edge {
-        margin-top: 13px;
+    .in-label-buttons-vertex{
+        margin-top:-5px;
     }
 
     .in-label-buttons-left {

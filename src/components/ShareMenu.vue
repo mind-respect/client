@@ -1,12 +1,12 @@
 <template>
     <v-card flat>
         <v-card-text class="pt-2 pb-0 mt-0 vh-center">
-            <v-btn small flat class="pa-0 mt-0" v-clipboard:copy="pageUrl">
+            <v-btn small text class="pa-0 mt-0" v-clipboard:copy="pageUrl">
                 <v-icon class="mr-2">link</v-icon>
                 {{$t('share:copy')}}
             </v-btn>
         </v-card-text>
-        <v-card-title class="pt-1 pb-0 subheading vh-center grey--text">
+        <v-card-title class="pt-1 pb-0 subtitle-1 vh-center grey--text">
             {{$t('share:title')}}
         </v-card-title>
         <v-card flat class="pt-0">

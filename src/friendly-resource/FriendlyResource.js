@@ -126,13 +126,15 @@ FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.focus = function (event) {
-    let labelHtml = this.getLabelHtml();
-    labelHtml.contentEditable = "true";
-    if (event) {
-        Focus.focusAtPosition(event, labelHtml);
-    } else {
-        Focus.focusEnd(labelHtml);
-    }
+    setTimeout(() => {
+        let labelHtml = this.getLabelHtml();
+        labelHtml.contentEditable = "true";
+        if (event) {
+            Focus.focusAtPosition(event, labelHtml);
+        } else {
+            Focus.focusEnd(labelHtml);
+        }
+    })
 };
 
 FriendlyResource.FriendlyResource.prototype.setLabel = function (label) {
@@ -688,15 +690,6 @@ FriendlyResource.FriendlyResource.prototype.visitDescendants = function (visitor
         );
     });
 };
-
-FriendlyResource.FriendlyResource.prototype.getNumberOfChildDeep = function () {
-    let nbChild = 0;
-    this.visitDescendants(function () {
-        nbChild++
-    });
-    return nbChild;
-};
-
 
 FriendlyResource.FriendlyResource.prototype.isLeaf = function () {
     return this.getNextChildren().length === 0;

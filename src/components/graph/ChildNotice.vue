@@ -20,9 +20,11 @@
                         open-delay="0"
                         :content-class="tooltipContentClass"
                 >
-                    <div slot="activator" class="vh-center" style="height:100%;">
+                    <template v-slot:activator="{ on }">
+                        <div class="vh-center" style="height:100%;">
                         <v-icon color="secondary" class="ma-0 pa-0">unfold_more</v-icon>
                     </div>
+                    </template>
                     <div :class="{
                         'reverse': isLeft
                     }">
@@ -62,7 +64,7 @@
         },
         mounted: function () {
             this.isLeft = this.bubble.isToTheLeft();
-            this.tooltipContentClass = this.isLeft ? "mr-3" : "ml-2";
+            this.tooltipContentClass = this.isLeft ? "mr-4" : "ml-2";
             this.nbChild = this.$store.state.isViewOnly && this.bubble.isVertex() ? this.bubble.getNbPublicNeighbors() - 1 : this.bubble.getNumberOfChild();
             if (this.nbChild > 9) {
                 this.nbChild = "9+";

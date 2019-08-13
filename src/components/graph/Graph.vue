@@ -5,11 +5,11 @@
 <template>
     <v-layout v-if="loaded">
         <v-divider></v-divider>
-        <div row id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle">
-            <v-layout row class='root-vertex-super-container vh-center' :style="zoomScale"
+        <div id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle">
+            <v-layout class='root-vertex-super-container vh-center' :style="zoomScale"
                       @dragstart="preventUndesirableDragging">
                 <v-flex grow class="vertices-children-container left-oriented">
-                    <v-layout row v-for="leftBubble in center.leftBubbles" :key="leftBubble.uiId">
+                    <v-layout v-for="leftBubble in center.leftBubbles" :key="leftBubble.uiId">
                         <v-flex grow :class="{
                         'mt-3' : center.leftBubbles.length === 2 && center.leftBubbles[0].isEdge(),
                         'mb-3' : center.leftBubbles.length === 2 && center.leftBubbles[1].isEdge()

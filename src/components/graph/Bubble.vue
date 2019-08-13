@@ -24,7 +24,7 @@
             ></v-flex>
         </v-flex>
         <v-layout
-                row :class="{
+                :class="{
         'vertex-tree-container': !isCenter,
         'bubble-container': isCenter
     }" :id="containerId">
@@ -47,10 +47,10 @@
                 </div>
                 <div class='bubble-container v-center'
                      :class="{
-                'vh-center':isCenter,
-                'left':!isLeft && !isCenter,
-                'pl-5': (!isCenter && isLeaf && isLeft) || (isCenter && bubble.leftBubbles.length === 0),
-                'pr-5': (!isCenter && isLeaf && !isLeft) || (isCenter && bubble.rightBubbles.length === 0)
+                    'vh-center':isCenter,
+                    'left':!isLeft && !isCenter,
+                    'pl-12': (!isCenter && isLeaf && isLeft) || (isCenter && bubble.leftBubbles.length === 0),
+                    'pr-12': (!isCenter && isLeaf && !isLeft) || (isCenter && bubble.rightBubbles.length === 0)
             }"
                      :id="bubble.uiId"
                 >
@@ -64,16 +64,16 @@
                                 'vertex-drop-arrow-top':bubble.isVertexType(),
                                 'edge-drop-arrow-top':!bubble.isVertexType()
                             }">
-                        <v-icon v-for="i in 5" small
+                        <v-icon v-for="i in 5" :key="i" small
                                 style="overflow-x: hidden"
                                 class="unselectable"
                                 :class="{
                                     'red--text': isTopDragOver,
                                     'transparent--text': !isTopDragOver,
-                                    'ml-4 fa-flip-horizontal': isLeft,
-                                    'mr-4': !isLeft
+                                    'ml-6': isLeft,
+                                    'mr-6': !isLeft
                                 }">
-                            arrow_forward
+                            {{dragOverArrow}}
                         </v-icon>
                     </div>
 
@@ -99,15 +99,14 @@
                     <div
                             v-if="bubble.isVertexType()"
                             class="bubble vertex graph-element relative vh-center" :class="{
-                        'selected' : (isSelected || isLabelDragOver || isLeftRightDragOver),
-                        'center-vertex': isCenter,
-                        'reverse': isLeft && !isCenter
-                }"
+                                'selected' : (isSelected || isLabelDragOver || isLeftRightDragOver),
+                                'center-vertex': isCenter,
+                                'reverse': isLeft && !isCenter
+                            }"
                     >
                         <div class="image_container"></div>
-                        <div class="in-bubble-content-wrapper unselectable">
+                        <div class="in-bubble-content-wrapper unselectable vh-center">
                             <v-menu
-                                    lazy
                                     v-model="showMenu"
                                     :value="isSelected && $store.state.selected.length === 1"
                                     max-width="250"
@@ -119,68 +118,66 @@
                                     :open-on-click="false"
                                     :disabled="bubble.isEditFlow"
                             >
-                                <div
-                                        slot="activator"
-                                        class="in-bubble-content vh-center"
-                                        :class="{
+                                <template v-slot:activator="{ on }">
+                                    <div
+                                            class="in-bubble-content vh-center"
+                                            :class="{
                                             'reverse': isLeft,
                                             'desktop': $vuetify.breakpoint.lgAndUp,
                                             'mobile': $vuetify.breakpoint.mdAndDown,
                                             'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
                                     }"
-                                        @click="click"
-                                        @mouseup="mouseup"
-                                        @dblclick="dblclick"
-                                        @mousedown="mouseDown"
-                                        @dragstart="dragStart"
-                                        @dragend="dragEnd"
-                                        @contextmenu="rightClick"
-                                        :draggable="!isCenter && !bubble.isEditFlow"
-                                        :style="background"
-                                >
-                                    <InLabelButtons :bubble="bubble" :isLeft="isLeft"
-                                                    :isCenter="isCenter"></InLabelButtons>
-                                    <v-menu
-                                            lazy
-                                            v-model="linkMenu"
-                                            auto
-                                            offset-y
-                                            :disabled="bubble.isEditFlow || $store.state.selected.length > 1"
+                                            @click="click"
+                                            @mouseup="mouseup"
+                                            @dblclick="dblclick"
+                                            @mousedown="mouseDown"
+                                            @dragstart="dragStart"
+                                            @dragend="dragEnd"
+                                            @contextmenu="rightClick"
+                                            :draggable="!isCenter && !bubble.isEditFlow"
+                                            :style="background"
                                     >
-                                        <v-badge color="third" slot="activator" :left="isLeft">
-                                            <template v-slot:badge v-if="bubble.isMeta()">
-                                                <v-icon dark>label</v-icon>
-                                            </template>
-                                            <!--                                            <template v-slot:badge-->
-                                            <!--                                                      v-if="bubble.isVertex() && bubble.getNbDuplicates() > 0">-->
-                                            <!--                                                {{bubble.getNbDuplicates()}}-->
-                                            <!--                                            </template>-->
-                                            <div
-                                                    class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
-                                                    @blur="leaveEditFlow"
-                                                    @dragover="labelDragEnter"
-                                                    @dragleave="labelDragLeave"
-                                                    @drop="labelDrop"
-                                                    :data-placeholder="$t('vertex:default')"
-                                                    v-html="label"
-                                                    @focus="focus"
-                                                    @keydown="keydown"
-                                                    @paste="paste"
-                                                    :style="labelFont"
-                                                    ref="vertexLabel"
-                                                    :class="{
+                                        <InLabelButtons :bubble="bubble" :isLeft="isLeft"
+                                                        :isCenter="isCenter"></InLabelButtons>
+                                        <v-menu
+                                                v-model="linkMenu"
+                                                auto
+                                                offset-y
+                                                :disabled="bubble.isEditFlow || $store.state.selected.length > 1"
+                                        >
+                                            <template v-slot:activator="{ on }">
+                                                <v-badge color="third" :left="isLeft">
+                                                    <template v-slot:badge v-if="bubble.isMeta()">
+                                                        <v-icon dark>label</v-icon>
+                                                    </template>
+                                                    <div
+                                                            class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
+                                                            @blur="leaveEditFlow"
+                                                            @dragover="labelDragEnter"
+                                                            @dragleave="labelDragLeave"
+                                                            @drop="labelDrop"
+                                                            :data-placeholder="$t('vertex:default')"
+                                                            v-html="label"
+                                                            @focus="focus"
+                                                            @keydown="keydown"
+                                                            @paste="paste"
+                                                            :style="labelFont"
+                                                            ref="vertexLabel"
+                                                            :class="{
                                                         'unselectable' : !bubble.isEditFlow
                                                     }"
-                                            ></div>
-                                        </v-badge>
-                                        <v-card :href="linkMenuHref" target="_blank">
-                                            <v-card-title>
-                                                <v-icon class="mr-2">share</v-icon>
-                                                {{$t('vertex:openLink')}}
-                                            </v-card-title>
-                                        </v-card>
-                                    </v-menu>
-                                </div>
+                                                    ></div>
+                                                </v-badge>
+                                            </template>
+                                            <v-card :href="linkMenuHref" target="_blank">
+                                                <v-card-title>
+                                                    <v-icon class="mr-2">share</v-icon>
+                                                    {{$t('vertex:openLink')}}
+                                                </v-card-title>
+                                            </v-card>
+                                        </v-menu>
+                                    </div>
+                                </template>
                                 <div :style="background">
                                     <BubbleButtons
                                             v-if="$store.state.selected.length === 1 && this.isSelected"></BubbleButtons>
@@ -214,15 +211,15 @@
                             'vertex-drop-arrow-bottom':bubble.isVertexType(),
                             'edge-drop-arrow-bottom':!bubble.isVertexType()
                         }">
-                        <v-icon v-for="i in 5" small
+                        <v-icon v-for="i in 5" :key="i" small
                                 class="unselectable"
                                 :class="{
                         'red--text' : isBottomDragOver,
                         'transparent--text': !isBottomDragOver,
-                        'ml-4 fa-flip-horizontal': isLeft,
-                        'mr-4': !isLeft
+                        'ml-6': isLeft,
+                        'mr-6': !isLeft
                     }">
-                            arrow_forward
+                            {{dragOverArrow}}
                         </v-icon>
                     </div>
                     <div class="vertex-left-right-drop"
@@ -232,15 +229,15 @@
                          @drop="rightDrop"
                          style="right:0;">
                     </div>
-                    <div
+                    <v-layout
                             v-if="bubble.isEdge() || bubble.isGroupRelation()"
-                            class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0"
+                            class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0 "
                             :class="{
                             'selected' : isSelected,
                             'reverse': isLeft && !isCenter
                             }">
                         <div class="image_container"></div>
-                        <div class="in-bubble-content"
+                        <div class="in-bubble-content vh-center"
                              @click="click"
                              @mouseup="mouseup"
                              @dblclick="dblclick"
@@ -248,18 +245,16 @@
                              @dragstart="dragStart"
                              @dragend="dragEnd"
                              @contextmenu="rightClick"
-                             draggable="true"
                              :draggable="!bubble.isEditFlow"
                              :class="{
-                                'pl-5 pr-1': bubble.isEdge() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
-                                'pl-1 pr-5': bubble.isEdge() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
-                                'pl-4': (bubble.isGroupRelation() && !isLeft),
-                                'pr-4': (bubble.isGroupRelation() && isLeft),
+                                'pl-12 pr-1': bubble.isEdge() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
+                                'pl-1 pr-12': bubble.isEdge() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
+                                'pl-6': (bubble.isGroupRelation() && !isLeft),
+                                'pr-6': (bubble.isGroupRelation() && isLeft),
                                 'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
                              }"
                         >
                             <v-menu
-                                    lazy
                                     v-model="showMenu"
                                     :value="isSelected && $store.state.selected.length === 1"
                                     max-width="250"
@@ -271,46 +266,47 @@
                                     class="pa-0 ma-0"
                                     :open-on-click="false"
                             >
-                                <div class="label-container" slot="activator">
-                                    <!--                                <span style="visibility: hidden;" v-if="isShrinked">{{$t('edge:default')}}</span>-->
-                                    <v-chip :color="chipColor"
-                                            small
-                                            @dragover="labelDragEnter"
-                                            @dragleave="labelDragLeave"
-                                            @drop="labelDrop"
-                                            :selected="isSelected || isLabelDragOver"
-                                            class="pt-0 pb-0 mt-0 mb-0 ma-0 pa-0 label-chip"
-                                            dark
-                                            transition="none"
-                                            :class="{
+                                <template v-slot:activator="{ on }">
+                                    <div class="label-container">
+                                        <v-chip :color="chipColor"
+                                                small
+                                                @dragover="labelDragEnter"
+                                                @dragleave="labelDragLeave"
+                                                @drop="labelDrop"
+                                                :input-value="isSelected || isLabelDragOver"
+                                                class="pt-0 pb-0 mt-0 mb-0 ma-0 pl-2 pr-2 label-chip vh-center"
+                                                dark
+                                                transition="none"
+                                                :class="{
                                             'reverse': isLeft,
                                         'elevation-4': isSelected,
                                         'is-inverse' : isInverse,
                                         'is-shrinked' : isShrinked,
                                         'empty-edge' : bubble.isEdge() && !bubble.isEditFlow && bubble.isLabelEmpty()
                                     }"
-                                    >
-                                        <InLabelButtons :bubble="bubble" :isLeft="isLeft" :isCenter="isCenter"
-                                                        v-if="!isShrinked"></InLabelButtons>
-                                        <div class="bubble-label white--text"
-                                             @blur="leaveEditFlow"
-                                             :data-placeholder="relationPlaceholder"
-                                             @focus="focus"
-                                             @paste="paste"
-                                             v-show="!isShrinked"
-                                             v-if="!bubble.isMetaRelation()"
-                                             v-text="label"
-                                             @keydown="keydown"
-                                             :style="labelFont"
-                                             :class="{
+                                        >
+                                            <InLabelButtons :bubble="bubble" :isLeft="isLeft" :isCenter="isCenter" class="vh-center"
+                                                            v-if="!isShrinked"></InLabelButtons>
+                                            <div class="bubble-label white--text"
+                                                 @blur="leaveEditFlow"
+                                                 :data-placeholder="relationPlaceholder"
+                                                 @focus="focus"
+                                                 @paste="paste"
+                                                 v-show="!isShrinked"
+                                                 v-if="!bubble.isMetaRelation()"
+                                                 v-text="label"
+                                                 @keydown="keydown"
+                                                 :style="labelFont"
+                                                 :class="{
                                                         'unselectable' : !bubble.isEditFlow
                                                     }"
-                                        ></div>
-                                        <v-icon v-if="bubble.isMetaRelation()" small class="bubble-label unselectable"
-                                                v-show="!isShrinked">label
-                                        </v-icon>
-                                    </v-chip>
-                                </div>
+                                            ></div>
+                                            <v-icon v-if="bubble.isMetaRelation()" small class="bubble-label unselectable"
+                                                    v-show="!isShrinked">label
+                                            </v-icon>
+                                        </v-chip>
+                                    </div>
+                                </template>
                                 <div :style="background">
                                     <BubbleButtons
                                             v-if="$store.state.selected.length === 1 && this.isSelected"></BubbleButtons>
@@ -323,7 +319,7 @@
                                         'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
                                      }"
                                      v-if="canExpand && !canShowChildren"></ChildNotice>
-                    </div>
+                    </v-layout>
                 </div>
                 <div v-if="!bubble.isCollapsed || isCenter">
                     <div>
@@ -394,7 +390,8 @@
                 linkMenu: false,
                 linkMenuHref: null,
                 chipColor: null,
-                isMetaRelated: null
+                isMetaRelated: null,
+                dragOverArrow: null
             }
         },
         mounted: async function () {
@@ -406,6 +403,7 @@
             this.isMetaRelated = this.bubble.isMetaRelation() || this.bubble.isMetaGroupVertex() || (parentBubble && parentBubble.isMetaRelation());
             this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
             this.isLeft = this.direction === "left";
+            this.dragOverArrow = this.isLeft ? "arrow_back" : "arrow_forward";
             if (this.isCenter) {
                 this.containerId = "center";
             } else {
@@ -489,7 +487,7 @@
                 let text = event.clipboardData.getData('Text');
                 window.document.execCommand('insertText', false, text);
             },
-            mouseup: function (event) {
+            mouseup: function () {
                 if (Selection.isSingle() && Selection.isSelected(this.bubble)) {
                     setTimeout(() => {
                         if (!this.bubble.isEditFlow && !this.linkMenu) {
@@ -604,7 +602,7 @@
                 event.preventDefault();
                 event.stopPropagation();
                 clearTimeout(this.dragOverLabelTimeout);
-                if (this.isLabelDragOver = true) {
+                if (this.isLabelDragOver === true) {
                     return;
                 }
                 let dragged = this.$store.state.dragged;
@@ -770,10 +768,7 @@
     .is-shrinked {
         height: 10px !important;
         width: 10px !important;
-    }
-
-    .is-shrinked.empty-edge {
-        top: 5px;
+        padding:0 !important;
     }
 
     .left-oriented .empty-edge {
@@ -788,9 +783,12 @@
         right: 2px;
     }
 
+    .is-shrinked.empty-edge {
+        top: -5px;
+    }
     .empty-edge {
         position: absolute;
-        top: -5px;
+        top: -15px;
     }
 
     .label-drag-over {
@@ -904,8 +902,8 @@
     .vertex .in-bubble-content {
         height: 100%;
         position: relative;
-        padding-top: 2px !important;
-        padding-bottom: 2px !important;
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
     }
 
     .vertex .in-bubble-content.desktop {
@@ -935,6 +933,9 @@
     .bubble-label {
         display: inline-block;
         word-break: break-word;
+        outline: 0 solid transparent;
+        border: none;
+        width: auto;
     }
 
 </style>

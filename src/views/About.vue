@@ -5,11 +5,11 @@
                 align-center
                 row
                 justify-center
-                class="mb-5 mt-5"
+                class="mb-12 mt-12"
         >
             <v-flex xs12>
                 <v-card color="secondary" class="white--text">
-                    <v-card-title class="title white--text text-xs-center vh-center">
+                    <v-card-title class="title white--text text-center vh-center">
                         <v-icon class="mr-2 white--text">
                             notifications_active
                         </v-icon>
@@ -47,13 +47,13 @@
                             <v-flex xs1>
                                 <v-icon class="white--text mr-2">search</v-icon>
                             </v-flex>
-                            <v-flex xs11 class="mb-4 text-xs-center">
+                            <v-flex xs11 class="mb-6 text-center">
                                 {{$t('about:level3Desc1')}}
                             </v-flex>
                             <v-flex xs1>
                                 <v-icon class="white--text mr-2">star</v-icon>
                             </v-flex>
-                            <v-flex xs11 class="text-xs-center">
+                            <v-flex xs11 class="text-center">
                                 {{$t('about:level3Desc2')}}
                             </v-flex>
                         </v-layout>
@@ -71,22 +71,22 @@
                 <!--</v-card-text>-->
                 <!--</v-card>-->
                 <!--<v-list class="white&#45;&#45;text" style="background-color: transparent" two-line dense>-->
-                <!--<v-list-tile>-->
-                <!--<v-list-tile-content>-->
-                <!--<v-list-tile-sub-title class="title white&#45;&#45;text">-->
+                <!--<v-list-item>-->
+                <!--<v-list-item-content>-->
+                <!--<v-list-item-sub-title class="title white&#45;&#45;text">-->
                 <!--<v-icon class="white&#45;&#45;text mr-2">search</v-icon>-->
                 <!--{{$t('about:level3Desc1')}}-->
-                <!--</v-list-tile-sub-title>-->
-                <!--</v-list-tile-content>-->
-                <!--</v-list-tile>-->
-                <!--<v-list-tile>-->
+                <!--</v-list-item-sub-title>-->
+                <!--</v-list-item-content>-->
+                <!--</v-list-item>-->
+                <!--<v-list-item>-->
                 <!--<v-list-content-content>-->
-                <!--<v-list-tile-sub-title class="title">-->
+                <!--<v-list-item-sub-title class="title">-->
                 <!--<v-icon class="white&#45;&#45;text mr-2">star</v-icon>-->
                 <!--{{$t('about:level3Desc2')}}-->
-                <!--</v-list-tile-sub-title>-->
+                <!--</v-list-item-sub-title>-->
                 <!--</v-list-content-content>-->
-                <!--</v-list-tile>-->
+                <!--</v-list-item>-->
                 <!--</v-list>-->
             </div>
         </Level>
@@ -99,7 +99,7 @@
                             <v-flex xs1>
                                 <v-icon class="white--text mr-2">fa-sitemap</v-icon>
                             </v-flex>
-                            <v-flex xs11 class="mb-4 text-xs-center">
+                            <v-flex xs11 class="mb-6 text-center">
                                 {{$t('about:level4Desc1')}}
                             </v-flex>
                         </v-layout>
@@ -118,13 +118,13 @@
                             <v-flex xs1 class="">
                                 <v-icon class="white--text mr-2">fa-balance-scale</v-icon>
                             </v-flex>
-                            <v-flex xs11 class="mb-4 text-xs-left pl-4">
+                            <v-flex xs11 class="mb-6 text-xs-left pl-6">
                                 {{$t('about:level5Desc1')}}
                             </v-flex>
                             <v-flex xs1>
                                 <v-icon class="white--text mr-2 fa-flip-horizontal">keyboard_return</v-icon>
                             </v-flex>
-                            <v-flex xs11 class="mb-4 text-xs-left pl-4">
+                            <v-flex xs11 class="mb-6 text-xs-left pl-6">
                                 {{$t('about:level5Desc11')}}
                             </v-flex>
                             <v-flex xs1>
@@ -132,7 +132,7 @@
                                     public
                                 </v-icon>
                             </v-flex>
-                            <v-flex xs11 class="mb-4 text-xs-left pl-4">
+                            <v-flex xs11 class="mb-6 text-xs-left pl-6">
                                 {{$t('about:level5Desc2')}}
                             </v-flex>
                             <v-flex xs1>
@@ -140,7 +140,7 @@
                                     keyboard_return
                                 </v-icon>
                             </v-flex>
-                            <v-flex xs11 class="mb-4 text-xs-left pl-4">
+                            <v-flex xs11 class="mb-6 text-xs-left pl-6">
                                 {{$t('about:level5Desc21')}}
                             </v-flex>
                         </v-layout>
@@ -155,8 +155,8 @@
         <v-layout row wrap class="">
             <v-flex xs12 md6 class="vh-center">
                 <v-card flat color="secondary" height="100%" class="vh-center">
-                    <v-card-title class="text-xs-center white--text vh-center pr-0 pl-0">
-                        <h3 class="display-2 text-xs-center">
+                    <v-card-title class="text-center white--text vh-center pr-0 pl-0">
+                        <h3 class="display-2 text-center">
                             {{$t('register:title')}}
                         </h3>
                         <div class="title">
@@ -165,17 +165,17 @@
                     </v-card-title>
                 </v-card>
             </v-flex>
-            <v-flex xs12 md6 class="mt-5 mb-5">
+            <v-flex xs12 md6 class="mt-12 mb-12">
                 <RegisterForm></RegisterForm>
             </v-flex>
         </v-layout>
-        <v-footer class="pa-3" dark>
+        <v-footer class="pa-4" dark>
             <v-spacer></v-spacer>
             <v-icon class="fa-flip-horizontal mr-2">copyright</v-icon>
             Copyleft
             <span class="ml-2">Vincent Blouin</span>
             <v-spacer></v-spacer>
-            <a href="https://www.facebook.com/mindrespectapp" :small="$vuetify.breakpoint.mdAndDown" class="mr-3 mt-1">
+            <a href="https://www.facebook.com/mindrespectapp" :small="$vuetify.breakpoint.mdAndDown" class="mr-4 mt-1">
                 <img src="https://facebookbrand.com/wp-content/uploads/2016/05/flogo_rgb_hex-brc-site-250.png?w=30&h=30">
             </a>
             <a href="https://github.com/mind-respect">

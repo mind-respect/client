@@ -4,51 +4,8 @@
 
 .bubble {
   z-index: 5;
-  display: table;
-
-  &.dragged {
-    background-color: transparent;
-  }
-  /*.label to override bootstrap*/
-  > *, .label {
-    display: table-cell;
-    vertical-align: middle;
-  }
-  &.view-only {
-    .arrow {
-      &:before {
-        left: 0;
-      }
-    }
-  }
   .in-bubble-content {
-    position: relative;
     z-index: 3;
-    .in-label-buttons {
-      display: inline-block;
-      white-space: nowrap;
-      button {
-        width: 37px;
-        height: 37px;
-        height: auto;
-        display: inline-block;
-        background: none;
-        border: none;
-        box-shadow: none;
-        font-size: 20px;
-        margin: -6px;
-        &[data-action=makePublic] {
-          i:before {
-            content: "\f023";
-          }
-        }
-        &[data-action=makePrivate] {
-          i:before {
-            content: "\f09c";
-          }
-        }
-      }
-    }
   }
   &.edit {
     user-select: text;
@@ -59,34 +16,22 @@
       }
     }
   }
-  white-space: nowrap;
   .bubble-label {
     text-align: center;
     color: black;
     &:empty:not(:focus) {
       color: grey;
       max-width: 100%;
-      //transition: all 0.3s;
       &:after {
         content: attr(data-placeholder);
         font-style: italic;
         font-size: calc(1em);
       }
     }
-    del {
-      text-decoration: none;
-    }
     &[contenteditable='true']:before {
       content: "\feff "; //to prevent small height when edit in firefox http://stackoverflow.com/a/23530317
     }
-    outline: 0 solid transparent;
-    border: none;
-    //font-size: 18px;
-    width: auto;
-    display: table-cell;
-    white-space: pre;
   }
-  position: relative;
   min-width: 0;
   margin: 0 0 0 0;
   &.selected {
@@ -116,18 +61,5 @@
     &:empty {
       min-width: 0;
     }
-  }
-  .edge-label {
-    display: inline;
-  }
-  .connector {
-    position: absolute;
-    height: $relationConnectorHeight;
-    border-top: $edgeStyle;
-    top: calc(50% - 2px);
-    width: 32px;
-    left: -22px;
-    z-index: -1;
-    //border-image: url("images/rope.svg.thumb.png") 30 round;
   }
 }

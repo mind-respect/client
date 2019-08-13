@@ -1,7 +1,7 @@
 <template>
     <v-navigation-drawer
             stateless
-            style="margin-top:42px;"
+            style="margin-top:43px;"
             :value="true"
             v-if="$vuetify.breakpoint.mdAndUp || (!isSingle || $store.state.sideMenuFlow !== false)"
             fixed
@@ -21,10 +21,10 @@
                     touchless
             >
                 <v-card class="" flat>
-                    <v-btn @click="expand" icon v-if="$store.state.sideMenuFlow === false" class="mt-4">
+                    <v-btn @click="expand" small icon v-if="$store.state.sideMenuFlow === false" class="mt-6">
                         <v-icon>chevron_right</v-icon>
                     </v-btn>
-                    <v-card-title class="subheading" v-if="$store.state.sideMenuFlow !== false">
+                    <v-card-title class="subtitle-1" v-if="$store.state.sideMenuFlow !== false">
                         <div class="grey--text" v-if="isSingle">
                             {{$t('side:creationDate')}}
                             {{formatDate(creationDate)}}
@@ -39,39 +39,40 @@
                                 v-model="tabMenu"
                                 grow
                                 centered
-                                next-icon=""
+                                show-arrows
                                 color="transparent"
+                                class="side-tabs"
                         >
-                            <v-tab class="primary--text">
+                            <v-tab class="primary--text side-tab">
                                 <v-icon>note</v-icon>
                             </v-tab>
-                            <v-tab class="primary--text">
+                            <v-tab class="primary--text side-tab">
                                 <v-icon>label</v-icon>
                             </v-tab>
-                            <v-tab class="primary--text">
+                            <v-tab class="primary--text side-tab">
                                 <v-icon>merge_type</v-icon>
                             </v-tab>
-                            <v-tab class="primary--text">
+                            <v-tab class="primary--text side-tab">
                                 <v-icon>share</v-icon>
                             </v-tab>
                         </v-tabs>
                         <v-tabs-items v-model="tabMenu" class="white">
                             <v-tab-item>
-                                <p v-if="!noteCanDo" class="pt-3 grey--text text-xs-center">
+                                <p v-if="!noteCanDo" class="pt-4 grey--text text-center">
                                     {{$t('side:noteCantDo')}}</p>
                                 <NoteMenu :bubble="selected" v-if="noteCanDo"></NoteMenu>
                             </v-tab-item>
                             <v-tab-item>
-                                <p v-if="!tagCanDo" class="pt-3 grey--text text-xs-center">{{$t('side:tagCantDo')}}</p>
+                                <p v-if="!tagCanDo" class="pt-4 grey--text text-center">{{$t('side:tagCantDo')}}</p>
                                 <TagMenu @focus="focus" @blur="blur" :bubble="selected" v-if="tagCanDo"></TagMenu>
                             </v-tab-item>
                             <v-tab-item>
-                                <p v-if="!mergeCanDo" class="pt-3 grey--text text-xs-center">
+                                <p v-if="!mergeCanDo" class="pt-4 grey--text text-center">
                                     {{$t('side:mergeCantDo')}}</p>
                                 <MergeMenu @focus="focus" @blur="blur" :bubble="selected" v-if="mergeCanDo"></MergeMenu>
                             </v-tab-item>
                             <v-tab-item>
-                                <p v-if="!shareCanDo" class="pt-3 grey--text text-xs-center">
+                                <p v-if="!shareCanDo" class="pt-4 grey--text text-center">
                                     {{$t('side:shareCantDo')}}</p>
                                 <ShareMenu @focus="focus" @blur="blur"
                                            v-if="shareCanDo"></ShareMenu>
@@ -209,6 +210,7 @@
 </script>
 
 <style>
+
     .side-search-menu {
         top: -16px !important;
     }
@@ -217,5 +219,12 @@
         height: auto;
         min-height: 48px;
         max-height: 105px;
+    }
+
+    .side-tab{
+        min-width:40px !important;
+    }
+    .side-tabs .v-slide-group__prev{
+        display:none;
     }
 </style>

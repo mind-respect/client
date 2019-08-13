@@ -12,13 +12,13 @@
         >
             <v-card style="background-color:black;">
                 <v-card-title class="pt-0 pb-0 vh-center">
-                    <h1 class="display-2 white--text font-weight-light mt-4 text-xs-center"
+                    <h1 class="display-2 white--text font-weight-light mt-6 text-center"
                         style="font-size: 40px !important; ">
                         {{$t('banner:slogan')}}
                     </h1>
                 </v-card-title>
                 <v-card-title class="vh-center">
-                    <h4 class="subheading white--text font-weight-bold text-xs-center">
+                    <h4 class="subtitle-1 white--text font-weight-bold text-center">
                         {{$t('banner:desc')}}
 <!--                        <a href="#" @click.prevent="Scroll.goToSection('mrLevel')" class="white&#45;&#45;text">-->
                             {{$t('banner:desc2')}}

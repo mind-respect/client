@@ -2,7 +2,7 @@
     <div>
         <v-card color="black" class="white--text">
             <v-card-title class="vh-center">
-                <h3 class="text-xs-center mb-5 mt-5">
+                <h3 class="text-center mb-12 mt-12">
                     <!--<v-badge color="secondary" left large :class="{-->
                     <!--'ml-4': $vuetify.breakpoint.smAndDown-->
                     <!--}">-->
@@ -10,9 +10,9 @@
                     <!--<span class="mr-4 display-2 font-weight-thin">{{level}}</span>-->
                     <!--<span class="headline">{{title}}</span>-->
                     <!--</v-badge>-->
-                    <span class="mr-4 display-2 font-weight-thin">{{level}}</span>
+                    <span class="mr-6 display-2 font-weight-thin">{{level}}</span>
                     <span class="headline">{{title}}</span>
-                    <div class="text-xs-center subheading mt-3 mb-3" v-if="$slots['description']">
+                    <div class="text-center subtitle-1 mt-4 mb-4" v-if="$slots['description']">
                         <slot name="description"></slot>
                     </div>
                 </h3>

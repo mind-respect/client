@@ -1,133 +1,133 @@
 <template>
     <v-menu
-            lazy
             :nudge-width="250"
             offset-y
-            content-class="settings-menu"
+            fixed
             v-if="$store.state.user !== undefined"
             :close-on-content-click="$vuetify.breakpoint.mdAndDown"
     >
-        <v-btn icon light slot="activator" class="mr-2">
-            <v-icon>
-                settings
-            </v-icon>
-        </v-btn>
-        <v-card>
-            <v-list>
-                <v-list-tile v-if="$store.state.user && $vuetify.breakpoint.mdAndDown" :to="'/user/' + $store.state.user.username" :disabled="$route.name === 'UserHome'">
-                    <v-list-tile-action>
-                        <v-icon>
-                            filter_center_focus
-                        </v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title>
-                            {{$t('centers')}}
-                        </v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile v-if="$store.state.user && $vuetify.breakpoint.mdAndDown" @click="createVertex">
-                    <v-list-tile-action>
-                        <v-icon color="third">add</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title>
-                            {{$t('button:createVertex')}}
-                        </v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile @click="expandAll" :disabled="!canExpandAll"
-                             v-if="isGraphRoute && $store.state.dragged === null">
-                    <v-list-tile-action>
-                        <v-icon class="">unfold_more</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title>
-                            {{$t('button:expandAll')}}
-                        </v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile @click="selectAllBubbles" v-if="isGraphRoute">
-                    <v-list-tile-action>
-                        <v-icon class="">select_all</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title>
-                            {{$t('button:selectAllBubbles')}}
-                        </v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile @click="fontPicker" v-if="isGraphRoute">
-                    <v-list-tile-action>
-                        <v-icon class="">font_download</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title>
-                            {{$t('button:fontPicker')}}
-                        </v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile @click="changeBackgroundColorMenu" v-if="isGraphRoute"
-                             :disabled="!changeBackgroundColorCanDo()">
-                    <v-list-tile-action>
-                        <v-icon class="">format_paint</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title>
-                            {{$t('button:changeBackgroundColor')}}
-                        </v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile @click="listAll" v-if="isGraphRoute">
-                    <v-list-tile-action>
-                        <v-icon class="">list</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title>
-                            {{$t('button:listAll')}}
-                        </v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile @click="switchLanguage()">
-                    <v-list-tile-action>
-                        <v-icon class="">public</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title>
+        <template v-slot:activator="{ on }">
+            <v-btn icon light class="mr-2" v-on="on">
+                <v-icon>
+                    settings
+                </v-icon>
+            </v-btn>
+        </template>
+        <v-list>
+            <v-list-item v-if="$store.state.user && $vuetify.breakpoint.mdAndDown"
+                         :to="'/user/' + $store.state.user.username" :disabled="$route.name === 'UserHome'">
+                <v-list-item-action>
+                    <v-icon>
+                        filter_center_focus
+                    </v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{$t('centers')}}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item v-if="$store.state.user && $vuetify.breakpoint.mdAndDown" @click="createVertex">
+                <v-list-item-action>
+                    <v-icon color="third">add</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{$t('button:createVertex')}}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="expandAll" :disabled="!canExpandAll"
+                         v-if="isGraphRoute && $store.state.dragged === null">
+                <v-list-item-action>
+                    <v-icon class="">unfold_more</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{$t('button:expandAll')}}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="selectAllBubbles" v-if="isGraphRoute">
+                <v-list-item-action>
+                    <v-icon class="">select_all</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{$t('button:selectAllBubbles')}}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="fontPicker" v-if="isGraphRoute">
+                <v-list-item-action>
+                    <v-icon class="">font_download</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{$t('button:fontPicker')}}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="changeBackgroundColorMenu" v-if="isGraphRoute"
+                         :disabled="!changeBackgroundColorCanDo()">
+                <v-list-item-action>
+                    <v-icon class="">format_paint</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{$t('button:changeBackgroundColor')}}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="listAll" v-if="isGraphRoute">
+                <v-list-item-action>
+                    <v-icon class="">list</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{$t('button:listAll')}}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="switchLanguage()">
+                <v-list-item-action>
+                    <v-icon class="">public</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
                                         <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.smAndDown">
                                             EN
                                         </span>
-                            <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.mdAndUp">
+                        <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.mdAndUp">
                                             English
                                         </span>
-                            <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.smAndDown">
+                        <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.smAndDown">
                                             FR
                                         </span>
-                            <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.mdAndUp">
+                        <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.mdAndUp">
                                             Français
                                         </span>
-                        </v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile @click="logout()">
-                    <v-list-tile-action>
-                        <v-icon>exit_to_app</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title>
-                            {{$t('logout')}}
-                        </v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-            </v-list>
-            <input
-                    id="background-color-picker"
-                    v-show="false"
-                    type="color"
-                    v-model="backgroundColor"
-                    @change="changeBackgroundColor"
-            >
-        </v-card>
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="logout()">
+                <v-list-item-action>
+                    <v-icon>exit_to_app</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{$t('logout')}}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+        </v-list>
+        <input
+                id="background-color-picker"
+                v-show="false"
+                type="color"
+                v-model="backgroundColor"
+                @change="changeBackgroundColor"
+        >
     </v-menu>
 </template>
 
@@ -149,7 +149,7 @@
         mounted: function () {
         },
         methods: {
-            createVertex:function(){
+            createVertex: function () {
                 AppController.createVertex();
             },
             expandAll: function () {

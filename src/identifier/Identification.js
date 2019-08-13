@@ -194,16 +194,17 @@ Identification.Identification.prototype.getFont = function () {
     };
 };
 
-Identification.Identification.prototype.getUrl = function () {
+Identification.Identification.prototype.buildExternalUrls = function () {
+    this.url = this.uri().url();
     let externalUri = this.getExternalResourceUri();
-    if (this.url) {
-        return Promise.resolve(this.url);
+    if (this.externalUrl) {
+        return Promise.resolve(this.externalUrl);
     }
     let promise = WikidataUri.isAWikidataUri(externalUri) ?
         WikidataService.getWikipediaUrlFromWikidataUri(externalUri) : Promise.resolve(IdUri.htmlUrlForBubbleUri(externalUri));
     return promise.then((url) => {
-        this.url = url;
-        return this.url;
+        this.externalUrl = url;
+        return this.externalUrl;
     });
 };
 

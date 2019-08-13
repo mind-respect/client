@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <v-card flat>
+    <v-card flat v-if="loaded">
         <v-card-text class="pt-0 pb-0">
             <v-autocomplete
                     ref="search"
@@ -25,12 +25,9 @@
                     :placeholder="$t('tag:title')"
             >
                 <template v-slot:prepend-inner>
-                    <i class="fab fa-wikipedia-w mt-1"></i>
-                    <v-icon>
-                        label
-                    </v-icon>
+                    <img :src="require('@/assets/wikipedia.svg')" width="25">
                 </template>
-                <template v-slot:item="{ item }">
+                <template v-slot:item="{ item }" :attr="searchResultAttrs(item.uri)">
                     <SearchResultContent :item="item"></SearchResultContent>
                     <SearchResultAction :item="item"></SearchResultAction>
                 </template>
@@ -39,36 +36,68 @@
         <v-card flat class="pt-0">
             <v-card-text class="pt-0" id="tagMenu"></v-card-text>
         </v-card>
-        <v-card min-height="150" flat class="pt-0 text-xs-center">
+        <v-card min-height="150" flat class="pt-0 text-center">
             <v-progress-circular indeterminate color="third" v-if="tagLoading"></v-progress-circular>
             <v-list subheader three-line>
-                <v-list-tile v-for="identifier in identifiersByLatest" :key="identifier.externalResourceUri"
-                             :href="identifier.url" target="_blank">
-                    <v-list-tile-action v-if="identifier.hasImages()">
+                <v-list-item v-for="identifier in identifiersByLatest" :key="identifier.externalResourceUri"
+                             class="mr-0 pr-0">
+                    <v-list-item-action v-if="identifier.hasImages()" class="ma-3 ml-0">
                         <v-img :src="identifier.getImage().urlForSmall" max-height="90"></v-img>
-                    </v-list-tile-action>
-                    <v-list-tile>
-                        <v-list-tile-content>
-                            <v-list-tile-title>
-                                {{identifier.getLabel()}}
-                            </v-list-tile-title>
-                            <v-list-tile-sub-title v-html="identifier.getComment()">
-                            </v-list-tile-sub-title>
-                        </v-list-tile-content>
-                    </v-list-tile>
-                    <v-spacer></v-spacer>
-                    <v-icon class="mr-4" v-if="identifier.refersToAGraphElement()">
-                        {{identifier.getIcon()}}
-                    </v-icon>
-                    <i class="fab fa-wikipedia-w mr-4" v-else></i>
-                    <v-list-tile-action v-if="!bubble.isGroupRelation()">
-                        <v-btn icon flat @click.native="removeIdentifier($event, identifier)">
-                            <v-icon color="third">
-                                delete
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title class="text-left mb-0">
+                            {{identifier.getLabel()}}
+                            <v-icon class="mr-6 float-right" v-if="identifier.refersToAGraphElement()">
+                                {{identifier.getIcon()}}
                             </v-icon>
-                        </v-btn>
-                    </v-list-tile-action>
-                </v-list-tile>
+                            <img v-else :src="require('@/assets/wikipedia.svg')" width="25" class="float-right">
+                        </v-list-item-title>
+                        <v-list-item-subtitle v-html="identifier.getComment()"
+                                              class="grey--text text-left"></v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action v-if="!bubble.isGroupRelation()" class="ma-0 vh-center"
+                                        style="min-height:100%;height:100%">
+                        <v-menu>
+                            <template v-slot:activator="{ on }">
+                                <v-btn icon text v-on="on" class="mt-5 ml-2 mr-1" small>
+                                    <v-icon color="third">
+                                        more_horiz
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+                            <v-list>
+                                <v-list-item :href="identifier.url">
+                                    <v-list-item-action>
+                                        <v-icon>filter_center_focus</v-icon>
+                                    </v-list-item-action>
+                                    <v-list-item-title>
+                                        {{$t('tag:center')}}
+                                    </v-list-item-title>
+                                </v-list-item>
+                                <v-list-item :href="identifier.externalUrl" target="_blank">
+                                    <v-list-item-action>
+                                        <v-icon class="mr-6 float-right" v-if="identifier.refersToAGraphElement()">
+                                            {{identifier.getIcon()}}
+                                        </v-icon>
+                                        <img v-else :src="require('@/assets/wikipedia.svg')" width="25"
+                                             class="float-right">
+                                    </v-list-item-action>
+                                    <v-list-item-title>
+                                        {{$t('tag:reference')}}
+                                    </v-list-item-title>
+                                </v-list-item>
+                                <v-list-item @click="removeIdentifier($event, identifier)">
+                                    <v-list-item-action>
+                                        <v-icon>delete</v-icon>
+                                    </v-list-item-action>
+                                    <v-list-item-title>
+                                        {{$t('tag:disassociate')}}
+                                    </v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                    </v-list-item-action>
+                </v-list-item>
             </v-list>
         </v-card>
     </v-card>
@@ -84,7 +113,7 @@
 
     export default {
         name: "TagMenu",
-        props:['bubble'],
+        props: ['bubble'],
         components: {
             SearchResultContent,
             SearchResultAction
@@ -92,14 +121,20 @@
         data: function () {
             I18n.i18next.addResources("en", "tag", {
                 "title": "Tag",
-                'tags': 'Tags'
+                'tags': 'Tags',
+                'disassociate': 'Disassociate',
+                'center': 'Center',
+                'reference': 'Reference'
             });
             I18n.i18next.addResources("fr", "tag", {
                 "title": "Étiquette",
-                'tags': 'Étiquettes'
+                'tags': 'Étiquettes',
+                'disassociate': 'Désassocier',
+                'center': 'Centrer',
+                'reference': 'Référence'
             });
             return {
-                dialog: false,
+                loaded: false,
                 searchLoading: false,
                 tagLoading: false,
                 selectedSearchResult: null,
@@ -112,11 +147,13 @@
             }
         },
         mounted: function () {
-            this.$store.dispatch("setIsTagFlow", false)
+            this.buildExternalUrls().then(() => {
+                this.loaded = true;
+            })
         },
         computed: {
-            isTagFlow: function () {
-                return this.$store.state.isTagFlow;
+            selected: function () {
+                return this.$store.state.selected;
             },
             identifiersByLatest: function () {
                 return this.bubble.getIdentifiers().sort((a, b) => {
@@ -128,34 +165,18 @@
             search: function (val) {
                 val && val !== this.select && this.querySelections(val)
             },
-            isTagFlow: function () {
-                if (this.$store.state.isTagFlow) {
-                    this.defineUrls().then(() => {
-                        this.dialog = true;
-                        this.$nextTick(() => {
-                            // if(this.bubble.getIdentifiers().length === 0){
-                            //     this.search = this.bubble.getLabel();
-                            // }
-                            // this.$nextTick(()=>{
-                            this.$refs.search.focus();
-                            // })
-                        })
-                    });
-                } else {
-                    this.dialog = false;
-                }
-            },
-            dialog: function () {
-                if (this.dialog === false) {
-                    this.$store.dispatch("setIsTagFlow", false)
-                }
+            selected: function () {
+                this.buildExternalUrls();
             }
         },
         methods: {
             querySelections(term) {
                 this.searchLoading = true;
                 SearchService.tags(term).then((results) => {
-                    this.items = results;
+                    this.items = results.map((result) => {
+                        result.disabled = this.bubble.hasTagRelatedToUri(result.uri);
+                        return result;
+                    });
                     this.searchLoading = false;
                 });
             },
@@ -202,12 +223,13 @@
                 $event.preventDefault();
                 this.bubble.controller().removeIdentifier(identifier);
             },
-            defineUrls: function () {
-                return Promise.all(
-                    this.bubble.getIdentifiers().map((identifier) => {
-                        return identifier.getUrl();
-                    })
-                );
+            buildExternalUrls: function () {
+                this.loaded = false;
+                return Promise.all(this.bubble.getIdentifiers().map((tag) => {
+                    return tag.buildExternalUrls();
+                })).then(() => {
+                    this.loaded = true;
+                })
             }
         }
     }

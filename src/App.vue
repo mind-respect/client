@@ -6,17 +6,17 @@
             </div>
         </div>
         <div id="nav" class="pa-0">
-            <v-toolbar
-                    app
+            <v-app-bar
                     color="white"
                     height="43"
+                    app
                     :class="{
                         'no-padding' : $vuetify.breakpoint.smAndDown
                     }"
                     style="z-index:4;"
             >
                 <v-toolbar-title>
-                    <router-link to="/welcome" class="no-style-link vh-center mr-3">
+                    <router-link to="/welcome" class="no-style-link vh-center mr-4">
                         <v-img
                                 :src="require('@/assets/logo-horizontal-black-small.png')"
                                 height="44"
@@ -29,21 +29,15 @@
                                 height="35"
                                 width="51"
                                 alt="MR"
-                                class="mt-1 ml-3"
-                                v-if="$vuetify.breakpoint.smAndDown"
+                                class="mt-1 ml-4"
+                                v-if="$vuetify.breakpoint.smAndDown && !isGraphRoute"
                         ></v-img>
                     </router-link>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
-                <!--<v-text-field-->
-                <!--light-->
-                <!--:placeholder="$t('search')"-->
-                <!--append-icon="search"-->
-                <!--v-if="$vuetify.breakpoint.mdAndUp"-->
-                <!--&gt;</v-text-field>-->
-                <Search></Search>
+                <Search class="mt-6"></Search>
                 <v-spacer></v-spacer>
-                <v-btn flat light
+                <v-btn text light
                        v-if="$store.state.user === undefined"
                        @click="loginDialog = true"
                        :class="{
@@ -52,7 +46,7 @@
                 >
                     {{$t('login')}}
                 </v-btn>
-                <v-btn flat light
+                <v-btn text light
                        v-if="$store.state.user === undefined"
                        @click="registerDialog = true"
                        :class="{
@@ -60,7 +54,7 @@
                 }">
                     {{$t('register')}}
                 </v-btn>
-                <v-btn light flat @click="switchLanguage()"
+                <v-btn light text @click="switchLanguage()"
                        v-if="$store.state.user === undefined"
                        :class="{
                     'ma-1 pa-1' : $vuetify.breakpoint.smAndDown
@@ -80,7 +74,7 @@
                     </span>
                 </v-btn>
                 <v-btn :to="'/user/' + $store.state.user.username"
-                       v-if="$store.state.user && $vuetify.breakpoint.lgAndUp" flat active-class=""
+                       v-if="$store.state.user && $vuetify.breakpoint.lgAndUp" text active-class=""
                        :icon="$vuetify.breakpoint.mdAndDown">
                     <v-icon :class="{
                         'mr-2' : $vuetify.breakpoint.lgAndUp
@@ -98,9 +92,7 @@
                 <Button :button="createVertexButton" :hightlight="true"
                         v-if="$store.state.user && $vuetify.breakpoint.lgAndUp"></Button>
                 <SettingsMenu></SettingsMenu>
-            </v-toolbar>
-            <!--<router-link to="/">Home</router-link>-->
-            <!--<router-link to="/about">About</router-link>-->
+            </v-app-bar>
         </div>
         <SideMenu v-if="isGraphRoute && $store.state.selected.length > 0"></SideMenu>
         <v-content>
@@ -188,8 +180,6 @@
     import I18n from '@/I18n'
 
     Vue.use(VueClipboard);
-
-    const aboutPages = ['register', 'login', 'forgotPassword', 'changePassword'];
 
     export default {
         components: {
@@ -566,11 +556,6 @@
 
     .v-toolbar__content {
         padding: 6px;
-    }
-
-    .settings-menu {
-        left: 100% !important;
-        margin-left: -300px;
     }
 
     .around-list {

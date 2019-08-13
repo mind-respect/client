@@ -6,7 +6,7 @@
     <div v-if="loaded">
         <div class="vertices-children-container" v-if="!isCenter && bubble.isVertexType()">
             <div v-for="child in bubble.rightBubbles" :class="{
-                        'mt-4 mb-4' : bubble.rightBubbles.length === 2,
+                        'mt-6 mb-6' : bubble.rightBubbles.length === 2,
                         'mt-0 mb-0' : bubble.rightBubbles.length > 2
                         }"
                  :key="child.uiId"
@@ -30,7 +30,7 @@
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()">
             <div v-for="child in bubble.children" :key="child.uiId"
                  :class="{
-                    'mt-4 mb-4' : bubble.children.length === 2,
+                    'mt-6 mb-6' : bubble.children.length === 2,
                     'mt-2 mb-2' : bubble.children.length > 2
                  }"
             >
