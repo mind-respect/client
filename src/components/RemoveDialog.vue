@@ -83,7 +83,7 @@
                 confirm: "Remove",
                 multiple_confirm_suffix: "all",
                 cancel: "Cancel",
-                cannotRemove: "A bubble must no longer have children to be erased. On the other hand, you can delete all relationships between the bubbles."
+                cannotRemove: "A bubble must no longer have children to be erased. However, you can delete the relationships between the bubbles at any time."
             });
             I18n.i18next.addResources("fr", "remove", {
                 title_prefix: "Effacer ",
@@ -94,7 +94,7 @@
                 confirm: "Effacer",
                 multiple_confirm_suffix: "tout",
                 cancel: "Annuler",
-                cannotRemove: "Une bulle ne doit plus avoir d'enfants pour être effacée. Par contre, vous pouvez effacer toutes relations entre les bulles."
+                cannotRemove: "Une bulle ne doit plus avoir d'enfants pour être effacée. Par contre, vous pouvez en tout temps effacer les relations entre les bulles."
             });
             return {
                 removeDialog: false,
