@@ -9,21 +9,18 @@
                 'reverse' : bubble.direction === 'left'
              }"
              v-if="!loading && !bubble.loading"
-             title=""
-             data-original-title="Expand (ctrl+E)"
         >
             <span>
                 <v-tooltip
                         :right="!isLeft"
                         :left="isLeft"
                         min-width="125"
-                        open-delay="0"
                         :content-class="tooltipContentClass"
                 >
                     <template v-slot:activator="{ on }">
-                        <div class="vh-center" style="height:100%;">
-                        <v-icon color="secondary" class="ma-0 pa-0">unfold_more</v-icon>
-                    </div>
+                        <div class="vh-center" style="height:100%;" v-on="on">
+                            <v-icon color="secondary" class="ma-0 pa-0">unfold_more</v-icon>
+                        </div>
                     </template>
                     <div :class="{
                         'reverse': isLeft
