@@ -14,9 +14,10 @@
             :content-class="contentClass"
     >
         <template v-slot:activator="{ on }">
-            <slot name="button" v-if="$slots.button"></slot>
+            <slot name="button" v-if="$slots.button" v-on="on"></slot>
             <v-btn
                     v-else
+                    v-on="on"
                     icon
                     large
                     class="ma-1"
