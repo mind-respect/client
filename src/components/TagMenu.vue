@@ -196,6 +196,7 @@
                     return this.identify(identifier);
                 }).then(() => {
                     this.tagLoading = false;
+                    this.$store.dispatch("redraw");
                 });
                 // var self = this;
                 // SchemaSuggestion.addSchemaSuggestionsIfApplicable(
@@ -219,9 +220,11 @@
                     identifier
                 );
             },
-            removeIdentifier: function ($event, identifier) {
+            removeIdentifier: async function ($event, identifier) {
                 $event.preventDefault();
-                this.bubble.controller().removeIdentifier(identifier);
+                await this.bubble.controller().removeIdentifier(identifier);
+                await this.$nextTick();
+                this.$store.dispatch("redraw");
             },
             buildExternalUrls: function () {
                 this.loaded = false;

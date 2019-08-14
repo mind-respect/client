@@ -104,7 +104,9 @@
                                 'reverse': isLeft && !isCenter
                             }"
                     >
-                        <div class="image_container"></div>
+                        <div class="image_container">
+                            <v-img :src="imageUrl" max-height="90" v-if="imageUrl" @load="imageLoaded"></v-img>
+                        </div>
                         <div class="in-bubble-content-wrapper unselectable vh-center">
                             <v-menu
                                     v-model="showMenu"
@@ -285,7 +287,8 @@
                                         'empty-edge' : bubble.isEdge() && !bubble.isEditFlow && bubble.isLabelEmpty()
                                     }"
                                         >
-                                            <InLabelButtons :bubble="bubble" :isLeft="isLeft" :isCenter="isCenter" class="vh-center"
+                                            <InLabelButtons :bubble="bubble" :isLeft="isLeft" :isCenter="isCenter"
+                                                            class="vh-center"
                                                             v-if="!isShrinked"></InLabelButtons>
                                             <div class="bubble-label white--text"
                                                  @blur="leaveEditFlow"
@@ -301,7 +304,8 @@
                                                         'unselectable' : !bubble.isEditFlow
                                                     }"
                                             ></div>
-                                            <v-icon v-if="bubble.isMetaRelation()" small class="bubble-label unselectable"
+                                            <v-icon v-if="bubble.isMetaRelation()" small
+                                                    class="bubble-label unselectable"
                                                     v-show="!isShrinked">label
                                             </v-icon>
                                         </v-chip>
@@ -470,6 +474,12 @@
                 return this.$store.state.selected.some((selected) => {
                     return selected.id === id;
                 });
+            },
+            imageUrl: function () {
+                let tagsWithImages = this.bubble.getIdentifiers().filter((tag) => {
+                    return tag.hasImages() && tag.getImage().urlForSmall;
+                });
+                return tagsWithImages.length ? tagsWithImages[0].getImage().urlForSmall : false;
             }
         },
         methods: {
@@ -729,6 +739,10 @@
             rightDrop: function (event) {
                 this.isLeftRightDragOver = false;
                 this.labelDrop(event, false);
+            },
+            imageLoaded: async function () {
+                await this.$nextTick();
+                return this.$store.dispatch('redraw');
             }
         },
         watch: {
@@ -768,7 +782,7 @@
     .is-shrinked {
         height: 10px !important;
         width: 10px !important;
-        padding:0 !important;
+        padding: 0 !important;
     }
 
     .left-oriented .empty-edge {
@@ -786,6 +800,7 @@
     .is-shrinked.empty-edge {
         top: -5px;
     }
+
     .empty-edge {
         position: absolute;
         top: -15px;
@@ -936,6 +951,10 @@
         outline: 0 solid transparent;
         border: none;
         width: auto;
+    }
+
+    .image-container-min-height {
+        min-height: 60px;
     }
 
 </style>
