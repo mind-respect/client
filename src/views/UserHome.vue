@@ -130,7 +130,7 @@
                                                     <!--</v-list-item-subtitle>-->
                                                 </v-list-item-content>
                                                 <v-list-item-action @click.stop v-if="$vuetify.breakpoint.smAndUp" style="min-width:40px;">
-                                                    <v-menu offset-y v-if="hover || center.menu" left
+                                                    <v-menu offset-y v-if="isOwner && (hover || center.menu)" left
                                                             v-model="center.menu">
                                                         <template v-slot:activator="{ on }">
                                                             <v-btn icon small v-on="on">
