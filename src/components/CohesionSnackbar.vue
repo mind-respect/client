@@ -21,20 +21,20 @@
                                     {{$t('cohesion:similarBubble')}}
                                 </span>
                                 <v-spacer></v-spacer>
-                                <v-btn small text color="secondary" class="ma-0 pa-1" :disabled="!mergeCanDo"
-                                       @click="merge">
-                                    <v-icon class="mr-2">
-                                        merge_type
-                                    </v-icon>
-                                    {{$t('cohesion:merge')}}
-                                </v-btn>
-                                <v-divider vertical class="ml-2 mr-2"></v-divider>
                                 <v-btn small text color="secondary" class="ma-0 pa-1" @click="tag"
                                        :disabled="!addTagCanDo">
                                     <v-icon class="mr-2">
                                         label
                                     </v-icon>
                                     {{$t('cohesion:tag')}}
+                                </v-btn>
+                                <v-divider vertical class="ml-2 mr-2"></v-divider>
+                                <v-btn small text color="secondary" class="ma-0 pa-1" :disabled="!mergeCanDo"
+                                       @click="merge">
+                                    <v-icon class="mr-2">
+                                        merge_type
+                                    </v-icon>
+                                    {{$t('cohesion:merge')}}
                                 </v-btn>
                                 <v-divider vertical class="ml-2 mr-2"></v-divider>
                                 <v-badge
@@ -168,7 +168,7 @@
             isEditFlow: async function () {
                 if (!this.$store.state.isEditFlow) {
                     await this.$nextTick();
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         this.refresh();
                     }, 100)
                 }
@@ -228,7 +228,13 @@
                     bubble.getLabel()
                 );
                 results = results.filter((result) => {
-                    return bubble.getUri() !== result.uri && !bubble.hasTagRelatedToUri(result.uri);
+                    let filter = bubble.getUri() !== result.uri && !bubble.hasTagRelatedToUri(result.uri);
+                    if (result.original.graphElement && result.original.graphElement.hasTagRelatedToUri) {
+                        filter = filter && !result.original.graphElement.hasTagRelatedToUri(
+                            bubble.getUri()
+                        )
+                    }
+                    return filter;
                 }).sort((result) => {
                     return result.label.toLowerCase().trim() === bubble.getLabel().toLowerCase().trim();
                 });

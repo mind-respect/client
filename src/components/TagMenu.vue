@@ -87,7 +87,8 @@
                                         {{$t('tag:reference')}}
                                     </v-list-item-title>
                                 </v-list-item>
-                                <v-list-item @click="removeIdentifier($event, identifier)" v-if="!bubble.isGroupRelation()">
+                                <v-list-item @click="removeIdentifier($event, identifier)"
+                                             v-if="!bubble.isGroupRelation()">
                                     <v-list-item-action>
                                         <v-icon>delete</v-icon>
                                     </v-list-item-action>
@@ -176,6 +177,11 @@
                 SearchService.tags(term).then((results) => {
                     this.items = results.map((result) => {
                         result.disabled = this.bubble.hasTagRelatedToUri(result.uri);
+                        if (!result.disabled && result.original.graphElement && result.original.graphElement.hasTagRelatedToUri) {
+                            result.disabled = result.original.graphElement.hasTagRelatedToUri(
+                                this.bubble.getUri()
+                            );
+                        }
                         return result;
                     });
                     this.searchLoading = false;
