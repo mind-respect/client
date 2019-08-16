@@ -2,10 +2,7 @@
     <div>
         <banner></banner>
         <v-layout
-                align-center
-                row
-                justify-center
-                class="mb-12 mt-12"
+                class="mb-12 mt-12 vh-center"
         >
             <v-flex xs12>
                 <v-card color="secondary" class="white--text">
@@ -18,7 +15,7 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <Level :title="$t('about:level1Title')" :level="1" image="swamp-2248571_1280.jpg">
+        <Level :title="$t('about:level1Title')" :level="1" image="swamp-2248571_1280_optimized_small.jpg">
             <!--https://pixabay.com/fr/marais-floride-terres-humides-2248571/-->
             <div slot="description">
                 <p class="title">
@@ -29,7 +26,7 @@
                 </p>
             </div>
         </Level>
-        <Level :title="$t('about:level2Title')" :level="2" image="plants-2564038_1280.jpg">
+        <Level :title="$t('about:level2Title')" :level="2" image="plants-2564038_1280_optimized_small.jpg">
             <!--https://pixabay.com/fr/plantes-nature-vert-feuilles-2564038/-->
             <div slot="description">
                 <p class="title">
@@ -37,13 +34,13 @@
                 </p>
             </div>
         </Level>
-        <Level image="featured_organize_chaos-1068x445.jpg" :title="$t('about:level3Title')" :level="3">
+        <Level image="organized_chaos_optimized_small.jpg" :title="$t('about:level3Title')" :level="3">
             <!--https://pixabay.com/fr/intelligence-artificielle-cerveau-3382507/-->
             <div slot="description" class="vh-center">
-                <v-layout row>
+                <v-layout >
                     <v-flex xs0 md2></v-flex>
                     <v-flex xs12 md8>
-                        <v-layout row wrap class="white--text title" style="background-color: transparent">
+                        <v-layout  wrap class="white--text title" style="background-color: transparent">
                             <v-flex xs1>
                                 <v-icon class="white--text mr-2">search</v-icon>
                             </v-flex>
@@ -90,12 +87,12 @@
                 <!--</v-list>-->
             </div>
         </Level>
-        <Level image="mindmap-2123973_1280.jpg" :title="$t('about:level4Title')" :level="4">
+        <Level image="mindmap_optimized_small.jpg" :title="$t('about:level4Title')" :level="4">
             <div slot="description" class="title">
-                <v-layout row>
+                <v-layout >
                     <v-flex xs0 sm2 md2></v-flex>
                     <v-flex xs12 sm8 md8>
-                        <v-layout row wrap class="white--text title" style="background-color: transparent">
+                        <v-layout  wrap class="white--text title" style="background-color: transparent">
                             <v-flex xs1>
                                 <v-icon class="white--text mr-2">fa-sitemap</v-icon>
                             </v-flex>
@@ -108,13 +105,13 @@
                 </v-layout>
             </div>
         </Level>
-        <Level image="neurons-440660.jpg" :title="$t('about:level5Title')" :level="5">
+        <Level image="neurons_optimized_small.jpg" :title="$t('about:level5Title')" :level="5">
             <!--https://www.flickr.com/photos/jjorquera/15433132769-->
             <div slot="description">
-                <v-layout row>
+                <v-layout >
                     <v-flex xs0 sm2 md2 lg3 xl4></v-flex>
                     <v-flex xs12 sm8 md8 lg6 xl4>
-                        <v-layout row wrap class="white--text title ml-4" style="background-color: transparent">
+                        <v-layout  wrap class="white--text title ml-4" style="background-color: transparent">
                             <v-flex xs1 class="">
                                 <v-icon class="white--text mr-2">fa-balance-scale</v-icon>
                             </v-flex>
@@ -149,10 +146,10 @@
                 </v-layout>
             </div>
         </Level>
-        <Level image="dawn-3804124_1280.jpg" :title="$t('about:level6Title')" :level="6">
+        <Level image="dawn-3804124_1280_optimized.jpg" :title="$t('about:level6Title')" :level="6">
             <!--https://pixabay.com/fr/dawn-arbres-l-%C3%A9cart-brouillard-3804124/-->
         </Level>
-        <v-layout row wrap class="">
+        <v-layout  wrap class="">
             <v-flex xs12 md6 class="vh-center">
                 <v-card flat color="secondary" height="100%" class="vh-center">
                     <v-card-title class="text-center white--text vh-center pr-0 pl-0">

@@ -18,8 +18,7 @@
                 </h3>
             </v-card-title>
         </v-card>
-        <v-parallax :src="require('@/assets/about/levels/' + image)" v-if="image"
-                    :height="stepsParallaxHeight"></v-parallax>
+        <v-img :src="require('@/assets/about/levels/' + image)"></v-img>
     </div>
 </template>
 
@@ -31,8 +30,14 @@
         ],
         data: function () {
             return {
-                stepsParallaxHeight: 350
+                loaded: false,
+                stepsParallaxHeight: 325
             }
+        },
+        mounted: function () {
+            setTimeout(() => {
+                this.loaded = true;
+            }, 100)
         }
     }
 </script>
