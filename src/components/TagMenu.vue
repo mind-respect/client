@@ -23,6 +23,7 @@
                     @focus="$emit('focus')"
                     @blur="$emit('blur')"
                     :placeholder="$t('tag:title')"
+                    v-if="!bubble.isGroupRelation()"
             >
                 <template v-slot:prepend-inner>
                     <img :src="require('@/assets/wikipedia.svg')" width="25">
@@ -55,7 +56,7 @@
                         <v-list-item-subtitle v-html="identifier.getComment()"
                                               class="grey--text text-left"></v-list-item-subtitle>
                     </v-list-item-content>
-                    <v-list-item-action v-if="!bubble.isGroupRelation()" class="ma-0 vh-center"
+                    <v-list-item-action class="ma-0 vh-center"
                                         style="min-height:100%;height:100%">
                         <v-menu>
                             <template v-slot:activator="{ on }">
@@ -86,7 +87,7 @@
                                         {{$t('tag:reference')}}
                                     </v-list-item-title>
                                 </v-list-item>
-                                <v-list-item @click="removeIdentifier($event, identifier)">
+                                <v-list-item @click="removeIdentifier($event, identifier)" v-if="!bubble.isGroupRelation()">
                                     <v-list-item-action>
                                         <v-icon>delete</v-icon>
                                     </v-list-item-action>
@@ -185,7 +186,7 @@
                 let identifier = Identification.fromSearchResult(
                     this.selectedSearchResult
                 );
-                if (this.bubble.model().hasIdentification(identifier)) {
+                if (this.bubble.hasIdentification(identifier)) {
                     return false;
                 }
                 identifier.makeGeneric();

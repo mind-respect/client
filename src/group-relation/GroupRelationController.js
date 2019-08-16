@@ -211,4 +211,8 @@ GroupRelationController.prototype.removeCanDo = function () {
     return false;
 };
 
+GroupRelationController.prototype.addIdentificationCanDo = function(){
+    return false;
+};
+
 export default api;

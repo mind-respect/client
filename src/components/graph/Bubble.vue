@@ -277,7 +277,6 @@
                                                 @drop="labelDrop"
                                                 :input-value="isSelected || isLabelDragOver"
                                                 class="pt-0 pb-0 mt-0 mb-0 ma-0 pl-2 pr-2 label-chip vh-center"
-                                                dark
                                                 transition="none"
                                                 :class="{
                                             'reverse': isLeft,
@@ -806,6 +805,10 @@
         top: -15px;
     }
 
+    .empty-edge .bubble-label{
+        width:30px;
+    }
+
     .label-drag-over {
         border: 1px dashed red;
         border-radius: 50px;
@@ -935,6 +938,10 @@
 
     .hidden {
         visibility: hidden;
+    }
+
+    .relation .v-chip.v-size--small{
+        font-size:15px;
     }
 
     .label-chip, .bubble-label, .label-chip .v-chip__content {

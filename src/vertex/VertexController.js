@@ -438,11 +438,13 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
             this.model()
         ).loadForParentIsAlreadyOnMap();
     }).then(() => {
-        let concatenatedLabel = beforeMergeLabel + " " + this.model().getLabel();
-        if (concatenatedLabel !== this.model().getLabel()) {
-            this.setLabel(
-                concatenatedLabel
-            );
+        if (beforeMergeLabel.toLowerCase().trim() !== this.model().getLabel().toLowerCase().trim()) {
+            let concatenatedLabel = beforeMergeLabel + " " + this.model().getLabel();
+            if (concatenatedLabel !== this.model().getLabel()) {
+                this.setLabel(
+                    concatenatedLabel
+                );
+            }
         }
         GraphElementService.changeChildrenIndex(
             this.model().getParentVertex()

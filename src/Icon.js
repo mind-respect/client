@@ -32,7 +32,7 @@ Icon.getForGraphElementType = function (graphElementType) {
         case GraphElementType.Meta :
             return "label";
         default :
-            return "panorama_fish_eye";
+            return "scatter_plot";
     }
 };
 

@@ -52,6 +52,7 @@
         <DescriptionDialog></DescriptionDialog>
         <FontDialog></FontDialog>
         <ListView></ListView>
+        <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>
     </v-layout>
 </template>
 
@@ -60,14 +61,9 @@
     import IdUri from '@/IdUri'
     import Bubble from '@/components/graph/Bubble'
     import GraphDrawing from '@/components/graph/GraphDrawing'
-    import ListView from '@/components/ListView'
     import Selection from '@/Selection'
     import SubGraphController from '@/graph/SubGraphController'
     import Meta from '@/identifier/Meta'
-    import RemoveDialog from '@/components/RemoveDialog'
-    import RemoveTagDialog from '@/components/RemoveTagDialog'
-    import DescriptionDialog from '@/components/DescriptionDialog'
-    import FontDialog from '@/components/FontDialog'
     import Color from '@/Color'
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import SubGraph from '@/graph/SubGraph'
@@ -82,12 +78,13 @@
         name: "Graph",
         components: {
             Bubble,
-            RemoveDialog,
-            RemoveTagDialog,
-            DescriptionDialog,
-            FontDialog,
+            RemoveDialog: () => import('@/components/RemoveDialog'),
+            RemoveTagDialog: () => import('@/components/RemoveTagDialog'),
+            DescriptionDialog: () => import('@/components/DescriptionDialog'),
+            FontDialog: () => import('@/components/FontDialog'),
             GraphDrawing,
-            ListView
+            ListView: () => import('@/components/ListView'),
+            CohesionSnackbar: () => import('@/components/CohesionSnackbar')
         },
         data: function () {
             return {
@@ -125,7 +122,7 @@
                 Selection.setToSingle(this.center);
                 await this.$nextTick();
                 Scroll.goToGraphElement(this.center);
-                if(center.getNumberOfChild() === 0 && center.isLabelEmpty()){
+                if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
                     center.focus();
                 }
             }).catch((error) => {
@@ -152,6 +149,12 @@
             window.removeEventListener('resize', this.handleResize)
         },
         computed: {
+            isOwner: function () {
+                if (!this.$store.state.user) {
+                    return false;
+                }
+                return this.$route.params.username === this.$store.state.user.username
+            },
             redraws: function () {
                 return this.$store.state.redraws;
             },
@@ -234,7 +237,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        z-index:-1;
+        z-index: -1;
     }
 
     #app.mind-map {

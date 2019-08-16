@@ -484,12 +484,20 @@ GraphElementController.prototype.becomeExParent = function () {
     return Promise.resolve();
 };
 
+GraphElementController.prototype.addIdentifiers = function(){
+    return this.addIdentificationCanDo();
+};
+
 GraphElementController.prototype.addIdentifiers = function (identifiers, preventMoving) {
     let promises = [];
     identifiers.forEach((identifier) => {
         promises.push(this.addIdentification(identifier, preventMoving));
     });
     return Promise.all(promises);
+};
+
+GraphElementController.prototype.addIdentificationCanDo = function(){
+    return true;
 };
 
 GraphElementController.prototype.addIdentification = function (identifier, preventMoving, force) {

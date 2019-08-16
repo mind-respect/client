@@ -41,7 +41,8 @@ export default {
                         save: "Save",
                         cancel: "Cancel",
                         copy: "copy",
-                        copied: "copied"
+                        copied: "copied",
+                        close: "Close"
                     }
                 },
                 fr: {
@@ -63,7 +64,8 @@ export default {
                         save: "Sauvegarder",
                         cancel: "Annuler",
                         copy: "copier",
-                        copied: "copié"
+                        copied: "copié",
+                        close: "Fermer"
                     }
                 }
             }
