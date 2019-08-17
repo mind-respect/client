@@ -190,7 +190,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
             if (groupRelation.hasFewEnoughBubblesToExpand()) {
                 groupRelation.expand(true);
             } else {
-                groupRelation.collapse();
+                groupRelation.collapse(true);
             }
         });
         let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;

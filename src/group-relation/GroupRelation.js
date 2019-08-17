@@ -172,7 +172,7 @@ GroupRelation.prototype.expand = async function (avoidCenter, isChildExpand) {
     Store.dispatch("redraw");
 };
 
-GroupRelation.prototype.collapse = function () {
+GroupRelation.prototype.collapse = function (preventScroll) {
     this.isExpanded = false;
     this.isCollapsed = true;
     if (this.children != null) {
@@ -180,7 +180,8 @@ GroupRelation.prototype.collapse = function () {
         this.children = null;
     }
     FriendlyResource.FriendlyResource.prototype.collapse.call(
-        this
+        this,
+        preventScroll
     );
 };
 

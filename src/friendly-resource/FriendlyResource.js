@@ -652,11 +652,13 @@ FriendlyResource.FriendlyResource.prototype.getIsExpanded = function () {
     return this.isExpanded;
 };
 
-FriendlyResource.FriendlyResource.prototype.collapse = function () {
+FriendlyResource.FriendlyResource.prototype.collapse = function (preventScroll) {
     this.isExpanded = false;
     this.isCollapsed = true;
-    Scroll.centerBubbleForTreeIfApplicable(this);
-    Store.dispatch("redraw");
+    if (!preventScroll) {
+        Scroll.centerBubbleForTreeIfApplicable(this);
+        Store.dispatch("redraw");
+    }
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {
