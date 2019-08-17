@@ -142,7 +142,7 @@
                 VertexService.saveFont(font).then(() => {
                     this.dialog = false;
                 });
-                AppController.refreshFont();
+                AppController.refreshFont(true);
             },
             saveDefault: function () {
                 this.font = GraphElement.DEFAULT_FONT.family;

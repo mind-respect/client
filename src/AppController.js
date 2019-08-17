@@ -107,24 +107,25 @@ api.fontPicker = function () {
     Store.dispatch("setIsFontFlow", true);
 };
 
-api.refreshFont = function () {
+api.refreshFont = function (justChanged) {
     let font = CurrentSubGraph.get().center.getFont();
-    if (GraphElement.DEFAULT_FONT.family === font.family) {
+    if (!justChanged && GraphElement.DEFAULT_FONT.family === font.family) {
         return;
     }
+    // let fontFile = new FontFace(font.family, 'url(fonts/junction-regular.woff)');
+
     let link = document.createElement("link");
     link.setAttribute("rel", "stylesheet");
     link.setAttribute("type", "text/css");
     link.setAttribute("href", "https://fonts.googleapis.com/css?family=" + font.family.replace(/ /g, '+'));
+    link.onload = () => {
+        setTimeout(()=>{
+            Vue.nextTick(() => {
+                Store.dispatch("redraw");
+            });
+        },100)
+    };
     document.getElementsByTagName("head")[0].appendChild(link);
-    setTimeout(() => {
-        Vue.nextTick(() => {
-            Store.dispatch("redraw");
-        });
-        setTimeout(() => {
-            Store.dispatch("redraw");
-        }, 500);
-    }, 200);
 };
 
 

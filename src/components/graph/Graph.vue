@@ -140,8 +140,8 @@
                 }
                 await this.$nextTick();
                 Color.refreshBackgroundColor();
-                AppController.refreshFont();
                 Selection.setToSingle(this.center);
+                AppController.refreshFont();
                 await this.$nextTick();
                 if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
                     center.focus();
