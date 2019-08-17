@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div class="hidden-properties-container vh-center unselectable" @click="click" v-if="loaded">
+    <div class="vh-center unselectable" v-if="loaded">
         <div class="hidden-properties-content bubble-size vh-center"
              :class="{
                 'reverse' : bubble.direction === 'left'
@@ -19,7 +19,9 @@
                 >
                     <template v-slot:activator="{ on }">
                         <div class="vh-center" style="height:100%;" v-on="on">
-                            <v-icon color="secondary" class="ma-0 pa-0">unfold_more</v-icon>
+                            <v-btn icon @click="click">
+                                <v-icon color="secondary" class="ma-0 pa-0">unfold_more</v-icon>
+                            </v-btn>
                         </div>
                     </template>
                     <div :class="{
@@ -90,13 +92,5 @@
 </script>
 
 <style scoped>
-
-    .hidden-properties-container {
-        z-index: 3;
-        min-width: 25px;
-        cursor: pointer;
-        font-size: 22px;
-        font-weight: bold;
-    }
 
 </style>
