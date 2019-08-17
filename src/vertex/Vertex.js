@@ -251,15 +251,15 @@ Vertex.prototype.getLeftBubble = function (bottom) {
     return this.getParentBubble();
 };
 
-Vertex.prototype.collapse = function () {
+Vertex.prototype.collapse = function (preventScroll) {
     if (this.isCenter) {
-        this.getNextChildren().forEach(function (child) {
+        this.getNextChildren().forEach((child) =>{
             if (child.isEdge()) {
                 child.getOtherVertex(this).collapse()
             } else {
                 child.collapse();
             }
-        }.bind(this));
+        });
         return;
     }
     if (!this.isExpanded) {
@@ -271,7 +271,8 @@ Vertex.prototype.collapse = function () {
     this.rightBubbles = [];
     this.leftBubbles = [];
     FriendlyResource.FriendlyResource.prototype.collapse.call(
-        this
+        this,
+        preventScroll
     );
 };
 
