@@ -28,6 +28,9 @@ const Scroll = {
     },
     goToGraphElement: function (bubble, noAnimation) {
         return new Promise((resolve) => {
+            if (cancelGraphElementScroll) {
+                cancelGraphElementScroll();
+            }
             let onlyScrollLeft = false;
             // if (bubble.isScrollPositionDefined()) {
             //     onlyScrollLeft = true;
@@ -91,11 +94,11 @@ const Scroll = {
                 },
                 force: true,
                 cancelable: true,
-                onStart: function (element) {
+                onStart: function () {
                     // scrolling started
                 },
                 onCancel: function () {
-                    // scrolling has been interrupted
+                    resolve();
                 },
                 x: true,
                 y: false
@@ -113,7 +116,7 @@ const Scroll = {
                         let position = Math.abs(300 * screen.height / 768);
                         return position * -1;
                     };
-                    VueScrollTo.scrollTo(
+                    cancelGraphElementScroll = VueScrollTo.scrollTo(
                         element,
                         noAnimation ? 1 : 350,
                         options
