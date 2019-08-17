@@ -1,8 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import About from '@/views/About.vue'
-import UserHome from '@/views/UserHome.vue'
-import Center from '@/views/Center.vue'
 Vue.use(Router)
 export default new Router({
     mode: 'history',
@@ -11,32 +8,32 @@ export default new Router({
         {
             path: '/',
             name: 'home',
-            component: About
+            component: () => import('./views/About.vue')
         },
         {
             path: '/welcome',
             name: 'welcome',
-            component: About
+            component: () => import('./views/About.vue')
         },
         {
             path: '/register',
             name: 'register',
-            component: About
+            component: () => import('./views/About.vue')
         },
         {
             path: '/login',
             name: 'login',
-            component: About
+            component: () => import('./views/About.vue')
         },
         {
             path: '/forgot-password',
             name: 'forgotPassword',
-            component: About
+            component: () => import('./views/About.vue')
         },
         {
             path: '/email/:email/token/:changePasswordToken',
             name: 'changePassword',
-            component: About
+            component: () => import('./views/About.vue')
         },
         {
             path: '/about',
@@ -44,27 +41,27 @@ export default new Router({
             // route level code-splitting
             // this generates a separate chunk (about.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
-            component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+            component: () => import('./views/About.vue')
         },
         {
             path: '/user/:username',
             name: 'UserHome',
-            component: UserHome
+            component: () => import('./views/UserHome.vue')
         },
         {
             path: '/user/:username/friends',
             name: 'FriendsUserHome',
-            component: UserHome
+            component: () => import('./views/UserHome.vue')
         },
         {
             path: '/user/:username/requestUser/:requestUsername/destinationUser/:destinationUsername/confirmToken/:confirmToken',
             name: "ConfirmFriendshipHome",
-            component: UserHome
+            component: () => import('./views/UserHome.vue')
         },
         {
             path: '/user/:username/graph/:graphElementType/:centerUri',
             name: "Center",
-            component: Center
+            component: () => import('./views/Center.vue')
         }
     ]
 })

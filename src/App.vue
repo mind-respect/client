@@ -73,32 +73,14 @@
                         Français
                     </span>
                 </v-btn>
-                <v-btn :to="'/user/' + $store.state.user.username"
-                       v-if="$store.state.user && $vuetify.breakpoint.lgAndUp" text active-class=""
-                       :icon="$vuetify.breakpoint.mdAndDown">
-                    <v-icon :class="{
-                        'mr-2' : $vuetify.breakpoint.lgAndUp
-                    }">
-                        filter_center_focus
-                    </v-icon>
-                    <span v-if="$vuetify.breakpoint.lgAndUp">
-                        {{$t('centers')}}
-                    </span>
-                </v-btn>
-                <!--                <Button :button="undoButton" v-if="isGraphRoute"></Button>-->
-                <!--                <Button :button="redoButton" v-if="isGraphRoute"></Button>-->
-                <Button :button="zoomOutButton" v-if="isGraphRoute"></Button>
-                <Button :button="zoomInButton" v-if="isGraphRoute"></Button>
-                <Button :button="createVertexButton" :hightlight="true"
-                        v-if="$store.state.user && $vuetify.breakpoint.lgAndUp"></Button>
-                <SettingsMenu></SettingsMenu>
+                <ToolbarGraphButtons v-if="$store.state.user"></ToolbarGraphButtons>
             </v-app-bar>
         </div>
         <SideMenu v-if="isGraphRoute && $store.state.selected.length > 0"></SideMenu>
         <v-content>
             <router-view></router-view>
         </v-content>
-        <v-dialog v-model="registerDialog" width="900">
+        <v-dialog v-model="registerDialog" width="900" v-if="registerDialog">
             <v-card>
                 <v-card-title class="pb-0">
                     <h3 class="title">
@@ -115,7 +97,7 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="loginDialog" width="900">
+        <v-dialog v-model="loginDialog" width="900" v-if="loginDialog">
             <v-card>
                 <v-card-title class="pb-0">
                     <h3 class="title">
@@ -129,7 +111,7 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="forgotPasswordDialog" width="900">
+        <v-dialog v-model="forgotPasswordDialog" width="900" v-if="forgotPasswordDialog">
             <v-card>
                 <v-card-title class="pb-0">
                     <h3 class="title">
@@ -144,7 +126,7 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="changePasswordDialog" width="900">
+        <v-dialog v-model="changePasswordDialog" width="900" v-if="changePasswordDialog">
             <v-card>
                 <v-card-title class="pb-0">
                     <h3 class="title">
@@ -164,33 +146,21 @@
 
 <script>
     import UserService from '@/service/UserService'
-    import LoginForm from "@/components/home/LoginForm";
-    import RegisterForm from "@/components/home/RegisterForm";
-    import ForgotPasswordForm from '@/components/home/ForgotPasswordForm'
-    import ChangePasswordForm from '@/components/home/ChangePasswordForm'
-    import SideMenu from '@/components/SideMenu'
-    import SettingsMenu from '@/components/SettingsMenu'
-    import AppController from '@/AppController'
     import LoadingFlow from '@/LoadingFlow'
     import Store from '@/store'
     import Vue from 'vue'
     import KeyboardActions from '@/KeyboardActions'
-    import Search from '@/components/Search'
-    import VueClipboard from 'vue-clipboard2'
     import I18n from '@/I18n'
-
-    Vue.use(VueClipboard);
 
     export default {
         components: {
-            SideMenu,
-            SettingsMenu,
-            RegisterForm,
-            LoginForm,
-            ForgotPasswordForm,
-            ChangePasswordForm,
-            Search,
-            Button: () => import('@/components/graph/Button')
+            ToolbarGraphButtons:() => import('@/components/ToolbarGraphButtons'),
+            SideMenu: () => import('@/components/SideMenu'),
+            RegisterForm: () => import('@/components/home/RegisterForm'),
+            LoginForm: () => import('@/components/home/LoginForm'),
+            ForgotPasswordForm: () => import('@/components/home/ForgotPasswordForm'),
+            ChangePasswordForm: () => import('@/components/home/ChangePasswordForm'),
+            Search: () => import('@/components/Search')
         },
         data: function () {
             I18n.i18next.addResources("en", "button", {
@@ -292,39 +262,7 @@
                 isLoading: false,
                 hasLoadingSpinner: true,
                 forgotPasswordDialog: false,
-                changePasswordDialog: false,
-                undoButton: {
-                    action: "undo",
-                    icon: "undo",
-                    ctrlShortcut: "Z",
-                    controller: AppController,
-                    disableNotHide: true
-                },
-                redoButton: {
-                    action: "redo",
-                    icon: "redo",
-                    ctrlShortcut: "Y",
-                    controller: AppController,
-                    disableNotHide: true
-                },
-                zoomInButton: {
-                    action: "zoomIn",
-                    icon: "zoom_in",
-                    ctrlShortcut: "&plus;",
-                    controller: AppController
-                },
-                zoomOutButton: {
-                    action: "zoomOut",
-                    icon: "zoom_out",
-                    ctrlShortcut: "&minus;",
-                    controller: AppController,
-                    disableNotHide: true
-                },
-                createVertexButton: {
-                    action: "createVertex",
-                    icon: "add",
-                    controller: AppController
-                }
+                changePasswordDialog: false
             };
         },
         methods: {
@@ -353,19 +291,19 @@
             }
         },
         mounted: function () {
-            UserService.authenticatedUser().then(function (response) {
+            UserService.authenticatedUser().then((response) => {
                 this.$store.dispatch('setUser', response.data);
                 this.dataLoaded = true;
-                Vue.nextTick(function () {
+                Vue.nextTick(() => {
                     this.showDialogFromRoute();
-                }.bind(this))
-            }.bind(this)).catch(function () {
+                })
+            }).catch(() => {
                 this.$store.dispatch('setUser', undefined);
                 this.dataLoaded = true;
-                Vue.nextTick(function () {
+                Vue.nextTick(() => {
                     this.showDialogFromRoute();
-                }.bind(this))
-            }.bind(this));
+                })
+            });
         },
         watch: {
             loadingFlows: function () {
@@ -597,7 +535,7 @@
         user-select: none;
     }
 
-    .flip-horizontal{
+    .flip-horizontal {
         transform: scale(-1, 1);
     }
 </style>
