@@ -121,7 +121,10 @@ api.refreshFont = function () {
         Vue.nextTick(() => {
             Store.dispatch("redraw");
         });
-    }, 750);
+        setTimeout(() => {
+            Store.dispatch("redraw");
+        }, 500);
+    }, 200);
 };
 
 
