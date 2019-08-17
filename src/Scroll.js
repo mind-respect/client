@@ -26,7 +26,7 @@ const Scroll = {
             router.push(route);
         }
     },
-    goToGraphElement: function (bubble) {
+    goToGraphElement: function (bubble, noAnimation) {
         let onlyScrollLeft = false;
         // if (bubble.isScrollPositionDefined()) {
         //     onlyScrollLeft = true;
@@ -108,14 +108,18 @@ const Scroll = {
                 };
                 VueScrollTo.scrollTo(
                     element,
-                    250,
+                    noAnimation ? 1 : 350,
                     options
                 )
             };
         }
+        if(noAnimation){
+            options.duration = 1;
+            options.easing = "linear"
+        }
         cancelGraphElementScroll = VueScrollTo.scrollTo(
             element,
-            150,
+            noAnimation ? 1 : 250,
             options
         );
 // or alternatively inside your components you can use

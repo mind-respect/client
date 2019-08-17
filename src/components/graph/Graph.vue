@@ -6,9 +6,25 @@
     <v-layout v-if="loaded">
         <v-divider></v-divider>
         <div id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle">
+<!--            <v-overlay-->
+<!--                    :value="showLoading"-->
+<!--                    absolute-->
+<!--                    z-index="100"-->
+<!--            >-->
+<!--            </v-overlay>-->
             <v-layout class='root-vertex-super-container vh-center' :style="zoomScale"
                       @dragstart="preventUndesirableDragging">
-                <v-flex grow class="vertices-children-container left-oriented">
+                <v-overlay
+                        :value="showLoading"
+                        absolute
+                        z-index="50"
+                        opacity="0"
+                >
+                    <v-progress-circular indeterminate color="third" size="64"></v-progress-circular>
+                </v-overlay>
+                <v-flex grow class="vertices-children-container left-oriented" :class="{
+                    'before-loaded': showLoading
+                }">
                     <v-layout v-for="leftBubble in center.leftBubbles" :key="leftBubble.uiId">
                         <v-flex grow :class="{
                         'mt-3' : center.leftBubbles.length === 2 && center.leftBubbles[0].isEdge(),
@@ -21,13 +37,17 @@
                         </v-flex>
                     </v-layout>
                 </v-flex>
-                <div class="vh-center">
+                <div class="vh-center" :class="{
+                    'before-loaded': showLoading
+                }">
                     <Bubble
                             :bubble="center"
                             direction="center"
                     ></Bubble>
                 </div>
-                <v-flex grow class="vertices-children-container right-oriented">
+                <v-flex grow class="vertices-children-container right-oriented" :class="{
+                    'before-loaded': showLoading
+                }">
                     <v-layout v-for="rightBubble in center.rightBubbles" :key="rightBubble.uiId">
                         <v-flex grow :class="{
                             'mt-3' : center.rightBubbles.length === 2 && center.rightBubbles[0].isEdge(),
@@ -91,10 +111,12 @@
                 loaded: false,
                 centerServerFormat: null,
                 redrawKey: null,
-                backgroundColorStyle: ""
+                backgroundColorStyle: "",
+                showLoading: true
             }
         },
         mounted: function () {
+            this.showLoading = true;
             window.addEventListener('resize', this.handleResize);
             CurrentSubGraph.set(SubGraph.empty());
             Selection.reset();
@@ -121,10 +143,14 @@
                 AppController.refreshFont();
                 Selection.setToSingle(this.center);
                 await this.$nextTick();
-                Scroll.goToGraphElement(this.center);
+                Scroll.goToGraphElement(this.center, true);
                 if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
                     center.focus();
                 }
+                await this.$nextTick();
+                this.showLoading = false;
+                await this.$nextTick();
+                this.redrawKey = Math.random();
             }).catch((error) => {
                 console.error(error);
                 this.$router.push("/")
@@ -166,6 +192,9 @@
         },
         watch: {
             redraws: async function () {
+                if (this.showLoading) {
+                    return;
+                }
                 await this.$nextTick();
                 this.redrawKey = Math.random();
             }
@@ -242,5 +271,11 @@
 
     #app.mind-map {
         background: none !important;
+    }
+    .before-loaded{
+        opacity:0;
+    }
+    .after-loaded{
+        opacity:1;
     }
 </style>

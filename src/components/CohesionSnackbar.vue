@@ -147,7 +147,8 @@
                 return this.$store.state.selected;
             },
             mergeCanDo: function () {
-                if (!Selection.isSingle()) {
+                let single = Selection.getSingle();
+                if (single == undefined) {
                     return false;
                 }
                 let controller = Selection.getSingle().controller();
@@ -155,7 +156,8 @@
                     this.selectedUri && controller.convertToDistantBubbleWithUriCanDo(this.selectedUri);
             },
             addTagCanDo: function () {
-                return Selection.isSingle() && Selection.getSingle().controller().addIdentificationCanDo();
+                let single = Selection.getSingle();
+                return single !== undefined && single.controller().addIdentificationCanDo();
             },
             isEditFlow: function () {
                 return this.$store.state.isEditFlow;
@@ -165,24 +167,26 @@
             selected: function () {
                 this.refresh();
             },
-            isEditFlow: async function () {
+            isEditFlow: function () {
                 if (!this.$store.state.isEditFlow) {
-                    await this.$nextTick();
-                    setTimeout(() => {
-                        this.refresh();
-                    }, 100)
+                    this.$nextTick(() => {
+                        setTimeout(() => {
+                            this.refresh();
+                        }, 100)
+                    });
                 }
             }
         },
         methods: {
-            merge: async function () {
+            merge: function () {
                 this.loading = true;
-                await Selection.getSingle().controller().convertToDistantBubbleWithUri(
+                Selection.getSingle().controller().convertToDistantBubbleWithUri(
                     this.firstResult.uri
-                );
-                await this.$nextTick();
-                this.loading = false;
-                this.snackbar = false;
+                ).then(async ()=>{
+                    await this.$nextTick();
+                    this.loading = false;
+                    this.snackbar = false;
+                });
             },
             tag: async function () {
                 this.loading = true;
@@ -204,9 +208,9 @@
                     identifier
                 );
                 await this.$nextTick();
-                this.$store.dispatch("redraw");
                 this.loading = false;
                 this.snackbar = false;
+                return this.$store.dispatch("redraw");
             },
             urlFromUri: function (uri) {
                 return IdUri.absoluteUrlForBubbleUri(
@@ -224,6 +228,9 @@
                     return;
                 }
                 let bubble = Selection.getSingle();
+                if (bubble.loading) {
+                    return;
+                }
                 let results = await SearchService.searchForAllOwnResources(
                     bubble.getLabel()
                 );
@@ -248,6 +255,7 @@
                 this.selectedUri = this.firstResult.uri;
                 this.results = results;
                 this.snackbar = true;
+                return this.results;
             }
         }
     }

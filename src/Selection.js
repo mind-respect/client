@@ -86,32 +86,38 @@ api.getOneOrArrayOfSelected = function () {
         api.getSingle() : api.getSelectedElements();
 };
 api.getSingle = function () {
-    return api.getSelectedBubbles()[0];
+    if (Store.state.selected.length === 0) {
+        return;
+    }
+    return api._graphElementSelected(Store.state.selected[0]);
 };
 api.getSelectedElements = api.getSelectedBubbles = function () {
     return Store.state.selected.map((selected) => {
-        if (GraphElementType.isEdgeType(selected.type)) {
-            return CurrentSubGraph.get().getEdgeWithUriAndId(
+        return api._graphElementSelected(selected);
+    });
+};
+api._graphElementSelected = function (selected) {
+    if (GraphElementType.isEdgeType(selected.type)) {
+        return CurrentSubGraph.get().getEdgeWithUriAndId(
+            selected.uri,
+            selected.id
+        );
+    }
+    switch (selected.type) {
+        case GraphElementType.Vertex :
+            return CurrentSubGraph.get().getVertexWithUriAndId(
                 selected.uri,
                 selected.id
             );
-        }
-        switch (selected.type) {
-            case GraphElementType.Vertex :
-                return CurrentSubGraph.get().getVertexWithUriAndId(
-                    selected.uri,
-                    selected.id
-                );
-            case GraphElementType.GroupRelation :
-                return CurrentSubGraph.get().getGroupRelationWithUiId(
-                    selected.id
-                );
-            case GraphElementType.Meta:
-                return CurrentSubGraph.get().tags[0];
-            default:
-                return CurrentSubGraph.get().otherGraphElements[selected.id];
-        }
-    });
+        case GraphElementType.GroupRelation :
+            return CurrentSubGraph.get().getGroupRelationWithUiId(
+                selected.id
+            );
+        case GraphElementType.Meta:
+            return CurrentSubGraph.get().tags[0];
+        default:
+            return CurrentSubGraph.get().otherGraphElements[selected.id];
+    }
 };
 api.getNbSelected = api.getNbSelectedElements = function () {
     return Store.state.selected.length;
