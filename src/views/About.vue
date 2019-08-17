@@ -119,13 +119,13 @@
                                 {{$t('about:level5Desc1')}}
                             </v-flex>
                             <v-flex xs1>
-                                <v-icon class="white--text mr-2 fa-flip-horizontal">keyboard_return</v-icon>
+                                <v-icon class="white--text mr-2 flip-horizontal">keyboard_return</v-icon>
                             </v-flex>
                             <v-flex xs11 class="mb-6 text-xs-left pl-6">
                                 {{$t('about:level5Desc11')}}
                             </v-flex>
                             <v-flex xs1>
-                                <v-icon class="white--text mr-2 fa-flip-horizontal">
+                                <v-icon class="white--text mr-2 flip-horizontal">
                                     public
                                 </v-icon>
                             </v-flex>
@@ -133,7 +133,7 @@
                                 {{$t('about:level5Desc2')}}
                             </v-flex>
                             <v-flex xs1>
-                                <v-icon class="white--text mr-2 fa-flip-horizontal">
+                                <v-icon class="white--text mr-2 flip-horizontal">
                                     keyboard_return
                                 </v-icon>
                             </v-flex>
@@ -168,7 +168,7 @@
         </v-layout>
         <v-footer class="pa-4" dark>
             <v-spacer></v-spacer>
-            <v-icon class="fa-flip-horizontal mr-2">copyright</v-icon>
+            <v-icon class="flip-horizontal mr-2">copyright</v-icon>
             Copyleft
             <span class="ml-2">Vincent Blouin</span>
             <v-spacer></v-spacer>

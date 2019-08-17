@@ -596,5 +596,9 @@
         -ms-user-select: none;
         user-select: none;
     }
+
+    .flip-horizontal{
+        transform: scale(-1, 1);
+    }
 </style>
 
