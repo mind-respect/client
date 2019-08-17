@@ -39,8 +39,10 @@
         name: 'banner',
         data: function () {
             I18n.i18next.addResources("en", "banner", {
-                'slogan': 'The best place for your ideas',
-                'desc': 'Constantly evolve your thoughts and ideas with the MindRespect note-taking application!'
+                'slogan': 'Structure your notes, make your thinking evolve',
+                desc: 'Mindrespect.com is a',
+                desc2: 'unique way',
+                desc3: 'to take notes'
             });
             // 'slogan': 'Le meilleur endroit pour vos idées',
             I18n.i18next.addResources("fr", "banner", {

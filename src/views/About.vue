@@ -113,7 +113,7 @@
                     <v-flex xs12 sm8 md8 lg6 xl4>
                         <v-layout  wrap class="white--text title ml-4" style="background-color: transparent">
                             <v-flex xs1 class="">
-                                <v-icon class="white--text mr-2">fa-balance-scale</v-icon>
+                                <v-icon class="white--text mr-2">ac_unit</v-icon>
                             </v-flex>
                             <v-flex xs11 class="mb-6 text-xs-left pl-6">
                                 {{$t('about:level5Desc1')}}

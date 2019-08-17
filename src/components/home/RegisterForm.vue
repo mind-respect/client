@@ -128,7 +128,7 @@
             I18n.i18next.addResources("en", "register", {
                 title: "Use MindRespect.com",
                 subtitle: "Take your notes in a unique way and let your ideas shape your life.",
-                newUsername: 'newUser name (public name)',
+                newUsername: 'Username (public name)',
                 email: 'Email',
                 password: 'Password',
                 registerBtn: "Register for free",
