@@ -182,13 +182,14 @@
                 this.loading = true;
                 Selection.getSingle().controller().convertToDistantBubbleWithUri(
                     this.firstResult.uri
-                ).then(async ()=>{
-                    await this.$nextTick();
+                ).then(() => {
+                    return this.$nextTick();
+                }).then(() => {
                     this.loading = false;
                     this.snackbar = false;
                 });
             },
-            tag: async function () {
+            tag: function () {
                 this.loading = true;
                 let identifier = Identification.fromSearchResult(
                     this.firstResult
@@ -200,24 +201,27 @@
                     return false;
                 }
                 identifier.makeGeneric();
-                let imageUrl = await this.firstResult.getImageUrl(this.firstResult);
-                if (imageUrl) {
-                    identifier.addImage(imageUrl);
-                }
-                await bubble.controller().addIdentification(
-                    identifier
-                );
-                await this.$nextTick();
-                this.loading = false;
-                this.snackbar = false;
-                return this.$store.dispatch("redraw");
+                this.firstResult.getImageUrl(this.firstResult).then((imageUrl) => {
+                    if (imageUrl) {
+                        identifier.addImage(imageUrl);
+                    }
+                    return bubble.controller().addIdentification(
+                        identifier
+                    );
+                }).then(() => {
+                    return this.$nextTick();
+                }).then(() => {
+                    this.loading = false;
+                    this.snackbar = false;
+                    this.$store.dispatch("redraw");
+                })
             },
             urlFromUri: function (uri) {
                 return IdUri.absoluteUrlForBubbleUri(
                     uri
                 )
             },
-            refresh: async function () {
+            refresh: function () {
                 this.snackbar = false;
                 this.loading = false;
                 this.isSeeMoreFlow = false;
@@ -231,31 +235,31 @@
                 if (bubble.loading) {
                     return;
                 }
-                let results = await SearchService.searchForAllOwnResources(
+                SearchService.searchForAllOwnResources(
                     bubble.getLabel()
-                );
-                results = results.filter((result) => {
-                    let filter = bubble.getUri() !== result.uri && !bubble.hasTagRelatedToUri(result.uri);
-                    if (result.original.graphElement && result.original.graphElement.hasTagRelatedToUri) {
-                        filter = filter && !result.original.graphElement.hasTagRelatedToUri(
-                            bubble.getUri()
-                        )
+                ).then((results) => {
+                    results = results.filter((result) => {
+                        let filter = bubble.getUri() !== result.uri && !bubble.hasTagRelatedToUri(result.uri);
+                        if (result.original.graphElement && result.original.graphElement.hasTagRelatedToUri) {
+                            filter = filter && !result.original.graphElement.hasTagRelatedToUri(
+                                bubble.getUri()
+                            )
+                        }
+                        return filter;
+                    }).sort((result) => {
+                        return result.label.toLowerCase().trim() === bubble.getLabel().toLowerCase().trim();
+                    });
+                    if (results.length === 0) {
+                        return;
                     }
-                    return filter;
-                }).sort((result) => {
-                    return result.label.toLowerCase().trim() === bubble.getLabel().toLowerCase().trim();
+                    this.firstResult = results[0];
+                    if (this.firstResult.label.toLowerCase().trim() !== bubble.getLabel().toLowerCase().trim()) {
+                        return;
+                    }
+                    this.selectedUri = this.firstResult.uri;
+                    this.results = results;
+                    this.snackbar = true;
                 });
-                if (results.length === 0) {
-                    return;
-                }
-                this.firstResult = results[0];
-                if (this.firstResult.label.toLowerCase().trim() !== bubble.getLabel().toLowerCase().trim()) {
-                    return;
-                }
-                this.selectedUri = this.firstResult.uri;
-                this.results = results;
-                this.snackbar = true;
-                return this.results;
             }
         }
     }

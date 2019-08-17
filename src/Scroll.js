@@ -27,103 +27,109 @@ const Scroll = {
         }
     },
     goToGraphElement: function (bubble, noAnimation) {
-        let onlyScrollLeft = false;
-        // if (bubble.isScrollPositionDefined()) {
-        //     onlyScrollLeft = true;
-        //     let rect = bubble.getHtml().getBoundingClientRect();
-        //     let scrollTop = rect.top - bubble.scrollRect.top;
-        //     document.scrollingElement.scrollTop += scrollTop;
-        //     bubble.resetScrollPosition();
-        // }
-        let element = bubble.isCenter ? bubble.getLabelHtml() : bubble.getLabelHtml();
-        if (!element) {
-            return;
-        }
-        let sideMenuOffset = SideMenu.getWidth();
-        let widthPadding;
-        if (bubble.isCenter) {
-            widthPadding = 0;
-        }
-        if (bubble.isToTheLeft()) {
-            widthPadding = 25;
-        } else {
-            widthPadding = -25;
-        }
-        let elementWidth = element.offsetWidth + widthPadding;
-        let options = {
-            container: 'body',
-            easing: 'ease',
-            offset: function () {
-                // let elementWidth = element.offsetWidth + (element.offsetWidth / 2)
-                // let screenCenter = screen.width / 2;
-                let offset;
-                let screenWidth = screen.width - sideMenuOffset;
-                let halfScreen = screenWidth / 2;
-                if (bubble.isCenter) {
-                    offset = halfScreen - elementWidth / 2;
-                } else {
-                    let deepestBubble = bubble.getDeepestDescendant();
-                    if (deepestBubble.isSameBubble(bubble)) {
+        return new Promise((resolve) => {
+            let onlyScrollLeft = false;
+            // if (bubble.isScrollPositionDefined()) {
+            //     onlyScrollLeft = true;
+            //     let rect = bubble.getHtml().getBoundingClientRect();
+            //     let scrollTop = rect.top - bubble.scrollRect.top;
+            //     document.scrollingElement.scrollTop += scrollTop;
+            //     bubble.resetScrollPosition();
+            // }
+            let element = bubble.isCenter ? bubble.getLabelHtml() : bubble.getLabelHtml();
+            if (!element) {
+                resolve();
+                return;
+            }
+            let sideMenuOffset = SideMenu.getWidth();
+            let widthPadding;
+            if (bubble.isCenter) {
+                widthPadding = 0;
+            }
+            if (bubble.isToTheLeft()) {
+                widthPadding = 25;
+            } else {
+                widthPadding = -25;
+            }
+            let elementWidth = element.offsetWidth + widthPadding;
+            let options = {
+                container: 'body',
+                easing: 'ease',
+                offset: function () {
+                    // let elementWidth = element.offsetWidth + (element.offsetWidth / 2)
+                    // let screenCenter = screen.width / 2;
+                    let offset;
+                    let screenWidth = screen.width - sideMenuOffset;
+                    let halfScreen = screenWidth / 2;
+                    if (bubble.isCenter) {
                         offset = halfScreen - elementWidth / 2;
                     } else {
-                        let deepestElement = deepestBubble.getLabelHtml();
-                        let deepestRect = deepestElement.getBoundingClientRect();
-                        let deepestXPosition = bubble.isToTheLeft() ? deepestRect.left : deepestRect.right;
-                        deepestXPosition += window.pageXOffset;
-
-                        let elementRect = element.getBoundingClientRect();
-                        let elementXPosition = bubble.isToTheLeft() ? elementRect.left : elementRect.right;
-                        elementXPosition += window.pageXOffset;
-
-                        let difference = Math.abs(elementXPosition - deepestXPosition);
-
-                        if (bubble.isToTheLeft()) {
-                            offset = Math.min(halfScreen + difference / 2 - elementWidth / 2, screenWidth - elementWidth / 2);
+                        let deepestBubble = bubble.getDeepestDescendant();
+                        if (deepestBubble.isSameBubble(bubble)) {
+                            offset = halfScreen - elementWidth / 2;
                         } else {
-                            offset = Math.max(halfScreen - difference / 2 - elementWidth / 2, 150)
+                            let deepestElement = deepestBubble.getLabelHtml();
+                            let deepestRect = deepestElement.getBoundingClientRect();
+                            let deepestXPosition = bubble.isToTheLeft() ? deepestRect.left : deepestRect.right;
+                            deepestXPosition += window.pageXOffset;
+
+                            let elementRect = element.getBoundingClientRect();
+                            let elementXPosition = bubble.isToTheLeft() ? elementRect.left : elementRect.right;
+                            elementXPosition += window.pageXOffset;
+
+                            let difference = Math.abs(elementXPosition - deepestXPosition);
+
+                            if (bubble.isToTheLeft()) {
+                                offset = Math.min(halfScreen + difference / 2 - elementWidth / 2, screenWidth - elementWidth / 2);
+                            } else {
+                                offset = Math.max(halfScreen - difference / 2 - elementWidth / 2, 150)
+                            }
                         }
                     }
-                }
-                let position = sideMenuOffset + offset;
-                return position * -1;
-            },
-            force: true,
-            cancelable: true,
-            onStart: function (element) {
-                // scrolling started
-            },
-            onCancel: function () {
-                // scrolling has been interrupted
-            },
-            x: true,
-            y: false
-        };
-        if (!onlyScrollLeft) {
-            options.onDone = function (element) {
-                options.x = false;
-                options.y = true;
-                options.offset = function () {
-                    let position = Math.abs(300 * screen.height / 768);
+                    let position = sideMenuOffset + offset;
                     return position * -1;
-                };
-                VueScrollTo.scrollTo(
-                    element,
-                    noAnimation ? 1 : 350,
-                    options
-                )
+                },
+                force: true,
+                cancelable: true,
+                onStart: function (element) {
+                    // scrolling started
+                },
+                onCancel: function () {
+                    // scrolling has been interrupted
+                },
+                x: true,
+                y: false
             };
-        }
-        if(noAnimation){
-            options.duration = 1;
-            options.easing = "linear"
-        }
-        cancelGraphElementScroll = VueScrollTo.scrollTo(
-            element,
-            noAnimation ? 1 : 250,
-            options
-        );
-// or alternatively inside your components you can use
-//         cancelScroll = Vue.$scrollTo(element, duration, options);
+            if (onlyScrollLeft) {
+                resolve()
+            } else {
+                options.onDone = function (element) {
+                    options.onDone = function () {
+                        resolve();
+                    };
+                    options.x = false;
+                    options.y = true;
+                    options.offset = function () {
+                        let position = Math.abs(300 * screen.height / 768);
+                        return position * -1;
+                    };
+                    VueScrollTo.scrollTo(
+                        element,
+                        noAnimation ? 1 : 350,
+                        options
+                    )
+                };
+            }
+            if (noAnimation) {
+                options.duration = 1;
+                options.easing = "linear"
+            }
+            cancelGraphElementScroll = VueScrollTo.scrollTo(
+                element,
+                noAnimation ? 1 : 250,
+                options
+            );
+        });
     },
     centerBubbleForTreeIfApplicable: function (bubble) {
         return Scroll.centerBubbleForTreeOrNotIfApplicable(

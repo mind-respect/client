@@ -142,9 +142,11 @@
                         });
                     }
                 } else {
-                    this.selected.forEach((selected) => {
-                        selected.selectedToRemove = false;
-                    });
+                    if(this.selected){
+                        this.selected.forEach((selected) => {
+                            selected.selectedToRemove = false;
+                        });
+                    }
                     this.removeDialog = false;
                 }
             },

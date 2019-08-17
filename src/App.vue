@@ -145,6 +145,7 @@
 </template>
 
 <script>
+    import SideMenu from '@/components/SideMenu'
     import UserService from '@/service/UserService'
     import LoadingFlow from '@/LoadingFlow'
     import Store from '@/store'
@@ -155,7 +156,7 @@
     export default {
         components: {
             ToolbarGraphButtons:() => import('@/components/ToolbarGraphButtons'),
-            SideMenu: () => import('@/components/SideMenu'),
+            SideMenu,
             RegisterForm: () => import('@/components/home/RegisterForm'),
             LoginForm: () => import('@/components/home/LoginForm'),
             ForgotPasswordForm: () => import('@/components/home/ForgotPasswordForm'),

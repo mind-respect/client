@@ -97,26 +97,20 @@
 </template>
 
 <script>
-    import NoteMenu from '@/components/NoteMenu'
-    import TagMenu from '@/components/TagMenu'
-    import MergeMenu from '@/components/MergeMenu'
-    import ShareMenu from '@/components/ShareMenu'
-    import BubbleButtons from '@/components/graph/BubbleButtons'
     import DateUtil from '@/DateUtil'
     import I18n from '@/I18n'
     import Selection from '@/Selection'
     import SideMenu from '@/SideMenu'
     import KeyboardActions from '@/KeyboardActions'
-    import BreakPoint from "../Breakpoint";
 
     export default {
         name: "SideMenu",
         components: {
-            NoteMenu,
-            TagMenu,
-            MergeMenu,
-            ShareMenu,
-            BubbleButtons
+            NoteMenu:() => import('@/components/NoteMenu'),
+            TagMenu:() => import('@/components/TagMenu'),
+            MergeMenu:() => import('@/components/MergeMenu'),
+            ShareMenu:() => import('@/components/ShareMenu'),
+            BubbleButtons:() => import('@/components/graph/BubbleButtons'),
         },
         data: () => {
             I18n.i18next.addResources("en", "side", {

@@ -6,12 +6,12 @@
     <v-layout v-if="loaded">
         <v-divider></v-divider>
         <div id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle">
-<!--            <v-overlay-->
-<!--                    :value="showLoading"-->
-<!--                    absolute-->
-<!--                    z-index="100"-->
-<!--            >-->
-<!--            </v-overlay>-->
+            <!--            <v-overlay-->
+            <!--                    :value="showLoading"-->
+            <!--                    absolute-->
+            <!--                    z-index="100"-->
+            <!--            >-->
+            <!--            </v-overlay>-->
             <v-layout class='root-vertex-super-container vh-center' :style="zoomScale"
                       @dragstart="preventUndesirableDragging">
                 <v-overlay
@@ -143,14 +143,15 @@
                 AppController.refreshFont();
                 Selection.setToSingle(this.center);
                 await this.$nextTick();
-                Scroll.goToGraphElement(this.center, true);
                 if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
                     center.focus();
                 }
-                await this.$nextTick();
-                this.showLoading = false;
-                await this.$nextTick();
-                this.redrawKey = Math.random();
+                Scroll.goToGraphElement(this.center, true).then(async () => {
+                    await this.$nextTick();
+                    this.showLoading = false;
+                    await this.$nextTick();
+                    this.redrawKey = Math.random();
+                })
             }).catch((error) => {
                 console.error(error);
                 this.$router.push("/")
@@ -272,10 +273,12 @@
     #app.mind-map {
         background: none !important;
     }
-    .before-loaded{
-        opacity:0;
+
+    .before-loaded {
+        opacity: 0;
     }
-    .after-loaded{
-        opacity:1;
+
+    .after-loaded {
+        opacity: 1;
     }
 </style>

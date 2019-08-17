@@ -7,6 +7,7 @@ import VertexService from '@/vertex/VertexService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import MindMapInfo from '@/MindMapInfo'
 import Vertex from '@/vertex/Vertex'
+import GraphElement from '@/graph-element/GraphElement'
 import Store from '@/store'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import Vue from 'vue'
@@ -107,10 +108,13 @@ api.fontPicker = function () {
 };
 
 api.refreshFont = function () {
+    let font = CurrentSubGraph.get().center.getFont();
+    if (GraphElement.DEFAULT_FONT.family === font.family) {
+        return;
+    }
     let link = document.createElement("link");
     link.setAttribute("rel", "stylesheet");
     link.setAttribute("type", "text/css");
-    let font = CurrentSubGraph.get().center.getFont();
     link.setAttribute("href", "https://fonts.googleapis.com/css?family=" + font.family.replace(/ /g, '+'));
     document.getElementsByTagName("head")[0].appendChild(link);
     setTimeout(() => {
