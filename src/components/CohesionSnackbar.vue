@@ -6,7 +6,7 @@
             color="white"
             class="cohesive-snackbar"
             bottom
-            style="opacity:0.85"
+            style="opacity:0.9"
     >
         <v-layout>
             <v-flex xs12>
