@@ -158,7 +158,7 @@
                 return this.$store.state.selected;
             },
             identifiersByLatest: function () {
-                return this.bubble.getIdentifiers().sort((a, b) => {
+                return this.bubble.getTagsAndSelfIfRelevant().sort((a, b) => {
                     return b.getCreationDate() - a.getCreationDate();
                 })
             }
@@ -235,7 +235,7 @@
             },
             buildExternalUrls: function () {
                 this.loaded = false;
-                return Promise.all(this.bubble.getIdentifiers().map((tag) => {
+                return Promise.all(this.bubble.getTagsAndSelfIfRelevant().map((tag) => {
                     return tag.buildExternalUrls();
                 })).then(() => {
                     this.loaded = true;

@@ -195,8 +195,9 @@ GraphElement.GraphElement.prototype.removeIdentifier = function (identifierToRem
 };
 
 GraphElement.GraphElement.prototype.hasIdentifications = function () {
-    return this.getIdentifiers().length > 0;
+    return this.getTagsAndSelfIfRelevant().length > 0;
 };
+
 GraphElement.GraphElement.prototype.hasAllIdentifiers = function (identifiers) {
     let has = true;
     identifiers.forEach(function (identifier) {
@@ -234,6 +235,13 @@ GraphElement.GraphElement.prototype.getIdentifiersIncludingSelf = function () {
         );
     }
     return identifiers;
+};
+
+GraphElement.GraphElement.prototype.getTagsAndSelfIfRelevant = function () {
+    return this.identifiers.filter((tag) => {
+        return tag.getExternalResourceUri() !== this.getUri()
+            || tag.getNbReferences() > 1;
+    });
 };
 
 GraphElement.GraphElement.prototype.hasRelevantTags = function () {
