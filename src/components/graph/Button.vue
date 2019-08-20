@@ -14,21 +14,22 @@
             :content-class="contentClass"
     >
         <template v-slot:activator="{ on }">
-            <slot name="button" v-if="$slots.button" v-on="on"></slot>
-            <v-btn
+            <span v-on="on">
+                <slot name="button" v-if="$slots.button"></slot>
+                <v-btn
                     v-else
-                    v-on="on"
                     icon
                     large
                     class="ma-1"
                     :color="color"
                     @click="performAction(button, $event)"
                     :disabled="button.disableNotHide && !canDo(button)"
-            >
-                <v-icon :class="button.iconClass" :large="hightlight">
-                    {{getIcon(button)}}
-                </v-icon>
-            </v-btn>
+                >
+                    <v-icon :class="button.iconClass" :large="hightlight">
+                        {{getIcon(button)}}
+                    </v-icon>
+                </v-btn>
+            </span>
         </template>
         <slot name="tooltipContent" v-if="$slots.tooltipContent"></slot>
         <span v-else>
@@ -64,7 +65,7 @@
             },
             contentClass: function () {
                 if (this.isInSideMenu) {
-                    let contentClass = "side-button-tooltip ";
+                    let contentClass = "bubble-menu-tooltip side-button-tooltip ";
                     contentClass += this.$store.state.sideMenuFlow === false ?
                         "side-button-collapsed-margin" :
                         "side-button-expanded-margin";
@@ -140,5 +141,6 @@
 
     .bubble-menu-tooltip {
         white-space: nowrap;
+        margin-top:10px;
     }
 </style>
