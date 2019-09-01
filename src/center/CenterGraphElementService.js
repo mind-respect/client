@@ -16,10 +16,9 @@ export default {
             UserService.getUsersResourceUrl() + username + "/center-elements/public"
         );
     },
-    removeCentersWithUri: function (centersUri) {
+    removeCenterWithUri: function (centerUri) {
         return Service.api().delete(
-            UserService.currentUserUri() + "/center-elements",
-            {data: centersUri}
+            centerUri + "/center"
         );
     }
 }

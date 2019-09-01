@@ -129,7 +129,8 @@
                                                     <!--{{center.lastVisit()}}-->
                                                     <!--</v-list-item-subtitle>-->
                                                 </v-list-item-content>
-                                                <v-list-item-action @click.stop v-if="$vuetify.breakpoint.smAndUp" style="min-width:40px;">
+                                                <v-list-item-action @click.stop v-if="$vuetify.breakpoint.smAndUp"
+                                                                    style="min-width:40px;">
                                                     <v-menu offset-y v-if="isOwner && (hover || center.menu)" left
                                                             v-model="center.menu">
                                                         <template v-slot:activator="{ on }">
@@ -323,8 +324,8 @@
                 AppController.createVertex(null, label);
             },
             removeCenter: function (centerToRemove, index) {
-                CenterGraphElementService.removeCentersWithUri(
-                    [centerToRemove.getUri()]
+                CenterGraphElementService.removeCenterWithUri(
+                    centerToRemove.getUri()
                 );
                 let l = this.centers.length;
                 while (l--) {

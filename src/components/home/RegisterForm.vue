@@ -152,6 +152,7 @@
             return {
                 Rules: Rules,
                 valid: true,
+                loading:false,
                 newUser: {
                     username: "",
                     email: "",

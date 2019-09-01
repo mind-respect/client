@@ -6,9 +6,6 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import Icon from '@/Icon'
 
 const api = {};
-api.additionalTypes = {
-    "Edge": "edge"
-};
 api.fromServerFormatArray = function (searchResultsServerFormat) {
     return searchResultsServerFormat.map((searchResult) => {
         return api.fromServerFormat(
@@ -17,8 +14,8 @@ api.fromServerFormatArray = function (searchResultsServerFormat) {
     })
 };
 api.fromServerFormat = function (searchResult) {
-    switch (searchResult.type) {
-        case api.additionalTypes.Edge :
+    switch (searchResult.type.toLowerCase()) {
+        case GraphElementType.Edge :
             // var sourceVertex = Vertex.fromServerFormat(
             //         searchResult.edge.sourceVertex
             //     ),
