@@ -65,7 +65,7 @@ CenterGraphElement.prototype.getShareIcon = function () {
 };
 
 CenterGraphElement.prototype.getContext = function () {
-    return this.centerGraphElementServerFormat.context;
+    return this.centerGraphElementServerFormat.context || {};
 };
 CenterGraphElement.prototype.setVisitRank = function (rank) {
     this.visitRank = rank;
