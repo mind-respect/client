@@ -131,7 +131,7 @@ SearchResult.prototype.getNumberOfReferences = function () {
 };
 
 SearchResult.prototype.getNbVisits = function () {
-    return this.serverFormat.nbVisits;
+    return this.serverFormat.nbVisits || 0;
 };
 
 SearchResult.prototype.is = function (graphElementType) {

@@ -58,6 +58,12 @@ function formattedOwnResults(results) {
             original: facade,
             source: "mindrespect.com"
         }
+    }).sort((a, b) => {
+        let nbVisitsDiff = b.original.getNbVisits() - a.original.getNbVisits();
+        if (nbVisitsDiff === 0) {
+            return b.original.getNumberOfReferences() - a.original.getNumberOfReferences();
+        }
+        return nbVisitsDiff;
     });
 }
 
