@@ -1,10 +1,10 @@
 <template>
     <v-app id="app" v-if="dataLoaded">
-        <div id="is-loading-overlay" v-if="isLoading">
+        <v-overlay :value="isLoading" z-index="9999">
             <div class="text">
                 <v-progress-circular indeterminate color="white" v-if="hasLoadingSpinner"></v-progress-circular>
             </div>
-        </div>
+        </v-overlay>
         <div id="nav" class="pa-0">
             <v-app-bar
                     color="white"
@@ -395,29 +395,6 @@
 
     .v-chip {
         transition: none;
-    }
-
-    #is-loading-overlay {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 202;
-        cursor: pointer;
-    }
-
-    #is-loading-overlay .text, .text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        font-size: 21px;
-        color: white;
-        transform: translate(-50%, -50%);
-        -ms-transform: translate(-50%, -50%);
     }
 
     .mr-title {

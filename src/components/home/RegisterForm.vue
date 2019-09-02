@@ -47,7 +47,7 @@
                         type="password"
                 ></v-text-field>
                 <v-btn
-                        :disabled="!valid"
+                        :disabled="!valid || loading"
                         color="secondary"
                         @click="register"
                         class="ml-0"
@@ -79,10 +79,11 @@
                     return;
                 }
                 LoadingFlow.enter();
-                AuthenticateService.register(this.newUser).then(function (response) {
+                this.loading = true;
+                AuthenticateService.register(this.newUser).then((response) => {
                     this.$store.dispatch('setUser', response.data)
                     this.$emit('flow-is-done');
-                    Vue.nextTick(function () {
+                    Vue.nextTick(() => {
                         this.$router.push({
                             name: 'UserHome',
                             params: {
@@ -90,23 +91,25 @@
                             }
                         });
                         LoadingFlow.leave();
-                    }.bind(this))
-                }.bind(this)).catch(function (response) {
-                    response.response.data.forEach(function (error) {
+                        this.loading = false;
+                    })
+                }).catch(function (response) {
+                    response.response.data.forEach((error) => {
                         if ("already_registered_email" === error.reason) {
                             this.emailAlreadyRegistered = true;
                         }
                         if ("user_name_already_registered" === error.reason) {
                             this.usernameAlreadyRegistered = true;
                         }
-                        if("invalid_user_name" === error.reason){
+                        if ("invalid_user_name" === error.reason) {
                             this.invalidUsername = true;
                         }
-                        if("too_long" === error.reason){
+                        if ("too_long" === error.reason) {
                             this.usernameTooLong = true;
                         }
-                    }.bind(this));
+                    });
                     this.createConflict = true;
+                    this.loading = false;
                     LoadingFlow.leave();
                 }.bind(this));
             },
@@ -152,7 +155,7 @@
             return {
                 Rules: Rules,
                 valid: true,
-                loading:false,
+                loading: false,
                 newUser: {
                     username: "",
                     email: "",
