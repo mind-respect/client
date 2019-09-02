@@ -17,7 +17,7 @@ export default {
         );
     },
     removeCenterWithUri: function (centerUri) {
-        return Service.api().delete(
+        return Service.geApi().delete(
             centerUri + "/center"
         );
     }
