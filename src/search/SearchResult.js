@@ -43,8 +43,9 @@ api.fromServerFormat = function (searchResult) {
                 searchResult.graphElement
             );
             let identifier = identifierAsGraphElement.getIdentifiers()[0];
+            let graphElement = identifier === undefined ? identifierAsGraphElement : identifier;
             return new SearchResult(
-                identifier,
+                graphElement,
                 GraphElementType.Meta,
                 api._buildMetaSomethingToDistinguish(searchResult),
                 searchResult
@@ -64,7 +65,7 @@ api._buildMetaSomethingToDistinguish = function (searchResult) {
     return searchResult.context.description === undefined ?
         api._buildSomethingToDistinguish(searchResult) : searchResult.context.description;
 };
-``
+
 api._buildSomethingToDistinguish = function (searchResult) {
     if (!searchResult.context) {
         return "";
