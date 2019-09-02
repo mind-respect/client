@@ -3,6 +3,7 @@
  */
 const api = {
     "Vertex": "vertex",
+    "Edge": "edge",
     "Relation": "relation",
     "GroupRelation": "group_relation",
     "Schema": "schema",

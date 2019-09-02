@@ -255,9 +255,9 @@ Vertex.prototype.collapse = function (preventScroll) {
     if (this.isCenter) {
         this.getNextChildren().forEach((child) =>{
             if (child.isEdge()) {
-                child.getOtherVertex(this).collapse()
+                child.getOtherVertex(this).collapse(true)
             } else {
-                child.collapse();
+                child.collapse(true);
             }
         });
         return;
