@@ -129,7 +129,6 @@
                 ).load();
             promise.then(async (_center) => {
                 let center = _center;
-                center.makeCenter();
                 document.title = center.getTextOrDefault() + " | MindRespect";
                 this.center = center;
                 this.handleResize();

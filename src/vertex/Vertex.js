@@ -377,6 +377,15 @@ Vertex.prototype.isMeta = function () {
     return this.getGraphElementType() === GraphElementType.Meta;
 };
 
+Vertex.prototype._freezeChildren = function () {
+    Object.freeze(
+        this._leftBubbles
+    );
+    Object.freeze(
+        this._rightBubbles
+    );
+};
+
 api.Vertex = Vertex;
 
 export default api;

@@ -121,6 +121,12 @@ GroupRelation.prototype.getRightBubble = function (bottom) {
     return bottom ? this._children[this._children.length - 1] : this._children[0];
 };
 
+GroupRelation.prototype._freezeChildren = function () {
+    Object.freeze(
+        this._children
+    );
+};
+
 GroupRelation.prototype.isLeaf = function () {
     return false;
 };
