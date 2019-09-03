@@ -398,6 +398,7 @@
             }
         },
         mounted: async function () {
+            Object.freeze(this.bubble.children);
             this.bubble.loading = false;
             this.bubble.isEditFlow = false;
             this.bubble.direction = this.direction;

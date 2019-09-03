@@ -78,7 +78,9 @@
         </div>
         <SideMenu v-if="isGraphRoute && $store.state.selected.length > 0"></SideMenu>
         <v-content>
-            <router-view></router-view>
+            <keep-alive>
+                <router-view></router-view>
+            </keep-alive>
         </v-content>
         <v-dialog v-model="registerDialog" width="900" v-if="registerDialog">
             <v-card>
@@ -153,10 +155,11 @@
     import KeyboardActions from '@/KeyboardActions'
     import VueClipboard from 'vue-clipboard2'
     import I18n from '@/I18n'
+
     Vue.use(VueClipboard);
     export default {
         components: {
-            ToolbarGraphButtons:() => import('@/components/ToolbarGraphButtons'),
+            ToolbarGraphButtons: () => import('@/components/ToolbarGraphButtons'),
             SideMenu,
             RegisterForm: () => import('@/components/home/RegisterForm'),
             LoginForm: () => import('@/components/home/LoginForm'),

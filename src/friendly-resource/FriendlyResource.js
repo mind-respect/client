@@ -126,9 +126,9 @@ FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.focus = function (event) {
+    let labelHtml = this.getLabelHtml();
+    labelHtml.contentEditable = "true";
     setTimeout(() => {
-        let labelHtml = this.getLabelHtml();
-        labelHtml.contentEditable = "true";
         if (event) {
             Focus.focusAtPosition(event, labelHtml);
         } else {
