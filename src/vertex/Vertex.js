@@ -56,11 +56,11 @@ function Vertex() {
 Vertex.prototype = new GraphElement.GraphElement();
 
 Vertex.prototype.init = function (vertexServerFormat) {
-    this.vertexServerFormat = vertexServerFormat;
-    if (!this.vertexServerFormat.vertex.shareLevel) {
+    this._vertexServerFormat = vertexServerFormat;
+    if (!this._vertexServerFormat.vertex.shareLevel) {
         this.makePrivate();
     }
-    this.vertexServerFormat.vertex.numberOfConnectedEdges = this.vertexServerFormat.vertex.numberOfConnectedEdges || 0;
+    this._vertexServerFormat.vertex.numberOfConnectedEdges = this._vertexServerFormat.vertex.numberOfConnectedEdges || 0;
     this.leftBubbles = [];
     this.leftBubblesCollapsed = null;
     this.rightBubbles = [];
@@ -82,13 +82,13 @@ Vertex.prototype.init = function (vertexServerFormat) {
 Vertex.prototype.clone = function () {
     let vertex = new Vertex();
     vertex.init(
-        JSON.parse(JSON.stringify(this.vertexServerFormat))
+        JSON.parse(JSON.stringify(this._vertexServerFormat))
     );
     return vertex;
 };
 
 Vertex.prototype.getNumberOfConnectedEdges = function () {
-    return this.vertexServerFormat.vertex.numberOfConnectedEdges;
+    return this._vertexServerFormat.vertex.numberOfConnectedEdges;
 };
 
 Vertex.prototype.getNumberOfChild = function (isLeft) {
@@ -116,36 +116,36 @@ Vertex.prototype.resetChildren = function () {
 
 
 Vertex.prototype.decrementNumberOfConnectedEdges = function () {
-    this.vertexServerFormat.vertex.numberOfConnectedEdges--;
+    this._vertexServerFormat.vertex.numberOfConnectedEdges--;
 };
 
 Vertex.prototype.incrementNbConnectedEdges = function () {
-    this.vertexServerFormat.vertex.numberOfConnectedEdges++;
+    this._vertexServerFormat.vertex.numberOfConnectedEdges++;
 };
 
 Vertex.prototype.incrementNbPublicNeighbors = function () {
-    this.vertexServerFormat.vertex.nbPublicNeighbors++;
+    this._vertexServerFormat.vertex.nbPublicNeighbors++;
 };
 
 
 Vertex.prototype.decrementNbPublicNeighbors = function () {
-    this.vertexServerFormat.vertex.nbPublicNeighbors--;
+    this._vertexServerFormat.vertex.nbPublicNeighbors--;
 };
 
 Vertex.prototype.getNbPublicNeighbors = function () {
-    return this.vertexServerFormat.vertex.nbPublicNeighbors;
+    return this._vertexServerFormat.vertex.nbPublicNeighbors;
 };
 
 Vertex.prototype.getNbFriendNeighbors = function () {
-    return this.vertexServerFormat.vertex.nbFriendNeighbors;
+    return this._vertexServerFormat.vertex.nbFriendNeighbors;
 };
 
 Vertex.prototype.incrementNbFriendNeighbors = function () {
-    this.vertexServerFormat.vertex.nbFriendNeighbors++;
+    this._vertexServerFormat.vertex.nbFriendNeighbors++;
 };
 
 Vertex.prototype.decrementNbFriendNeigbors = function () {
-    this.vertexServerFormat.vertex.nbFriendNeighbors--;
+    this._vertexServerFormat.vertex.nbFriendNeighbors--;
 };
 
 Vertex.prototype.isPublic = function () {
@@ -162,7 +162,7 @@ Vertex.prototype.isFriendsOnly = function () {
 };
 
 Vertex.prototype.getShareLevel = function () {
-    return this.vertexServerFormat.vertex.shareLevel.toUpperCase();
+    return this._vertexServerFormat.vertex.shareLevel.toUpperCase();
 };
 
 Vertex.prototype.makePrivate = function () {
@@ -174,7 +174,7 @@ Vertex.prototype.makePublic = function () {
 };
 
 Vertex.prototype.setShareLevel = function (shareLevel) {
-    this.vertexServerFormat.vertex.shareLevel = shareLevel.toUpperCase();
+    this._vertexServerFormat.vertex.shareLevel = shareLevel.toUpperCase();
     this.forceInLabelMenuUpdate();
 };
 
@@ -265,7 +265,7 @@ Vertex.prototype.collapse = function (preventScroll) {
     if (!this.isExpanded) {
         return;
     }
-    this.vertexServerFormat.vertex.numberOfConnectedEdges = this.getNextChildren().length + 1;
+    this._vertexServerFormat.vertex.numberOfConnectedEdges = this.getNextChildren().length + 1;
     this.rightBubblesCollapsed = this.rightBubbles;
     this.leftBubblesCollapsed = this.leftBubbles;
     this.rightBubbles = [];

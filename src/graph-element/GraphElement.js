@@ -147,7 +147,7 @@ GraphElement._getControllerClassFromType = function (graphElementType) {
 GraphElement.GraphElement.prototype = new FriendlyResource.FriendlyResource();
 
 GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
-    this.graphElementServerFormat = graphElementServerFormat;
+    this._graphElementServerFormat = graphElementServerFormat;
     FriendlyResource.FriendlyResource.apply(
         this
     );
@@ -155,26 +155,26 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
         this,
         graphElementServerFormat.friendlyResource
     );
-    if (this.graphElementServerFormat.childrenIndex && typeof this.graphElementServerFormat.childrenIndex === 'string') {
-        this.graphElementServerFormat.childrenIndex = JSON.parse(
-            this.graphElementServerFormat.childrenIndex
+    if (this._graphElementServerFormat.childrenIndex && typeof this._graphElementServerFormat.childrenIndex === 'string') {
+        this._graphElementServerFormat.childrenIndex = JSON.parse(
+            this._graphElementServerFormat.childrenIndex
         );
     }
-    if (this.graphElementServerFormat.colors && typeof this.graphElementServerFormat.colors === 'string') {
-        this.graphElementServerFormat.colors = JSON.parse(
-            this.graphElementServerFormat.colors
+    if (this._graphElementServerFormat.colors && typeof this._graphElementServerFormat.colors === 'string') {
+        this._graphElementServerFormat.colors = JSON.parse(
+            this._graphElementServerFormat.colors
         );
     } else {
-        this.graphElementServerFormat.colors = {
+        this._graphElementServerFormat.colors = {
             background: Color.DEFAULT_BACKGROUND_COLOR
         }
     }
-    if (this.graphElementServerFormat.font && typeof this.graphElementServerFormat.font === 'string') {
-        this.graphElementServerFormat.font = JSON.parse(
-            this.graphElementServerFormat.font
+    if (this._graphElementServerFormat.font && typeof this._graphElementServerFormat.font === 'string') {
+        this._graphElementServerFormat.font = JSON.parse(
+            this._graphElementServerFormat.font
         );
     } else {
-        this.graphElementServerFormat.font = GraphElement.DEFAULT_FONT;
+        this._graphElementServerFormat.font = GraphElement.DEFAULT_FONT;
     }
     this._buildIdentifications();
     // this.wikipediaLinksPromise = this._buildWikidataLinks();
@@ -263,11 +263,11 @@ GraphElement.GraphElement.prototype.getSelfTag = function () {
 
 GraphElement.GraphElement.prototype._buildIdentifications = function () {
     this.identifiers = [];
-    if (undefined === this.graphElementServerFormat.identifications) {
+    if (undefined === this._graphElementServerFormat.identifications) {
         return;
     }
     Object.values(
-        this.graphElementServerFormat.identifications
+        this._graphElementServerFormat.identifications
     ).forEach((identifier) => {
         this.identifiers.push(
             Identification.fromServerFormat(
@@ -344,16 +344,16 @@ GraphElement.GraphElement.prototype.getFirstIdentificationToAGraphElement = func
 };
 
 GraphElement.GraphElement.prototype.setSortDate = function (sortDate) {
-    this.graphElementServerFormat.sortDate = sortDate.getTime();
-    this.graphElementServerFormat.moveDate = new Date().getTime();
+    this._graphElementServerFormat.sortDate = sortDate.getTime();
+    this._graphElementServerFormat.moveDate = new Date().getTime();
 };
 
 GraphElement.GraphElement.prototype.getSortDate = function () {
-    if (undefined === this.graphElementServerFormat.sortDate) {
+    if (undefined === this._graphElementServerFormat.sortDate) {
         return this.getCreationDate();
     }
     return new Date(
-        this.graphElementServerFormat.sortDate
+        this._graphElementServerFormat.sortDate
     );
 };
 
@@ -365,7 +365,7 @@ GraphElement.GraphElement.prototype.getIndex = function (parentChildrenIndex) {
 };
 
 GraphElement.GraphElement.prototype.getColors = function () {
-    return this.graphElementServerFormat.colors || {};
+    return this._graphElementServerFormat.colors || {};
 };
 
 GraphElement.GraphElement.prototype.setBackgroundColor = function (backgroundColor) {
@@ -377,15 +377,15 @@ GraphElement.GraphElement.prototype.getBackgroundColor = function () {
 };
 
 GraphElement.GraphElement.prototype.setFont = function (font) {
-    return this.graphElementServerFormat.font = font;
+    return this._graphElementServerFormat.font = font;
 };
 
 GraphElement.GraphElement.prototype.getFont = function () {
-    return this.graphElementServerFormat.font || GraphElement.DEFAULT_FONT;
+    return this._graphElementServerFormat.font || GraphElement.DEFAULT_FONT;
 };
 
 GraphElement.GraphElement.prototype.getChildrenIndex = function () {
-    return this.graphElementServerFormat.childrenIndex || {};
+    return this._graphElementServerFormat.childrenIndex || {};
 };
 
 GraphElement.GraphElement.prototype.integrateChildrenIndex = function (secondary) {
@@ -403,15 +403,15 @@ GraphElement.GraphElement.prototype.integrateChildrenIndex = function (secondary
 };
 
 GraphElement.GraphElement.prototype.setChildrenIndex = function (childrenIndex) {
-    return this.graphElementServerFormat.childrenIndex = childrenIndex;
+    return this._graphElementServerFormat.childrenIndex = childrenIndex;
 };
 
 GraphElement.GraphElement.prototype.getMoveDate = function () {
-    if (undefined === this.graphElementServerFormat.moveDate) {
+    if (undefined === this._graphElementServerFormat.moveDate) {
         return this.getCreationDate();
     }
     return new Date(
-        this.graphElementServerFormat.moveDate
+        this._graphElementServerFormat.moveDate
     );
 };
 

@@ -19,11 +19,11 @@
         <div class="vertices-children-container" v-if="bubble.isEdge()">
             <Bubble
                     v-if="isInverse"
-                    :bubble="bubble.sourceVertex"
+                    :bubble="bubble._sourceVertex"
                     :direction="direction"
             ></Bubble>
             <Bubble v-else
-                    :bubble="bubble.destinationVertex"
+                    :bubble="bubble._destinationVertex"
                     :direction="direction"
             ></Bubble>
         </div>
