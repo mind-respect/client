@@ -78,9 +78,7 @@
         </div>
         <SideMenu v-if="isGraphRoute && $store.state.selected.length > 0"></SideMenu>
         <v-content>
-            <keep-alive>
-                <router-view></router-view>
-            </keep-alive>
+            <router-view></router-view>
         </v-content>
         <v-dialog v-model="registerDialog" width="900" v-if="registerDialog">
             <v-card>
