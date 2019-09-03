@@ -30,11 +30,11 @@ api.withTagAndChildren = function (tag, children) {
 };
 
 function GroupRelation(tags, children) {
-    this.children = children.map((child) => {
+    this._children = children.map((child) => {
         child.parentBubble = this;
         return child;
     });
-    this.childrenCollapsed = null;
+    this._childrenCollapsed = null;
     let tag = tags[0];
     GraphElement.GraphElement.apply(
         this
@@ -63,16 +63,16 @@ GroupRelation.prototype.hasFewEnoughBubblesToExpand = function () {
 };
 
 GroupRelation.prototype.removeChild = function (child, isTemporary) {
-    let l = this.children.length;
+    let l = this._children.length;
     let removedChild;
     while (l--) {
-        if (this.children[l].getUri() === child.getUri()) {
-            removedChild = this.children[l];
-            this.children.splice(l, 1);
+        if (this._children[l].getUri() === child.getUri()) {
+            removedChild = this._children[l];
+            this._children.splice(l, 1);
         }
     }
     if (!isTemporary) {
-        if (this.children.length === 1) {
+        if (this._children.length === 1) {
             let parentBubble = this.getParentBubble();
             let child = this.getNextChildren()[0];
             parentBubble.replaceChild(
@@ -83,7 +83,7 @@ GroupRelation.prototype.removeChild = function (child, isTemporary) {
                 child.controller().setLabel(this.getLabel())
             }
         }
-        if (this.children.length === 0) {
+        if (this._children.length === 0) {
             this.getParentBubble().removeChild(this);
         }
     }
@@ -103,10 +103,10 @@ GroupRelation.prototype.getGreatestGroupRelationAncestor = function () {
 
 GroupRelation.prototype.getLeftBubble = function () {
     if (this.isToTheLeft()) {
-        if (this.isCollapsed || !this.children) {
+        if (this.isCollapsed || !this._children) {
             return this;
         }
-        return this.children[0];
+        return this._children[0];
     }
     return this.parentBubble;
 };
@@ -115,10 +115,10 @@ GroupRelation.prototype.getRightBubble = function (bottom) {
     if (this.isToTheLeft()) {
         return this.parentBubble;
     }
-    if (this.isCollapsed || !this.children) {
+    if (this.isCollapsed || !this._children) {
         return this;
     }
-    return bottom ? this.children[this.children.length - 1] : this.children[0];
+    return bottom ? this._children[this._children.length - 1] : this._children[0];
 };
 
 GroupRelation.prototype.isLeaf = function () {
@@ -138,7 +138,7 @@ GroupRelation.prototype._getNextChildrenCollapsedOrNot = function (getEvenIfColl
     if (!this.parentVertex) {
         return [];
     }
-    let children = this.isCollapsed && getEvenIfCollapsed ? this.childrenCollapsed : this.children;
+    let children = this.isCollapsed && getEvenIfCollapsed ? this._childrenCollapsed : this._children;
     if (children === undefined || children === null) {
         return [];
     }
@@ -157,9 +157,9 @@ GroupRelation.prototype.getFirstEdge = function () {
 };
 
 GroupRelation.prototype.expand = async function (avoidCenter, isChildExpand) {
-    if (this.childrenCollapsed !== null) {
-        this.children = this.childrenCollapsed;
-        this.childrenCollapsed = null;
+    if (this._childrenCollapsed !== null) {
+        this._children = this._childrenCollapsed;
+        this._childrenCollapsed = null;
     }
     this.isExpanded = true;
     this.isCollapsed = false;
@@ -175,9 +175,9 @@ GroupRelation.prototype.expand = async function (avoidCenter, isChildExpand) {
 GroupRelation.prototype.collapse = function (preventScroll) {
     this.isExpanded = false;
     this.isCollapsed = true;
-    if (this.children != null) {
-        this.childrenCollapsed = this.children;
-        this.children = null;
+    if (this._children != null) {
+        this._childrenCollapsed = this._children;
+        this._children = null;
     }
     FriendlyResource.FriendlyResource.prototype.collapse.call(
         this,
@@ -209,9 +209,9 @@ GroupRelation.prototype.addChild = function (child, isToTheLeft, index) {
             relation.parentVertex = this.parentVertex;
         });
         if (index === undefined) {
-            this.children.push(child);
+            this._children.push(child);
         } else {
-            this.children.splice(
+            this._children.splice(
                 index,
                 0,
                 child
@@ -224,9 +224,9 @@ GroupRelation.prototype.addChild = function (child, isToTheLeft, index) {
     edge.parentVertex = this.getParentVertex();
     edge.parentBubble = this;
     if (index === undefined) {
-        this.children.push(edge);
+        this._children.push(edge);
     } else {
-        this.children.splice(
+        this._children.splice(
             index,
             0,
             edge
@@ -268,9 +268,9 @@ GroupRelation.prototype.getChildGroupRelations = function () {
 
 GroupRelation.prototype.getNumberOfChild = function () {
     if (this.isCollapsed) {
-        return this.childrenCollapsed ? this.childrenCollapsed.length : 0;
+        return this._childrenCollapsed ? this._childrenCollapsed.length : 0;
     }
-    return this.children ? this.children.length : 0;
+    return this._children ? this._children.length : 0;
 };
 
 GroupRelation.prototype.getChip = function () {

@@ -49,8 +49,8 @@
                      :class="{
                     'vh-center':isCenter,
                     'left':!isLeft && !isCenter,
-                    'pl-12': (!isCenter && isLeaf && isLeft) || (isCenter && bubble.leftBubbles.length === 0),
-                    'pr-12': (!isCenter && isLeaf && !isLeft) || (isCenter && bubble.rightBubbles.length === 0)
+                    'pl-12': (!isCenter && isLeaf && isLeft) || (isCenter && bubble._leftBubbles.length === 0),
+                    'pr-12': (!isCenter && isLeaf && !isLeft) || (isCenter && bubble._rightBubbles.length === 0)
             }"
                      :id="bubble.uiId"
                 >
@@ -89,7 +89,7 @@
                             @contextmenu="rightClick"
                     ></div>
                     <div class="vertex-left-right-drop"
-                         v-if="(isCenter && bubble.leftBubbles.length === 0 ) || (!isCenter && isLeaf && !isLeft)"
+                         v-if="(isCenter && bubble._leftBubbles.length === 0 ) || (!isCenter && isLeaf && !isLeft)"
                          @dragover="leftRightDragEnter"
                          @dragleave="leftRightDragLeave"
                          @drop="leftDrop"
@@ -225,7 +225,7 @@
                         </v-icon>
                     </div>
                     <div class="vertex-left-right-drop"
-                         v-if="(isCenter && bubble.rightBubbles.length === 0 ) || (!isCenter && isLeaf && !isLeft)"
+                         v-if="(isCenter && bubble._rightBubbles.length === 0 ) || (!isCenter && isLeaf && !isLeft)"
                          @dragover="leftRightDragEnter"
                          @dragleave="leftRightDragLeave"
                          @drop="rightDrop"
@@ -427,13 +427,13 @@
                 return this.bubble.isEdge() && this.bubble.isInverse();
             },
             leftBubbles: function () {
-                return this.bubble.leftBubbles ?
-                    this.bubble.leftBubbles :
+                return this.bubble._leftBubbles ?
+                    this.bubble._leftBubbles :
                     [];
             },
             rightBubbles: function () {
-                return this.bubble.rightBubbles ?
-                    this.bubble.rightBubbles :
+                return this.bubble._rightBubbles ?
+                    this.bubble._rightBubbles :
                     [];
             },
             isLeaf: function () {
@@ -464,8 +464,8 @@
                 return this.bubble.isShrinked();
             },
             canShowChildren: function () {
-                return (this.bubble.isVertexType() && this.bubble.rightBubbles.length > 0) ||
-                    (this.bubble.isGroupRelation() && this.bubble.children && this.bubble.children.length > 0) ||
+                return (this.bubble.isVertexType() && this.bubble._rightBubbles.length > 0) ||
+                    (this.bubble.isGroupRelation() && this.bubble._children && this.bubble._children.length > 0) ||
                     this.bubble.isEdge();
             },
             isSelected: function () {
