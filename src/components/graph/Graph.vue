@@ -13,7 +13,7 @@
             <!--            >-->
             <!--            </v-overlay>-->
             <v-layout class='root-vertex-super-container vh-center' :style="zoomScale"
-                      @dragstart="preventUndesirableDragging">
+                      @dragstart="preventUndesirableDragging" :key="center.childrenKey">
                 <v-overlay
                         :value="showLoading"
                         absolute

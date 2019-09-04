@@ -30,7 +30,7 @@
     }" :id="containerId">
             <v-flex grow class="v-center drop-relative-container">
                 <v-spacer v-if="isLeft"></v-spacer>
-                <div v-if="isLeft && !isCenter" :key="bubble.childrenKey">
+                <div :key="bubble.childrenKey" v-if="isLeft && !isCenter">
                     <div>
                         <Children
                                 :bubble="bubble"
