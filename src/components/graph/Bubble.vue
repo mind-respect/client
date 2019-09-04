@@ -495,6 +495,7 @@
             },
             click: function (event) {
                 event.stopPropagation();
+                this.bubble.isSelected = true;
                 if (this.bubble.isEditFlow) {
                     this.linkMenu = false;
                     return;
