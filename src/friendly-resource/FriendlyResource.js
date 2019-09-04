@@ -639,6 +639,7 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isCh
     this.loading = false;
     this.isExpanded = true;
     this.isCollapsed = false;
+    this.refreshChildren();
     // if (!avoidCenter && !isChildExpand) {
     //     Scroll.centerBubbleForTreeOrNotIfApplicable(this);
     // }
