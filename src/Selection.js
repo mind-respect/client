@@ -15,7 +15,7 @@ api.reset = function () {
     Store.dispatch("setSelected", []);
 };
 
-api.setToSingle = function (graphElement) {
+api.setToSingle = function (graphElement, noScroll) {
     if (!graphElement) {
         return;
     }
@@ -31,15 +31,16 @@ api.setToSingle = function (graphElement) {
         }
     });
     graphElement.isSelected = true;
+
     Vue.nextTick(() => {
-        if (!graphElement.loading) {
-            centerBubbleIfApplicable(graphElement);
+        Store.dispatch("setSelected", [
+            api._storeFormat(graphElement)
+        ]);
+        if (!graphElement.loading && !noScroll) {
+            Vue.nextTick(() => {
+                centerBubbleIfApplicable(graphElement)
+            });
         }
-        Vue.nextTick(() => {
-            Store.dispatch("setSelected", [
-                api._storeFormat(graphElement)
-            ]);
-        });
     });
 };
 
@@ -157,6 +158,6 @@ api._storeFormat = function (graphElement) {
 export default api;
 
 function centerBubbleIfApplicable(bubble) {
-    Scroll.centerBubbleIfApplicable(bubble);
+    return Scroll.centerBubbleIfApplicable(bubble);
 }
 

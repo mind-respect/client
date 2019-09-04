@@ -148,16 +148,17 @@ const Scroll = {
     },
     centerBubbleForTreeOrNotIfApplicable: async function (bubble, isForTree) {
         if (!isForTree && Breakpoint.isMobile()) {
-            return;
+            return Promise.resolve();
         }
         await Vue.nextTick();
         let element = isForTree ? bubble.getDeepestDescendant().getLabelHtml() : bubble.getLabelHtml();
         if (!element) {
-            return;
+            return Promise.resolve();
         }
-
         if (!Scroll.isElementFullyOnScreen(element) && !bubble.isEditFlow) {
-            Scroll.goToGraphElement(bubble)
+            return Scroll.goToGraphElement(bubble)
+        } else {
+            return Promise.resolve();
         }
     }
 
