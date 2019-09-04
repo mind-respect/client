@@ -99,7 +99,7 @@
                     <div
                             v-if="bubble.isVertexType()"
                             class="bubble vertex graph-element relative vh-center" :class="{
-                                'selected' : (bubble.isSelected || isLabelDragOver || isLeftRightDragOver),
+                                'selected' : bubble.isSelected,
                                 'center-vertex': isCenter,
                                 'reverse': isLeft && !isCenter
                             }"
@@ -449,9 +449,6 @@
                 }
                 return this.bubble.isShrinked();
             },
-            isSelected: function () {
-                return this.bubble.isSelected;
-            },
             imageUrl: function () {
                 let tagsWithImages = this.bubble.getIdentifiers().filter((tag) => {
                     return tag.hasImages() && tag.getImage().urlForSmall;
@@ -731,11 +728,6 @@
         watch: {
             showMenu: function () {
                 GraphUi.enableDragScroll();
-            },
-            isSelected: function () {
-                if (!this.bubble.isSelected) {
-                    this.showMenu = false;
-                }
             }
         }
     }
