@@ -25,10 +25,10 @@
                 <v-flex grow class="vertices-children-container left-oriented" :class="{
                     'before-loaded': showLoading
                 }">
-                    <v-layout v-for="leftBubble in center._leftBubbles" :key="leftBubble.uiId">
+                    <v-layout v-for="leftBubble in center.leftBubbles" :key="leftBubble.uiId">
                         <v-flex grow :class="{
-                        'mt-3' : center._leftBubbles.length === 2 && center._leftBubbles[0].isEdge(),
-                        'mb-3' : center._leftBubbles.length === 2 && center._leftBubbles[1].isEdge()
+                        'mt-3' : center.leftBubbles.length === 2 && center.leftBubbles[0].isEdge(),
+                        'mb-3' : center.leftBubbles.length === 2 && center.leftBubbles[1].isEdge()
                         }">
                             <Bubble
                                     :bubble="leftBubble"
@@ -48,10 +48,10 @@
                 <v-flex grow class="vertices-children-container right-oriented" :class="{
                     'before-loaded': showLoading
                 }">
-                    <v-layout v-for="rightBubble in center._rightBubbles" :key="rightBubble.uiId">
+                    <v-layout v-for="rightBubble in center.rightBubbles" :key="rightBubble.uiId">
                         <v-flex grow :class="{
-                            'mt-3' : center._rightBubbles.length === 2 && center._rightBubbles[0].isEdge(),
-                            'mb-3' : center._rightBubbles.length === 2 && center._rightBubbles[1].isEdge()
+                            'mt-3' : center.rightBubbles.length === 2 && center.rightBubbles[0].isEdge(),
+                            'mb-3' : center.rightBubbles.length === 2 && center.rightBubbles[1].isEdge()
                         }">
                             <Bubble
                                     :bubble="rightBubble"
@@ -68,7 +68,7 @@
                         version="1.1"
                         xmlns="http://www.w3.org/2000/svg">
                     <path
-                            :d="svg()"
+                            :d="svg"
                             fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
                     />
                 </svg>
@@ -119,7 +119,8 @@
                 backgroundColorStyle: "",
                 showLoading: true,
                 strokeColor: "#1a237e",
-                strokeWidth: this.$vuetify.breakpoint.mdAndDown ? 1 : 2
+                strokeWidth: this.$vuetify.breakpoint.mdAndDown ? 1 : 2,
+                svg: null
             }
         },
         mounted: function () {
@@ -155,6 +156,7 @@
                 Scroll.goToGraphElement(this.center, true).then(async () => {
                     await this.$nextTick();
                     this.showLoading = false;
+                    this.svg = new GraphDraw(this.center).build();
                     await this.$nextTick();
                     this.redrawKey = Math.random();
                 })
@@ -176,9 +178,6 @@
                     Scroll.centerBubbleIfApplicable(Selection.getSingle());
                 }
                 Breakpoint.set(this.$vuetify.breakpoint)
-            },
-            svg: function () {
-                return new GraphDraw(CurrentSubGraph.get().center).build();
             }
         },
         beforeDestroy: function () {
@@ -206,6 +205,7 @@
                     return;
                 }
                 await this.$nextTick();
+                this.svg = new GraphDraw(this.center).build();
                 this.redrawKey = Math.random();
             }
         }

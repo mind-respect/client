@@ -266,13 +266,4 @@ api.Edge.prototype.canExpand = function () {
     return false;
 };
 
-api.Edge.prototype._freezeChildren = function () {
-    Object.freeze(
-        this._sourceVertex
-    );
-    Object.freeze(
-        this._destinationVertex
-    );
-};
-
 export default api;

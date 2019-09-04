@@ -61,10 +61,10 @@ Vertex.prototype.init = function (vertexServerFormat) {
         this.makePrivate();
     }
     this._vertexServerFormat.vertex.numberOfConnectedEdges = this._vertexServerFormat.vertex.numberOfConnectedEdges || 0;
-    this._leftBubbles = [];
-    this._leftBubblesCollapsed = null;
-    this._rightBubbles = [];
-    this._rightBubblesCollapsed = null;
+    this.leftBubbles = [];
+    this.leftBubblesCollapsed = null;
+    this.rightBubbles = [];
+    this.rightBubblesCollapsed = null;
     GraphElement.GraphElement.apply(
         this
     );
@@ -108,10 +108,10 @@ Vertex.prototype.resetChildren = function () {
     this.getNextChildrenEvenIfCollapsed().forEach((child) => {
         subGraph.remove(child);
     });
-    this._leftBubbles = [];
-    this._rightBubbles = [];
-    this._leftBubblesCollapsed = [];
-    this._rightBubblesCollapsed = [];
+    this.leftBubbles = [];
+    this.rightBubbles = [];
+    this.leftBubblesCollapsed = [];
+    this.rightBubblesCollapsed = [];
 };
 
 
@@ -210,14 +210,14 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
     child.parentBubble = child.parentVertex = this;
     if (this.isCenter) {
         if (this._shouldAddLeft(isToTheLeft)) {
-            children = this._leftBubbles;
+            children = this.leftBubbles;
             child.makeLeft()
         } else {
-            children = this._rightBubbles;
+            children = this.rightBubbles;
             child.makeRight();
         }
     } else {
-        children = this._rightBubbles;
+        children = this.rightBubbles;
         child.direction = this.direction;
     }
     if (index === undefined) {
@@ -229,24 +229,24 @@ Vertex.prototype.addChild = function (child, isToTheLeft, index) {
 };
 
 Vertex.prototype.getRightBubble = function (bottom) {
-    let index = bottom ? this._rightBubbles.length - 1 : 0;
+    let index = bottom ? this.rightBubbles.length - 1 : 0;
     if (this.isCenter) {
-        return this._rightBubbles[index];
+        return this.rightBubbles[index];
     }
     if (this.isToTheLeft()) {
         return this.parentBubble;
     }
-    return this._rightBubbles[index];
+    return this.rightBubbles[index];
 };
 
 Vertex.prototype.getLeftBubble = function (bottom) {
     if (this.isCenter) {
-        let index = bottom ? this._leftBubbles.length - 1 : 0;
-        return this._leftBubbles[index];
+        let index = bottom ? this.leftBubbles.length - 1 : 0;
+        return this.leftBubbles[index];
     }
     if (this.isToTheLeft()) {
-        let index = bottom ? this._rightBubbles.length - 1 : 0;
-        return this._rightBubbles[index];
+        let index = bottom ? this.rightBubbles.length - 1 : 0;
+        return this.rightBubbles[index];
     }
     return this.getParentBubble();
 };
@@ -266,10 +266,10 @@ Vertex.prototype.collapse = function (preventScroll) {
         return;
     }
     this._vertexServerFormat.vertex.numberOfConnectedEdges = this.getNextChildren().length + 1;
-    this._rightBubblesCollapsed = this._rightBubbles;
-    this._leftBubblesCollapsed = this._leftBubbles;
-    this._rightBubbles = [];
-    this._leftBubbles = [];
+    this.rightBubblesCollapsed = this.rightBubbles;
+    this.leftBubblesCollapsed = this.leftBubbles;
+    this.rightBubbles = [];
+    this.leftBubbles = [];
     FriendlyResource.FriendlyResource.prototype.collapse.call(
         this,
         preventScroll
@@ -282,19 +282,19 @@ Vertex.prototype.expand = function (avoidCenter, isChildExpand) {
         avoidCenter,
         isChildExpand
     );
-    if (this._rightBubblesCollapsed !== null) {
-        this._rightBubbles = this._rightBubblesCollapsed;
-        this._rightBubblesCollapsed = null;
+    if (this.rightBubblesCollapsed !== null) {
+        this.rightBubbles = this.rightBubblesCollapsed;
+        this.rightBubblesCollapsed = null;
     }
-    if (this._leftBubblesCollapsed !== null) {
-        this._leftBubbles = this._leftBubblesCollapsed;
-        this._leftBubblesCollapsed = null;
+    if (this.leftBubblesCollapsed !== null) {
+        this.leftBubbles = this.leftBubblesCollapsed;
+        this.leftBubblesCollapsed = null;
     }
 };
 
 Vertex.prototype.getNextChildrenEvenIfCollapsed = function (isToTheLeft) {
     if (this.isCollapsed) {
-        return this._leftBubblesCollapsed.concat(this._rightBubblesCollapsed);
+        return this.leftBubblesCollapsed.concat(this.rightBubblesCollapsed);
     } else {
         return this.getNextChildren(isToTheLeft);
     }
@@ -307,8 +307,8 @@ Vertex.prototype.getNextChildrenEvenIfCollapsed = Vertex.prototype.getNextChildr
     }
     if (this.isCenter) {
         if (toTheLeft === undefined) {
-            let nbLeft = this._leftBubbles.length;
-            let nbRight = this._rightBubbles.length;
+            let nbLeft = this.leftBubbles.length;
+            let nbRight = this.rightBubbles.length;
             let nbChild = nbLeft + nbRight;
             let index = 0;
             let rightIndex = 0;
@@ -318,20 +318,20 @@ Vertex.prototype.getNextChildrenEvenIfCollapsed = Vertex.prototype.getNextChildr
                 index++;
                 if (isRightTurn && nbRight > rightIndex) {
                     rightIndex++;
-                    return this._rightBubbles[rightIndex - 1];
+                    return this.rightBubbles[rightIndex - 1];
                 } else if (nbLeft > leftIndex) {
                     leftIndex++;
-                    return this._leftBubbles[leftIndex - 1];
+                    return this.leftBubbles[leftIndex - 1];
                 } else {
                     rightIndex++;
-                    return this._rightBubbles[rightIndex - 1];
+                    return this.rightBubbles[rightIndex - 1];
                 }
             });
         } else {
-            return toTheLeft ? this._leftBubbles : this._rightBubbles;
+            return toTheLeft ? this.leftBubbles : this.rightBubbles;
         }
     } else {
-        return this._rightBubbles;
+        return this.rightBubbles;
     }
 };
 
@@ -341,7 +341,7 @@ Vertex.prototype.remove = function () {
 };
 
 Vertex.prototype.removeChild = function (child, isTemporary) {
-    let childrenArray = this.isCenter && child.isToTheLeft() ? this._leftBubbles : this._rightBubbles;
+    let childrenArray = this.isCenter && child.isToTheLeft() ? this.leftBubbles : this.rightBubbles;
     let removedChild;
     let l = childrenArray.length;
     while (l--) {
@@ -367,8 +367,8 @@ Vertex.prototype._shouldAddLeft = function (isToTheLeft) {
         return false;
     }
     if (isToTheLeft === undefined || isToTheLeft === null) {
-        return this._leftBubbles.length <
-            this._rightBubbles.length;
+        return this.leftBubbles.length <
+            this.rightBubbles.length;
     }
     return isToTheLeft;
 };
@@ -378,14 +378,6 @@ Vertex.prototype.isMeta = function () {
     return this.getGraphElementType() === GraphElementType.Meta;
 };
 
-Vertex.prototype._freezeChildren = function () {
-    Object.freeze(
-        this._leftBubbles
-    );
-    Object.freeze(
-        this._rightBubbles
-    );
-};
 
 api.Vertex = Vertex;
 
