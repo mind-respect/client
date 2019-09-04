@@ -177,6 +177,7 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
         this.graphElementServerFormat.font = GraphElement.DEFAULT_FONT;
     }
     this._buildIdentifications();
+    this.refreshChildren();
     // this.wikipediaLinksPromise = this._buildWikidataLinks();
     return this;
 };
@@ -252,6 +253,10 @@ GraphElement.GraphElement.prototype.getRelevantTags = function () {
     return this.getIdentifiersIncludingSelf().filter(function (tag) {
         return tag.getNbReferences() > 0;
     });
+};
+
+GraphElement.GraphElement.prototype.refreshChildren = function () {
+    this.childrenKey = IdUri.uuid();
 };
 
 GraphElement.GraphElement.prototype.getSelfTag = function () {

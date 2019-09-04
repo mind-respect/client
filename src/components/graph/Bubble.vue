@@ -30,27 +30,27 @@
     }" :id="containerId">
             <v-flex grow class="v-center drop-relative-container">
                 <v-spacer v-if="isLeft"></v-spacer>
-                <div v-if="!bubble.isCollapsed || isCenter">
+                <div v-if="isLeft && !isCenter" :key="bubble.childrenKey">
                     <div>
-                        <!--                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"-->
-                        <!--                                    v-on:after-enter="afterChildrenAnimation">-->
                         <Children
                                 :bubble="bubble"
                                 direction="left"
-                                v-if="
-                                        isLeft && !isCenter && canShowChildren
-                                      "
+                                v-if="!bubble.isCollapsed && canShowChildren()"
                         >
                         </Children>
-                        <!--                        </transition>-->
+                        <ChildNotice :bubble="bubble"
+                                     :class="{
+                                        'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
+                                     }"
+                                     v-if="canExpand && !canShowChildren()"></ChildNotice>
                     </div>
                 </div>
                 <div class='bubble-container v-center'
                      :class="{
                     'vh-center':isCenter,
                     'left':!isLeft && !isCenter,
-                    'pl-12': (!isCenter && isLeaf && isLeft) || (isCenter && bubble.leftBubbles.length === 0),
-                    'pr-12': (!isCenter && isLeaf && !isLeft) || (isCenter && bubble.rightBubbles.length === 0)
+                    'pl-12': !canExpand && (!isCenter && bubble.isVertexType() && isLeft && bubble.rightBubbles.length === 0) || (isCenter && bubble.leftBubbles.length === 0),
+                    'pr-12': !canExpand && (bubble.isVertexType() && (!isLeft || isCenter) && bubble.rightBubbles.length === 0)
             }"
                      :id="bubble.uiId"
                 >
@@ -186,11 +186,6 @@
                                 </div>
                             </v-menu>
                         </div>
-                        <ChildNotice :bubble="bubble"
-                                     :class="{
-                                        'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
-                                     }"
-                                     v-if="canExpand && !canShowChildren"></ChildNotice>
                     </div>
                     <div
                             class="vertex-drop-arrow-top-bottom-drop bottom-vertex-drop-arrow-drop"
@@ -316,26 +311,20 @@
                                 </div>
                             </v-menu>
                         </div>
+                    </v-layout>
+                </div>
+                <div :key="bubble.childrenKey" v-if="!isLeft && !isCenter">
+                    <div>
+                        <Children :bubble="bubble"
+                                  v-if="!bubble.isCollapsed && canShowChildren()"
+                                  direction="right">
+                        </Children>
                         <ChildNotice :bubble="bubble"
                                      class=""
                                      :class="{
                                         'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
                                      }"
-                                     v-if="canExpand && !canShowChildren"></ChildNotice>
-                    </v-layout>
-                </div>
-                <div v-if="!bubble.isCollapsed || isCenter">
-                    <div>
-                        <!--                        <transition name="fade" v-on:before-enter="beforeChildrenAnimation"-->
-                        <!--                                    v-on:after-enter="afterChildrenAnimation">-->
-                        <Children :bubble="bubble"
-                                  direction="right"
-                                  v-if="
-                                      !isLeft && !isCenter && canShowChildren
-                                      "
-                        >
-                        </Children>
-                        <!--                        </transition>-->
+                                     v-if="canExpand && !canShowChildren()"></ChildNotice>
                     </div>
                 </div>
             </v-flex>
@@ -463,11 +452,6 @@
                 }
                 return this.bubble.isShrinked();
             },
-            canShowChildren: function () {
-                return (this.bubble.isVertexType() && this.bubble.rightBubbles.length > 0) ||
-                    (this.bubble.isGroupRelation() && this.bubble.children && this.bubble.children.length > 0) ||
-                    this.bubble.isEdge();
-            },
             isSelected: function () {
                 let id = this.bubble.getId();
                 return this.$store.state.selected.some((selected) => {
@@ -482,6 +466,11 @@
             }
         },
         methods: {
+            canShowChildren: function () {
+                return (this.bubble.isVertexType() && this.bubble.rightBubbles.length > 0) ||
+                    (this.bubble.isGroupRelation() && this.bubble.children && this.bubble.children.length > 0) ||
+                    this.bubble.isEdge();
+            },
             beforeChildrenAnimation: async function () {
                 await this.$nextTick();
                 this.$store.dispatch("redraw");
@@ -805,8 +794,8 @@
         top: -15px;
     }
 
-    .empty-edge .bubble-label{
-        width:30px;
+    .empty-edge .bubble-label {
+        width: 30px;
     }
 
     .label-drag-over {
@@ -940,8 +929,8 @@
         visibility: hidden;
     }
 
-    .relation .v-chip.v-size--small{
-        font-size:15px;
+    .relation .v-chip.v-size--small {
+        font-size: 15px;
     }
 
     .label-chip, .bubble-label, .label-chip .v-chip__content {

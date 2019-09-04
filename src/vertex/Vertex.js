@@ -337,6 +337,7 @@ Vertex.prototype.getNextChildrenEvenIfCollapsed = Vertex.prototype.getNextChildr
 
 Vertex.prototype.remove = function () {
     this.getParentBubble().remove();
+    this.refreshChildren();
 };
 
 Vertex.prototype.removeChild = function (child, isTemporary) {

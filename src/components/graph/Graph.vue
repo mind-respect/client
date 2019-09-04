@@ -61,10 +61,17 @@
                     </v-layout>
                 </v-flex>
             </v-layout>
-            <div class="svg-container" v-if="!$store.state.isEditFlow">
-                <!--                <transition name="fade">-->
-                <GraphDrawing :center="center" :key="redrawKey" v-if="redrawKey"></GraphDrawing>
-                <!--                </transition>-->
+            <div class="svg-container" v-if="redrawKey" :key="redrawKey"
+                 v-show="!$store.state.isEditFlow && center.draw && !$store.state.isLoading && !center.isEditFlow">
+                <svg
+                        style="position:absolute;overflow:visible; top:0; left:0; height:100%; width:100%;z-index:-1;"
+                        version="1.1"
+                        xmlns="http://www.w3.org/2000/svg">
+                    <path
+                            :d="svg()"
+                            fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
+                    />
+                </svg>
             </div>
         </div>
         <RemoveDialog></RemoveDialog>
@@ -80,7 +87,6 @@
     import MindMapInfo from '@/MindMapInfo'
     import IdUri from '@/IdUri'
     import Bubble from '@/components/graph/Bubble'
-    import GraphDrawing from '@/components/graph/GraphDrawing'
     import Selection from '@/Selection'
     import SubGraphController from '@/graph/SubGraphController'
     import Meta from '@/identifier/Meta'
@@ -92,7 +98,7 @@
     import Breakpoint from '@/Breakpoint'
     import MetaController from '@/identifier/MetaController'
     import GraphElement from "@/graph-element/GraphElement";
-
+    import GraphDraw from '@/draw/GraphDraw'
 
     export default {
         name: "Graph",
@@ -102,7 +108,6 @@
             RemoveTagDialog: () => import('@/components/RemoveTagDialog'),
             DescriptionDialog: () => import('@/components/DescriptionDialog'),
             FontDialog: () => import('@/components/FontDialog'),
-            GraphDrawing,
             ListView: () => import('@/components/ListView'),
             CohesionSnackbar: () => import('@/components/CohesionSnackbar')
         },
@@ -112,7 +117,9 @@
                 centerServerFormat: null,
                 redrawKey: null,
                 backgroundColorStyle: "",
-                showLoading: true
+                showLoading: true,
+                strokeColor: "#1a237e",
+                strokeWidth: this.$vuetify.breakpoint.mdAndDown ? 1 : 2
             }
         },
         mounted: function () {
@@ -170,6 +177,9 @@
                     Scroll.centerBubbleIfApplicable(Selection.getSingle());
                 }
                 Breakpoint.set(this.$vuetify.breakpoint)
+            },
+            svg: function () {
+                return new GraphDraw(CurrentSubGraph.get().center).build();
             }
         },
         beforeDestroy: function () {
