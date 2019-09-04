@@ -18,8 +18,11 @@ api.setToSingle = function (graphElement) {
     if (!graphElement) {
         return;
     }
-    if (api.isSingle() && Store.state.selected[0].id === graphElement.getId()) {
-        return;
+    if(api.isSingle()){
+        api.getSingle().isSelected = false;
+        if (Store.state.selected[0].id === graphElement.getId()) {
+            return;
+        }
     }
     api.getSelectedElements().forEach((selected) => {
         if (selected) {

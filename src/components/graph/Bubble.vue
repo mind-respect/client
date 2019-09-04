@@ -99,7 +99,7 @@
                     <div
                             v-if="bubble.isVertexType()"
                             class="bubble vertex graph-element relative vh-center" :class="{
-                                'selected' : (isSelected || isLabelDragOver || isLeftRightDragOver),
+                                'selected' : (bubble.isSelected || isLabelDragOver || isLeftRightDragOver),
                                 'center-vertex': isCenter,
                                 'reverse': isLeft && !isCenter
                             }"
@@ -110,7 +110,7 @@
                         <div class="in-bubble-content-wrapper unselectable vh-center">
                             <v-menu
                                     v-model="showMenu"
-                                    :value="isSelected && $store.state.selected.length === 1"
+                                    :value="bubble.isSelected && $store.state.selected.length === 1"
                                     max-width="250"
                                     :nudge-width="250"
                                     auto
@@ -182,7 +182,7 @@
                                 </template>
                                 <div :style="background">
                                     <BubbleButtons
-                                            v-if="$store.state.selected.length === 1 && this.isSelected"></BubbleButtons>
+                                            v-if="$store.state.selected.length === 1 && bubble.isSelected"></BubbleButtons>
                                 </div>
                             </v-menu>
                         </div>
@@ -230,7 +230,7 @@
                             v-if="bubble.isEdge() || bubble.isGroupRelation()"
                             class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0 "
                             :class="{
-                            'selected' : isSelected,
+                            'selected' : bubble.isSelected,
                             'reverse': isLeft && !isCenter
                             }">
                         <div class="image_container"></div>
@@ -253,7 +253,7 @@
                         >
                             <v-menu
                                     v-model="showMenu"
-                                    :value="isSelected && $store.state.selected.length === 1"
+                                    :value="bubble.isSelected && $store.state.selected.length === 1"
                                     max-width="250"
                                     :nudge-width="250"
                                     auto
@@ -270,12 +270,12 @@
                                                 @dragover="labelDragEnter"
                                                 @dragleave="labelDragLeave"
                                                 @drop="labelDrop"
-                                                :input-value="isSelected || isLabelDragOver"
+                                                :input-value="bubble.isSelected || isLabelDragOver"
                                                 class="pt-0 pb-0 mt-0 mb-0 ma-0 pl-2 pr-2 label-chip vh-center"
                                                 transition="none"
                                                 :class="{
                                             'reverse': isLeft,
-                                        'elevation-4': isSelected,
+                                        'elevation-4': bubble.isSelected,
                                         'is-inverse' : isInverse,
                                         'is-shrinked' : isShrinked,
                                         'empty-edge' : bubble.isEdge() && !bubble.isEditFlow && bubble.isLabelEmpty()
@@ -307,7 +307,7 @@
                                 </template>
                                 <div :style="background">
                                     <BubbleButtons
-                                            v-if="$store.state.selected.length === 1 && this.isSelected"></BubbleButtons>
+                                            v-if="$store.state.selected.length === 1 && bubble.isSelected"></BubbleButtons>
                                 </div>
                             </v-menu>
                         </div>
@@ -432,7 +432,7 @@
                 return this.bubble.canExpand();
             },
             background: function () {
-                return this.isSelected && Color.bubbleBackground ?
+                return this.bubble.isSelected && Color.bubbleBackground ?
                     "background-color:" + Color.bubbleBackground :
                     "";
             },
@@ -440,11 +440,8 @@
                 let font = CurrentSubGraph.get().center.getFont();
                 return "font-family:" + font.family;
             },
-            selected: function () {
-                return this.$store.state.selected;
-            },
             relationPlaceholder: function () {
-                return this.bubble.isGroupRelation() || this.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
+                return this.bubble.isGroupRelation() || this.bubble.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
             },
             isShrinked: function () {
                 if (this.isLabelDragOver) {
@@ -453,10 +450,7 @@
                 return this.bubble.isShrinked();
             },
             isSelected: function () {
-                let id = this.bubble.getId();
-                return this.$store.state.selected.some((selected) => {
-                    return selected.id === id;
-                });
+                return this.bubble.isSelected;
             },
             imageUrl: function () {
                 let tagsWithImages = this.bubble.getIdentifiers().filter((tag) => {
@@ -517,7 +511,7 @@
                 }
                 GraphUi.enableDragScroll();
                 if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
-                    if (this.isSelected) {
+                    if (this.bubble.isSelected) {
                         Selection.remove(this.bubble);
                     } else {
                         Selection.add(this.bubble);
@@ -739,7 +733,7 @@
                 GraphUi.enableDragScroll();
             },
             isSelected: function () {
-                if (!this.isSelected) {
+                if (!this.bubble.isSelected) {
                     this.showMenu = false;
                 }
             }

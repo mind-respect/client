@@ -170,6 +170,9 @@
                 invalidUsername: false,
                 usernameTooLong: false
             };
+        },
+        mounted: function(){
+            // this.$refs.registerForm.enter();
         }
     }
 </script>

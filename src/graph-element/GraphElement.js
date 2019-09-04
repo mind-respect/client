@@ -178,6 +178,7 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
     }
     this._buildIdentifications();
     this.refreshChildren();
+    this.isSelected = false;
     // this.wikipediaLinksPromise = this._buildWikidataLinks();
     return this;
 };

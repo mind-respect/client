@@ -331,7 +331,6 @@
                     this.$router.push({
                         name: "login"
                     });
-                    this.$refs.loginForm.enter();
                     return;
                 }
                 this.$router.push({
@@ -343,7 +342,6 @@
                     this.$router.push({
                         name: "register"
                     });
-                    this.$refs.registerForm.enter();
                     return;
                 }
                 this.$router.push({
@@ -355,7 +353,6 @@
                     this.$router.push({
                         name: "forgot-password"
                     });
-                    this.$refs.forgotPasswordForm.enter();
                     return;
                 }
                 this.$router.push({

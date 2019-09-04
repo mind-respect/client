@@ -125,6 +125,7 @@
             };
         },
         mounted: function () {
+            // this.$refs.loginForm.enter();
         }
     }
 </script>

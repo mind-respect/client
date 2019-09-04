@@ -98,6 +98,7 @@
             };
         },
         mounted: function () {
+            // this.$refs.forgotPasswordForm.enter();
         }
     }
 </script>
