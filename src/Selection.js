@@ -7,6 +7,7 @@ import Store from '@/store'
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
 import GraphElementType from '@/graph-element/GraphElementType'
 import GraphElement from '@/graph-element/GraphElement'
+import Vue from 'vue'
 
 const api = {};
 
@@ -18,7 +19,7 @@ api.setToSingle = function (graphElement) {
     if (!graphElement) {
         return;
     }
-    if(api.isSingle()){
+    if (api.isSingle()) {
         api.getSingle().isSelected = false;
         if (Store.state.selected[0].id === graphElement.getId()) {
             return;
@@ -29,13 +30,17 @@ api.setToSingle = function (graphElement) {
             selected.deselect();
         }
     });
-    Store.dispatch("setSelected", [
-        api._storeFormat(graphElement)
-    ]);
     graphElement.isSelected = true;
-    if(!graphElement.loading){
-        centerBubbleIfApplicable(graphElement);
-    }
+    Vue.nextTick(() => {
+        if (!graphElement.loading) {
+            centerBubbleIfApplicable(graphElement);
+        }
+        Vue.nextTick(() => {
+            Store.dispatch("setSelected", [
+                api._storeFormat(graphElement)
+            ]);
+        });
+    });
 };
 
 api.isSelected = function (graphElement) {
