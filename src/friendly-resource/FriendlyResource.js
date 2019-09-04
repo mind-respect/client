@@ -10,6 +10,7 @@ import Store from '@/store'
 import Icon from '@/Icon'
 import Scroll from '@/Scroll'
 import Vue from 'vue'
+import GraphUi from '@/graph/GraphUi'
 
 const MoveRelation = {
     "Parent": "parent",
@@ -126,6 +127,9 @@ FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.focus = function (event) {
+    this.isEditFlow = true;
+    GraphUi.disableDragScroll();
+    Store.dispatch("setIsEditFlow", true);
     let labelHtml = this.getLabelHtml();
     labelHtml.contentEditable = "true";
     setTimeout(() => {

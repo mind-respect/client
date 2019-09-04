@@ -158,7 +158,7 @@
                                                             @dragover="labelDragEnter"
                                                             @dragleave="labelDragLeave"
                                                             @drop="labelDrop"
-                                                            :data-placeholder="$t('vertex:default')"
+                                                            :data-placeholder="bubble.isEditFlow ? '' : $t('vertex:default')"
                                                             v-html="label"
                                                             @focus="focus"
                                                             @keydown="keydown"
@@ -552,10 +552,10 @@
                 this.$store.dispatch("redraw");
             },
             focus: function () {
+                this.showMenu = false;
                 if (this.bubble.isEditFlow) {
                     return;
                 }
-                this.showMenu = false;
                 this.bubble.isEditFlow = true;
                 GraphUi.disableDragScroll();
                 this.$store.dispatch("setIsEditFlow", true);
