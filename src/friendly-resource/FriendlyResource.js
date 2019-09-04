@@ -126,9 +126,9 @@ FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.focus = function (event) {
+    let labelHtml = this.getLabelHtml();
+    labelHtml.contentEditable = "true";
     setTimeout(() => {
-        let labelHtml = this.getLabelHtml();
-        labelHtml.contentEditable = "true";
         if (event) {
             Focus.focusAtPosition(event, labelHtml);
         } else {
@@ -138,11 +138,11 @@ FriendlyResource.FriendlyResource.prototype.focus = function (event) {
 };
 
 FriendlyResource.FriendlyResource.prototype.setLabel = function (label) {
-    this.friendlyResourceServerFormat.label = label;
+    this._friendlyResourceServerFormat.label = label;
 };
 
 FriendlyResource.FriendlyResource.prototype.getLabel = FriendlyResource.FriendlyResource.prototype.text = function () {
-    return this.friendlyResourceServerFormat.label;
+    return this._friendlyResourceServerFormat.label;
 };
 
 FriendlyResource.FriendlyResource.prototype.getLabelOrDefault = function () {
@@ -168,10 +168,10 @@ FriendlyResource.FriendlyResource.prototype.hasChildren = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.getComment = function () {
-    return this.friendlyResourceServerFormat.comment.trim();
+    return this._friendlyResourceServerFormat.comment.trim();
 };
 FriendlyResource.FriendlyResource.prototype.setComment = function (comment) {
-    return this.friendlyResourceServerFormat.comment = comment;
+    return this._friendlyResourceServerFormat.comment = comment;
 };
 FriendlyResource.FriendlyResource.prototype.hasComment = function () {
     return this.getComment() !== '';
@@ -189,14 +189,14 @@ FriendlyResource.FriendlyResource.prototype.hasImages = function () {
     return this._images.length > 0;
 };
 FriendlyResource.FriendlyResource.prototype.setUri = function (uri) {
-    this.friendlyResourceServerFormat.uri = uri;
+    this._friendlyResourceServerFormat.uri = uri;
     this.uriFacade = new IdUri.IdUri(
         this.getUri()
     );
 };
 FriendlyResource.FriendlyResource.prototype.getUri = function () {
     return decodeURIComponent(
-        this.friendlyResourceServerFormat.uri
+        this._friendlyResourceServerFormat.uri
     );
 };
 FriendlyResource.FriendlyResource.prototype.uri = function () {
@@ -850,26 +850,26 @@ FriendlyResource.FriendlyResource.prototype.getImagesServerFormat = function () 
 * @deprecated
 */
 FriendlyResource.FriendlyResource.prototype.getServerFormat = function () {
-    return this.friendlyResourceServerFormat;
+    return this._friendlyResourceServerFormat;
 };
 
 FriendlyResource.FriendlyResource.prototype.getFriendlyJson = function () {
-    return this.friendlyResourceServerFormat;
+    return this._friendlyResourceServerFormat;
 };
 
 FriendlyResource.FriendlyResource.prototype.getCreationDate = function () {
-    return this.friendlyResourceServerFormat.creationDate === undefined ?
+    return this._friendlyResourceServerFormat.creationDate === undefined ?
         new Date() :
         new Date(
-            this.friendlyResourceServerFormat.creationDate
+            this._friendlyResourceServerFormat.creationDate
         );
 };
 
 FriendlyResource.FriendlyResource.prototype._buildImages = function () {
-    return undefined === this.friendlyResourceServerFormat.images ?
+    return undefined === this._friendlyResourceServerFormat.images ?
         [] :
         Image.arrayFromServerJson(
-            this.friendlyResourceServerFormat.images
+            this._friendlyResourceServerFormat.images
         );
 };
 
@@ -887,17 +887,17 @@ FriendlyResource.FriendlyResource.prototype.getIcon = function () {
 
 FriendlyResource.FriendlyResource.prototype.forceInLabelMenuUpdate = function () {
     this.inLabelMenuKey = IdUri.uuid();
-}
+};
 
 FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceServerFormat) {
-    this.friendlyResourceServerFormat = friendlyResourceServerFormat;
+    this._friendlyResourceServerFormat = friendlyResourceServerFormat;
     this.draw = true;
     this._images = this._buildImages();
     if (friendlyResourceServerFormat.comment === undefined) {
         friendlyResourceServerFormat.comment = "";
     }
     if (friendlyResourceServerFormat.label === undefined) {
-        this.friendlyResourceServerFormat.label = "";
+        this._friendlyResourceServerFormat.label = "";
     }
     this.uiId = IdUri.uuid();
     this.forceInLabelMenuUpdate();

@@ -5,9 +5,9 @@
 <template>
     <div v-if="loaded">
         <div class="vertices-children-container" v-if="!isCenter && bubble.isVertexType()">
-            <div v-for="child in bubble.rightBubbles" :class="{
-                        'mt-6 mb-6' : bubble.rightBubbles.length === 2,
-                        'mt-0 mb-0' : bubble.rightBubbles.length > 2
+            <div v-for="child in bubble._rightBubbles" :class="{
+                        'mt-6 mb-6' : bubble._rightBubbles.length === 2,
+                        'mt-0 mb-0' : bubble._rightBubbles.length > 2
                         }"
                  :key="child.uiId"
             >
@@ -19,19 +19,19 @@
         <div class="vertices-children-container" v-if="bubble.isEdge()">
             <Bubble
                     v-if="isInverse"
-                    :bubble="bubble.sourceVertex"
+                    :bubble="bubble._sourceVertex"
                     :direction="direction"
             ></Bubble>
             <Bubble v-else
-                    :bubble="bubble.destinationVertex"
+                    :bubble="bubble._destinationVertex"
                     :direction="direction"
             ></Bubble>
         </div>
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()">
-            <div v-for="child in bubble.children" :key="child.uiId"
+            <div v-for="child in bubble._children" :key="child.uiId"
                  :class="{
-                    'mt-6 mb-6' : bubble.children.length === 2,
-                    'mt-2 mb-2' : bubble.children.length > 2
+                    'mt-6 mb-6' : bubble._children.length === 2,
+                    'mt-2 mb-2' : bubble._children.length > 2
                  }"
             >
                 <Bubble :bubble="child"

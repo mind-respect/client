@@ -69,12 +69,12 @@ api.Edge = function () {
 api.Edge.prototype = new GraphElement.GraphElement();
 
 api.Edge.prototype.init = function (edgeServerFormat, sourceVertex, destinationVertex) {
-    this.sourceVertex = sourceVertex ? sourceVertex : FriendlyResource.fromServerFormat(
+    this._sourceVertex = sourceVertex ? sourceVertex : FriendlyResource.fromServerFormat(
         VertexServerFormatBuilder.getFriendlyResourceServerObject(
             edgeServerFormat.sourceVertex
         )
     );
-    this.destinationVertex = destinationVertex ? destinationVertex : FriendlyResource.fromServerFormat(
+    this._destinationVertex = destinationVertex ? destinationVertex : FriendlyResource.fromServerFormat(
         VertexServerFormatBuilder.getFriendlyResourceServerObject(
             edgeServerFormat.destinationVertex
         )
@@ -86,7 +86,7 @@ api.Edge.prototype.init = function (edgeServerFormat, sourceVertex, destinationV
         this,
         edgeServerFormat.graphElement
     );
-    this.edgeServerFormat = edgeServerFormat;
+    this._edgeServerFormat = edgeServerFormat;
     this.isExpanded = true;
     return this;
 };
@@ -95,7 +95,7 @@ api.Edge.prototype.init = function (edgeServerFormat, sourceVertex, destinationV
 api.Edge.prototype.clone = function () {
     let edge = new api.Edge();
     edge.init(
-        JSON.parse(JSON.stringify(this.edgeServerFormat)),
+        JSON.parse(JSON.stringify(this._edgeServerFormat)),
         this.getSourceVertex(),
         this.getDestinationVertex()
     );
@@ -146,7 +146,7 @@ api.Edge.prototype.replaceRelatedVertex = function (relatedVertex, newVertex) {
 };
 
 api.Edge.prototype.setSourceVertex = function (sourceVertex) {
-    this.sourceVertex = sourceVertex;
+    this._sourceVertex = sourceVertex;
 };
 
 api.Edge.prototype.setParentVertex = function (vertex) {
@@ -161,14 +161,14 @@ api.Edge.prototype.setParentVertex = function (vertex) {
 };
 
 api.Edge.prototype.setDestinationVertex = function (destinationVertex) {
-    this.destinationVertex = destinationVertex;
+    this._destinationVertex = destinationVertex;
 };
 
 api.Edge.prototype.getSourceVertex = function () {
-    return this.sourceVertex;
+    return this._sourceVertex;
 };
 api.Edge.prototype.getDestinationVertex = function () {
-    return this.destinationVertex;
+    return this._destinationVertex;
 };
 
 api.Edge.prototype.isPublic = function () {
@@ -264,6 +264,15 @@ api.Edge.prototype.getChip = function () {
 
 api.Edge.prototype.canExpand = function () {
     return false;
+};
+
+api.Edge.prototype._freezeChildren = function () {
+    Object.freeze(
+        this._sourceVertex
+    );
+    Object.freeze(
+        this._destinationVertex
+    );
 };
 
 export default api;

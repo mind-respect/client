@@ -110,7 +110,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
                     firstEdge.isUnderVertex = true;
                 }
             } else {
-                groupRelation.children = groupRelation.children.map((edge) => {
+                groupRelation._children = groupRelation._children.map((edge) => {
                     edge.isInGroupRelation = true;
                     let parentBubble = edge.getParentBubble();
                     if (parentBubble.getNumberOfChild() > 1 && !groupRelation.shouldBeChildOfGroupRelation(parentBubble)) {
@@ -146,15 +146,15 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
                     }
                     let firstEdge = groupRelation.getFirstEdge();
                     let index = 0;
-                    for (let i = 0; i < otherGroupRelation.children.length; i++) {
-                        if (otherGroupRelation.children[i].getUri() === firstEdge.getUri()) {
+                    for (let i = 0; i < otherGroupRelation._children.length; i++) {
+                        if (otherGroupRelation._children[i].getUri() === firstEdge.getUri()) {
                             index = i;
                         }
                     }
                     let isToTheLeft = groupRelation.isToTheLeft();
                     groupRelation.getParentBubble().removeChild(groupRelation, true, true);
                     otherGroupRelation.addChild(groupRelation, isToTheLeft, index);
-                    groupRelation.children.forEach((child) => {
+                    groupRelation._children.forEach((child) => {
                         otherGroupRelation.removeChild(child, true, true);
                     });
                 }
@@ -193,6 +193,13 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
                 groupRelation.collapse(true);
             }
         });
+        // centerVertex._freezeChildren();
+        // centerVertex.getNextChildren().forEach((child) => {
+        //     child._freezeChildren();
+        //     child.getNextChildren().forEach((grandChild)=>{
+        //         grandChild._freezeChildren();
+        //     });
+        // });
         let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
         return isChildrenIndexBuilt || MindMapInfo.isViewOnly() ? Promise.resolve(centerVertex) :
             GraphElementService.changeChildrenIndex(

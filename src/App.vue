@@ -153,10 +153,11 @@
     import KeyboardActions from '@/KeyboardActions'
     import VueClipboard from 'vue-clipboard2'
     import I18n from '@/I18n'
+
     Vue.use(VueClipboard);
     export default {
         components: {
-            ToolbarGraphButtons:() => import('@/components/ToolbarGraphButtons'),
+            ToolbarGraphButtons: () => import('@/components/ToolbarGraphButtons'),
             SideMenu,
             RegisterForm: () => import('@/components/home/RegisterForm'),
             LoginForm: () => import('@/components/home/LoginForm'),

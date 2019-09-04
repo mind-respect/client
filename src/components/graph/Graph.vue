@@ -25,10 +25,10 @@
                 <v-flex grow class="vertices-children-container left-oriented" :class="{
                     'before-loaded': showLoading
                 }">
-                    <v-layout v-for="leftBubble in center.leftBubbles" :key="leftBubble.uiId">
+                    <v-layout v-for="leftBubble in center._leftBubbles" :key="leftBubble.uiId">
                         <v-flex grow :class="{
-                        'mt-3' : center.leftBubbles.length === 2 && center.leftBubbles[0].isEdge(),
-                        'mb-3' : center.leftBubbles.length === 2 && center.leftBubbles[1].isEdge()
+                        'mt-3' : center._leftBubbles.length === 2 && center._leftBubbles[0].isEdge(),
+                        'mb-3' : center._leftBubbles.length === 2 && center._leftBubbles[1].isEdge()
                         }">
                             <Bubble
                                     :bubble="leftBubble"
@@ -48,10 +48,10 @@
                 <v-flex grow class="vertices-children-container right-oriented" :class="{
                     'before-loaded': showLoading
                 }">
-                    <v-layout v-for="rightBubble in center.rightBubbles" :key="rightBubble.uiId">
+                    <v-layout v-for="rightBubble in center._rightBubbles" :key="rightBubble.uiId">
                         <v-flex grow :class="{
-                            'mt-3' : center.rightBubbles.length === 2 && center.rightBubbles[0].isEdge(),
-                            'mb-3' : center.rightBubbles.length === 2 && center.rightBubbles[1].isEdge()
+                            'mt-3' : center._rightBubbles.length === 2 && center._rightBubbles[0].isEdge(),
+                            'mb-3' : center._rightBubbles.length === 2 && center._rightBubbles[1].isEdge()
                         }">
                             <Bubble
                                     :bubble="rightBubble"
@@ -136,7 +136,6 @@
                 ).load();
             promise.then(async (_center) => {
                 let center = _center;
-                center.makeCenter();
                 document.title = center.getTextOrDefault() + " | MindRespect";
                 this.center = center;
                 this.handleResize();
