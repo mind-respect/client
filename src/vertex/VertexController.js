@@ -394,7 +394,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
         promise = this.expandDescendantsIfApplicable();
     }
     return promise.then(() => {
-        this.model().expand(avoidCenter, isChildExpand);
+        this.model().expand(true, isChildExpand);
         Vue.nextTick(() => {
             LoadingFlow.leave();
             if (avoidCenter !== true) {

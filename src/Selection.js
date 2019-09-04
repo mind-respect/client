@@ -30,7 +30,9 @@ api.setToSingle = function (graphElement) {
         api._storeFormat(graphElement)
     ]);
     graphElement.isSelected = true;
-    centerBubbleIfApplicable(graphElement);
+    if(!graphElement.loading){
+        centerBubbleIfApplicable(graphElement);
+    }
 };
 
 api.isSelected = function (graphElement) {

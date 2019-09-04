@@ -124,7 +124,8 @@
                 firstResult: null,
                 selectedUri: null,
                 results: [],
-                isSeeMoreFlow: false
+                isSeeMoreFlow: false,
+                working: false
             }
         },
         mounted: function () {
@@ -165,19 +166,10 @@
         },
         watch: {
             selected: function () {
-                this.refresh();
+                this.tryRefresh();
             },
             isEditFlow: function () {
-                if (!this.$store.state.isEditFlow && this.$store.state.selected.length === 1) {
-                    let selectedId = this.$store.state.selected[0];
-                    this.$nextTick(() => {
-                        setTimeout(() => {
-                            if(!this.$store.state.isEditFlow && this.$store.state.selected.length === 1 && this.$store.state.selected[0] === selectedId){
-                                this.refresh();
-                            }
-                        }, 500)
-                    });
-                }
+                this.tryRefresh();
             }
         },
         methods: {
@@ -223,6 +215,18 @@
                 return IdUri.absoluteUrlForBubbleUri(
                     uri
                 )
+            },
+            tryRefresh: function () {
+                if (!this.$store.state.isEditFlow && this.$store.state.selected.length === 1 && !this.working) {
+                    let selectedId = this.$store.state.selected[0].id;
+                    this.$nextTick(() => {
+                        setTimeout(() => {
+                            if (!this.$store.state.isEditFlow && this.$store.state.selected.length === 1 && this.$store.state.selected[0].id === selectedId && !this.working) {
+                                this.refresh();
+                            }
+                        }, 1000)
+                    });
+                }
             },
             refresh: function () {
                 this.snackbar = false;
