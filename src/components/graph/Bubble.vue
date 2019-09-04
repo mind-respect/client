@@ -549,6 +549,7 @@
                 }
                 GraphUi.enableDragScroll();
                 this.$store.dispatch("setIsEditFlow", false);
+                this.$store.dispatch("redraw");
             },
             focus: function () {
                 if (this.bubble.isEditFlow) {
