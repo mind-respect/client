@@ -495,7 +495,7 @@
             },
             click: function (event) {
                 event.stopPropagation();
-                this.bubble.isSelected = true;
+                this.$set(this.bubble, "isSelected", true);
                 this.$nextTick(() => {
                     if (this.bubble.isEditFlow) {
                         this.linkMenu = false;
