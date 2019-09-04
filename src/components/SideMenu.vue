@@ -3,7 +3,7 @@
             stateless
             style="margin-top:43px;"
             :value="true"
-            v-if="$vuetify.breakpoint.mdAndUp || (!isSingle || $store.state.sideMenuFlow !== false)"
+            v-show="$vuetify.breakpoint.mdAndUp || (!isSingle || $store.state.sideMenuFlow !== false)"
             fixed
             :width="mainWidth"
             :mini-variant="$store.state.sideMenuFlow === false"
@@ -16,15 +16,16 @@
                     mini-variant-width="50"
                     :width="menuWidth"
                     :value="true"
-                    v-if="$vuetify.breakpoint.lgAndUp || $store.state.sideMenuFlow !== false"
+                    v-show="$vuetify.breakpoint.lgAndUp || $store.state.sideMenuFlow !== false"
                     stateless
                     touchless
             >
                 <v-card flat class="text-center">
-                    <v-btn @click="expand" small icon v-if="$store.state.sideMenuFlow === false" class="mt-6 text-center">
+                    <v-btn @click="expand" small icon v-show="$store.state.sideMenuFlow === false"
+                           class="mt-6 text-center">
                         <v-icon>chevron_right</v-icon>
                     </v-btn>
-                    <v-card-title class="subtitle-1" v-if="$store.state.sideMenuFlow !== false">
+                    <v-card-title class="subtitle-1" v-show="$store.state.sideMenuFlow !== false">
                         <div class="grey--text" v-if="isSingle">
                             {{$t('side:creationDate')}}
                             {{formatDate(creationDate)}}
@@ -34,7 +35,7 @@
                             <v-icon>chevron_left</v-icon>
                         </v-btn>
                     </v-card-title>
-                    <div v-if="$store.state.sideMenuFlow !== false" class="text-left">
+                    <div v-show="$store.state.sideMenuFlow !== false" class="text-left">
                         <v-tabs
                                 v-model="tabMenu"
                                 grow
@@ -58,21 +59,22 @@
                         </v-tabs>
                         <v-tabs-items v-model="tabMenu" class="white">
                             <v-tab-item>
-                                <p v-if="!noteCanDo" class="pt-4 grey--text text-center">
+                                <p v-show="!noteCanDo" class="pt-4 grey--text text-center">
                                     {{$t('side:noteCantDo')}}</p>
-                                <NoteMenu :bubble="selected" v-if="noteCanDo"></NoteMenu>
+                                <NoteMenu :bubble="selected" v-show="noteCanDo"></NoteMenu>
                             </v-tab-item>
                             <v-tab-item>
-                                <p v-if="!tagCanDo" class="pt-4 grey--text text-center">{{$t('side:tagCantDo')}}</p>
-                                <TagMenu @focus="focus" @blur="blur" :bubble="selected" v-if="tagCanDo"></TagMenu>
+                                <p v-show="!tagCanDo" class="pt-4 grey--text text-center">{{$t('side:tagCantDo')}}</p>
+                                <TagMenu @focus="focus" @blur="blur" :bubble="selected" v-show="tagCanDo"></TagMenu>
                             </v-tab-item>
                             <v-tab-item>
-                                <p v-if="!mergeCanDo" class="pt-4 grey--text text-center">
+                                <p v-show="!mergeCanDo" class="pt-4 grey--text text-center">
                                     {{$t('side:mergeCantDo')}}</p>
-                                <MergeMenu @focus="focus" @blur="blur" :bubble="selected" v-if="mergeCanDo"></MergeMenu>
+                                <MergeMenu @focus="focus" @blur="blur" :bubble="selected"
+                                           v-show="mergeCanDo"></MergeMenu>
                             </v-tab-item>
                             <v-tab-item>
-                                <p v-if="!shareCanDo" class="pt-4 grey--text text-center">
+                                <p v-show="!shareCanDo" class="pt-4 grey--text text-center">
                                     {{$t('side:shareCantDo')}}</p>
                                 <ShareMenu @focus="focus" @blur="blur"
                                            v-if="shareCanDo"></ShareMenu>
@@ -82,7 +84,7 @@
                 </v-card>
             </v-navigation-drawer>
             <v-navigation-drawer
-                    v-if="$vuetify.breakpoint.mdAndUp || !isSingle"
+                    v-show="$vuetify.breakpoint.mdAndUp || !isSingle"
                     :value="true"
                     right
                     mini-variant
@@ -106,11 +108,11 @@
     export default {
         name: "SideMenu",
         components: {
-            NoteMenu:() => import('@/components/NoteMenu'),
-            TagMenu:() => import('@/components/TagMenu'),
-            MergeMenu:() => import('@/components/MergeMenu'),
-            ShareMenu:() => import('@/components/ShareMenu'),
-            BubbleButtons:() => import('@/components/graph/BubbleButtons'),
+            NoteMenu: () => import('@/components/NoteMenu'),
+            TagMenu: () => import('@/components/TagMenu'),
+            MergeMenu: () => import('@/components/MergeMenu'),
+            ShareMenu: () => import('@/components/ShareMenu'),
+            BubbleButtons: () => import('@/components/graph/BubbleButtons'),
         },
         data: () => {
             I18n.i18next.addResources("en", "side", {
@@ -215,10 +217,11 @@
         max-height: 105px;
     }
 
-    .side-tab{
-        min-width:40px !important;
+    .side-tab {
+        min-width: 40px !important;
     }
-    .side-tabs .v-slide-group__prev{
-        display:none;
+
+    .side-tabs .v-slide-group__prev {
+        display: none;
     }
 </style>

@@ -12,10 +12,10 @@
             <v-flex xs12>
                 <v-layout>
                     <v-flex xs12>
-                        <v-card v-if="loading" flat class="text-center" width="100%">
+                        <v-card v-show="loading" flat class="text-center" width="100%">
                             <v-progress-circular indeterminate color="third"></v-progress-circular>
                         </v-card>
-                        <v-card flat v-if="!loading">
+                        <v-card flat v-show="!loading">
                             <v-card-title>
                                 <span class="mt-2 mb-2 subtitle-1">
                                     {{$t('cohesion:similarBubble')}}
@@ -62,12 +62,12 @@
                 </v-layout>
                 <v-layout>
                     <v-flex xs12>
-                        <v-card flat class="pa-0" v-if="!loading">
+                        <v-card flat class="pa-0" v-show="!loading">
                             <v-card-text class="pa-0">
                                 <v-radio-group v-model="selectedUri" class="mt-0">
                                     <v-list width="100%" two-line class="pa-0">
                                         <v-list-item class="pt-0" v-for="(item, index) in results"
-                                                     v-if="index === 0 || isSeeMoreFlow">
+                                                     v-show="index === 0 || isSeeMoreFlow">
                                             <v-list-item-action>
                                                 <v-radio
                                                         :value="item.uri"
@@ -90,7 +90,7 @@
                         </v-card>
                     </v-flex>
                 </v-layout>
-                <v-layout v-if="results.length > 1">
+                <v-layout v-show="results.length > 1">
                     <v-flex xs12>
                         <v-btn text color="third" class="ml-1" @click="isSeeMoreFlow=true" :disabled="isSeeMoreFlow">
                             {{$t('cohesion:viewMore')}}

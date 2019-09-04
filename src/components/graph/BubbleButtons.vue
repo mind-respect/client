@@ -8,10 +8,10 @@
         <span v-for="button in buttons" :key="button.action" :class="{
             'h-center': isInSideMenu
         }">
-            <Button :button="button" :controller="controller" :isInSideMenu="isInSideMenu" v-if="!button.isCustom"
+            <Button :button="button" :controller="controller" :isInSideMenu="isInSideMenu" v-show="!button.isCustom"
                     @performed="forceRefresh"></Button>
             <Button :button="button" :isInSideMenu="isInSideMenu" :controller="controller"
-                    v-if="button.isCustom && button.action === 'copy'" class="">
+                    v-show="button.isCustom && button.action === 'copy'" class="">
                 <v-btn slot="button"
                        icon
                        color="primary"
