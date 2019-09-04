@@ -496,29 +496,31 @@
             click: function (event) {
                 event.stopPropagation();
                 this.bubble.isSelected = true;
-                if (this.bubble.isEditFlow) {
-                    this.linkMenu = false;
-                    return;
-                }
-                if (event.target.tagName === "A") {
-                    event.preventDefault();
-                    this.linkMenuHref = event.target.href;
-                    this.linkMenu = true;
-                } else {
-                    this.linkMenu = false;
-                }
-                GraphUi.enableDragScroll();
-                if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
-                    if (this.bubble.isSelected) {
-                        Selection.remove(this.bubble);
-                    } else {
-                        Selection.add(this.bubble);
+                this.$nextTick(() => {
+                    if (this.bubble.isEditFlow) {
+                        this.linkMenu = false;
+                        return;
                     }
-                } else {
-                    Selection.setToSingle(
-                        this.bubble
-                    );
-                }
+                    if (event.target.tagName === "A") {
+                        event.preventDefault();
+                        this.linkMenuHref = event.target.href;
+                        this.linkMenu = true;
+                    } else {
+                        this.linkMenu = false;
+                    }
+                    GraphUi.enableDragScroll();
+                    if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
+                        if (this.bubble.isSelected) {
+                            Selection.remove(this.bubble);
+                        } else {
+                            Selection.add(this.bubble);
+                        }
+                    } else {
+                        Selection.setToSingle(
+                            this.bubble
+                        );
+                    }
+                });
             },
             dblclick: function (event) {
                 event.stopPropagation();
