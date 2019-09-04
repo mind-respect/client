@@ -168,11 +168,14 @@
                 this.refresh();
             },
             isEditFlow: function () {
-                if (!this.$store.state.isEditFlow) {
+                if (!this.$store.state.isEditFlow && this.$store.state.selected.length === 1) {
+                    let selectedId = this.$store.state.selected[0];
                     this.$nextTick(() => {
                         setTimeout(() => {
-                            this.refresh();
-                        }, 100)
+                            if(!this.$store.state.isEditFlow && this.$store.state.selected.length === 1 && this.$store.state.selected[0] === selectedId){
+                                this.refresh();
+                            }
+                        }, 500)
                     });
                 }
             }
@@ -232,7 +235,7 @@
                     return;
                 }
                 let bubble = Selection.getSingle();
-                if (bubble.loading) {
+                if (bubble.loading || bubble.getLabel() === "") {
                     return;
                 }
                 SearchService.searchForAllOwnResources(
