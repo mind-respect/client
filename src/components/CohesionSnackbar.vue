@@ -222,7 +222,7 @@
                     this.$nextTick(() => {
                         setTimeout(() => {
                             if (!this.$store.state.isEditFlow && this.$store.state.selected.length === 1 && this.$store.state.selected[0].id === selectedId && !this.working) {
-                                this.refresh();
+                                // this.refresh();
                             }
                         }, 1000)
                     });
