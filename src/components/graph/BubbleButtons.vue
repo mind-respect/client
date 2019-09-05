@@ -4,7 +4,9 @@
 
 <template>
     <div :key="menuKey"
-         v-if="menuKey && $store.state.selected.length > 0 && ($store.state.selected.length > 1 || !single.loading)">
+         v-if="menuKey"
+         v-show="$store.state.selected.length > 0"
+    >
         <span v-for="button in buttons" :key="button.action" :class="{
             'h-center': isInSideMenu
         }">
@@ -16,7 +18,7 @@
                        icon
                        color="primary"
                        text
-                       v-clipboard:copy="copyContent"
+                       @click="copyLabel"
                 >
                     <v-icon>{{button.icon}}</v-icon>
                 </v-btn>
@@ -171,21 +173,17 @@
         methods: {
             forceRefresh: function () {
                 this.menuKey = IdUri.uuid();
+            },
+            copyLabel: function () {
+                this.$copyText(
+                    Selection.getSingle().getLabel()
+                )
             }
         },
         mounted: function () {
-            this.single = Selection.getSingle();
-            if (!this.single) {
-                this.single = {
-                    loading: true
-                }
-            }
             this.menuKey = IdUri.uuid();
         },
         computed: {
-            copyContent: function () {
-                return this.single.getLabel()
-            },
             controller: function () {
                 return Selection.controller();
             }

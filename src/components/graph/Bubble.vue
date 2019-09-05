@@ -30,8 +30,8 @@
     }" :id="containerId">
             <v-flex grow class="v-center drop-relative-container">
                 <v-spacer v-if="isLeft"></v-spacer>
-                <div :key="bubble.childrenKey" v-if="isLeft && !isCenter">
-                    <div>
+                <div :key="childrenKey" v-if="isLeft && !isCenter">
+                    <div :key="bubble.childrenKey">
                         <Children
                                 :bubble="bubble"
                                 direction="left"
@@ -39,6 +39,7 @@
                         >
                         </Children>
                         <ChildNotice :bubble="bubble"
+                                     @expanded="refreshChildren()"
                                      :class="{
                                         'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
                                      }"
@@ -98,9 +99,10 @@
                     <v-spacer v-if="isLeft && isLeaf"></v-spacer>
                     <div
                             v-if="bubble.isVertexType()"
-                            class="bubble vertex graph-element relative vh-center" :class="{
+                            class="bubble vertex graph-element relative vh-center"
+                            :key="contentKey"
+                            :class="{
                                 'selected' : bubble.isSelected,
-                                'center-vertex': isCenter,
                                 'reverse': isLeft && !isCenter
                             }"
                     >
@@ -137,7 +139,6 @@
                                             @dragend="dragEnd"
                                             @contextmenu="rightClick"
                                             :draggable="!isCenter && !bubble.isEditFlow"
-                                            :style="background"
                                     >
                                         <InLabelButtons :bubble="bubble" :isLeft="isLeft"
                                                         :isCenter="isCenter"></InLabelButtons>
@@ -159,7 +160,7 @@
                                                             @dragleave="labelDragLeave"
                                                             @drop="labelDrop"
                                                             :data-placeholder="bubble.isEditFlow ? '' : $t('vertex:default')"
-                                                            v-html="label"
+                                                            v-html="label()"
                                                             @focus="focus"
                                                             @keydown="keydown"
                                                             @paste="paste"
@@ -180,9 +181,8 @@
                                         </v-menu>
                                     </div>
                                 </template>
-                                <div :style="background">
-                                    <BubbleButtons
-                                            v-if="$store.state.selected.length === 1 && bubble.isSelected"></BubbleButtons>
+                                <div :style="'background-color:' + backgroundColor">
+                                    <BubbleButtons></BubbleButtons>
                                 </div>
                             </v-menu>
                         </div>
@@ -248,7 +248,7 @@
                                 'pl-1 pr-12': bubble.isEdge() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
                                 'pl-6': (bubble.isGroupRelation() && !isLeft),
                                 'pr-6': (bubble.isGroupRelation() && isLeft),
-                                'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
+                                'blur-overlay': !bubble.isEditFlow && $store.state.isEditFlow
                              }"
                         >
                             <v-menu
@@ -286,12 +286,12 @@
                                                             v-if="!isShrinked"></InLabelButtons>
                                             <div class="bubble-label white--text"
                                                  @blur="leaveEditFlow"
-                                                 :data-placeholder="relationPlaceholder"
+                                                 :data-placeholder="relationPlaceholder()"
                                                  @focus="focus"
                                                  @paste="paste"
                                                  v-show="!isShrinked"
                                                  v-if="!bubble.isMetaRelation()"
-                                                 v-text="label"
+                                                 v-text="label()"
                                                  @keydown="keydown"
                                                  :style="labelFont"
                                                  :class="{
@@ -305,21 +305,21 @@
                                         </v-chip>
                                     </div>
                                 </template>
-                                <div :style="background">
-                                    <BubbleButtons
-                                            v-if="$store.state.selected.length === 1 && bubble.isSelected"></BubbleButtons>
+                                <div :style="'background-color:' + backgroundColor">
+                                    <BubbleButtons></BubbleButtons>
                                 </div>
                             </v-menu>
                         </div>
                     </v-layout>
                 </div>
-                <div :key="bubble.childrenKey" v-if="!isLeft && !isCenter">
-                    <div>
+                <div :key="childrenKey" v-if="!isLeft && !isCenter">
+                    <div :key="bubble.childrenKey">
                         <Children :bubble="bubble"
                                   v-if="!bubble.isCollapsed && canShowChildren()"
                                   direction="right">
                         </Children>
                         <ChildNotice :bubble="bubble"
+                                     @expanded="refreshChildren()"
                                      class=""
                                      :class="{
                                         'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
@@ -383,13 +383,20 @@
                 linkMenuHref: null,
                 chipColor: null,
                 isMetaRelated: null,
-                dragOverArrow: null
+                dragOverArrow: null,
+                backgroundColor: Color.bubbleBackground,
+                contentKey: null,
+                childrenKey: null
             }
         },
+        // updated: function () {
+        //     console.log(this.bubble.getLabel())
+        // },
         mounted: async function () {
             this.bubble.loading = false;
             this.bubble.isEditFlow = false;
             this.bubble.direction = this.direction;
+            this.contentKey = IdUri.uuid();
             this.chipColor = this.bubble.isMetaRelation() ? "third" : "secondary";
             let parentBubble = this.bubble.getParentBubble();
             this.isMetaRelated = this.bubble.isMetaRelation() || this.bubble.isMetaGroupVertex() || (parentBubble && parentBubble.isMetaRelation());
@@ -404,11 +411,6 @@
             this.loaded = true;
         },
         computed: {
-            label: function () {
-                let doc = new DOMParser().parseFromString(this.bubble.getFriendlyJson().label, 'text/html');
-                let text = doc.body.textContent || "";
-                return this.isEditFlow ? text : linkifyStr(text);
-            },
             isNextBubbleExpanded: function () {
                 return this.bubble.getNextBubble().isExpanded;
             },
@@ -431,17 +433,9 @@
             canExpand: function () {
                 return this.bubble.canExpand();
             },
-            background: function () {
-                return this.bubble.isSelected && Color.bubbleBackground ?
-                    "background-color:" + Color.bubbleBackground :
-                    "";
-            },
             labelFont: function () {
                 let font = CurrentSubGraph.get().center.getFont();
                 return "font-family:" + font.family;
-            },
-            relationPlaceholder: function () {
-                return this.bubble.isGroupRelation() || this.bubble.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
             },
             isShrinked: function () {
                 if (this.isLabelDragOver) {
@@ -457,6 +451,17 @@
             }
         },
         methods: {
+            label: function () {
+                let doc = new DOMParser().parseFromString(this.bubble.getFriendlyJson().label, 'text/html');
+                let text = doc.body.textContent || "";
+                return this.isEditFlow ? text : linkifyStr(text);
+            },
+            relationPlaceholder: function () {
+                return this.bubble.isGroupRelation() || this.bubble.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
+            },
+            refreshChildren: function () {
+                this.childrenKey = IdUri.uuid();
+            },
             canShowChildren: function () {
                 return (this.bubble.isVertexType() && this.bubble.rightBubbles.length > 0) ||
                     (this.bubble.isGroupRelation() && this.bubble.children && this.bubble.children.length > 0) ||
@@ -495,32 +500,37 @@
             },
             click: function (event) {
                 event.stopPropagation();
-                this.$set(this.bubble, "isSelected", true);
-                this.$nextTick(() => {
-                    if (this.bubble.isEditFlow) {
-                        this.linkMenu = false;
-                        return;
-                    }
-                    if (event.target.tagName === "A") {
-                        event.preventDefault();
-                        this.linkMenuHref = event.target.href;
-                        this.linkMenu = true;
-                    } else {
-                        this.linkMenu = false;
-                    }
-                    GraphUi.enableDragScroll();
-                    if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
-                        if (this.bubble.isSelected) {
-                            Selection.remove(this.bubble);
-                        } else {
-                            Selection.add(this.bubble);
+                setTimeout(()=>{
+                    this.$nextTick(() => {
+                        if (this.bubble.isEditFlow) {
+                            this.linkMenu = false;
+                            return;
                         }
-                    } else {
-                        Selection.setToSingle(
-                            this.bubble
-                        );
-                    }
-                });
+                        this.$set(this.bubble, "isSelected", true);
+                        this.contentKey = IdUri.uuid();
+                        this.$nextTick(() => {
+                            if (event.target.tagName === "A") {
+                                event.preventDefault();
+                                this.linkMenuHref = event.target.href;
+                                this.linkMenu = true;
+                            } else {
+                                this.linkMenu = false;
+                            }
+                            GraphUi.enableDragScroll();
+                            if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
+                                if (this.bubble.isSelected) {
+                                    Selection.remove(this.bubble);
+                                } else {
+                                    Selection.add(this.bubble);
+                                }
+                            } else {
+                                Selection.setToSingle(
+                                    this.bubble
+                                );
+                            }
+                        });
+                    });
+                })
             },
             dblclick: function (event) {
                 event.stopPropagation();

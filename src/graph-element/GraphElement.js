@@ -178,6 +178,7 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
     }
     this._buildIdentifications();
     this.refreshChildren();
+    this.refreshContent();
     this.isSelected = false;
     // this.wikipediaLinksPromise = this._buildWikidataLinks();
     return this;
@@ -258,6 +259,10 @@ GraphElement.GraphElement.prototype.getRelevantTags = function () {
 
 GraphElement.GraphElement.prototype.refreshChildren = function () {
     this.childrenKey = IdUri.uuid();
+};
+
+GraphElement.GraphElement.prototype.refreshContent = function () {
+    this.contentKey = IdUri.uuid();
 };
 
 GraphElement.GraphElement.prototype.getSelfTag = function () {

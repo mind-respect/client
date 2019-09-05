@@ -20,7 +20,6 @@ api.setToSingle = function (graphElement, noScroll) {
         return;
     }
     if (api.isSingle()) {
-        api.getSingle().isSelected = false;
         if (Store.state.selected[0].id === graphElement.getId()) {
             return;
         }

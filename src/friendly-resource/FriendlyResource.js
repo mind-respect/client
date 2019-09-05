@@ -130,9 +130,9 @@ FriendlyResource.FriendlyResource.prototype.focus = function (event) {
     this.isEditFlow = true;
     GraphUi.disableDragScroll();
     Store.dispatch("setIsEditFlow", true);
-    let labelHtml = this.getLabelHtml();
-    labelHtml.contentEditable = "true";
     setTimeout(() => {
+        let labelHtml = this.getLabelHtml();
+        labelHtml.contentEditable = "true";
         if (event) {
             Focus.focusAtPosition(event, labelHtml);
         } else {

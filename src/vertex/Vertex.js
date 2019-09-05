@@ -337,7 +337,6 @@ Vertex.prototype.getNextChildrenEvenIfCollapsed = Vertex.prototype.getNextChildr
 
 Vertex.prototype.remove = function () {
     this.getParentBubble().remove();
-    this.refreshChildren();
 };
 
 Vertex.prototype.removeChild = function (child, isTemporary) {
@@ -352,6 +351,7 @@ Vertex.prototype.removeChild = function (child, isTemporary) {
     if (removedChild && child.isEdge()) {
         this.decrementNumberOfConnectedEdges();
     }
+    this.refreshChildren();
 };
 
 api.getWhenEmptyLabel = function () {

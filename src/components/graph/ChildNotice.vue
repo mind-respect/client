@@ -80,11 +80,14 @@
                 }
                 this.loading = this.bubble.loading = true;
                 this.bubble.controller().expand().then(() => {
-                    Vue.nextTick(() => {
-                        this.loading = this.bubble.loading = false;
+                    this.$emit("expanded");
+                    this.$nextTick(() => {
+                        Selection.setToSingle(this.bubble);
+                        Store.dispatch("redraw");
+                        this.$nextTick(() => {
+                            this.loading = this.bubble.loading = false;
+                        });
                     });
-                    Selection.setToSingle(this.bubble);
-                    Store.dispatch("redraw");
                 });
             }
         }
