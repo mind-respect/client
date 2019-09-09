@@ -113,7 +113,7 @@
                             <v-menu
                                     v-model="showMenu"
                                     :value="bubble.isSelected && $store.state.selected.length === 1"
-                                    max-width="250"
+                                    :max-width="menuWidth()"
                                     :nudge-width="250"
                                     auto
                                     right
@@ -451,6 +451,9 @@
             }
         },
         methods: {
+            menuWidth: function () {
+                return this.menuFlow === 'buttons' ? 250 : "auto";
+            },
             label: function () {
                 let doc = new DOMParser().parseFromString(this.bubble.getFriendlyJson().label, 'text/html');
                 let text = doc.body.textContent || "";
