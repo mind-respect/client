@@ -67,7 +67,10 @@
             isInverse: function () {
                 return this.bubble.isEdge() && this.bubble.isInverse();
             }
-        }
+        },
+        // updated: function () {
+        //     console.log(this.bubble.getLabel())
+        // }
     }
 </script>
 

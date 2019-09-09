@@ -41,7 +41,7 @@
                         <ChildNotice :bubble="bubble"
                                      @expanded="refreshChildren()"
                                      :class="{
-                                        'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
+                                        'blur-overlay': !isEditFlow && $store.state.isEditFlow
                                      }"
                                      v-if="canExpand && !canShowChildren()"></ChildNotice>
                     </div>
@@ -119,8 +119,7 @@
                                     right
                                     color="white"
                                     offset-y
-                                    :open-on-click="false"
-                                    :disabled="bubble.isEditFlow"
+                                    :disabled="isEditFlow"
                             >
                                 <template v-slot:activator="{ on }">
                                     <div
@@ -129,7 +128,7 @@
                                             'reverse': isLeft,
                                             'desktop': $vuetify.breakpoint.lgAndUp,
                                             'mobile': $vuetify.breakpoint.mdAndDown,
-                                            'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
+                                            'blur-overlay': !isEditFlow && $store.state.isEditFlow
                                     }"
                                             @click="click"
                                             @mouseup="mouseup"
@@ -138,51 +137,44 @@
                                             @dragstart="dragStart"
                                             @dragend="dragEnd"
                                             @contextmenu="rightClick"
-                                            :draggable="!isCenter && !bubble.isEditFlow"
+                                            :draggable="!isCenter && !isEditFlow"
                                     >
                                         <InLabelButtons :bubble="bubble" :isLeft="isLeft"
                                                         :isCenter="isCenter"></InLabelButtons>
-                                        <v-menu
-                                                v-model="linkMenu"
-                                                auto
-                                                offset-y
-                                                :disabled="bubble.isEditFlow || $store.state.selected.length > 1"
-                                        >
-                                            <template v-slot:activator="{ on }">
-                                                <v-badge color="third" :left="isLeft">
-                                                    <template v-slot:badge v-if="bubble.isMeta()">
-                                                        <v-icon dark>label</v-icon>
-                                                    </template>
-                                                    <div
-                                                            class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
-                                                            @blur="leaveEditFlow"
-                                                            @dragover="labelDragEnter"
-                                                            @dragleave="labelDragLeave"
-                                                            @drop="labelDrop"
-                                                            :data-placeholder="bubble.isEditFlow ? '' : $t('vertex:default')"
-                                                            v-html="label()"
-                                                            @focus="focus"
-                                                            @keydown="keydown"
-                                                            @paste="paste"
-                                                            :style="labelFont"
-                                                            ref="vertexLabel"
-                                                            :class="{
-                                                        'unselectable' : !bubble.isEditFlow
-                                                    }"
-                                                    ></div>
-                                                </v-badge>
+
+
+                                        <v-badge color="third" :left="isLeft">
+                                            <template v-slot:badge v-if="bubble.isMeta()">
+                                                <v-icon dark>label</v-icon>
                                             </template>
-                                            <v-card :href="linkMenuHref" target="_blank">
-                                                <v-card-title class="body-1">
-                                                    <v-icon class="mr-2">share</v-icon>
-                                                    {{$t('vertex:openLink')}}
-                                                </v-card-title>
-                                            </v-card>
-                                        </v-menu>
+                                            <div
+                                                    class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
+                                                    @blur="leaveEditFlow"
+                                                    @dragover="labelDragEnter"
+                                                    @dragleave="labelDragLeave"
+                                                    @drop="labelDrop"
+                                                    :data-placeholder="isEditFlow ? '' : $t('vertex:default')"
+                                                    v-html="label()"
+                                                    @focus="focus"
+                                                    @keydown="keydown"
+                                                    @paste="paste"
+                                                    :style="labelFont"
+                                                    ref="vertexLabel"
+                                                    :class="{
+                                                        'unselectable' : !isEditFlow
+                                                    }"
+                                            ></div>
+                                        </v-badge>
                                     </div>
                                 </template>
                                 <div :style="'background-color:' + backgroundColor">
-                                    <BubbleButtons></BubbleButtons>
+                                    <BubbleButtons v-show="menuFlow === 'buttons'"></BubbleButtons>
+                                    <v-card :href="linkMenuHref" target="_blank" v-show="menuFlow === 'link'">
+                                        <v-card-title class="body-1 link-menu">
+                                            <v-icon class="mr-2">share</v-icon>
+                                            {{$t('vertex:openLink')}}
+                                        </v-card-title>
+                                    </v-card>
                                 </div>
                             </v-menu>
                         </div>
@@ -242,13 +234,13 @@
                              @dragstart="dragStart"
                              @dragend="dragEnd"
                              @contextmenu="rightClick"
-                             :draggable="!bubble.isEditFlow"
+                             :draggable="!isEditFlow"
                              :class="{
                                 'pl-12 pr-1': bubble.isEdge() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
                                 'pl-1 pr-12': bubble.isEdge() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
                                 'pl-6': (bubble.isGroupRelation() && !isLeft),
                                 'pr-6': (bubble.isGroupRelation() && isLeft),
-                                'blur-overlay': !bubble.isEditFlow && $store.state.isEditFlow
+                                'blur-overlay': !isEditFlow && $store.state.isEditFlow
                              }"
                         >
                             <v-menu
@@ -278,7 +270,7 @@
                                         'elevation-4': bubble.isSelected,
                                         'is-inverse' : isInverse,
                                         'is-shrinked' : isShrinked,
-                                        'empty-edge' : bubble.isEdge() && !bubble.isEditFlow && bubble.isLabelEmpty()
+                                        'empty-edge' : bubble.isEdge() && !isEditFlow && bubble.isLabelEmpty()
                                     }"
                                         >
                                             <InLabelButtons :bubble="bubble" :isLeft="isLeft" :isCenter="isCenter"
@@ -295,7 +287,7 @@
                                                  @keydown="keydown"
                                                  :style="labelFont"
                                                  :class="{
-                                                        'unselectable' : !bubble.isEditFlow
+                                                        'unselectable' : !isEditFlow
                                                     }"
                                             ></div>
                                             <v-icon v-if="bubble.isMetaRelation()" small
@@ -306,7 +298,13 @@
                                     </div>
                                 </template>
                                 <div :style="'background-color:' + backgroundColor">
-                                    <BubbleButtons></BubbleButtons>
+                                    <BubbleButtons v-show="menuFlow === 'link'"></BubbleButtons>
+                                    <v-card :href="linkMenuHref" target="_blank" v-show="menuFlow === 'link'">
+                                        <v-card-title class="body-1 link-menu">
+                                            <v-icon class="mr-2">share</v-icon>
+                                            {{$t('vertex:openLink')}}
+                                        </v-card-title>
+                                    </v-card>
                                 </div>
                             </v-menu>
                         </div>
@@ -322,7 +320,7 @@
                                      @expanded="refreshChildren()"
                                      class=""
                                      :class="{
-                                        'blur-overlay': $store.state.isEditFlow && !bubble.isEditFlow
+                                        'blur-overlay': !isEditFlow && $store.state.isEditFlow
                                      }"
                                      v-if="canExpand && !canShowChildren()"></ChildNotice>
                     </div>
@@ -379,14 +377,15 @@
                 isBottomDragOver: null,
                 isLeftRightDragOver: null,
                 showMenu: false,
-                linkMenu: false,
+                menuFlow: null,
                 linkMenuHref: null,
                 chipColor: null,
                 isMetaRelated: null,
                 dragOverArrow: null,
                 backgroundColor: Color.bubbleBackground,
                 contentKey: null,
-                childrenKey: null
+                childrenKey: null,
+                isEditFlow: false
             }
         },
         // updated: function () {
@@ -396,6 +395,7 @@
             this.bubble.loading = false;
             this.bubble.isEditFlow = false;
             this.bubble.direction = this.direction;
+            this.bubble.component = this;
             this.contentKey = IdUri.uuid();
             this.chipColor = this.bubble.isMetaRelation() ? "third" : "secondary";
             let parentBubble = this.bubble.getParentBubble();
@@ -482,40 +482,46 @@
                 window.document.execCommand('insertText', false, text);
             },
             mouseup: function () {
-                if (Selection.isSingle() && Selection.isSelected(this.bubble)) {
-                    setTimeout(() => {
-                        if (!this.bubble.isEditFlow && !this.linkMenu) {
-                            this.showMenu = true;
-                        }
-                    }, 150)
-                }
+
             },
             rightClick: function (event) {
                 event.preventDefault();
-                if (this.bubble.isEditFlow) {
+                if (this.isEditFlow) {
                     return;
                 }
+                this.menuFlow = 'buttons';
                 this.showMenu = true;
                 Selection.setToSingle(this.bubble)
             },
             click: function (event) {
                 event.stopPropagation();
-                setTimeout(()=>{
-                    this.$nextTick(() => {
-                        if (this.bubble.isEditFlow) {
-                            this.linkMenu = false;
-                            return;
+                if (this.isEditFlow) {
+                    this.showMenu = false;
+                    return;
+                }
+                if (Selection.isSingle() && this.bubble.isSelected && (event.target.tagName !== "A" || this.menuFlow === 'link')) {
+                    event.preventDefault();
+                    this.menuFlow = 'buttons';
+                    setTimeout(() => {
+                        if (!this.isEditFlow && this.menuFlow !== 'link') {
+                            this.showMenu = true;
                         }
+                    }, 150)
+                } else if (event.target.tagName === "A") {
+                    event.preventDefault();
+                    this.linkMenuHref = event.target.href;
+                    this.menuFlow = 'link';
+                    setTimeout(() => {
+                        this.showMenu = true;
+                    }, 150);
+                } else {
+                    this.showMenu = false;
+                }
+                setTimeout(() => {
+                    this.$nextTick(() => {
                         this.$set(this.bubble, "isSelected", true);
                         this.contentKey = IdUri.uuid();
                         this.$nextTick(() => {
-                            if (event.target.tagName === "A") {
-                                event.preventDefault();
-                                this.linkMenuHref = event.target.href;
-                                this.linkMenu = true;
-                            } else {
-                                this.linkMenu = false;
-                            }
                             GraphUi.enableDragScroll();
                             if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
                                 if (this.bubble.isSelected) {
@@ -539,12 +545,14 @@
                     return;
                 }
                 this.bubble.isEditFlow = true;
+                this.isEditFlow = true;
                 this.$store.dispatch("setIsEditFlow", true);
                 GraphUi.disableDragScroll();
                 this.bubble.focus(event);
             },
             leaveEditFlow: function () {
                 this.bubble.isEditFlow = false;
+                this.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
                 this.bubble.controller().setLabel(labelHtml.innerHTML);
@@ -557,12 +565,15 @@
             },
             focus: function () {
                 this.showMenu = false;
-                if (this.bubble.isEditFlow) {
+                if (this.isEditFlow) {
                     return;
                 }
+                this.isEditFlow = true;
                 this.bubble.isEditFlow = true;
-                GraphUi.disableDragScroll();
-                this.$store.dispatch("setIsEditFlow", true);
+                this.$nextTick(() => {
+                    GraphUi.disableDragScroll();
+                    this.$store.dispatch("setIsEditFlow", true);
+                });
             },
             keydown: function (event) {
                 if ([KeyCode.KEY_RETURN, KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {
@@ -571,7 +582,7 @@
                 }
             },
             mouseDown: function () {
-                if (this.bubble.isEditFlow) {
+                if (this.isEditFlow) {
                     return;
                 }
                 GraphUi.disableDragScroll();

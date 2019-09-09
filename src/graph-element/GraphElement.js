@@ -259,6 +259,10 @@ GraphElement.GraphElement.prototype.getRelevantTags = function () {
 
 GraphElement.GraphElement.prototype.refreshChildren = function () {
     this.childrenKey = IdUri.uuid();
+    if (this.component) {
+        this.component.refreshChildren();
+        console.log("component refreshed")
+    }
 };
 
 GraphElement.GraphElement.prototype.refreshContent = function () {

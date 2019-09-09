@@ -127,7 +127,6 @@ FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.focus = function (event) {
-    this.isEditFlow = true;
     GraphUi.disableDragScroll();
     Store.dispatch("setIsEditFlow", true);
     setTimeout(() => {
