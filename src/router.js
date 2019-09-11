@@ -15,7 +15,7 @@ const router = new Router({
                     if (Store.state.user === undefined) {
                         return import('./views/About.vue');
                     }
-                    router.push({
+                    router.replace({
                         name: "UserHome",
                         params: {
                             username: Store.state.user.username
