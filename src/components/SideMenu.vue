@@ -147,22 +147,39 @@
                 return Selection.getSingle();
             },
             creationDate: function () {
-                return Selection.getSingle().getCreationDate();
+                let single = Selection.getSingle();
+                return single ? single.getCreationDate() : new Date();
             },
             isSingle: () => {
                 return Selection.isSingle();
             },
             noteCanDo: function () {
-                return Selection.isSingle() && Selection.getSingle().controller().noteCanDo();
+                if (!Selection.isSingle()) {
+                    return false;
+                }
+                let single = Selection.getSingle();
+                return single && single.controller().noteCanDo();
             },
             tagCanDo: function () {
-                return Selection.isSingle() && Selection.getSingle().controller().identifyCanDo();
+                if (!Selection.isSingle()) {
+                    return false;
+                }
+                let single = Selection.getSingle();
+                return single && single.controller().identifyCanDo();
             },
             mergeCanDo: function () {
-                return Selection.isSingle() && Selection.getSingle().controller().mergeCanDo();
+                if (!Selection.isSingle()) {
+                    return false;
+                }
+                let single = Selection.getSingle();
+                return single && single.controller().mergeCanDo();
             },
             shareCanDo: function () {
-                return Selection.controller().setShareLevelCanDo();
+                if (!Selection.isSingle()) {
+                    return false;
+                }
+                let single = Selection.getSingle();
+                return single && single.controller().setShareLevelCanDo();
             },
             menuWidth: function () {
                 return this.$vuetify.breakpoint.mdAndDown ? this.mainWidth : 340;

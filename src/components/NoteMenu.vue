@@ -1,5 +1,5 @@
 <template>
-    <v-card flat @click="$store.dispatch('setIsDescriptionFlow', true)" hover>
+    <v-card flat @click="$store.dispatch('setIsDescriptionFlow', true)" hover v-if="bubble">
         <v-card-title class="pt-4 pb-0 subtitle-1">
             <span class="pt-0 grey--text body-1 text-center" v-if="bubble.getComment() === ''">
                 {{$t('noteMenu:noNote')}}

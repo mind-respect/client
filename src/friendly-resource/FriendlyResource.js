@@ -256,6 +256,10 @@ FriendlyResource.FriendlyResource.prototype.isVertexType = function () {
     return this.type.isVertexType();
 };
 
+FriendlyResource.FriendlyResource.prototype.isForkType = function () {
+    return this.isInTypes(GraphElementType.Fork)
+};
+
 FriendlyResource.FriendlyResource.prototype.select = function () {
     this.isSelected = true;
 };
@@ -677,8 +681,8 @@ FriendlyResource.FriendlyResource.prototype.getExpandableDescendants = function 
     });
 };
 
-FriendlyResource.FriendlyResource.prototype.getDescendants = function () {
-    return this.getNextChildren().reduce((children, child) => {
+FriendlyResource.FriendlyResource.prototype.getDescendants = function (toTheLeft) {
+    return this.getNextChildren(toTheLeft).reduce((children, child) => {
         children.push(child);
         if (child.isLeaf()) {
             return children;

@@ -106,7 +106,6 @@
 </template>
 
 <script>
-    import Selection from '@/Selection'
     import SearchResultContent from '@/components/SearchResultContent'
     import SearchResultAction from '@/components/SearchResultAction'
     import I18n from '@/I18n'

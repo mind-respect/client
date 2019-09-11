@@ -6,23 +6,6 @@
     <div v-if="loaded" class="unselectable" :class="{
             'mt-1 mb-1' : $vuetify.breakpoint.mdAndDown
         }">
-        <v-flex xs12>
-            <v-flex xs12 class="pt-1 dotted-border-top"
-                    @dragover="topDragEnter"
-                    @dragleave="resetTopBottomDragOver"
-                    @drop="topDrop"
-                    @click="click"
-                    @mouseup="mouseup"
-                    @dblclick="dblclick"
-                    @contextmenu="rightClick"
-                    v-if="(bubble.isEdge() || bubble.isGroupRelation()) && !isNextBubbleExpanded"
-            ></v-flex>
-            <v-flex xs12
-                    style="position:relative;"
-                    class="dotted-border-top"
-                    v-if="bubble.isVertexType() && !bubble.isCenter"
-            ></v-flex>
-        </v-flex>
         <v-layout
                 :class="{
         'vertex-tree-container': !isCenter,
@@ -55,42 +38,8 @@
             }"
                      :id="bubble.uiId"
                 >
-
-                    <div
-                            v-if="!isCenter"
-                            class="arrowTopBottomContainer"
-                            :class="{
-                                'top-bottom-left-side text-xs-right': isLeft,
-                                'top-bottom-right-side': !isLeft,
-                                'vertex-drop-arrow-top':bubble.isVertexType(),
-                                'edge-drop-arrow-top':!bubble.isVertexType()
-                            }">
-                        <v-icon v-for="i in 5" :key="i" small
-                                style="overflow-x: hidden"
-                                class="unselectable"
-                                :class="{
-                                    'red--text': isTopDragOver,
-                                    'transparent--text': !isTopDragOver,
-                                    'ml-6': isLeft,
-                                    'mr-6': !isLeft
-                                }">
-                            {{dragOverArrow}}
-                        </v-icon>
-                    </div>
-
-                    <div
-                            v-if="!isCenter"
-                            class="vertex-drop-arrow-top-bottom-drop top-vertex-arrow-drop"
-                            @dragover="topDragEnter"
-                            @dragleave="resetTopBottomDragOver"
-                            @drop="topDrop"
-                            @click="click"
-                            @mouseup="mouseup"
-                            @dblclick="dblclick"
-                            @contextmenu="rightClick"
-                    ></div>
                     <div class="vertex-left-right-drop"
-                         v-if="(isCenter && bubble.leftBubbles.length === 0 ) || (!isCenter && isLeaf && !isLeft)"
+                         v-if="(isCenter && bubble.leftBubbles.length === 0 ) || (!isCenter && isLeaf && isLeft)"
                          @dragover="leftRightDragEnter"
                          @dragleave="leftRightDragLeave"
                          @drop="leftDrop"
@@ -102,7 +51,7 @@
                             class="bubble vertex graph-element relative vh-center"
                             :key="contentKey"
                             :class="{
-                                'selected' : bubble.isSelected,
+                                'selected' : bubble.isSelected || isLabelDragOver,
                                 'reverse': isLeft && !isCenter
                             }"
                     >
@@ -136,6 +85,9 @@
                                             @mousedown="mouseDown"
                                             @dragstart="dragStart"
                                             @dragend="dragEnd"
+                                            @dragover="labelDragEnter"
+                                            @dragleave="labelDragLeave"
+                                            @drop="labelDrop"
                                             @contextmenu="rightClick"
                                             :draggable="!isCenter && !isEditFlow"
                                     >
@@ -150,9 +102,6 @@
                                             <div
                                                     class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
                                                     @blur="leaveEditFlow"
-                                                    @dragover="labelDragEnter"
-                                                    @dragleave="labelDragLeave"
-                                                    @drop="labelDrop"
                                                     :data-placeholder="isEditFlow ? '' : $t('vertex:default')"
                                                     v-html="label()"
                                                     @focus="focus"
@@ -178,38 +127,6 @@
                                 </div>
                             </v-menu>
                         </div>
-                    </div>
-                    <div
-                            class="vertex-drop-arrow-top-bottom-drop bottom-vertex-drop-arrow-drop"
-                            @click="click"
-                            @mouseup="mouseup"
-                            @dblclick="dblclick"
-                            @contextmenu="rightClick"
-                            @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"
-                    ></div>
-                    <div @dragover="bottomDragEnter"
-                         @drop="bottomDrop"
-                         @click="click"
-                         @mouseup="mouseup"
-                         @dblclick="dblclick"
-                         @contextmenu="rightClick"
-                         class="arrowTopBottomContainer"
-                         :class="{
-                            'top-bottom-left-side text-xs-right': isLeft && !isCenter,
-                            'top-bottom-right-side': !isLeft && !isCenter,
-                            'vertex-drop-arrow-bottom':bubble.isVertexType(),
-                            'edge-drop-arrow-bottom':!bubble.isVertexType()
-                        }">
-                        <v-icon v-for="i in 5" :key="i" small
-                                class="unselectable"
-                                :class="{
-                        'red--text' : isBottomDragOver,
-                        'transparent--text': !isBottomDragOver,
-                        'ml-6': isLeft,
-                        'mr-6': !isLeft
-                    }">
-                            {{dragOverArrow}}
-                        </v-icon>
                     </div>
                     <div class="vertex-left-right-drop"
                          v-if="(isCenter && bubble.rightBubbles.length === 0 ) || (!isCenter && isLeaf && !isLeft)"
@@ -327,14 +244,6 @@
                 </div>
             </v-flex>
         </v-layout>
-        <v-flex xs12
-                class="dotted-border-bottom"
-                v-if="bubble.isVertexType() && !isCenter"
-        ></v-flex>
-        <v-flex xs12 class="pb-1 dotted-border-bottom"
-                @dragover="bottomDragEnter" @dragleave="resetTopBottomDragOver" @drop="bottomDrop"
-                v-if="(bubble.isEdge() || bubble.isGroupRelation()) && !isNextBubbleExpanded"
-        ></v-flex>
     </div>
 </template>
 
@@ -352,6 +261,7 @@
     import MindMapInfo from '@/MindMapInfo'
     import linkifyStr from 'linkifyjs/string'
     import InLabelButtons from "@/components/graph/bubble/InLabelButtons";
+    import Dragged from '@/Dragged'
 
     export default {
         name: "Bubble",
@@ -375,7 +285,6 @@
                 dragOverTopBottomTimeout: undefined,
                 isTopDragOver: null,
                 isBottomDragOver: null,
-                isLeftRightDragOver: null,
                 showMenu: false,
                 menuFlow: null,
                 linkMenuHref: null,
@@ -591,16 +500,13 @@
                 GraphUi.disableDragScroll();
             },
             dragStart: function (event) {
-                // event.preventDefault();
                 if (MindMapInfo.isViewOnly() || this.isMetaRelated) {
                     event.preventDefault();
                     return;
                 }
-                // Selection.removeAll();
-                // debugger;
                 event.target.style.opacity = .5;
                 event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
-                this.$store.dispatch('setDragged', this.bubble);
+                Dragged.dragged = this.bubble;
                 this.isContainerDragOver = false;
                 GraphUi.disableDragScroll();
             },
@@ -608,9 +514,9 @@
                 event.preventDefault();
                 event.target.style.opacity = 1;
                 GraphUi.enableDragScroll();
-                this.$store.dispatch('setDragged', null);
             },
             labelDragEnter: function (event) {
+                console.log("dragover " + this.bubble.getLabel());
                 /*
                 method name is drag enter but actually
                 called on drag over to enable drop handler to trigger
@@ -618,11 +524,11 @@
                  */
                 event.preventDefault();
                 event.stopPropagation();
-                clearTimeout(this.dragOverLabelTimeout);
                 if (this.isLabelDragOver === true) {
                     return;
                 }
-                let dragged = this.$store.state.dragged;
+                this.bubble.isDragOver = true;
+                let dragged = Dragged.dragged;
                 let shouldSetToDragOver = dragged !== undefined &&
                     dragged.getUri() !== this.bubble.getUri();
                 if (!shouldSetToDragOver) {
@@ -634,11 +540,12 @@
                 // console.log("yes " + this.bubble.getLabel())
             },
             labelDragLeave: function (event) {
-                event.preventDefault();
+                this.bubble.isDragOver = false;
+                this.isLabelDragOver = false;
                 // console.log("label drag leave");
-                this.dragOverLabelTimeout = setTimeout(function () {
-                    this.isLabelDragOver = false;
-                }.bind(this), 50)
+                // this.dragOverLabelTimeout = setTimeout(function () {
+                //     this.isLabelDragOver = false;
+                // }.bind(this), 50)
             },
             labelDrop: function (event, forceLeft) {
                 // console.log("label drop");
@@ -647,8 +554,8 @@
                 event.stopPropagation();
                 GraphUi.enableDragScroll();
                 this.isLabelDragOver = false;
-                let dragged = this.$store.state.dragged;
-                this.$store.dispatch('setDragged', null);
+                let dragged = Dragged.dragged;
+                // this.$store.dispatch('setDragged', null);
                 if (dragged === null) {
                     return;
                 }
@@ -665,12 +572,11 @@
                 if (edge.isVertex()) {
                     edge = edge.getParentBubble();
                 }
-                let dragged = this.$store.state.dragged;
-                this.$store.dispatch('setDragged', null);
-                // if (edge.isRelation() && dragged.getId() === edge.destinationVertex.getId()) {
-                //     console.log("drop denied")
-                //     return;
-                // }")
+                let dragged = Dragged.dragged;
+                if (edge.isRelation() && dragged.getId() === edge.destinationVertex.getId()) {
+                    console.log("drop denied");
+                    return;
+                }
                 return dragged.controller()[method](edge);
             },
             topDrop: function (event) {
@@ -702,7 +608,7 @@
                 if (this.isTopDragOver) {
                     return;
                 }
-                let dragged = this.$store.state.dragged;
+                let dragged = Dragged.dragged;
                 if (!dragged) {
                     return;
                 }
@@ -725,7 +631,7 @@
                     return;
                 }
                 let bubble = this.bubble.isEdge() ? this.bubble.getNextBubble() : this.bubble;
-                if (this.$store.state.dragged.getId() === bubble.getId()) {
+                if (Dragged.dragged.getId() === bubble.getId()) {
                     return;
                 }
                 this.isContainerDragOver = true;
@@ -733,18 +639,18 @@
             },
             leftRightDragEnter: function (event) {
                 event.preventDefault();
-                this.isLeftRightDragOver = true;
+                this.isLabelDragOver = true;
             },
             leftRightDragLeave: function (event) {
                 event.preventDefault();
-                this.isLeftRightDragOver = false;
+                this.isLabelDragOver = false;
             },
             leftDrop: function (event) {
-                this.isLeftRightDragOver = false;
+                this.isLabelDragOver = false;
                 this.labelDrop(event, true);
             },
             rightDrop: function (event) {
-                this.isLeftRightDragOver = false;
+                this.isLabelDragOver = false;
                 this.labelDrop(event, false);
             },
             imageLoaded: async function () {

@@ -30,11 +30,10 @@ api.setToSingle = function (graphElement, noScroll) {
         }
     });
     graphElement.isSelected = true;
-
+    Store.dispatch("setSelected", [
+        api._storeFormat(graphElement)
+    ]);
     Vue.nextTick(() => {
-        Store.dispatch("setSelected", [
-            api._storeFormat(graphElement)
-        ]);
         if (!graphElement.loading && !noScroll) {
             Vue.nextTick(() => {
                 centerBubbleIfApplicable(graphElement)
@@ -104,7 +103,9 @@ api.getSingle = function () {
 api.getSelectedElements = api.getSelectedBubbles = function () {
     return Store.state.selected.map((selected) => {
         return api._graphElementSelected(selected);
-    });
+    }).filter((selected)=>{
+        return selected !== undefined;
+    })
 };
 api._graphElementSelected = function (selected) {
     if (GraphElementType.isEdgeType(selected.type)) {

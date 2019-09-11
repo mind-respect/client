@@ -38,7 +38,7 @@
                 </v-list-item-content>
             </v-list-item>
             <v-list-item @click="expandAll" :disabled="!canExpandAll"
-                         v-if="isGraphRoute && $store.state.dragged === null">
+                         v-if="isGraphRoute">
                 <v-list-item-action>
                     <v-icon class="">unfold_more</v-icon>
                 </v-list-item-action>

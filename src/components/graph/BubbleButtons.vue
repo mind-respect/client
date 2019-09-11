@@ -4,8 +4,7 @@
 
 <template>
     <div :key="menuKey"
-         v-if="menuKey"
-         v-show="$store.state.selected.length > 0"
+         v-if="menuKey && $store.state.selected.length > 0"
     >
         <span v-for="button in buttons" :key="button.action" :class="{
             'h-center': isInSideMenu
@@ -48,7 +47,8 @@
                     {
                         action: "addChild",
                         icon: function () {
-                            return Selection.getSingle().isToTheLeft() ?
+                            let single = Selection.getSingle();
+                            return single && single.isToTheLeft() ?
                                 "arrow_back" :
                                 "arrow_forward"
                         }

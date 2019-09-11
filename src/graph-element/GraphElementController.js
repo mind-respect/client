@@ -422,6 +422,10 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
     } else {
         model.moveBelow(otherEdge);
     }
+    otherEdge.getParentFork().refreshChildren();
+    Vue.nextTick(() => {
+        Store.dispatch("redraw")
+    });
     let parentOfOtherBubble = otherEdge.getParentBubble();
     if (parentOfOtherBubble.isGroupRelation()) {
         let identification = parentOfOtherBubble.getIdentification();
@@ -473,6 +477,7 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
         //I don't know why I have to Selection.reset() to select the same bubble.
         Selection.removeAll();
         Selection.setToSingle(model);
+        Store.dispatch("redraw");
     });
 };
 
@@ -484,7 +489,7 @@ GraphElementController.prototype.becomeExParent = function () {
     return Promise.resolve();
 };
 
-GraphElementController.prototype.addIdentifiers = function(){
+GraphElementController.prototype.addIdentifiers = function () {
     return this.addIdentificationCanDo();
 };
 
@@ -496,7 +501,7 @@ GraphElementController.prototype.addIdentifiers = function (identifiers, prevent
     return Promise.all(promises);
 };
 
-GraphElementController.prototype.addIdentificationCanDo = function(){
+GraphElementController.prototype.addIdentificationCanDo = function () {
     return true;
 };
 

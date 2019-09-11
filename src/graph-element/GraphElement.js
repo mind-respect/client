@@ -261,7 +261,7 @@ GraphElement.GraphElement.prototype.refreshChildren = function () {
     this.childrenKey = IdUri.uuid();
     if (this.component) {
         this.component.refreshChildren();
-        console.log("component refreshed")
+        // console.log("component refreshed")
     }
 };
 

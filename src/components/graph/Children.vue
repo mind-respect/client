@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div v-if="loaded">
+    <div v-if="loaded" @dragover="dragOver" @dragleave="dragLeave" @drop="childrenDrop">
         <div class="vertices-children-container" v-if="!isCenter && bubble.isVertexType()">
             <div v-for="child in bubble.rightBubbles" :class="{
                         'mt-6 mb-6' : bubble.rightBubbles.length === 2,
@@ -44,6 +44,8 @@
 
 <script>
 
+    import Dragged from '@/Dragged'
+
     export default {
         name: "Children",
         props: [
@@ -62,7 +64,18 @@
             this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
             this.loaded = true;
         },
-        methods: {},
+        methods: {
+            childrenDrop: function (event) {
+                Dragged.handleDrop(event, this.bubble);
+            },
+            dragOver: function (event) {
+                event.preventDefault();
+                // console.log("over " + this.bubble.getLabel())
+            },
+            dragLeave: function (event) {
+                event.preventDefault();
+            }
+        },
         computed: {
             isInverse: function () {
                 return this.bubble.isEdge() && this.bubble.isInverse();

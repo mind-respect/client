@@ -22,9 +22,11 @@
                 >
                     <v-progress-circular indeterminate color="third" size="64"></v-progress-circular>
                 </v-overlay>
-                <v-flex grow class="vertices-children-container left-oriented" :class="{
+                <v-flex grow class="vertices-children-container left-oriented pt-12 pb-12" @dragover="dragOver"
+                        @dragleave="dragLeave" @drop="childrenDropLeft" :class="{
                     'before-loaded': showLoading
-                }">
+                }"
+                >
                     <v-layout v-for="leftBubble in center.leftBubbles" :key="leftBubble.uiId">
                         <v-flex grow :class="{
                         'mt-3' : center.leftBubbles.length === 2 && center.leftBubbles[0].isEdge(),
@@ -45,7 +47,8 @@
                             direction="center"
                     ></Bubble>
                 </div>
-                <v-flex grow class="vertices-children-container right-oriented" :class="{
+                <v-flex grow class="vertices-children-container right-oriented pt-12 pb-12" @dragover="dragOver"
+                        @dragleave="dragLeave" @drop="childrenDropRight" :class="{
                     'before-loaded': showLoading
                 }">
                     <v-layout v-for="rightBubble in center.rightBubbles" :key="rightBubble.uiId">
@@ -99,6 +102,7 @@
     import MetaController from '@/identifier/MetaController'
     import GraphElement from "@/graph-element/GraphElement";
     import GraphDraw from '@/draw/GraphDraw'
+    import Dragged from '@/Dragged'
 
     export default {
         name: "Graph",
@@ -166,6 +170,20 @@
             })
         },
         methods: {
+            dragLeave: function () {
+                // console.log("over center leave")
+            },
+            dragOver: function (event) {
+                //must prevent default in drag over in order for drop to work
+                event.preventDefault();
+                // console.log("over center")
+            },
+            childrenDropLeft: function (event) {
+                Dragged.handleCenterDrop(event, this.center, true);
+            },
+            childrenDropRight: function (event) {
+                Dragged.handleCenterDrop(event, this.center, false);
+            },
             preventUndesirableDragging: function (event) {
                 if (!event.target.classList.contains("in-bubble-content")) {
                     console.warn("unwanted dragged occurred on " + event.target);
