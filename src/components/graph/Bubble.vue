@@ -292,8 +292,8 @@
                 isMetaRelated: null,
                 dragOverArrow: null,
                 backgroundColor: Color.bubbleBackground,
-                contentKey: null,
-                childrenKey: null,
+                contentKey: IdUri.uuid(),
+                childrenKey: IdUri.uuid(),
                 isEditFlow: false
             }
         },
@@ -305,7 +305,6 @@
             this.bubble.isEditFlow = false;
             this.bubble.direction = this.direction;
             this.bubble.component = this;
-            this.contentKey = IdUri.uuid();
             this.chipColor = this.bubble.isMetaRelation() ? "third" : "secondary";
             let parentBubble = this.bubble.getParentBubble();
             this.isMetaRelated = this.bubble.isMetaRelation() || this.bubble.isMetaGroupVertex() || (parentBubble && parentBubble.isMetaRelation());
@@ -371,6 +370,9 @@
             relationPlaceholder: function () {
                 return this.bubble.isGroupRelation() || this.bubble.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
             },
+            refreshContent: function () {
+                this.contentKey = IdUri.uuid();
+            },
             refreshChildren: function () {
                 this.childrenKey = IdUri.uuid();
             },
@@ -432,7 +434,7 @@
                 setTimeout(() => {
                     this.$nextTick(() => {
                         this.$set(this.bubble, "isSelected", true);
-                        this.contentKey = IdUri.uuid();
+                        this.refreshContent()
                         this.$nextTick(() => {
                             GraphUi.enableDragScroll();
                             if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {

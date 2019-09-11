@@ -262,11 +262,13 @@ FriendlyResource.FriendlyResource.prototype.isForkType = function () {
 
 FriendlyResource.FriendlyResource.prototype.select = function () {
     this.isSelected = true;
+    this.refreshContent();
 };
 
 FriendlyResource.FriendlyResource.prototype.deselect = function () {
     this.blur();
     this.isSelected = false;
+    this.refreshContent();
 };
 
 FriendlyResource.FriendlyResource.prototype.blur = function () {

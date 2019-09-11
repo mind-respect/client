@@ -29,7 +29,7 @@ api.setToSingle = function (graphElement, noScroll) {
             selected.deselect();
         }
     });
-    graphElement.isSelected = true;
+    graphElement.select();
     Store.dispatch("setSelected", [
         api._storeFormat(graphElement)
     ]);
