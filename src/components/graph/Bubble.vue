@@ -518,7 +518,7 @@
                 GraphUi.enableDragScroll();
             },
             labelDragEnter: function (event) {
-                console.log("dragover " + this.bubble.getLabel());
+                // console.log("dragover " + this.bubble.getLabel());
                 /*
                 method name is drag enter but actually
                 called on drag over to enable drop handler to trigger
