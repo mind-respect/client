@@ -336,7 +336,7 @@
                 }
             },
             setupCenters: function () {
-                let isOwner = this.$store.state.user && this.$store.state.user.username === this.$route.params.username;
+                let isOwner = this.$store.state.user && (!this.$route.params.username || this.$store.state.user.username === this.$route.params.username);
                 let centersRequest = isOwner ? CenterGraphElementService.getPublicAndPrivate() : CenterGraphElementService.getPublicOnlyForUsername(
                     this.$route.params.username
                 );
@@ -407,7 +407,7 @@
             reload: function () {
                 this.loaded = false;
                 let promise;
-                if (this.$route.name === 'UserHome') {
+                if (this.$route.name === 'UserHome' || this.$route.name === 'home') {
                     this.tabMenu = 0;
                     promise = this.setupCenters();
                 } else if (this.$route.name === 'FriendsUserHome') {
@@ -430,7 +430,7 @@
                 if (!this.$store.state.user) {
                     return false;
                 }
-                return this.$route.params.username === this.$store.state.user.username
+                return this.$route.params.username === undefined || this.$route.params.username === this.$store.state.user.username
             },
             isTesting: function () {
                 return process.env.NODE_ENV == "test";
@@ -444,12 +444,14 @@
                 } else {
                     pathName = "FriendsUserHome";
                 }
-                this.$router.push({
-                    name: pathName,
-                    params: {
-                        username: this.$route.params.username
-                    }
-                });
+                if (this.$route.name !== 'home' && this.$route.name !== pathName) {
+                    this.$router.push({
+                        name: pathName,
+                        params: {
+                            username: this.$route.params.username
+                        }
+                    });
+                }
             },
             '$route.name': function () {
                 this.reload();

@@ -1,14 +1,19 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-Vue.use(Router)
-export default new Router({
+
+Vue.use(Router);
+import Store from '@/store'
+
+const router = new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
         {
             path: '/',
             name: 'home',
-            component: () => import('./views/About.vue')
+            component: () => {
+                return Store.state.user === undefined ? import('./views/About.vue') : import('./views/UserHome.vue');
+            }
         },
         {
             path: '/welcome',
@@ -64,4 +69,5 @@ export default new Router({
             component: () => import('./views/Center.vue')
         }
     ]
-})
+});
+export default router;
