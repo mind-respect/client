@@ -431,26 +431,20 @@
                 } else {
                     this.showMenu = false;
                 }
-                setTimeout(() => {
-                    this.$nextTick(() => {
-                        this.$set(this.bubble, "isSelected", true);
-                        this.refreshContent()
-                        this.$nextTick(() => {
-                            GraphUi.enableDragScroll();
-                            if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
-                                if (this.bubble.isSelected) {
-                                    Selection.remove(this.bubble);
-                                } else {
-                                    Selection.add(this.bubble);
-                                }
-                            } else {
-                                Selection.setToSingle(
-                                    this.bubble
-                                );
-                            }
-                        });
-                    });
-                })
+                this.$nextTick(() => {
+                    GraphUi.enableDragScroll();
+                    if (UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey) {
+                        if (this.bubble.isSelected) {
+                            Selection.remove(this.bubble);
+                        } else {
+                            Selection.add(this.bubble);
+                        }
+                    } else {
+                        Selection.setToSingle(
+                            this.bubble
+                        );
+                    }
+                });
             },
             dblclick: function (event) {
                 event.stopPropagation();

@@ -612,7 +612,10 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
     if (this.isSingle()) {
         GraphElementService.changeChildrenIndex(this.model().getParentVertex());
     }
-    Store.dispatch("redraw");
+    Vue.nextTick(()=>{
+        Store.dispatch("redraw");
+    });
+
 };
 
 GraphElementController.prototype.removeIdentifier = function (identifier, preventMoving) {
