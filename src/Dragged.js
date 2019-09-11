@@ -29,7 +29,7 @@ const Dragged = {
         return Dragged.dragged.controller()[method](closestChildEdge);
     },
     handleCenterDrop: function (event, parent, isLeft) {
-        console.log("dropped " + parent.getLabel());
+        // console.log("dropped " + parent.getLabel());
         if (parent.isDragOver) {
             return Dragged.dragged.controller().moveUnderParent(
                 parent
@@ -54,8 +54,8 @@ const Dragged = {
             }
         });
         let method = isAbove ? "moveAbove" : "moveBelow";
-        console.log("closestChildEdge  " + closestChildEdge.getLabel());
-        console.log("dragged " + Dragged.dragged.getLabel());
+        // console.log("closestChildEdge  " + closestChildEdge.getLabel());
+        // console.log("dragged " + Dragged.dragged.getLabel());
         return Dragged.dragged.controller()[method](closestChildEdge);
     }
 
