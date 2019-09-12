@@ -292,6 +292,7 @@ VertexController.prototype.setShareLevelDo = function (shareLevel) {
             vertex.getParentVertex().incrementNbFriendNeighbors();
         }
         vertex.setShareLevel(shareLevel);
+        vertex.refreshButtons();
         if (vertex.model().isPublic()) {
             vertex.getParentVertex().decrementNbPublicNeighbors();
         }
