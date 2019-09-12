@@ -55,6 +55,7 @@ EdgeController.prototype.addChild = async function () {
             this.model(),
             newGroupRelation
         );
+        newGroupRelation.refreshChildren();
         Vue.nextTick(() => {
             GraphElementService.changeChildrenIndex(
                 this.model().getParentVertex()

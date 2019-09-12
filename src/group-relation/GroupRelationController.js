@@ -100,6 +100,10 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         index
     );
     CurrentSubGraph.get().add(triple.edge);
+    if (!saveIndex) {
+        this.model().refreshChildren();
+    }
+    this.model().refreshChildren();
     Vue.nextTick(() => {
         saveIndex === false ? Promise.resolve() : GraphElementService.changeChildrenIndex(
             this.model().getParentVertex()
@@ -211,7 +215,7 @@ GroupRelationController.prototype.removeCanDo = function () {
     return false;
 };
 
-GroupRelationController.prototype.addIdentificationCanDo = function(){
+GroupRelationController.prototype.addIdentificationCanDo = function () {
     return false;
 };
 
