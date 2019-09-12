@@ -92,7 +92,7 @@
                                             :draggable="!isCenter && !isEditFlow"
                                     >
                                         <InLabelButtons :bubble="bubble" :isLeft="isLeft"
-                                                        :isCenter="isCenter"></InLabelButtons>
+                                                        :isCenter="isCenter" :key="inLabelMenuKey"></InLabelButtons>
 
 
                                         <v-badge color="third" :left="isLeft">
@@ -117,7 +117,8 @@
                                     </div>
                                 </template>
                                 <div :style="'background-color:' + backgroundColor">
-                                    <BubbleButtons v-show="menuFlow === 'buttons'"></BubbleButtons>
+                                    <BubbleButtons v-show="menuFlow === 'buttons'"
+                                                   @refresh="buttonRefresh"></BubbleButtons>
                                     <v-card :href="linkMenuHref" target="_blank" v-show="menuFlow === 'link'">
                                         <v-card-title class="body-1 link-menu">
                                             <v-icon class="mr-2">share</v-icon>
@@ -192,7 +193,7 @@
                                         >
                                             <InLabelButtons :bubble="bubble" :isLeft="isLeft" :isCenter="isCenter"
                                                             class="vh-center"
-                                                            v-if="!isShrinked"></InLabelButtons>
+                                                            v-if="!isShrinked" :key="inLabelMenuKey"></InLabelButtons>
                                             <div class="bubble-label white--text"
                                                  @blur="leaveEditFlow"
                                                  :data-placeholder="relationPlaceholder()"
@@ -215,7 +216,8 @@
                                     </div>
                                 </template>
                                 <div :style="'background-color:' + backgroundColor">
-                                    <BubbleButtons v-show="menuFlow === 'link'"></BubbleButtons>
+                                    <BubbleButtons v-show="menuFlow === 'link'"
+                                                   @refresh="buttonRefresh"></BubbleButtons>
                                     <v-card :href="linkMenuHref" target="_blank" v-show="menuFlow === 'link'">
                                         <v-card-title class="body-1 link-menu">
                                             <v-icon class="mr-2">share</v-icon>
@@ -294,7 +296,8 @@
                 backgroundColor: Color.bubbleBackground,
                 contentKey: IdUri.uuid(),
                 childrenKey: IdUri.uuid(),
-                isEditFlow: false
+                inLabelMenuKey: IdUri.uuid(),
+                isEditFlow: false,
             }
         },
         // updated: function () {
@@ -359,6 +362,9 @@
             }
         },
         methods: {
+            buttonRefresh: function () {
+                this.inLabelMenuKey = IdUri.uuid();
+            },
             menuWidth: function () {
                 return this.menuFlow === 'buttons' ? 250 : "auto";
             },

@@ -20,9 +20,9 @@
                 <v-card-title class="vh-center">
                     <h4 class="subtitle-1 white--text font-weight-bold text-center">
                         {{$t('banner:desc')}}
-<!--                        <a href="#" @click.prevent="Scroll.goToSection('mrLevel')" class="white&#45;&#45;text">-->
-                            {{$t('banner:desc2')}}
-<!--                        </a>-->
+                        <!--                        <a href="#" @click.prevent="Scroll.goToSection('mrLevel')" class="white&#45;&#45;text">-->
+                        {{$t('banner:desc2')}}
+                        <!--                        </a>-->
                         {{$t('banner:desc3')}}
                     </h4>
                 </v-card-title>
@@ -39,14 +39,16 @@
         name: 'banner',
         data: function () {
             I18n.i18next.addResources("en", "banner", {
-                'slogan': 'Structure your notes, make your thinking evolve',
+                slogan: 'Structure your notes, make your thinking evolve',
+                slogan2: 'Map your truth',
                 desc: 'Mindrespect.com is a',
                 desc2: 'unique way',
                 desc3: 'to take notes'
             });
             // 'slogan': 'Le meilleur endroit pour vos idées',
             I18n.i18next.addResources("fr", "banner", {
-                'slogan': 'Structure vos notes, fait évoluer votre pensée',
+                slogan: 'Structure vos notes, fait évoluer votre pensée',
+                slogan2: 'Map your truth',
                 desc: "Mindrespect.com est une",
                 desc2: "façon unique",
                 desc3: "de prendre ses notes"

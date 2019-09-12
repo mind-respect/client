@@ -12,7 +12,7 @@ const router = new Router({
                 path: '/',
                 name: 'home',
                 component: () => {
-                    if (Store.state.user === undefined) {
+                    if (Store.state.user === undefined || Store.state.user === null) {
                         return import('./views/About.vue');
                     }
                     router.replace({

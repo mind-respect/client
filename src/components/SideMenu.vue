@@ -92,7 +92,7 @@
                     stateless
                     id="buttonsDrawer"
             >
-                <BubbleButtons :isInSideMenu="true"></BubbleButtons>
+                <BubbleButtons :isInSideMenu="true" @refresh="buttonRefresh"></BubbleButtons>
             </v-navigation-drawer>
         </v-layout>
     </v-navigation-drawer>
@@ -192,6 +192,11 @@
             }
         },
         methods: {
+            buttonRefresh: function () {
+                Selection.getSelectedElements().forEach((graphElement) => {
+                    graphElement.refreshButtons();
+                });
+            },
             focus: function () {
                 KeyboardActions.disable();
             },

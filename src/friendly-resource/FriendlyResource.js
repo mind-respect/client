@@ -895,10 +895,6 @@ FriendlyResource.FriendlyResource.prototype.getIcon = function () {
     return Icon.getForGraphElement(this);
 };
 
-FriendlyResource.FriendlyResource.prototype.forceInLabelMenuUpdate = function () {
-    this.inLabelMenuKey = IdUri.uuid();
-};
-
 FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceServerFormat) {
     this._friendlyResourceServerFormat = friendlyResourceServerFormat;
     this.draw = true;
@@ -910,7 +906,6 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
         this._friendlyResourceServerFormat.label = "";
     }
     this.uiId = IdUri.uuid();
-    this.forceInLabelMenuUpdate();
     this.uriFacade = new IdUri.IdUri(
         this.getUri()
     );

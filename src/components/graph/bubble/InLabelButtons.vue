@@ -7,7 +7,6 @@
                                                      'in-label-buttons-vertex' : bubble.isVertexType(),
                                                      'in-label-icons-left': isLeft && !isCenter
                                                     }"
-            :key="bubble.inLabelMenuKey"
     >
         <v-icon small :color="color" v-if="isCenter">
             filter_center_focus

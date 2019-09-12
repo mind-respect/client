@@ -272,6 +272,13 @@ GraphElement.GraphElement.prototype.refreshContent = function () {
     }
 };
 
+GraphElement.GraphElement.prototype.refreshButtons = function () {
+    if (this.component) {
+        this.component.buttonRefresh();
+        // console.log("component refreshed")
+    }
+};
+
 GraphElement.GraphElement.prototype.getSelfTag = function () {
     let selfTag = this.getIdentifierHavingExternalUri(
         this.getUri()

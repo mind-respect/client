@@ -173,6 +173,7 @@
         methods: {
             forceRefresh: function () {
                 this.menuKey = IdUri.uuid();
+                this.$emit("refresh")
             },
             copyLabel: function () {
                 this.$copyText(

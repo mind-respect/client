@@ -175,7 +175,6 @@ Vertex.prototype.makePublic = function () {
 
 Vertex.prototype.setShareLevel = function (shareLevel) {
     this._vertexServerFormat.vertex.shareLevel = shareLevel.toUpperCase();
-    this.forceInLabelMenuUpdate();
 };
 
 Vertex.prototype.getGraphElementType = function () {
