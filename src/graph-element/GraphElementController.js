@@ -539,6 +539,7 @@ GraphElementController.prototype.addIdentification = function (identifier, preve
             this.model().addIdentifications(
                 identifications
             );
+            this.model().refreshImages();
             this.model().refreshButtons();
             return identifications;
         })
@@ -639,6 +640,7 @@ GraphElementController.prototype.removeIdentifier = function (identifier, preven
             this.model().getDuplicates().forEach((duplicate) => {
                 duplicate.removeIdentifier(identifier);
             });
+            this.model().refreshImages();
             this.model().refreshButtons();
         });
     });

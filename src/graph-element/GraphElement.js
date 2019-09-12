@@ -274,7 +274,14 @@ GraphElement.GraphElement.prototype.refreshContent = function () {
 
 GraphElement.GraphElement.prototype.refreshButtons = function () {
     if (this.component) {
-        this.component.buttonRefresh();
+        this.component.refreshButtons();
+        // console.log("component refreshed")
+    }
+};
+
+GraphElement.GraphElement.prototype.refreshImages = function () {
+    if (this.component) {
+        this.component.refreshImages();
         // console.log("component refreshed")
     }
 };

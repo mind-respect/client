@@ -169,7 +169,7 @@
         },
         methods: {
             refresh: function(){
-                this.refreshKey = IdUri.uuid()
+                this.refreshKey = IdUri.uuid();
             },
             identifiersByLatest: function () {
                 return this.bubble.getTagsAndSelfIfRelevant().sort((a, b) => {

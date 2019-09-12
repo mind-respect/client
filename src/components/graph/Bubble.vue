@@ -118,7 +118,7 @@
                                 </template>
                                 <div :style="'background-color:' + backgroundColor">
                                     <BubbleButtons v-show="menuFlow === 'buttons'"
-                                                   @refresh="buttonRefresh"></BubbleButtons>
+                                                   @refresh="refreshButtons"></BubbleButtons>
                                     <v-card :href="linkMenuHref" target="_blank" v-show="menuFlow === 'link'">
                                         <v-card-title class="body-1 link-menu">
                                             <v-icon class="mr-2">share</v-icon>
@@ -217,7 +217,7 @@
                                 </template>
                                 <div :style="'background-color:' + backgroundColor">
                                     <BubbleButtons v-show="menuFlow === 'link'"
-                                                   @refresh="buttonRefresh"></BubbleButtons>
+                                                   @refresh="refreshButtons"></BubbleButtons>
                                     <v-card :href="linkMenuHref" target="_blank" v-show="menuFlow === 'link'">
                                         <v-card-title class="body-1 link-menu">
                                             <v-icon class="mr-2">share</v-icon>
@@ -297,7 +297,9 @@
                 contentKey: IdUri.uuid(),
                 childrenKey: IdUri.uuid(),
                 inLabelMenuKey: IdUri.uuid(),
+                imageRefresh: IdUri.uuid(),
                 isEditFlow: false,
+                imageUrl: false
             }
         },
         // updated: function () {
@@ -308,6 +310,7 @@
             this.bubble.isEditFlow = false;
             this.bubble.direction = this.direction;
             this.bubble.component = this;
+            this.refreshImages();
             this.chipColor = this.bubble.isMetaRelation() ? "third" : "secondary";
             let parentBubble = this.bubble.getParentBubble();
             this.isMetaRelated = this.bubble.isMetaRelation() || this.bubble.isMetaGroupVertex() || (parentBubble && parentBubble.isMetaRelation());
@@ -353,16 +356,17 @@
                     return false;
                 }
                 return this.bubble.isShrinked();
-            },
-            imageUrl: function () {
-                let tagsWithImages = this.bubble.getIdentifiers().filter((tag) => {
-                    return tag.hasImages() && tag.getImage().urlForSmall;
-                });
-                return tagsWithImages.length ? tagsWithImages[0].getImage().urlForSmall : false;
             }
         },
         methods: {
-            buttonRefresh: function () {
+            refreshImages: function () {
+                let tagsWithImages = this.bubble.getIdentifiers().filter((tag) => {
+                    return tag.hasImages() && tag.getImage().urlForSmall;
+                });
+                this.imageUrl = tagsWithImages.length ? tagsWithImages[0].getImage().urlForSmall : false;
+                this.imageRefresh = IdUri.uuid();
+            },
+            refreshButtons: function () {
                 this.inLabelMenuKey = IdUri.uuid();
             },
             menuWidth: function () {
