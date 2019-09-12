@@ -215,6 +215,9 @@
         },
         watch: {
             tabMenu: function () {
+                if (this.$store.state.sideMenuFlow === false) {
+                    return;
+                }
                 this.$store.dispatch("setSideMenuFlow", this.tabMenu);
             },
             sideMenuFlow: function () {
