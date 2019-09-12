@@ -46,6 +46,9 @@
                          style="left:0;">
                     </div>
                     <v-spacer v-if="isLeft && isLeaf"></v-spacer>
+                    <div class="image_container">
+                        <v-img :src="imageUrl" max-height="90" v-if="imageUrl" @load="imageLoaded"></v-img>
+                    </div>
                     <div
                             v-if="bubble.isVertexType()"
                             class="bubble vertex graph-element relative vh-center"
@@ -55,9 +58,6 @@
                                 'reverse': isLeft && !isCenter
                             }"
                     >
-                        <div class="image_container">
-                            <v-img :src="imageUrl" max-height="90" v-if="imageUrl" @load="imageLoaded"></v-img>
-                        </div>
                         <div class="in-bubble-content-wrapper unselectable vh-center">
                             <v-menu
                                     v-model="showMenu"
@@ -364,7 +364,7 @@
                     return tag.hasImages() && tag.getImage().urlForSmall;
                 });
                 this.imageUrl = tagsWithImages.length ? tagsWithImages[0].getImage().urlForSmall : false;
-                this.imageRefresh = IdUri.uuid();
+                // this.imageRefresh = IdUri.uuid();
             },
             refreshButtons: function () {
                 this.inLabelMenuKey = IdUri.uuid();
@@ -663,7 +663,7 @@
                 await this.$nextTick();
                 setTimeout(()=>{
                     return this.$store.dispatch('redraw');
-                }, 50);
+                }, 250);
             }
         },
         watch: {

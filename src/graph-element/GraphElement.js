@@ -7,6 +7,8 @@ import IdUri from '@/IdUri'
 import Color from '@/Color'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphElementType from '@/graph-element/GraphElementType'
+import Vue from 'vue'
+import Store from '@/store'
 
 const controllerGetters = {};
 
@@ -177,8 +179,7 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
         this._graphElementServerFormat.font = GraphElement.DEFAULT_FONT;
     }
     this._buildIdentifications();
-    this.refreshChildren();
-    this.refreshContent();
+    this.childrenKey = IdUri.uuid();
     this.isSelected = false;
     // this.wikipediaLinksPromise = this._buildWikidataLinks();
     return this;
@@ -261,6 +262,12 @@ GraphElement.GraphElement.prototype.refreshChildren = function () {
     this.childrenKey = IdUri.uuid();
     if (this.component) {
         this.component.refreshChildren();
+        Vue.nextTick(() => {
+            Store.dispatch("redraw");
+            setTimeout(() => {
+                Store.dispatch("redraw");
+            }, 250);
+        });
         // console.log("component refreshed")
     }
 };

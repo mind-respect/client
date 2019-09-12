@@ -453,7 +453,7 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
             this.model().getParentVertex()
         );
         this.model().loading = false;
-        Store.dispatch("redraw");
+        this.model().refreshChildren();
     });
 };
 
