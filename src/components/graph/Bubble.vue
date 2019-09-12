@@ -661,7 +661,9 @@
             },
             imageLoaded: async function () {
                 await this.$nextTick();
-                return this.$store.dispatch('redraw');
+                setTimeout(()=>{
+                    return this.$store.dispatch('redraw');
+                }, 50);
             }
         },
         watch: {
