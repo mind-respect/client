@@ -539,6 +539,7 @@ GraphElementController.prototype.addIdentification = function (identifier, preve
             this.model().addIdentifications(
                 identifications
             );
+            this.model().refreshButtons();
             return identifications;
         })
     });
@@ -612,7 +613,7 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
     if (this.isSingle()) {
         GraphElementService.changeChildrenIndex(this.model().getParentVertex());
     }
-    Vue.nextTick(()=>{
+    Vue.nextTick(() => {
         Store.dispatch("redraw");
     });
 
@@ -638,6 +639,7 @@ GraphElementController.prototype.removeIdentifier = function (identifier, preven
             this.model().getDuplicates().forEach((duplicate) => {
                 duplicate.removeIdentifier(identifier);
             });
+            this.model().refreshButtons();
         });
     });
 };

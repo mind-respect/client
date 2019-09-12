@@ -37,10 +37,10 @@
         <v-card flat class="pt-0">
             <v-card-text class="pt-0" id="tagMenu"></v-card-text>
         </v-card>
-        <v-card min-height="150" flat class="pt-0 text-center">
+        <v-card min-height="150" flat class="pt-0 text-center" :key="refreshKey">
             <v-progress-circular indeterminate color="third" v-if="tagLoading"></v-progress-circular>
             <v-list subheader three-line>
-                <v-list-item v-for="identifier in identifiersByLatest" :key="identifier.externalResourceUri"
+                <v-list-item v-for="identifier in identifiersByLatest()" :key="identifier.externalResourceUri"
                              class="mr-0 pr-0">
                     <v-list-item-action v-if="identifier.hasImages()" class="ma-3 ml-0">
                         <v-img :src="identifier.getImage().urlForSmall" max-height="90"></v-img>
@@ -106,6 +106,7 @@
 </template>
 
 <script>
+    import IdUri from "@/IdUri";
     import SearchResultContent from '@/components/SearchResultContent'
     import SearchResultAction from '@/components/SearchResultAction'
     import I18n from '@/I18n'
@@ -144,7 +145,8 @@
                 items: [],
                 menuProps: {
                     "contentClass": 'side-search-menu search-menu'
-                }
+                },
+                refreshKey: IdUri.uuid()
             }
         },
         mounted: function () {
@@ -156,11 +158,6 @@
             selected: function () {
                 return this.$store.state.selected;
             },
-            identifiersByLatest: function () {
-                return this.bubble.getTagsAndSelfIfRelevant().sort((a, b) => {
-                    return b.getCreationDate() - a.getCreationDate();
-                })
-            }
         },
         watch: {
             search: function (val) {
@@ -171,6 +168,14 @@
             }
         },
         methods: {
+            refresh: function(){
+                this.refreshKey = IdUri.uuid()
+            },
+            identifiersByLatest: function () {
+                return this.bubble.getTagsAndSelfIfRelevant().sort((a, b) => {
+                    return b.getCreationDate() - a.getCreationDate();
+                })
+            },
             querySelections(term) {
                 this.searchLoading = true;
                 SearchService.tags(term).then((results) => {
@@ -202,6 +207,7 @@
                     return this.identify(identifier);
                 }).then(() => {
                     this.tagLoading = false;
+                    this.refresh();
                     this.$store.dispatch("redraw");
                 });
                 // var self = this;
@@ -229,6 +235,7 @@
             removeIdentifier: async function ($event, identifier) {
                 $event.preventDefault();
                 await this.bubble.controller().removeIdentifier(identifier);
+                this.refresh();
                 await this.$nextTick();
                 this.$store.dispatch("redraw");
             },
