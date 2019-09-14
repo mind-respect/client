@@ -79,13 +79,14 @@ GroupRelation.prototype.removeChild = function (child, isTemporary) {
                 this,
                 child
             );
-            if(child.isLabelEmpty()){
+            if (child.isLabelEmpty()) {
                 child.controller().setLabel(this.getLabel())
             }
         }
         if (this.children.length === 0) {
             this.getParentBubble().removeChild(this);
         }
+        this.refreshChildren();
     }
 };
 

@@ -27,6 +27,26 @@
                     </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
+            <v-list-item v-if="isGraphRoute && $vuetify.breakpoint.mdAndDown" @click="zoomOut">
+                <v-list-item-action>
+                    <v-icon>zoom_out</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{$t('button:zoomOut')}}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item v-if="isGraphRoute && $vuetify.breakpoint.mdAndDown" @click="zoomIn">
+                <v-list-item-action>
+                    <v-icon>zoom_in</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{$t('button:zoomIn')}}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
             <v-list-item v-if="$store.state.user && $vuetify.breakpoint.mdAndDown" @click="createVertex">
                 <v-list-item-action>
                     <v-icon color="third">add</v-icon>
@@ -141,14 +161,36 @@
 
     export default {
         name: "SettingsMenu",
+        component: {
+            Button: () => import('@/components/graph/Button')
+        },
         data: function () {
             return {
-                backgroundColor: null
+                backgroundColor: null,
+                zoomInButton: {
+                    action: "zoomIn",
+                    icon: "zoom_in",
+                    ctrlShortcut: "&plus;",
+                    controller: AppController
+                },
+                zoomOutButton: {
+                    action: "zoomOut",
+                    icon: "zoom_out",
+                    ctrlShortcut: "&minus;",
+                    controller: AppController,
+                    disableNotHide: true
+                }
             }
         },
         mounted: function () {
         },
         methods: {
+            zoomIn: function () {
+                AppController.zoomIn();
+            },
+            zoomOut: function (event) {
+                AppController.zoomOut();
+            },
             createVertex: function () {
                 AppController.createVertex();
             },

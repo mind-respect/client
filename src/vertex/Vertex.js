@@ -350,7 +350,9 @@ Vertex.prototype.removeChild = function (child, isTemporary) {
     if (removedChild && child.isEdge()) {
         this.decrementNumberOfConnectedEdges();
     }
-    this.refreshChildren();
+    if(!isTemporary){
+        this.refreshChildren();
+    }
 };
 
 api.getWhenEmptyLabel = function () {

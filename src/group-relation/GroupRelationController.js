@@ -100,7 +100,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         index
     );
     CurrentSubGraph.get().add(triple.edge);
-    if (!saveIndex) {
+    if (saveIndex) {
         this.model().refreshChildren();
     }
     this.model().refreshChildren();

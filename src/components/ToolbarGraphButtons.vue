@@ -14,8 +14,8 @@
         </v-btn>
         <!--                <Button :button="undoButton" v-if="isGraphRoute"></Button>-->
         <!--                <Button :button="redoButton" v-if="isGraphRoute"></Button>-->
-                <Button :button="zoomOutButton" v-if="isGraphRoute"></Button>
-                <Button :button="zoomInButton" v-if="isGraphRoute"></Button>
+                <Button :button="zoomOutButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></Button>
+                <Button :button="zoomInButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></Button>
                 <Button :button="createVertexButton" :hightlight="true"
                         v-if="$store.state.user && $vuetify.breakpoint.lgAndUp"></Button>
                 <SettingsMenu></SettingsMenu>
