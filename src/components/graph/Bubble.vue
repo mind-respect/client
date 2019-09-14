@@ -102,7 +102,7 @@
                                             <div
                                                     class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
                                                     @blur="leaveEditFlow"
-                                                    :data-placeholder="isEditFlow ? '' : $t('vertex:default')"
+                                                    :data-placeholder="$t('vertex:default')"
                                                     v-html="label()"
                                                     @focus="focus"
                                                     @keydown="keydown"
@@ -872,7 +872,8 @@
     .bubble-label {
         display: inline-block;
         word-break: break-word;
-        outline: 0 solid transparent;
+        /*outline: 1px solid transparent to show cursor on empty label*/
+        outline: 1px solid transparent;
         border: none;
         width: auto;
     }
