@@ -674,7 +674,7 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
     .vertex-drop-arrow-top {
         top: -12px !important;
     }
@@ -880,6 +880,24 @@
 
     .image-container-min-height {
         min-height: 60px;
+    }
+
+    .bubble-label {
+        text-align: center;
+        color: black;
+        &:empty{
+            text-align: left;
+            color: grey;
+            max-width: 100%;
+            &:after {
+                content: attr(data-placeholder);
+                font-style: italic;
+                font-size: calc(1em);
+            }
+        }
+        &[contenteditable='true']:before {
+            content: "\feff "; //to prevent small height when edit in firefox http://stackoverflow.com/a/23530317
+        }
     }
 
 </style>
