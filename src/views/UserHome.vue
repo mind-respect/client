@@ -71,9 +71,14 @@
                             {{$t('userhome:confirmedFriend')}}
                         </v-chip>
                     </v-card-title>
-                    <v-card flat class="ma-0 pa-0" min-height="200" :class="{
+                    <v-card flat class="ma-0 pa-0 pb-12" min-height="200" :class="{
                         'vh-center': !loaded
-                    }">
+                    }"
+                            v-infinite-scroll="addCenters"
+                            :infinite-scroll-disabled="busy"
+                            :infinite-scroll-distance="10"
+                            style="overflow-y:scroll;"
+                    >
                         <v-card-text class="pt-0">
                             <v-tooltip v-if="isOwner" left>
                                 <template v-slot:activator="{ on }">
@@ -93,12 +98,8 @@
                             </v-layout>
                             <v-layout
                                     wrap
-                                    class="pt-0"
+                                    class="pt-0 pb-12 mb-12"
                                     v-if="loaded && centers"
-                                    v-infinite-scroll="addCenters"
-                                    :infinite-scroll-disabled="busy"
-                                    :infinite-scroll-distance="10"
-                                    style="overflow-y:scroll;"
                             >
                                 <v-flex xs12 md6 v-if="centers.length === 0">
                                     <h3 class="subtitle-1 vh-center font-italic" v-if="centers.length === 0">
@@ -322,6 +323,10 @@
             }
         },
         methods: {
+
+            beforeDestroy: function () {
+                document.body.style["overflow-y"] = "scroll";
+            },
             addCenters() {
                 this.busy = true;
                 let centersRequest = this.isOwner ? CenterGraphElementService.getPublicAndPrivateWithSkip(this.centers.length) : CenterGraphElementService.getPublicOnlyForUsernameWithSkip(
@@ -451,6 +456,7 @@
             }
         },
         mounted: function () {
+            document.body.style["overflow-y"] = "hidden";
             if (this.isTesting) {
                 return;
             }
