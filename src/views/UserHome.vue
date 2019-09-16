@@ -98,6 +98,7 @@
                                     v-infinite-scroll="addCenters"
                                     :infinite-scroll-disabled="busy"
                                     :infinite-scroll-distance="10"
+                                    style="overflow-y:scroll;"
                             >
                                 <v-flex xs12 md6 v-if="centers.length === 0">
                                     <h3 class="subtitle-1 vh-center font-italic" v-if="centers.length === 0">
@@ -494,5 +495,4 @@
     .add-button-desktop {
         margin-top: -25px;
     }
-
 </style>
