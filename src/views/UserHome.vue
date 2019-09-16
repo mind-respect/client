@@ -442,6 +442,12 @@
                 promise.then(() => {
                     this.loaded = true;
                 });
+            },
+            handleScroll: function () {
+                if (!this.loaded) {
+                    return;
+                }
+                this.bottom = this.bottomVisible();
             }
         },
         mounted: function () {
@@ -462,9 +468,10 @@
             }
         },
         created() {
-            window.addEventListener('scroll', () => {
-                this.bottom = this.bottomVisible();
-            });
+            document.body.addEventListener('scroll', this.handleScroll);
+        },
+        beforeDestroy: function () {
+            document.body.removeEventListener('scroll', this.handleScroll);
         },
         watch: {
             bottom(bottom) {

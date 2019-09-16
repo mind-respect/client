@@ -169,7 +169,10 @@
             })
         },
         created: function () {
-            window.addEventListener('resize', this.handleResize);
+            document.body.addEventListener('resize', this.handleResize);
+        },
+        beforeDestroy: function () {
+            document.body.removeEventListener('resize', this.handleResize)
         },
         methods: {
             dragLeave: function () {
@@ -199,9 +202,6 @@
                 }
                 Breakpoint.set(this.$vuetify.breakpoint)
             }
-        },
-        beforeDestroy: function () {
-            window.removeEventListener('resize', this.handleResize)
         },
         computed: {
             isOwner: function () {
