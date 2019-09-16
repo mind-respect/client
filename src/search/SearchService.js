@@ -9,12 +9,12 @@ import SearchResult from '@/search/SearchResult'
 
 const api = {};
 api.tags = function (term) {
-    return sortForTags(
-        resultsFromProviders([
-            api.searchForAllOwnResources(term),
-            WikidataService.search(term),
-        ])
-    );
+    return resultsFromProviders([
+        api.searchForAllOwnResources(term).then((results) => {
+            return sortForTags(results);
+        }),
+        WikidataService.search(term)
+    ]);
 };
 api.searchForAllOwnResources = function (searchText) {
     return Service.api().post(
