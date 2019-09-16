@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div class="" id="user-home" v-if="!isTesting" >
+    <div class="" id="user-home" v-if="!isTesting">
         <v-tabs
                 v-model="tabMenu"
                 color="primary"
@@ -73,11 +73,7 @@
                     </v-card-title>
                     <v-card flat class="ma-0 pa-0" min-height="200" :class="{
                         'vh-center': !loaded
-                    }"
-                            v-infinite-scroll="addCenters"
-                            infinite-scroll-disabled="busy"
-                            infinite-scroll-distance="10"
-                    >
+                    }">
                         <v-card-text class="pt-0">
                             <v-tooltip v-if="isOwner" left>
                                 <template v-slot:activator="{ on }">
@@ -99,6 +95,9 @@
                                     wrap
                                     class="pt-0"
                                     v-if="loaded && centers"
+                                    v-infinite-scroll="addCenters"
+                                    :infinite-scroll-disabled="busy"
+                                    :infinite-scroll-distance="10"
                             >
                                 <v-flex xs12 md6 v-if="centers.length === 0">
                                     <h3 class="subtitle-1 vh-center font-italic" v-if="centers.length === 0">
