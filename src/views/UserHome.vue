@@ -310,6 +310,30 @@
             }
         },
         methods: {
+            bottomVisible() {
+                const scrollY = window.scrollY;
+                const visible = document.documentElement.clientHeight;
+                const pageHeight = document.documentElement.scrollHeight;
+                const bottomOfPage = visible + scrollY >= pageHeight;
+                return bottomOfPage || pageHeight < visible;
+            },
+            addCenters() {
+                let centersRequest = this.isOwner ? CenterGraphElementService.getPublicAndPrivateWithSkip(this.centers.length) : CenterGraphElementService.getPublicOnlyForUsernameWithSkip(
+                    this.$route.params.username,
+                    this.centers.length
+                );
+                centersRequest.then((response) => {
+                    CenterGraphElement.fromServerFormat(response.data).map((center) => {
+                        center.labelSearch = center.getLabel();
+                        center.contextSearch = Object.values(center.getContext()).join(' ');
+                        return center;
+                    }).sort(function (a, b) {
+                        return b.getLastCenterDate() - a.getLastCenterDate();
+                    }).forEach((center) => {
+                        this.centers.push(center);
+                    });
+                });
+            },
             go: function ($event, path) {
                 this.$router.push(
                     path
@@ -345,15 +369,15 @@
                 } else {
                     this.tabMenu = 0;
                 }
-                return centersRequest.then(function (response) {
-                    this.centers = CenterGraphElement.fromServerFormat(response.data).map(function (center) {
+                return centersRequest.then((response) => {
+                    this.centers = CenterGraphElement.fromServerFormat(response.data).map((center) => {
                         center.labelSearch = center.getLabel();
                         center.contextSearch = Object.values(center.getContext()).join(' ');
                         return center;
                     }).sort(function (a, b) {
                         return b.getLastCenterDate() - a.getLastCenterDate();
                     });
-                }.bind(this))
+                });
             },
             setupFriendFlow: function () {
                 let promise = Promise.resolve();
@@ -436,7 +460,17 @@
                 return process.env.NODE_ENV == "test";
             }
         },
+        created() {
+            window.addEventListener('scroll', () => {
+                this.bottom = this.bottomVisible();
+            });
+        },
         watch: {
+            bottom(bottom) {
+                if (bottom) {
+                    this.addCenters()
+                }
+            },
             tabMenu: function () {
                 let pathName;
                 if (this.tabMenu === 0) {

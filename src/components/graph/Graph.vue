@@ -129,7 +129,6 @@
         },
         mounted: function () {
             this.showLoading = true;
-            window.addEventListener('resize', this.handleResize);
             CurrentSubGraph.set(SubGraph.empty());
             Selection.reset();
             let centerUri = MindMapInfo.getCenterBubbleUri();
@@ -169,27 +168,35 @@
                 this.$router.push("/")
             })
         },
+        created: function () {
+            window.addEventListener('resize', this.handleResize);
+        },
         methods: {
             dragLeave: function () {
                 // console.log("over center leave")
-            },
+            }
+            ,
             dragOver: function (event) {
                 //must prevent default in drag over in order for drop to work
                 event.preventDefault();
                 // console.log("over center")
-            },
+            }
+            ,
             childrenDropLeft: function (event) {
                 Dragged.handleCenterDrop(event, this.center, true);
-            },
+            }
+            ,
             childrenDropRight: function (event) {
                 Dragged.handleCenterDrop(event, this.center, false);
-            },
+            }
+            ,
             preventUndesirableDragging: function (event) {
                 if (!event.target.classList.contains("in-bubble-content")) {
                     console.warn("unwanted dragged occurred on " + event.target);
                     event.preventDefault();
                 }
-            },
+            }
+            ,
             handleResize: function () {
                 this.redrawKey = Math.random();
                 if (Selection.isSingle()) {
@@ -197,26 +204,31 @@
                 }
                 Breakpoint.set(this.$vuetify.breakpoint)
             }
-        },
+        }
+        ,
         beforeDestroy: function () {
             window.removeEventListener('resize', this.handleResize)
-        },
+        }
+        ,
         computed: {
             isOwner: function () {
                 if (!this.$store.state.user) {
                     return false;
                 }
                 return this.$route.params.username === this.$store.state.user.username
-            },
+            }
+            ,
             redraws: function () {
                 return this.$store.state.redraws;
-            },
+            }
+            ,
             zoomScale: function () {
                 return "transform: scale(" +
                     this.$store.state.zoom + "," +
                     this.$store.state.zoom + ")";
             }
-        },
+        }
+        ,
         watch: {
             redraws: async function () {
                 if (this.showLoading) {
@@ -240,6 +252,7 @@
                 .vertex {
                     .in-bubble-content {
                         max-width: 500px;
+
                         .bubble-label {
                             white-space: pre-wrap;
                         }
@@ -276,6 +289,7 @@
                         content: "\f02d";
                     }
                 }
+
                 .bubble-label {
                     $fontSizeExtra: max(0, 8 - $i / 1.20);
                     //font-size: calc(1em + #{$fontSizeExtra}vw);
@@ -297,10 +311,12 @@
         .in-bubble-content {
             zoom: 500%;
             -moz-transform: scale(5);
+
             .bubble-label {
                 //zoom:2000%;
             }
         }
+
         .bubble-content {
             //zoom:500%;
         }
