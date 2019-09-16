@@ -33,7 +33,7 @@
                     <SearchResultAction :item="item"></SearchResultAction>
                 </template>
                 <v-list-item slot="append-item" @click="createTagWithNoRef"
-                             v-if="search && search.trim() !== '' && items.length > 2">
+                             v-if="!searchLoading && search && search.trim() !== '' && items.length > 0">
                     <v-list-item-content>
                         <v-list-item-title>
                             "{{search}}"

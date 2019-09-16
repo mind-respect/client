@@ -29,7 +29,7 @@
             <SearchResultContent :item="item"></SearchResultContent>
             <SearchResultAction :item="item"></SearchResultAction>
         </template>
-        <v-list-item slot="no-data" @click="createCenterVertex">
+        <v-list-item slot="no-data" @click="createCenterVertex" v-if="!loading">
             <v-list-item-content>
                 <v-list-item-title>
                     {{$t('noSearchResults')}}
