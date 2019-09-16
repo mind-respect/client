@@ -675,20 +675,103 @@
 </script>
 
 <style scoped lang="scss">
-    .vertex-drop-arrow-top {
-        top: -12px !important;
+    $edgeSize: calc(1px + 0.1em);
+    $metaColor: purple;
+    $selectBubbleColor: transparent;
+
+    .bubble {
+        z-index: 5;
+        .in-bubble-content {
+            z-index: 3;
+        }
+        &.edit {
+            user-select: text;
+            cursor: text;
+            .bubble-label {
+                &:after {
+                    content: "";
+                }
+            }
+        }
+        min-width: 0;
+        margin: 0 0 0 0;
+        &.selected{
+            .bubble-label {
+                &:empty:not(:focus):after {
+                    content: attr(data-placeholder);
+                    color: grey;
+                    font-style: italic;
+                }
+            }
+            z-index: 11;
+            .in-bubble-content {
+                z-index: 5;
+            }
+
+        }
+        .image_container {
+            z-index: 3;
+            position: relative;
+            min-width: 60px;
+            text-align: right;
+            &:empty {
+                min-width: 0;
+            }
+        }
+        .bubble-label {
+            text-align: center;
+            color: black;
+            &:empty{
+                text-align: left;
+                color: grey;
+                max-width: 100%;
+                &:after {
+                    content: attr(data-placeholder);
+                    font-style: italic;
+                    font-size: calc(1em);
+                }
+            }
+            &[contenteditable='true']:before {
+                content: "\feff "; //to prevent small height when edit in firefox http://stackoverflow.com/a/23530317
+            }
+        }
     }
 
-    .edge-drop-arrow-top {
-        top: -20px !important;
+    .vertex {
+        /*white-space: nowrap; because sometimes when hovering the relation menu and there is a vertex image it messes up */
+        white-space: nowrap;
+        &.meta {
+            .in-bubble-content {
+                border-radius: 5px;
+                border: $edgeSize solid $metaColor;
+                color: black;
+                text-shadow: none;
+            }
+        }
+
+        &.selected {
+            z-index: 12;
+            $selectedBoxShadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
+            .in-bubble-content {
+                background-color: $selectBubbleColor;
+                box-shadow: $selectedBoxShadow;
+            }
+        }
+
+        .in-bubble-content {
+            border-radius: 50px;
+            white-space: normal;
+        }
     }
 
-    .vertex-drop-arrow-bottom {
-        bottom: -12px !important;
-    }
-
-    .edge-drop-arrow-bottom {
-        bottom: -20px !important;
+    .relation.bubble{
+        &.selected{
+            .bubble-label {
+                &:empty:after {
+                    color: white;
+                }
+            }
+        }
     }
 
     .bubble-size {
@@ -737,39 +820,8 @@
         border-radius: 0;
     }
 
-    .dotted-border-top {
-        border-top: 1px dashed transparent;
-    }
-
-    .dotted-border-bottom {
-        border-bottom: 1px dashed transparent;
-    }
-
-    .border-visible {
-        border-color: red;
-    }
-
     .drop-relative-container {
         position: relative;
-    }
-
-    .vertex-drop-arrow-top-bottom-drop {
-        position: absolute !important;
-        width: 100% !important;
-        max-width: 500px !important;
-        z-index: 10;
-    }
-
-    .top-vertex-arrow-drop {
-        height: 50% !important;
-        top: 0;
-        margin-top: -10px
-    }
-
-    .bottom-vertex-drop-arrow-drop {
-        bottom: 0;
-        height: 30% !important;
-        margin-bottom: -10px;
     }
 
     .vertex-left-right-drop {
@@ -777,23 +829,6 @@
         width: 60px !important;
         height: 100% !important;
         /*border: 1px solid red;*/
-    }
-
-    .top-bottom-left-side {
-        right: 0px;
-    }
-
-    .top-bottom-right-side {
-        left: 5px;
-    }
-
-    .arrowTopBottomContainer {
-        position: absolute;
-        max-width: inherit;
-        width: 100%;
-        overflow-x: hidden;
-        white-space: nowrap;
-        z-index: -1;
     }
 
     .fade-enter-active {
@@ -853,10 +888,6 @@
         position: relative;
     }
 
-    .hidden {
-        visibility: hidden;
-    }
-
     .relation .v-chip.v-size--small {
         font-size: 15px;
     }
@@ -880,24 +911,6 @@
 
     .image-container-min-height {
         min-height: 60px;
-    }
-
-    .bubble-label {
-        text-align: center;
-        color: black;
-        &:empty{
-            text-align: left;
-            color: grey;
-            max-width: 100%;
-            &:after {
-                content: attr(data-placeholder);
-                font-style: italic;
-                font-size: calc(1em);
-            }
-        }
-        &[contenteditable='true']:before {
-            content: "\feff "; //to prevent small height when edit in firefox http://stackoverflow.com/a/23530317
-        }
     }
 
 </style>

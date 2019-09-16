@@ -669,6 +669,7 @@ FriendlyResource.FriendlyResource.prototype.collapse = function (preventScroll) 
         Scroll.centerBubbleForTreeIfApplicable(this);
         Store.dispatch("redraw");
     }
+    this.refreshChildren();
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {

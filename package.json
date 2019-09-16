@@ -6,7 +6,6 @@
     "serve": "vue-cli-service --port 8084 serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "sass:compile": "node-sass --include-path sass src/css/mr.scss src/assets/mr.css",
     "test:unit": "vue-cli-service test:unit",
     "watch": "jest --watchAll --verbose=false"
   },

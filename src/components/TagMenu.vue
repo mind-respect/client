@@ -18,8 +18,8 @@
                     :searchLoading="searchLoading"
                     @change="selectSearchResult()"
                     cache-items
-                    hide-no-data
                     clearable
+                    :hide-no-data='!search || search.trim() === ""'
                     @focus="$emit('focus')"
                     @blur="$emit('blur')"
                     :placeholder="$t('tag:title')"
@@ -32,6 +32,37 @@
                     <SearchResultContent :item="item"></SearchResultContent>
                     <SearchResultAction :item="item"></SearchResultAction>
                 </template>
+                <v-list-item slot="append-item" @click="createTagWithNoRef"
+                             v-if="search && search.trim() !== '' && items.length > 2">
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            "{{search}}"
+                        </v-list-item-title>
+                        <v-list-item-subtitle class="">
+                            {{$t('tag:createNew')}}
+                        </v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                        <v-icon>
+                            add
+                        </v-icon>
+                    </v-list-item-action>
+                </v-list-item>
+                <v-list-item slot="no-data" @click="createTagWithNoRef" v-if="search && search.trim() !== ''">
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            "{{search}}"
+                        </v-list-item-title>
+                        <v-list-item-subtitle class="">
+                            {{$t('tag:createNew')}}
+                        </v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                        <v-icon>
+                            add
+                        </v-icon>
+                    </v-list-item-action>
+                </v-list-item>
             </v-autocomplete>
         </v-card-text>
         <v-card flat class="pt-0">
@@ -126,14 +157,16 @@
                 'tags': 'Tags',
                 'disassociate': 'Disassociate',
                 'center': 'Center',
-                'reference': 'Reference'
+                'reference': 'Reference',
+                'createNew': 'Create new tag'
             });
             I18n.i18next.addResources("fr", "tag", {
                 "title": "Étiquette",
                 'tags': 'Étiquettes',
                 'disassociate': 'Désassocier',
                 'center': 'Centrer',
-                'reference': 'Référence'
+                'reference': 'Référence',
+                'createNew': 'Créer une nouvelle étiquette'
             });
             return {
                 loaded: false,
@@ -168,7 +201,21 @@
             }
         },
         methods: {
-            refresh: function(){
+            createTagWithNoRef: function () {
+                this.tagLoading = true;
+                let tag = Identification.withUriLabelAndDescription(
+                    Identification.generateVoidUri(),
+                    this.search,
+                    ""
+                );
+                this.identify(tag).then((tags) => {
+                    this.tagLoading = false;
+                    this.refresh();
+                });
+                this.$refs.search.reset();
+                this.$refs.search.blur();
+            },
+            refresh: function () {
                 this.refreshKey = IdUri.uuid();
             },
             identifiersByLatest: function () {
@@ -224,7 +271,7 @@
                 // } else {
                 // }
                 this.$refs.search.reset();
-                this.search = '';
+                this.$refs.search.blur();
                 return identifier;
             },
             identify: function (identifier) {

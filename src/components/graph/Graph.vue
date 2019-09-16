@@ -230,7 +230,95 @@
     }
 </script>
 
-<style>
+<style lang="scss">
+    $horizontalPaddingHighest: 3.5;
+
+    @mixin zoom {
+        @for $i from 0 through 10 {
+            $horizontalPadding: max(1, $horizontalPaddingHighest - ($i * 1.1));
+            [data-zoom="#{$i}"] {
+                .vertex {
+                    .in-bubble-content {
+                        max-width: 500px;
+                        .bubble-label {
+                            white-space: pre-wrap;
+                        }
+                    }
+
+                    .in-bubble-content {
+                        padding: 1em;
+                        padding-bottom: 0.5em;
+                        padding-top: 0.5em;
+                        $buttonExtraSize: max(0, 1.5 - $i * 0.3);
+                        $buttonSize: calc(30px + #{$buttonExtraSize}vw);
+                        $fontSizeExtra: max(0, 0.5 - $i * 0.1);
+                        //button {
+                        //  width: $buttonSize;
+                        //  height: $buttonSize;
+                        //  font-size: calc(1em + #{$fontSizeExtra}vw);
+                        //  i {
+                        //    $top: 0.25 + max(0, 0.25 - ($i * 0.02));
+                        //    top: percentage($top);
+                        //  }
+                        //}
+                        //.menu {
+                        //  $menuWidthExtra: $buttonExtraSize * 5;
+                        //  width: calc(260px + #{$menuWidthExtra}vw);
+                        //}
+                    }
+                }
+
+                .in-bubble-note-button {
+                    $fontSizeExtra: max(0, 8 - $i) / 1.5;
+                    //font-size: calc(1.5em + #{$fontSizeExtra}vw);
+                    &:before {
+                        font-family: FontAwesome;
+                        content: "\f02d";
+                    }
+                }
+                .bubble-label {
+                    $fontSizeExtra: max(0, 8 - $i / 1.20);
+                    //font-size: calc(1em + #{$fontSizeExtra}vw);
+                }
+            }
+        }
+    }
+
+    @include zoom;
+
+    .zoom-scale {
+        .menu {
+            zoom: 30%;
+            -moz-transform: scale(0.3);
+        }
+    }
+
+    .zoom-scale-1 {
+        .in-bubble-content {
+            zoom: 500%;
+            -moz-transform: scale(5);
+            .bubble-label {
+                //zoom:2000%;
+            }
+        }
+        .bubble-content {
+            //zoom:500%;
+        }
+    }
+
+    [draggable] {
+        cursor: move;
+        -khtml-user-drag: element; //for safari http://stackoverflow.com/a/3977637
+    }
+
+    .not-editable .bubble.single-selected .bubble-label {
+        &:after {
+            content: "";
+            color: grey;
+            font-style: italic;
+        }
+    }
+
     #drawn_graph {
         /*position: absolute;*/
         /*padding: 25%;*/

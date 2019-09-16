@@ -7,6 +7,7 @@ import WikidataUri from '@/wikidata/WikidataUri'
 import WikidataService from '@/wikidata/WikidataService'
 import Icon from '@/Icon'
 import GraphElementType from '@/graph-element/GraphElementType'
+import UserService from "@/service/UserService";
 
 const RELATION_URIS = {
     "sameAs": "same-as",
@@ -14,6 +15,9 @@ const RELATION_URIS = {
     "generic": "generic"
 };
 const Identification = {
+    generateVoidUri: function () {
+        return "/service" + UserService.currentUserUri() + "/void/ref/" + IdUri.uuid();
+    },
     fromMultipleServerFormat: function (serverFormat, relationExternalResourceUri) {
         return Object.values(
             serverFormat
