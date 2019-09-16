@@ -174,29 +174,24 @@
         methods: {
             dragLeave: function () {
                 // console.log("over center leave")
-            }
-            ,
+            },
             dragOver: function (event) {
                 //must prevent default in drag over in order for drop to work
                 event.preventDefault();
                 // console.log("over center")
-            }
-            ,
+            },
             childrenDropLeft: function (event) {
                 Dragged.handleCenterDrop(event, this.center, true);
-            }
-            ,
+            },
             childrenDropRight: function (event) {
                 Dragged.handleCenterDrop(event, this.center, false);
-            }
-            ,
+            },
             preventUndesirableDragging: function (event) {
                 if (!event.target.classList.contains("in-bubble-content")) {
                     console.warn("unwanted dragged occurred on " + event.target);
                     event.preventDefault();
                 }
-            }
-            ,
+            },
             handleResize: function () {
                 this.redrawKey = Math.random();
                 if (Selection.isSingle()) {
@@ -204,31 +199,26 @@
                 }
                 Breakpoint.set(this.$vuetify.breakpoint)
             }
-        }
-        ,
+        },
         beforeDestroy: function () {
             window.removeEventListener('resize', this.handleResize)
-        }
-        ,
+        },
         computed: {
             isOwner: function () {
                 if (!this.$store.state.user) {
                     return false;
                 }
                 return this.$route.params.username === this.$store.state.user.username
-            }
-            ,
+            },
             redraws: function () {
                 return this.$store.state.redraws;
-            }
-            ,
+            },
             zoomScale: function () {
                 return "transform: scale(" +
                     this.$store.state.zoom + "," +
                     this.$store.state.zoom + ")";
             }
-        }
-        ,
+        },
         watch: {
             redraws: async function () {
                 if (this.showLoading) {

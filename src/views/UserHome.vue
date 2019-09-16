@@ -306,7 +306,8 @@
                 tabMenu: null,
                 isWaitingFriendship: false,
                 isConfirmedFriend: false,
-                isWaitingForYourAnswer: false
+                isWaitingForYourAnswer: false,
+                bottom: false
             }
         },
         methods: {
