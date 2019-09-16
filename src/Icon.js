@@ -9,6 +9,9 @@ Icon.getForGraphElement = function (graphElement) {
     )
 };
 Icon.getForTag = function (tag) {
+    if (tag.isVoidReferenceTag()) {
+        return 'label';
+    }
     return Icon.getForUri(
         tag.getExternalResourceUri()
     );

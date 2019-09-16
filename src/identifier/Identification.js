@@ -226,4 +226,8 @@ Identification.Identification.prototype.getGraphElementType = function () {
     return GraphElementType.Meta;
 };
 
+Identification.Identification.prototype.isVoidReferenceTag = function () {
+    return this.getExternalResourceUri().indexOf("/void/ref/") > -1;
+};
+
 export default Identification;

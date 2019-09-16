@@ -106,7 +106,7 @@
                                         {{$t('tag:center')}}
                                     </v-list-item-title>
                                 </v-list-item>
-                                <v-list-item :href="identifier.externalUrl" target="_blank">
+                                <v-list-item :href="identifier.externalUrl" target="_blank" v-if="!identifier.isVoidReferenceTag()">
                                     <v-list-item-action>
                                         <v-icon class="mr-6 float-right" v-if="identifier.refersToAGraphElement()">
                                             {{identifier.getIcon()}}
