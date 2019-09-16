@@ -333,6 +333,7 @@
                     }).forEach((center) => {
                         this.centers.push(center);
                     });
+                    this.bottom = false;
                 });
             },
             go: function ($event, path) {
