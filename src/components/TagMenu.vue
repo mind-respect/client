@@ -48,7 +48,7 @@
                         </v-icon>
                     </v-list-item-action>
                 </v-list-item>
-                <v-list-item slot="no-data" @click="createTagWithNoRef" v-if="search && search.trim() !== ''">
+                <v-list-item slot="no-data" @click="createTagWithNoRef" v-if="!searchLoading && search && search.trim() !== ''">
                     <v-list-item-content>
                         <v-list-item-title>
                             "{{search}}"
