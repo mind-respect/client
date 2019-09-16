@@ -91,7 +91,12 @@
                                     <v-progress-circular size="64" indeterminate color="third"></v-progress-circular>
                                 </v-flex>
                             </v-layout>
-                            <v-layout wrap class="pt-0" v-if="loaded && centers">
+                            <v-layout
+                                    wrap
+                                    class="pt-0"
+                                    v-if="loaded && centers"
+                                    v-infinite-scroll="addCenters" infinite-scroll-disabled="busy" infinite-scroll-distance="10"
+                            >
                                 <v-flex xs12 md6 v-if="centers.length === 0">
                                     <h3 class="subtitle-1 vh-center font-italic" v-if="centers.length === 0">
                                         {{$t('userhome:noBubbles')}}
@@ -193,12 +198,14 @@
     import FriendService from '@/friend/FriendService'
     import UserService from '@/service/UserService'
     import AppController from '@/AppController'
+    import infiniteScroll from 'vue-infinite-scroll'
 
     export default {
         name: "CentersList",
         components: {
             Friends
         },
+        directives: {infiniteScroll},
         data: function () {
             I18n.i18next.addResources("en", "userhome", {
                 "center": "Center",
@@ -307,18 +314,12 @@
                 isWaitingFriendship: false,
                 isConfirmedFriend: false,
                 isWaitingForYourAnswer: false,
-                bottom: false
+                busy: false
             }
         },
         methods: {
-            bottomVisible() {
-                const scrollY = window.scrollY;
-                const visible = document.documentElement.clientHeight;
-                const pageHeight = document.documentElement.scrollHeight;
-                const bottomOfPage = visible + scrollY >= pageHeight;
-                return bottomOfPage || pageHeight < visible;
-            },
             addCenters() {
+                this.busy = true;
                 let centersRequest = this.isOwner ? CenterGraphElementService.getPublicAndPrivateWithSkip(this.centers.length) : CenterGraphElementService.getPublicOnlyForUsernameWithSkip(
                     this.$route.params.username,
                     this.centers.length
@@ -333,7 +334,7 @@
                     }).forEach((center) => {
                         this.centers.push(center);
                     });
-                    this.bottom = false;
+                    this.busy = false;
                 });
             },
             go: function ($event, path) {
@@ -443,12 +444,6 @@
                 promise.then(() => {
                     this.loaded = true;
                 });
-            },
-            handleScroll: function () {
-                if (!this.loaded) {
-                    return;
-                }
-                this.bottom = this.bottomVisible();
             }
         },
         mounted: function () {
@@ -468,18 +463,7 @@
                 return process.env.NODE_ENV == "test";
             }
         },
-        created() {
-            document.body.addEventListener('scroll', this.handleScroll);
-        },
-        beforeDestroy: function () {
-            document.body.removeEventListener('scroll', this.handleScroll);
-        },
         watch: {
-            bottom(bottom) {
-                if (bottom) {
-                    this.addCenters()
-                }
-            },
             tabMenu: function () {
                 let pathName;
                 if (this.tabMenu === 0) {
