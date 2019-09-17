@@ -179,6 +179,19 @@
                                             indeterminate
                                     ></v-progress-circular>
                                 </v-flex>
+                                <v-flex xs12 class="vh-center" v-if="hasLoadedAll && centers.length > 28">
+                                    <v-card flat>
+                                        <v-card-title class="title grey--text">
+                                            {{$t('userhome:noMoreCenters')}}
+                                            <v-btn text>
+                                                <v-icon color="third" class="mr-2" large>
+                                                    add
+                                                </v-icon>
+                                                {{$t('userhome:addBubble')}}
+                                            </v-btn>
+                                        </v-card-title>
+                                    </v-card>
+                                </v-flex>
                             </v-layout>
                         </v-card-text>
                     </v-card>
@@ -244,7 +257,9 @@
                 },
                 remove: "Remove from center's list",
                 open: "Open in new tab",
-                copy: "Copy link"
+                copy: "Copy link",
+                noMoreCenters: "... no more centers",
+                addBubble: "Add bubble"
             });
             I18n.i18next.addResources("fr", "userhome", {
                 "center": "Centre",
@@ -282,7 +297,9 @@
                 },
                 remove: "Retirer de la liste des centres",
                 open: "Ouvrir dans un nouvel onglet",
-                copy: "Copier le lien"
+                copy: "Copier le lien",
+                noMoreCenters: "... plus de centres",
+                addBubble: "Ajouter une bulle"
             });
             return {
                 isListView: true,
@@ -314,7 +331,8 @@
                 isWaitingFriendship: false,
                 isConfirmedFriend: false,
                 isWaitingForYourAnswer: false,
-                bottom: false
+                bottom: false,
+                hasLoadedAll: false
             }
         },
         methods: {
@@ -332,6 +350,9 @@
                     this.centers.length
                 );
                 centersRequest.then((response) => {
+                    if (response.data.length < 8) {
+                        this.hasLoadedAll = true
+                    }
                     CenterGraphElement.fromServerFormat(response.data).map((center) => {
                         center.labelSearch = center.getLabel();
                         center.contextSearch = Object.values(center.getContext()).join(' ');
@@ -387,6 +408,9 @@
                     }).sort(function (a, b) {
                         return b.getLastCenterDate() - a.getLastCenterDate();
                     });
+                    if (this.centers.length < 28) {
+                        this.hasLoadedAll = true;
+                    }
                 });
             },
             setupFriendFlow: function () {
@@ -453,7 +477,7 @@
                 });
             },
             handleScroll: function () {
-                if (!this.loaded || this.bottom) {
+                if (!this.loaded || this.bottom || this.hasLoadedAll) {
                     return;
                 }
                 this.bottom = this.bottomVisible();
