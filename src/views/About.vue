@@ -37,10 +37,10 @@
         <Level image="organized_chaos_optimized_small.jpg" :title="$t('about:level3Title')" :level="3">
             <!--https://pixabay.com/fr/intelligence-artificielle-cerveau-3382507/-->
             <div slot="description" class="vh-center">
-                <v-layout >
+                <v-layout>
                     <v-flex xs0 md2></v-flex>
                     <v-flex xs12 md8>
-                        <v-layout  wrap class="white--text title" style="background-color: transparent">
+                        <v-layout wrap class="white--text title" style="background-color: transparent">
                             <v-flex xs1>
                                 <v-icon class="white--text mr-2">search</v-icon>
                             </v-flex>
@@ -89,10 +89,10 @@
         </Level>
         <Level image="mindmap_optimized_small.jpg" :title="$t('about:level4Title')" :level="4">
             <div slot="description" class="title">
-                <v-layout >
+                <v-layout>
                     <v-flex xs0 sm2 md2></v-flex>
                     <v-flex xs12 sm8 md8>
-                        <v-layout  wrap class="white--text title" style="background-color: transparent">
+                        <v-layout wrap class="white--text title" style="background-color: transparent">
                             <v-flex xs1>
                                 <v-icon class="white--text mr-2">fa-sitemap</v-icon>
                             </v-flex>
@@ -108,10 +108,10 @@
         <Level image="neurons_optimized_small.jpg" :title="$t('about:level5Title')" :level="5">
             <!--https://www.flickr.com/photos/jjorquera/15433132769-->
             <div slot="description">
-                <v-layout >
+                <v-layout>
                     <v-flex xs0 sm2 md2 lg3 xl4></v-flex>
                     <v-flex xs12 sm8 md8 lg6 xl4>
-                        <v-layout  wrap class="white--text title ml-4" style="background-color: transparent">
+                        <v-layout wrap class="white--text title ml-4" style="background-color: transparent">
                             <v-flex xs1 class="">
                                 <v-icon class="white--text mr-2">ac_unit</v-icon>
                             </v-flex>
@@ -149,7 +149,7 @@
         <Level image="dawn-3804124_1280_optimized.jpg" :title="$t('about:level6Title')" :level="6">
             <!--https://pixabay.com/fr/dawn-arbres-l-%C3%A9cart-brouillard-3804124/-->
         </Level>
-        <v-layout  wrap class="">
+        <v-layout wrap class="">
             <v-flex xs12 md6 class="vh-center">
                 <v-card flat color="secondary" height="100%" class="vh-center">
                     <v-card-title class="text-center white--text vh-center pr-0 pl-0">
@@ -264,6 +264,8 @@
                         username: this.$store.state.user.username
                     }
                 })
+            } else {
+                document.body.scrollTop = 0;
             }
         }
     }

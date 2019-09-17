@@ -487,6 +487,7 @@
             if (this.isTesting) {
                 return;
             }
+            document.body.scrollTop = 0;
             this.reload();
         },
         computed: {
