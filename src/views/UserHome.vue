@@ -71,14 +71,9 @@
                             {{$t('userhome:confirmedFriend')}}
                         </v-chip>
                     </v-card-title>
-                    <v-card flat class="ma-0 pa-0 pb-12" min-height="200" :class="{
+                    <v-card flat class="ma-0 pa-0" min-height="200" :class="{
                         'vh-center': !loaded
-                    }"
-                            v-infinite-scroll="addCenters"
-                            :infinite-scroll-disabled="busy"
-                            :infinite-scroll-distance="10"
-                            style="overflow-y:scroll;"
-                    >
+                    }">
                         <v-card-text class="pt-0">
                             <v-tooltip v-if="isOwner" left>
                                 <template v-slot:activator="{ on }">
@@ -96,11 +91,7 @@
                                     <v-progress-circular size="64" indeterminate color="third"></v-progress-circular>
                                 </v-flex>
                             </v-layout>
-                            <v-layout
-                                    wrap
-                                    class="pt-0 pb-12 mb-12"
-                                    v-if="loaded && centers"
-                            >
+                            <v-layout wrap class="pt-0" v-if="loaded && centers">
                                 <v-flex xs12 md6 v-if="centers.length === 0">
                                     <h3 class="subtitle-1 vh-center font-italic" v-if="centers.length === 0">
                                         {{$t('userhome:noBubbles')}}
@@ -150,8 +141,7 @@
                                                             </v-btn>
                                                         </template>
                                                         <v-list>
-                                                            <v-list-item
-                                                                    @click.prevent="removeCenter(center, index)">
+                                                            <v-list-item @click.prevent="removeCenter(center, index)">
                                                                 <v-list-item-action>
                                                                     <v-icon>visibility_off</v-icon>
                                                                 </v-list-item-action>
@@ -182,6 +172,13 @@
                                         </v-list>
                                     </v-hover>
                                 </v-flex>
+                                <v-flex xs12 v-show="bottom" class="vh-center">
+                                    <v-progress-circular
+                                            :size="64"
+                                            color="third"
+                                            indeterminate
+                                    ></v-progress-circular>
+                                </v-flex>
                             </v-layout>
                         </v-card-text>
                     </v-card>
@@ -203,14 +200,12 @@
     import FriendService from '@/friend/FriendService'
     import UserService from '@/service/UserService'
     import AppController from '@/AppController'
-    import infiniteScroll from 'vue-infinite-scroll'
 
     export default {
         name: "CentersList",
         components: {
             Friends
         },
-        directives: {infiniteScroll},
         data: function () {
             I18n.i18next.addResources("en", "userhome", {
                 "center": "Center",
@@ -319,16 +314,19 @@
                 isWaitingFriendship: false,
                 isConfirmedFriend: false,
                 isWaitingForYourAnswer: false,
-                busy: false
+                bottom: false
             }
         },
         methods: {
-
-            beforeDestroy: function () {
-                document.body.style["overflow-y"] = "scroll";
+            bottomVisible() {
+                const scrollY = document.body.scrollTop;
+                console.log("scrollY " + scrollY);
+                const visible = document.documentElement.clientHeight;
+                const pageHeight = document.body.scrollHeight;
+                const bottomOfPage = visible + scrollY >= pageHeight;
+                return bottomOfPage || pageHeight < visible;
             },
             addCenters() {
-                this.busy = true;
                 let centersRequest = this.isOwner ? CenterGraphElementService.getPublicAndPrivateWithSkip(this.centers.length) : CenterGraphElementService.getPublicOnlyForUsernameWithSkip(
                     this.$route.params.username,
                     this.centers.length
@@ -343,7 +341,7 @@
                     }).forEach((center) => {
                         this.centers.push(center);
                     });
-                    this.busy = false;
+                    this.bottom = false;
                 });
             },
             go: function ($event, path) {
@@ -453,10 +451,15 @@
                 promise.then(() => {
                     this.loaded = true;
                 });
+            },
+            handleScroll: function () {
+                if (!this.loaded || this.bottom) {
+                    return;
+                }
+                this.bottom = this.bottomVisible();
             }
         },
         mounted: function () {
-            document.body.style["overflow-y"] = "hidden";
             if (this.isTesting) {
                 return;
             }
@@ -473,7 +476,18 @@
                 return process.env.NODE_ENV == "test";
             }
         },
+        created() {
+            document.body.addEventListener('scroll', this.handleScroll);
+        },
+        beforeDestroy: function () {
+            document.body.removeEventListener('scroll', this.handleScroll);
+        },
         watch: {
+            bottom(bottom) {
+                if (bottom) {
+                    this.addCenters()
+                }
+            },
             tabMenu: function () {
                 let pathName;
                 if (this.tabMenu === 0) {
@@ -497,7 +511,7 @@
     }
 </script>
 
-<style scoped>
+<style>
     .add-button-desktop {
         margin-top: -25px;
     }
