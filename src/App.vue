@@ -37,6 +37,9 @@
                 <v-spacer></v-spacer>
                 <Search class="mt-6"></Search>
                 <v-spacer></v-spacer>
+                <v-btn icon @click="$refs.docsFlow.enter()">
+                    <v-icon>help</v-icon>
+                </v-btn>
                 <v-btn text light
                        v-if="$store.state.user === undefined"
                        @click="loginDialog = true"
@@ -141,6 +144,7 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
+        <DocsDialog ref="docsFlow"></DocsDialog>
     </v-app>
 </template>
 
@@ -163,7 +167,8 @@
             LoginForm: () => import('@/components/home/LoginForm'),
             ForgotPasswordForm: () => import('@/components/home/ForgotPasswordForm'),
             ChangePasswordForm: () => import('@/components/home/ChangePasswordForm'),
-            Search: () => import('@/components/Search')
+            Search: () => import('@/components/Search'),
+            DocsDialog: () => import('@/components/DocsDialog'),
         },
         data: function () {
             I18n.i18next.addResources("en", "button", {
