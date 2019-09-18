@@ -219,7 +219,7 @@
                 VertexService.saveColors({
                     background: this.backgroundColor
                 });
-                Color.refreshBackgroundColor();
+                Color.refreshBackgroundColor(this.backgroundColor);
             },
             listAll: function () {
                 AppController.listAll();
