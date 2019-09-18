@@ -481,7 +481,7 @@
             },
             handleScroll: function () {
                 // this.log = "scrolling " + Math.random();
-                if (!this.loaded || this.bottom) {
+                if (!this.loaded || this.bottom || this.hasLoadedAll) {
                     return;
                 }
                 this.bottom = this.bottomVisible();
