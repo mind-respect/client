@@ -375,7 +375,12 @@
             label: function () {
                 let doc = new DOMParser().parseFromString(this.bubble.getFriendlyJson().label, 'text/html');
                 let text = doc.body.textContent || "";
-                return this.isEditFlow ? text : linkifyStr(text);
+                //setting draggable: "false" because otherwise you can't drag the bubble when pressing on link
+                return this.isEditFlow ? text : linkifyStr(text, {
+                    attributes: {
+                        draggable: "false"
+                    }
+                });
             },
             relationPlaceholder: function () {
                 return this.bubble.isGroupRelation() || this.bubble.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
@@ -661,7 +666,7 @@
             },
             imageLoaded: async function () {
                 await this.$nextTick();
-                setTimeout(()=>{
+                setTimeout(() => {
                     return this.$store.dispatch('redraw');
                 }, 250);
             }
@@ -681,21 +686,26 @@
 
     .bubble {
         z-index: 5;
+
         .in-bubble-content {
             z-index: 3;
         }
+
         &.edit {
             user-select: text;
             cursor: text;
+
             .bubble-label {
                 &:after {
                     content: "";
                 }
             }
         }
+
         min-width: 0;
         margin: 0 0 0 0;
-        &.selected{
+
+        &.selected {
             .bubble-label {
                 &:empty:not(:focus):after {
                     content: attr(data-placeholder);
@@ -703,34 +713,42 @@
                     font-style: italic;
                 }
             }
+
             z-index: 11;
+
             .in-bubble-content {
                 z-index: 5;
             }
 
         }
+
         .image_container {
             z-index: 3;
             position: relative;
             min-width: 60px;
             text-align: right;
+
             &:empty {
                 min-width: 0;
             }
         }
+
         .bubble-label {
             text-align: center;
             color: black;
-            &:empty{
+
+            &:empty {
                 text-align: left;
                 color: grey;
                 max-width: 100%;
+
                 &:after {
                     content: attr(data-placeholder);
                     font-style: italic;
                     font-size: calc(1em);
                 }
             }
+
             &[contenteditable='true']:before {
                 content: "\feff "; //to prevent small height when edit in firefox http://stackoverflow.com/a/23530317
             }
@@ -740,6 +758,7 @@
     .vertex {
         /*white-space: nowrap; because sometimes when hovering the relation menu and there is a vertex image it messes up */
         white-space: nowrap;
+
         &.meta {
             .in-bubble-content {
                 border-radius: 5px;
@@ -751,7 +770,8 @@
 
         &.selected {
             z-index: 12;
-            $selectedBoxShadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
+            $selectedBoxShadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+
             .in-bubble-content {
                 background-color: $selectBubbleColor;
                 box-shadow: $selectedBoxShadow;
@@ -764,8 +784,8 @@
         }
     }
 
-    .relation.bubble{
-        &.selected{
+    .relation.bubble {
+        &.selected {
             .bubble-label {
                 &:empty:after {
                     color: white;
