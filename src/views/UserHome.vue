@@ -214,6 +214,8 @@
     import UserService from '@/service/UserService'
     import AppController from '@/AppController'
 
+    const ADDRESS_BAR_HEIGHT  = 60;
+
     export default {
         name: "CentersList",
         components: {
@@ -332,17 +334,18 @@
                 isConfirmedFriend: false,
                 isWaitingForYourAnswer: false,
                 bottom: false,
-                hasLoadedAll: false
+                hasLoadedAll: false,
+                log: "empty log"
             }
         },
         methods: {
             bottomVisible() {
                 const scrollY = document.body.scrollTop;
-                console.log("scrollY " + scrollY);
                 const visible = document.documentElement.clientHeight;
                 const pageHeight = document.body.scrollHeight;
-                const bottomOfPage = visible + scrollY >= pageHeight;
-                return bottomOfPage || pageHeight < visible;
+                const bottomOfPage = visible + scrollY + ADDRESS_BAR_HEIGHT >= pageHeight;
+                // this.log = "scrollY " + scrollY + " visible " + visible + " pageHeight" + pageHeight + " bottomOfPage " + bottomOfPage;
+                return bottomOfPage || pageHeight < visible + ADDRESS_BAR_HEIGHT;
             },
             addCenters() {
                 let centersRequest = this.isOwner ? CenterGraphElementService.getPublicAndPrivateWithSkip(this.centers.length) : CenterGraphElementService.getPublicOnlyForUsernameWithSkip(
@@ -477,7 +480,8 @@
                 });
             },
             handleScroll: function () {
-                if (!this.loaded || this.bottom || this.hasLoadedAll) {
+                // this.log = "scrolling " + Math.random();
+                if (!this.loaded || this.bottom) {
                     return;
                 }
                 this.bottom = this.bottomVisible();
@@ -503,9 +507,11 @@
         },
         created() {
             document.body.addEventListener('scroll', this.handleScroll);
+            document.addEventListener('touchmove', this.handleScroll);
         },
         beforeDestroy: function () {
             document.body.removeEventListener('scroll', this.handleScroll);
+            document.removeEventListener('touchmove', this.handleScroll);
         },
         watch: {
             bottom(bottom) {
