@@ -668,8 +668,8 @@ FriendlyResource.FriendlyResource.prototype.collapse = function (preventScroll) 
     if (!preventScroll) {
         Scroll.centerBubbleForTreeIfApplicable(this);
         Store.dispatch("redraw");
+        this.refreshChildren();
     }
-    this.refreshChildren();
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {

@@ -252,13 +252,14 @@ Vertex.prototype.getLeftBubble = function (bottom) {
 
 Vertex.prototype.collapse = function (preventScroll) {
     if (this.isCenter) {
-        this.getNextChildren().forEach((child) =>{
+        this.getNextChildren().forEach((child) => {
             if (child.isEdge()) {
                 child.getOtherVertex(this).collapse(true)
             } else {
                 child.collapse(true);
             }
         });
+        this.refreshChildren();
         return;
     }
     if (!this.isExpanded) {
@@ -350,7 +351,7 @@ Vertex.prototype.removeChild = function (child, isTemporary) {
     if (removedChild && child.isEdge()) {
         this.decrementNumberOfConnectedEdges();
     }
-    if(!isTemporary){
+    if (!isTemporary) {
         this.refreshChildren();
     }
 };
