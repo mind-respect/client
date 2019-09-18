@@ -169,10 +169,10 @@
             })
         },
         created: function () {
-            document.body.addEventListener('resize', this.handleResize);
+            window.addEventListener('resize', this.handleResize);
         },
         beforeDestroy: function () {
-            document.body.removeEventListener('resize', this.handleResize)
+            window.removeEventListener('resize', this.handleResize)
         },
         methods: {
             dragLeave: function () {
@@ -196,11 +196,8 @@
                 }
             },
             handleResize: function () {
-                this.redrawKey = Math.random();
-                if (Selection.isSingle()) {
-                    Scroll.centerBubbleIfApplicable(Selection.getSingle());
-                }
-                Breakpoint.set(this.$vuetify.breakpoint)
+                Breakpoint.set(this.$vuetify.breakpoint);
+                this.$store.dispatch("redraw");
             }
         },
         computed: {

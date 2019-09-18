@@ -806,7 +806,7 @@
     }
 
     .empty-edge .bubble-label {
-        width: 30px;
+        width: 32px;
     }
 
     .label-drag-over {
