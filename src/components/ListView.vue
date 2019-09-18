@@ -20,8 +20,8 @@
                             ref="copyTree"
                     >
                         <template v-slot:label="{ item }">
-                            <span class="font-italic">{{getEdgeLabel(item.original)}}</span>
-                            <span v-html="linkify(item.original.getLabelOrDefault())"></span>
+                            <span class="font-italic">{{item.edgeLabel}}</span>
+                            <span v-html="linkify(item.label)"></span>
                         </template>
                     </v-treeview>
                 </v-card-text>
@@ -82,7 +82,7 @@
                     isRoot = true;
                     parent = this.items[0];
                 }
-                let content = this.getEdgeLabel(parent.original) + " " + this.linkify(parent.original.getLabelOrDefault())
+                let content = parent.edgeLabel + " " + this.linkify(parent.label);
                 content += "<ul>";
                 parent.children.forEach((child) => {
                     content += "<li>";
@@ -95,7 +95,8 @@
             forkAsItem: function (fork) {
                 return {
                     id: fork.getId(),
-                    original: fork,
+                    edgeLabel: this.getEdgeLabel(fork),
+                    label: fork.getLabelOrDefault(),
                     children: fork.getClosestChildrenInTypes(GraphElementType.Fork).map((childFork) => {
                         return this.forkAsItem(childFork)
                     })
