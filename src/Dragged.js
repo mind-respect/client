@@ -1,34 +1,6 @@
 const Dragged = {
     dragged: null,
-    handleDrop: function (event, bubble, isLeft) {
-        // console.log("dropped " + bubble.getLabel());
-        if (bubble.isDragOver) {
-            return Dragged.dragged.controller().moveUnderParent(
-                bubble
-            );
-        }
-        event.stopPropagation();
-        let parent = bubble.isForkType() ? bubble : bubble.getParentFork();
-        let minDistance = 99999999;
-        let closestChildEdge;
-        isLeft === undefined ? bubble.isToTheLeft() : isLeft;
-        parent.getNextChildren(isLeft).forEach((childEdge) => {
-            let position = childEdge.getHtml().getBoundingClientRect();
-            let distance = event.pageY - position.top;
-            // let centerExtraCondition = parent.isCenter ?
-            //     (isLeft ? event.pageX < position.right : event.pageX > position.left) :
-            //     true;
-            if (Math.abs(distance) < Math.abs(minDistance)) {
-                minDistance = distance;
-                closestChildEdge = childEdge;
-            }
-        });
-        let method = minDistance > 0 ? "moveBelow" : "moveAbove";
-        // console.log("closestChildEdge  " + closestChildEdge.getLabel());
-        // console.log("dragged " + Dragged.dragged.getLabel());
-        return Dragged.dragged.controller()[method](closestChildEdge);
-    },
-    handleCenterDrop: function (event, parent, isLeft) {
+    handleDrop: function (event, parent, isLeft) {
         // console.log("dropped " + parent.getLabel());
         if (parent.isDragOver) {
             return Dragged.dragged.controller().moveUnderParent(

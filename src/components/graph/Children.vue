@@ -66,7 +66,7 @@
         },
         methods: {
             childrenDrop: function (event) {
-                Dragged.handleDrop(event, this.bubble);
+                Dragged.handleDrop(event, this.bubble.getParentFork(), this.bubble.isToTheLeft());
             },
             dragOver: function (event) {
                 event.preventDefault();

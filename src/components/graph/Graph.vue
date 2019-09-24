@@ -217,10 +217,10 @@
                 // console.log("over center")
             },
             childrenDropLeft: function (event) {
-                Dragged.handleCenterDrop(event, this.center, true);
+                Dragged.handleDrop(event, this.center, true);
             },
             childrenDropRight: function (event) {
-                Dragged.handleCenterDrop(event, this.center, false);
+                Dragged.handleDrop(event, this.center, false);
             },
             preventUndesirableDragging: function (event) {
                 if (!event.target.classList.contains("in-bubble-content")) {
