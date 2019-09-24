@@ -36,6 +36,7 @@ const Dragged = {
             );
         }
         event.stopPropagation();
+        event.preventDefault();
         let minDistance = 99999999;
         let closestChildEdge;
         let isAbove = false;
