@@ -63,6 +63,11 @@ const router = new Router({
                 component: () => import('./views/UserHome.vue')
             },
             {
+                path: '/patterns',
+                name: 'Patterns',
+                component: () => import('./views/UserHome.vue')
+            },
+            {
                 path: '/user/:username/friends',
                 name: 'FriendsUserHome',
                 component: () => import('./views/UserHome.vue')

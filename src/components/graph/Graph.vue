@@ -83,6 +83,18 @@
         <FontDialog></FontDialog>
         <ListView></ListView>
         <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>
+        <v-btn @click="usePattern"
+               fixed
+               bottom
+               right
+               color="secondary"
+               style="z-index:2;" class="mr-12 mb-12"
+               :disabled="usePatternLoading"
+               :loading="usePatternLoading"
+               v-if="$store.state.isPatternFlow"
+        >
+            {{$t('graph:usePattern')}}
+        </v-btn>
     </v-layout>
 </template>
 
@@ -103,6 +115,8 @@
     import GraphElement from "@/graph-element/GraphElement";
     import GraphDraw from '@/draw/GraphDraw'
     import Dragged from '@/Dragged'
+    import I18n from '@/I18n'
+    import PatternService from "@/pattern/PatternService";
 
     export default {
         name: "Graph",
@@ -116,6 +130,12 @@
             CohesionSnackbar: () => import('@/components/CohesionSnackbar')
         },
         data: function () {
+            I18n.i18next.addResources("en", "graph", {
+                usePattern: "Use pattern"
+            });
+            I18n.i18next.addResources("fr", "graph", {
+                usePattern: "Utiliser le pattern"
+            });
             return {
                 loaded: false,
                 centerServerFormat: null,
@@ -124,7 +144,8 @@
                 showLoading: true,
                 strokeColor: "#1a237e",
                 strokeWidth: this.$vuetify.breakpoint.mdAndDown ? 1 : 2,
-                svg: null
+                svg: null,
+                usePatternLoading: false
             }
         },
         mounted: function () {
@@ -151,6 +172,7 @@
                 await this.$nextTick();
                 Color.refreshBackgroundColor();
                 Selection.setToSingle(this.center, true);
+                this.$store.dispatch("setIsPatternFlow", this.center.isPattern());
                 AppController.refreshFont();
                 await this.$nextTick();
                 if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
@@ -175,6 +197,17 @@
             window.removeEventListener('resize', this.handleResize)
         },
         methods: {
+            usePattern: function () {
+                this.usePatternLoading = true;
+                PatternService.use(
+                    this.center.getUri()
+                ).then((response) => {
+                    this.$router.push(
+                        IdUri.htmlUrlForBubbleUri(response.data.uri)
+                    );
+                    this.usePatternLoading = false;
+                })
+            },
             dragLeave: function () {
                 // console.log("over center leave")
             },

@@ -3,7 +3,6 @@
  */
 
 import GraphElement from '@/graph-element/GraphElement'
-import Icon from '@/Icon'
 import ShareLevel from '@/vertex/ShareLevel'
 import DateUtil from '@/DateUtil'
 import IdUri from '@/IdUri'
@@ -80,16 +79,20 @@ CenterGraphElement.prototype.lastVisit = function () {
     return DateUtil.fromNow(this.getLastCenterDate());
 };
 
-CenterGraphElement.prototype.showIcon = function () {
-    return !IdUri.isVertexUri(this.getUri())
+CenterGraphElement.prototype.getGraphElementType = function () {
+    return IdUri.getGraphElementTypeFromUri(this.getUri())
 };
 
 CenterGraphElement.prototype.getIcon = function () {
-    return Icon.getForUri(this.getUri());
+    return this.isPattern() ? "stars" : Icon.getForUri(this.getUri());
 };
 
-CenterGraphElement.prototype.getGraphElementType = function () {
-    return IdUri.getGraphElementTypeFromUri(this.getUri())
+CenterGraphElement.prototype.isPattern = function () {
+    return this.centerGraphElementServerFormat.isPattern;
+};
+
+CenterGraphElement.prototype.showIcon = function () {
+    return this.isPattern() || !IdUri.isVertexUri(this.getUri());
 };
 
 

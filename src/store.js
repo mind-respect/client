@@ -33,6 +33,7 @@ const Store = new Vuex.Store({
         isListViewFlow: false,
         isFontFlow: false,
         isEditFlow: false,
+        isPatternFlow: false,
         redraws: Math.random(),
         sideMenuFlow: false,
         isViewOnly: null,
@@ -81,6 +82,9 @@ const Store = new Vuex.Store({
         },
         setIsEditFlow: function (state, isEditFlow) {
             state.isEditFlow = isEditFlow;
+        },
+        setIsPatternFlow: function (state, isPatternFlow) {
+            state.isPatternFlow = isPatternFlow;
         },
         redraw: function (state, spec) {
             state.redraws = {
@@ -143,6 +147,9 @@ const Store = new Vuex.Store({
         },
         setIsEditFlow: function (action, setIsEditFlow) {
             action.commit('setIsEditFlow', setIsEditFlow);
+        },
+        setIsPatternFlow: function (action, setIsPatternFlow) {
+            action.commit('setIsPatternFlow', setIsPatternFlow);
         },
         redraw: function (action, spec) {
             action.commit('redraw', spec);

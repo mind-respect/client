@@ -170,7 +170,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
             let edge = groupRelation.getFirstEdge();
             let child = groupRelation.getNumberOfChild() > 1 ? groupRelation : edge;
             let endVertex = edge.getOtherVertex(centerVertex);
-            let childIndex = childrenIndex[endVertex.getUri()];
+            let childIndex = childrenIndex[endVertex.getUri()] || childrenIndex[endVertex.getPatternUri()]
             let addLeft;
             if (childIndex !== undefined) {
                 addLeft = childIndex.toTheLeft;

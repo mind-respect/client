@@ -250,6 +250,18 @@ Vertex.prototype.getLeftBubble = function (bottom) {
     return this.getParentBubble();
 };
 
+Vertex.prototype.isPattern = function () {
+    return this._vertexServerFormat.vertex.isPattern;
+};
+
+Vertex.prototype.makePattern = function () {
+    this._vertexServerFormat.vertex.isPattern = true;
+};
+
+Vertex.prototype.undoPattern = function () {
+    this._vertexServerFormat.vertex.isPattern = false;
+};
+
 Vertex.prototype.collapse = function (preventScroll) {
     if (this.isCenter) {
         this.getNextChildren().forEach((child) => {

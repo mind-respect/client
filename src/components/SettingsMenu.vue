@@ -109,6 +109,28 @@
                     </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
+            <v-list-item @click="enterPatternFlow"
+                         v-if="isGraphRoute && !$store.state.isPatternFlow && !$store.state.isViewOnly">
+                <v-list-item-action>
+                    <v-icon>stars</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{$t('side:becomePattern')}}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="removePattern"
+                         v-if="isGraphRoute && $store.state.isPatternFlow && !$store.state.isViewOnly">
+                <v-list-item-action>
+                    <v-icon>stars</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{$t('side:removePattern')}}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
             <v-list-item @click="switchLanguage()">
                 <v-list-item-action>
                     <v-icon class="">public</v-icon>
@@ -148,6 +170,40 @@
                 v-model="backgroundColor"
                 @change="changeBackgroundColor"
         >
+        <v-dialog v-model="patternDialog" width="600">
+            <v-card>
+                <v-card-title>
+                    {{$t('areYouSure')}}
+                    <v-spacer></v-spacer>
+                    <v-btn @click="patternDialog=false" icon>
+                        <v-icon>
+                            close
+                        </v-icon>
+                    </v-btn>
+                </v-card-title>
+                <v-card-text class="body-1">
+                    <p>
+                        {{$t('side:patternInfo')}}
+                    </p>
+                    <p>
+                        {{$t('side:patternInfo2')}}
+                    </p>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn @click="becomeAPattern" :loading="makePatternLoading" :disabled="makePatternLoading"
+                           color="secondary">
+                        <v-icon class="mr-2">
+                            stars
+                        </v-icon>
+                        {{$t('side:makeAPattern')}}
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn @click="patternDialog=false" text>
+                        {{$t('cancel')}}
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-menu>
 </template>
 
@@ -158,6 +214,7 @@
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import VertexService from '@/vertex/VertexService'
     import Color from '@/Color'
+    import I18n from '@/I18n'
 
     export default {
         name: "SettingsMenu",
@@ -165,6 +222,20 @@
             Button: () => import('@/components/graph/Button')
         },
         data: function () {
+            I18n.i18next.addResources("en", "side", {
+                becomePattern: "Create pattern",
+                removePattern: "Remove the pattern",
+                makeAPattern: "Make this map a pattern",
+                patternInfo: "Other users will be able to copy this map and use it as a starting point to add their own ideas.",
+                patternInfo2: "All bubbles on this card will be public."
+            });
+            I18n.i18next.addResources("fr", "side", {
+                becomePattern: "Créer un pattern",
+                removePattern: "Enlever le pattern",
+                makeAPattern: "Faire de cette carte un pattern",
+                patternInfo: "D'autres usagers pourront copier cette carte et l'utiliser comme point de départ pour y ajouter leurs propres idées.",
+                patternInfo2: "Toutes les bulles de cette cartes seront publiques."
+            });
             return {
                 backgroundColor: null,
                 zoomInButton: {
@@ -179,12 +250,31 @@
                     ctrlShortcut: "&minus;",
                     controller: AppController,
                     disableNotHide: true
-                }
+                },
+                patternDialog: false,
+                makePatternLoading: false
             }
         },
         mounted: function () {
         },
         methods: {
+            becomeAPattern: function () {
+                this.makePatternLoading = true;
+                AppController.becomeAPattern().then(() => {
+                    CurrentSubGraph.get().getVertices().forEach((vertex) => {
+                        vertex.makePublic();
+                        vertex.refreshButtons();
+                    });
+                    this.patternDialog = false;
+                    this.makePatternLoading = false;
+                })
+            },
+            removePattern: function () {
+                AppController.removePattern();
+            },
+            enterPatternFlow: function () {
+                this.patternDialog = true;
+            },
             zoomIn: function () {
                 AppController.zoomIn();
             },

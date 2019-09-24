@@ -202,6 +202,7 @@ FriendlyResource.FriendlyResource.prototype.getUri = function () {
         this._friendlyResourceServerFormat.uri
     );
 };
+
 FriendlyResource.FriendlyResource.prototype.uri = function () {
     return this.uriFacade
 };

@@ -9,6 +9,7 @@ import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Vue from 'vue'
 import Store from '@/store'
+import Icon from '@/Icon'
 
 const controllerGetters = {};
 
@@ -397,10 +398,17 @@ GraphElement.GraphElement.prototype.getSortDate = function () {
 };
 
 GraphElement.GraphElement.prototype.getIndex = function (parentChildrenIndex) {
-    if (!parentChildrenIndex[this.getUri()]) {
+    let indexInfo = parentChildrenIndex[this.getUri()] || parentChildrenIndex[this.getPatternUri()];
+    if (!indexInfo) {
         return 9999999;
     }
-    return parentChildrenIndex[this.getUri()].index;
+    return indexInfo.index;
+};
+
+GraphElement.GraphElement.prototype.getPatternUri = function () {
+    return decodeURIComponent(
+        this._graphElementServerFormat.patternUri
+    );
 };
 
 GraphElement.GraphElement.prototype.getColors = function () {
@@ -475,6 +483,14 @@ GraphElement.GraphElement.prototype.getControllerWithElements = function (elemen
     return new controller[
         GraphElement._getControllerNameFromType(this.getGraphElementType())
         ](elements);
+};
+
+GraphElement.GraphElement.prototype.getIcon = function () {
+    return Icon.getForUri(this.getUri());
+};
+
+GraphElement.GraphElement.prototype.showIcon = function () {
+    return !IdUri.isVertexUri(this.getUri())
 };
 
 // GraphElement.GraphElement.prototype._buildWikidataLinks = function () {

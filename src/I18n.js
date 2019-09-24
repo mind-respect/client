@@ -42,7 +42,9 @@ export default {
                         cancel: "Cancel",
                         copy: "copy",
                         copied: "copied",
-                        close: "Close"
+                        close: "Close",
+                        areYouSure: "Are you sure ?",
+                        use: "Use"
                     }
                 },
                 fr: {
@@ -65,7 +67,9 @@ export default {
                         cancel: "Annuler",
                         copy: "copier",
                         copied: "copié",
-                        close: "Fermer"
+                        close: "Fermer",
+                        areYouSure: "Êtes-vous certain?",
+                        use: "Utiliser"
                     }
                 }
             }

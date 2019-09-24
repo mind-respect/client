@@ -126,6 +126,19 @@ api.saveFont = function (font) {
     );
 };
 
+api.makePattern = function (vertex) {
+    return Service.geApi().post(
+        vertex.getUri() + '/pattern'
+    );
+};
+
+api.undoPattern = function (vertex) {
+    return Service.geApi().delete(
+        vertex.getUri() + '/pattern'
+    );
+};
+
+
 export default api;
 
 

@@ -73,6 +73,22 @@ api.createVertex = function (event, label) {
         });
     });
 };
+api.becomeAPattern = function () {
+    CurrentSubGraph.get().center.makePattern();
+    Store.dispatch("setIsPatternFlow", true);
+    return VertexService.makePattern(
+        CurrentSubGraph.get().center
+    );
+};
+
+api.removePattern = function () {
+    CurrentSubGraph.get().center.undoPattern();
+    Store.dispatch("setIsPatternFlow", false);
+    return VertexService.undoPattern(
+        CurrentSubGraph.get().center
+    );
+};
+
 api.changeBackgroundColorCanDo = function () {
     if (!CurrentSubGraph.get() || !CurrentSubGraph.get().center) {
         return false;
@@ -119,11 +135,11 @@ api.refreshFont = function (justChanged) {
     link.setAttribute("type", "text/css");
     link.setAttribute("href", "https://fonts.googleapis.com/css?family=" + font.family.replace(/ /g, '+'));
     link.onload = () => {
-        setTimeout(()=>{
+        setTimeout(() => {
             Vue.nextTick(() => {
                 Store.dispatch("redraw");
             });
-        },100)
+        }, 100)
     };
     document.getElementsByTagName("head")[0].appendChild(link);
 };

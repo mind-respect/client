@@ -99,6 +99,9 @@
                                             <template v-slot:badge v-if="bubble.isMeta()">
                                                 <v-icon dark>label</v-icon>
                                             </template>
+                                            <template v-slot:badge v-if="isCenter && $store.state.isPatternFlow">
+                                                <v-icon dark>stars</v-icon>
+                                            </template>
                                             <div
                                                     class="bubble-label ui-autocomplete-input bubble-size font-weight-regular mb-1"
                                                     @blur="leaveEditFlow"
