@@ -7,6 +7,7 @@ import ShareLevel from '@/vertex/ShareLevel'
 import DateUtil from '@/DateUtil'
 import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
+import Icon from '@/Icon'
 
 export default {
     fromServerFormat: function (centersServerFormat) {
