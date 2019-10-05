@@ -389,6 +389,12 @@
                 return this.bubble.isGroupRelation() || this.bubble.isSelected || this.isLabelDragOver ? this.$t('edge:default') : "";
             },
             refreshContent: function () {
+                /*
+                    this.showMenu = false; is a hack to fix that the menu shows
+                    when it's visible and then changing bubble selection.
+                    Try to remove when vuetify updates.
+                */
+                this.showMenu = false;
                 this.contentKey = IdUri.uuid();
             },
             refreshChildren: function () {
@@ -675,9 +681,9 @@
             }
         },
         watch: {
-            showMenu: function () {
-                GraphUi.enableDragScroll();
-            }
+            // showMenu: function () {
+            //     GraphUi.enableDragScroll();
+            // }
         }
     }
 </script>
