@@ -1,24 +1,24 @@
 <template>
     <div>
         <v-btn :to="'/user/' + $store.state.user.username"
-               v-if="$store.state.user && $vuetify.breakpoint.lgAndUp" text active-class=""
+               v-if="$store.state.user && $vuetify.breakpoint.lgAndUp" text exact
                :icon="$vuetify.breakpoint.mdAndDown">
-                <v-icon :class="{
+            <v-icon :class="{
                     'mr-2' : $vuetify.breakpoint.lgAndUp
                 }">
-                    filter_center_focus
-                </v-icon>
-                <span v-if="$vuetify.breakpoint.lgAndUp">
+                filter_center_focus
+            </v-icon>
+            <span v-if="$vuetify.breakpoint.lgAndUp">
                     {{$t('centers')}}
                 </span>
         </v-btn>
         <!--                <Button :button="undoButton" v-if="isGraphRoute"></Button>-->
         <!--                <Button :button="redoButton" v-if="isGraphRoute"></Button>-->
-                <Button :button="zoomOutButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></Button>
-                <Button :button="zoomInButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></Button>
-                <Button :button="createVertexButton" :hightlight="true"
-                        v-if="$store.state.user && $vuetify.breakpoint.lgAndUp"></Button>
-                <SettingsMenu></SettingsMenu>
+        <Button :button="zoomOutButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></Button>
+        <Button :button="zoomInButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></Button>
+        <Button :button="createVertexButton" :hightlight="true"
+                v-if="$store.state.user && $vuetify.breakpoint.lgAndUp"></Button>
+        <SettingsMenu></SettingsMenu>
     </div>
 </template>
 
@@ -76,5 +76,4 @@
 </script>
 
 <style scoped>
-
 </style>
