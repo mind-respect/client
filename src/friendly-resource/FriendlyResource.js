@@ -129,15 +129,29 @@ FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
 FriendlyResource.FriendlyResource.prototype.focus = function (event) {
     GraphUi.disableDragScroll();
     Store.dispatch("setIsEditFlow", true);
-    setTimeout(() => {
-        let labelHtml = this.getLabelHtml();
-        labelHtml.contentEditable = "true";
-        if (event) {
-            Focus.focusAtPosition(event, labelHtml);
-        } else {
-            Focus.focusEnd(labelHtml);
-        }
-    })
+    let interval;
+    if (!focus.bind(this)()) {
+        interval = setInterval(focus.bind(this), 100);
+    }
+
+    function focus() {
+        setTimeout(() => {
+            let labelHtml = this.getLabelHtml();
+            if (!labelHtml) {
+                return false;
+            }
+            if (interval) {
+                clearInterval(interval);
+            }
+            labelHtml.contentEditable = "true";
+            if (event) {
+                Focus.focusAtPosition(event, labelHtml);
+            } else {
+                Focus.focusEnd(labelHtml);
+            }
+        });
+        return true;
+    }
 };
 
 FriendlyResource.FriendlyResource.prototype.setLabel = function (label) {
