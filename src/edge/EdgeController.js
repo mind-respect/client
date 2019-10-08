@@ -10,6 +10,7 @@ import Selection from '@/Selection'
 import GroupRelation from '@/group-relation/GroupRelation'
 import GraphElementService from '@/graph-element/GraphElementService'
 import Store from '@/store'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 api.RelationController = EdgeController;
@@ -55,6 +56,7 @@ EdgeController.prototype.addChild = async function () {
             this.model(),
             newGroupRelation
         );
+        CurrentSubGraph.get().add(newGroupRelation);
         newGroupRelation.refreshChildren();
         Vue.nextTick(() => {
             GraphElementService.changeChildrenIndex(
@@ -109,11 +111,13 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
         moveEdge.bind(this)(adoptedChild);
     }
     return Promise.all(promises).then(() => {
+        CurrentSubGraph.get().add(newGroupRelation);
         newGroupRelation.expand(true);
         Store.dispatch("redraw");
         GraphElementService.changeChildrenIndex(
             this.model().getParentVertex()
         );
+        Selection.setToSingle(newGroupRelation);
         return newGroupRelation;
     });
 
