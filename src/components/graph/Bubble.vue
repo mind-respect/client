@@ -219,7 +219,7 @@
                                     </div>
                                 </template>
                                 <div :style="'background-color:' + backgroundColor">
-                                    <BubbleButtons v-show="menuFlow === 'link'"
+                                    <BubbleButtons v-show="menuFlow === 'buttons'"
                                                    @refresh="refreshButtons"></BubbleButtons>
                                     <v-card :href="linkMenuHref" target="_blank" v-show="menuFlow === 'link'">
                                         <v-card-title class="body-1 link-menu">
