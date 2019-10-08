@@ -82,7 +82,8 @@
                 searchText: null,
                 items: [],
                 menuProps: {
-                    "offset-y": true
+                    "offset-y": true,
+                    "max-width": 800
                 },
                 loading: false,
                 x: null,
