@@ -34,4 +34,12 @@ Meta.prototype.getGraphElementType = function () {
     return GraphElementType.Meta;
 };
 
+Meta.prototype.setOriginalMeta = function (originalMeta) {
+    this.originalMeta = originalMeta;
+};
+
+Meta.prototype.getOriginalMeta = function () {
+    return this.originalMeta;
+};
+
 export default api;

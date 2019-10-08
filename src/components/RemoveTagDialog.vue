@@ -139,7 +139,7 @@
         },
         methods: {
             remove: async function () {
-                let tag = CurrentSubGraph.get().center;
+                let tag = CurrentSubGraph.get().center.getOriginalMeta();
                 await Promise.all(this.bubbles.map((bubble) => {
                     let parentVertex = bubble.getParentVertex();
                     if (parentVertex.isMetaGroupVertex()) {

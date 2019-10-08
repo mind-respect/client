@@ -10,6 +10,12 @@ import MetaGraph from '@/identifier/MetaGraph'
 import MetaRelation from '@/identifier/MetaRelation'
 import MetaGroupVertex from '@/identifier/MetaGroupVertex'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
+import VertexService from '@/vertex/VertexService'
+import Vertex from '@/vertex/Vertex'
+import Vue from 'vue'
+import Selection from '@/Selection'
+import SubGraphController from '@/graph/SubGraphController'
+import GraphElementService from '@/graph-element/GraphElementService'
 
 const api = {};
 
@@ -52,6 +58,7 @@ MetaController.prototype.loadGraph = function () {
         centerBubble.makeCenter();
         centerBubble.setLabel(centerTag.getLabel());
         centerBubble.setComment(centerTag.getComment());
+        centerBubble.setOriginalMeta(centerTag);
         let edgesBySourceVertex = buildEdgesGroupedBySourceVertex(metaSubGraph);
         let subGraph = metaSubGraph.getSubGraph();
         CurrentSubGraph.get().add(centerBubble);
@@ -150,6 +157,62 @@ function buildEdgesGroupedBySourceVertex(metaSubGraph) {
 
 MetaController.prototype.identifyCanDo = function () {
     return false;
+};
+
+MetaController.prototype.addChild = function () {
+    return VertexService.createVertex().then((response) => {
+        let serverFormat = response.data;
+        let newVertex = Vertex.fromServerFormat(
+            serverFormat
+        );
+        newVertex.controller().addIdentification(
+            this.model().getOriginalMeta(),
+            true
+        );
+        let newEdge = new MetaRelation(newVertex, this.model());
+        this.model().addChild(
+            newEdge
+        );
+        CurrentSubGraph.get().add(newEdge);
+        this.model().refreshChildren();
+        Vue.nextTick(() => {
+            Selection.setToSingle(newVertex);
+            // GraphElementService.changeChildrenIndex(
+            //     this.model()
+            // );
+        })
+    });
+};
+
+MetaController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft) {
+    SubGraphController.withVertex(
+        Vertex.withUri(
+            distantVertexUri
+        )
+    ).loadNonCenter().then((distantVertex) => {
+        let newEdge = new MetaRelation(distantVertex, this.model());
+        distantVertex.parentBubble = newEdge;
+        distantVertex.parentVertex = this.model();
+        distantVertex.controller().addIdentification(
+            this.model().getOriginalMeta(),
+            true
+        );
+        this.model().addChild(
+            newEdge,
+            isLeft,
+            index
+        );
+        CurrentSubGraph.get().add(
+            newEdge
+        );
+        this.model().refreshChildren();
+        Vue.nextTick(() => {
+            Selection.setToSingle(distantVertex);
+            // GraphElementService.changeChildrenIndex(
+            //     this.model()
+            // );
+        });
+    });
 };
 
 MetaController.prototype.convertToDistantBubbleWithUriCanDo = function () {

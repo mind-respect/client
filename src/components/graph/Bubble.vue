@@ -211,7 +211,7 @@
                                                         'unselectable' : !isEditFlow
                                                     }"
                                             ></div>
-                                            <v-icon v-if="bubble.isMetaRelation()" small
+                                            <v-icon v-if="bubble.isMetaRelation()" color="white" small
                                                     class="bubble-label unselectable"
                                                     v-show="!isShrinked">label
                                             </v-icon>
