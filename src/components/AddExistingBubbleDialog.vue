@@ -119,6 +119,7 @@
                 this.isLeft = isLeft;
                 this.dialog = true;
                 this.$nextTick(() => {
+                    this.$refs.existingBubbleAutocomplete.reset();
                     this.$refs.existingBubbleAutocomplete.focus();
                 });
             },

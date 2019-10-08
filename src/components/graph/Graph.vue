@@ -231,6 +231,7 @@
             },
             showContextMenu: function (event, isLeft) {
                 event.preventDefault();
+                event.stopPropagation();
                 this.contextMenu = false;
                 this.xContextMenu = event.clientX;
                 this.yContextMenu = event.clientY;

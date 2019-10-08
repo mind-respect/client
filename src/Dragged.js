@@ -22,6 +22,9 @@ const Dragged = {
         let closestChildEdge;
         let isAbove = false;
         parent.getDescendants(isLeft).forEach((childEdge) => {
+            if (!childEdge.isEdge()) {
+                return;
+            }
             let position = childEdge.getHtml().getBoundingClientRect();
             let xPosition = (position.left + position.right) / 2;
             let yPosition = (position.top + position.bottom) / 2;

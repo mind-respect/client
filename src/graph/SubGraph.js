@@ -161,6 +161,9 @@ api.SubGraph.prototype.removeEdge = function (edge) {
             edges.splice(l, 1);
         }
     }
+    if (edges.length === 0) {
+        delete this.vertices[edge.getUri()];
+    }
 };
 
 api.SubGraph.prototype.removeVertex = function (vertex) {
@@ -170,6 +173,9 @@ api.SubGraph.prototype.removeVertex = function (vertex) {
         if (vertices[l].getId() === vertex.getId()) {
             vertices.splice(l, 1);
         }
+    }
+    if (vertices.length === 0) {
+        delete this.vertices[vertex.getUri()];
     }
 };
 

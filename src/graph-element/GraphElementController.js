@@ -563,7 +563,7 @@ GraphElementController.prototype.relateToDistantVertexWithUri = function (distan
         Vertex.withUri(
             distantVertexUri
         )
-    ).load().then((_distantVertex) => {
+    ).loadNonCenter().then((_distantVertex) => {
         distantVertex = _distantVertex;
         return EdgeService.createFromSourceAndDestinationUri(parentVertex.getUri(), distantVertexUri);
     }).then((newEdgeUri) => {
@@ -575,7 +575,6 @@ GraphElementController.prototype.relateToDistantVertexWithUri = function (distan
         if (identifiers) {
             newEdge.controller().addIdentifiers(identifiers, true)
         }
-        distantVertex.isCenter = false;
         distantVertex.parentBubble = newEdge;
         distantVertex.parentVertex = parentVertex;
         this.model().addChild(
@@ -588,6 +587,7 @@ GraphElementController.prototype.relateToDistantVertexWithUri = function (distan
         );
         this.model().refreshChildren();
         Vue.nextTick(() => {
+            Selection.setToSingle(distantVertex);
             GraphElementService.changeChildrenIndex(
                 parentVertex
             );
@@ -640,6 +640,13 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
         }
     }
     graphElements.forEach(function (bubble) {
+        bubble.getDescendants().forEach((bubble) => {
+            if (bubble.isVertex()) {
+                CurrentSubGraph.get().removeVertex(bubble);
+            } else if (bubble.isEdge()) {
+                CurrentSubGraph.get().removeEdge(bubble);
+            }
+        });
         bubble.remove();
         if (bubble.isVertex()) {
             CurrentSubGraph.get().removeVertex(bubble);

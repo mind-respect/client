@@ -29,14 +29,21 @@ function SubGraphController(vertices) {
 api.SubGraphController = SubGraphController;
 
 SubGraphController.prototype.loadForParentIsAlreadyOnMap = function () {
-    return this.load(true);
+    return this.load(true, false);
+};
+
+SubGraphController.prototype.loadNonCenter = function () {
+    return this.load(false, false);
 };
 
 SubGraphController.prototype.model = function () {
     return this.vertices;
 };
 
-SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
+SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMap) {
+    if (isCenterOnMap === undefined) {
+        isCenterOnMap = true;
+    }
     return GraphService.getForCentralBubbleUri(
         this.model().getUri()
     ).then((response) => {
@@ -61,7 +68,9 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap) {
             );
             subGraph.vertices[centerVertex.getUri()] = [centerVertex];
         } else {
-            centerVertex.makeCenter();
+            if (isCenterOnMap) {
+                centerVertex.makeCenter();
+            }
             CurrentSubGraph.get().add(centerVertex);
         }
         if (isParentAlreadyOnMap) {

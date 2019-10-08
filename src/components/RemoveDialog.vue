@@ -45,7 +45,8 @@
             <v-card-actions>
                 <form @submit.prevent="remove">
                     <input type="text" ref="enterRemoveInput" autofocus style="width:0">
-                    <v-btn color="secondary" class="ml-2" @click="remove" type="submit" :disabled="!isThereSomethingToRemove">
+                    <v-btn color="secondary" class="ml-2" @click="remove" type="submit"
+                           :disabled="!isThereSomethingToRemove">
                         <v-icon class="mr-2">delete</v-icon>
                         {{$t('remove:confirm')}}
                         <span v-if="$store.state.selected.length > 1" class="ml-2">
@@ -99,8 +100,8 @@
             return {
                 removeDialog: false,
                 selected: null,
-                isThereSomethingToRemove:null,
-                someCannotBeRemoved:null
+                isThereSomethingToRemove: null,
+                someCannotBeRemoved: null
             }
         },
         mounted: function () {
@@ -126,10 +127,10 @@
                         selected.canRemove = this.canRemove(selected);
                         return selected;
                     });
-                    this.isThereSomethingToRemove = this.selected.some((selected)=>{
+                    this.isThereSomethingToRemove = this.selected.some((selected) => {
                         return selected.canRemove;
                     });
-                    this.someCannotBeRemoved = this.selected.some((selected)=>{
+                    this.someCannotBeRemoved = this.selected.some((selected) => {
                         return !selected.canRemove;
                     });
                     this.removeDialog = true;
@@ -142,7 +143,7 @@
                         });
                     }
                 } else {
-                    if(this.selected){
+                    if (this.selected) {
                         this.selected.forEach((selected) => {
                             selected.selectedToRemove = false;
                         });
@@ -164,6 +165,9 @@
                 return this.$store.dispatch("setIsRemoveFlow", false);
             },
             canRemove: function (graphElement) {
+                if (graphElement.isEdge()) {
+                    return true;
+                }
                 if (graphElement.canExpand()) {
                     return false;
                 }
