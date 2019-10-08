@@ -509,7 +509,7 @@
                         this.centers.push(center);
                     });
                     this.$nextTick(() => {
-                        document.body.scrollTop = document.body.scrollTop - 10;
+                        document.body.scrollTop = document.body.scrollTop - 10 - ADDRESS_BAR_HEIGHT;
                         this.bottom = false;
                     });
                 });
