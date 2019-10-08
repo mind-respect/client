@@ -207,6 +207,10 @@ api.SubGraph.prototype.getVertexWithUri = function (uri) {
     return this.vertices[uri][0];
 };
 
+api.SubGraph.prototype.hasUri = function (uri) {
+    return this.edges[uri] !== undefined || this.vertices[uri] !== undefined;
+};
+
 api.SubGraph.prototype.getVertexWithUriAndId = function (uri, id) {
     return this.getVerticesWithUri(uri).filter((vertex) => {
         return vertex.getId() === id;

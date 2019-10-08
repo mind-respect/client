@@ -1,7 +1,6 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import GraphElementController from '@/graph-element/GraphElementController'
 import GraphService from '@/graph/GraphService'
 import GraphElementService from '@/graph-element/GraphElementService'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
@@ -25,18 +24,16 @@ api.withVertices = function (vertices) {
 
 function SubGraphController(vertices) {
     this.vertices = vertices;
-    GraphElementController.GraphElementController.prototype.init.call(
-        this,
-        this.vertices
-    );
 }
 
 api.SubGraphController = SubGraphController;
 
-SubGraphController.prototype = new GraphElementController.GraphElementController();
-
 SubGraphController.prototype.loadForParentIsAlreadyOnMap = function () {
     return this.load(true);
+};
+
+SubGraphController.prototype.model = function () {
+    return this.vertices;
 };
 
 SubGraphController.prototype.load = function (isParentAlreadyOnMap) {

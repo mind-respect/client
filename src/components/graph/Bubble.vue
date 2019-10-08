@@ -424,6 +424,7 @@
             },
             rightClick: function (event) {
                 event.preventDefault();
+                event.stopPropagation();
                 if (this.isEditFlow) {
                     return;
                 }

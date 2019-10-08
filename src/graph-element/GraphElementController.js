@@ -13,6 +13,10 @@ import Scroll from '@/Scroll'
 import Vue from 'vue'
 import TagService from '@/identifier/TagService'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
+import EdgeService from '@/edge/EdgeService'
+import Vertex from '@/vertex/Vertex'
+import Edge from '@/edge/Edge'
+import SubGraphController from '@/graph/SubGraphController'
 
 const api = {};
 let bubbleCutClipboard;
@@ -549,6 +553,45 @@ GraphElementController.prototype.addIdentification = function (identifier, preve
             this.model().refreshButtons();
             return identifications;
         })
+    });
+};
+
+GraphElementController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft, identifiers) {
+    let distantVertex;
+    let parentVertex = this.model().isVertex() ? this.model() : this.model().getParentVertex();
+    SubGraphController.withVertex(
+        Vertex.withUri(
+            distantVertexUri
+        )
+    ).load().then((_distantVertex) => {
+        distantVertex = _distantVertex;
+        return EdgeService.createFromSourceAndDestinationUri(parentVertex.getUri(), distantVertexUri);
+    }).then((newEdgeUri) => {
+        let newEdge = Edge.withUriAndSourceAndDestinationVertex(
+            newEdgeUri,
+            parentVertex,
+            distantVertex
+        );
+        if (identifiers) {
+            newEdge.controller().addIdentifiers(identifiers, true)
+        }
+        distantVertex.isCenter = false;
+        distantVertex.parentBubble = newEdge;
+        distantVertex.parentVertex = parentVertex;
+        this.model().addChild(
+            newEdge,
+            isLeft,
+            index
+        );
+        CurrentSubGraph.get().add(
+            newEdge
+        );
+        this.model().refreshChildren();
+        Vue.nextTick(() => {
+            GraphElementService.changeChildrenIndex(
+                parentVertex
+            );
+        });
     });
 };
 

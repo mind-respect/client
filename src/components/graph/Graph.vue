@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <v-layout v-if="loaded">
+    <v-layout v-if="loaded" @contextmenu="showContextMenu">
         <v-divider></v-divider>
         <div id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle">
             <!--            <v-overlay-->
@@ -23,7 +23,7 @@
                     <v-progress-circular indeterminate color="third" size="64"></v-progress-circular>
                 </v-overlay>
                 <v-flex grow class="vertices-children-container left-oriented pt-12 pb-12" @dragover="dragOver"
-                        @dragleave="dragLeave" @drop="childrenDropLeft" :class="{
+                        @dragleave="dragLeave" @drop="childrenDropLeft" @contextmenu="contextMenuLeft" :class="{
                     'before-loaded': showLoading
                 }"
                 >
@@ -48,7 +48,7 @@
                     ></Bubble>
                 </div>
                 <v-flex grow class="vertices-children-container right-oriented pt-12 pb-12" @dragover="dragOver"
-                        @dragleave="dragLeave" @drop="childrenDropRight" :class="{
+                        @dragleave="dragLeave" @drop="childrenDropRight" @contextmenu="contextMenuRight" :class="{
                     'before-loaded': showLoading
                 }">
                     <v-layout v-for="rightBubble in center.rightBubbles" :key="rightBubble.uiId">
@@ -77,12 +77,31 @@
                 </svg>
             </div>
         </div>
+        <v-menu
+                v-model="contextMenu"
+                :position-x="xContextMenu"
+                :position-y="yContextMenu"
+                absolute
+                offset-y
+        >
+            <v-list>
+                <v-list-item
+                        @click="$refs.addExistingBubbleDialog.enter(xContextMenu, yContextMenu, isContextMenuLeft)"
+                >
+                    <v-list-item-action>
+                        <v-icon>scatter_plot</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-title>{{$t('graph:addExistingBubble')}}</v-list-item-title>
+                </v-list-item>
+            </v-list>
+        </v-menu>
         <RemoveDialog></RemoveDialog>
         <RemoveTagDialog></RemoveTagDialog>
         <DescriptionDialog></DescriptionDialog>
         <FontDialog></FontDialog>
         <ListView></ListView>
         <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>
+        <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
         <v-btn @click="usePattern"
                fixed
                bottom
@@ -127,14 +146,17 @@
             DescriptionDialog: () => import('@/components/DescriptionDialog'),
             FontDialog: () => import('@/components/FontDialog'),
             ListView: () => import('@/components/ListView'),
-            CohesionSnackbar: () => import('@/components/CohesionSnackbar')
+            CohesionSnackbar: () => import('@/components/CohesionSnackbar'),
+            AddExistingBubbleDialog: () => import('@/components/AddExistingBubbleDialog')
         },
         data: function () {
             I18n.i18next.addResources("en", "graph", {
-                usePattern: "Use pattern"
+                usePattern: "Use pattern",
+                addExistingBubble: "Add an existing bubble"
             });
             I18n.i18next.addResources("fr", "graph", {
-                usePattern: "Utiliser le pattern"
+                usePattern: "Utiliser le pattern",
+                addExistingBubble: "Ajouter une bulle existante"
             });
             return {
                 loaded: false,
@@ -145,7 +167,11 @@
                 strokeColor: "#1a237e",
                 strokeWidth: this.$vuetify.breakpoint.mdAndDown ? 1 : 2,
                 svg: null,
-                usePatternLoading: false
+                usePatternLoading: false,
+                contextMenu: false,
+                xContextMenu: 0,
+                yContextMenu: 0,
+                isContextMenuLeft: false
             }
         },
         mounted: function () {
@@ -197,6 +223,22 @@
             window.removeEventListener('resize', this.handleResize)
         },
         methods: {
+            contextMenuLeft: function (event) {
+                this.showContextMenu(event, true);
+            },
+            contextMenuRight: function (event) {
+                this.showContextMenu(event, false);
+            },
+            showContextMenu: function (event, isLeft) {
+                event.preventDefault();
+                this.contextMenu = false;
+                this.xContextMenu = event.clientX;
+                this.yContextMenu = event.clientY;
+                this.isContextMenuLeft = isLeft;
+                this.$nextTick(() => {
+                    this.contextMenu = true;
+                })
+            },
             usePattern: function () {
                 this.usePatternLoading = true;
                 PatternService.use(

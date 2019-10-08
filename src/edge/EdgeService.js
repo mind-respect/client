@@ -5,6 +5,7 @@
 import IdUri from '@/IdUri'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import Service from '@/Service'
+import UserService from "@/service/UserService";
 
 const api = {};
 
@@ -30,5 +31,26 @@ api.changeDestinationVertex = function (destinationVertex, edge) {
     );
 };
 
+api.createFromSourceAndDestinationUri = function (sourceUri, destinationUri) {
+    let sourceVertexUriFormatted = encodeURIComponent(
+        sourceUri
+    );
+    let destinationVertexUriFormatted = encodeURIComponent(
+        destinationUri
+    );
+    return Service.api().post(
+        edgesUrl() + '?sourceVertexId=' + sourceVertexUriFormatted +
+        '&destinationVertexId=' + destinationVertexUriFormatted
+    ).then((response) => {
+        return IdUri.removeDomainNameFromGraphElementUri(
+            response.headers.location
+        );
+    });
+};
+
 export default api;
+
+function edgesUrl() {
+    return UserService.currentUserUri() + "/graph/edge";
+}
 

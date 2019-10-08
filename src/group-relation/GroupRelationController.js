@@ -11,6 +11,7 @@ import Selection from '@/Selection'
 import Vue from 'vue'
 import Store from '@/store'
 import CurrentSubGraph from "../graph/CurrentSubGraph";
+import Vertex from '@/vertex/Vertex'
 
 const api = {};
 api.GroupRelationController = GroupRelationController;
@@ -116,6 +117,17 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
     });
     return Promise.resolve(triple);
 };
+
+GroupRelationController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft) {
+    return GraphElementController.GraphElementController.prototype.relateToDistantVertexWithUri.call(
+        this,
+        distantVertexUri,
+        index,
+        isLeft,
+        this.model().getIdentifiers()
+    );
+};
+
 
 GroupRelationController.prototype.setLabel = function (newLabel) {
     this.model().setLabel(

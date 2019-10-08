@@ -50,11 +50,6 @@ const IdUri = {
         var username = UserService.authenticatedUserInCache().user_name;
         return "/users" + username + "/" + id;
     },
-    resourceUriFromAjaxResponse: function (response) {
-        return IdUri.removeDomainNameFromGraphElementUri(
-            response.getResponseHeader("Location")
-        );
-    },
     vertexBaseUri: function () {
         return UserService.currentUserUri() + "/graph/vertex";
     },

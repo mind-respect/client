@@ -14,7 +14,7 @@ import LoadingFlow from '@/LoadingFlow'
 import Scroll from '@/Scroll'
 import Vue from 'vue'
 import Store from '@/store'
-import CurrentSubGraph from "../graph/CurrentSubGraph";
+import CurrentSubGraph from "@/graph/CurrentSubGraph";
 
 const api = {};
 
