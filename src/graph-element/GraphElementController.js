@@ -600,7 +600,7 @@ GraphElementController.prototype.remove = function (skipConfirmation) {
         return this.removeDo();
     }
     let selectedIsPristine = this.getUiArray().every((graphElement) => {
-        return graphElement.isPristine();
+        return graphElement.isPristine() && (!graphElement.isForkType() || graphElement.getNumberOfChild() === 0);
     });
     if (selectedIsPristine) {
         return this.removeDo();
