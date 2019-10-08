@@ -17,7 +17,6 @@
             <v-card-text class="pt-0">
                 <v-progress-linear v-if="!fonts" :indeterminate="true" color="secondary"></v-progress-linear>
                 <v-autocomplete
-                        attach="fontDialog"
                         v-if="fonts"
                         v-model="font"
                         :items="fonts"
@@ -39,7 +38,7 @@
                 <!--</v-layout>-->
             </v-card-text>
             <v-card flat class="pt-0">
-                <v-card-text class="pt-0" id="fontDialog"></v-card-text>
+                <v-card-text class="pt-0"></v-card-text>
             </v-card>
             <v-card min-height="150" flat class="pt-0">
             </v-card>

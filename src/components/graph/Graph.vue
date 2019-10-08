@@ -77,6 +77,13 @@
                 </svg>
             </div>
         </div>
+        <input
+                id="background-color-picker"
+                v-show="false"
+                type="color"
+                v-model="backgroundColor"
+                @change="changeBackgroundColor"
+        >
         <v-menu
                 v-model="contextMenu"
                 :position-x="xContextMenu"
@@ -92,6 +99,47 @@
                         <v-icon>scatter_plot</v-icon>
                     </v-list-item-action>
                     <v-list-item-title>{{$t('graph:addExistingBubble')}}</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="expandAll" :disabled="!canExpandAll">
+                    <v-list-item-action>
+                        <v-icon class="">unfold_more</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{$t('button:expandAll')}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item @click="selectAllBubbles">
+                    <v-list-item-action>
+                        <v-icon class="">select_all</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{$t('button:selectAllBubbles')}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item @click="fontPicker">
+                    <v-list-item-action>
+                        <v-icon class="">font_download</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{$t('button:fontPicker')}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item @click="changeBackgroundColorMenu"
+                             :disabled="!changeBackgroundColorCanDo()">
+                    <v-list-item-action>
+                        <v-icon class="">format_paint</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{$t('button:changeBackgroundColor')}}
+                        </v-list-item-title>
+                    </v-list-item-content>
                 </v-list-item>
             </v-list>
         </v-menu>
@@ -136,6 +184,8 @@
     import Dragged from '@/Dragged'
     import I18n from '@/I18n'
     import PatternService from "@/pattern/PatternService";
+    import GraphController from '@/graph/GraphController'
+    import VertexService from '@/vertex/VertexService'
 
     export default {
         name: "Graph",
@@ -171,7 +221,8 @@
                 contextMenu: false,
                 xContextMenu: 0,
                 yContextMenu: 0,
-                isContextMenuLeft: false
+                isContextMenuLeft: false,
+                backgroundColor: null
             }
         },
         mounted: function () {
@@ -223,6 +274,33 @@
             window.removeEventListener('resize', this.handleResize)
         },
         methods: {
+            expandAll: function () {
+                GraphController.expandAll();
+            },
+            changeBackgroundColorCanDo: function () {
+                return AppController.changeBackgroundColorCanDo();
+            },
+            changeBackgroundColor: function () {
+                CurrentSubGraph.get().center.setBackgroundColor(this.backgroundColor);
+                VertexService.saveColors({
+                    background: this.backgroundColor
+                });
+                Color.refreshBackgroundColor(this.backgroundColor);
+            },
+            selectAllBubbles: function () {
+                GraphController.selectAllBubbles();
+            },
+            fontPicker: function () {
+                AppController.fontPicker();
+            },
+            changeBackgroundColorMenu: function () {
+                this.backgroundColor = CurrentSubGraph.get().center.getBackgroundColor();
+                this.$nextTick(() => {
+                    document.getElementById(
+                        "background-color-picker"
+                    ).click();
+                });
+            },
             contextMenuLeft: function (event) {
                 this.showContextMenu(event, true);
             },
@@ -277,6 +355,9 @@
             }
         },
         computed: {
+            canExpandAll: function () {
+                return GraphController.expandAllCanDo();
+            },
             isOwner: function () {
                 if (!this.$store.state.user) {
                     return false;

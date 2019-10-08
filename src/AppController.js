@@ -135,6 +135,7 @@ api.refreshFont = function (justChanged) {
     link.setAttribute("type", "text/css");
     link.setAttribute("href", "https://fonts.googleapis.com/css?family=" + font.family.replace(/ /g, '+'));
     link.onload = () => {
+        CurrentSubGraph.get().center.refreshChildren();
         setTimeout(() => {
             Vue.nextTick(() => {
                 Store.dispatch("redraw");
