@@ -94,6 +94,7 @@
             <v-list>
                 <v-list-item
                         @click="$refs.addExistingBubbleDialog.enter(xContextMenu, yContextMenu, isContextMenuLeft)"
+                        :disabled="!isOwner"
                 >
                     <v-list-item-action>
                         <v-icon>scatter_plot</v-icon>
@@ -120,7 +121,7 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item @click="fontPicker">
+                <v-list-item @click="fontPicker" :disabled="!isOwner">
                     <v-list-item-action>
                         <v-icon class="">font_download</v-icon>
                     </v-list-item-action>

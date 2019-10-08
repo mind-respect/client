@@ -78,7 +78,7 @@
                     </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item @click="fontPicker" v-if="isGraphRoute">
+            <v-list-item @click="fontPicker" v-if="isGraphRoute" :disabled="$store.state.isViewOnly">
                 <v-list-item-action>
                     <v-icon class="">font_download</v-icon>
                 </v-list-item-action>
