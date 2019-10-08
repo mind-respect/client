@@ -508,7 +508,10 @@
                     }).forEach((center) => {
                         this.centers.push(center);
                     });
-                    this.bottom = false;
+                    this.$nextTick(() => {
+                        document.body.scrollTop = document.body.scrollTop - 10;
+                        this.bottom = false;
+                    });
                 });
             },
             go: function ($event, path) {
