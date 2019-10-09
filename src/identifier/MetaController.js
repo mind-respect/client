@@ -16,6 +16,7 @@ import Vue from 'vue'
 import Selection from '@/Selection'
 import SubGraphController from '@/graph/SubGraphController'
 import GraphElementService from '@/graph-element/GraphElementService'
+import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 
 const api = {};
 
@@ -164,6 +165,10 @@ MetaController.prototype.addChild = function () {
         let serverFormat = response.data;
         let newVertex = Vertex.fromServerFormat(
             serverFormat
+        );
+        FriendlyResourceService.updateLabel(
+            newVertex,
+            ""
         );
         newVertex.controller().addIdentification(
             this.model().getOriginalMeta(),
