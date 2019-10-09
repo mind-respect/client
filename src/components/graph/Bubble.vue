@@ -398,7 +398,7 @@
                 this.contentKey = IdUri.uuid();
             },
             refreshChildren: function () {
-                if (this.isCenter) {
+                if (this.isCenter && CurrentSubGraph.get().component) {
                     CurrentSubGraph.get().component.refreshChildren();
                     return;
                 }

@@ -22,7 +22,7 @@ const Dragged = {
         let closestChildEdge;
         let isAbove = false;
         parent.getDescendants(isLeft).forEach((childEdge) => {
-            if (!childEdge.isEdge()) {
+            if (!childEdge.isEdge() && !childEdge.isGroupRelation()) {
                 return;
             }
             let position = childEdge.getHtml().getBoundingClientRect();
