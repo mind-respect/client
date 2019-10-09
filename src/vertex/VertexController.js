@@ -402,8 +402,10 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
         Vue.nextTick(() => {
             LoadingFlow.leave();
             if (avoidCenter !== true) {
-                Scroll.centerBubbleForTreeIfApplicable(this.model());
-                Store.dispatch("redraw");
+                setTimeout(()=>{
+                    Scroll.centerBubbleForTreeIfApplicable(this.model());
+                    Store.dispatch("redraw");
+                }, 100);
             }
         });
     });
