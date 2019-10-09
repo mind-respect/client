@@ -398,6 +398,10 @@
                 this.contentKey = IdUri.uuid();
             },
             refreshChildren: function () {
+                if (this.isCenter) {
+                    CurrentSubGraph.get().component.refreshChildren();
+                    return;
+                }
                 this.childrenKey = IdUri.uuid();
             },
             canShowChildren: function () {

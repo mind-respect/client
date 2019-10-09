@@ -13,7 +13,7 @@
             <!--            >-->
             <!--            </v-overlay>-->
             <v-layout class='root-vertex-super-container vh-center' :style="zoomScale"
-                      @dragstart="preventUndesirableDragging" :key="center.childrenKey">
+                      @dragstart="preventUndesirableDragging" :key="childrenKey">
                 <v-overlay
                         :value="showLoading"
                         absolute
@@ -223,7 +223,8 @@
                 xContextMenu: 0,
                 yContextMenu: 0,
                 isContextMenuLeft: false,
-                backgroundColor: null
+                backgroundColor: null,
+                childrenKey: IdUri.uuid()
             }
         },
         mounted: function () {
@@ -262,7 +263,8 @@
                     this.svg = new GraphDraw(this.center).build();
                     await this.$nextTick();
                     this.redrawKey = Math.random();
-                })
+                });
+                CurrentSubGraph.get().component = this;
             }).catch((error) => {
                 console.error(error);
                 this.$router.push("/")
@@ -275,6 +277,9 @@
             window.removeEventListener('resize', this.handleResize)
         },
         methods: {
+            refreshChildren: function () {
+                this.childrenKey = IdUri.uuid();
+            },
             expandAll: function () {
                 GraphController.expandAll();
             },
