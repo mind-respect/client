@@ -558,7 +558,7 @@ GraphElementController.prototype.addIdentification = function (identifier, preve
 
 GraphElementController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft, identifiers) {
     let distantVertex;
-    let parentVertex = this.model().isVertex() ? this.model() : this.model().getParentVertex();
+    let parentVertex = this.model().isVertexType() ? this.model() : this.model().getParentVertex();
     SubGraphController.withVertex(
         Vertex.withUri(
             distantVertexUri
