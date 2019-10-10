@@ -136,6 +136,7 @@ FriendlyResource.FriendlyResource.prototype.focus = function (event) {
 
     function focus() {
         setTimeout(() => {
+            console.log("in interval");
             let labelHtml = this.getLabelHtml();
             if (!labelHtml) {
                 return false;
