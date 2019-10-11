@@ -72,6 +72,9 @@ api.SubGraph.prototype.add = function (graphElement) {
         endVertex.parentBubble = graphElement;
         endVertex.parentVertex = graphElement.parentVertex;
         endVertex.direction = graphElement.direction;
+        if (endVertex.getNumberOfChild() === 0) {
+            endVertex.isExpanded = true;
+        }
         this.add(endVertex);
     } else if (graphElement.isVertex()) {
         this.addVertex(graphElement);
@@ -249,6 +252,18 @@ api.SubGraph.prototype.getGroupRelationWithUiId = function (uiId) {
 
 api.SubGraph.prototype.getCenter = function () {
     return this.getVertexWithUri(this.centerUri);
+};
+
+api.SubGraph.prototype.getCenterTagIndex = function () {
+    return this.serverFormat.childrenIndexesCenterTag;
+};
+
+api.SubGraph.prototype.getCenterTagColors = function () {
+    return this.serverFormat.colorsCenterTag;
+};
+
+api.SubGraph.prototype.getFontCenterTag = function () {
+    return this.serverFormat.fontCenterTag;
 };
 
 api.SubGraph.prototype._buildVertices = function () {

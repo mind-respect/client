@@ -93,8 +93,7 @@ api.changeBackgroundColorCanDo = function () {
     if (!CurrentSubGraph.get() || !CurrentSubGraph.get().center) {
         return false;
     }
-    return !MindMapInfo.isViewOnly() &&
-        CurrentSubGraph.get().center.isVertex();
+    return !MindMapInfo.isViewOnly();
 };
 
 api.changeBackgroundColor = function () {

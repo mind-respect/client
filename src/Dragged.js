@@ -15,6 +15,13 @@ const Dragged = {
             isLeft
         );
         let method = closestEdge.isAbove ? "moveAbove" : "moveBelow";
+        let parentVertex = closestEdge.edge.getParentVertex();
+        if (parentVertex.isMeta() && !Dragged.dragged.getParentVertex().isMeta()) {
+            return;
+        }
+        if (parentVertex.isMetaGroupVertex() && Dragged.dragged.getParentVertex().getUri() !== parentVertex.getUri()) {
+            return;
+        }
         return Dragged.dragged.controller()[method](closestEdge.edge);
     },
     getClosestChildEdge: function (x, y, parent, isLeft) {

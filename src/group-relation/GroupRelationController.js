@@ -227,6 +227,39 @@ GroupRelationController.prototype.removeCanDo = function () {
     return false;
 };
 
+GroupRelationController.prototype.remove = function () {
+    return Promise.all(
+        this.model().getClosestChildRelations().map((child) => {
+            return child.controller().remove();
+        })
+    );
+};
+
+GroupRelationController.prototype.addIdentification = function (tag) {
+    return Promise.all(
+        this.model().getClosestChildRelations().map((child) => {
+            return child.controller().addIdentification(tag, true);
+        })
+    );
+};
+
+GroupRelationController.prototype.addTagToChildVertex = function (tag) {
+    return Promise.all(
+        this.model().getClosestChildVertices().map((child) => {
+            return child.controller().addIdentification(tag, true);
+        })
+    );
+};
+
+GroupRelationController.prototype.replaceParentVertex = function (newParentVertex) {
+    return Promise.all(
+        this.model().getClosestChildRelations().map((child) => {
+            return child.controller().replaceParentVertex(newParentVertex);
+        })
+    );
+};
+
+
 GroupRelationController.prototype.addIdentificationCanDo = function () {
     return false;
 };

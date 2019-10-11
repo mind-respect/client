@@ -158,27 +158,9 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
         this,
         graphElementServerFormat.friendlyResource
     );
-    if (this._graphElementServerFormat.childrenIndex && typeof this._graphElementServerFormat.childrenIndex === 'string') {
-        this._graphElementServerFormat.childrenIndex = JSON.parse(
-            this._graphElementServerFormat.childrenIndex
-        );
-    }
-    if (this._graphElementServerFormat.colors && typeof this._graphElementServerFormat.colors === 'string') {
-        this._graphElementServerFormat.colors = JSON.parse(
-            this._graphElementServerFormat.colors
-        );
-    } else {
-        this._graphElementServerFormat.colors = {
-            background: Color.DEFAULT_BACKGROUND_COLOR
-        }
-    }
-    if (this._graphElementServerFormat.font && typeof this._graphElementServerFormat.font === 'string') {
-        this._graphElementServerFormat.font = JSON.parse(
-            this._graphElementServerFormat.font
-        );
-    } else {
-        this._graphElementServerFormat.font = GraphElement.DEFAULT_FONT;
-    }
+    this.setChildrenIndex(this._graphElementServerFormat.childrenIndex);
+    this.setColors(this._graphElementServerFormat.colors);
+    this.setFont(this._graphElementServerFormat.font);
     this._buildIdentifications();
     this.childrenKey = IdUri.uuid();
     this.isSelected = false;
@@ -411,6 +393,18 @@ GraphElement.GraphElement.prototype.getPatternUri = function () {
     );
 };
 
+GraphElement.GraphElement.prototype.setColors = function (colors) {
+    if (colors && typeof colors === 'string') {
+        this._graphElementServerFormat.colors = JSON.parse(
+            colors
+        );
+    } else {
+        this._graphElementServerFormat.colors = colors || {
+            background: Color.DEFAULT_BACKGROUND_COLOR
+        }
+    }
+};
+
 GraphElement.GraphElement.prototype.getColors = function () {
     return this._graphElementServerFormat.colors || {};
 };
@@ -424,15 +418,47 @@ GraphElement.GraphElement.prototype.getBackgroundColor = function () {
 };
 
 GraphElement.GraphElement.prototype.setFont = function (font) {
-    return this._graphElementServerFormat.font = font;
+    this._graphElementServerFormat.font = font && typeof font === 'string' ? JSON.parse(font) : font || GraphElement.DEFAULT_FONT;
 };
 
 GraphElement.GraphElement.prototype.getFont = function () {
     return this._graphElementServerFormat.font || GraphElement.DEFAULT_FONT;
 };
 
+GraphElement.GraphElement.prototype.setChildrenIndex = function (childrenIndex) {
+    return this._graphElementServerFormat.childrenIndex = childrenIndex && typeof childrenIndex === 'string' ?
+        JSON.parse(childrenIndex) :
+        childrenIndex;
+};
+
 GraphElement.GraphElement.prototype.getChildrenIndex = function () {
     return this._graphElementServerFormat.childrenIndex || {};
+};
+
+FriendlyResource.FriendlyResource.prototype.buildChildrenIndex = function (index) {
+    let whileCenterContextLeftRightIndex = this.isCenter ? {} : this.getChildrenIndex();
+    index = index || 0;
+    return this.getClosestChildrenInTypes(
+        [GraphElementType.Vertex, GraphElementType.MetaGroupVertex, GraphElementType.GroupRelation],
+        true
+    ).reduce((childrenIndex, child) => {
+        if (child.isGroupRelation()) {
+            let groupRelationIndex = child.buildChildrenIndex(index);
+            index += Object.keys(groupRelationIndex).length;
+            childrenIndex = Object.assign(childrenIndex, groupRelationIndex);
+        } else {
+            let leftRightIndexWhileCenter = whileCenterContextLeftRightIndex[child.getUri()];
+            let isLeft = leftRightIndexWhileCenter ? leftRightIndexWhileCenter.toTheLeft : child.isToTheLeft();
+            childrenIndex[child.getUri()] = {
+                index: index,
+                toTheLeft: isLeft,
+                label: child.getLabel(),
+                type: child.getGraphElementType()
+            };
+            index++;
+        }
+        return childrenIndex;
+    }, {});
 };
 
 GraphElement.GraphElement.prototype.integrateChildrenIndex = function (secondary) {
@@ -447,10 +473,6 @@ GraphElement.GraphElement.prototype.integrateChildrenIndex = function (secondary
         }
     });
     return hasModified;
-};
-
-GraphElement.GraphElement.prototype.setChildrenIndex = function (childrenIndex) {
-    return this._graphElementServerFormat.childrenIndex = childrenIndex;
 };
 
 GraphElement.GraphElement.prototype.getMoveDate = function () {

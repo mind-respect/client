@@ -151,13 +151,9 @@
                     CurrentSubGraph.get().center,
                     this.isLeft
                 );
-                let index = closest.edge.getIndexInTree();
-                if (!closest.isAbove) {
-                    index++;
-                }
                 closest.edge.getParentFork().controller().relateToDistantVertexWithUri(
                     this.selectedSearchResult.uri,
-                    index,
+                    closest.edge.getIndexInTree(closest.isAbove),
                     this.isLeft
                 );
                 this.dialog = false;

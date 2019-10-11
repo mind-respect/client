@@ -323,7 +323,7 @@ GraphElementController.prototype._canMoveAboveOrUnder = function (otherEdge) {
 };
 
 GraphElementController.prototype.moveBelow = function (otherEdge) {
-    if (otherEdge.isVertex()) {
+    if (otherEdge.isVertexType()) {
         otherEdge = otherEdge.getParentBubble();
     }
     if (!this._canMoveAboveOrUnder(otherEdge)) {
@@ -338,7 +338,7 @@ GraphElementController.prototype.moveBelow = function (otherEdge) {
 };
 
 GraphElementController.prototype.moveAbove = function (otherEdge) {
-    if (otherEdge.isVertex()) {
+    if (otherEdge.isVertexType()) {
         otherEdge = otherEdge.getParentBubble();
     }
     if (!this._canMoveAboveOrUnder(otherEdge)) {
@@ -418,15 +418,23 @@ GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previou
 
 GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, previousParentVertex) {
     let model = this.model();
-    let movedEdge = model.isVertex() ?
+    let movedEdge = model.isVertexType() ?
         model.getParentBubble() :
         model;
     let promises = [];
-    if (!otherEdge.getParentBubble().isSameUri(movedEdge.getParentBubble())) {
+    let parentOfOtherBubble = otherEdge.getParentBubble();
+    if (!parentOfOtherBubble.isSameUri(movedEdge.getParentBubble())) {
         promises.push(
             movedEdge.getParentBubble().controller().becomeExParent(movedEdge)
         );
     }
+    // if (parentOfOtherBubble.isMeta()) {
+    //     return parentOfOtherBubble.controller().becomeParent(
+    //         movedEdge,
+    //         otherEdge.isToTheLeft(),
+    //         otherEdge.getIndexInTree(isAbove)
+    //     );
+    // }
     if (isAbove) {
         model.moveAbove(otherEdge);
     } else {
@@ -436,54 +444,34 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
     Vue.nextTick(() => {
         Store.dispatch("redraw")
     });
-    let parentOfOtherBubble = otherEdge.getParentBubble();
+    parentOfOtherBubble = otherEdge.getParentBubble();
     if (parentOfOtherBubble.isGroupRelation()) {
-        let identification = parentOfOtherBubble.getIdentification();
-        if (movedEdge.isGroupRelation()) {
-            movedEdge.visitClosestChildRelations(function (relation) {
-                promises.push(
-                    relation.controller().addIdentification(
-                        identification,
-                        true
-                    )
-                );
-            });
-        } else {
-            promises.push(
-                movedEdge.controller().addIdentification(
-                    identification,
-                    true
-                )
-            );
-        }
+        promises.push(
+            movedEdge.controller().addIdentification(
+                parentOfOtherBubble.getIdentification(),
+                true
+            )
+        );
+        movedEdge.expand();
     }
-
-    if (previousParentVertex.getUri() !== otherEdge.getParentVertex().getUri()) {
-        if (movedEdge.isGroupRelation()) {
-            movedEdge.expand();
-            movedEdge.visitClosestChildRelations(function (relationUi) {
-                promises.push(
-                    relationUi.controller().replaceParentVertex(
-                        otherEdge.getParentVertex()
-                    )
-                );
-            });
-        } else {
-            promises.push(
-                movedEdge.controller().replaceParentVertex(
-                    otherEdge.getParentVertex(),
-                    true
-                )
-            );
-        }
+    let parentVertex = otherEdge.getParentVertex();
+    if (!parentVertex.isMeta() && previousParentVertex.getUri() !== parentVertex.getUri()) {
+        promises.push(
+            movedEdge.controller().replaceParentVertex(
+                otherEdge.getParentVertex(),
+                true
+            )
+        );
     }
     return Promise.all(promises).then(() => {
         GraphElementService.changeChildrenIndex(
-            otherEdge.getParentVertex()
+            parentVertex
         );
-        GraphElementService.changeChildrenIndex(
-            previousParentVertex
-        );
+        if (previousParentVertex.getUri() !== parentVertex.getUri()) {
+            GraphElementService.changeChildrenIndex(
+                previousParentVertex
+            );
+        }
         //I don't know why I have to Selection.reset() to select the same bubble.
         Selection.removeAll();
         Selection.setToSingle(model);

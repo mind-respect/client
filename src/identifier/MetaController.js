@@ -17,6 +17,8 @@ import Selection from '@/Selection'
 import SubGraphController from '@/graph/SubGraphController'
 import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
+import GraphElement from '@/graph-element/GraphElement'
+import Color from '@/Color'
 
 const api = {};
 
@@ -60,10 +62,20 @@ MetaController.prototype.loadGraph = function () {
         centerBubble.setLabel(centerTag.getLabel());
         centerBubble.setComment(centerTag.getComment());
         centerBubble.setOriginalMeta(centerTag);
-        let edgesBySourceVertex = buildEdgesGroupedBySourceVertex(metaSubGraph);
         let subGraph = metaSubGraph.getSubGraph();
         CurrentSubGraph.get().add(centerBubble);
+        centerBubble.setChildrenIndex(
+            subGraph.serverFormat.childrenIndexesCenterTag
+        );
+        centerBubble.setColors(
+            subGraph.serverFormat.colorsCenterTag
+        );
+        centerBubble.setFont(
+            subGraph.serverFormat.fontCenterTag
+        );
         subGraph.center = centerBubble;
+        let edgesBySourceVertex = buildEdgesGroupedBySourceVertex(metaSubGraph, centerBubble);
+        let edges = [];
         Object.keys(edgesBySourceVertex).forEach((vertexUri) => {
             let sourceVertexAndEdges = edgesBySourceVertex[vertexUri];
             let child;
@@ -73,21 +85,15 @@ MetaController.prototype.loadGraph = function () {
             if (sourceVertexAndEdges.edges.length === 0) {
                 vertex.incrementNbConnectedEdges();
                 child = new MetaRelation(vertex, centerBubble);
-                centerBubble.addChild(
-                    child
-                );
-                CurrentSubGraph.get().add(child);
+                edges.push(child);
             } else {
                 vertex = new MetaGroupVertex(
                     vertex
                 );
                 CurrentSubGraph.get().add(vertex);
                 child = new MetaRelation(vertex, centerBubble);
-                centerBubble.addChild(
-                    child
-                );
-                CurrentSubGraph.get().add(child);
-                sourceVertexAndEdges.edges.forEach((edgeBetweenGroupAndDestination) => {
+                edges.push(child);
+                sortEdges(sourceVertexAndEdges.edges, vertex).forEach((edgeBetweenGroupAndDestination) => {
                     let destinationVertex = subGraph.getVertexWithUri(
                         edgeBetweenGroupAndDestination.getDestinationVertex().getUri()
                     );
@@ -97,7 +103,6 @@ MetaController.prototype.loadGraph = function () {
                     );
                     vertex.addChild(grandChild);
                     CurrentSubGraph.get().add(grandChild);
-                    // api._setupMetaEdgeUi(edgeBetweenGroupAndDestinationUi);
                 });
                 if (vertex.getNumberOfChild() > 1) {
                     vertex.expand();
@@ -105,15 +110,45 @@ MetaController.prototype.loadGraph = function () {
                 }
             }
         });
+        let childrenIndex = centerBubble.getChildrenIndex();
+        sortEdges(edges, centerBubble).forEach((edge) => {
+            let endVertex = edge.getOtherVertex(centerBubble);
+            let childIndex = childrenIndex[endVertex.getUri()] || childrenIndex[endVertex.getPatternUri()];
+            let addLeft;
+            if (childIndex !== undefined) {
+                addLeft = childIndex.toTheLeft;
+            }
+            centerBubble.addChild(
+                edge,
+                addLeft
+            );
+            CurrentSubGraph.get().add(edge);
+        });
+        if (!subGraph.serverFormat.childrenIndexesCenterTag) {
+            GraphElementService.changeChildrenIndex(centerBubble)
+        }
         return centerBubble;
     });
 };
 
-function buildEdgesGroupedBySourceVertex(metaSubGraph) {
+function sortEdges(edges, metaGroupVertex) {
+    let childrenIndex = metaGroupVertex.getChildrenIndex();
+    return edges.sort((a, b) => {
+        let vertexA = a.getOtherVertex(metaGroupVertex);
+        let vertexB = b.getOtherVertex(metaGroupVertex);
+        return GraphElement.sortCompare(
+            vertexA,
+            vertexB,
+            childrenIndex
+        );
+    });
+}
+
+function buildEdgesGroupedBySourceVertex(metaSubGraph, centerVertex) {
     let edgesBySourceVertex = {};
     let excludedDestinationVerticesUri = {};
     let subGraph = metaSubGraph.getSubGraph();
-    subGraph.getEdges().forEach((edge) => {
+    sortEdges(subGraph.getEdges(), centerVertex).forEach((edge) => {
         if (!edge.hasIdentification(metaSubGraph.getMetaCenter())) {
             return;
         }
@@ -182,9 +217,9 @@ MetaController.prototype.addChild = function () {
         this.model().refreshChildren();
         Vue.nextTick(() => {
             Selection.setToSingle(newVertex);
-            // GraphElementService.changeChildrenIndex(
-            //     this.model()
-            // );
+            GraphElementService.changeChildrenIndex(
+                this.model()
+            );
         })
     });
 };
@@ -239,6 +274,25 @@ MetaController.prototype.convertToDistantBubbleWithUri = function (distantTagUri
 
 MetaController.prototype.mergeCanDo = function () {
     return false;
+};
+
+MetaController.prototype.becomeParent = function (child, isLeft, index) {
+    return Promise.resolve();
+    // let promises = [];
+    // debugger;
+    // promises.push(
+    //     child.controller().addTagToChildVertex(this.getOriginalMeta())
+    // );
+    // if (child.isGroupRelation()) {
+    //     promises.push(
+    //         child.getClosestChildRelations().map(() => {
+    //             // return child.
+    //         })
+    //     );
+    // }
+    // child.controller().remove();
+    // let newChild = new MetaRelation(child.getNextBubble(), this.model());
+
 };
 
 api.MetaController = MetaController;

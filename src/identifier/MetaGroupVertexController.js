@@ -73,6 +73,10 @@ MetaGroupVertexController.prototype.relateToDistantVertexWithUri = function (dis
     );
 };
 
+MetaGroupVertexController.prototype.becomeParent = function (child, isLeft, index) {
+    return Promise.resolve();
+};
+
 api.MetaGroupVertexController = MetaGroupVertexController;
 
 export default api;

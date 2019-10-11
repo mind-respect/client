@@ -72,9 +72,6 @@ Vertex.prototype.init = function (vertexServerFormat) {
         this,
         vertexServerFormat.vertex.graphElement
     );
-    if (this.getNumberOfChild() === 0) {
-        this.isExpanded = true;
-    }
     return this;
 };
 

@@ -353,6 +353,10 @@ VertexController.prototype.becomeParent = function (child) {
     }
 };
 
+VertexController.prototype.moveUpOneStepCanDo = VertexController.prototype.moveDownOneStepCanDo = function () {
+    return !this.model().getParentVertex().isMetaGroupVertex();
+};
+
 VertexController.prototype.copyCanDo = function () {
     return !this.isSingle() || !this.getUi().isLabelEmpty();
 };
@@ -402,7 +406,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
         Vue.nextTick(() => {
             LoadingFlow.leave();
             if (avoidCenter !== true) {
-                setTimeout(()=>{
+                setTimeout(() => {
                     Scroll.centerBubbleForTreeIfApplicable(this.model());
                     Store.dispatch("redraw");
                 }, 100);

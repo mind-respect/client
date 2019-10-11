@@ -165,7 +165,7 @@
                     return false;
                 }
                 let single = Selection.getSingle();
-                return single && single.controller().identifyCanDo();
+                return single && (single.controller().identifyCanDo() || single.isMeta());
             },
             mergeCanDo: function () {
                 if (!Selection.isSingle()) {

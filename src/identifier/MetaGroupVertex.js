@@ -10,6 +10,7 @@ function MetaGroupVertex(vertex) {
     );
     this.setLabel(vertex.getLabel());
     this.setComment(vertex.getComment());
+    this.setChildrenIndex(vertex.getChildrenIndex());
 }
 
 MetaGroupVertex.prototype = new Vertex.Vertex();

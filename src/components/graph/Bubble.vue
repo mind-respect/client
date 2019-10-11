@@ -285,11 +285,6 @@
                 containerId: "",
                 loaded: false,
                 isLabelDragOver: false,
-                dragOverLabelTimeout: undefined,
-                isContainerDragOver: false,
-                dragOverTopBottomTimeout: undefined,
-                isTopDragOver: null,
-                isBottomDragOver: null,
                 showMenu: false,
                 menuFlow: null,
                 linkMenuHref: null,
@@ -316,7 +311,7 @@
             this.refreshImages();
             this.chipColor = this.bubble.isMetaRelation() ? "third" : "secondary";
             let parentBubble = this.bubble.getParentBubble();
-            this.isMetaRelated = this.bubble.isMetaRelation() || this.bubble.isMetaGroupVertex() || (parentBubble && parentBubble.isMetaRelation());
+            // this.isMetaRelated = this.bubble.isMetaRelation() || this.bubble.isMetaGroupVertex() || (parentBubble && parentBubble.isMetaRelation());
             this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
             this.isLeft = this.direction === "left";
             this.dragOverArrow = this.isLeft ? "arrow_back" : "arrow_forward";
@@ -525,14 +520,13 @@
                 GraphUi.disableDragScroll();
             },
             dragStart: function (event) {
-                if (MindMapInfo.isViewOnly() || this.isMetaRelated) {
+                if (MindMapInfo.isViewOnly()) {
                     event.preventDefault();
                     return;
                 }
                 event.target.style.opacity = .5;
                 event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
                 Dragged.dragged = this.bubble;
-                this.isContainerDragOver = false;
                 GraphUi.disableDragScroll();
             },
             dragEnd: function (event) {
@@ -568,9 +562,6 @@
                 this.bubble.isDragOver = false;
                 this.isLabelDragOver = false;
                 // console.log("label drag leave");
-                // this.dragOverLabelTimeout = setTimeout(function () {
-                //     this.isLabelDragOver = false;
-                // }.bind(this), 50)
             },
             labelDrop: function (event, forceLeft) {
                 // console.log("label drop");
@@ -588,79 +579,6 @@
                     this.bubble,
                     forceLeft
                 );
-            },
-            topBottomDrop: function (method) {
-                this.isContainerDragOver = false;
-                this.isBottomDragOver = false;
-                this.isTopDragOver = false;
-                let edge = this.bubble;
-                if (edge.isVertex()) {
-                    edge = edge.getParentBubble();
-                }
-                let dragged = Dragged.dragged;
-                if (edge.isRelation() && dragged.getId() === edge.destinationVertex.getId()) {
-                    console.log("drop denied");
-                    return;
-                }
-                return dragged.controller()[method](edge);
-            },
-            topDrop: function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                this.topBottomDrop("moveAbove");
-            },
-            bottomDrop: function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                this.topBottomDrop("moveBelow");
-            },
-            resetTopBottomDragOver: function (event) {
-                event.preventDefault();
-                this.dragOverTopBottomTimeout = setTimeout(function () {
-                    this.isContainerDragOver = false;
-                    this.isBottomDragOver = false;
-                    this.isTopDragOver = false;
-                }.bind(this), 50);
-            },
-            topDragEnter: function (event) {
-                /*
-                method name is drag enter but actually
-                called on drag over to enable drop handler to trigger
-                I don't know why !
-                 */
-                event.preventDefault();
-                clearTimeout(this.dragOverTopBottomTimeout);
-                if (this.isTopDragOver) {
-                    return;
-                }
-                let dragged = Dragged.dragged;
-                if (!dragged) {
-                    return;
-                }
-                let bubble = this.bubble.isEdge() ? this.bubble.getNextBubble() : this.bubble;
-                if (dragged.getId() === bubble.getId()) {
-                    return;
-                }
-                this.isContainerDragOver = true;
-                this.isTopDragOver = true;
-            },
-            bottomDragEnter: function (event) {
-                /*
-                method name is drag enter but actually
-                called on drag over to enable drop handler to trigger
-                I don't know why !
-                 */
-                event.preventDefault();
-                clearTimeout(this.dragOverTopBottomTimeout);
-                if (this.isBottomDragOver) {
-                    return;
-                }
-                let bubble = this.bubble.isEdge() ? this.bubble.getNextBubble() : this.bubble;
-                if (Dragged.dragged.getId() === bubble.getId()) {
-                    return;
-                }
-                this.isContainerDragOver = true;
-                this.isBottomDragOver = true;
             },
             leftRightDragEnter: function (event) {
                 event.preventDefault();

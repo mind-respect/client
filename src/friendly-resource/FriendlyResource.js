@@ -386,6 +386,9 @@ FriendlyResource.FriendlyResource.prototype.getNextSibling = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpand = function () {
+    if (this.isExpanded === undefined) {
+        this.isExpanded = this.getNumberOfChild(undefined, true) === 0;
+    }
     let nbChild = this.getNumberOfChild();
     return !this.isCenter && !this.isExpanded && nbChild > 0;
 };
@@ -408,7 +411,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
     if (this.isGroupRelation()) {
         this.expand();
     }
-    if (this.isVertex()) {
+    if (this.isVertexType()) {
         return this.getParentBubble().moveTo(
             otherBubble,
             relation
@@ -436,23 +439,15 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         let isTemporaryRemove = parentBubble.isSameBubble(otherParentBubble);
         parentBubble.removeChild(this, isTemporaryRemove);
         this.direction = otherBubble.direction;
-        let index = otherParentBubble.getChildIndex(otherBubble);
+        let index = otherParentBubble.getChildIndex(otherBubble, MoveRelation.Before === relation);
         this.setParentVertex(
             otherBubble.getParentVertex()
         );
-        if (MoveRelation.Before === relation) {
-            otherParentBubble.addChild(
-                this,
-                otherBubble.isToTheLeft(),
-                index
-            );
-        } else {
-            otherParentBubble.addChild(
-                this,
-                otherBubble.isToTheLeft(),
-                index + 1
-            );
-        }
+        otherParentBubble.addChild(
+            this,
+            otherBubble.isToTheLeft(),
+            index
+        );
     }
     // await Vue.nextTick();
     // const last = elm.getBoundingClientRect();
@@ -500,33 +495,6 @@ FriendlyResource.FriendlyResource.prototype.moveBelow = function (newSibling) {
         newSibling,
         MoveRelation.After
     );
-};
-
-
-FriendlyResource.FriendlyResource.prototype.buildChildrenIndex = function (index) {
-    let whileCenterContextLeftRightIndex = this.isCenter ? {} : this.getChildrenIndex();
-    index = index || 0;
-    return this.getClosestChildrenInTypes(
-        [GraphElementType.Vertex, GraphElementType.GroupRelation],
-        true
-    ).reduce((childrenIndex, child) => {
-        if (child.isGroupRelation()) {
-            let groupRelationIndex = child.buildChildrenIndex(index);
-            index += Object.keys(groupRelationIndex).length;
-            childrenIndex = Object.assign(childrenIndex, groupRelationIndex);
-        } else {
-            let leftRightIndexWhileCenter = whileCenterContextLeftRightIndex[child.getUri()];
-            let isLeft = leftRightIndexWhileCenter ? leftRightIndexWhileCenter.toTheLeft : child.isToTheLeft();
-            childrenIndex[child.getUri()] = {
-                index: index,
-                toTheLeft: isLeft,
-                label: child.getLabel(),
-                type: child.getGraphElementType()
-            };
-            index++;
-        }
-        return childrenIndex;
-    }, {});
 };
 
 FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDown, isForTravel) {
@@ -607,7 +575,7 @@ FriendlyResource.FriendlyResource.prototype.replaceChild = function (existingChi
     );
 };
 
-FriendlyResource.FriendlyResource.prototype.getChildIndex = function (child) {
+FriendlyResource.FriendlyResource.prototype.getChildIndex = function (child, isToGoAbove) {
     let foundIndex = -1;
     let children = this.getNextChildren(child.isToTheLeft());
     for (let i = 0; i < children.length; i++) {
@@ -626,7 +594,7 @@ FriendlyResource.FriendlyResource.prototype.getChildIndex = function (child) {
             }
         }
     }
-    return foundIndex;
+    return isToGoAbove === false ? foundIndex + 1 : foundIndex;
 };
 
 FriendlyResource.FriendlyResource.prototype.getChildAtIndex = function (index, isToTheLeft) {
@@ -724,8 +692,8 @@ FriendlyResource.FriendlyResource.prototype.isLeaf = function () {
     return this.getNextChildren().length === 0;
 };
 
-FriendlyResource.FriendlyResource.prototype.getIndexInTree = function () {
-    return this.getParentFork().getChildIndex(this);
+FriendlyResource.FriendlyResource.prototype.getIndexInTree = function (isToGoAbove) {
+    return this.getParentFork().getChildIndex(this, isToGoAbove);
 };
 
 FriendlyResource.FriendlyResource.prototype.getParentFork = function () {
@@ -771,6 +739,12 @@ FriendlyResource.FriendlyResource.prototype.visitClosestChildRelations = functio
     this.visitClosestChildOfType(
         GraphElementType.Relation,
         visitor
+    );
+};
+
+FriendlyResource.FriendlyResource.prototype.getClosestChildRelations = function () {
+    return this.getClosestChildrenOfType(
+        GraphElementType.Relation
     );
 };
 

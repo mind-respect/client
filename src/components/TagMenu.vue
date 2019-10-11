@@ -23,7 +23,7 @@
                     @focus="$emit('focus')"
                     @blur="$emit('blur')"
                     :placeholder="$t('tag:title')"
-                    v-if="!bubble.isGroupRelation()"
+                    v-show="!bubble.isGroupRelation() && !bubble.isMeta()"
             >
                 <template v-slot:prepend-inner>
                     <img :src="require('@/assets/wikipedia.svg')" width="25">
@@ -48,7 +48,8 @@
                         </v-icon>
                     </v-list-item-action>
                 </v-list-item>
-                <v-list-item slot="no-data" @click="createTagWithNoRef" v-if="search && search.trim() !== ''" v-show="!searchLoading">
+                <v-list-item slot="no-data" @click="createTagWithNoRef" v-if="search && search.trim() !== ''"
+                             v-show="!searchLoading">
                     <v-list-item-content>
                         <v-list-item-title>
                             "{{search}}"
@@ -88,7 +89,7 @@
                                               class="grey--text text-left"></v-list-item-subtitle>
                     </v-list-item-content>
                     <v-list-item-action class="ma-0 vh-center"
-                                        style="min-height:100%;height:100%">
+                                        style="min-height:100%;height:100%" v-show="!bubble.isMeta()">
                         <v-menu>
                             <template v-slot:activator="{ on }">
                                 <v-btn icon text v-on="on" class="mt-5 ml-2 mr-1" small>
@@ -106,7 +107,8 @@
                                         {{$t('tag:center')}}
                                     </v-list-item-title>
                                 </v-list-item>
-                                <v-list-item :href="identifier.externalUrl" target="_blank" v-if="!identifier.isVoidReferenceTag()">
+                                <v-list-item :href="identifier.externalUrl" target="_blank"
+                                             v-if="!identifier.isVoidReferenceTag()">
                                     <v-list-item-action>
                                         <v-icon class="mr-6 float-right" v-if="identifier.refersToAGraphElement()">
                                             {{identifier.getIcon()}}
@@ -219,6 +221,11 @@
                 this.refreshKey = IdUri.uuid();
             },
             identifiersByLatest: function () {
+                if (this.bubble.isMeta()) {
+                    return [
+                        this.bubble.getOriginalMeta()
+                    ];
+                }
                 return this.bubble.getTagsAndSelfIfRelevant().sort((a, b) => {
                     return b.getCreationDate() - a.getCreationDate();
                 })

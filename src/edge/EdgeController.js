@@ -255,4 +255,11 @@ EdgeController.prototype.replaceParentVertex = function (newParentVertex, preven
     }
 };
 
+EdgeController.prototype.addTagToChildVertex = function (tag) {
+    return this.model().getNextBubble().controller().addIdentification(
+        tag,
+        true
+    );
+};
+
 export default api;
