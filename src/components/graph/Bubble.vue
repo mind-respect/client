@@ -26,15 +26,15 @@
                                      :class="{
                                         'blur-overlay': !isEditFlow && $store.state.isEditFlow
                                      }"
-                                     v-if="canExpand && !canShowChildren()"></ChildNotice>
+                                     v-if="canExpand() && !canShowChildren()"></ChildNotice>
                     </div>
                 </div>
                 <div class='bubble-container v-center'
                      :class="{
                     'vh-center':isCenter,
                     'left':!isLeft && !isCenter,
-                    'pl-12': !canExpand && (!isCenter && bubble.isVertexType() && isLeft && bubble.rightBubbles.length === 0) || (isCenter && bubble.leftBubbles.length === 0),
-                    'pr-12': !canExpand && (bubble.isVertexType() && (!isLeft || isCenter) && bubble.rightBubbles.length === 0)
+                    'pl-12': !canExpand() && (!isCenter && bubble.isVertexType() && isLeft && bubble.rightBubbles.length === 0) || (isCenter && bubble.leftBubbles.length === 0),
+                    'pr-12': !canExpand() && (bubble.isVertexType() && (!isLeft || isCenter) && bubble.rightBubbles.length === 0)
             }"
                      :id="bubble.uiId"
                 >
@@ -244,7 +244,7 @@
                                      :class="{
                                         'blur-overlay': !isEditFlow && $store.state.isEditFlow
                                      }"
-                                     v-if="canExpand && !canShowChildren()"></ChildNotice>
+                                     v-if="canExpand() && !canShowChildren()"></ChildNotice>
                     </div>
                 </div>
             </v-flex>
@@ -342,9 +342,6 @@
             isLeaf: function () {
                 return this.bubble.isLeaf();
             },
-            canExpand: function () {
-                return this.bubble.canExpand();
-            },
             labelFont: function () {
                 let font = CurrentSubGraph.get().center.getFont();
                 return "font-family:" + font.family;
@@ -357,6 +354,9 @@
             }
         },
         methods: {
+            canExpand: function () {
+                return this.bubble.canExpand();
+            },
             refreshImages: function () {
                 let tagsWithImages = this.bubble.getIdentifiers().filter((tag) => {
                     return tag.hasImages() && tag.getImage().urlForSmall;
