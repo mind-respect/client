@@ -39,10 +39,10 @@ const Store = new Vuex.Store({
         sideMenuFlow: false,
         isViewOnly: null,
         selected: [],
-        labelRefresh: IdUri.uuid(),
-        noteRefresh: IdUri.uuid(),
-        tagRefresh: IdUri.uuid(),
-        shareRefresh: IdUri.uuid()
+        labelRefresh: Math.random(),
+        noteRefresh: Math.random(),
+        tagRefresh: Math.random(),
+        shareRefresh: Math.random()
     },
     mutations: {
         setUser: function (state, user) {
