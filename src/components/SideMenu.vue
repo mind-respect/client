@@ -26,7 +26,10 @@
                         <v-icon>chevron_right</v-icon>
                     </v-btn>
                     <v-card-title class="subtitle-1" v-show="$store.state.sideMenuFlow !== false">
-                        <div class="grey--text" v-if="isSingle">
+                        <div class="grey--text text-left" v-if="isSingle">
+                            <div class="font-italic side-menu-label" :key="$store.state.labelRefresh + 'sideMenu'">
+                                {{selected.getLabel()}}
+                            </div>
                             {{$t('side:creationDate')}}
                             {{formatDate(creationDate)}}
                         </div>
@@ -41,14 +44,27 @@
                                 grow
                                 centered
                                 show-arrows
-                                color="transparent"
                                 class="side-tabs"
                         >
                             <v-tab class="primary--text side-tab">
-                                <v-icon>note</v-icon>
+                                <v-badge color="transparent" :key="$store.state.noteRefresh + 'noteHeader'">
+                                    <template v-slot:badge>
+                                        <v-icon color="third" v-if="selected.hasComment()">
+                                            brightness_1
+                                        </v-icon>
+                                    </template>
+                                    <v-icon>note</v-icon>
+                                </v-badge>
                             </v-tab>
                             <v-tab class="primary--text side-tab">
-                                <v-icon>label</v-icon>
+                                <v-badge color="transparent" :key="$store.state.tagRefresh + 'tagMenuHeader'">
+                                    <template v-slot:badge>
+                                        <v-icon color="third" v-if="selected.hasIdentifications()">
+                                            brightness_1
+                                        </v-icon>
+                                    </template>
+                                    <v-icon>label</v-icon>
+                                </v-badge>
                             </v-tab>
                             <v-tab class="primary--text side-tab">
                                 <v-icon>merge_type</v-icon>
@@ -76,8 +92,11 @@
                             <v-tab-item>
                                 <p v-show="!shareCanDo" class="pt-4 grey--text text-center">
                                     {{$t('side:shareCantDo')}}</p>
-                                <ShareMenu @focus="focus" @blur="blur"
-                                           v-if="shareCanDo"></ShareMenu>
+                                <ShareMenu @focus="focus"
+                                           @blur="blur"
+                                           v-if="shareCanDo"
+                                           :key="$store.state.shareRefresh + 'shareMenu'"
+                                ></ShareMenu>
                             </v-tab-item>
                         </v-tabs-items>
                     </div>
@@ -104,6 +123,7 @@
     import Selection from '@/Selection'
     import SideMenu from '@/SideMenu'
     import KeyboardActions from '@/KeyboardActions'
+    import IdUri from "@/IdUri";
 
     export default {
         name: "SideMenu",
@@ -139,7 +159,7 @@
                     {title: 'Home', icon: 'dashboard'},
                     {title: 'About', icon: 'question_answer'}
                 ],
-                mainWidth: SideMenu.EXPANDED_WIDTH,
+                mainWidth: SideMenu.EXPANDED_WIDTH
             }
         },
         computed: {
@@ -231,6 +251,12 @@
 </script>
 
 <style>
+    .side-menu-label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 250px;
+    }
 
     .side-search-menu {
         top: -16px !important;

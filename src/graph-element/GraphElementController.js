@@ -65,6 +65,7 @@ GraphElementController.prototype.setLabel = function (newLabel) {
     this.model().getDuplicates().forEach((duplicate) => {
         duplicate.setLabel(newLabel)
     });
+    Store.dispatch("labelRefresh");
     return FriendlyResourceService.updateLabel(
         this.model(),
         newLabel
@@ -82,6 +83,7 @@ GraphElementController.prototype.noteDo = function (note) {
     this.model().getDuplicates().forEach((duplicate) => {
         duplicate.setComment(note)
     });
+    Store.dispatch("noteRefresh");
     return GraphElementService.updateNote(
         this.model()
     ).then(() => {

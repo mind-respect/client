@@ -204,6 +204,7 @@
                         identifier
                     );
                 }).then(() => {
+                    this.$store.dispatch("tagRefresh");
                     return this.$nextTick();
                 }).then(() => {
                     this.loading = false;

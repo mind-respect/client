@@ -161,6 +161,9 @@ GroupRelationController.prototype.noteDo = function (note) {
 GroupRelationController.prototype.becomeParent = function (child) {
     let uiChild;
     let promises = [];
+    if (child.getParentFork().getUri() === this.model().getUri()) {
+        return Promise.resolve(this.model());
+    }
     if (child.isGroupRelation()) {
         child.expand();
         child.getClosestChildrenOfType(

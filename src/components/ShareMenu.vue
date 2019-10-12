@@ -11,11 +11,12 @@
         </v-card-title>
         <v-card flat class="pt-0">
             <v-card-text class="pt-0 mt-0 vh-center" id="shareMenu">
-                <v-radio-group v-model="shareLevel" class="pa-0 mt-0">
+                <v-radio-group v-model="shareLevel" class="pa-0 mt-0" @change="update">
                     <v-radio :label="$t('share:private')" on-icon="lock" off-icon="lock" value="PRIVATE"></v-radio>
                     <v-radio :label="$t('share:friendsOnly')" value="FRIENDS" on-icon="people"
                              off-icon="people"></v-radio>
-                    <v-radio :label="$t('share:publicWithLink')" value="PUBLIC_WITH_LINK" on-icon="link" off-icon="link"></v-radio>
+                    <v-radio :label="$t('share:publicWithLink')" value="PUBLIC_WITH_LINK" on-icon="link"
+                             off-icon="link"></v-radio>
                     <v-radio :label="$t('share:public')" value="PUBLIC" on-icon="public" off-icon="public"></v-radio>
                 </v-radio-group>
             </v-card-text>
@@ -48,36 +49,45 @@
                 copy: "Copier le lien de la page"
             });
             return {
-                loading: false
+                loading: false,
+                shareLevel: null
             }
         },
         mounted: function () {
+            this.shareLevel = this.getShareLevel();
         },
         computed: {
+            selected: function () {
+                return this.$store.state.selected;
+            },
             controller: function () {
                 return Selection.controller();
             },
-            shareLevel: {
-                get: function () {
-                    if (this.controller._areAllElementsPublicWithLink()) {
-                        return ShareLevel.PUBLIC_WITH_LINK;
-                    }
-                    else if (this.controller._areAllElementsPublic()) {
-                        return ShareLevel.PUBLIC;
-                    } else if (this.controller._areAllElementsFriendsOnly()) {
-                        return ShareLevel.FRIENDS;
-                    } else if (this.controller._areAllElementsPrivate()) {
-                        return ShareLevel.PRIVATE;
-                    }else{
-                        return "na"
-                    }
-                },
-                set: function (newShareLevel) {
-                    this.controller.setShareLevelDo(newShareLevel);
-                }
-            },
-            pageUrl: function(){
+            pageUrl: function () {
                 return window.location.href;
+            }
+        },
+        watch: {
+            selected: function () {
+                this.shareLevel = this.getShareLevel();
+            }
+        },
+        methods: {
+            update: function () {
+                this.controller.setShareLevelDo(this.shareLevel);
+            },
+            getShareLevel: function () {
+                if (this.controller._areAllElementsPublicWithLink()) {
+                    return ShareLevel.PUBLIC_WITH_LINK;
+                } else if (this.controller._areAllElementsPublic()) {
+                    return ShareLevel.PUBLIC;
+                } else if (this.controller._areAllElementsFriendsOnly()) {
+                    return ShareLevel.FRIENDS;
+                } else if (this.controller._areAllElementsPrivate()) {
+                    return ShareLevel.PRIVATE;
+                } else {
+                    return "na"
+                }
             }
         }
     }

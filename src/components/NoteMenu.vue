@@ -1,5 +1,5 @@
 <template>
-    <v-card flat @click="$store.dispatch('setIsDescriptionFlow', true)" hover v-show="bubble">
+    <v-card flat @click="$store.dispatch('setIsDescriptionFlow', true)" hover v-show="bubble" :key="$store.state.noteRefresh + 'noteMenu'">
         <v-card-title class="pt-4 pb-0 subtitle-1">
             <span class="pt-0 grey--text body-1 text-center" v-show="bubble.getComment() === ''">
                 {{$t('noteMenu:noNote')}}
@@ -11,7 +11,6 @@
 
 <script>
     import I18n from '@/I18n'
-    import IdUri from "@/IdUri";
 
     export default {
         name: "NoteMenu",
@@ -23,19 +22,7 @@
             I18n.i18next.addResources("fr", "noteMenu", {
                 "noNote": "Note vide"
             });
-            return {
-                redrawKey: IdUri.uuid()
-            };
-        },
-        computed: {
-            isDescriptionFlow: function () {
-                return this.$store.state.isDescriptionFlow
-            }
-        },
-        watch: {
-            isDescriptionFlow: function () {
-                this.redrawKey = IdUri.uuid();
-            }
+            return {};
         }
     }
 </script>

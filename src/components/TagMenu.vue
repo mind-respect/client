@@ -69,9 +69,9 @@
         <v-card flat class="pt-0">
             <v-card-text class="pt-0" id="tagMenu"></v-card-text>
         </v-card>
-        <v-card min-height="150" flat class="pt-0 text-center" :key="refreshKey">
+        <v-card min-height="150" flat class="pt-0 text-center">
             <v-progress-circular indeterminate color="third" v-if="tagLoading"></v-progress-circular>
-            <v-list subheader three-line>
+            <v-list subheader three-line :key="$store.state.tagRefresh + 'tagMenu'">
                 <v-list-item v-for="identifier in identifiersByLatest()" :key="identifier.externalResourceUri"
                              class="mr-0 pr-0">
                     <v-list-item-action v-if="identifier.hasImages()" class="ma-3 ml-0">
@@ -180,8 +180,7 @@
                 items: [],
                 menuProps: {
                     "contentClass": 'side-search-menu search-menu'
-                },
-                refreshKey: IdUri.uuid()
+                }
             }
         },
         mounted: function () {
@@ -193,6 +192,9 @@
             selected: function () {
                 return this.$store.state.selected;
             },
+            identifiers: function () {
+                return this.bubble.identifiers;
+            }
         },
         watch: {
             search: function (val) {
@@ -218,7 +220,7 @@
                 this.$refs.search.blur();
             },
             refresh: function () {
-                this.refreshKey = IdUri.uuid();
+                this.$store.dispatch("tagRefresh");
             },
             identifiersByLatest: function () {
                 if (this.bubble.isMeta()) {

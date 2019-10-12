@@ -6,6 +6,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import UserService from '@/service/UserService'
+import IdUri from '@/IdUri'
 
 Vue.use(Vuex);
 
@@ -37,7 +38,11 @@ const Store = new Vuex.Store({
         redraws: Math.random(),
         sideMenuFlow: false,
         isViewOnly: null,
-        selected: []
+        selected: [],
+        labelRefresh: IdUri.uuid(),
+        noteRefresh: IdUri.uuid(),
+        tagRefresh: IdUri.uuid(),
+        shareRefresh: IdUri.uuid()
     },
     mutations: {
         setUser: function (state, user) {
@@ -118,6 +123,18 @@ const Store = new Vuex.Store({
                     state.selected.splice(l, 1)
                 }
             }
+        },
+        labelRefresh: function (state, key) {
+            state.labelRefresh = key;
+        },
+        noteRefresh: function (state, key) {
+            state.noteRefresh = key;
+        },
+        tagRefresh: function (state, key) {
+            state.tagRefresh = key;
+        },
+        shareRefresh: function (state, key) {
+            state.shareRefresh = key;
         }
     },
     actions: {
@@ -174,6 +191,18 @@ const Store = new Vuex.Store({
         },
         removeSelected: function (action, selected) {
             action.commit('removeSelected', selected);
+        },
+        labelRefresh: function (action) {
+            action.commit('labelRefresh', IdUri.uuid());
+        },
+        noteRefresh: function (action) {
+            action.commit('noteRefresh', IdUri.uuid());
+        },
+        tagRefresh: function (action) {
+            action.commit('tagRefresh', IdUri.uuid());
+        },
+        shareRefresh: function (action) {
+            action.commit('shareRefresh', IdUri.uuid());
         }
     }
 });

@@ -304,6 +304,7 @@ VertexController.prototype.setShareLevelDo = function (shareLevel) {
     if (verticesToUpdate.length === 0) {
         return Promise.resolve();
     }
+    Store.dispatch("shareRefresh");
     return this.isMultiple() ?
         VertexService.setCollectionShareLevel(
             shareLevel, verticesToUpdate
