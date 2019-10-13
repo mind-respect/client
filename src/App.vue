@@ -520,5 +520,12 @@
     .flip-horizontal {
         transform: scale(-1, 1);
     }
+
+    /*
+    vuetifyjs wrong component css order fixes
+    */
+    .v-badge__badge .v-icon{
+        font-size:14px;
+    }
 </style>
 

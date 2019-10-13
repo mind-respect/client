@@ -128,7 +128,7 @@
 <style>
     .side-button-tooltip {
         white-space: nowrap;
-        position: fixed;
+        position: fixed !important;
     }
 
     .side-button-expanded-margin {
