@@ -1,7 +1,7 @@
 <template>
     <v-card flat>
         <v-card-text class="pt-2 pb-0 mt-0 vh-center">
-            <v-btn small text class="pa-0 mt-0" v-clipboard:copy="pageUrl">
+            <v-btn small text class="pa-0 mt-0" v-clipboard:copy="bubbleUrl" v-if="$store.state.selected.length === 1">
                 <v-icon class="mr-2">link</v-icon>
                 {{$t('share:copy')}}
             </v-btn>
@@ -38,7 +38,7 @@
                 public: "Public and indexed by search engines",
                 publicWithLink: "Public with link",
                 friendsOnly: "Friends only",
-                copy: "Copy page link"
+                copy: "Copy bubble's link"
             });
             I18n.i18next.addResources("fr", "share", {
                 title: "Niveau de partage",
@@ -46,7 +46,7 @@
                 public: "Publique et indexé par les moteurs de recherche",
                 publicWithLink: "Publique avec le lien",
                 friendsOnly: "Amis seulement",
-                copy: "Copier le lien de la page"
+                copy: "Copier le lien de la bulle"
             });
             return {
                 loading: false,
@@ -63,8 +63,8 @@
             controller: function () {
                 return Selection.controller();
             },
-            pageUrl: function () {
-                return window.location.href;
+            bubbleUrl: function () {
+                return Selection.getSingle().uri().absoluteUrl();
             }
         },
         watch: {

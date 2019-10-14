@@ -140,6 +140,10 @@ IdUri.IdUri.prototype.url = function () {
     return IdUri.htmlUrlForBubbleUri(this.uri);
 };
 
+IdUri.IdUri.prototype.absoluteUrl = function () {
+    return IdUri.absoluteUrlForBubbleUri(this.uri);
+};
+
 IdUri.IdUri.prototype.getGraphElementShortIdFromUri = function () {
     return IdUri.getGraphElementShortIdFromUri(this.uri);
 };
