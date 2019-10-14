@@ -27,11 +27,13 @@
                     </v-btn>
                     <v-card-title class="subtitle-1" v-show="$store.state.sideMenuFlow !== false">
                         <div class="grey--text text-left" v-if="isSingle">
-                            <div class="font-italic side-menu-label" :key="$store.state.labelRefresh + 'sideMenu'">
+                            <div class="font-weight-bold side-menu-label" :key="$store.state.labelRefresh + 'sideMenu'">
                                 {{selected.getLabel()}}
                             </div>
-                            {{$t('side:creationDate')}}
-                            {{formatDate(creationDate)}}
+                            <div class="font-italic">
+                                {{$t('side:creationDate')}}
+                                {{formatDate(creationDate)}}
+                            </div>
                         </div>
                         <v-spacer></v-spacer>
                         <v-btn @click="collapse" icon>
