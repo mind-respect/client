@@ -149,7 +149,7 @@
         <DescriptionDialog></DescriptionDialog>
         <FontDialog></FontDialog>
         <ListView></ListView>
-        <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>
+<!--        <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>-->
         <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
         <v-btn @click="usePattern"
                fixed
@@ -197,7 +197,7 @@
             DescriptionDialog: () => import('@/components/DescriptionDialog'),
             FontDialog: () => import('@/components/FontDialog'),
             ListView: () => import('@/components/ListView'),
-            CohesionSnackbar: () => import('@/components/CohesionSnackbar'),
+            // CohesionSnackbar: () => import('@/components/CohesionSnackbar'),
             AddExistingBubbleDialog: () => import('@/components/AddExistingBubbleDialog')
         },
         data: function () {
