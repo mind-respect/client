@@ -197,11 +197,7 @@
                 return single && single.controller().mergeCanDo();
             },
             shareCanDo: function () {
-                if (!Selection.isSingle()) {
-                    return false;
-                }
-                let single = Selection.getSingle();
-                return single && single.controller().setShareLevelCanDo();
+                return this.$store.state.selected.length > 0 && Selection.controller().setShareLevelCanDo();
             },
             menuWidth: function () {
                 return this.$vuetify.breakpoint.mdAndDown ? this.mainWidth : 340;
