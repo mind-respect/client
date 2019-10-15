@@ -142,6 +142,7 @@
                     <v-layout
                             v-if="bubble.isEdge() || bubble.isGroupRelation()"
                             class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0 "
+                            :key="contentKey"
                             :class="{
                             'selected' : bubble.isSelected,
                             'reverse': isLeft && !isCenter
@@ -188,7 +189,7 @@
                                                 transition="none"
                                                 :class="{
                                             'reverse': isLeft,
-                                        'elevation-4': bubble.isSelected,
+                                        'elevation-5': bubble.isSelected,
                                         'is-inverse' : isInverse,
                                         'is-shrinked' : isShrinked,
                                         'empty-edge' : bubble.isEdge() && !isEditFlow && bubble.isLabelEmpty()
