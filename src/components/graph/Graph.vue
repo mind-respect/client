@@ -13,7 +13,7 @@
             <!--            >-->
             <!--            </v-overlay>-->
             <v-layout class='root-vertex-super-container vh-center' :style="zoomScale"
-                      @dragstart="preventUndesirableDragging" :key="childrenKey">
+                      @dragstart="preventUndesirableDragging" :key="childrenKey" @mousedown="mousedown">
                 <v-overlay
                         :value="showLoading"
                         absolute
@@ -187,6 +187,7 @@
     import PatternService from "@/pattern/PatternService";
     import GraphController from '@/graph/GraphController'
     import VertexService from '@/vertex/VertexService'
+    import GraphUi from '@/graph/GraphUi'
 
     export default {
         name: "Graph",
@@ -278,6 +279,9 @@
             window.removeEventListener('resize', this.handleResize)
         },
         methods: {
+            mousedown: function(){
+                GraphUi.enableDragScroll();
+            },
             refreshChildren: function () {
                 this.childrenKey = IdUri.uuid();
             },

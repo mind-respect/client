@@ -514,10 +514,11 @@
                     return this.bubble.getLabelHtml().blur();
                 }
             },
-            mouseDown: function () {
+            mouseDown: function (event) {
                 if (this.isEditFlow) {
                     return;
                 }
+                event.stopPropagation();
                 GraphUi.disableDragScroll();
             },
             dragStart: function (event) {
