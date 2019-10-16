@@ -118,6 +118,19 @@
                                 Description
                             </v-flex>
                         </v-layout>
+                        <v-layout class="mt-6" v-if="$vuetify.breakpoint.lgAndUp">
+                            <v-flex xs2 class="text-left">
+                            </v-flex>
+                            <v-flex lg2 class="text-left">
+                                <v-icon small class="mr-2">arrow_upward</v-icon>
+                                <v-icon small class="mr-2">arrow_downward</v-icon>
+                                <v-icon small class="mr-2">arrow_back</v-icon>
+                                <v-icon small>arrow_forward</v-icon>
+                            </v-flex>
+                            <v-flex xs10 lg8>
+                                {{$t('guide:useArrows')}}
+                            </v-flex>
+                        </v-layout>
                         <v-layout class="mt-6">
                             <v-flex xs2 class="text-left">
                                 <v-icon>unfold_more</v-icon>
@@ -214,7 +227,8 @@
                                 <v-icon v-if="$vuetify.breakpoint.mdAndDown" class="mr-4">touch_app</v-icon>
                                 <span v-if="$vuetify.breakpoint.lgAndUp">
                                     <v-icon>mouse</v-icon>
-                                    <span class="ml-4">
+                                    <v-icon class="ml-2 mr-2" x-small>brightness_1</v-icon>
+                                    <span class="">
                                         {{ctrlKey}}
                                         <v-icon small class="mb-1">arrow_upward</v-icon>
                                         |
@@ -364,6 +378,27 @@
                         </v-layout>
                         <v-layout class="mt-6">
                             <v-flex xs2 class="text-left">
+                                <v-icon>share</v-icon>
+                            </v-flex>
+                            <v-flex xs12>
+                                <p>
+                                    {{$t('guide:shareUrl1')}}
+                                    <v-icon class="ml-2 mr-2">public</v-icon>
+                                    {{$t('guide:shareUrl2')}}
+                                    <v-icon class="ml-2 mr-2">people</v-icon>
+                                    {{$t('guide:shareUrl3')}}
+                                </p>
+                                <p>
+                                    {{$t('guide:shareUrl4')}}
+                                    <v-btn text click="">
+                                        <v-icon class="mr-2">link</v-icon>
+                                        {{$t('guide:copyLink')}}
+                                    </v-btn>
+                                </p>
+                            </v-flex>
+                        </v-layout>
+                        <v-layout class="mt-6">
+                            <v-flex xs2 class="text-left">
                                 <v-icon>public</v-icon>
                             </v-flex>
                             <v-flex lg2 v-if="$vuetify.breakpoint.lgAndUp">
@@ -497,7 +532,7 @@
                 titreB: "Fonctionnalités de base pour naviguer à travers vos idées",
                 titreC: "Fonctionnalités et manipulation pour organiser vos pensées et structurer vos notes",
                 titreD: "Fonctionnalités pour approfondir et développer vos idées",
-                titreE: "Pour personnaliser vos bulles centrales.",
+                titreE: "Pour personnaliser vos bulles centrales",
                 titreE1: "Accessible depuis vos paramètres",
                 titreF: "Pour partager vos cartes ou exporter vos idées",
                 A1: "Créer une nouvelle bulle centrale (carte)",
@@ -531,7 +566,7 @@
                 F1: "Options de partage",
                 F3: "Voir en liste, puis appuyer sur le bouton",
                 copy: "copier",
-                listPaste:"Vous pourrez ensuite coller le contenu de la liste",
+                listPaste: "Vous pourrez ensuite coller le contenu de la liste",
                 F4: "Ami-e-s (menu accessible depuis le menu des bulles centres)",
                 F5: "Visiter les bulles publiques et les templates des autres usagers",
                 point1: "Construire",
@@ -541,9 +576,15 @@
                 point5: "Décorer",
                 point6: "Diffuser",
                 merge: "Fusion",
-                rightClick: "Click droit",
+                rightClick: "clic droit",
                 longPress: "Appuyer longtemps",
-                wikipediaTag: "Vous pouvez étiquetter vos bulles à des articles de Wikipédia afin de donner une référence universelle à votre bulle"
+                wikipediaTag: "Vous pouvez étiquetter vos bulles à des articles de Wikipédia afin de donner une référence universelle à votre bulle",
+                shareUrl1: "Copiez l'url de la page dans la barre d'adresse et une fois votre bulle centrale publique",
+                shareUrl2: "ou partagée avec vos amis",
+                shareUrl3: "d'autres pourront consulter votre carte.",
+                shareUrl4: "Vous pouvez également copier l'url d'une bulle à partir du menu de partage en cliquant sur le bouton",
+                copyLink: "Copier le lien de la bulle",
+                useArrows: "Utilisez les flèches pour voyager d'une bulle à l'autre"
             });
             I18n.i18next.addResources('en', 'guide', {
                 icon: "Icon",
@@ -552,7 +593,7 @@
                 titreB: "Basic functionalities to surf through your thoughts",
                 titreC: "Functionalities and operations to organise your thoughts and structure your notes",
                 titreD: "Functionalities to deepen and develop your thoughts",
-                titreE: "Customize your center bubbles. Accessible from the menu",
+                titreE: "Customize your center bubbles",
                 titreE1: "accessible from your settings",
                 titreF: "Share or export your thoughts",
                 A1: "Create a new center bubble (map)",
@@ -565,7 +606,7 @@
                 A5: "Merge two bubbles into one and match their content and relationships",
                 A6: "\"Drag and drop\" your bubbles to change their location or order of appearance",
                 B1: "Expand and hide the tree",
-                B2: "Indoor and outdoor zoom",
+                B2: "Zoom in and out",
                 B3: "Center a bubble",
                 B4: "Visit the menu of bubbles centers",
                 B5: "Search bar to find a bubble",
@@ -586,7 +627,7 @@
                 F1: "Sharing options",
                 F3: "View in list, then press the button",
                 copy: "copy",
-                listPaste:"You can then paste the contents of the list",
+                listPaste: "You can then paste the contents of the list",
                 point1: "Build",
                 point2: "Navigate",
                 point3: "Organize",
@@ -594,9 +635,15 @@
                 point5: "Decorate",
                 point6: "Spread",
                 merge: "Merge",
-                rightClick: "Right click",
+                rightClick: "right click",
                 longPress: "Long press",
-                wikipediaTag: "You can tag your bubbles to Wikipedia articles to give a universal reference to your bubble"
+                wikipediaTag: "You can tag your bubbles to Wikipedia articles to give a universal reference to your bubble",
+                shareUrl1: "Copy the url of the page in the address bar and once your central public bubble",
+                shareUrl2: "or shared with your friends",
+                shareUrl3: "others will be able to consult your map.",
+                shareUrl4: "You can also copy the url of a bubble from the sharing menu by clicking on the",
+                copyLink: "Copy bubble's link",
+                useArrows: "Use the arrows to travel from one bubble to another"
             });
 
             return {
