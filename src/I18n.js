@@ -44,7 +44,8 @@ export default {
                         copied: "copied",
                         close: "Close",
                         areYouSure: "Are you sure ?",
-                        use: "Use"
+                        use: "Use",
+                        bubbles: "Bubbles"
                     }
                 },
                 fr: {
@@ -69,7 +70,8 @@ export default {
                         copied: "copié",
                         close: "Fermer",
                         areYouSure: "Êtes-vous certain?",
-                        use: "Utiliser"
+                        use: "Utiliser",
+                        bubbles: "Bulles"
                     }
                 }
             }

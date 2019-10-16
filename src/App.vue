@@ -37,7 +37,7 @@
                 <v-spacer></v-spacer>
                 <Search class="mt-6"></Search>
                 <v-spacer></v-spacer>
-                <v-btn icon @click="$refs.docsFlow.enter()" v-if="false">
+                <v-btn icon @click="$refs.docsFlow.enter()">
                     <v-icon>help</v-icon>
                 </v-btn>
                 <v-btn text light
