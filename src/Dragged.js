@@ -15,6 +15,10 @@ const Dragged = {
             isLeft
         );
         let method = closestEdge.isAbove ? "moveAbove" : "moveBelow";
+        if (!closestEdge.edge) {
+            method = "moveUnderParent";
+            closestEdge.edge = parent;
+        }
         let parentVertex = closestEdge.edge.getParentVertex();
         if (parentVertex.isMeta() && !Dragged.dragged.getParentVertex().isMeta()) {
             return;
@@ -22,16 +26,13 @@ const Dragged = {
         if (parentVertex.isMetaGroupVertex() && Dragged.dragged.getParentVertex().getUri() !== parentVertex.getUri()) {
             return;
         }
-        return Dragged.dragged.controller()[method](closestEdge.edge);
+        return Dragged.dragged.controller()[method](closestEdge.edge, isLeft);
     },
     getClosestChildEdge: function (x, y, parent, isLeft) {
         let minDistance = 99999999;
         let closestChildEdge;
         let isAbove = false;
         parent.getDescendants(isLeft).forEach((childEdge) => {
-            if (!childEdge.isEdge() && !childEdge.isGroupRelation()) {
-                return;
-            }
             let position = childEdge.getHtml().getBoundingClientRect();
             let xPosition = (position.left + position.right) / 2;
             let yPosition = (position.top + position.bottom) / 2;
@@ -40,7 +41,7 @@ const Dragged = {
             let distance = Math.hypot(xDistance, yDistance);
             if (Math.abs(distance) < Math.abs(minDistance)) {
                 minDistance = distance;
-                closestChildEdge = childEdge;
+                closestChildEdge = childEdge.isVertexType() ? childEdge.getParentBubble() : childEdge;
                 isAbove = yDistance < 0;
             }
         });

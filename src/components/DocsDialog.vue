@@ -390,7 +390,7 @@
                                 </p>
                                 <p>
                                     {{$t('guide:shareUrl4')}}
-                                    <v-btn text click="">
+                                    <v-btn text click="" small>
                                         <v-icon class="mr-2">link</v-icon>
                                         {{$t('guide:copyLink')}}
                                     </v-btn>

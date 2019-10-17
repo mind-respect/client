@@ -151,7 +151,8 @@
                     CurrentSubGraph.get().center,
                     this.isLeft
                 );
-                closest.edge.getParentFork().controller().relateToDistantVertexWithUri(
+                let forkToRelate = closest.edge ? CurrentSubGraph.get().center : closest.edge.getParentFork();
+                forkToRelate.controller().relateToDistantVertexWithUri(
                     this.selectedSearchResult.uri,
                     closest.edge.getIndexInTree(closest.isAbove),
                     this.isLeft
