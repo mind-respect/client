@@ -226,6 +226,17 @@
                     <v-tab-item>
                         <v-card>
                             <v-card-text>
+                                <v-tooltip v-if="isOwner" left>
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn color="third" fab @click="createCenterPatternVertex()" dark large bottom
+                                               absolute right class="mr-6 right" style="z-index:0;" :class="{
+                                        'add-button-desktop' : $vuetify.breakpoint.mdAndUp
+                                       }">
+                                            <v-icon large>add</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{$t('userhome:createInfo')}}</span>
+                                </v-tooltip>
                                 <v-layout wrap class="pt-0" v-if="loaded && patterns">
                                     <v-flex xs12 :md3="$store.state.areCentersInGridView"
                                             v-for="(pattern, index) in patterns"
@@ -528,6 +539,9 @@
             },
             createCenterVertex: function (label) {
                 AppController.createVertex(null, label);
+            },
+            createCenterPatternVertex: function (label) {
+                AppController.createVertex(null, label, true);
             },
             removeCenter: function (centerToRemove, index) {
                 CenterGraphElementService.removeCenterWithUri(

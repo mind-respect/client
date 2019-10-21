@@ -52,7 +52,7 @@ api.zoom = function (adjust) {
     })
 };
 
-api.createVertex = function (event, label) {
+api.createVertex = function (event, label, isPattern) {
     return VertexService.createVertex().then(function (response) {
         let serverFormat = response.data;
         let newVertex = Vertex.fromServerFormat(
@@ -65,6 +65,9 @@ api.createVertex = function (event, label) {
                 newVertex
             );
         }
+        if (isPattern) {
+            api.becomeAPattern(newVertex);
+        }
         return promise.then(function () {
             router.push(
                 newVertex.uri().url()
@@ -73,11 +76,12 @@ api.createVertex = function (event, label) {
         });
     });
 };
-api.becomeAPattern = function () {
-    CurrentSubGraph.get().center.makePattern();
+api.becomeAPattern = function (centerVertex) {
+    centerVertex = centerVertex || CurrentSubGraph.get().center;
+    centerVertex.makePattern();
     Store.dispatch("setIsPatternFlow", true);
     return VertexService.makePattern(
-        CurrentSubGraph.get().center
+        centerVertex
     );
 };
 
