@@ -690,7 +690,7 @@ GraphElementController.prototype.removeIdentifier = function (identifier, preven
     );
     let parentBubble = this.model().getParentBubble();
     if (!preventMoving && parentBubble.isGroupRelation() && parentBubble.hasIdentification(identifier)) {
-        return this.moveBelow(parentBubble);
+        this.moveBelow(parentBubble);
     }
     return new Promise((resolve) => {
         TagService.remove(
