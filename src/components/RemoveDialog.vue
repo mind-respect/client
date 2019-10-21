@@ -24,13 +24,11 @@
                             :key="bubble.uiId"
                     >
                         <v-list-item-action>
-                            <v-icon v-if="bubble.canRemove">check</v-icon>
-                            <v-icon v-if="!bubble.canRemove">error</v-icon>
+                            <v-icon v-if="bubble.canRemove">delete_outline</v-icon>
+                            <v-icon v-if="!bubble.canRemove">highlight_off</v-icon>
                         </v-list-item-action>
                         <v-list-item-content>
-                            <v-list-item-title :class="{
-                                'cannot-remove': bubble.canRemove
-                            }">
+                            <v-list-item-title>
                                 {{bubble.getLabelOrDefault()}}
                             </v-list-item-title>
                         </v-list-item-content>
@@ -38,7 +36,7 @@
                 </v-list>
             </v-card-text>
             <v-card-text v-if="someCannotBeRemoved" class="pt-0">
-                <v-icon class="mr-2">error</v-icon>
+                <v-icon class="mr-2">highlight_off</v-icon>
                 {{$t('remove:cannotRemove')}}
             </v-card-text>
             <v-card-actions>
@@ -46,13 +44,12 @@
                     <input type="text" ref="enterRemoveInput" autofocus style="width:0">
                     <v-btn color="secondary" class="ml-2" @click="remove" type="submit"
                            :disabled="!isThereSomethingToRemove">
-                        <v-icon class="mr-2">delete</v-icon>
                         {{$t('remove:confirm')}}
                         <span class="ml-1" v-if="$store.state.selected.length > 1">
                             {{$t('remove:multiple_confirm_suffix')}}
                         </span>
                         <v-icon class="ml-2 mb-1" v-if="$store.state.selected.length > 1">
-                            check
+                            delete
                         </v-icon>
                     </v-btn>
                 </form>
@@ -84,7 +81,7 @@
                 desc2: "The relations around an erased bubble are also removed.",
                 desc3: "If you choose to remove this and it seems like related bubbles have disapeared, try to look for them in the search bar.",
                 confirm: "Remove",
-                multiple_confirm_suffix: "bubbles with",
+                multiple_confirm_suffix: "bubbles with the icon",
                 cancel: "Cancel",
                 cannotRemove: "A bubble must no longer have children to be erased. However, you can delete the relationships between the bubbles at any time."
             });
@@ -95,7 +92,7 @@
                 desc2: "Les relations autour des bulles seront également effacées.",
                 desc3: "Si des bulles semblent avoir disparues, retrouvez les dans la barre de recherche.",
                 confirm: "Effacer",
-                multiple_confirm_suffix: "les bulles avec un",
+                multiple_confirm_suffix: "les bulles avec l'icône",
                 cancel: "Annuler",
                 cannotRemove: "Une bulle ne doit plus avoir d'enfants pour être effacée. Par contre, vous pouvez en tout temps effacer les relations entre les bulles."
             });
