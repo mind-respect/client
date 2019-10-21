@@ -212,7 +212,7 @@ EdgeController.prototype.sourceVertex = function (sourceVertex) {
             this.setSourceVertex(sourceVertex);
             return EdgeService.changeSourceVertex(
                 sourceVertex,
-                self.getUi()
+                this.model()
             );
         }
         this.setDestinationVertex(sourceVertex);

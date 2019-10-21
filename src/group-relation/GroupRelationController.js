@@ -158,54 +158,6 @@ GroupRelationController.prototype.noteDo = function (note) {
     });
 };
 
-GroupRelationController.prototype.becomeParent = function (child) {
-    let uiChild;
-    let promises = [];
-    if (child.getParentFork().getUri() === this.model().getUri()) {
-        return Promise.resolve(this.model());
-    }
-    if (child.isGroupRelation()) {
-        child.expand();
-        child.getClosestChildrenOfType(
-            GraphElementType.Relation
-        ).forEach(moveEdge.bind(this));
-        uiChild = child;
-    } else {
-        uiChild = child.isVertex() ? child.getParentBubble() : child;
-        moveEdge.bind(this)(
-            uiChild
-        );
-    }
-    return Promise.all(promises).then(() => {
-        uiChild.moveToParent(this.model());
-        Vue.nextTick(() => {
-            GraphElementService.changeChildrenIndex(
-                this.model().getParentVertex()
-            );
-        });
-        return this.model();
-    });
-
-    function moveEdge(movedEdge) {
-        let parentGroupRelation = this.model();
-        promises.push(
-            movedEdge.controller().replaceParentVertex(
-                parentGroupRelation.getParentVertex(),
-                true
-            )
-        );
-        do {
-            promises.push(
-                movedEdge.controller().addIdentifiers(
-                    parentGroupRelation.model().getIdentifiers(),
-                    true
-                )
-            );
-            parentGroupRelation = parentGroupRelation.getParentBubble();
-        } while (parentGroupRelation.isGroupRelation());
-    }
-};
-
 GroupRelationController.prototype.becomeExParent = function (movedEdge) {
     let promises = [];
     let previousParentGroupRelation = this.model().getGreatestGroupRelationAncestor();

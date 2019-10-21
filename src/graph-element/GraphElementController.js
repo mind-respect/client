@@ -373,6 +373,18 @@ GraphElementController.prototype._canMoveUnderParent = function (parent, forceLe
     return true;
 };
 
+GraphElementController.prototype.becomeParent = function (child) {
+    return this.expand(true).then(() => {
+        let children = this.model().getNextChildren();
+        /*
+            children length can only be zero for a vertex and one for an edge
+            but this function 'becomeParent' is overriden for these types of bubbles
+        */
+        let lastChild = children[children.length - 1];
+        return child.controller().moveBelow(lastChild);
+    });
+};
+
 GraphElementController.prototype.moveUnderParent = function (parent, forceLeft) {
     if (!this._canMoveUnderParent(parent, forceLeft)) {
         return Promise.resolve();
@@ -418,7 +430,7 @@ GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previou
     );
 };
 
-GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, previousParentVertex) {
+GraphElementController.prototype._moveToExecute = async function (otherEdge, isAbove, previousParentVertex) {
     let model = this.model();
     let movedEdge = model.isVertexType() ?
         model.getParentBubble() :
@@ -446,15 +458,17 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
     Vue.nextTick(() => {
         Store.dispatch("redraw")
     });
-    parentOfOtherBubble = otherEdge.getParentBubble();
     if (parentOfOtherBubble.isGroupRelation()) {
-        promises.push(
-            movedEdge.controller().addIdentification(
-                parentOfOtherBubble.getIdentification(),
-                true
-            )
-        );
-        movedEdge.expand();
+        let parentGroupRelation = parentOfOtherBubble;
+        do {
+            promises.push(
+                movedEdge.controller().addIdentifiers(
+                    parentGroupRelation.getIdentifiers(),
+                    true
+                )
+            );
+            parentGroupRelation = parentGroupRelation.getParentBubble();
+        } while (parentGroupRelation.isGroupRelation());
     }
     let parentVertex = otherEdge.getParentVertex();
     if (!parentVertex.isMeta() && previousParentVertex.getUri() !== parentVertex.getUri()) {
@@ -478,6 +492,7 @@ GraphElementController.prototype._moveToExecute = function (otherEdge, isAbove, 
         Selection.removeAll();
         Selection.setToSingle(model);
         Store.dispatch("redraw");
+        return this.model();
     });
 };
 
