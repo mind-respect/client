@@ -395,6 +395,12 @@
             ,
             reload: function () {
                 this.loaded = false;
+                this.reviewTabMenu();
+                this.setupFriendship().then(() => {
+                    this.loaded = true;
+                });
+            },
+            reviewTabMenu: function () {
                 if (this.$route.name === 'UserHome' || this.$route.name === 'home') {
                     this.tabMenu = 0;
                 } else if (this.$route.name === 'FriendsUserHome') {
@@ -404,9 +410,6 @@
                 } else if (this.$route.name === 'PublicCenters') {
                     this.tabMenu = 3;
                 }
-                this.setupFriendship().then(() => {
-                    this.loaded = true;
-                });
             }
         },
         mounted: function () {
@@ -427,10 +430,12 @@
             ,
             isTesting: function () {
                 return process.env.NODE_ENV == "test";
-            }
-            ,
+            },
             userInUrl: function () {
                 return this.$route.params.username;
+            },
+            routeName: function () {
+                return this.$route.name;
             }
         }
         ,
@@ -458,9 +463,14 @@
             userInUrl: function () {
                 this.loaded = false;
                 this.setupFriendship().then(() => {
-                    this.tabMenu = 0;
+                    if (this.tabMenu === 2 || this.tabMenu === 3) {
+                        this.tabMenu = 0;
+                    }
                     this.loaded = true;
                 });
+            },
+            routeName: function () {
+                this.reviewTabMenu();
             }
         }
     }
