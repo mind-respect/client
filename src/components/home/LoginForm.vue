@@ -71,17 +71,30 @@
                 }
                 LoadingFlow.enter();
                 AuthenticateService.login(this.user).then(function (response) {
-                    this.$store.dispatch('setUser', response.data)
+                    this.$store.dispatch('setUser', response.data);
                     this.$emit('flow-is-done');
-                    Vue.nextTick(function () {
-                        this.$router.push({
-                            name: 'UserHome',
-                            params: {
-                                username: response.data.user_name
-                            }
-                        });
+                    Vue.nextTick(() => {
+                        if (this.$route.params.confirmToken && response.data.user_name === this.$route.params.destinationUsername) {
+                            this.$router.push({
+                                name: 'ConfirmFriendshipHome',
+                                params: {
+                                    username: this.$route.params.requestUsername,
+                                    requestUsername: this.$route.params.requestUsername,
+                                    destinationUsername: this.$route.params.destinationUsername,
+                                    confirmToken: this.$route.params.confirmToken
+
+                                }
+                            });
+                        } else {
+                            this.$router.push({
+                                name: 'UserHome',
+                                params: {
+                                    username: response.data.user_name
+                                }
+                            });
+                        }
                         LoadingFlow.leave();
-                    }.bind(this))
+                    });
                 }.bind(this)).catch(function () {
                     this.wrongLogin = true;
                     LoadingFlow.leave();

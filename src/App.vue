@@ -158,6 +158,8 @@
     import VueClipboard from 'vue-clipboard2'
     import I18n from '@/I18n'
 
+    const LoginPages = ['login', 'LoginFriendshipConfirm'];
+
     Vue.use(VueClipboard);
     export default {
         components: {
@@ -214,7 +216,8 @@
                 "listAll": "See as list",
                 "fontPicker": "Font picker",
                 "setShareLevel": "Share",
-                "createVertex": "Create a new bubble"
+                "createVertex": "Create a new bubble",
+                close: "Close"
             });
             I18n.i18next.addResources("fr", "button", {
                 "select": "Sélection à la main",
@@ -259,7 +262,8 @@
                 "listAll": "Voir en liste",
                 "fontPicker": "Polices",
                 "setShareLevel": "Partager",
-                "createVertex": "Créer une nouvelle bulle"
+                "createVertex": "Créer une nouvelle bulle",
+                close: "Fermer"
             });
             return {
                 clipped: false,
@@ -274,6 +278,9 @@
             };
         },
         methods: {
+            isLoginUrl: function () {
+                return LoginPages.indexOf(this.$route.name) > -1;
+            },
             switchLanguage: function () {
                 let newLocale = this.$store.state.locale === "en" ? "fr" : "en";
                 this.$store.dispatch('setLocale', newLocale);
@@ -282,7 +289,7 @@
                 if (this.$route.name === 'register') {
                     this.registerDialog = true;
                 }
-                if (this.$route.name === 'login') {
+                if (this.isLoginUrl()) {
                     this.loginDialog = true;
                 }
                 if (this.$route.name === 'forgotPassword') {
@@ -322,9 +329,7 @@
                 Store.dispatch("setIsLoading", this.isLoading);
             },
             '$route.name': function () {
-                if (this.$route.name === 'forgotPassword') {
-                    this.forgotPasswordDialog = true;
-                }
+                this.showDialogFromRoute();
                 if (this.$route.name === "Center") {
                     KeyboardActions.enable();
                 } else {
@@ -333,9 +338,11 @@
             },
             loginDialog: function () {
                 if (this.loginDialog) {
-                    this.$router.push({
-                        name: "login"
-                    });
+                    if (!this.isLoginUrl()) {
+                        this.$router.push({
+                            name: "login"
+                        });
+                    }
                     return;
                 }
                 this.$router.push({
@@ -524,8 +531,8 @@
     /*
     vuetifyjs wrong component css order fixes
     */
-    .v-badge__badge .v-icon{
-        font-size:14px;
+    .v-badge__badge .v-icon {
+        font-size: 14px;
     }
 </style>
 

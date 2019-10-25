@@ -12,12 +12,12 @@
         <v-card flat class="pt-0">
             <v-card-text class="pt-0 mt-0 vh-center" id="shareMenu">
                 <v-radio-group v-model="shareLevel" class="pa-0 mt-0" @change="update">
-                    <v-radio :label="$t('share:private')" on-icon="lock" off-icon="lock" value="PRIVATE"></v-radio>
+                    <v-radio :label="$t('share:private')" on-icon="lock" off-icon="lock" value="PRIVATE" color="third"></v-radio>
                     <v-radio :label="$t('share:friendsOnly')" value="FRIENDS" on-icon="people"
-                             off-icon="people"></v-radio>
+                             off-icon="people" color="third"></v-radio>
                     <v-radio :label="$t('share:publicWithLink')" value="PUBLIC_WITH_LINK" on-icon="link"
-                             off-icon="link"></v-radio>
-                    <v-radio :label="$t('share:public')" value="PUBLIC" on-icon="public" off-icon="public"></v-radio>
+                             off-icon="link" color="third"></v-radio>
+                    <v-radio :label="$t('share:public')" value="PUBLIC" on-icon="public" off-icon="public" color="third"></v-radio>
                 </v-radio-group>
             </v-card-text>
         </v-card>

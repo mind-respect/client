@@ -40,6 +40,11 @@ const router = new Router({
                 component: () => import('./views/About.vue')
             },
             {
+                path: '/login/requestUser/:requestUsername/destinationUser/:destinationUsername/confirmToken/:confirmToken',
+                name: 'LoginFriendshipConfirm',
+                component: () => import('./views/About.vue')
+            },
+            {
                 path: '/forgot-password',
                 name: 'forgotPassword',
                 component: () => import('./views/About.vue')
@@ -65,6 +70,11 @@ const router = new Router({
             {
                 path: '/patterns',
                 name: 'Patterns',
+                component: () => import('./views/UserHome.vue')
+            },
+            {
+                path: '/public',
+                name: 'PublicCenters',
                 component: () => import('./views/UserHome.vue')
             },
             {

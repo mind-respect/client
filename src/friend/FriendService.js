@@ -6,8 +6,10 @@ import Service from '@/Service'
 import UserService from '@/service/UserService'
 
 export default {
-    list: function () {
-        return Service.api().get(UserService.currentUserUri() + "/friends");
+    listForUser: function (username) {
+        return Service.api().get(
+            "/friend-list/user/" + username
+        );
     },
     addFriend: function (username) {
         return Service.api().post(
@@ -19,7 +21,7 @@ export default {
     },
     confirmFriendshipUsingUrlToken: function (requestUsename, destinationUsername, confirmToken) {
         return Service.api().post(
-            UserService.getUsersResourceUrl() + "confirm-friendship-with-token",
+            UserService.currentUserUri() + "/friends/confirm-friendship-with-token",
             {
                 requestUsername: requestUsename,
                 destinationUsername: destinationUsername,

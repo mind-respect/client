@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <v-card flat min-height="200">
+        <v-card min-height="200">
             <v-card-text>
                 <!--<v-icon>-->
                 <!--people-->
@@ -22,6 +22,7 @@
                         @change="visitUser()"
                         return-object
                         :no-data-text="$t('noSearchResults')"
+                        v-if="isOwner"
                 ></v-autocomplete>
                 <v-card flat v-if="!loaded">
                     <v-card-text class="vh-center">
@@ -67,6 +68,7 @@
 
     export default {
         name: "Friends",
+        props: ['isOwner'],
         data: function () {
             I18n.i18next.addResources("en", "friends", {
                 "search": "Users of Mind Respect",
@@ -99,7 +101,7 @@
             friendSearch: function () {
                 // // Items have already been loaded
                 // if (this.items.length > 0) return
-                Vue.nextTick(function () {
+                Vue.nextTick(() => {
                     if (this.isLoading) return;
                     if (!this.friendSearch) {
                         return;
@@ -109,31 +111,36 @@
                         return;
                     }
                     this.isLoading = true;
-                    UserService.search(this.friendSearch).then(function (response) {
-                        this.users = response.data;
-                    }.bind(this)).finally(() => (
+                    UserService.search(this.friendSearch).then((response) => {
+                        this.users = response.data.map((user) => {
+                            if (this.$store.state.user.username === user.username) {
+                                user.disabled = true;
+                            }
+                            return user;
+                        });
+                    }).finally(() => (
                         this.isLoading = false
                     ))
-                }.bind(this))
+                })
             }
         },
         methods: {
             visitUser: function () {
-                Vue.nextTick(function () {
+                Vue.nextTick(() => {
                     this.$router.push({
                         name: "UserHome",
                         params: {
                             username: this.searchValue.username
                         }
                     })
-                }.bind(this))
+                });
             }
         },
         mounted: function () {
-            FriendService.list().then(function (response) {
+            FriendService.listForUser(this.$route.params.username).then((response) => {
                 this.friends = response.data;
                 this.loaded = true;
-            }.bind(this))
+            });
         }
     }
 </script>

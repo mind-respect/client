@@ -52,7 +52,7 @@ api.zoom = function (adjust) {
     })
 };
 
-api.createVertex = function (event, label, isPattern) {
+api.createVertex = function (event, label, isPattern, isPublic) {
     return VertexService.createVertex().then(function (response) {
         let serverFormat = response.data;
         let newVertex = Vertex.fromServerFormat(
@@ -67,6 +67,9 @@ api.createVertex = function (event, label, isPattern) {
         }
         if (isPattern) {
             api.becomeAPattern(newVertex);
+        }
+        if (isPublic) {
+            newVertex.makePublic();
         }
         return promise.then(function () {
             router.push(
