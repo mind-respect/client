@@ -177,7 +177,7 @@
                 });
                 this.loaded = true;
                 if (this.centers.length < 28) {
-                    this.hasLoadedAll = false;
+                    this.hasLoadedAll = true;
                 }
             })
         },
@@ -262,7 +262,7 @@
                 let centersRequest = this.getNextCenters();
                 centersRequest.then((response) => {
                     if (response.data.length < 8) {
-                        this.hasLoadedAll = false
+                        this.hasLoadedAll = true
                     }
                     CenterGraphElement.fromServerFormat(response.data).map((center) => {
                         center.labelSearch = center.getLabel();
@@ -272,7 +272,7 @@
                         this.centers.push(center);
                     });
                     this.$nextTick(() => {
-                        // document.body.scrollTop = document.body.scrollTop - 10 - ADDRESS_BAR_HEIGHT;
+                        document.body.scrollTop = document.body.scrollTop - 10 - ADDRESS_BAR_HEIGHT;
                         setTimeout(() => {
                             this.bottom = false;
                         }, 250);

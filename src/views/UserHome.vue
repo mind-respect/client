@@ -309,7 +309,6 @@
                 isWaitingFriendship: false,
                 isConfirmedFriend: false,
                 isWaitingForYourAnswer: false,
-                hasLoadedAll: false,
                 log: "empty log",
                 patterns: null,
                 publicCenters: null,
