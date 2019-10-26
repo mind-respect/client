@@ -57,6 +57,13 @@
                                                 {{value}}
                                             </div>
                                         </v-list-item-subtitle>
+                                        <v-list-item-subtitle
+                                                v-if="flow !== 'centers'">
+                                            <v-avatar class="text-uppercase teal white--text mr-2" size="30">
+                                                {{center.uri().getOwner().substring(0,2)}}
+                                            </v-avatar>
+                                            {{center.uri().getOwner()}}
+                                        </v-list-item-subtitle>
                                         <!--<v-list-item-s  ub-title class="text-xs-right" >-->
                                         <!--{{center.lastVisit()}}-->
                                         <!--</v-list-item-subtitle>-->

@@ -47,7 +47,7 @@ const IdUri = {
         );
     },
     uriFromGraphElementId: function (id) {
-        var username = UserService.authenticatedUserInCache().user_name;
+        let username = UserService.authenticatedUserInCache().user_name;
         return "/users" + username + "/" + id;
     },
     vertexBaseUri: function () {
@@ -157,6 +157,10 @@ IdUri.IdUri.prototype.withoutId = function () {
         0,
         this.uri.lastIndexOf("/")
     );
+};
+
+IdUri.IdUri.prototype.getOwner = function () {
+    return IdUri.getOwnerFromUri(this.uri);
 };
 
 export default IdUri;
