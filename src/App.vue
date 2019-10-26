@@ -403,6 +403,10 @@
         height: 100%;
     }
 
+    .secondary-color {
+        color: #1A237E !important;
+    }
+
     .v-chip {
         transition: none;
     }

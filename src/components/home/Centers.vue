@@ -59,10 +59,11 @@
                                         </v-list-item-subtitle>
                                         <v-list-item-subtitle
                                                 v-if="flow !== 'centers'">
-                                            <v-chip color="secondary" outlined
-                                                    :href="'/user/' + center.uri().getOwner()" @click.stop small>
+
+                                            <router-link :to="'/user/' + center.uri().getOwner()"
+                                                         class="no-style-link secondary-color" @click.stop color="secondary">
                                                 {{center.uri().getOwner()}}
-                                            </v-chip>
+                                            </router-link>
                                         </v-list-item-subtitle>
                                         <!--<v-list-item-s  ub-title class="text-xs-right" >-->
                                         <!--{{center.lastVisit()}}-->
