@@ -59,10 +59,9 @@
                                         </v-list-item-subtitle>
                                         <v-list-item-subtitle
                                                 v-if="flow !== 'centers'">
-                                            <v-avatar class="text-uppercase teal white--text mr-2" size="30">
-                                                {{center.uri().getOwner().substring(0,2)}}
-                                            </v-avatar>
-                                            {{center.uri().getOwner()}}
+                                            <v-chip color="secondary" :href="'/user/' + center.uri().getOwner()" @click.stop small>
+                                                {{center.uri().getOwner()}}
+                                            </v-chip>
                                         </v-list-item-subtitle>
                                         <!--<v-list-item-s  ub-title class="text-xs-right" >-->
                                         <!--{{center.lastVisit()}}-->
