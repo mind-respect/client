@@ -30,10 +30,10 @@
                     {{$t('userhome:toGrid')}}
                 </v-tooltip>
                 <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
-                <v-avatar v-if="!isOwner" class="text-uppercase teal white--text mt-4 mr-2" small>
+                <v-avatar class="text-uppercase teal white--text mt-4 mr-2" small>
                     {{$route.params.username.substring(0,2)}}
                 </v-avatar>
-                <span v-if="!isOwner" class="body-1 mt-4">
+                <span class="body-1 mt-4">
                     {{$route.params.username}}
                 </span>
                 <v-spacer></v-spacer>
@@ -127,10 +127,43 @@
                         ></Centers>
                     </v-tab-item>
                     <v-tab-item>
-                        <Friends :isOwner="isOwner"></Friends>
-                        <Centers flow="friends" @create="createCenterVertex" :isOwner="isOwner"
-                                 v-if="tabMenu === 1 && isOwner"
-                        ></Centers>
+                        <v-tabs
+                                v-model="friendsTabMenu"
+                                grow
+                                slider-color="secondary"
+                                slider-size="2"
+                                v-if="isOwner"
+                                color="secondary"
+                                :icons-and-text="$vuetify.breakpoint.smAndDown"
+                        >
+                            <v-tab>
+                                {{$t('userhome:centerTab')}}
+                                <v-icon :class="{
+                                    'mb-2' : $vuetify.breakpoint.smAndDown,
+                                    'ml-2' : $vuetify.breakpoint.mdAndUp
+                                }">
+                                    filter_center_focus
+                                </v-icon>
+                            </v-tab>
+                            <v-tab>
+                                {{$t('userhome:friendTab')}}
+                                <v-icon :class="{
+                                    'mb-2' : $vuetify.breakpoint.smAndDown,
+                                    'ml-2' : $vuetify.breakpoint.mdAndUp
+                                }">
+                                    people
+                                </v-icon>
+                            </v-tab>
+                            <v-tab-item>
+                                <Centers flow="friends" @create="createCenterVertex" :isOwner="isOwner"
+                                         v-if="friendsTabMenu === 0"
+                                ></Centers>
+                            </v-tab-item>
+                            <v-tab-item>
+                                <Friends :isOwner="isOwner" v-if="friendsTabMenu === 1"></Friends>
+                            </v-tab-item>
+                        </v-tabs>
+                        <Friends :isOwner="isOwner" v-if="!isOwner"></Friends>
                     </v-tab-item>
                     <v-tab-item v-if="isOwner">
                         <Centers flow="patterns" @create="createCenterVertex" :isOwner="isOwner"
@@ -211,9 +244,9 @@
                     "addAll": "Add All",
                     "removeAll": "Remove All"
                 },
-                "centerTab": "Your centers",
+                "centerTab": "Centers",
                 "centerTabNotOwner": "Centers",
-                "friendTab": "Your friends",
+                "friendTab": "Friends",
                 "friendTabNotOwner": "Friends",
                 "toGrid": "Grid view",
                 "toList": "List view",
@@ -256,9 +289,9 @@
                     "addAll": "Ajouter tout",
                     "removeAll": "Enlever tout"
                 },
-                "centerTab": "Vos centres",
+                "centerTab": "Centres",
                 "centerTabNotOwner": "Centres",
-                "friendTab": "Vos Amis",
+                "friendTab": "Amis",
                 "friendTabNotOwner": "Amis",
                 "toGrid": "Vue en grille",
                 "toList": "Vue en liste",
@@ -306,6 +339,7 @@
                 ],
                 loaded: false,
                 tabMenu: null,
+                friendsTabMenu: null,
                 isWaitingFriendship: false,
                 isConfirmedFriend: false,
                 isWaitingForYourAnswer: false,

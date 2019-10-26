@@ -59,7 +59,8 @@
                                         </v-list-item-subtitle>
                                         <v-list-item-subtitle
                                                 v-if="flow !== 'centers'">
-                                            <v-chip color="secondary" outlined :href="'/user/' + center.uri().getOwner()" @click.stop small>
+                                            <v-chip color="secondary" outlined
+                                                    :href="'/user/' + center.uri().getOwner()" @click.stop small>
                                                 {{center.uri().getOwner()}}
                                             </v-chip>
                                         </v-list-item-subtitle>
@@ -265,6 +266,9 @@
                 return bottomOfPage || pageHeight < visible + ADDRESS_BAR_HEIGHT;
             },
             addCenters() {
+                if (this.hasLoadedAll) {
+                    return;
+                }
                 let centersRequest = this.getNextCenters();
                 centersRequest.then((response) => {
                     if (response.data.length < 8) {

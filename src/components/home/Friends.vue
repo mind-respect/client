@@ -37,9 +37,6 @@
                     {{$t('friends:noFriends')}}
                 </v-card-text>
                 <v-list v-if="loaded && Object.keys(friends).length > 0">
-                    <v-subheader inset>
-                        {{$t('friends:friends')}}
-                    </v-subheader>
                     <v-list-item v-for="friend in friends" :to="'/user/' + friend.username">
                         <v-list-item-action>
                             <v-avatar class="text-uppercase teal white--text">{{friend.username.substring(0,2)}}
