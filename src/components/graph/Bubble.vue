@@ -428,9 +428,13 @@
                 if (this.isEditFlow) {
                     return;
                 }
-                this.menuFlow = 'buttons';
-                this.showMenu = true;
-                Selection.setToSingle(this.bubble)
+                Selection.setToSingle(this.bubble);
+                this.$nextTick(() => {
+                    this.menuFlow = 'buttons';
+                    setTimeout(() => {
+                        this.showMenu = true;
+                    }, 0);
+                });
             },
             click: function (event) {
                 event.stopPropagation();
@@ -445,14 +449,14 @@
                         if (!this.isEditFlow && this.menuFlow !== 'link') {
                             this.showMenu = true;
                         }
-                    }, 150)
+                    }, 0)
                 } else if (event.target.tagName === "A") {
                     event.preventDefault();
                     this.linkMenuHref = event.target.href;
                     this.menuFlow = 'link';
                     setTimeout(() => {
                         this.showMenu = true;
-                    }, 150);
+                    }, 0);
                 } else {
                     this.showMenu = false;
                 }
