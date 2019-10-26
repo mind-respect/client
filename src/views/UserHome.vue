@@ -30,15 +30,15 @@
                     {{$t('userhome:toGrid')}}
                 </v-tooltip>
                 <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
-                <v-avatar class="text-uppercase teal white--text mt-4 mr-2" small>
-                    {{$route.params.username.substring(0,2)}}
+                <v-avatar class="text-uppercase teal white--text mt-4 mr-2" small v-if="headUsername">
+                    {{headUsername.substring(0,2)}}
                 </v-avatar>
-                <span class="body-1 mt-4">
-                    {{$route.params.username}}
+                <span class="body-1 mt-4" v-if="headUsername">
+                    {{headUsername}}
                 </span>
                 <v-spacer></v-spacer>
                 <v-btn class="mt-4" color="secondary" :disabled="addFriendLoading"
-                       v-if="!isOwner && !isWaitingFriendship && !isConfirmedFriend"
+                       v-if="$store.state.user && !isOwner && !isWaitingFriendship && !isConfirmedFriend"
                        float
                        @click="addFriend()">
                     <v-icon class="mr-2">
@@ -72,7 +72,7 @@
                         slider-size="4"
                         :key="'userHomeTabs' + $route.params.username"
                 >
-                    <v-tab>
+                    <v-tab :disabled="!headUsername">
                         <span v-if="isOwner">
                             {{$t('userhome:centerTab')}}
                         </span>
@@ -86,7 +86,7 @@
                             filter_center_focus
                         </v-icon>
                     </v-tab>
-                    <v-tab>
+                    <v-tab :disabled="!headUsername">
                         <span v-if="isOwner">
                             {{$t('userhome:friendTab')}}
                         </span>
@@ -100,7 +100,7 @@
                             people
                         </v-icon>
                     </v-tab>
-                    <v-tab v-if="isOwner">
+                    <v-tab v-if="isOwner || !$store.state.user">
                         Patterns
                         <v-icon :class="{
                             'mb-2' : $vuetify.breakpoint.smAndDown,
@@ -109,7 +109,7 @@
                             stars
                         </v-icon>
                     </v-tab>
-                    <v-tab v-if="isOwner">
+                    <v-tab v-if="isOwner || !$store.state.user">
                         {{$t('userhome:public')}}
                         <v-icon :class="{
                             'mb-2' : $vuetify.breakpoint.smAndDown,
@@ -122,7 +122,7 @@
                         <Centers flow="centers"
                                  @create="createCenterVertex"
                                  :isOwner="isOwner"
-                                 v-if="tabMenu === 0"
+                                 v-if="tabMenu === 0 && headUsername"
                                  :isFriend="isConfirmedFriend"
                         ></Centers>
                     </v-tab-item>
@@ -132,9 +132,9 @@
                                 grow
                                 slider-color="secondary"
                                 slider-size="2"
-                                v-if="isOwner"
                                 color="secondary"
                                 :icons-and-text="$vuetify.breakpoint.smAndDown"
+                                v-if="isOwner && headUsername"
                         >
                             <v-tab>
                                 {{$t('userhome:centerTab')}}
@@ -165,11 +165,11 @@
                         </v-tabs>
                         <Friends :isOwner="isOwner" v-if="!isOwner"></Friends>
                     </v-tab-item>
-                    <v-tab-item v-if="isOwner">
+                    <v-tab-item v-if="isOwner || !$store.state.user">
                         <Centers flow="patterns" @create="createCenterVertex" :isOwner="isOwner"
                                  v-if="tabMenu === 2"></Centers>
                     </v-tab-item>
-                    <v-tab-item v-if="isOwner">
+                    <v-tab-item v-if="isOwner || !$store.state.user">
                         <Centers flow="publicCenters" @create="createCenterVertex" :isOwner="isOwner"
                                  v-if="tabMenu === 3"
                         ></Centers>
@@ -214,6 +214,8 @@
     import FriendService from '@/friend/FriendService'
     import UserService from '@/service/UserService'
     import AppController from '@/AppController'
+
+    const WHEN_OWNER_ONLY_TAB_MENUS = [2, 3];
 
     export default {
         name: "CentersList",
@@ -394,6 +396,9 @@
                     this.isWaitingFriendship = false;
                     this.isWaitingForYourAnswer = false;
                     this.isConfirmedFriend = false;
+                    if (!this.$store.state.user) {
+                        return;
+                    }
                     return FriendService.getStatusWithUser(this.$route.params.username).then((response) => {
                         switch (response.data.status) {
                             case "waiting": {
@@ -460,8 +465,15 @@
                     return false;
                 }
                 return this.$route.params.username === undefined || this.$route.params.username === this.$store.state.user.username;
-            }
-            ,
+            },
+            headUsername: function () {
+                if (this.$route.params.username) {
+                    return this.$route.params.username;
+                }
+                if (this.$store.state.user) {
+                    return this.$store.state.user.username;
+                }
+            },
             isTesting: function () {
                 return process.env.NODE_ENV == "test";
             },
@@ -489,7 +501,7 @@
                     this.$router.push({
                         name: pathName,
                         params: {
-                            username: this.$route.params.username || this.$store.state.user.username
+                            username: this.headUsername
                         }
                     });
                 }

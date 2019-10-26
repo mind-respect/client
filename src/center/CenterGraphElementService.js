@@ -23,12 +23,12 @@ export default {
     },
     getPatterns: function () {
         return Service.api().get(
-            UserService.currentUserUri() + "/center-elements/pattern"
+            "/center-elements/public/pattern"
         );
     },
     getPatternsWithSkip: function (nbSkip) {
         return Service.api().get(
-            UserService.currentUserUri() + "/center-elements/pattern/skip/" + nbSkip
+            "/center-elements/public/pattern/skip/" + nbSkip
         );
     },
     getPublicAndPrivateWithSkip: function (nbSkip) {
