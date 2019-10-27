@@ -2,7 +2,7 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 export default {
-    focusEnd: function(element){
+    focusEnd: function (element) {
         element.focus();
         if (typeof window.getSelection != "undefined"
             && typeof document.createRange != "undefined") {
@@ -50,12 +50,10 @@ function getMouseEventCaretRange(evt) {
     if (document.body.createTextRange) {
         range = document.body.createTextRange();
         range.moveToPoint(x, y);
-    }
-
-    else if (typeof document.createRange != "undefined") {
+    } else if (typeof document.createRange != "undefined") {
         // Try Mozilla's rangeOffset and rangeParent properties, which are exactly what we want
 
-        if (typeof evt.rangeParent != "undefined") {
+        if (evt.rangeParent !== null && typeof evt.rangeParent != "undefined") {
             range = document.createRange();
             range.setStart(evt.rangeParent, evt.rangeOffset);
             range.collapse(true);

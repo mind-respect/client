@@ -451,9 +451,15 @@
                     event.preventDefault();
                     this.linkMenuHref = event.target.href;
                     this.menuFlow = 'link';
-                    setTimeout(() => {
+                    /*
+                    *   setting to single here to make sure that scroll is over before
+                    *   showing the menu
+                    */
+                    Selection.setToSingle(
+                        this.bubble
+                    ).then(() => {
                         this.showMenu = true;
-                    }, 0);
+                    });
                 } else {
                     this.showMenu = false;
                 }
@@ -544,74 +550,81 @@
                 called on drag over to enable drop handler to trigger
                 I don't know why !
                  */
-                event.preventDefault();
-                event.stopPropagation();
-                if (this.isLabelDragOver === true) {
-                    return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (this.isLabelDragOver === true) {
+                        return;
+                    }
+                    this.bubble.isDragOver = true;
+                    let dragged = Dragged.dragged;
+                    let shouldSetToDragOver = dragged !== undefined &&
+                        dragged.getUri() !== this.bubble.getUri();
+                    if (!shouldSetToDragOver) {
+                        // console.log("not " + this.bubble.getLabel())
+                        this.isLabelDragOver = false;
+                        return;
+                    }
+                    this.isLabelDragOver = true;
+                    // console.log("yes " + this.bubble.getLabel())
                 }
-                this.bubble.isDragOver = true;
-                let dragged = Dragged.dragged;
-                let shouldSetToDragOver = dragged !== undefined &&
-                    dragged.getUri() !== this.bubble.getUri();
-                if (!shouldSetToDragOver) {
-                    // console.log("not " + this.bubble.getLabel())
+            ,
+                labelDragLeave: function (event) {
+                    this.bubble.isDragOver = false;
                     this.isLabelDragOver = false;
-                    return;
+                    // console.log("label drag leave");
                 }
-                this.isLabelDragOver = true;
-                // console.log("yes " + this.bubble.getLabel())
-            },
-            labelDragLeave: function (event) {
-                this.bubble.isDragOver = false;
-                this.isLabelDragOver = false;
-                // console.log("label drag leave");
-            },
-            labelDrop: function (event, forceLeft) {
-                // console.log("label drop");
-                // debugger;
-                event.preventDefault();
-                event.stopPropagation();
-                GraphUi.enableDragScroll();
-                this.isLabelDragOver = false;
-                let dragged = Dragged.dragged;
-                // this.$store.dispatch('setDragged', null);
-                if (dragged === null) {
-                    return;
+            ,
+                labelDrop: function (event, forceLeft) {
+                    // console.log("label drop");
+                    // debugger;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    GraphUi.enableDragScroll();
+                    this.isLabelDragOver = false;
+                    let dragged = Dragged.dragged;
+                    // this.$store.dispatch('setDragged', null);
+                    if (dragged === null) {
+                        return;
+                    }
+                    dragged.controller().moveUnderParent(
+                        this.bubble,
+                        forceLeft
+                    );
                 }
-                dragged.controller().moveUnderParent(
-                    this.bubble,
-                    forceLeft
-                );
+            ,
+                leftRightDragEnter: function (event) {
+                    event.preventDefault();
+                    this.isLabelDragOver = true;
+                }
+            ,
+                leftRightDragLeave: function (event) {
+                    event.preventDefault();
+                    this.isLabelDragOver = false;
+                }
+            ,
+                leftDrop: function (event) {
+                    this.isLabelDragOver = false;
+                    this.labelDrop(event, true);
+                }
+            ,
+                rightDrop: function (event) {
+                    this.isLabelDragOver = false;
+                    this.labelDrop(event, false);
+                }
+            ,
+                imageLoaded: async function () {
+                    await this.$nextTick();
+                    setTimeout(() => {
+                        return this.$store.dispatch('redraw');
+                    }, 250);
+                }
             },
-            leftRightDragEnter: function (event) {
-                event.preventDefault();
-                this.isLabelDragOver = true;
-            },
-            leftRightDragLeave: function (event) {
-                event.preventDefault();
-                this.isLabelDragOver = false;
-            },
-            leftDrop: function (event) {
-                this.isLabelDragOver = false;
-                this.labelDrop(event, true);
-            },
-            rightDrop: function (event) {
-                this.isLabelDragOver = false;
-                this.labelDrop(event, false);
-            },
-            imageLoaded: async function () {
-                await this.$nextTick();
-                setTimeout(() => {
-                    return this.$store.dispatch('redraw');
-                }, 250);
+            watch: {
+                // showMenu: function () {
+                //     GraphUi.enableDragScroll();
+                // }
             }
-        },
-        watch: {
-            // showMenu: function () {
-            //     GraphUi.enableDragScroll();
-            // }
         }
-    }
 </script>
 
 <style scoped lang="scss">
