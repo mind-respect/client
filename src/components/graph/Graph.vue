@@ -6,22 +6,10 @@
     <v-layout v-if="loaded" @contextmenu="showContextMenu">
         <v-divider></v-divider>
         <div id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle">
-            <!--            <v-overlay-->
-            <!--                    :value="showLoading"-->
-            <!--                    absolute-->
-            <!--                    z-index="100"-->
-            <!--            >-->
-            <!--            </v-overlay>-->
+            <v-progress-circular indeterminate color="third" size="128"
+                                 style="position:fixed; left:60%; top:40%;" v-show="showLoading"></v-progress-circular>
             <v-layout class='root-vertex-super-container vh-center' :style="zoomScale"
                       @dragstart="preventUndesirableDragging" :key="childrenKey" @mousedown="mousedown">
-                <v-overlay
-                        :value="showLoading"
-                        absolute
-                        z-index="50"
-                        opacity="0"
-                >
-                    <v-progress-circular indeterminate color="third" size="64"></v-progress-circular>
-                </v-overlay>
                 <v-flex grow class="vertices-children-container left-oriented pt-12 pb-12" @dragover="dragOver"
                         @dragleave="dragLeave" @drop="childrenDropLeft" @contextmenu="contextMenuLeft" :class="{
                     'before-loaded': showLoading
@@ -149,7 +137,7 @@
         <DescriptionDialog></DescriptionDialog>
         <FontDialog></FontDialog>
         <ListView></ListView>
-<!--        <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>-->
+        <!--        <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>-->
         <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
         <v-btn @click="usePattern"
                fixed
@@ -234,6 +222,10 @@
             Selection.reset();
             let centerUri = MindMapInfo.getCenterBubbleUri();
             MindMapInfo.defineIsViewOnly(true);
+            setTimeout(() => {
+                document.body.scrollTop = document.body.scrollHeight / 2 - (document.documentElement.clientHeight / 2);
+                document.body.scrollLeft = document.body.scrollWidth / 2 - (document.documentElement.clientWidth / 2);
+            }, 150);
             let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : GraphElement.withUri(centerUri);
             let promise = center.isMeta() ?
                 MetaController.withMeta(center).loadGraph() :
@@ -241,33 +233,34 @@
                     center
                 ).load();
             promise.then(async (_center) => {
-                let center = _center;
-                document.title = center.getTextOrDefault() + " | MindRespect";
-                this.center = center;
-                this.handleResize();
-                this.loaded = true;
-                let app = document.getElementById("app");
-                if (app) {
-                    app.classList.add("mind-map");
-                }
-                await this.$nextTick();
-                Color.refreshBackgroundColor();
-                Selection.setToSingle(this.center, true);
-                this.$store.dispatch("setIsPatternFlow", this.center.isPattern());
-                AppController.refreshFont();
-                await this.$nextTick();
-                if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
-                    center.focus();
-                }
-                Scroll.goToGraphElement(this.center, true).then(async () => {
+                    let center = _center;
+                    document.title = center.getTextOrDefault() + " | MindRespect";
+                    this.center = center;
+                    this.handleResize();
+                    this.loaded = true;
+                    let app = document.getElementById("app");
+                    if (app) {
+                        app.classList.add("mind-map");
+                    }
                     await this.$nextTick();
-                    this.showLoading = false;
-                    this.svg = new GraphDraw(this.center).build();
+                    Color.refreshBackgroundColor();
+                    Selection.setToSingle(this.center, true);
+                    this.$store.dispatch("setIsPatternFlow", this.center.isPattern());
+                    AppController.refreshFont();
                     await this.$nextTick();
-                    this.redrawKey = Math.random();
-                });
-                CurrentSubGraph.get().component = this;
-            }).catch((error) => {
+                    if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
+                        center.focus();
+                    }
+                    Scroll.goToGraphElement(this.center, true).then(async () => {
+                        await this.$nextTick();
+                        this.showLoading = false;
+                        this.svg = new GraphDraw(this.center).build();
+                        await this.$nextTick();
+                        this.redrawKey = Math.random();
+                    });
+                    CurrentSubGraph.get().component = this;
+                }
+            ).catch((error) => {
                 console.error(error);
                 this.$router.push("/")
             })
