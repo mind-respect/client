@@ -13,9 +13,8 @@
                         :editorOptions="editorOptions"
                 ></vue-editor>
             </v-card-text>
-            <v-card-actions>
-                <v-btn color="secondary" class="ml-2" @click="save" :disabled="note === bubble.getComment()"
-                       v-if="!$store.state.isViewOnly">
+            <v-card-actions v-if="!$store.state.isViewOnly">
+                <v-btn color="secondary" class="ml-2" @click="save" :disabled="note === bubble.getComment()">
                     <v-icon class="mr-2">save</v-icon>
                     {{$t('save')}}
                 </v-btn>

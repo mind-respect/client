@@ -233,7 +233,7 @@
             CurrentSubGraph.set(SubGraph.empty());
             Selection.reset();
             let centerUri = MindMapInfo.getCenterBubbleUri();
-            MindMapInfo.defineIsViewOnly();
+            MindMapInfo.defineIsViewOnly(true);
             let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : GraphElement.withUri(centerUri);
             let promise = center.isMeta() ?
                 MetaController.withMeta(center).loadGraph() :

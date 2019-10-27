@@ -26,8 +26,8 @@ api.isViewOnly = function () {
     api.defineIsViewOnly();
     return _isViewOnly;
 };
-api.defineIsViewOnly = function () {
-    if (_isViewOnly !== undefined) {
+api.defineIsViewOnly = function (force) {
+    if (!force && _isViewOnly !== undefined) {
         return;
     }
     _isViewOnly = _isTagCloudFlow || _isAuthenticatedLandingPageFlow ?
