@@ -27,6 +27,7 @@
                                 loading
                                 height="94"
                                 type="list-item-two-line"
+                                class="pa-2"
                         >
                         </v-skeleton-loader>
                     </v-flex>
@@ -132,11 +133,12 @@
                         </v-hover>
                     </v-flex>
                     <v-flex xs12 :md3="$store.state.areCentersInGridView"
-                            v-for="i in 8" v-if="!loaded">
+                            v-for="i in 8" v-if="bottom">
                         <v-skeleton-loader
                                 loading
                                 height="94"
                                 type="list-item-two-line"
+                                class="pa-2"
                         >
                         </v-skeleton-loader>
                     </v-flex>
