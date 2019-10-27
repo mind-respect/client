@@ -133,7 +133,7 @@
                         </v-hover>
                     </v-flex>
                     <v-flex xs12 :md3="$store.state.areCentersInGridView"
-                            v-for="i in 8" v-if="bottom">
+                            v-for="i in 8" v-if="isBottom">
                         <v-skeleton-loader
                                 loading
                                 height="94"
@@ -181,7 +181,8 @@
                 loaded: false,
                 hasLoadedAll: false,
                 centers: null,
-                bottom: false
+                isBottom: false,
+                scrollTopWhenCentersAdded: 0
             }
         },
         mounted: function () {
@@ -266,7 +267,7 @@
                     }
                 }
             },
-            bottomVisible() {
+            isBottomVisible() {
                 const scrollY = document.body.scrollTop;
                 const visible = document.documentElement.clientHeight;
                 const pageHeight = document.body.scrollHeight;
@@ -293,7 +294,7 @@
                     this.$nextTick(() => {
                         document.body.scrollTop = document.body.scrollTop - 10 - ADDRESS_BAR_HEIGHT;
                         setTimeout(() => {
-                            this.bottom = false;
+                            this.isBottom = false;
                         }, 250);
                     });
                 });
@@ -327,10 +328,10 @@
             },
             handleScroll: function () {
                 // this.log = "scrolling " + Math.random();
-                if (!this.loaded || this.bottom || this.hasLoadedAll) {
+                if (!this.loaded || this.isBottom || this.hasLoadedAll || document.body.scrollTop <= this.scrollTopWhenCentersAdded) {
                     return;
                 }
-                this.bottom = this.bottomVisible();
+                this.isBottom = this.isBottomVisible();
             }
         },
         created() {
@@ -342,8 +343,9 @@
             document.removeEventListener('touchmove', this.handleScroll);
         },
         watch: {
-            bottom(bottom) {
-                if (bottom) {
+            isBottom(isBottom) {
+                if (isBottom) {
+                    this.scrollTopWhenCentersAdded = document.body.scrollTop;
                     this.addCenters()
                 }
             }
