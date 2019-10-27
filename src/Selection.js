@@ -16,29 +16,35 @@ api.reset = function () {
 };
 
 api.setToSingle = function (graphElement, noScroll) {
-    if (!graphElement) {
-        return;
-    }
-    if (api.isSingle()) {
-        if (Store.state.selected[0].id === graphElement.getId()) {
+    return new Promise((resolve) => {
+        if (!graphElement) {
+            resolve();
             return;
         }
-    }
-    api.getSelectedElements().forEach((selected) => {
-        if (selected) {
-            selected.deselect();
+        if (api.isSingle()) {
+            if (Store.state.selected[0].id === graphElement.getId()) {
+                resolve();
+                return;
+            }
         }
-    });
-    graphElement.select();
-    Store.dispatch("setSelected", [
-        api._storeFormat(graphElement)
-    ]);
-    Vue.nextTick(() => {
-        if (!graphElement.loading && !noScroll) {
-            Vue.nextTick(() => {
-                centerBubbleIfApplicable(graphElement)
-            });
-        }
+        api.getSelectedElements().forEach((selected) => {
+            if (selected) {
+                selected.deselect();
+            }
+        });
+        graphElement.select();
+        Store.dispatch("setSelected", [
+            api._storeFormat(graphElement)
+        ]);
+        Vue.nextTick(() => {
+            if (!graphElement.loading && !noScroll) {
+                Vue.nextTick(() => {
+                    centerBubbleIfApplicable(graphElement).then(resolve)
+                });
+            } else {
+                resolve();
+            }
+        });
     });
 };
 
@@ -103,7 +109,7 @@ api.getSingle = function () {
 api.getSelectedElements = api.getSelectedBubbles = function () {
     return Store.state.selected.map((selected) => {
         return api._graphElementSelected(selected);
-    }).filter((selected)=>{
+    }).filter((selected) => {
         return selected !== undefined;
     })
 };

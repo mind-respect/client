@@ -428,12 +428,9 @@
                 if (this.isEditFlow) {
                     return;
                 }
-                Selection.setToSingle(this.bubble);
-                this.$nextTick(() => {
+                Selection.setToSingle(this.bubble).then(() => {
                     this.menuFlow = 'buttons';
-                    setTimeout(() => {
-                        this.showMenu = true;
-                    }, 0);
+                    this.showMenu = true;
                 });
             },
             click: function (event) {
