@@ -15,20 +15,23 @@
                     </template>
                     <span>{{$t('userhome:createInfo')}}</span>
                 </v-tooltip>
-                <v-layout wrap v-if="!loaded">
-                    <v-flex xs12 class="vh-center">
-                        <v-progress-circular size="64" indeterminate
-                                             color="third"></v-progress-circular>
-                    </v-flex>
-                </v-layout>
-                <v-layout wrap class="pt-0" v-if="loaded && centers">
-                    <v-flex xs12 v-if="centers.length === 0" class="vh-center">
+                <v-layout wrap class="pt-0">
+                    <v-flex xs12 v-if="centers && centers.length === 0" class="vh-center">
                         <h3 class="title vh-center font-italic mt-10" v-if="centers.length === 0">
                             {{$t('userhome:noBubbles')}}
                         </h3>
                     </v-flex>
                     <v-flex xs12 :md3="$store.state.areCentersInGridView"
-                            v-for="(center, index) in centers">
+                            v-for="i in 28" v-if="!loaded">
+                        <v-skeleton-loader
+                                loading
+                                height="94"
+                                type="list-item-two-line"
+                        >
+                        </v-skeleton-loader>
+                    </v-flex>
+                    <v-flex xs12 :md3="$store.state.areCentersInGridView"
+                            v-for="(center, index) in centers" v-if="loaded && centers">
                         <v-hover>
                             <v-list two-line id="grid-list" slot-scope="{ hover }">
                                 <v-list-item @click="go($event, center.uri().url())">
@@ -61,7 +64,8 @@
                                                 v-if="flow !== 'centers'">
 
                                             <router-link :to="'/user/' + center.uri().getOwner()"
-                                                         class="no-style-link secondary-color" @click.stop color="secondary">
+                                                         class="no-style-link secondary-color" @click.stop
+                                                         color="secondary">
                                                 {{center.uri().getOwner()}}
                                             </router-link>
                                         </v-list-item-subtitle>
@@ -127,12 +131,14 @@
                             </v-list>
                         </v-hover>
                     </v-flex>
-                    <v-flex xs12 v-show="bottom" class="vh-center">
-                        <v-progress-circular
-                                :size="64"
-                                color="third"
-                                indeterminate
-                        ></v-progress-circular>
+                    <v-flex xs12 :md3="$store.state.areCentersInGridView"
+                            v-for="i in 8" v-if="!loaded">
+                        <v-skeleton-loader
+                                loading
+                                height="94"
+                                type="list-item-two-line"
+                        >
+                        </v-skeleton-loader>
                     </v-flex>
                     <v-flex xs12 class="vh-center" v-if="hasLoadedAll && centers.length > 28">
                         <v-card flat>
@@ -177,17 +183,19 @@
             }
         },
         mounted: function () {
-            this.loadData().then((response) => {
-                this.centers = CenterGraphElement.fromServerFormat(response.data).map((center) => {
-                    center.labelSearch = center.getLabel();
-                    center.contextSearch = Object.values(center.getContext()).join(' ');
-                    return center;
+            setTimeout(()=>{
+                this.loadData().then((response) => {
+                    this.centers = CenterGraphElement.fromServerFormat(response.data).map((center) => {
+                        center.labelSearch = center.getLabel();
+                        center.contextSearch = Object.values(center.getContext()).join(' ');
+                        return center;
+                    });
+                    this.loaded = true;
+                    if (this.centers.length < 28) {
+                        this.hasLoadedAll = true;
+                    }
                 });
-                this.loaded = true;
-                if (this.centers.length < 28) {
-                    this.hasLoadedAll = true;
-                }
-            })
+            }, 4000)
         },
         methods: {
             loadData: function () {

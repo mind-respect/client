@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div class="" id="user-home" v-if="!isTesting && loaded">
+    <div class="" id="user-home" v-if="!isTesting">
         <v-card flat class="pa-0">
             <v-card-title v-if="$vuetify.breakpoint.mdAndUp || !isOwner" class="pt-0">
                 <v-tooltip v-if="$store.state.areCentersInGridView && $vuetify.breakpoint.mdAndUp" right>
