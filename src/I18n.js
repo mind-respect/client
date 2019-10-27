@@ -96,6 +96,12 @@ export default {
         i18next.addResources("fr", "tag", {
             "default": "Étiquette"
         });
+        i18next.addResources("en", "groupRelation", {
+            "default": "relate"
+        });
+        i18next.addResources("fr", "groupRelation", {
+            "default": "relie"
+        });
         i18next.addResources("en", "childNotice", {
             "tooltip": "Expand (ctrl+E)",
             "tooltipForMac": "Expand (⌘+E)"

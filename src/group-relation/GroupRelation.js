@@ -7,6 +7,7 @@ import Vue from 'vue'
 import Store from '@/store'
 import FriendlyResource from "../friendly-resource/FriendlyResource";
 import IdUri from '@/IdUri'
+import I18n from '@/I18n'
 
 const api = {};
 api.EXPAND_UNDER_NB_SIBLINGS = 4;
@@ -283,6 +284,10 @@ GroupRelation.prototype.getChip = function () {
 
 GroupRelation.prototype.isShrinked = function () {
     return false;
+};
+
+GroupRelation.prototype.getWhenEmptyLabel = function () {
+    return I18n.i18next.t("groupRelation:default");
 };
 
 api.GroupRelation = GroupRelation;
