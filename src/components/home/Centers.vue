@@ -292,7 +292,7 @@
                         this.centers.push(center);
                     });
                     this.$nextTick(() => {
-                        // document.body.scrollTop = document.body.scrollTop - 10 - ADDRESS_BAR_HEIGHT;
+                        document.body.scrollTop = document.body.scrollTop - 16 - ADDRESS_BAR_HEIGHT;
                         setTimeout(() => {
                             this.isBottom = false;
                         }, 250);
