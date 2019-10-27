@@ -183,19 +183,17 @@
             }
         },
         mounted: function () {
-            setTimeout(()=>{
-                this.loadData().then((response) => {
-                    this.centers = CenterGraphElement.fromServerFormat(response.data).map((center) => {
-                        center.labelSearch = center.getLabel();
-                        center.contextSearch = Object.values(center.getContext()).join(' ');
-                        return center;
-                    });
-                    this.loaded = true;
-                    if (this.centers.length < 28) {
-                        this.hasLoadedAll = true;
-                    }
+            this.loadData().then((response) => {
+                this.centers = CenterGraphElement.fromServerFormat(response.data).map((center) => {
+                    center.labelSearch = center.getLabel();
+                    center.contextSearch = Object.values(center.getContext()).join(' ');
+                    return center;
                 });
-            }, 4000)
+                this.loaded = true;
+                if (this.centers.length < 28) {
+                    this.hasLoadedAll = true;
+                }
+            });
         },
         methods: {
             loadData: function () {
