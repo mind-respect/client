@@ -171,7 +171,7 @@
                     return false;
                 }
                 return graphElement.getDescendants().every((descendant) => {
-                    return !descendant.isForkType() || (descendant.selectedToRemove && !descendant.canExpand());
+                    return !descendant.isVertexType() || (descendant.selectedToRemove && !descendant.canExpand());
                 });
             }
         }
