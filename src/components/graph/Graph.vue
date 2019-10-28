@@ -139,18 +139,18 @@
         <ListView></ListView>
         <!--        <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>-->
         <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
-<!--        <v-btn @click="usePattern"-->
-<!--               fixed-->
-<!--               bottom-->
-<!--               right-->
-<!--               color="secondary"-->
-<!--               style="z-index:2;" class="mr-12 mb-12"-->
-<!--               :disabled="usePatternLoading"-->
-<!--               :loading="usePatternLoading"-->
-<!--               v-if="$store.state.isPatternFlow"-->
-<!--        >-->
-<!--            {{$t('graph:usePattern')}}-->
-<!--        </v-btn>-->
+        <v-btn @click="usePattern"
+               fixed
+               bottom
+               right
+               color="secondary"
+               style="z-index:2;" class="mr-12 mb-12"
+               :disabled="usePatternLoading"
+               :loading="usePatternLoading"
+               v-if="$store.state.isPatternFlow"
+        >
+            {{$t('graph:usePattern')}}
+        </v-btn>
     </v-layout>
 </template>
 

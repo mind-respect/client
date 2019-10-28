@@ -88,17 +88,17 @@
                                                 </v-btn>
                                             </template>
                                             <v-list>
-<!--                                                <v-list-item-->
-<!--                                                        @click.prevent="usePattern(center)"-->
-<!--                                                        v-if="center.isPattern()"-->
-<!--                                                >-->
-<!--                                                    <v-list-item-action>-->
-<!--                                                        <v-icon>stars</v-icon>-->
-<!--                                                    </v-list-item-action>-->
-<!--                                                    <v-list-item-title>-->
-<!--                                                        {{$t('use')}}-->
-<!--                                                    </v-list-item-title>-->
-<!--                                                </v-list-item>-->
+                                                <v-list-item
+                                                        @click.prevent="usePattern(center)"
+                                                        v-if="center.isPattern()"
+                                                >
+                                                    <v-list-item-action>
+                                                        <v-icon>stars</v-icon>
+                                                    </v-list-item-action>
+                                                    <v-list-item-title>
+                                                        {{$t('use')}}
+                                                    </v-list-item-title>
+                                                </v-list-item>
                                                 <v-list-item :href="center.uri().url()"
                                                              target="_blank">
                                                     <v-list-item-action>
