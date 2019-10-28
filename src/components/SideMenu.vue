@@ -187,7 +187,7 @@
                     return false;
                 }
                 let single = Selection.getSingle();
-                return single && (single.controller().identifyCanDo() || single.isMeta());
+                return single && (single.controller().identifyCanDo() || single.isMeta() || single.hasIdentifications());
             },
             mergeCanDo: function () {
                 if (!Selection.isSingle()) {

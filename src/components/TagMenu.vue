@@ -99,7 +99,7 @@
                                 </v-btn>
                             </template>
                             <v-list>
-                                <v-list-item :href="identifier.url">
+                                <v-list-item :href="identifier.url" v-if="!$store.state.isViewOnly">
                                     <v-list-item-action>
                                         <v-icon>filter_center_focus</v-icon>
                                     </v-list-item-action>
