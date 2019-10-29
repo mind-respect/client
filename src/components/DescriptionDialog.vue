@@ -5,7 +5,7 @@
 <template>
     <v-dialog v-model="dialog" v-if="isDescriptionFlow" width="900" persistent>
         <v-card>
-            <v-card-text class="pt-8" style="color:inherit">
+            <v-card-text class="pt-8" style="color:inherit" v-if="!$store.state.isViewOnly">
                 <vue-editor
                         :key="bubble.uiId"
                         v-model="note"
@@ -13,6 +13,7 @@
                         :editorOptions="editorOptions"
                 ></vue-editor>
             </v-card-text>
+            <v-card-text v-html="note" v-if="$store.state.isViewOnly" style="color:inherit" class="pt-8"></v-card-text>
             <v-card-actions v-if="!$store.state.isViewOnly">
                 <v-btn color="secondary" class="ml-2" @click="save" :disabled="note === bubble.getComment()">
                     <v-icon class="mr-2">save</v-icon>
