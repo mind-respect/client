@@ -210,7 +210,7 @@ VertexController.prototype.togglePublicPrivate = function () {
 VertexController.prototype.makePrivateManyIsPossible = true;
 
 VertexController.prototype.makePrivateCanDo = function () {
-    return this.isOwned() && (
+    return !Store.state.isPatternFlow && this.isOwned() && (
         (this.isMultiple() && !this._areAllElementsPrivate()) || (
             this.isSingle() && this.getUi().model().isPublic()
         )
@@ -278,7 +278,7 @@ VertexController.prototype.setShareLevel = function () {
 };
 
 VertexController.prototype.setShareLevelCanDo = function () {
-    return this.isOwned();
+    return !Store.state.isPatternFlow && this.isOwned();
 };
 
 VertexController.prototype.setShareLevelDo = function (shareLevel) {
