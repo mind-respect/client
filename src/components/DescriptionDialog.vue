@@ -27,6 +27,16 @@
                     {{$t('cancel')}}
                 </v-btn>
             </v-card-actions>
+            <v-card-actions v-if="$store.state.isViewOnly">
+                <v-spacer></v-spacer>
+                <v-btn
+                        text
+                        class="mr-2"
+                        @click="dialog = false"
+                >
+                    {{$t('close')}}
+                </v-btn>
+            </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
