@@ -10,9 +10,7 @@ import SearchResult from '@/search/SearchResult'
 const api = {};
 api.tags = function (term) {
     return resultsFromProviders([
-        api.searchForAllOwnResources(term).then((results) => {
-            return sortForTags(results);
-        }),
+        api.searchForAllOwnResources(term),
         WikidataService.search(term)
     ]);
 };
@@ -23,9 +21,7 @@ api.searchForAllOwnResources = function (searchText) {
             "searchText": searchText
         }
     ).then((response) => {
-        return sortForCenters(
-            formattedOwnResults(response.data)
-        );
+        return formattedOwnResults(response.data)
     });
 };
 
@@ -36,31 +32,9 @@ api.ownVertices = function (searchText) {
             "searchText": searchText
         }
     ).then((response) => {
-        return sortForCenters(
-            formattedOwnResults(response.data)
-        );
+        return formattedOwnResults(response.data);
     });
 };
-
-function sortForTags(results) {
-    return results.sort((a, b) => {
-        let nbRefsDiff = b.original.getNumberOfReferences() - a.original.getNumberOfReferences();
-        if (nbRefsDiff === 0) {
-            return b.original.getNbVisits() - a.original.getNbVisits();
-        }
-        return nbRefsDiff;
-    });
-}
-
-function sortForCenters(results) {
-    return results.sort((a, b) => {
-        let nbVisitsDiff = b.original.getNbVisits() - a.original.getNbVisits();
-        if (nbVisitsDiff === 0) {
-            return b.original.getNumberOfReferences() - a.original.getNumberOfReferences();
-        }
-        return nbVisitsDiff;
-    });
-}
 
 function formattedOwnResults(results) {
     return results.map((searchResult) => {
