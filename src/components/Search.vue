@@ -49,8 +49,8 @@
 </template>
 
 <script>
-    import SearchResultContent from '@/components/SearchResultContent'
-    import SearchResultAction from '@/components/SearchResultAction'
+    import SearchResultContent from '@/components/search/SearchResultContent'
+    import SearchResultAction from '@/components/search/SearchResultAction'
     import I18n from '@/I18n'
     import SearchService from '@/search/SearchService'
     import AppController from '@/AppController'

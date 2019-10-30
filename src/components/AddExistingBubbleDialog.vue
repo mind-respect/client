@@ -58,8 +58,8 @@
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import GraphUi from '@/graph/GraphUi'
     import SearchService from '@/search/SearchService'
-    import SearchResultContent from '@/components/SearchResultContent'
-    import SearchResultAction from '@/components/SearchResultAction'
+    import SearchResultContent from '@/components/search/SearchResultContent'
+    import SearchResultAction from '@/components/search/SearchResultAction'
     import IdUri from '@/IdUri'
     import Dragged from '@/Dragged'
 

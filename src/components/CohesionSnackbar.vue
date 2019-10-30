@@ -105,8 +105,8 @@
 <script>
     import SearchService from '@/search/SearchService'
     import Selection from '@/Selection'
-    import SearchResultContent from '@/components/SearchResultContent'
-    import SearchResultAction from '@/components/SearchResultAction'
+    import SearchResultContent from '@/components/search/SearchResultContent'
+    import SearchResultAction from '@/components/search/SearchResultAction'
     import I18n from '@/I18n'
     import Identification from '@/identifier/Identification'
     import IdUri from '@/IdUri'
