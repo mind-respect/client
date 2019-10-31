@@ -36,7 +36,6 @@
         },
         methods: {
             reset: function (nbLastResults, searchText) {
-                this.isAllLoaded = false;
                 this.nbLastResults = nbLastResults;
                 this.searchText = searchText;
             },
