@@ -29,6 +29,8 @@
             <SearchResultContent :item="item"></SearchResultContent>
             <SearchResultAction :item="item"></SearchResultAction>
         </template>
+        <SearchLoadMore slot="append-item" @loadMore="loadMore" @create="createCenterVertex"
+                        ref="loadMore"></SearchLoadMore>
         <v-list-item slot="no-data" @click="createCenterVertex" v-show="!loading">
             <v-list-item-content>
                 <v-list-item-title>
@@ -49,6 +51,7 @@
 </template>
 
 <script>
+    import SearchLoadMore from '@/components/search/SearchLoadMore'
     import SearchResultContent from '@/components/search/SearchResultContent'
     import SearchResultAction from '@/components/search/SearchResultAction'
     import I18n from '@/I18n'
@@ -60,6 +63,7 @@
     export default {
         name: "Search",
         components: {
+            SearchLoadMore,
             SearchResultContent,
             SearchResultAction
         },
@@ -119,6 +123,13 @@
                 SearchService.searchForAllOwnResources(searchText).then((results) => {
                     this.items = results;
                     this.loading = false;
+                    this.$refs.loadMore.reset(results.length, searchText);
+                });
+            },
+            loadMore: function (callback) {
+                SearchService.searchForAllOwnResources(this.searchText, this.items.length).then((results) => {
+                    this.items = this.items.concat(results);
+                    callback(results.length);
                 });
             },
             createCenterVertex: function () {

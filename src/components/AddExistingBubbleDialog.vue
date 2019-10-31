@@ -35,6 +35,8 @@
                         <SearchResultContent :item="item"></SearchResultContent>
                         <SearchResultAction :item="item"></SearchResultAction>
                     </template>
+                    <SearchLoadMore slot="append-item" @loadMore="loadMore" :noCreateButton="true"
+                                    ref="loadMore"></SearchLoadMore>
                 </v-autocomplete>
             </v-card-text>
             <v-card flat class="pt-0">
@@ -58,6 +60,7 @@
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import GraphUi from '@/graph/GraphUi'
     import SearchService from '@/search/SearchService'
+    import SearchLoadMore from '@/components/search/SearchLoadMore'
     import SearchResultContent from '@/components/search/SearchResultContent'
     import SearchResultAction from '@/components/search/SearchResultAction'
     import IdUri from '@/IdUri'
@@ -66,6 +69,7 @@
     export default {
         name: "AddExistingBubbleDialog",
         components: {
+            SearchLoadMore,
             SearchResultContent,
             SearchResultAction
         },
@@ -136,12 +140,21 @@
             querySelections: function (searchText) {
                 this.loading = true;
                 let currentSubGraph = CurrentSubGraph.get();
-                SearchService.searchForAllOwnResources(searchText).then((results) => {
+                SearchService.ownVertices(searchText).then((results) => {
                     this.items = results.map((result) => {
                         result.disabled = currentSubGraph.hasUri(result.uri);
                         return result;
                     });
                     this.loading = false;
+                    this.$nextTick(() => {
+                        this.$refs.loadMore.reset(results.length, searchText);
+                    });
+                });
+            },
+            loadMore: function (callback) {
+                SearchService.ownVertices(this.searchText, this.items.length).then((results) => {
+                    this.items = results;
+                    callback(results.length);
                 });
             },
             chooseItem: function () {

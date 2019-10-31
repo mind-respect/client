@@ -32,22 +32,24 @@
                     <SearchResultContent :item="item"></SearchResultContent>
                     <SearchResultAction :item="item"></SearchResultAction>
                 </template>
-                <v-list-item slot="append-item" @click="createTagWithNoRef"
-                             v-if="search && search.trim() !== '' && items.length > 0" v-show="!searchLoading">
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            "{{search}}"
-                        </v-list-item-title>
-                        <v-list-item-subtitle class="">
-                            {{$t('tag:createNew')}}
-                        </v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
-                        <v-icon>
-                            add
-                        </v-icon>
-                    </v-list-item-action>
-                </v-list-item>
+                <SearchLoadMore slot="append-item" @loadMore="loadMore" @create="createTagWithNoRef"
+                                ref="loadMore" v-show="!searchLoading"></SearchLoadMore>
+                <!--                <v-list-item slot="append-item" @click="createTagWithNoRef"-->
+                <!--                             v-if="search && search.trim() !== '' && items.length > 0" >-->
+                <!--                    <v-list-item-content>-->
+                <!--                        <v-list-item-title>-->
+                <!--                            "{{search}}"-->
+                <!--                        </v-list-item-title>-->
+                <!--                        <v-list-item-subtitle class="">-->
+                <!--                            {{$t('tag:createNew')}}-->
+                <!--                        </v-list-item-subtitle>-->
+                <!--                    </v-list-item-content>-->
+                <!--                    <v-list-item-action>-->
+                <!--                        <v-icon>-->
+                <!--                            add-->
+                <!--                        </v-icon>-->
+                <!--                    </v-list-item-action>-->
+                <!--                </v-list-item>-->
                 <v-list-item slot="no-data" @click="createTagWithNoRef" v-if="search && search.trim() !== ''"
                              v-show="!searchLoading">
                     <v-list-item-content>
@@ -140,6 +142,7 @@
 
 <script>
     import IdUri from "@/IdUri";
+    import SearchLoadMore from '@/components/search/SearchLoadMore'
     import SearchResultContent from '@/components/search/SearchResultContent'
     import SearchResultAction from '@/components/search/SearchResultAction'
     import I18n from '@/I18n'
@@ -150,6 +153,7 @@
         name: "TagMenu",
         props: ['bubble'],
         components: {
+            SearchLoadMore,
             SearchResultContent,
             SearchResultAction
         },
@@ -245,6 +249,15 @@
                         return result;
                     });
                     this.searchLoading = false;
+                    this.$refs.loadMore.reset(results.length, this.search);
+                });
+            },
+            loadMore: function (callback) {
+                SearchService.tags(this.search, this.items.filter((item) => {
+                    return item.source === "mindrespect.com";
+                }).length).then((results) => {
+                    this.items = this.items.concat(results);
+                    callback(results.length);
                 });
             },
             selectSearchResult: function () {

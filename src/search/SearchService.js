@@ -8,28 +8,35 @@ import Service from '@/Service'
 import SearchResult from '@/search/SearchResult'
 
 const api = {};
-api.tags = function (term) {
-    return resultsFromProviders([
-        api.searchForAllOwnResources(term),
-        WikidataService.search(term)
-    ]);
+api.tags = function (term, nbSkip) {
+    let providers = [
+        api.searchForAllOwnResources(term, nbSkip)
+    ];
+    if (!nbSkip) {
+        providers.push(
+            WikidataService.search(term)
+        );
+    }
+    return resultsFromProviders(providers);
 };
-api.searchForAllOwnResources = function (searchText) {
+api.searchForAllOwnResources = function (searchText, nbSkip) {
     return Service.api().post(
         UserService.currentUserUri() + "/search/own_all_resource/auto_complete",
         {
-            "searchText": searchText
+            "searchText": searchText,
+            nbSkip: nbSkip
         }
     ).then((response) => {
         return formattedOwnResults(response.data)
     });
 };
 
-api.ownVertices = function (searchText) {
+api.ownVertices = function (searchText, nbSkip) {
     return Service.api().post(
         UserService.currentUserUri() + "/search/own_vertices/auto_complete",
         {
-            "searchText": searchText
+            "searchText": searchText,
+            nbSkip: nbSkip
         }
     ).then((response) => {
         return formattedOwnResults(response.data);

@@ -45,7 +45,8 @@ export default {
                         close: "Close",
                         areYouSure: "Are you sure ?",
                         use: "Use",
-                        bubbles: "Bubbles"
+                        bubbles: "Bubbles",
+                        moreResults: "More results"
                     }
                 },
                 fr: {
@@ -71,7 +72,8 @@ export default {
                         close: "Fermer",
                         areYouSure: "Êtes-vous certain?",
                         use: "Utiliser",
-                        bubbles: "Bulles"
+                        bubbles: "Bulles",
+                        moreResults: "Plus de résultats"
                     }
                 }
             }

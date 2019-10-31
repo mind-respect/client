@@ -25,6 +25,8 @@
                     <SearchResultContent :item="item"></SearchResultContent>
                     <SearchResultAction :item="item"></SearchResultAction>
                 </template>
+                <SearchLoadMore slot="append-item" @loadMore="loadMore" :noCreateButton="true"
+                                ref="mergeLoadMore"></SearchLoadMore>
             </v-autocomplete>
         </v-card-text>
         <v-card flat class="pt-0">
@@ -39,14 +41,16 @@
 <script>
     import I18n from '@/I18n'
     import SearchService from '@/search/SearchService'
+    import SearchLoadMore from '@/components/search/SearchLoadMore'
     import SearchResultContent from '@/components/search/SearchResultContent'
     import SearchResultAction from '@/components/search/SearchResultAction'
     import Breakpoint from "@/Breakpoint";
 
     export default {
         name: "MergeMenu",
-        props:['bubble'],
+        props: ['bubble'],
         components: {
+            SearchLoadMore,
             SearchResultContent,
             SearchResultAction
         },
@@ -80,6 +84,15 @@
                 SearchService.ownVertices(term).then((results) => {
                     this.items = results;
                     this.loading = false;
+                    this.$nextTick(()=>{
+                        this.$refs.mergeLoadMore.reset(results.length, term);
+                    });
+                });
+            },
+            loadMore: function (callback) {
+                SearchService.ownVertices(this.search, this.items.length).then((results) => {
+                    this.items = results;
+                    callback(results.length);
                 });
             },
             selectSearchResult: function () {
