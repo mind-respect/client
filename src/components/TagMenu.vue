@@ -257,7 +257,7 @@
                     return item.source === "mindrespect.com";
                 }).length).then((results) => {
                     this.items = this.items.concat(results);
-                    callback(results.length);
+                    callback(results.length, this.$refs.search);
                 });
             },
             selectSearchResult: function () {

@@ -153,8 +153,8 @@
             },
             loadMore: function (callback) {
                 SearchService.ownVertices(this.searchText, this.items.length).then((results) => {
-                    this.items = results;
-                    callback(results.length);
+                    this.items = this.items.concat(results);
+                    callback(results.length, this.$refs.existingBubbleAutocomplete);
                 });
             },
             chooseItem: function () {

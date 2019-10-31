@@ -91,8 +91,10 @@
             },
             loadMore: function (callback) {
                 SearchService.ownVertices(this.search, this.items.length).then((results) => {
-                    this.items = results;
-                    callback(results.length);
+                    this.items = this.items.concat(results);
+                    this.$nextTick(()=>{
+                        callback(results.length, this.$refs.mergeSearch);
+                    });
                 });
             },
             selectSearchResult: function () {
