@@ -149,7 +149,7 @@
         <Level image="dawn-3804124_1280_optimized.jpg" :title="$t('about:level6Title')" :level="6">
             <!--https://pixabay.com/fr/dawn-arbres-l-%C3%A9cart-brouillard-3804124/-->
         </Level>
-        <v-layout wrap class="">
+        <v-layout wrap class="" v-if="!$store.state.user">
             <v-flex xs12 md6 class="vh-center">
                 <v-card flat color="secondary" height="100%" class="vh-center">
                     <v-card-title class="text-center white--text vh-center pr-0 pl-0">
