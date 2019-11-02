@@ -24,7 +24,7 @@
                             </v-btn>
                         </div>
                     </template>
-                    <div :class="{
+                    <div style="white-space: nowrap;" :class="{
                         'reverse': isLeft
                     }">
                         <v-avatar color="secondary" size="18" :left="isLeft" style="height:100%;" :class="{
