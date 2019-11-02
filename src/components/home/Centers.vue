@@ -270,10 +270,10 @@
             },
             isBottomVisible() {
                 const scrollY = document.scrollingElement.scrollTop;
-                const visible = document.documentElement.clientHeight;
+                const visible = this.$vuetify.breakpoint.mdAndDown && window.innerHeight ?
+                    window.innerHeight : document.documentElement.clientHeight;
                 const pageHeight = document.scrollingElement.scrollHeight;
                 const bottomOfPage = visible + scrollY >= pageHeight;
-                // this.log = "scrollY " + scrollY + " visible " + visible + " pageHeight" + pageHeight + " bottomOfPage " + bottomOfPage;
                 return bottomOfPage;
             },
             addCenters() {
