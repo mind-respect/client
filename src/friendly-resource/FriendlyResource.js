@@ -668,13 +668,16 @@ FriendlyResource.FriendlyResource.prototype.getExpandableDescendants = function 
     });
 };
 
-FriendlyResource.FriendlyResource.prototype.getDescendants = function (toTheLeft) {
+FriendlyResource.FriendlyResource.prototype.getDescendants = function (toTheLeft, filter) {
     return this.getNextChildren(toTheLeft).reduce((children, child) => {
+        if (filter && !filter(child)) {
+            return children;
+        }
         children.push(child);
         if (child.isLeaf()) {
             return children;
         } else {
-            return children.concat(child.getDescendants(toTheLeft));
+            return children.concat(child.getDescendants(toTheLeft, filter));
         }
     }, []);
 };

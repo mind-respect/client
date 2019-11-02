@@ -32,10 +32,13 @@ const Dragged = {
         let minDistance = 99999999;
         let closestChildEdge;
         let isAbove = false;
-        parent.getDescendants(isLeft).forEach((childEdge) => {
+
+        parent.getDescendants(isLeft, (descendant) => {
+            return descendant.getId() !== Dragged.dragged.getId();
+        }).forEach((childEdge) => {
             let position = childEdge.getHtml().getBoundingClientRect();
-            let xPosition = (position.left + position.right) / 2;
-            let yPosition = (position.top + position.bottom) / 2;
+            let xPosition = (position.left + position.right) / 2 + document.scrollingElement.scrollLeft;
+            let yPosition = (position.top + position.bottom) / 2 + document.scrollingElement.scrollTop;
             let xDistance = x - xPosition;
             let yDistance = y - yPosition;
             let distance = Math.hypot(xDistance, yDistance);
