@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" v-if="dialog" width="900">
+    <v-dialog v-model="dialog" v-if="dialog" fullscreen>
         <v-card flat>
             <v-card-title>
                 <v-spacer></v-spacer>
@@ -9,9 +9,64 @@
                     </v-icon>
                 </v-btn>
             </v-card-title>
-            <v-card-text>
+            <v-card-text class="pt-0" :class="{
+                'pa-0': $vuetify.breakpoint.smAndDown
+            }">
                 <!--STEP 1 Construire-->
-                <v-stepper non-linear alt-labels>
+                <v-stepper :alt-labels="$vuetify.breakpoint.mdAndUp">
+                    <v-stepper-header>
+                        <v-stepper-step
+                                editable
+                                step="1"
+                        >
+                            {{$t('guide:point1')}}
+                        </v-stepper-step>
+
+                        <v-divider></v-divider>
+
+                        <v-stepper-step
+                                editable
+                                step="2"
+                        >
+                            {{$t('guide:point2')}}
+                        </v-stepper-step>
+
+                        <v-divider></v-divider>
+
+                        <v-stepper-step
+                                step="3"
+                                editable
+                        >
+                            {{$t('guide:point3')}}
+                        </v-stepper-step>
+
+                        <v-divider></v-divider>
+
+                        <v-stepper-step
+                                step="4"
+                                editable
+                        >
+                            {{$t('guide:point4')}}
+                        </v-stepper-step>
+
+                        <v-divider></v-divider>
+
+                        <v-stepper-step
+                                step="5"
+                                editable
+                        >
+                            {{$t('guide:point5')}}
+                        </v-stepper-step>
+
+                        <v-divider></v-divider>
+
+                        <v-stepper-step
+                                step="6"
+                                editable
+                        >
+                            {{$t('guide:point6')}}
+                        </v-stepper-step>
+                    </v-stepper-header>
                     <v-stepper-content step="1">
                         <div class="title">
                             {{$t('guide:titreA')}}
@@ -458,62 +513,14 @@
                             </v-flex>
                         </v-layout>
                     </v-stepper-content>
-                    <!--MENU de Stepper -->
-                    <v-stepper-header>
-                        <v-stepper-step
-                                editable
-                                step="1"
-                        >
-                            {{$t('guide:point1')}}
-                        </v-stepper-step>
-
-                        <v-divider></v-divider>
-
-                        <v-stepper-step
-                                editable
-                                step="2"
-                        >
-                            {{$t('guide:point2')}}
-                        </v-stepper-step>
-
-                        <v-divider></v-divider>
-
-                        <v-stepper-step
-                                step="3"
-                                editable
-                        >
-                            {{$t('guide:point3')}}
-                        </v-stepper-step>
-
-                        <v-divider></v-divider>
-
-                        <v-stepper-step
-                                step="4"
-                                editable
-                        >
-                            {{$t('guide:point4')}}
-                        </v-stepper-step>
-
-                        <v-divider></v-divider>
-
-                        <v-stepper-step
-                                step="5"
-                                editable
-                        >
-                            {{$t('guide:point5')}}
-                        </v-stepper-step>
-
-                        <v-divider></v-divider>
-
-                        <v-stepper-step
-                                step="6"
-                                editable
-                        >
-                            {{$t('guide:point6')}}
-                        </v-stepper-step>
-                    </v-stepper-header>
                 </v-stepper>
             </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn @click="dialog = false">
+                    {{$t('close')}}
+                </v-btn>
+            </v-card-actions>
         </v-card>
     </v-dialog>
 </template>

@@ -128,7 +128,6 @@
 <style>
     .side-button-tooltip {
         white-space: nowrap;
-        position: fixed !important;
     }
 
     .side-button-expanded-margin {
@@ -141,6 +140,6 @@
 
     .bubble-menu-tooltip {
         white-space: nowrap;
-        margin-top:10px;
+        margin-top:-30px;
     }
 </style>
