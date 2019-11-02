@@ -267,12 +267,14 @@
         },
         created: function () {
             window.addEventListener('resize', this.handleResize);
+            document.scrollingElement.style.overflow = "scroll";
         },
         beforeDestroy: function () {
-            window.removeEventListener('resize', this.handleResize)
+            window.removeEventListener('resize', this.handleResize);
+            document.scrollingElement.style.overflow = "inherit";
         },
         methods: {
-            mousedown: function(){
+            mousedown: function () {
                 GraphUi.enableDragScroll();
             },
             refreshChildren: function () {
@@ -493,7 +495,6 @@
         /*display: flex;*/
         /*justify-content: center;*/
         /*align-items: center;*/
-        padding: 0;
         min-height: 200%;
         min-width: 200%;
         z-index: 1;

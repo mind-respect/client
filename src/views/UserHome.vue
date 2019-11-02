@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div class="" id="user-home" v-if="!isTesting">
+    <div id="user-home" v-if="!isTesting" class="">
         <v-card flat class="pa-0">
             <v-card-title v-if="$vuetify.breakpoint.mdAndUp || !isOwner" class="pt-0">
                 <v-tooltip v-if="$store.state.areCentersInGridView && $vuetify.breakpoint.mdAndUp" right>
@@ -118,62 +118,64 @@
                             public
                         </v-icon>
                     </v-tab>
-                    <v-tab-item>
-                        <Centers flow="centers"
-                                 @create="createCenterVertex"
-                                 :isOwner="isOwner"
-                                 v-if="tabMenu === 0 && headUsername"
-                                 :isFriend="isConfirmedFriend"
-                        ></Centers>
-                    </v-tab-item>
-                    <v-tab-item>
-                        <v-tabs
-                                v-model="friendsTabMenu"
-                                grow
-                                slider-color="secondary"
-                                slider-size="2"
-                                color="secondary"
-                                :icons-and-text="$vuetify.breakpoint.smAndDown"
-                                v-if="isOwner && headUsername"
-                        >
-                            <v-tab>
-                                {{$t('userhome:centerTab')}}
-                                <v-icon :class="{
+                    <v-tabs-items v-model="tabMenu" touchless>
+                        <v-tab-item>
+                            <Centers flow="centers"
+                                     @create="createCenterVertex"
+                                     :isOwner="isOwner"
+                                     v-if="tabMenu === 0 && headUsername"
+                                     :isFriend="isConfirmedFriend"
+                            ></Centers>
+                        </v-tab-item>
+                        <v-tab-item>
+                            <v-tabs
+                                    v-model="friendsTabMenu"
+                                    grow
+                                    slider-color="secondary"
+                                    slider-size="2"
+                                    color="secondary"
+                                    :icons-and-text="$vuetify.breakpoint.smAndDown"
+                                    v-if="isOwner && headUsername"
+                            >
+                                <v-tab>
+                                    {{$t('userhome:centerTab')}}
+                                    <v-icon :class="{
                                     'mb-2' : $vuetify.breakpoint.smAndDown,
                                     'ml-2' : $vuetify.breakpoint.mdAndUp
                                 }">
-                                    filter_center_focus
-                                </v-icon>
-                            </v-tab>
-                            <v-tab>
-                                {{$t('userhome:friendTab')}}
-                                <v-icon :class="{
+                                        filter_center_focus
+                                    </v-icon>
+                                </v-tab>
+                                <v-tab>
+                                    {{$t('userhome:friendTab')}}
+                                    <v-icon :class="{
                                     'mb-2' : $vuetify.breakpoint.smAndDown,
                                     'ml-2' : $vuetify.breakpoint.mdAndUp
                                 }">
-                                    people
-                                </v-icon>
-                            </v-tab>
-                            <v-tab-item>
-                                <Centers flow="friends" @create="createCenterVertex" :isOwner="isOwner"
-                                         v-if="friendsTabMenu === 0"
-                                ></Centers>
-                            </v-tab-item>
-                            <v-tab-item>
-                                <Friends :isOwner="isOwner" v-if="friendsTabMenu === 1"></Friends>
-                            </v-tab-item>
-                        </v-tabs>
-                        <Friends :isOwner="isOwner" v-if="!isOwner"></Friends>
-                    </v-tab-item>
-                    <v-tab-item v-if="isOwner || !$store.state.user">
-                        <Centers flow="patterns" @create="createCenterVertex" :isOwner="isOwner"
-                                 v-if="tabMenu === 2"></Centers>
-                    </v-tab-item>
-                    <v-tab-item v-if="isOwner || !$store.state.user">
-                        <Centers flow="publicCenters" @create="createCenterVertex" :isOwner="isOwner"
-                                 v-if="tabMenu === 3"
-                        ></Centers>
-                    </v-tab-item>
+                                        people
+                                    </v-icon>
+                                </v-tab>
+                                <v-tab-item>
+                                    <Centers flow="friends" @create="createCenterVertex" :isOwner="isOwner"
+                                             v-if="friendsTabMenu === 0"
+                                    ></Centers>
+                                </v-tab-item>
+                                <v-tab-item>
+                                    <Friends :isOwner="isOwner" v-if="friendsTabMenu === 1"></Friends>
+                                </v-tab-item>
+                            </v-tabs>
+                            <Friends :isOwner="isOwner" v-if="!isOwner"></Friends>
+                        </v-tab-item>
+                        <v-tab-item v-if="isOwner || !$store.state.user">
+                            <Centers flow="patterns" @create="createCenterVertex" :isOwner="isOwner"
+                                     v-if="tabMenu === 2"></Centers>
+                        </v-tab-item>
+                        <v-tab-item v-if="isOwner || !$store.state.user">
+                            <Centers flow="publicCenters" @create="createCenterVertex" :isOwner="isOwner"
+                                     v-if="tabMenu === 3"
+                            ></Centers>
+                        </v-tab-item>
+                    </v-tabs-items>
                 </v-tabs>
             </v-card-text>
         </v-card>

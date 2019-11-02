@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card class="centers-card">
         <v-card class="ma-0 pa-0" min-height="200" :class="{
                         'vh-center': !loaded
                     }">
@@ -32,7 +32,8 @@
                         </v-skeleton-loader>
                     </v-flex>
                     <v-flex xs12 :md3="$store.state.areCentersInGridView"
-                            v-for="(center, index) in centers" v-if="loaded && centers">
+                            v-for="(center, index) in centers" v-if="loaded && centers"
+                    >
                         <v-hover>
                             <v-list two-line id="grid-list" slot-scope="{ hover }">
                                 <v-list-item @click="go($event, center.uri().url())">
@@ -354,5 +355,4 @@
 </script>
 
 <style scoped>
-
 </style>

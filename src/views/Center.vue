@@ -33,7 +33,9 @@
                 )
             );
             GraphElement.initMenuHandlerGetters();
-            GraphUi.initDragScroll();
+            GraphUi.initDragScroll(
+                document.scrollingElement
+            );
             GraphUi.enableDragScroll();
             KeyboardActions.init();
             KeyboardActions.enable();

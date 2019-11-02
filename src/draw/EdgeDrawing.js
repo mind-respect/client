@@ -294,9 +294,9 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
     } else {
         position.x = this.isLeft ? rect.right : rect.left;
     }
-    position.x += document.body.scrollLeft;
+    position.x += document.scrollingElement.scrollLeft;
     position.x = Math.round(position.x);
-    position.y = rect.top - (rect.height / 2) - 23 + document.body.scrollTop;
+    position.y = rect.top - (rect.height / 2) - 23 + document.scrollingElement.scrollTop;
     position.y += yAdjust;
     position.y = Math.round(position.y);
 
@@ -310,7 +310,7 @@ EdgeDrawing.prototype.topPositionCalculate = function () {
         y: 0
     };
     position.x = this.isLeft ? this.bubbleRect.left : this.bubbleRect.right;
-    position.x += document.body.scrollLeft;
+    position.x += document.scrollingElement.scrollLeft;
     let isSmall = (this.bubbleRect.width - standardInnerMargin * 2) < standardInnerMargin;
     let innerMargin = isSmall ? smallInnerMargin : standardInnerMargin;
     let xAdjust = this.isLeft ? innerMargin : innerMargin * -1;
@@ -325,7 +325,7 @@ EdgeDrawing.prototype.topPositionCalculate = function () {
     if (this.bubble.isEdge()) {
         yAdjust = -65;
     }
-    position.y = this.bubbleRect.top + yAdjust + document.body.scrollTop;
+    position.y = this.bubbleRect.top + yAdjust + document.scrollingElement.scrollTop;
     return position;
 };
 
@@ -334,7 +334,7 @@ EdgeDrawing.prototype.bottomPositionCalculate = function () {
         x: 0,
         y: 0
     };
-    position.x = this.bubbleRect.x + document.body.scrollLeft;
+    position.x = this.bubbleRect.x + document.scrollingElement.scrollLeft;
     let isSmall = (this.bubbleRect.width - standardInnerMargin * 2) < standardInnerMargin;
     let innerMargin = isSmall ? smallInnerMargin : standardInnerMargin;
     if (this.isLowestInBetween) {
@@ -349,7 +349,7 @@ EdgeDrawing.prototype.bottomPositionCalculate = function () {
     } else {
         yAdjust = this.isLeft ? -43 : -63;
     }
-    position.y = Math.round(this.bubbleRect.bottom + yAdjust + document.body.scrollTop);
+    position.y = Math.round(this.bubbleRect.bottom + yAdjust + document.scrollingElement.scrollTop);
     return position;
 };
 
