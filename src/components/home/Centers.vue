@@ -272,9 +272,9 @@
                 const scrollY = document.scrollingElement.scrollTop;
                 const visible = document.documentElement.clientHeight;
                 const pageHeight = document.scrollingElement.scrollHeight;
-                const bottomOfPage = visible + scrollY + ADDRESS_BAR_HEIGHT >= pageHeight;
+                const bottomOfPage = visible + scrollY >= pageHeight;
                 // this.log = "scrollY " + scrollY + " visible " + visible + " pageHeight" + pageHeight + " bottomOfPage " + bottomOfPage;
-                return bottomOfPage || pageHeight < visible + ADDRESS_BAR_HEIGHT;
+                return bottomOfPage;
             },
             addCenters() {
                 if (this.hasLoadedAll) {
@@ -293,10 +293,8 @@
                         this.centers.push(center);
                     });
                     this.$nextTick(() => {
-                        document.scrollingElement.scrollTop = document.scrollingElement.scrollTop - 16 - ADDRESS_BAR_HEIGHT;
-                        setTimeout(() => {
-                            this.isBottom = false;
-                        }, 250);
+                        document.scrollingElement.scrollTop = document.scrollingElement.scrollTop - 1;
+                        this.isBottom = false;
                     });
                 });
             },
