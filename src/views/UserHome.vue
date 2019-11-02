@@ -457,7 +457,7 @@
             if (this.isTesting) {
                 return;
             }
-            document.body.scrollTop = 0;
+            document.scrollingElement.scrollTop = 0;
             this.reload();
         }
         ,

@@ -269,9 +269,9 @@
                 }
             },
             isBottomVisible() {
-                const scrollY = document.body.scrollTop;
+                const scrollY = document.scrollingElement.scrollTop;
                 const visible = document.documentElement.clientHeight;
-                const pageHeight = document.body.scrollHeight;
+                const pageHeight = document.scrollingElement.scrollHeight;
                 const bottomOfPage = visible + scrollY + ADDRESS_BAR_HEIGHT >= pageHeight;
                 // this.log = "scrollY " + scrollY + " visible " + visible + " pageHeight" + pageHeight + " bottomOfPage " + bottomOfPage;
                 return bottomOfPage || pageHeight < visible + ADDRESS_BAR_HEIGHT;
@@ -293,7 +293,7 @@
                         this.centers.push(center);
                     });
                     this.$nextTick(() => {
-                        document.body.scrollTop = document.body.scrollTop - 16 - ADDRESS_BAR_HEIGHT;
+                        document.scrollingElement.scrollTop = document.scrollingElement.scrollTop - 16 - ADDRESS_BAR_HEIGHT;
                         setTimeout(() => {
                             this.isBottom = false;
                         }, 250);
@@ -329,24 +329,24 @@
             },
             handleScroll: function () {
                 // this.log = "scrolling " + Math.random();
-                if (!this.loaded || this.isBottom || this.hasLoadedAll || document.body.scrollTop <= this.scrollTopWhenCentersAdded) {
+                if (!this.loaded || this.isBottom || this.hasLoadedAll || document.scrollingElement.scrollTop <= this.scrollTopWhenCentersAdded) {
                     return;
                 }
                 this.isBottom = this.isBottomVisible();
             }
         },
         created() {
-            document.body.addEventListener('scroll', this.handleScroll);
+            document.addEventListener('scroll', this.handleScroll);
             document.addEventListener('touchmove', this.handleScroll);
         },
         beforeDestroy: function () {
-            document.body.removeEventListener('scroll', this.handleScroll);
+            document.removeEventListener('scroll', this.handleScroll);
             document.removeEventListener('touchmove', this.handleScroll);
         },
         watch: {
             isBottom(isBottom) {
                 if (isBottom) {
-                    this.scrollTopWhenCentersAdded = document.body.scrollTop;
+                    this.scrollTopWhenCentersAdded = document.scrollingElement.scrollTop;
                     this.addCenters()
                 }
             }
