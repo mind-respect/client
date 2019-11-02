@@ -267,11 +267,9 @@
         },
         created: function () {
             window.addEventListener('resize', this.handleResize);
-            document.scrollingElement.style.overflow = "scroll";
         },
         beforeDestroy: function () {
             window.removeEventListener('resize', this.handleResize);
-            document.scrollingElement.style.overflow = "inherit";
         },
         methods: {
             mousedown: function () {

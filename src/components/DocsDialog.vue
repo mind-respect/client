@@ -2,6 +2,9 @@
     <v-dialog v-model="dialog" v-if="dialog" fullscreen>
         <v-card flat>
             <v-card-title>
+                <v-btn @click="dialog = false" text class="mr-4">
+                    {{$t('close')}}
+                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn icon @click="dialog=false">
                     <v-icon>
@@ -515,12 +518,6 @@
                     </v-stepper-content>
                 </v-stepper>
             </v-card-text>
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn @click="dialog = false" text class="mr-4">
-                    {{$t('close')}}
-                </v-btn>
-            </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
