@@ -1,8 +1,10 @@
 <template>
     <v-menu
-            :nudge-width="250"
+            content-class="settings-menu"
+            attach="#app"
+            nudge-left="240"
+            max-width="300"
             offset-y
-            fixed
             v-if="$store.state.user !== undefined"
             :close-on-content-click="$vuetify.breakpoint.mdAndDown"
     >
@@ -338,6 +340,10 @@
     }
 </script>
 
-<style scoped>
+<style>
 
+    .settings-menu {
+        position: fixed !important;
+        right:0;
+    }
 </style>

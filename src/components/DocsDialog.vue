@@ -517,7 +517,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn @click="dialog = false">
+                <v-btn @click="dialog = false" text class="mr-4">
                     {{$t('close')}}
                 </v-btn>
             </v-card-actions>

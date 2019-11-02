@@ -9,7 +9,7 @@
             close-delay="0"
             bottom
             allow-overflow
-            :attach="attach"
+            attach="#app"
             max-width="400"
             :content-class="contentClass"
     >
@@ -17,13 +17,13 @@
             <span v-on="on">
                 <slot name="button" v-if="$slots.button"></slot>
                 <v-btn
-                    v-else
-                    icon
-                    large
-                    class="ma-1"
-                    :color="color"
-                    @click="performAction(button, $event)"
-                    :disabled="button.disableNotHide && !canDo(button)"
+                        v-else
+                        icon
+                        large
+                        class="ma-1"
+                        :color="color"
+                        @click="performAction(button, $event)"
+                        :disabled="button.disableNotHide && !canDo(button)"
                 >
                     <v-icon :class="button.iconClass" :large="hightlight">
                         {{getIcon(button)}}
@@ -60,9 +60,6 @@
             }
         },
         computed: {
-            attach: function () {
-                return this.isInMainMenu ? "#mind_map" : false;
-            },
             contentClass: function () {
                 if (this.isInSideMenu) {
                     let contentClass = "bubble-menu-tooltip side-button-tooltip ";
@@ -140,6 +137,6 @@
 
     .bubble-menu-tooltip {
         white-space: nowrap;
-        margin-top:-30px;
+        margin-top: 10px;
     }
 </style>
