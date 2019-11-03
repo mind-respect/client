@@ -2,7 +2,7 @@
     <div>
         <v-btn :to="'/user/' + $store.state.user.username"
                v-if="$store.state.user && $vuetify.breakpoint.lgAndUp" text exact
-               :icon="$vuetify.breakpoint.mdAndDown">
+               :icon="$vuetify.breakpoint.mdAndDown" :isInTopMenu="true">
             <v-icon :class="{
                     'mr-2' : $vuetify.breakpoint.lgAndUp
                 }">
@@ -14,10 +14,10 @@
         </v-btn>
         <!--                <Button :button="undoButton" v-if="isGraphRoute"></Button>-->
         <!--                <Button :button="redoButton" v-if="isGraphRoute"></Button>-->
-        <Button :button="zoomOutButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></Button>
-        <Button :button="zoomInButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp"></Button>
+        <Button :button="zoomOutButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp" :isInTopMenu="true"></Button>
+        <Button :button="zoomInButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp" :isInTopMenu="true"></Button>
         <Button :button="createVertexButton" :hightlight="true"
-                v-if="$store.state.user && $vuetify.breakpoint.lgAndUp"></Button>
+                v-if="$store.state.user && $vuetify.breakpoint.lgAndUp" :isInTopMenu="true"></Button>
         <SettingsMenu></SettingsMenu>
     </div>
 </template>

@@ -9,7 +9,7 @@
             close-delay="0"
             bottom
             allow-overflow
-            attach="#app"
+            :attach="attach"
             max-width="400"
             :content-class="contentClass"
     >
@@ -72,6 +72,9 @@
             },
             isInMainMenu: function () {
                 return this.isInTopMenu || this.isInSideMenu;
+            },
+            attach: function () {
+                return this.isInMainMenu ? "#app" : false;
             }
         },
         methods: {

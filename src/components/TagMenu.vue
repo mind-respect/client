@@ -95,10 +95,10 @@
                         <v-menu
                                 allow-overflow
                                 absolute
-                                bottom
                                 nudge-bottom="100"
                                 :position-x="340"
-                                >
+                                content-class="tag-menu-content"
+                        >
                             <template v-slot:activator="{ on }">
                                 <v-btn icon text v-on="on" class="mt-5 ml-2 mr-1" small>
                                     <v-icon color="third">
@@ -327,4 +327,7 @@
 </script>
 
 <style>
+    .tag-menu-content {
+        position: absolute !important;
+    }
 </style>
