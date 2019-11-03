@@ -92,7 +92,13 @@
                     </v-list-item-content>
                     <v-list-item-action class="ma-0 vh-center"
                                         style="min-height:100%;height:100%" v-show="!bubble.isMeta()">
-                        <v-menu>
+                        <v-menu
+                                allow-overflow
+                                absolute
+                                bottom
+                                nudge-bottom="100"
+                                :position-x="340"
+                                >
                             <template v-slot:activator="{ on }">
                                 <v-btn icon text v-on="on" class="mt-5 ml-2 mr-1" small>
                                     <v-icon color="third">
