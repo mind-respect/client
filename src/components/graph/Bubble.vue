@@ -3,9 +3,7 @@
   -->
 
 <template>
-    <div v-if="loaded" class="unselectable" :class="{
-            'mt-1 mb-1' : $vuetify.breakpoint.mdAndDown
-        }">
+    <div v-if="loaded" class="unselectable mt-1 mb-1">
         <v-layout
                 :class="{
         'vertex-tree-container': !isCenter,
