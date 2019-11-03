@@ -306,7 +306,9 @@
             }
         },
         mounted: function () {
-            document.scrollingElement.style.overflow = "scroll";
+            if (document.scrollingElement) {
+                document.scrollingElement.style.overflow = "scroll";
+            }
             UserService.authenticatedUser().then((response) => {
                 this.$store.dispatch('setUser', response.data);
                 this.dataLoaded = true;

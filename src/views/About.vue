@@ -265,7 +265,7 @@
                     }
                 })
             } else {
-                document.body.scrollTop = 0;
+                document.scrollingElement.scrollTop = 0;
             }
         }
     }

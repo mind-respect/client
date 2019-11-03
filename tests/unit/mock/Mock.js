@@ -11,6 +11,8 @@ import TagServiceMock from './TagServiceMock'
 import UserServiceMock from './UserServiceMock'
 import EdgeServiceMock from './EdgeServiceMock'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
+import Store from '@/store'
+import MindMapInfo from '@/MindMapInfo'
 
 const crypto = require('crypto');
 
@@ -44,6 +46,13 @@ api.setCenterBubbleUriInUrl = function (centerVertexUri) {
 };
 
 api.applyDefault = function () {
+    Store.dispatch("setIsViewOnly", true);
+    jest.spyOn(MindMapInfo, "isViewOnly").mockImplementation(() => {
+        return false;
+    });
+    jest.spyOn(MindMapInfo, "defineIsViewOnly").mockImplementation(() => {
+        return false;
+    });
     jest.spyOn(axios, "create").mockImplementation(() => {
         return {
             post: jest.fn(() => {

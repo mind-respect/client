@@ -8,7 +8,8 @@ import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import Command from '@/Command'
 import AppController from '@/AppController'
 import GraphServiceMock from '../mock/GraphServiceMock'
-import SameLevelRelationsWithMoreThanOneCommonMetaScenario from "../scenario/SameLevelRelationsWithMoreThanOneCommonMetaScenario";
+import SameLevelRelationsWithMoreThanOneCommonMetaScenario
+    from "../scenario/SameLevelRelationsWithMoreThanOneCommonMetaScenario";
 
 describe('GraphElementController', () => {
     describe("removeDo", () => {

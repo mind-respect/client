@@ -223,8 +223,8 @@
             let centerUri = MindMapInfo.getCenterBubbleUri();
             MindMapInfo.defineIsViewOnly(true);
             setTimeout(() => {
-                document.body.scrollTop = document.body.scrollHeight / 2 - (document.documentElement.clientHeight / 2);
-                document.body.scrollLeft = document.body.scrollWidth / 2 - (document.documentElement.clientWidth / 2);
+                document.scrollingElement.scrollTop = document.scrollingElement.scrollHeight / 2 - (document.documentElement.clientHeight / 2);
+                document.scrollingElement.scrollLeft = document.scrollingElement.scrollWidth / 2 - (document.documentElement.clientWidth / 2);
             }, 150);
             let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : GraphElement.withUri(centerUri);
             let promise = center.isMeta() ?

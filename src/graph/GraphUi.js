@@ -9,6 +9,9 @@ let _isDragScrollEnabled = false,
     _isDragScrollLocked = false;
 
 GraphUi.initDragScroll = function (dragScrollContainer) {
+    if (!dragScrollContainer) {
+        return;
+    }
     dragScrollContainer.classList.add("dragscroll");
     dragScrollContainer.style.overflow = "scroll";
     DragScroll.reset();

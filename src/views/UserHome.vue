@@ -477,7 +477,7 @@
                 }
             },
             isTesting: function () {
-                return process.env.NODE_ENV == "test";
+                return process.env.NODE_ENV === "test";
             },
             userInUrl: function () {
                 return this.$route.params.username;
