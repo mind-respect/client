@@ -599,6 +599,55 @@ describe("EdgeController", () => {
             expect(
                 b3.getLabel()
             ).toBe("b3");
-        })
+        });
+        it("removes tag of moved relation that was under a group relation", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let center = scenario.getCenterInTree();
+            let groupRelation = scenario.getPossessionGroupRelation();
+            groupRelation.expand();
+            let otherEdge = TestUtil.getChildWithLabel(
+                center,
+                "other relation"
+            );
+            expect(
+                otherEdge.isEdge()
+            ).toBeTruthy();
+            let book1 = groupRelation.getNextBubble().getNextBubble();
+            expect(
+                book1.getLabel()
+            ).toBe("book 1");
+            let book2 = book1.getDownBubble();
+            expect(
+                book2.getLabel()
+            ).toBe("book 2");
+            await book2.controller().removeDo();
+            expect(
+                TestUtil.hasChildWithLabel(
+                    center,
+                    "Possession"
+                )
+            ).toBeTruthy();
+            await book1.controller().moveUnderParent(otherEdge);
+            otherEdge = TestUtil.getChildWithLabel(
+                center,
+                "other relation"
+            );
+            expect(
+                otherEdge.isGroupRelation()
+            ).toBeTruthy();
+            expect(
+                TestUtil.hasChildWithLabel(
+                    center,
+                    "Possession"
+                )
+            ).toBeFalsy();
+            let book1Rel = TestUtil.getChildWithLabel(
+                otherEdge,
+                "Possession of book 1"
+            );
+            expect(
+                book1Rel.getIdentifiers().length
+            ).toBe(1)
+        });
     });
 });

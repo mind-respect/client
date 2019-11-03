@@ -91,7 +91,11 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
     let promises = [];
     Selection.removeAll();
     let parentFork = this.model().getParentFork();
-    adoptedChild.getParentFork().removeChild(adoptedChild, false, true);
+    let childParentFork = adoptedChild.getParentFork();
+    promises.push(
+        childParentFork.controller().becomeExParent(adoptedChild)
+    );
+    childParentFork.removeChild(adoptedChild, false, true);
     let newGroupRelation = this._convertToGroupRelation();
     adoptedChild.setParentVertex(this.model().getParentVertex());
     newGroupRelation.addChild(adoptedChild);
@@ -110,6 +114,7 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
     } else {
         moveEdge.bind(this)(adoptedChild);
     }
+    parentFork.refreshChildren();
     return Promise.all(promises).then(() => {
         CurrentSubGraph.get().add(newGroupRelation);
         newGroupRelation.expand(true);

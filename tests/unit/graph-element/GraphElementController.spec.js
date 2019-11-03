@@ -560,4 +560,8 @@ describe('GraphElementController', () => {
     describe("_moveToExecute", () => {
 
     });
+
+    describe("becomeParent", () => {
+
+    });
 });
