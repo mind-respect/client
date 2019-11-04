@@ -139,18 +139,40 @@
         <ListView></ListView>
         <!--        <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>-->
         <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
-        <v-btn @click="usePattern"
-               fixed
-               bottom
-               right
-               color="secondary"
-               style="z-index:2;" class="mr-12 mb-12"
-               :disabled="usePatternLoading"
-               :loading="usePatternLoading"
-               v-if="$store.state.isPatternFlow"
-        >
-            {{$t('graph:usePattern')}}
-        </v-btn>
+        <v-bottom-sheet v-model="usePatternSheet" hide-overlay persistent attach="#drawn_graph" no-click-animation
+                        activator="#closePatternButton" inset :content-class="usePatternContentClass">
+            <v-sheet class="text-center" height="150px" style="opacity:0.85;">
+                <v-layout class="vh-center">
+                    <v-flex xs12>
+                        <v-btn
+                                class="mt-6"
+                                color="secondary"
+                                @click="usePattern"
+                                :disabled="usePatternLoading"
+                                :loading="usePatternLoading"
+                        >
+                            <v-icon class="mr-2">
+                                stars
+                            </v-icon>
+                            {{$t('graph:usePattern')}}
+                        </v-btn>
+                        <v-icon id="closePatternButton"
+                                class="mt-6 float-right mr-4"
+                                @click="usePatternSheet = false">
+                            close
+                        </v-icon>
+                    </v-flex>
+                </v-layout>
+                <v-layout class="vh-center">
+                    <v-flex xs12 md6 lg4>
+                        <p class="mt-4 body-1">
+                            {{$t('graph:usePatternInfo1')}}
+                            {{$t('graph:usePatternInfo2')}}
+                        </p>
+                    </v-flex>
+                </v-layout>
+            </v-sheet>
+        </v-bottom-sheet>
     </v-layout>
 </template>
 
@@ -192,10 +214,14 @@
         data: function () {
             I18n.i18next.addResources("en", "graph", {
                 usePattern: "Use pattern",
+                usePatternInfo1: "The entire map will be copied to your centers and its bubbles will be made private.",
+                usePatternInfo2: "You can use a pattern as many times as you want.",
                 addExistingBubble: "Add an existing bubble"
             });
             I18n.i18next.addResources("fr", "graph", {
                 usePattern: "Utiliser le pattern",
+                usePatternInfo1: "Toute la carte sera copiée dans vos centres et ses bulles seront rendues privées.",
+                usePatternInfo2: "Vous pouvez utiliser un pattern autant de fois que vous vouler.",
                 addExistingBubble: "Ajouter une bulle existante"
             });
             return {
@@ -213,7 +239,8 @@
                 yContextMenu: 0,
                 isContextMenuLeft: false,
                 backgroundColor: null,
-                childrenKey: IdUri.uuid()
+                childrenKey: IdUri.uuid(),
+                usePatternSheet: null
             }
         },
         mounted: function () {
@@ -246,6 +273,7 @@
                     Color.refreshBackgroundColor();
                     Selection.setToSingle(this.center, true);
                     this.$store.dispatch("setIsPatternFlow", this.center.isPattern());
+                    this.usePatternSheet = this.center.isPattern();
                     AppController.refreshFont();
                     await this.$nextTick();
                     if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
@@ -375,6 +403,17 @@
                 return "transform: scale(" +
                     this.$store.state.zoom + "," +
                     this.$store.state.zoom + ")";
+            },
+            isPatternFlow: function () {
+                return this.$store.state.isPatternFlow;
+            },
+            usePatternContentClass: function () {
+                if (this.$vuetify.breakpoint.smAndDown) {
+                    return "";
+                }
+                return this.$store.state.sideMenuFlow === false ?
+                    "use-pattern-bottom-sheet-collapsed" :
+                    "use-pattern-bottom-sheet-expanded";
             }
         },
         watch: {
@@ -385,6 +424,9 @@
                 await this.$nextTick();
                 this.svg = new GraphDraw(this.center).build();
                 this.redrawKey = Math.random();
+            },
+            isPatternFlow: function () {
+                this.usePatternSheet = this.$store.state.isPatternFlow;
             }
         }
     }
@@ -558,5 +600,13 @@
 
     .after-loaded {
         opacity: 1;
+    }
+
+    .use-pattern-bottom-sheet-collapsed {
+        margin-left: 95px;
+    }
+
+    .use-pattern-bottom-sheet-expanded {
+        margin-left: 385px !important;
     }
 </style>
