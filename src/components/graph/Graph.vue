@@ -140,39 +140,80 @@
         <!--        <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>-->
         <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
         <v-bottom-sheet v-model="usePatternSheet" hide-overlay persistent attach="#drawn_graph" no-click-animation
-                        activator="#closePatternButton" inset :content-class="usePatternContentClass">
-            <v-sheet class="text-center" height="150px" style="opacity:0.85;">
-                <v-layout class="vh-center">
-                    <v-flex xs12>
+                        :inset="$vuetify.breakpoint.mdAndUp"
+                        :content-class="usePatternContentClass">
+            <v-sheet class="text-center">
+                <v-layout wrap>
+                    <v-flex xs12 class="h-center pb-4 pt-4" :class="{
+                        'v-center':  !usePatternConfirmFlow
+                    }">
                         <v-btn
-                                class="mt-6"
                                 color="secondary"
-                                @click="usePattern"
+                                text
+                                large
+                                @click="usePatternConfirmFlow = true"
+                                v-show="!usePatternConfirmFlow"
                                 :disabled="usePatternLoading"
-                                :loading="usePatternLoading"
                         >
                             <v-icon class="mr-2">
                                 stars
                             </v-icon>
                             {{$t('graph:usePattern')}}
                         </v-btn>
-                        <v-icon id="closePatternButton"
-                                class="mt-6 float-right mr-4"
-                                @click="usePatternSheet = false">
-                            close
-                        </v-icon>
+                        <v-btn
+                                color="primary"
+                                text
+                                @click="usePatternConfirmFlow = false"
+                                v-show="usePatternConfirmFlow"
+                                :disabled="usePatternLoading"
+                        >
+                            {{$t('cancel')}}
+                        </v-btn>
                     </v-flex>
-                </v-layout>
-                <v-layout class="vh-center">
-                    <v-flex xs12 md6 lg4>
-                        <p class="mt-4 body-1">
-                            {{$t('graph:usePatternInfo1')}}
-                            {{$t('graph:usePatternInfo2')}}
-                        </p>
+                    <v-flex xs12 class="text-center" v-show="usePatternConfirmFlow">
+                        <v-card flat>
+                            <v-card-text class="subtitle-1 pl-4 pr-4 text-center pb-0 pt-0">
+                                <p >
+                                    {{$t('graph:usePatternInfo1')}}
+                                </p>
+                                <p>
+                                    {{$t('graph:usePatternInfo2')}}
+                                </p>
+                            </v-card-text>
+                            <v-card-actions class="text-center pt-0">
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                        class="mt-5 mb-5"
+                                        color="secondary"
+                                        @click="usePattern"
+                                        :disabled="usePatternLoading"
+                                        :loading="usePatternLoading"
+                                >
+                                    <v-icon class="mr-2">
+                                        stars
+                                    </v-icon>
+                                    {{$t('confirm')}}
+                                </v-btn>
+                                <v-spacer></v-spacer>
+                            </v-card-actions>
+                        </v-card>
+
                     </v-flex>
                 </v-layout>
             </v-sheet>
         </v-bottom-sheet>
+        <!--        <v-btn @click="usePattern"-->
+        <!--               fixed-->
+        <!--               bottom-->
+        <!--               right-->
+        <!--               color="secondary"-->
+        <!--               style="z-index:2;" class="mr-12 mb-12"-->
+        <!--               :disabled="usePatternLoading"-->
+        <!--               :loading="usePatternLoading"-->
+        <!--               v-if="$store.state.isPatternFlow"-->
+        <!--        >-->
+        <!--            {{$t('graph:usePattern')}}-->
+        <!--        </v-btn>-->
     </v-layout>
 </template>
 
@@ -214,14 +255,14 @@
         data: function () {
             I18n.i18next.addResources("en", "graph", {
                 usePattern: "Use pattern",
-                usePatternInfo1: "The entire map will be copied to your centers and its bubbles will be made private.",
-                usePatternInfo2: "You can use a pattern as many times as you want.",
+                usePatternInfo1: "This entire map will be copied to your centers and its bubbles will be made private.",
+                usePatternInfo2: "You can use a pattern many times.",
                 addExistingBubble: "Add an existing bubble"
             });
             I18n.i18next.addResources("fr", "graph", {
                 usePattern: "Utiliser le pattern",
-                usePatternInfo1: "Toute la carte sera copiée dans vos centres et ses bulles seront rendues privées.",
-                usePatternInfo2: "Vous pouvez utiliser un pattern autant de fois que vous vouler.",
+                usePatternInfo1: "Toute cette carte sera copiée dans vos centres et ses bulles seront rendues privées.",
+                usePatternInfo2: "Vous pouvez utiliser un pattern à plusieurs reprises.",
                 addExistingBubble: "Ajouter une bulle existante"
             });
             return {
@@ -240,11 +281,13 @@
                 isContextMenuLeft: false,
                 backgroundColor: null,
                 childrenKey: IdUri.uuid(),
-                usePatternSheet: null
+                usePatternSheet: null,
+                usePatternConfirmFlow: null
             }
         },
         mounted: function () {
             this.showLoading = true;
+            this.usePatternConfirmFlow = false;
             CurrentSubGraph.set(SubGraph.empty());
             Selection.reset();
             let centerUri = MindMapInfo.getCenterBubbleUri();
