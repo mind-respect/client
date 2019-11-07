@@ -19,7 +19,7 @@ api.getIcon = function(shareLevel){
         case api.PUBLIC:
             return "public";
         case api.PUBLIC_WITH_LINK:
-            return "public";
+            return "link";
         case api.FRIENDS :
             return "people";
     }
