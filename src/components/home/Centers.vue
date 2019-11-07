@@ -39,12 +39,14 @@
                                 <v-list-item @click="go($event, center.uri().url())">
                                     <v-list-item-content>
                                         <v-list-item-title class="subtitle-1 font-weight-bold">
-                                            {{center.getLabel()}}
-                                            <v-icon class="ml-1 mb-1 float-right" color="grey"
-                                                    v-if="center.showIcon()"
-                                                    small>
-                                                {{center.getIcon()}}
-                                            </v-icon>
+                                            <v-badge color="transparent">
+                                                <template v-slot:badge v-if="center.showIcon()">
+                                                    <v-icon>
+                                                        {{center.getIcon()}}
+                                                    </v-icon>
+                                                </template>
+                                                {{center.getLabel()}}
+                                            </v-badge>
                                             <v-icon class="ml-4 mb-1 float-right" color="grey"
                                                     v-if="!center.isPattern()"
                                                     small>
