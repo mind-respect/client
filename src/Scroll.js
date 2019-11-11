@@ -6,6 +6,7 @@ import router from '@/router'
 import Vue from 'vue'
 import SideMenu from '@/SideMenu'
 import Breakpoint from '@/Breakpoint'
+import Store from '@/store'
 
 Vue.use(VueScrollTo);
 
@@ -179,6 +180,15 @@ Scroll.isElementFullyOnScreen = function (elem) {
 
 Scroll.getIsOnScreenRightThreshold = function () {
     return Breakpoint.isMobile() ? IS_ON_SCREEN_RIGHT_THRESHOLD_MOBILE : IS_ON_SCREEN_RIGHT_THRESHOLD;
+};
+
+Scroll.centerElement = function (element) {
+    const elementRect = element.getBoundingClientRect();
+    const absoluteElementTop = elementRect.top + window.pageYOffset;
+    const middleY = absoluteElementTop - (window.innerHeight / 2);
+    const middleX = elementRect.left + window.pageXOffset - (window.innerWidth / 2);
+    const xAdjust = Store.state.sideMenuFlow === false ? 50 : -150;
+    window.scrollTo(middleX + xAdjust, middleY);
 };
 
 export default Scroll;

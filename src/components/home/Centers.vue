@@ -36,7 +36,7 @@
                     >
                         <v-hover>
                             <v-list two-line id="grid-list" slot-scope="{ hover }">
-                                <v-list-item @click="go($event, center.uri().url())">
+                                <v-list-item @click="go($event, center)">
                                     <v-list-item-content>
                                         <v-list-item-title class="subtitle-1 font-weight-bold">
                                             <v-badge color="transparent">
@@ -248,10 +248,16 @@
             setupFriendsCenters: function () {
                 return CenterGraphElementService.getFriendsFeed();
             },
-            go: function ($event, path) {
-                this.$router.push(
-                    path
-                );
+            go: function ($event, center) {
+                this.$router.push({
+                    name: "Center",
+                    params: {
+                        username: center.uri().getOwner(),
+                        graphElementType: center.uri().getGraphElementType(),
+                        centerUri: center.uri().getGraphElementShortId(),
+                        nbChild: 5
+                    }
+                });
             },
             copyUrl: function (center) {
                 this.$copyText(

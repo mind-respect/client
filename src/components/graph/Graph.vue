@@ -3,17 +3,14 @@
   -->
 
 <template>
-    <v-layout v-if="loaded" @contextmenu="showContextMenu">
+    <v-layout @contextmenu="showContextMenu">
         <v-divider></v-divider>
-        <div id="drawn_graph" data-zoom="9" class="vh-center" :style="backgroundColorStyle">
-            <v-progress-circular indeterminate color="third" size="128"
-                                 style="position:fixed; left:60%; top:40%;" v-show="showLoading"></v-progress-circular>
+        <div id="drawn_graph" data-zoom="9" class="vh-center">
             <v-layout class='root-vertex-super-container vh-center' :style="zoomScale"
                       @dragstart="preventUndesirableDragging" :key="childrenKey" @mousedown="mousedown">
                 <v-flex grow class="vertices-children-container left-oriented pt-12 pb-12" @dragover="dragOver"
-                        @dragleave="dragLeave" @drop="childrenDropLeft" @contextmenu="contextMenuLeft" :class="{
-                    'before-loaded': showLoading
-                }"
+                        @dragleave="dragLeave" @drop="childrenDropLeft" @contextmenu="contextMenuLeft"
+                        v-if="center !== null"
                 >
                     <v-layout v-for="leftBubble in center.leftBubbles" :key="leftBubble.uiId">
                         <v-flex grow :class="{
@@ -27,18 +24,21 @@
                         </v-flex>
                     </v-layout>
                 </v-flex>
-                <div class="vh-center" :class="{
-                    'before-loaded': showLoading
-                }">
+                <div class="vh-center">
                     <Bubble
                             :bubble="center"
                             direction="center"
+                            v-if="center !== null"
                     ></Bubble>
+                    <div id="temp-center" v-if="center === null">
+                        <v-progress-circular indeterminate color="third" size="75"
+                                             style="" v-show="showLoading"></v-progress-circular>
+                    </div>
                 </div>
                 <v-flex grow class="vertices-children-container right-oriented pt-12 pb-12" @dragover="dragOver"
-                        @dragleave="dragLeave" @drop="childrenDropRight" @contextmenu="contextMenuRight" :class="{
-                    'before-loaded': showLoading
-                }">
+                        @dragleave="dragLeave" @drop="childrenDropRight" @contextmenu="contextMenuRight"
+                        v-if="center !== null"
+                >
                     <v-layout v-for="rightBubble in center.rightBubbles" :key="rightBubble.uiId">
                         <v-flex grow :class="{
                             'mt-3' : center.rightBubbles.length === 2 && center.rightBubbles[0].isEdge(),
@@ -173,7 +173,7 @@
                     <v-flex xs12 class="text-center" v-show="usePatternConfirmFlow">
                         <v-card flat>
                             <v-card-text class="subtitle-1 pl-4 pr-4 text-center pb-0 pt-0">
-                                <p >
+                                <p>
                                     {{$t('graph:usePatternInfo1')}}
                                 </p>
                                 <p>
@@ -267,9 +267,9 @@
             });
             return {
                 loaded: false,
+                center: null,
                 centerServerFormat: null,
                 redrawKey: null,
-                backgroundColorStyle: "",
                 showLoading: true,
                 strokeColor: "#1a237e",
                 strokeWidth: this.$vuetify.breakpoint.mdAndDown ? 1 : 2,
@@ -292,10 +292,14 @@
             Selection.reset();
             let centerUri = MindMapInfo.getCenterBubbleUri();
             MindMapInfo.defineIsViewOnly(true);
-            setTimeout(() => {
-                document.scrollingElement.scrollTop = document.scrollingElement.scrollHeight / 2 - (document.documentElement.clientHeight / 2);
-                document.scrollingElement.scrollLeft = document.scrollingElement.scrollWidth / 2 - (document.documentElement.clientWidth / 2);
-            }, 150);
+            let app = document.getElementById("app");
+            if (app) {
+                app.classList.add("mind-map");
+            }
+            Color.refreshBackgroundColor(Color.DEFAULT_BACKGROUND_COLOR);
+            Scroll.centerElement(
+                document.getElementById('temp-center')
+            );
             let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : GraphElement.withUri(centerUri);
             let promise = center.isMeta() ?
                 MetaController.withMeta(center).loadGraph() :
@@ -308,10 +312,6 @@
                     this.center = center;
                     this.handleResize();
                     this.loaded = true;
-                    let app = document.getElementById("app");
-                    if (app) {
-                        app.classList.add("mind-map");
-                    }
                     await this.$nextTick();
                     Color.refreshBackgroundColor();
                     Selection.setToSingle(this.center, true);
@@ -322,13 +322,12 @@
                     if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
                         center.focus();
                     }
-                    Scroll.goToGraphElement(this.center, true).then(async () => {
-                        await this.$nextTick();
-                        this.showLoading = false;
-                        this.svg = new GraphDraw(this.center).build();
-                        await this.$nextTick();
-                        this.redrawKey = Math.random();
-                    });
+                    Scroll.centerElement(this.center.getHtml());
+                    await this.$nextTick();
+                    this.showLoading = false;
+                    this.svg = new GraphDraw(this.center).build();
+                    await this.$nextTick();
+                    this.redrawKey = Math.random();
                     CurrentSubGraph.get().component = this;
                 }
             ).catch((error) => {
@@ -427,6 +426,12 @@
             handleResize: function () {
                 Breakpoint.set(this.$vuetify.breakpoint);
                 this.$store.dispatch("redraw");
+                if(this.center){
+                    let html = this.center.getHtml();
+                    if(html){
+                        Scroll.centerElement(html);
+                    }
+                }
             }
         },
         computed: {
@@ -635,10 +640,6 @@
 
     #app.mind-map {
         background: none !important;
-    }
-
-    .before-loaded {
-        opacity: 0;
     }
 
     .after-loaded {

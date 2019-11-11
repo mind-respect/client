@@ -459,8 +459,7 @@
             }
             document.scrollingElement.scrollTop = 0;
             this.reload();
-        }
-        ,
+        },
         computed: {
             isOwner: function () {
                 if (!this.$store.state.user) {
@@ -489,6 +488,7 @@
         ,
         watch: {
             tabMenu: function () {
+                document.title = "MindRespect.com";
                 let pathName;
                 if (this.tabMenu === 0) {
                     pathName = "UserHome";

@@ -144,7 +144,7 @@ IdUri.IdUri.prototype.absoluteUrl = function () {
     return IdUri.absoluteUrlForBubbleUri(this.uri);
 };
 
-IdUri.IdUri.prototype.getGraphElementShortIdFromUri = function () {
+IdUri.IdUri.prototype.getGraphElementShortId = IdUri.IdUri.prototype.getGraphElementShortIdFromUri = function () {
     return IdUri.getGraphElementShortIdFromUri(this.uri);
 };
 
@@ -161,6 +161,10 @@ IdUri.IdUri.prototype.withoutId = function () {
 
 IdUri.IdUri.prototype.getOwner = function () {
     return IdUri.getOwnerFromUri(this.uri);
+};
+
+IdUri.IdUri.prototype.getGraphElementType = function () {
+    return IdUri.getGraphElementTypeFromUri(this.uri);
 };
 
 export default IdUri;

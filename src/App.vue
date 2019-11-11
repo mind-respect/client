@@ -79,7 +79,7 @@
                 <ToolbarGraphButtons v-if="$store.state.user"></ToolbarGraphButtons>
             </v-app-bar>
         </div>
-        <SideMenu v-if="isGraphRoute && $store.state.selected.length > 0"></SideMenu>
+        <SideMenu v-if="isGraphRoute"></SideMenu>
         <v-content>
             <router-view></router-view>
         </v-content>
