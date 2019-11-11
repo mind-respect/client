@@ -322,12 +322,14 @@
                     if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
                         center.focus();
                     }
-                    Scroll.centerElement(this.center.getHtml());
-                    await this.$nextTick();
-                    this.showLoading = false;
-                    this.svg = new GraphDraw(this.center).build();
-                    await this.$nextTick();
-                    this.redrawKey = Math.random();
+                    // Scroll.centerElement(this.center.getHtml());
+                    Scroll.goToGraphElement(this.center, true).then(async () => {
+                        await this.$nextTick();
+                        this.showLoading = false;
+                        this.svg = new GraphDraw(this.center).build();
+                        await this.$nextTick();
+                        this.redrawKey = Math.random();
+                    });
                     CurrentSubGraph.get().component = this;
                 }
             ).catch((error) => {
@@ -426,11 +428,8 @@
             handleResize: function () {
                 Breakpoint.set(this.$vuetify.breakpoint);
                 this.$store.dispatch("redraw");
-                if(this.center){
-                    let html = this.center.getHtml();
-                    if(html){
-                        Scroll.centerElement(html);
-                    }
+                if (Selection.isSingle()) {
+                    Scroll.goToGraphElement(Selection.getSingle(), true);
                 }
             }
         },
