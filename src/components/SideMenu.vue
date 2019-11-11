@@ -26,11 +26,23 @@
                         <v-icon>chevron_right</v-icon>
                     </v-btn>
                     <v-card-title class="subtitle-1" v-show="$store.state.sideMenuFlow !== false">
-                        <div class="grey--text text-left" v-if="isSingle">
-                            <div class="font-weight-bold side-menu-label" :key="$store.state.labelRefresh + 'sideMenu'">
+                        <div class="grey--text text-left">
+                            <v-skeleton-loader
+                                    type="text"
+                                    width="200"
+                                    v-show="$store.state.selected.length ===0"
+                            >
+                            </v-skeleton-loader>
+                            <v-skeleton-loader
+                                    type="text"
+                                    width="200"
+                                    v-show="$store.state.selected.length ===0"
+                            >
+                            </v-skeleton-loader>
+                            <div class="font-weight-bold side-menu-label" :key="$store.state.labelRefresh + 'sideMenu'" v-if="isSingle">
                                 {{selected.getLabel()}}
                             </div>
-                            <div class="font-italic">
+                            <div class="font-italic" v-if="isSingle">
                                 {{$t('side:creationDate')}}
                                 {{formatDate(creationDate)}}
                             </div>
@@ -86,8 +98,7 @@
                                     {{$t('side:noteCantDo')}}</p>
                                 <NoteMenu
                                         :bubble="selected"
-                                        v-show="noteCanDo"
-                                        v-if="$store.state.selected.length > 0"
+                                        v-show="noteCanDo || !selected"
                                 ></NoteMenu>
                             </v-tab-item>
                             <v-tab-item>
@@ -102,8 +113,7 @@
                                         @focus="focus"
                                         @blur="blur"
                                         :bubble="selected"
-                                        v-show="tagCanDo"
-                                        v-if="$store.state.selected.length > 0"
+                                        v-show="tagCanDo || !selected"
                                 ></TagMenu>
                             </v-tab-item>
                             <v-tab-item>
@@ -113,8 +123,7 @@
                                 >
                                     {{$t('side:mergeCantDo')}}</p>
                                 <MergeMenu @focus="focus" @blur="blur" :bubble="selected"
-                                           v-show="mergeCanDo"
-                                           v-if="$store.state.selected.length > 0"
+                                           v-show="mergeCanDo || !selected"
                                 ></MergeMenu>
                             </v-tab-item>
                             <v-tab-item>
@@ -125,7 +134,7 @@
                                     {{$t('side:shareCantDo')}}</p>
                                 <ShareMenu @focus="focus"
                                            @blur="blur"
-                                           v-if="shareCanDo && $store.state.selected.length > 0"
+                                           v-if="shareCanDo || !selected"
                                            :key="$store.state.shareRefresh + 'shareMenu'"
                                 ></ShareMenu>
                             </v-tab-item>

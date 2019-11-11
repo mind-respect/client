@@ -306,6 +306,7 @@
                 SubGraphController.withVertex(
                     center
                 ).load();
+
             promise.then(async (_center) => {
                     let center = _center;
                     document.title = center.getTextOrDefault() + " | MindRespect";
@@ -328,6 +329,7 @@
                         this.showLoading = false;
                         this.svg = new GraphDraw(this.center).build();
                         await this.$nextTick();
+                        await this.$nextTick();
                         this.redrawKey = Math.random();
                     });
                     CurrentSubGraph.get().component = this;
@@ -335,7 +337,7 @@
             ).catch((error) => {
                 console.error(error);
                 this.$router.push("/")
-            })
+            });
         },
         created: function () {
             window.addEventListener('resize', this.handleResize);
@@ -428,9 +430,14 @@
             handleResize: function () {
                 Breakpoint.set(this.$vuetify.breakpoint);
                 this.$store.dispatch("redraw");
-                if (Selection.isSingle()) {
-                    Scroll.goToGraphElement(Selection.getSingle(), true);
-                }
+                /*
+                    cannot scroll center on resize on mobile
+                    because it keeps on getting resized because of
+                    the constant address bar showing and hiding
+                 */
+                // if (Selection.isSingle()) {
+                //     Scroll.goToGraphElement(Selection.getSingle(), true);
+                // }
             }
         },
         computed: {

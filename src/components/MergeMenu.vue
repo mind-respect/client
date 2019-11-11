@@ -20,6 +20,7 @@
                     :filter="filter"
                     @focus="$emit('focus')"
                     @blur="$emit('blur')"
+                    :disabled="!bubble"
             >
                 <template v-slot:item="{ item }">
                     <SearchResultContent :item="item"></SearchResultContent>

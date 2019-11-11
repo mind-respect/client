@@ -23,7 +23,8 @@
                     @focus="$emit('focus')"
                     @blur="$emit('blur')"
                     :placeholder="$t('tag:title')"
-                    v-show="!bubble.isGroupRelation() && !bubble.isMeta()"
+                    v-show="!bubble || (!bubble.isGroupRelation() && !bubble.isMeta())"
+                    :disabled="!bubble"
             >
                 <template v-slot:prepend-inner>
                     <img :src="require('@/assets/wikipedia.svg')" width="25">
@@ -71,8 +72,13 @@
         <v-card flat class="pt-0">
             <v-card-text class="pt-0" id="tagMenu"></v-card-text>
         </v-card>
-        <v-card min-height="150" flat class="pt-0 text-center">
+        <v-card min-height="150" flat class="pt-0 text-center" id="poire">
             <v-progress-circular indeterminate color="third" v-if="tagLoading"></v-progress-circular>
+            <v-skeleton-loader
+                    type="list-item-avatar-two-line"
+                    v-show="$store.state.selected.length === 0"
+            >
+            </v-skeleton-loader>
             <v-list subheader three-line :key="$store.state.tagRefresh + 'tagMenu'">
                 <v-list-item v-for="identifier in identifiersByLatest()" :key="identifier.externalResourceUri"
                              class="mr-0 pr-0">
@@ -92,57 +98,56 @@
                     </v-list-item-content>
                     <v-list-item-action class="ma-0 vh-center"
                                         style="min-height:100%;height:100%" v-show="!bubble.isMeta()">
-                        <v-menu
-                                allow-overflow
-                                absolute
-                                nudge-bottom="100"
-                                :position-x="340"
-                                content-class="tag-menu-content"
-                        >
-                            <template v-slot:activator="{ on }">
-                                <v-btn icon text v-on="on" class="mt-5 ml-2 mr-1" small>
-                                    <v-icon color="third">
-                                        more_horiz
-                                    </v-icon>
-                                </v-btn>
-                            </template>
-                            <v-list>
-                                <v-list-item :href="identifier.url" v-if="!$store.state.isViewOnly">
-                                    <v-list-item-action>
-                                        <v-icon>filter_center_focus</v-icon>
-                                    </v-list-item-action>
-                                    <v-list-item-title>
-                                        {{$t('tag:center')}}
-                                    </v-list-item-title>
-                                </v-list-item>
-                                <v-list-item :href="identifier.externalUrl" target="_blank"
-                                             v-if="!identifier.isVoidReferenceTag()">
-                                    <v-list-item-action>
-                                        <v-icon class="mr-6 float-right" v-if="identifier.refersToAGraphElement()">
-                                            {{identifier.getIcon()}}
-                                        </v-icon>
-                                        <img v-else :src="require('@/assets/wikipedia.svg')" width="25"
-                                             class="float-right">
-                                    </v-list-item-action>
-                                    <v-list-item-title>
-                                        {{$t('tag:reference')}}
-                                    </v-list-item-title>
-                                </v-list-item>
-                                <v-list-item @click="removeIdentifier($event, identifier)"
-                                             v-if="!bubble.isGroupRelation()">
-                                    <v-list-item-action>
-                                        <v-icon>delete</v-icon>
-                                    </v-list-item-action>
-                                    <v-list-item-title>
-                                        {{$t('tag:disassociate')}}
-                                    </v-list-item-title>
-                                </v-list-item>
-                            </v-list>
-                        </v-menu>
+                        <v-btn icon text class="mt-5 ml-2 mr-1" small @click="setMenuPosition($event, identifier)">
+                            <v-icon color="third">
+                                more_horiz
+                            </v-icon>
+                        </v-btn>
                     </v-list-item-action>
                 </v-list-item>
             </v-list>
         </v-card>
+        <v-menu
+                absolute
+                :position-x="menuX"
+                :position-y="menuY"
+                v-model="showMenu"
+                nudge-right="20"
+                nudge-top="20"
+        >
+            <v-list v-if="currentTag">
+                <v-list-item :href="currentTag.url" v-if="!$store.state.isViewOnly">
+                    <v-list-item-action>
+                        <v-icon>filter_center_focus</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-title>
+                        {{$t('tag:center')}}
+                    </v-list-item-title>
+                </v-list-item>
+                <v-list-item :href="currentTag.externalUrl" target="_blank"
+                             v-if="!currentTag.isVoidReferenceTag()">
+                    <v-list-item-action>
+                        <v-icon class="mr-6 float-right" v-if="currentTag.refersToAGraphElement()">
+                            {{currentTag.getIcon()}}
+                        </v-icon>
+                        <img v-else :src="require('@/assets/wikipedia.svg')" width="25"
+                             class="float-right">
+                    </v-list-item-action>
+                    <v-list-item-title>
+                        {{$t('tag:reference')}}
+                    </v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="removeIdentifier($event, currentTag)"
+                             v-if="!bubble.isGroupRelation()">
+                    <v-list-item-action>
+                        <v-icon>delete</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-title>
+                        {{$t('tag:disassociate')}}
+                    </v-list-item-title>
+                </v-list-item>
+            </v-list>
+        </v-menu>
     </v-card>
 </template>
 
@@ -186,11 +191,14 @@
                 tagLoading: false,
                 selectedSearchResult: null,
                 search: null,
-                identifier: null,
+                currentTag: null,
                 items: [],
                 menuProps: {
                     "contentClass": 'side-search-menu search-menu'
-                }
+                },
+                menuX: 0,
+                menuY: 0,
+                showMenu: null
             }
         },
         mounted: function () {
@@ -215,6 +223,17 @@
             }
         },
         methods: {
+            setMenuPosition: function (event, tag) {
+                this.showMenu = false;
+                this.menuX = event.clientX;
+                this.menuY = event.clientY;
+                this.currentTag = tag;
+                this.$nextTick(() => {
+                    setTimeout(()=>{
+                        this.showMenu = true;
+                    })
+                });
+            },
             createTagWithNoRef: function () {
                 this.tagLoading = true;
                 let tag = Identification.withUriLabelAndDescription(
@@ -233,6 +252,9 @@
                 this.$store.dispatch("tagRefresh");
             },
             identifiersByLatest: function () {
+                if (!this.bubble) {
+                    return [];
+                }
                 if (this.bubble.isMeta()) {
                     return [
                         this.bubble.getOriginalMeta()
@@ -315,6 +337,9 @@
                 this.$store.dispatch("redraw");
             },
             buildExternalUrls: function () {
+                if (!this.bubble) {
+                    return Promise.resolve();
+                }
                 this.loaded = false;
                 return Promise.all(this.bubble.getTagsAndSelfIfRelevant().map((tag) => {
                     return tag.buildExternalUrls();
