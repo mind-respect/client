@@ -38,6 +38,39 @@ CenterGraphElement.prototype.init = function (serverFormat) {
     );
     return this;
 };
+
+CenterGraphElement.prototype.getNbNeighborsFromFlow = function (flow, isOwner) {
+    switch (flow) {
+        case "centers" : {
+            if (isOwner) {
+                return this.getNbAllNeighbors();
+            }
+            return this.isFriend ? this.getNbFriendNeighbors() + this.getNbPublicNeighbors() : this.getNbPublicNeighbors();
+        }
+        case "patterns" : {
+            return this.getNbPublicNeighbors();
+        }
+        case "friends" : {
+            return this.getNbFriendNeighbors() + this.getNbPublicNeighbors();
+        }
+        case "publicCenters" : {
+            return this.getNbPublicNeighbors();
+        }
+    }
+};
+
+CenterGraphElement.prototype.getNbAllNeighbors = function () {
+    return this.centerGraphElementServerFormat.numberOfConnectedEdges || 0;
+};
+
+CenterGraphElement.prototype.getNbPublicNeighbors = function () {
+    return this.centerGraphElementServerFormat.nbPublicNeighbors || 0;
+};
+
+CenterGraphElement.prototype.getNbFriendNeighbors = function () {
+    return this.centerGraphElementServerFormat.nbFriendNeighbors || 0;
+};
+
 CenterGraphElement.prototype.getNumberOfVisits = function () {
     if (!this.centerGraphElementServerFormat.numberOfVisits) {
         return 0;

@@ -249,13 +249,15 @@
                 return CenterGraphElementService.getFriendsFeed();
             },
             go: function ($event, center) {
+                const nbChild = center.getNbNeighborsFromFlow(this.flow, this.isOwner);
                 this.$router.push({
                     name: "Center",
                     params: {
                         username: center.uri().getOwner(),
                         graphElementType: center.uri().getGraphElementType(),
                         centerUri: center.uri().getGraphElementShortId(),
-                        nbChild: 5
+                        nbChild: nbChild,
+                        colors: center.getColors()
                     }
                 });
             },

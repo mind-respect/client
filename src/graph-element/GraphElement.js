@@ -96,6 +96,16 @@ GraphElement.initMenuHandlerGetters = function () {
     controllerGetters[GraphElementType.Meta] = GraphDisplayer.getMetaController;
     controllerGetters[GraphElementType.MetaRelation] = GraphDisplayer.getMetaRelationController;
     controllerGetters[GraphElementType.MetaGroupVertex] = GraphDisplayer.getMetaGroupVertexController;
+    controllerGetters[GraphElementType.VertexSkeleton] = function () {
+        return {
+            VertexSkeletonController: function(){}
+        };
+    };
+    controllerGetters[GraphElementType.RelationSkeleton] = function () {
+        return {
+            RelationSkeletonController: function(){}
+        };
+    };
 };
 
 GraphElement.GraphElement = function () {
@@ -513,6 +523,10 @@ GraphElement.GraphElement.prototype.getIcon = function () {
 
 GraphElement.GraphElement.prototype.showIcon = function () {
     return !IdUri.isVertexUri(this.getUri())
+};
+
+GraphElement.GraphElement.prototype.isSkeleton = function () {
+    return false;
 };
 
 // GraphElement.GraphElement.prototype._buildWikidataLinks = function () {

@@ -239,6 +239,8 @@
     import GraphController from '@/graph/GraphController'
     import VertexService from '@/vertex/VertexService'
     import GraphUi from '@/graph/GraphUi'
+    import VertexSkeleton from '@/vertex/VertexSkeleton'
+    import RelationSkeleton from '@/edge/RelationSkeleton'
 
     export default {
         name: "Graph",
@@ -271,7 +273,7 @@
                 centerServerFormat: null,
                 redrawKey: null,
                 showLoading: true,
-                strokeColor: "#1a237e",
+                strokeColor: Color.EdgeColor,
                 strokeWidth: this.$vuetify.breakpoint.mdAndDown ? 1 : 2,
                 svg: null,
                 usePatternLoading: false,
@@ -296,17 +298,40 @@
             if (app) {
                 app.classList.add("mind-map");
             }
-            Color.refreshBackgroundColor(Color.DEFAULT_BACKGROUND_COLOR);
+            Color.refreshBackgroundColor(
+                this.$route.params.colors && this.$route.params.colors.background ?
+                    this.$route.params.colors.background : Color.DEFAULT_BACKGROUND_COLOR
+            );
             Scroll.centerElement(
                 document.getElementById('temp-center')
             );
             let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : GraphElement.withUri(centerUri);
+            if (this.$route.params.nbChild !== undefined) {
+                this.center = new VertexSkeleton();
+                this.center.makeCenter();
+                for (let i = 0; i < this.$route.params.nbChild; i++) {
+                    this.center.addChild(
+                        new RelationSkeleton(
+                            this.center,
+                            new VertexSkeleton()
+                        )
+                    );
+                }
+                this.$nextTick(async () => {
+                    await this.$nextTick();
+                    await this.$nextTick();
+                    this.strokeColor = Color.SkeletonColor;
+                    this.svg = new GraphDraw(this.center).build();
+                    this.redrawKey = Math.random();
+                    Breakpoint.set(this.$vuetify.breakpoint);
+                    Scroll.goToGraphElement(this.center, true);
+                });
+            }
             let promise = center.isMeta() ?
                 MetaController.withMeta(center).loadGraph() :
                 SubGraphController.withVertex(
                     center
                 ).load();
-
             promise.then(async (_center) => {
                     let center = _center;
                     document.title = center.getTextOrDefault() + " | MindRespect";
@@ -330,6 +355,7 @@
                         this.svg = new GraphDraw(this.center).build();
                         await this.$nextTick();
                         await this.$nextTick();
+                        this.strokeColor = Color.EdgeColor;
                         this.redrawKey = Math.random();
                     });
                     CurrentSubGraph.get().component = this;

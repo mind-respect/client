@@ -5,6 +5,8 @@ import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const Color = {
     DEFAULT_BACKGROUND_COLOR: "#1E87AF",
+    EdgeColor: "#1a237e",
+    SkeletonColor: "#e8e8e8",
     getBackgroundColorForColor: function (color) {
         var hsl = Color.hex2Hsl(color);
         return 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + 96 + '%)';

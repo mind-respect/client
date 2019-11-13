@@ -14,7 +14,8 @@ api.expandAllCanDo = function () {
     if (!center) {
         return false;
     }
-    return center.controller().expandCanDo();
+    const controller = center.controller();
+    return controller.expandCanDo && controller.expandCanDo();
 };
 
 api.expandAll = function () {

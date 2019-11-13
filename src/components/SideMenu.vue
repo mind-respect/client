@@ -28,6 +28,7 @@
                     <v-card-title class="subtitle-1" v-show="$store.state.sideMenuFlow !== false">
                         <div class="grey--text text-left">
                             <v-skeleton-loader
+                                    class="mt-4"
                                     type="text"
                                     width="200"
                                     v-show="$store.state.selected.length ===0"

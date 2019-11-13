@@ -47,8 +47,10 @@
                     <div class="image_container">
                         <v-img :src="imageUrl" max-height="90" v-if="imageUrl" @load="imageLoaded"></v-img>
                     </div>
+                    <v-skeleton-loader type="chip" v-if="bubble.isVertexType() && bubble.isSkeleton()"
+                                       class="bubble-label"></v-skeleton-loader>
                     <div
-                            v-if="bubble.isVertexType()"
+                            v-if="bubble.isVertexType() && !bubble.isSkeleton()"
                             class="bubble vertex graph-element relative vh-center"
                             :key="contentKey"
                             :class="{
@@ -138,7 +140,7 @@
                          style="right:0;">
                     </div>
                     <v-layout
-                            v-if="bubble.isEdge() || bubble.isGroupRelation()"
+                            v-if="(bubble.isEdge() || bubble.isGroupRelation())"
                             class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0 "
                             :key="contentKey"
                             :class="{
@@ -163,6 +165,12 @@
                                 'blur-overlay': !isEditFlow && $store.state.isEditFlow
                              }"
                         >
+                            <!--                            <v-skeleton-loader type="button"-->
+                            <!--                                               v-if="bubble.isEdge() && bubble.isSkeleton()"-->
+                            <!--                                               width="20"-->
+                            <!--                                               height="20"-->
+                            <!--                                               class="bubble-label"-->
+                            <!--                            ></v-skeleton-loader>-->
                             <v-menu
                                     v-model="showMenu"
                                     :value="bubble.isSelected && $store.state.selected.length === 1"
@@ -308,9 +316,11 @@
             this.bubble.direction = this.direction;
             this.bubble.component = this;
             this.refreshImages();
-            this.chipColor = this.bubble.isMetaRelation() ? "third" : "secondary";
-            let parentBubble = this.bubble.getParentBubble();
-            // this.isMetaRelated = this.bubble.isMetaRelation() || this.bubble.isMetaGroupVertex() || (parentBubble && parentBubble.isMetaRelation());
+            if (this.bubble.isSkeleton()) {
+                this.chipColor = Color.SkeletonColor;
+            } else {
+                this.chipColor = this.bubble.isMetaRelation() ? "third" : "secondary";
+            }
             this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
             this.isLeft = this.direction === "left";
             this.dragOverArrow = this.isLeft ? "arrow_back" : "arrow_forward";
@@ -342,7 +352,11 @@
                 return this.bubble.isLeaf();
             },
             labelFont: function () {
-                let font = CurrentSubGraph.get().center.getFont();
+                let center = CurrentSubGraph.get().center;
+                if (!center) {
+                    return "";
+                }
+                let font = center.getFont();
                 return "font-family:" + font.family;
             },
             isShrinked: function () {
@@ -548,81 +562,81 @@
                 called on drag over to enable drop handler to trigger
                 I don't know why !
                  */
-                    event.preventDefault();
-                    event.stopPropagation();
-                    if (this.isLabelDragOver === true) {
-                        return;
-                    }
-                    this.bubble.isDragOver = true;
-                    let dragged = Dragged.dragged;
-                    let shouldSetToDragOver = dragged !== undefined &&
-                        dragged.getUri() !== this.bubble.getUri();
-                    if (!shouldSetToDragOver) {
-                        // console.log("not " + this.bubble.getLabel())
-                        this.isLabelDragOver = false;
-                        return;
-                    }
-                    this.isLabelDragOver = true;
-                    // console.log("yes " + this.bubble.getLabel())
+                event.preventDefault();
+                event.stopPropagation();
+                if (this.isLabelDragOver === true) {
+                    return;
                 }
-            ,
-                labelDragLeave: function (event) {
-                    this.bubble.isDragOver = false;
+                this.bubble.isDragOver = true;
+                let dragged = Dragged.dragged;
+                let shouldSetToDragOver = dragged !== undefined &&
+                    dragged.getUri() !== this.bubble.getUri();
+                if (!shouldSetToDragOver) {
+                    // console.log("not " + this.bubble.getLabel())
                     this.isLabelDragOver = false;
-                    // console.log("label drag leave");
+                    return;
                 }
-            ,
-                labelDrop: function (event, forceLeft) {
-                    // console.log("label drop");
-                    // debugger;
-                    event.preventDefault();
-                    event.stopPropagation();
-                    GraphUi.enableDragScroll();
-                    this.isLabelDragOver = false;
-                    let dragged = Dragged.dragged;
-                    // this.$store.dispatch('setDragged', null);
-                    if (dragged === null) {
-                        return;
-                    }
-                    dragged.controller().moveUnderParent(
-                        this.bubble,
-                        forceLeft
-                    );
-                }
-            ,
-                leftRightDragEnter: function (event) {
-                    event.preventDefault();
-                    this.isLabelDragOver = true;
-                }
-            ,
-                leftRightDragLeave: function (event) {
-                    event.preventDefault();
-                    this.isLabelDragOver = false;
-                }
-            ,
-                leftDrop: function (event) {
-                    this.isLabelDragOver = false;
-                    this.labelDrop(event, true);
-                }
-            ,
-                rightDrop: function (event) {
-                    this.isLabelDragOver = false;
-                    this.labelDrop(event, false);
-                }
-            ,
-                imageLoaded: async function () {
-                    await this.$nextTick();
-                    setTimeout(() => {
-                        return this.$store.dispatch('redraw');
-                    }, 250);
-                }
-            },
-            watch: {
-                // showMenu: function () {
-                //     GraphUi.enableDragScroll();
-                // }
+                this.isLabelDragOver = true;
+                // console.log("yes " + this.bubble.getLabel())
             }
+            ,
+            labelDragLeave: function (event) {
+                this.bubble.isDragOver = false;
+                this.isLabelDragOver = false;
+                // console.log("label drag leave");
+            }
+            ,
+            labelDrop: function (event, forceLeft) {
+                // console.log("label drop");
+                // debugger;
+                event.preventDefault();
+                event.stopPropagation();
+                GraphUi.enableDragScroll();
+                this.isLabelDragOver = false;
+                let dragged = Dragged.dragged;
+                // this.$store.dispatch('setDragged', null);
+                if (dragged === null) {
+                    return;
+                }
+                dragged.controller().moveUnderParent(
+                    this.bubble,
+                    forceLeft
+                );
+            }
+            ,
+            leftRightDragEnter: function (event) {
+                event.preventDefault();
+                this.isLabelDragOver = true;
+            }
+            ,
+            leftRightDragLeave: function (event) {
+                event.preventDefault();
+                this.isLabelDragOver = false;
+            }
+            ,
+            leftDrop: function (event) {
+                this.isLabelDragOver = false;
+                this.labelDrop(event, true);
+            }
+            ,
+            rightDrop: function (event) {
+                this.isLabelDragOver = false;
+                this.labelDrop(event, false);
+            }
+            ,
+            imageLoaded: async function () {
+                await this.$nextTick();
+                setTimeout(() => {
+                    return this.$store.dispatch('redraw');
+                }, 250);
+            }
+        },
+        watch: {
+            // showMenu: function () {
+            //     GraphUi.enableDragScroll();
+            // }
         }
+    }
 </script>
 
 <style scoped lang="scss">

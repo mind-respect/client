@@ -12,11 +12,13 @@ const api = {
     "RelationSuggestion": "relation_suggestion",
     "Meta": "meta",
     "MetaRelation": "meta_relation",
-    "MetaGroupVertex": "meta_group_vertex"
+    "MetaGroupVertex": "meta_group_vertex",
+    "VertexSkeleton" : "vertexSkeleton",
+    "RelationSkeleton" : "relationSkeleton",
 };
 
 api.Fork = [
-    api.Vertex, api.GroupRelation, api.Meta, api.MetaGroupVertex
+    api.Vertex, api.GroupRelation, api.Meta, api.MetaGroupVertex, api.VertexSkeleton
 ];
 
 api.GraphElementType = function (type) {
@@ -113,7 +115,8 @@ api.getVertexTypes = function () {
         api.VertexSuggestion,
         api.Schema,
         api.Meta,
-        api.MetaGroupVertex
+        api.MetaGroupVertex,
+        api.VertexSkeleton
     ];
 };
 api.getEdgeTypes = function () {
@@ -121,7 +124,8 @@ api.getEdgeTypes = function () {
         api.Relation,
         api.Property,
         api.RelationSuggestion,
-        api.MetaRelation
+        api.MetaRelation,
+        api.RelationSkeleton
     ];
 };
 api.isEdgeType = function (type) {

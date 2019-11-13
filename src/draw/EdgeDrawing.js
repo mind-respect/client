@@ -317,7 +317,7 @@ EdgeDrawing.prototype.topPositionCalculate = function () {
     position.x += xAdjust;
     position.x = Math.round(position.x);
     let yAdjust;
-    if (Selection.isSelected(this.bubble) || this.bubble.isCenter || !this.bubble.isVertex()) {
+    if (Selection.isSelected(this.bubble) || this.bubble.isCenter || !this.bubble.isVertexType()) {
         yAdjust = this.isLeft ? -24 : -45;
     } else {
         yAdjust = this.isLeft ? -24 : -45;
@@ -344,7 +344,7 @@ EdgeDrawing.prototype.bottomPositionCalculate = function () {
     position.x += xAdjust;
     position.x = Math.round(position.x);
     let yAdjust;
-    if (Selection.isSelected(this.bubble) || this.bubble.isCenter || !this.bubble.isVertex()) {
+    if (Selection.isSelected(this.bubble) || this.bubble.isCenter || !this.bubble.isVertexType()) {
         yAdjust = this.isLeft ? -43 : -63;
     } else {
         yAdjust = this.isLeft ? -43 : -63;
