@@ -539,5 +539,6 @@
     .v-badge__badge .v-icon {
         font-size: 14px;
     }
+
 </style>
 

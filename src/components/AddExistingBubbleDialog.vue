@@ -30,6 +30,7 @@
                         :loading="loading"
                         flat
                         ref="existingBubbleAutocomplete"
+                        @focus="focus"
                 >
                     <template v-slot:item="{ item }">
                         <SearchResultContent :item="item"></SearchResultContent>
@@ -86,8 +87,7 @@
                 searchText: null,
                 items: [],
                 menuProps: {
-                    "offset-y": true,
-                    "max-width": 800
+                    "contentClass": "add-existing-dialog-menu"
                 },
                 loading: false,
                 x: null,
@@ -99,6 +99,7 @@
         },
         watch: {
             searchText: function (val) {
+                this.setMenuPosition();
                 val && val !== this.select && this.querySelections(val)
             },
             dialog: function () {
@@ -159,18 +160,38 @@
             },
             chooseItem: function () {
                 let closest = Dragged.getClosestChildEdge(
-                    this.x,
-                    this.y,
+                    this.x + document.scrollingElement.scrollLeft,
+                    this.y + document.scrollingElement.scrollTop,
                     CurrentSubGraph.get().center,
                     this.isLeft
                 );
-                let forkToRelate = closest.edge ? CurrentSubGraph.get().center : closest.edge.getParentFork();
+                let forkToRelate = closest.edge === undefined ? CurrentSubGraph.get().center : closest.edge.getParentFork();
                 forkToRelate.controller().relateToDistantVertexWithUri(
                     this.selectedSearchResult.uri,
-                    closest.edge.getIndexInTree(closest.isAbove),
+                    closest.edge === undefined ? 0 : closest.edge.getIndexInTree(closest.isAbove),
                     this.isLeft
                 );
                 this.dialog = false;
+            },
+            setMenuPosition: function () {
+                this.$nextTick(() => {
+                    const menu = document.getElementsByClassName('add-existing-dialog-menu')[0];
+                    if (!menu) {
+                        return;
+                    }
+                    const autocompleteRect = this.$refs.existingBubbleAutocomplete.$el.getBoundingClientRect();
+                    menu.style.left = autocompleteRect.x + "px";
+                    menu.style.top = (autocompleteRect.y + autocompleteRect.height) + "px";
+                });
+            },
+            focus: function () {
+                this.$nextTick(async () => {
+                    await this.$nextTick();
+                    await this.$nextTick();
+                    setTimeout(() => {
+                        this.setMenuPosition();
+                    }, 100)
+                });
             }
         }
     }

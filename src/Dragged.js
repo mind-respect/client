@@ -34,7 +34,7 @@ const Dragged = {
         let isAbove = false;
 
         parent.getDescendants(isLeft, (descendant) => {
-            return descendant.getId() !== Dragged.dragged.getId();
+            return !Dragged.dragged || descendant.getId() !== Dragged.dragged.getId();
         }).forEach((childEdge) => {
             let position = childEdge.getHtml().getBoundingClientRect();
             let xPosition = (position.left + position.right) / 2 + document.scrollingElement.scrollLeft;

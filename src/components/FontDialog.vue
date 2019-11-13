@@ -20,9 +20,14 @@
                         v-if="fonts"
                         v-model="font"
                         :items="fonts"
+                        item-text="family"
                         item-value="family"
                         :menu-props="menuProps"
                         @change="save"
+                        cache-items
+                        :search-input.sync="searchText"
+                        ref="fontAutocomplete"
+                        @focus="focus"
                 >
                     <template v-slot:selection="{ item, selected }">
                         <img
@@ -35,6 +40,30 @@
                                 :src="fontImageBaseUrl + item.familyFormatted + '-400.' + item.version +'.png'">
                     </template>
                 </v-autocomplete>
+                <!--                <v-menu>-->
+                <!--                    <template v-slot:activator="{ on }">-->
+                <!--                        <v-btn-->
+                <!--                                color="primary"-->
+                <!--                                dark-->
+                <!--                                v-on="on"-->
+                <!--                        >-->
+                <!--                            Dropdown-->
+                <!--                        </v-btn>-->
+                <!--                    </template>-->
+                <!--                    <v-list>-->
+                <!--                        <v-list-item-->
+                <!--                                v-for="(item, index) in fonts"-->
+                <!--                                :key="index"-->
+                <!--                                @click=""-->
+                <!--                        >-->
+                <!--                            <v-list-item-title>-->
+                <!--                                <img-->
+                <!--                                        height="14"-->
+                <!--                                        :src="fontImageBaseUrl + item.familyFormatted + '-400.' + item.version +'.png'">-->
+                <!--                            </v-list-item-title>-->
+                <!--                        </v-list-item>-->
+                <!--                    </v-list>-->
+                <!--                </v-menu>-->
                 <!--</v-layout>-->
             </v-card-text>
             <v-card flat class="pt-0">
@@ -88,8 +117,9 @@
                 fonts: null,
                 fontImageBaseUrl: "https://raw.githubusercontent.com/getstencil/GoogleWebFonts-FontFamilyPreviewImages/master/48px/compressed/",
                 menuProps: {
-                    "offset-y": true
-                }
+                    "contentClass": "font-dialog-menu"
+                },
+                searchText: null
             }
         },
         mounted: function () {
@@ -128,9 +158,23 @@
                 if (this.dialog === false) {
                     this.$store.dispatch("setIsFontFlow", false)
                 }
+            },
+            searchText: function () {
+                this.setMenuPosition();
             }
         },
         methods: {
+            setMenuPosition: function () {
+                this.$nextTick(() => {
+                    const menu = document.getElementsByClassName('font-dialog-menu')[0];
+                    if (!menu) {
+                        return;
+                    }
+                    const autocompleteRect = this.$refs.fontAutocomplete.$el.getBoundingClientRect();
+                    menu.style.left = autocompleteRect.x + "px";
+                    menu.style.top = (autocompleteRect.y + autocompleteRect.height) + "px";
+                });
+            },
             save: function () {
                 let font = {
                     family: this.font
@@ -146,6 +190,16 @@
             saveDefault: function () {
                 this.font = GraphElement.DEFAULT_FONT.family;
                 return this.save();
+            },
+            focus: function(){
+                this.$nextTick(async ()=>{
+                    await this.$nextTick();
+                    await this.$nextTick();
+                    setTimeout(()=>{
+                        this.setMenuPosition();
+                    },100)
+                });
+
             }
         }
     }
