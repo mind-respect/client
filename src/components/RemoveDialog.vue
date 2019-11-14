@@ -115,7 +115,9 @@
             isRemoveFlow: function () {
                 if (this.$store.state.isRemoveFlow) {
                     this.someCannotBeRemoved = false;
-                    this.selected = Selection.getSelectedElements().map((selected) => {
+                    this.selected = Selection.getSelectedElements().filter((selected) => {
+                        return !selected.isMetaGroupVertex();
+                    }).map((selected) => {
                         selected.selectedToRemove = true;
                         return selected;
                     }).map((selected) => {

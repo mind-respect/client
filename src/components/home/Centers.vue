@@ -249,10 +249,11 @@
                 return CenterGraphElementService.getFriendsFeed();
             },
             go: function ($event, center) {
-                const nbChild = center.getNbNeighborsFromFlow(this.flow, this.isOwner);
+                let nbChild = center.getNbNeighborsFromFlow(this.flow, this.isOwner);
                 let graphElementType = center.uri().getGraphElementType();
                 if (graphElementType === "meta") {
                     graphElementType = "identification";
+                    nbChild = undefined;
                 }
                 this.$router.push({
                     name: "Center",
