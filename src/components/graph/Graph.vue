@@ -320,13 +320,11 @@
                 this.$nextTick(async () => {
                     await this.$nextTick();
                     await this.$nextTick();
-                    setTimeout(() => {
-                        this.strokeColor = Color.SkeletonColor;
-                        this.svg = new GraphDraw(this.center).build();
-                        this.redrawKey = Math.random();
-                        Breakpoint.set(this.$vuetify.breakpoint);
-                        Scroll.goToGraphElement(this.center, true);
-                    }, 50)
+                    this.strokeColor = Color.SkeletonColor;
+                    this.svg = new GraphDraw(this.center).build();
+                    this.redrawKey = Math.random();
+                    Breakpoint.set(this.$vuetify.breakpoint);
+                    Scroll.goToGraphElement(this.center, true);
                 });
             }
             let promise = center.isMeta() ?
@@ -358,7 +356,9 @@
                         await this.$nextTick();
                         await this.$nextTick();
                         this.strokeColor = Color.EdgeColor;
-                        this.redrawKey = Math.random();
+                        setTimeout(() => {
+                            this.redrawKey = Math.random();
+                        }, 50);
                     });
                     CurrentSubGraph.get().component = this;
                 }

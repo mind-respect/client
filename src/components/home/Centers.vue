@@ -250,11 +250,15 @@
             },
             go: function ($event, center) {
                 const nbChild = center.getNbNeighborsFromFlow(this.flow, this.isOwner);
+                let graphElementType = center.uri().getGraphElementType();
+                if (graphElementType === "meta") {
+                    graphElementType = "identification";
+                }
                 this.$router.push({
                     name: "Center",
                     params: {
                         username: center.uri().getOwner(),
-                        graphElementType: center.uri().getGraphElementType(),
+                        graphElementType: graphElementType,
                         centerUri: center.uri().getGraphElementShortId(),
                         nbChild: nbChild,
                         colors: center.getColors()
