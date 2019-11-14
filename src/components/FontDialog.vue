@@ -165,15 +165,13 @@
         },
         methods: {
             setMenuPosition: function () {
-                this.$nextTick(() => {
-                    const menu = document.getElementsByClassName('font-dialog-menu')[0];
-                    if (!menu) {
-                        return;
-                    }
-                    const autocompleteRect = this.$refs.fontAutocomplete.$el.getBoundingClientRect();
-                    menu.style.left = autocompleteRect.x + "px";
-                    menu.style.top = (autocompleteRect.y + autocompleteRect.height) + "px";
-                });
+                const menu = document.getElementsByClassName('font-dialog-menu')[0];
+                if (!menu) {
+                    return;
+                }
+                const autocompleteRect = this.$refs.fontAutocomplete.$el.getBoundingClientRect();
+                menu.style.left = autocompleteRect.x + "px";
+                menu.style.top = (autocompleteRect.y + autocompleteRect.height) + "px";
             },
             save: function () {
                 let font = {
@@ -191,13 +189,14 @@
                 this.font = GraphElement.DEFAULT_FONT.family;
                 return this.save();
             },
-            focus: function(){
-                this.$nextTick(async ()=>{
+            focus: function () {
+                this.$nextTick(async () => {
                     await this.$nextTick();
                     await this.$nextTick();
-                    setTimeout(()=>{
+                    await this.$nextTick();
+                    setTimeout(() => {
                         this.setMenuPosition();
-                    },100)
+                    }, 100)
                 });
 
             }

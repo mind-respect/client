@@ -87,7 +87,8 @@
                 searchText: null,
                 items: [],
                 menuProps: {
-                    "contentClass": "add-existing-dialog-menu"
+                    "contentClass": "add-existing-dialog-menu",
+                    "max-width": 800
                 },
                 loading: false,
                 x: null,
@@ -174,18 +175,17 @@
                 this.dialog = false;
             },
             setMenuPosition: function () {
-                this.$nextTick(() => {
-                    const menu = document.getElementsByClassName('add-existing-dialog-menu')[0];
-                    if (!menu) {
-                        return;
-                    }
-                    const autocompleteRect = this.$refs.existingBubbleAutocomplete.$el.getBoundingClientRect();
-                    menu.style.left = autocompleteRect.x + "px";
-                    menu.style.top = (autocompleteRect.y + autocompleteRect.height) + "px";
-                });
+                const menu = document.getElementsByClassName('add-existing-dialog-menu')[0];
+                if (!menu) {
+                    return;
+                }
+                const autocompleteRect = this.$refs.existingBubbleAutocomplete.$el.getBoundingClientRect();
+                menu.style.left = autocompleteRect.x + "px";
+                menu.style.top = (autocompleteRect.y + autocompleteRect.height) + "px";
             },
             focus: function () {
                 this.$nextTick(async () => {
+                    await this.$nextTick();
                     await this.$nextTick();
                     await this.$nextTick();
                     setTimeout(() => {
