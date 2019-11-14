@@ -35,7 +35,7 @@
                             v-for="(center, index) in centers" v-if="loaded && centers"
                     >
                         <v-hover>
-                            <v-list two-line id="grid-list" slot-scope="{ hover }">
+                            <v-list two-line slot-scope="{ hover }">
                                 <v-list-item @click="go($event, center)">
                                     <v-list-item-content>
                                         <v-list-item-title class="subtitle-1 font-weight-bold">

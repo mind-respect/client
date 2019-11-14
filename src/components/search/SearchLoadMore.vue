@@ -42,12 +42,14 @@
             loadMore: function () {
                 this.isLoading = true;
                 this.$emit('loadMore', (nbLastResults, searchComponent) => {
-                    /*
-                        changing scroll top of menu because in main search notably, to
-                        force display of new elements. I dont know why.
-                     */
-                    let menuElement = searchComponent.$refs.menu.$children[0].$el;
-                    menuElement.scrollTop = menuElement.scrollTop - 1;
+                    if (searchComponent) {
+                        /*
+                            changing scroll top of menu because in main search notably, to
+                            force display of new elements. I dont know why.
+                        */
+                        let menuElement = searchComponent.$refs.menu.$children[0].$el;
+                        menuElement.scrollTop = menuElement.scrollTop - 1;
+                    }
                     this.nbLastResults = nbLastResults;
                     this.isLoading = false;
                 });

@@ -1,5 +1,5 @@
 <template>
-    <v-snackbar
+    <v-bottom-sheet
             v-model="snackbar"
             multi-line
             :timeout="0"
@@ -7,99 +7,97 @@
             class="cohesive-snackbar"
             bottom
             style="opacity:0.9"
+            hide-overlay
+            :scrollable="!loading"
     >
-        <v-layout>
-            <v-flex xs12>
-                <v-layout>
-                    <v-flex xs12>
-                        <v-card v-show="loading" flat class="text-center" width="100%">
-                            <v-progress-circular indeterminate color="third"></v-progress-circular>
-                        </v-card>
-                        <v-card flat v-show="!loading">
-                            <v-card-title>
-                                <span class="mt-2 mb-2 subtitle-1">
+        <v-card v-show="loading" flat class="vh-center" width="100%" style="height:200px;">
+            <v-progress-circular indeterminate color="third" size="50"></v-progress-circular>
+        </v-card>
+        <v-card v-show="!loading">
+            <v-card-title>
+                <v-spacer></v-spacer>
+                <span class="mt-2 mb-2 subtitle-1 font-weight-bold">
                                     {{$t('cohesion:similarBubble')}}
                                 </span>
-                                <v-spacer></v-spacer>
-                                <v-btn small text color="secondary" class="ma-0 pa-1" @click="tag"
-                                       :disabled="!addTagCanDo">
-                                    <v-icon class="mr-2">
-                                        label
-                                    </v-icon>
-                                    {{$t('cohesion:tag')}}
-                                </v-btn>
-                                <v-divider vertical class="ml-2 mr-2"></v-divider>
-                                <v-btn small text color="secondary" class="ma-0 pa-1" :disabled="!mergeCanDo"
-                                       @click="merge">
-                                    <v-icon class="mr-2">
-                                        merge_type
-                                    </v-icon>
-                                    {{$t('cohesion:merge')}}
-                                </v-btn>
-                                <v-divider vertical class="ml-2 mr-2"></v-divider>
-                                <v-badge
-                                        color="third"
-                                        @click="snackbar = false"
-                                >
-                                    <template v-slot:badge @click="snackbar=false">
-                                        <v-icon dark @click="snackbar=false">
-                                            close
-                                        </v-icon>
-                                    </template>
-                                    <v-btn
-                                            small
-                                            color="third"
-                                            text
-                                            class="ma-0 pa-1"
-                                            @click="snackbar=false"
-                                    >
-                                        {{$t('close')}}
-                                    </v-btn>
-                                </v-badge>
-                            </v-card-title>
-                        </v-card>
-                    </v-flex>
-                </v-layout>
-                <v-layout>
-                    <v-flex xs12>
-                        <v-card flat class="pa-0" v-show="!loading">
-                            <v-card-text class="pa-0">
-                                <v-radio-group v-model="selectedUri" class="mt-0">
-                                    <v-list width="100%" two-line class="pa-0">
-                                        <v-list-item class="pt-0" v-for="(item, index) in results"
-                                                     v-show="index === 0 || isSeeMoreFlow">
-                                            <v-list-item-action>
-                                                <v-radio
-                                                        :value="item.uri"
-                                                        :key="index" color="primary"
-                                                        on-icon="radio_button_checked"
-                                                        off-icon="radio_button_unchecked"
-                                                ></v-radio>
-                                            </v-list-item-action>
-                                            <SearchResultContent :item="item"></SearchResultContent>
-                                            <SearchResultAction :item="item"></SearchResultAction>
-                                            <v-list-item-action>
-                                                <v-btn icon :href="urlFromUri(item.uri)" target="_blank">
-                                                    <v-icon color="secondary">open_in_new</v-icon>
-                                                </v-btn>
-                                            </v-list-item-action>
-                                        </v-list-item>
-                                    </v-list>
-                                </v-radio-group>
-                            </v-card-text>
-                        </v-card>
-                    </v-flex>
-                </v-layout>
-                <v-layout v-show="results.length > 1">
-                    <v-flex xs12>
-                        <v-btn text color="third" class="ml-1" @click="isSeeMoreFlow=true" :disabled="isSeeMoreFlow">
-                            {{$t('cohesion:viewMore')}}
-                        </v-btn>
-                    </v-flex>
-                </v-layout>
-            </v-flex>
-        </v-layout>
-    </v-snackbar>
+                <v-spacer></v-spacer>
+                <v-badge
+                        color="third"
+                        @click="snackbar = false"
+                >
+                    <template v-slot:badge @click="snackbar=false">
+                        <v-icon dark @click="snackbar=false">
+                            close
+                        </v-icon>
+                    </template>
+                    <v-btn
+                            small
+                            color="third"
+                            text
+                            class="ma-0 pa-1"
+                            @click="snackbar=false"
+                    >
+                        {{$t('close')}}
+                    </v-btn>
+                </v-badge>
+            </v-card-title>
+            <v-card-text style="height: 200px;" id="cohesion-scroll-container">
+                <v-radio-group v-model="selectedUri" class="mt-0 cohesion-radio-group">
+                    <v-layout wrap>
+                        <v-flex xs12 md3
+                                v-for="(item, index) in results"
+                        >
+                            <v-list two-line>
+                                <v-list-item>
+                                    <v-list-item-action>
+                                        <v-radio
+                                                :value="item.uri"
+                                                :key="index" color="primary"
+                                                on-icon="radio_button_checked"
+                                                off-icon="radio_button_unchecked"
+                                        ></v-radio>
+                                    </v-list-item-action>
+                                    <v-list-item-content>
+                                        <SearchResultContent :item="item" class="mr-2"></SearchResultContent>
+                                    </v-list-item-content>
+                                    <SearchResultAction :item="item"></SearchResultAction>
+                                    <v-list-item-action>
+                                        <v-btn icon :href="urlFromUri(item.uri)" target="_blank">
+                                            <v-icon color="secondary">open_in_new</v-icon>
+                                        </v-btn>
+                                    </v-list-item-action>
+                                </v-list-item>
+                            </v-list>
+                        </v-flex>
+                        <v-flex xs12
+                                md3
+                                class="vh-center"
+                                v-show="showLoadMore"
+                        >
+                            <v-btn color="secondary" text @click="loadMore()">
+                                ... {{$t('moreResults')}}
+                            </v-btn>
+                        </v-flex>
+                    </v-layout>
+                </v-radio-group>
+            </v-card-text>
+            <v-card-actions class="vh-center">
+                <v-btn color="secondary" class="ma-0 mr-8" @click="tag"
+                       :disabled="!addTagCanDo">
+                    <v-icon class="mr-2">
+                        label
+                    </v-icon>
+                    {{$t('cohesion:tag')}}
+                </v-btn>
+                <v-btn color="secondary" class="ma-0 ml-8" :disabled="!mergeCanDo"
+                       @click="merge">
+                    <v-icon class="mr-2">
+                        merge_type
+                    </v-icon>
+                    {{$t('cohesion:merge')}}
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-bottom-sheet>
 </template>
 
 <script>
@@ -121,11 +119,11 @@
             return {
                 snackbar: false,
                 loading: false,
-                firstResult: null,
                 selectedUri: null,
                 results: [],
-                isSeeMoreFlow: false,
-                working: false
+                showLoadMore: true,
+                working: false,
+                nbLoadResults: 0
             }
         },
         mounted: function () {
@@ -137,7 +135,7 @@
             });
 
             I18n.i18next.addResources("fr", "cohesion", {
-                similarBubble: "Bulle similaire",
+                similarBubble: "Bulles similaires",
                 merge: "Fusionner",
                 tag: "Étiquetter",
                 viewMore: "Voir plus"
@@ -176,7 +174,7 @@
             merge: function () {
                 this.loading = true;
                 Selection.getSingle().controller().convertToDistantBubbleWithUri(
-                    this.firstResult.uri
+                    this.selectedUri
                 ).then(() => {
                     return this.$nextTick();
                 }).then(() => {
@@ -186,8 +184,9 @@
             },
             tag: function () {
                 this.loading = true;
-                let identifier = Identification.fromSearchResult(
-                    this.firstResult
+                const selectedResult = this.getSelectedResult();
+                const identifier = Identification.fromSearchResult(
+                    selectedResult
                 );
                 let bubble = Selection.getSingle();
                 if (bubble.hasIdentification(identifier)) {
@@ -196,7 +195,7 @@
                     return false;
                 }
                 identifier.makeGeneric();
-                this.firstResult.getImageUrl(this.firstResult).then((imageUrl) => {
+                selectedResult.getImageUrl(selectedResult).then((imageUrl) => {
                     if (imageUrl) {
                         identifier.addImage(imageUrl);
                     }
@@ -232,20 +231,29 @@
             refresh: function () {
                 this.snackbar = false;
                 this.loading = false;
-                this.isSeeMoreFlow = false;
+                this.showLoadMore = true;
+                this.nbLoadResults = 0;
+                this.results = [];
                 if (this.$store.state.selected.length !== 1) {
                     return;
                 }
                 if (!this.mergeCanDo && !this.addTagCanDo) {
                     return;
                 }
+                this.loadMore();
+            },
+            loadMore: function () {
                 let bubble = Selection.getSingle();
                 if (bubble.loading || bubble.getLabel() === "") {
                     return;
                 }
                 SearchService.searchForAllOwnResources(
-                    bubble.getLabel()
+                    bubble.getLabel(),
+                    this.nbLoadResults * 10
                 ).then((results) => {
+                    if (results.length < 10) {
+                        this.showLoadMore = false;
+                    }
                     results = results.filter((result) => {
                         let filter = bubble.getUri() !== result.uri && !bubble.hasTagRelatedToUri(result.uri);
                         if (result.original.graphElement && result.original.graphElement.hasTagRelatedToUri) {
@@ -260,14 +268,29 @@
                     if (results.length === 0) {
                         return;
                     }
-                    this.firstResult = results[0];
-                    if (this.firstResult.label.toLowerCase().trim() !== bubble.getLabel().toLowerCase().trim()) {
-                        return;
+                    if (this.nbLoadResults === 0) {
+                        let hasOneRelevantResult = results.some((result) => {
+                            return result.label.toLowerCase().trim() === bubble.getLabel().toLowerCase().trim()
+                        });
+                        if (!hasOneRelevantResult) {
+                            return;
+                        }
+                        this.selectedUri = results[0].uri;
                     }
-                    this.selectedUri = this.firstResult.uri;
-                    this.results = results;
+                    this.results = this.results.concat(results);
                     this.snackbar = true;
+                    if (this.nbLoadResults === 0) {
+                        this.$nextTick(() => {
+                            document.getElementById("cohesion-scroll-container").scrollTop = 0;
+                        });
+                    }
+                    this.nbLoadResults++
                 });
+            },
+            getSelectedResult: function () {
+                return this.results.filter((result) => {
+                    return result.uri === this.selectedUri;
+                })[0];
             }
         }
     }
@@ -288,5 +311,9 @@
 
     .cohesive-snackbar .v-list-item {
         min-height: inherit;
+    }
+
+    .cohesion-radio-group.v-input--radio-group, .cohesion-radio-group .v-input--radio-group__input, .cohesion-radio-group .v-input__control {
+        width: 100%;
     }
 </style>
