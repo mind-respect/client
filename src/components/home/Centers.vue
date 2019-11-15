@@ -295,6 +295,7 @@
                 if (this.hasLoadedAll) {
                     return;
                 }
+                let previousScrollTop = document.scrollingElement.scrollTop;
                 let centersRequest = this.getNextCenters();
                 centersRequest.then((response) => {
                     if (response.data.length < 8) {
@@ -308,7 +309,11 @@
                         this.centers.push(center);
                     });
                     this.$nextTick(() => {
-                        document.scrollingElement.scrollTop = document.scrollingElement.scrollTop - 1;
+                        if (this.$vuetify.breakpoint.smAndDown || !this.$store.state.areCentersInGridView) {
+                            document.scrollingElement.scrollTop = previousScrollTop + window.innerHeight - 200;
+                        } else {
+                            document.scrollingElement.scrollTop = document.scrollingElement.scrollTop - 1;
+                        }
                         this.isBottom = false;
                     });
                 });
