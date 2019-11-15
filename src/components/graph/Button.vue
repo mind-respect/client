@@ -78,11 +78,11 @@
             }
         },
         methods: {
-            performAction: function (button, event) {
+            performAction: function (button) {
                 let controller = this.getController(button);
                 let promise = controller[
                     button.action
-                    ](event);
+                    ]();
                 if (!promise || !promise.then) {
                     promise = Promise.resolve();
                 }

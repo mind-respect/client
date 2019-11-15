@@ -280,7 +280,7 @@
             zoomIn: function () {
                 AppController.zoomIn();
             },
-            zoomOut: function (event) {
+            zoomOut: function () {
                 AppController.zoomOut();
             },
             createVertex: function () {

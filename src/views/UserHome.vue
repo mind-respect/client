@@ -357,13 +357,13 @@
         },
         methods: {
             createCenterVertex: function (label) {
-                AppController.createVertex(null, label);
+                AppController.createVertex(label);
             },
             createCenterPatternVertex: function (label) {
-                AppController.createVertex(null, label, true);
+                AppController.createVertex(label, true);
             },
             createCenterPublicVertex: function (label) {
-                AppController.createVertex(null, label, false, true);
+                AppController.createVertex(label, false, true);
             },
             setupFriendship: function () {
                 let promise = Promise.resolve();
