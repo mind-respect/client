@@ -163,11 +163,19 @@ const Scroll = {
             return Promise.resolve();
         }
         await Vue.nextTick();
-        let element = isForTree ? bubble.getDeepestDescendant().getLabelHtml() : bubble.getLabelHtml();
+        if (bubble.isEditFlow) {
+            return Promise.resolve();
+        }
+        let isDeepestElementOnScreen = true;
+        if (isForTree) {
+            let deepestElement = bubble.getDeepestDescendant().getLabelHtml();
+            isDeepestElementOnScreen = deepestElement && Scroll.isElementFullyOnScreen(deepestElement);
+        }
+        let element = bubble.getLabelHtml();
         if (!element) {
             return Promise.resolve();
         }
-        if (!Scroll.isElementFullyOnScreen(element) && !bubble.isEditFlow) {
+        if (!isDeepestElementOnScreen || !Scroll.isElementFullyOnScreen(element)) {
             return Scroll.goToGraphElement(bubble)
         } else {
             return Promise.resolve();

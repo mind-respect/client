@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <v-layout @contextmenu="showContextMenu">
+    <v-layout @contextmenu="showContextMenu" style="height:100%;width:100%;" id="graph-container">
         <v-divider></v-divider>
         <div id="drawn_graph" data-zoom="9" class="vh-center">
             <v-layout class='root-vertex-super-container vh-center' :style="zoomScale"
@@ -627,8 +627,7 @@
         justify-content: center;
         align-items: center;
         flex-shrink: 0;
-        padding-top: 15%;
-        padding-bottom: 15%;
+        padding:0;
     }
 
     [draggable=true] {
