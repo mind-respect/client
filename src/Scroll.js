@@ -51,7 +51,7 @@ const Scroll = {
                 return;
             }
             let options = {
-                container: 'body',
+                container: document.scrollingElement,
                 easing: 'ease',
                 offset: function () {
                     return offset.x;
