@@ -78,15 +78,14 @@
                                         <!--</v-list-item-subtitle>-->
                                     </v-list-item-content>
                                     <v-list-item-action @click.stop
-                                                        v-if="$vuetify.breakpoint.smAndUp"
                                                         style="min-width:40px;">
-                                        <v-menu offset-y v-if="isOwner && (hover || center.menu)"
+                                        <v-menu offset-y v-if="isOwner && (hover || center.menu || $vuetify.breakpoint.smAndDown || !$store.state.areCentersInGridView)"
                                                 left
                                                 v-model="center.menu">
                                             <template v-slot:activator="{ on }">
                                                 <v-btn icon small v-on="on">
-                                                    <v-icon color="third">
-                                                        more_horiz
+                                                    <v-icon color="secondary">
+                                                        more_vert
                                                     </v-icon>
                                                 </v-btn>
                                             </template>
