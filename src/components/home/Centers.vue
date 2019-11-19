@@ -39,7 +39,7 @@
                     <v-flex xs12 :md3="$store.state.areCentersInGridView"
                             v-for="(center, index) in centers" v-if="loaded && centers"
                             :key="center.uiId"
-                            :id="'center-' + center.uiId"
+                            :ref="'center-' + center.uiId"
                             :class="{
                                 'center-flex' : centers && centers.length && loaded && $vuetify.breakpoint.smAndDown
                             }"
@@ -52,7 +52,7 @@
                                              v-touch="{
                                                     left: (e) => swipe(e, center)
                                             }"
-                                             @touchstart="touchstart"
+                                             @touchstart="touchstart($event, center)"
                                              @touchmove="touchmove($event, center)"
                                              @touchend="touchend($event, center)"
                                 >
@@ -153,11 +153,6 @@
                                 </v-list-item>
                             </v-list>
                         </v-hover>
-                        <div style="position:absolute;right:40px;z-index:0;" v-show="center.isSwiping">
-                            <v-icon color="white" large style="margin-top:-115px;">
-                                delete
-                            </v-icon>
-                        </div>
                     </v-flex>
                     <v-flex xs12 :md3="$store.state.areCentersInGridView"
                             v-for="i in 16" v-if="isBottom">
@@ -194,6 +189,10 @@
                 {{$t('cancel')}}
             </v-btn>
         </v-snackbar>
+        <v-icon color="white" large style="position:fixed;right:40px;z-index:0;"
+                ref="deleteIcon" v-show="isSwiping">
+            delete
+        </v-icon>
     </v-card>
 </template>
 
@@ -211,6 +210,7 @@
     let touchStartX = 0;
     let touchStartScrollY = 0;
     let allowSwipeMenu = false;
+    let deleteIcon;
 
     export default {
         name: "Centers",
@@ -240,7 +240,7 @@
         mounted: function () {
             this.loadData().then((response) => {
                 this.centers = CenterGraphElement.fromServerFormat(response.data).map((center) => {
-                    center.isSwiping = false;
+                    this.isSwiping = false;
                     center.labelSearch = center.getLabel();
                     center.contextSearch = Object.values(center.getContext()).join(' ');
                     return center;
@@ -252,46 +252,51 @@
             });
         },
         methods: {
-            touchstart: function (event) {
+            touchstart: function (event, center) {
                 touchStartX = event.touches[0].pageX;
                 touchStartScrollY = document.scrollingElement.scrollTop + window.innerHeight + document.documentElement.clientHeight;
                 allowSwipeMenu = true;
+                const deleteIcon = this.$refs.deleteIcon.$el;
+                const centerRect = this.$refs[
+                'center-' + center.uiId
+                    ][0].getBoundingClientRect();
+                deleteIcon.style.top = (centerRect.y + centerRect.height / 2 - 20) + "px";
             },
             touchmove: function (event, center) {
                 if (!allowSwipeMenu || touchStartScrollY !== document.scrollingElement.scrollTop + window.innerHeight + document.documentElement.clientHeight) {
-                    center.isSwiping = false;
-                    document.getElementById(
+                    this.isSwiping = false;
+                    this.$refs[
                         'center-' + center.uiId
-                    ).style['margin-left'] = 0;
+                    ][0].style['margin-left'] = 0;
                     allowSwipeMenu = false;
                     return;
                 }
                 const margin = (touchStartX - event.touches[0].pageX) * -1;
                 if (margin > -10) {
-                    center.isSwiping = false;
-                    document.getElementById(
+                    this.isSwiping = false;
+                    this.$refs[
                         'center-' + center.uiId
-                    ).style['margin-left'] = 0;
+                    ][0].style['margin-left'] = 0;
                     return;
                 }
-                document.getElementById(
+                this.$refs[
                     'center-' + center.uiId
-                ).style['margin-left'] = margin + "px";
-                center.isSwiping = true;
+                ][0].style['margin-left'] = margin + "px";
+                this.isSwiping = true;
             },
             touchend: function (event, center) {
-                const centerFlex = document.getElementById(
+                const centerFlex = this.$refs[
                     'center-' + center.uiId
-                );
+                ][0];
                 centerFlex.style['margin-left'] = "0";
-                center.isSwiping = false;
+                this.isSwiping = false;
             },
             swipe: function (event, center) {
-                const centerFlex = document.getElementById(
+                const centerFlex = this.$refs[
                     'center-' + center.uiId
-                );
+                ][0];
                 centerFlex.style['margin-left'] = "0";
-                center.isSwiping = false;
+                this.isSwiping = false;
                 if (allowSwipeMenu && event.touchendX + 100 < centerFlex.getBoundingClientRect().width / 2) {
                     this.removeCenter(center);
                 }
@@ -411,7 +416,6 @@
                         this.hasLoadedAll = true
                     }
                     CenterGraphElement.fromServerFormat(response.data).map((center) => {
-                        center.isSwiping = false;
                         center.labelSearch = center.getLabel();
                         center.contextSearch = Object.values(center.getContext()).join(' ');
                         return center;
