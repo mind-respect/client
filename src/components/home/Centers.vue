@@ -19,7 +19,7 @@
                           class="pt-0"
                           style="margin-top:5px;"
                           :class="{
-                            'swipe-container': centers && centers.length && loaded
+                            'swipe-container': centers && centers.length && loaded && $vuetify.breakpoint.smAndDown
                           }"
                 >
                     <v-flex xs12 v-if="centers && centers.length === 0" class="vh-center">
@@ -41,11 +41,15 @@
                             v-for="(center, index) in centers" v-if="loaded && centers"
                             :key="center.uiId"
                             :id="'center-' + center.uiId"
-                            class="center-flex"
+                            :class="{
+                                'center-flex' : centers && centers.length && loaded && $vuetify.breakpoint.smAndDown
+                            }"
                     >
                         <div>
                             <v-hover>
-                                <v-list two-line slot-scope="{ hover }" class="center-list">
+                                <v-list two-line slot-scope="{ hover }" :class="{
+                                    'center-list': centers && centers.length && loaded && $vuetify.breakpoint.smAndDown
+                                }">
                                     <v-list-item @click="go($event, center)"
                                                  v-touch="{
                                                     left: (e) => swipe(e, center)
@@ -368,7 +372,7 @@
                 this.removeSnackbar = false;
                 CenterGraphElementService.makeCenterWithUriAndLastCenterDate(
                     this.removedCenter.getUri(),
-                        this.removedCenter.getLastCenterDateTime()
+                    this.removedCenter.getLastCenterDateTime()
                 );
                 this.centers.splice(
                     this.removeCenterIndex,
