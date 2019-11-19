@@ -395,9 +395,9 @@
             isBottomVisible() {
                 const scrollY = document.scrollingElement.scrollTop;
                 const visible = this.$vuetify.breakpoint.mdAndDown && window.innerHeight ?
-                    window.innerHeight : document.documentElement.clientHeight;
+                    window.innerHeight : document.scrollingElement.clientHeight;
                 const pageHeight = document.scrollingElement.scrollHeight;
-                const bottomOfPage = visible + scrollY >= pageHeight;
+                const bottomOfPage = visible + scrollY + 1 >= pageHeight;
                 return bottomOfPage;
             },
             addCenters() {
@@ -422,7 +422,7 @@
                         if (this.$vuetify.breakpoint.smAndDown || !this.$store.state.areCentersInGridView) {
                             document.scrollingElement.scrollTop = previousScrollTop + window.innerHeight - 200;
                         } else {
-                            document.scrollingElement.scrollTop = document.scrollingElement.scrollTop - 1;
+                            document.scrollingElement.scrollTop = document.scrollingElement.scrollTop - 3;
                         }
                         this.isBottom = false;
                     });
