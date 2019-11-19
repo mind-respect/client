@@ -160,7 +160,7 @@
                         </div>
                     </v-flex>
                     <v-flex xs12 :md3="$store.state.areCentersInGridView"
-                            v-for="i in 8" v-if="isBottom">
+                            v-for="i in 16" v-if="isBottom">
                         <v-skeleton-loader
                                 loading
                                 height="94"
@@ -407,7 +407,7 @@
                 let previousScrollTop = document.scrollingElement.scrollTop;
                 let centersRequest = this.getNextCenters();
                 centersRequest.then((response) => {
-                    if (response.data.length < 8) {
+                    if (response.data.length < 16) {
                         this.hasLoadedAll = true
                     }
                     CenterGraphElement.fromServerFormat(response.data).map((center) => {
