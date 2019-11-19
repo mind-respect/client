@@ -19,7 +19,7 @@
                           class="pt-0"
                           style="margin-top:5px;"
                           :class="{
-                            'swipe-container': centers && centers.length && loaded && $vuetify.breakpoint.smAndDown
+                            'swipe-container': centers && centers.length && loaded && $vuetify.breakpoint.smAndDown && !isBottom
                           }"
                 >
                     <v-flex xs12 v-if="centers && centers.length === 0" class="vh-center">
@@ -258,8 +258,11 @@
             },
             touchmove: function (event, center) {
                 const margin = (touchStartX - event.touches[0].pageX) * -1;
-                if (margin > - 10) {
+                if (margin > -10) {
                     center.isSwiping = false;
+                    document.getElementById(
+                        'center-' + center.uiId
+                    ).style['margin-left'] = 0;
                     return;
                 }
                 document.getElementById(
