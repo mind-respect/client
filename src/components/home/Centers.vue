@@ -212,6 +212,8 @@
     const ADDRESS_BAR_HEIGHT = 60;
 
     let touchStartX = 0;
+    let touchStartScrollY = 0;
+    let allowSwipeMenu = false;
 
     export default {
         name: "Centers",
@@ -255,8 +257,18 @@
         methods: {
             touchstart: function (event) {
                 touchStartX = event.touches[0].pageX;
+                touchStartScrollY = document.scrollingElement.scrollTop + window.innerHeight + document.documentElement.clientHeight;
+                allowSwipeMenu = true;
             },
             touchmove: function (event, center) {
+                if (!allowSwipeMenu || touchStartScrollY !== document.scrollingElement.scrollTop + window.innerHeight + document.documentElement.clientHeight) {
+                    center.isSwiping = false;
+                    document.getElementById(
+                        'center-' + center.uiId
+                    ).style['margin-left'] = 0;
+                    allowSwipeMenu = false;
+                    return;
+                }
                 const margin = (touchStartX - event.touches[0].pageX) * -1;
                 if (margin > -10) {
                     center.isSwiping = false;
@@ -283,7 +295,7 @@
                 );
                 centerFlex.style['margin-left'] = "0";
                 center.isSwiping = false;
-                if (event.touchendX + 50 < centerFlex.getBoundingClientRect().width / 2) {
+                if (allowSwipeMenu && event.touchendX + 100 < centerFlex.getBoundingClientRect().width / 2) {
                     this.removeCenter(center);
                 }
             },
