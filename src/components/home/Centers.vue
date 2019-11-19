@@ -17,7 +17,6 @@
                 </v-tooltip>
                 <v-layout wrap
                           class="pt-0"
-                          style="margin-top:5px;"
                           :class="{
                             'swipe-container': centers && centers.length && loaded && $vuetify.breakpoint.smAndDown && !isBottom
                           }"
@@ -45,117 +44,115 @@
                                 'center-flex' : centers && centers.length && loaded && $vuetify.breakpoint.smAndDown
                             }"
                     >
-                        <div>
-                            <v-hover>
-                                <v-list two-line slot-scope="{ hover }" :class="{
+                        <v-hover>
+                            <v-list two-line slot-scope="{ hover }" :class="{
                                     'center-list': centers && centers.length && loaded && $vuetify.breakpoint.smAndDown
                                 }">
-                                    <v-list-item @click="go($event, center)"
-                                                 v-touch="{
+                                <v-list-item @click="go($event, center)"
+                                             v-touch="{
                                                     left: (e) => swipe(e, center)
                                             }"
-                                                 @touchstart="touchstart"
-                                                 @touchmove="touchmove($event, center)"
-                                                 @touchend="touchend($event, center)"
-                                    >
-                                        <v-list-item-content>
-                                            <v-list-item-title class="subtitle-1 font-weight-bold">
-                                                <v-badge color="transparent">
-                                                    <template v-slot:badge v-if="center.showIcon()">
-                                                        <v-icon>
-                                                            {{center.getIcon()}}
-                                                        </v-icon>
-                                                    </template>
-                                                    {{center.getLabel()}}
-                                                </v-badge>
-                                                <v-icon class="ml-4 mb-1 float-right" color="grey"
-                                                        v-if="!center.isPattern()"
-                                                        small>
-                                                    {{center.getShareIcon()}}
-                                                </v-icon>
-                                                <small class="grey--text font-weight-normal font-italic mr-1 float-right"
-                                                       v-if="$vuetify.breakpoint.mdAndUp && center.lastVisit">
-                                                    {{center.lastVisit()}}
-                                                </small>
-                                            </v-list-item-title>
-                                            <v-list-item-subtitle class="mt-1">
-                                                <div v-for="(value, key) in center.getContext()"
-                                                     v-if="center.contextSearch !== ''"
-                                                     class="around-list-item">
-                                                    {{value}}
-                                                </div>
-                                            </v-list-item-subtitle>
-                                            <v-list-item-subtitle
-                                                    v-if="flow !== 'centers'">
-
-                                                <router-link :to="'/user/' + center.uri().getOwner()"
-                                                             class="no-style-link secondary-color" @click.stop
-                                                             color="secondary">
-                                                    {{center.uri().getOwner()}}
-                                                </router-link>
-                                            </v-list-item-subtitle>
-                                            <!--<v-list-item-s  ub-title class="text-xs-right" >-->
-                                            <!--{{center.lastVisit()}}-->
-                                            <!--</v-list-item-subtitle>-->
-                                        </v-list-item-content>
-                                        <v-list-item-action @click.stop
-                                                            style="min-width:40px;" v-if="$vuetify.breakpoint.mdAndUp">
-                                            <v-menu offset-y
-                                                    v-if="isOwner && (hover || center.menu || !$store.state.areCentersInGridView)"
-                                                    left
-                                                    v-model="center.menu">
-                                                <template v-slot:activator="{ on }">
-                                                    <v-btn icon small v-on="on">
-                                                        <v-icon color="secondary">
-                                                            more_vert
-                                                        </v-icon>
-                                                    </v-btn>
+                                             @touchstart="touchstart"
+                                             @touchmove="touchmove($event, center)"
+                                             @touchend="touchend($event, center)"
+                                >
+                                    <v-list-item-content>
+                                        <v-list-item-title class="subtitle-1 font-weight-bold">
+                                            <v-badge color="transparent">
+                                                <template v-slot:badge v-if="center.showIcon()">
+                                                    <v-icon>
+                                                        {{center.getIcon()}}
+                                                    </v-icon>
                                                 </template>
-                                                <v-list>
-                                                    <v-list-item
-                                                            @click.prevent="usePattern(center)"
-                                                            v-if="center.isPattern()"
-                                                    >
-                                                        <v-list-item-action>
-                                                            <v-icon>stars</v-icon>
-                                                        </v-list-item-action>
-                                                        <v-list-item-title>
-                                                            {{$t('use')}}
-                                                        </v-list-item-title>
-                                                    </v-list-item>
-                                                    <v-list-item :href="center.uri().url()"
-                                                                 target="_blank">
-                                                        <v-list-item-action>
-                                                            <v-icon>open_in_new</v-icon>
-                                                        </v-list-item-action>
-                                                        <v-list-item-title>
-                                                            {{$t('userhome:open')}}
-                                                        </v-list-item-title>
-                                                    </v-list-item>
-                                                    <v-list-item @click="copyUrl(center)">
-                                                        <v-list-item-action>
-                                                            <v-icon>link</v-icon>
-                                                        </v-list-item-action>
-                                                        <v-list-item-title>
-                                                            {{$t('userhome:copy')}}
-                                                        </v-list-item-title>
-                                                    </v-list-item>
-                                                    <v-list-item
-                                                            @click.prevent="removeCenter(center, index)">
-                                                        <v-list-item-action>
-                                                            <v-icon>visibility_off</v-icon>
-                                                        </v-list-item-action>
-                                                        <v-list-item-title>
-                                                            {{$t('userhome:remove')}}
-                                                        </v-list-item-title>
-                                                    </v-list-item>
-                                                </v-list>
-                                            </v-menu>
-                                        </v-list-item-action>
-                                    </v-list-item>
-                                </v-list>
-                            </v-hover>
-                        </div>
+                                                {{center.getLabel()}}
+                                            </v-badge>
+                                            <v-icon class="ml-4 mb-1 float-right" color="grey"
+                                                    v-if="!center.isPattern()"
+                                                    small>
+                                                {{center.getShareIcon()}}
+                                            </v-icon>
+                                            <small class="grey--text font-weight-normal font-italic mr-1 float-right"
+                                                   v-if="$vuetify.breakpoint.mdAndUp && center.lastVisit">
+                                                {{center.lastVisit()}}
+                                            </small>
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle class="mt-1">
+                                            <div v-for="(value, key) in center.getContext()"
+                                                 v-if="center.contextSearch !== ''"
+                                                 class="around-list-item">
+                                                {{value}}
+                                            </div>
+                                        </v-list-item-subtitle>
+                                        <v-list-item-subtitle
+                                                v-if="flow !== 'centers'">
+
+                                            <router-link :to="'/user/' + center.uri().getOwner()"
+                                                         class="no-style-link secondary-color" @click.stop
+                                                         color="secondary">
+                                                {{center.uri().getOwner()}}
+                                            </router-link>
+                                        </v-list-item-subtitle>
+                                        <!--<v-list-item-s  ub-title class="text-xs-right" >-->
+                                        <!--{{center.lastVisit()}}-->
+                                        <!--</v-list-item-subtitle>-->
+                                    </v-list-item-content>
+                                    <v-list-item-action @click.stop
+                                                        style="min-width:40px;" v-if="$vuetify.breakpoint.mdAndUp">
+                                        <v-menu offset-y
+                                                v-if="isOwner && (hover || center.menu || !$store.state.areCentersInGridView)"
+                                                left
+                                                v-model="center.menu">
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn icon small v-on="on">
+                                                    <v-icon color="secondary">
+                                                        more_vert
+                                                    </v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <v-list>
+                                                <v-list-item
+                                                        @click.prevent="usePattern(center)"
+                                                        v-if="center.isPattern()"
+                                                >
+                                                    <v-list-item-action>
+                                                        <v-icon>stars</v-icon>
+                                                    </v-list-item-action>
+                                                    <v-list-item-title>
+                                                        {{$t('use')}}
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item :href="center.uri().url()"
+                                                             target="_blank">
+                                                    <v-list-item-action>
+                                                        <v-icon>open_in_new</v-icon>
+                                                    </v-list-item-action>
+                                                    <v-list-item-title>
+                                                        {{$t('userhome:open')}}
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item @click="copyUrl(center)">
+                                                    <v-list-item-action>
+                                                        <v-icon>link</v-icon>
+                                                    </v-list-item-action>
+                                                    <v-list-item-title>
+                                                        {{$t('userhome:copy')}}
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item
+                                                        @click.prevent="removeCenter(center, index)">
+                                                    <v-list-item-action>
+                                                        <v-icon>visibility_off</v-icon>
+                                                    </v-list-item-action>
+                                                    <v-list-item-title>
+                                                        {{$t('userhome:remove')}}
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                            </v-list>
+                                        </v-menu>
+                                    </v-list-item-action>
+                                </v-list-item>
+                            </v-list>
+                        </v-hover>
                         <div style="position:absolute;right:40px;z-index:0;" v-show="center.isSwiping">
                             <v-icon color="white" large style="margin-top:-115px;">
                                 delete
@@ -487,6 +484,7 @@
 
 <style scoped>
     .swipe-container {
+        margin-top: 5px;
         background-color: #F44336;
     }
 
