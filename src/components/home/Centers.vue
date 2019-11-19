@@ -15,7 +15,13 @@
                     </template>
                     <span>{{$t('userhome:createInfo')}}</span>
                 </v-tooltip>
-                <v-layout wrap class="pt-0">
+                <v-layout wrap
+                          class="pt-0"
+                          style="margin-top:5px;"
+                          :class="{
+                            'swipe-container': centers && centers.length && loaded
+                          }"
+                >
                     <v-flex xs12 v-if="centers && centers.length === 0" class="vh-center">
                         <h3 class="title vh-center font-italic mt-10" v-if="centers.length === 0">
                             {{$t('userhome:noBubbles')}}
@@ -33,106 +39,124 @@
                     </v-flex>
                     <v-flex xs12 :md3="$store.state.areCentersInGridView"
                             v-for="(center, index) in centers" v-if="loaded && centers"
+                            :key="center.uiId"
+                            :id="'center-' + center.uiId"
+                            class="center-flex"
                     >
-                        <v-hover>
-                            <v-list two-line slot-scope="{ hover }">
-                                <v-list-item @click="go($event, center)">
-                                    <v-list-item-content>
-                                        <v-list-item-title class="subtitle-1 font-weight-bold">
-                                            <v-badge color="transparent">
-                                                <template v-slot:badge v-if="center.showIcon()">
-                                                    <v-icon>
-                                                        {{center.getIcon()}}
-                                                    </v-icon>
-                                                </template>
-                                                {{center.getLabel()}}
-                                            </v-badge>
-                                            <v-icon class="ml-4 mb-1 float-right" color="grey"
-                                                    v-if="!center.isPattern()"
-                                                    small>
-                                                {{center.getShareIcon()}}
-                                            </v-icon>
-                                            <small class="grey--text font-weight-normal font-italic mr-1 float-right"
-                                                   v-if="$vuetify.breakpoint.mdAndUp && center.lastVisit">
-                                                {{center.lastVisit()}}
-                                            </small>
-                                        </v-list-item-title>
-                                        <v-list-item-subtitle class="mt-1">
-                                            <div v-for="(value, key) in center.getContext()"
-                                                 v-if="center.contextSearch !== ''"
-                                                 class="around-list-item">
-                                                {{value}}
-                                            </div>
-                                        </v-list-item-subtitle>
-                                        <v-list-item-subtitle
-                                                v-if="flow !== 'centers'">
+                        <div>
+                            <v-hover>
+                                <v-list two-line slot-scope="{ hover }" class="center-list">
+                                    <v-list-item @click="go($event, center)"
+                                                 v-touch="{
+                                                    left: (e) => swipe(e, center)
+                                            }"
+                                                 @touchstart="touchstart"
+                                                 @touchmove="touchmove($event, center)"
+                                                 @touchend="touchend($event, center)"
+                                    >
+                                        <v-list-item-content>
+                                            <v-list-item-title class="subtitle-1 font-weight-bold">
+                                                <v-badge color="transparent">
+                                                    <template v-slot:badge v-if="center.showIcon()">
+                                                        <v-icon>
+                                                            {{center.getIcon()}}
+                                                        </v-icon>
+                                                    </template>
+                                                    {{center.getLabel()}}
+                                                </v-badge>
+                                                <v-icon class="ml-4 mb-1 float-right" color="grey"
+                                                        v-if="!center.isPattern()"
+                                                        small>
+                                                    {{center.getShareIcon()}}
+                                                </v-icon>
+                                                <small class="grey--text font-weight-normal font-italic mr-1 float-right"
+                                                       v-if="$vuetify.breakpoint.mdAndUp && center.lastVisit">
+                                                    {{center.lastVisit()}}
+                                                </small>
+                                            </v-list-item-title>
+                                            <v-list-item-subtitle class="mt-1">
+                                                <div v-for="(value, key) in center.getContext()"
+                                                     v-if="center.contextSearch !== ''"
+                                                     class="around-list-item">
+                                                    {{value}}
+                                                </div>
+                                            </v-list-item-subtitle>
+                                            <v-list-item-subtitle
+                                                    v-if="flow !== 'centers'">
 
-                                            <router-link :to="'/user/' + center.uri().getOwner()"
-                                                         class="no-style-link secondary-color" @click.stop
-                                                         color="secondary">
-                                                {{center.uri().getOwner()}}
-                                            </router-link>
-                                        </v-list-item-subtitle>
-                                        <!--<v-list-item-s  ub-title class="text-xs-right" >-->
-                                        <!--{{center.lastVisit()}}-->
-                                        <!--</v-list-item-subtitle>-->
-                                    </v-list-item-content>
-                                    <v-list-item-action @click.stop
-                                                        style="min-width:40px;">
-                                        <v-menu offset-y v-if="isOwner && (hover || center.menu || $vuetify.breakpoint.smAndDown || !$store.state.areCentersInGridView)"
-                                                left
-                                                v-model="center.menu">
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn icon small v-on="on">
-                                                    <v-icon color="secondary">
-                                                        more_vert
-                                                    </v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <v-list>
-                                                <v-list-item
-                                                        @click.prevent="usePattern(center)"
-                                                        v-if="center.isPattern()"
-                                                >
-                                                    <v-list-item-action>
-                                                        <v-icon>stars</v-icon>
-                                                    </v-list-item-action>
-                                                    <v-list-item-title>
-                                                        {{$t('use')}}
-                                                    </v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item :href="center.uri().url()"
-                                                             target="_blank">
-                                                    <v-list-item-action>
-                                                        <v-icon>open_in_new</v-icon>
-                                                    </v-list-item-action>
-                                                    <v-list-item-title>
-                                                        {{$t('userhome:open')}}
-                                                    </v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item @click="copyUrl(center)">
-                                                    <v-list-item-action>
-                                                        <v-icon>link</v-icon>
-                                                    </v-list-item-action>
-                                                    <v-list-item-title>
-                                                        {{$t('userhome:copy')}}
-                                                    </v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item
-                                                        @click.prevent="removeCenter(center, index)">
-                                                    <v-list-item-action>
-                                                        <v-icon>visibility_off</v-icon>
-                                                    </v-list-item-action>
-                                                    <v-list-item-title>
-                                                        {{$t('userhome:remove')}}
-                                                    </v-list-item-title>
-                                                </v-list-item>
-                                            </v-list>
-                                        </v-menu>
-                                    </v-list-item-action>
-                                </v-list-item>
-                            </v-list>
-                        </v-hover>
+                                                <router-link :to="'/user/' + center.uri().getOwner()"
+                                                             class="no-style-link secondary-color" @click.stop
+                                                             color="secondary">
+                                                    {{center.uri().getOwner()}}
+                                                </router-link>
+                                            </v-list-item-subtitle>
+                                            <!--<v-list-item-s  ub-title class="text-xs-right" >-->
+                                            <!--{{center.lastVisit()}}-->
+                                            <!--</v-list-item-subtitle>-->
+                                        </v-list-item-content>
+                                        <v-list-item-action @click.stop
+                                                            style="min-width:40px;" v-if="$vuetify.breakpoint.mdAndUp">
+                                            <v-menu offset-y
+                                                    v-if="isOwner && (hover || center.menu || !$store.state.areCentersInGridView)"
+                                                    left
+                                                    v-model="center.menu">
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn icon small v-on="on">
+                                                        <v-icon color="secondary">
+                                                            more_vert
+                                                        </v-icon>
+                                                    </v-btn>
+                                                </template>
+                                                <v-list>
+                                                    <v-list-item
+                                                            @click.prevent="usePattern(center)"
+                                                            v-if="center.isPattern()"
+                                                    >
+                                                        <v-list-item-action>
+                                                            <v-icon>stars</v-icon>
+                                                        </v-list-item-action>
+                                                        <v-list-item-title>
+                                                            {{$t('use')}}
+                                                        </v-list-item-title>
+                                                    </v-list-item>
+                                                    <v-list-item :href="center.uri().url()"
+                                                                 target="_blank">
+                                                        <v-list-item-action>
+                                                            <v-icon>open_in_new</v-icon>
+                                                        </v-list-item-action>
+                                                        <v-list-item-title>
+                                                            {{$t('userhome:open')}}
+                                                        </v-list-item-title>
+                                                    </v-list-item>
+                                                    <v-list-item @click="copyUrl(center)">
+                                                        <v-list-item-action>
+                                                            <v-icon>link</v-icon>
+                                                        </v-list-item-action>
+                                                        <v-list-item-title>
+                                                            {{$t('userhome:copy')}}
+                                                        </v-list-item-title>
+                                                    </v-list-item>
+                                                    <v-list-item
+                                                            @click.prevent="removeCenter(center, index)">
+                                                        <v-list-item-action>
+                                                            <v-icon>visibility_off</v-icon>
+                                                        </v-list-item-action>
+                                                        <v-list-item-title>
+                                                            {{$t('userhome:remove')}}
+                                                        </v-list-item-title>
+                                                    </v-list-item>
+                                                </v-list>
+                                            </v-menu>
+                                        </v-list-item-action>
+                                    </v-list-item>
+                                </v-list>
+                            </v-hover>
+                        </div>
+                        <div style="position:absolute;right:40px;z-index:0;" v-show="center.isSwiping">
+                            <v-icon color="white" large style="margin-top:-115px;">
+                                delete
+                            </v-icon>
+                        </div>
                     </v-flex>
                     <v-flex xs12 :md3="$store.state.areCentersInGridView"
                             v-for="i in 8" v-if="isBottom">
@@ -160,6 +184,15 @@
                 </v-layout>
             </v-card-text>
         </v-card>
+        <v-snackbar v-model="removeSnackbar">
+            {{$t('centers:removedCenter')}}
+            <v-btn
+                    text
+                    @click="cancelRemove()"
+            >
+                {{$t('cancel')}}
+            </v-btn>
+        </v-snackbar>
     </v-card>
 </template>
 
@@ -170,26 +203,41 @@
     import PatternService from "@/pattern/PatternService";
     import LoadingFlow from "@/LoadingFlow";
     import IdUri from '@/IdUri'
+    import Touch from 'vuetify/es5/directives/touch'
 
     const ADDRESS_BAR_HEIGHT = 60;
+
+    let touchStartX = 0;
 
     export default {
         name: "Centers",
         props: ['flow', 'isOwner', 'isFriend'],
+        directives: {
+            Touch
+        },
         data: function () {
-            I18n.i18next.addResources("en", "centers", {});
-            I18n.i18next.addResources("en", "centers", {});
+            I18n.i18next.addResources("en", "centers", {
+                removedCenter: 'Removed from the list of centers'
+            });
+            I18n.i18next.addResources("fr", "centers", {
+                removedCenter: 'Enlevé de la liste des centres'
+            });
             return {
                 loaded: false,
                 hasLoadedAll: false,
                 centers: null,
                 isBottom: false,
-                scrollTopWhenCentersAdded: 0
+                scrollTopWhenCentersAdded: 0,
+                isSwiping: false,
+                removeSnackbar: false,
+                removedCenter: null,
+                removeCenterIndex: null
             }
         },
         mounted: function () {
             this.loadData().then((response) => {
                 this.centers = CenterGraphElement.fromServerFormat(response.data).map((center) => {
+                    center.isSwiping = false;
                     center.labelSearch = center.getLabel();
                     center.contextSearch = Object.values(center.getContext()).join(' ');
                     return center;
@@ -201,6 +249,37 @@
             });
         },
         methods: {
+            touchstart: function (event) {
+                touchStartX = event.touches[0].pageX;
+            },
+            touchmove: function (event, center) {
+                const margin = (touchStartX - event.touches[0].pageX) * -1;
+                if (margin > 0) {
+                    center.isSwiping = false;
+                    return;
+                }
+                document.getElementById(
+                    'center-' + center.uiId
+                ).style['margin-left'] = margin + "px";
+                center.isSwiping = true;
+            },
+            touchend: function (event, center) {
+                const centerFlex = document.getElementById(
+                    'center-' + center.uiId
+                );
+                centerFlex.style['margin-left'] = "0";
+                center.isSwiping = false;
+            },
+            swipe: function (event, center) {
+                const centerFlex = document.getElementById(
+                    'center-' + center.uiId
+                );
+                centerFlex.style['margin-left'] = "0";
+                center.isSwiping = false;
+                if (event.touchendX + 50 < centerFlex.getBoundingClientRect().width / 2) {
+                    this.removeCenter(center);
+                }
+            },
             loadData: function () {
                 switch (this.flow) {
                     case "centers" : {
@@ -278,9 +357,24 @@
                 while (l--) {
                     let center = this.centers[l];
                     if (center.getUri() === centerToRemove.getUri()) {
+                        this.removedCenter = center;
+                        this.removeSnackbar = true;
+                        this.removeCenterIndex = l;
                         this.centers.splice(l, 1);
                     }
                 }
+            },
+            cancelRemove: function () {
+                this.removeSnackbar = false;
+                CenterGraphElementService.makeCenterWithUriAndLastCenterDate(
+                    this.removedCenter.getUri(),
+                        this.removedCenter.getLastCenterDateTime()
+                );
+                this.centers.splice(
+                    this.removeCenterIndex,
+                    0,
+                    this.removedCenter
+                );
             },
             isBottomVisible() {
                 const scrollY = document.scrollingElement.scrollTop;
@@ -301,6 +395,7 @@
                         this.hasLoadedAll = true
                     }
                     CenterGraphElement.fromServerFormat(response.data).map((center) => {
+                        center.isSwiping = false;
                         center.labelSearch = center.getLabel();
                         center.contextSearch = Object.values(center.getContext()).join(' ');
                         return center;
@@ -372,4 +467,17 @@
 </script>
 
 <style scoped>
+    .swipe-container {
+        background-color: #F44336;
+    }
+
+    .center-flex {
+        margin-bottom: -5px;
+        margin-top: -5px;
+    }
+
+    .center-list {
+        border-radius: 0;
+    }
+
 </style>

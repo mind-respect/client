@@ -66,6 +66,16 @@ export default {
             UserService.currentUserUri() + "/center-elements/friend/" + friendName + "/skip/" + nbSkip
         );
     },
+
+    makeCenterWithUriAndLastCenterDate: function (centerUri, lastCenterDateTime) {
+        return Service.geApi().post(
+            centerUri + "/center",
+            {
+                lastCenterDate: lastCenterDateTime
+            }
+        );
+    },
+
     removeCenterWithUri: function (centerUri) {
         return Service.geApi().delete(
             centerUri + "/center"

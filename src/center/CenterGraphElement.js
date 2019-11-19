@@ -84,6 +84,11 @@ CenterGraphElement.prototype.getLastCenterDate = function () {
     return new Date(this.centerGraphElementServerFormat.lastCenterDate);
 };
 
+CenterGraphElement.prototype.getLastCenterDateTime = function () {
+    const lastCenterDate = this.getLastCenterDate();
+    return lastCenterDate.getTime() + (lastCenterDate.getTimezoneOffset() * 60000);
+};
+
 CenterGraphElement.prototype.getShareLevel = function () {
     return this.centerGraphElementServerFormat.shareLevel;
 };
