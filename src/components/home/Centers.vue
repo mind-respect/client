@@ -258,7 +258,7 @@
             },
             touchmove: function (event, center) {
                 const margin = (touchStartX - event.touches[0].pageX) * -1;
-                if (margin > 0) {
+                if (margin > - 10) {
                     center.isSwiping = false;
                     return;
                 }
