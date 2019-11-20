@@ -180,7 +180,7 @@
                 </v-layout>
             </v-card-text>
         </v-card>
-        <v-snackbar v-model="removeSnackbar">
+        <v-snackbar v-model="removeSnackbar" color="secondary">
             {{$t('centers:removedCenter')}}
             <v-btn
                     text
