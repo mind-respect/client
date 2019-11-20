@@ -321,10 +321,12 @@
                     await this.$nextTick();
                     await this.$nextTick();
                     this.strokeColor = Color.SkeletonColor;
-                    this.svg = new GraphDraw(this.center).build();
-                    this.redrawKey = Math.random();
-                    Breakpoint.set(this.$vuetify.breakpoint);
-                    Scroll.goToGraphElement(this.center, true);
+                    requestAnimationFrame(() => {
+                        this.svg = new GraphDraw(this.center).build();
+                        this.redrawKey = Math.random();
+                        Breakpoint.set(this.$vuetify.breakpoint);
+                        Scroll.goToGraphElement(this.center, true);
+                    });
                 });
             }
             let promise = center.isMeta() ?
@@ -627,7 +629,7 @@
         justify-content: center;
         align-items: center;
         flex-shrink: 0;
-        padding:0;
+        padding: 0;
     }
 
     [draggable=true] {

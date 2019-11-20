@@ -11,6 +11,7 @@ import Icon from '@/Icon'
 import Scroll from '@/Scroll'
 import Vue from 'vue'
 import GraphUi from '@/graph/GraphUi'
+import CurrentSubGraph from "@/graph/CurrentSubGraph";
 
 const MoveRelation = {
     "Parent": "parent",
@@ -417,8 +418,15 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             relation
         );
     }
-    // let elm = this.getHtml();
-    // const first = elm.getBoundingClientRect();
+    let previousTop = document.scrollingElement.scrollTop;
+    let previousLeft = document.scrollingElement.scrollLeft;
+    const firstBoxes = {};
+    CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
+        const html = graphElement.getHtml();
+        if (html) {
+            firstBoxes[graphElement.getId()] = html.getBoundingClientRect();
+        }
+    });
     if (MoveRelation.Parent === relation) {
         if (otherBubble.isGroupRelation()) {
             otherBubble.expand();
@@ -449,27 +457,35 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             index
         );
     }
-    // await Vue.nextTick();
-    // const last = elm.getBoundingClientRect();
-    // const deltaX = first.left - last.left;
-    // const deltaY = first.top - last.top;
-    // // const deltaW = first.width / last.width;
-    // // const deltaH = first.height / last.height;
-    //
-    // elm.animate([{
-    //     transformOrigin: 'top left',
-    //     transform: `
-    //     translate(${deltaX}px, ${deltaY}px)
-    //     `
-    // }, {
-    //     transformOrigin: 'top left',
-    //     transform: 'none'
-    // }], {
-    //     duration: 300,
-    //     easing: 'ease-in-out',
-    //     fill: 'both'
-    // });
-    Store.dispatch("redraw");
+    await Vue.nextTick();
+
+    CurrentSubGraph.get().center.draw = false;
+    requestAnimationFrame(() => {
+        CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
+            const html = graphElement.getHtml();
+            if (!html) {
+                return;
+            }
+            const firstBox = firstBoxes[graphElement.getId()];
+            const lastBox = html.getBoundingClientRect();
+            const deltaX = firstBox.left - lastBox.left;
+            const deltaY = firstBox.top - lastBox.top;
+            html.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+            html.style.transition = 'transform 0s';
+            requestAnimationFrame(() => {
+                html.style.transform = '';
+                html.style.transition = 'transform 500ms';
+            });
+        });
+        setTimeout(() => {
+            CurrentSubGraph.get().center.draw = true;
+            Store.dispatch("redraw");
+            document.scrollingElement.style['scroll-behavior'] = 'smooth';
+            document.scrollingElement.scrollTop = previousTop;
+            document.scrollingElement.scrollLeft = previousLeft;
+            document.scrollingElement.style['scroll-behavior'] = 'inherit';
+        }, 650)
+    });
 };
 
 FriendlyResource.FriendlyResource.prototype.revertIdentificationIntegration = function (identifier) {
