@@ -207,15 +207,6 @@ GraphElementController.prototype.collapseCanDo = function () {
 GraphElementController.prototype.collapse = function () {
     this.model().defineScrollPosition();
     this.model().collapse();
-    /*
-    using setTimeout because when I collapsed a center bubble it scrolled nowhere out of view
-    as if the center html was not present at the time of scrolling
-     */
-    setTimeout(() => {
-        Vue.nextTick(() => {
-            Scroll.goToGraphElement(this.model());
-        })
-    }, 100)
 };
 
 GraphElementController.prototype.cutCanDo = function () {
