@@ -458,7 +458,6 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         );
     }
     await Vue.nextTick();
-
     CurrentSubGraph.get().center.draw = false;
     requestAnimationFrame(() => {
         CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
@@ -480,10 +479,10 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         setTimeout(() => {
             CurrentSubGraph.get().center.draw = true;
             Store.dispatch("redraw");
-            document.scrollingElement.style['scroll-behavior'] = 'smooth';
-            document.scrollingElement.scrollTop = previousTop;
-            document.scrollingElement.scrollLeft = previousLeft;
-            document.scrollingElement.style['scroll-behavior'] = 'inherit';
+            // document.scrollingElement.style['scroll-behavior'] = 'smooth';
+            // document.scrollingElement.scrollTop = previousTop;
+            // document.scrollingElement.scrollLeft = previousLeft;
+            // document.scrollingElement.style['scroll-behavior'] = 'inherit';
         }, 650)
     });
 };

@@ -409,7 +409,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
             if (avoidCenter !== true) {
                 setTimeout(() => {
                     Scroll.centerBubbleForTreeIfApplicable(this.model());
-                    Store.dispatch("redraw");
+                    //no need to redraw here because this.model().expand eventually triggers a redraw
                 }, 100);
             }
         });

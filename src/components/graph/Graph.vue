@@ -52,12 +52,18 @@
                     </v-layout>
                 </v-flex>
             </v-layout>
-            <div class="svg-container" v-if="redrawKey" :key="redrawKey"
-                 v-show="!$store.state.isEditFlow && center.draw && !$store.state.isLoading && !center.isEditFlow">
+            <div
+                    class="svg-container"
+                    id="graph-svg-container"
+            >
                 <svg
+                        v-if="redrawKey"
+                        :key="redrawKey"
+                        v-show="!$store.state.isEditFlow && center.draw && !$store.state.isLoading && !center.isEditFlow"
                         style="position:absolute;overflow:visible; top:0; left:0; height:100%; width:100%;z-index:-1;"
                         version="1.1"
-                        xmlns="http://www.w3.org/2000/svg">
+                        xmlns="http://www.w3.org/2000/svg"
+                >
                     <path
                             :d="svg"
                             fill="none" :stroke="strokeColor" :stroke-width="strokeWidth"
@@ -241,6 +247,8 @@
     import GraphUi from '@/graph/GraphUi'
     import VertexSkeleton from '@/vertex/VertexSkeleton'
     import RelationSkeleton from '@/edge/RelationSkeleton'
+
+    let insideSvgOpacityTransition = false;
 
     export default {
         name: "Graph",
@@ -508,6 +516,20 @@
                 await this.$nextTick();
                 this.svg = new GraphDraw(this.center).build();
                 this.redrawKey = Math.random();
+                await this.$nextTick();
+                if (!insideSvgOpacityTransition) {
+                    insideSvgOpacityTransition = true;
+                    const graphSvgContainer = document.getElementById("graph-svg-container");
+                    graphSvgContainer.style.opacity = '0';
+                    graphSvgContainer.style.transition = 'opacity 0s';
+                    requestAnimationFrame(() => {
+                        graphSvgContainer.style.opacity = '1';
+                        graphSvgContainer.style.transition = 'opacity 500ms';
+                        setTimeout(() => {
+                            insideSvgOpacityTransition = false;
+                        }, 500)
+                    });
+                }
             },
             isPatternFlow: function () {
                 this.usePatternSheet = this.$store.state.isPatternFlow;
@@ -688,4 +710,5 @@
     .use-pattern-bottom-sheet-expanded {
         margin-left: 385px !important;
     }
+
 </style>
