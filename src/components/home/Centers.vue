@@ -253,6 +253,9 @@
         },
         methods: {
             touchstart: function (event, center) {
+                if (this.flow !== 'centers' || !this.isOwner) {
+                    return;
+                }
                 touchStartX = event.touches[0].pageX;
                 touchStartScrollY = document.scrollingElement.scrollTop + window.innerHeight + document.documentElement.clientHeight;
                 allowSwipeMenu = true;
@@ -263,11 +266,14 @@
                 deleteIcon.style.top = (centerRect.y + centerRect.height / 2 - 20) + "px";
             },
             touchmove: function (event, center) {
+                if (this.flow !== 'centers' || !this.isOwner) {
+                    return;
+                }
                 if (!allowSwipeMenu || touchStartScrollY !== document.scrollingElement.scrollTop + window.innerHeight + document.documentElement.clientHeight) {
                     this.isSwiping = false;
                     this.$refs[
-                        'center-' + center.uiId
-                    ][0].style['margin-left'] = 0;
+                    'center-' + center.uiId
+                        ][0].style['margin-left'] = 0;
                     allowSwipeMenu = false;
                     return;
                 }
@@ -275,26 +281,32 @@
                 if (margin > -10) {
                     this.isSwiping = false;
                     this.$refs[
-                        'center-' + center.uiId
-                    ][0].style['margin-left'] = 0;
+                    'center-' + center.uiId
+                        ][0].style['margin-left'] = 0;
                     return;
                 }
                 this.$refs[
-                    'center-' + center.uiId
-                ][0].style['margin-left'] = margin + "px";
+                'center-' + center.uiId
+                    ][0].style['margin-left'] = margin + "px";
                 this.isSwiping = true;
             },
             touchend: function (event, center) {
+                if (this.flow !== 'centers' || !this.isOwner) {
+                    return;
+                }
                 const centerFlex = this.$refs[
-                    'center-' + center.uiId
-                ][0];
+                'center-' + center.uiId
+                    ][0];
                 centerFlex.style['margin-left'] = "0";
                 this.isSwiping = false;
             },
             swipe: function (event, center) {
+                if (this.flow !== 'centers' || !this.isOwner) {
+                    return;
+                }
                 const centerFlex = this.$refs[
-                    'center-' + center.uiId
-                ][0];
+                'center-' + center.uiId
+                    ][0];
                 centerFlex.style['margin-left'] = "0";
                 this.isSwiping = false;
                 if (allowSwipeMenu && event.touchendX + 100 < centerFlex.getBoundingClientRect().width / 2) {
