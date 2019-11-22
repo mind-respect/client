@@ -648,9 +648,14 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isCh
     this.isExpanded = true;
     this.isCollapsed = false;
     this.refreshChildren();
-    // if (!avoidCenter && !isChildExpand) {
-    //     Scroll.centerBubbleForTreeOrNotIfApplicable(this);
-    // }
+    if (avoidCenter !== true && !isChildExpand) {
+        Vue.nextTick(()=>{
+            setTimeout(() => {
+                Scroll.centerBubbleForTreeIfApplicable(this);
+                //no need to redraw here because this.refreshChildren() triggers a redraw
+            }, 100);
+        })
+    }
     // this.draw = true;
     // Vue.nextTick(function(){
     //     Store.dispatch("redraw")

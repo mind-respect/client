@@ -403,15 +403,9 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
         promise = this.expandDescendantsIfApplicable();
     }
     return promise.then(() => {
-        this.model().expand(true, isChildExpand);
+        this.model().expand(avoidCenter, isChildExpand);
         Vue.nextTick(() => {
             LoadingFlow.leave();
-            if (avoidCenter !== true) {
-                setTimeout(() => {
-                    Scroll.centerBubbleForTreeIfApplicable(this.model());
-                    //no need to redraw here because this.model().expand eventually triggers a redraw
-                }, 100);
-            }
         });
     });
 };
