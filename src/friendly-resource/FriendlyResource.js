@@ -478,7 +478,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         });
         setTimeout(() => {
             CurrentSubGraph.get().center.draw = true;
-            Store.dispatch("redraw");
+            Store.dispatch("redraw", {fadeIn: true});
             // document.scrollingElement.style['scroll-behavior'] = 'smooth';
             // document.scrollingElement.scrollTop = previousTop;
             // document.scrollingElement.scrollLeft = previousLeft;
@@ -649,7 +649,7 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isCh
     this.isCollapsed = false;
     this.refreshChildren();
     if (avoidCenter !== true && !isChildExpand) {
-        Vue.nextTick(()=>{
+        Vue.nextTick(() => {
             setTimeout(() => {
                 Scroll.centerBubbleForTreeIfApplicable(this);
                 //no need to redraw here because this.refreshChildren() triggers a redraw

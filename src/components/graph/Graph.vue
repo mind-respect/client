@@ -517,7 +517,7 @@
                 this.svg = new GraphDraw(this.center).build();
                 this.redrawKey = Math.random();
                 await this.$nextTick();
-                if (!insideSvgOpacityTransition) {
+                if (this.$store.state.redraws.fadeIn && !insideSvgOpacityTransition) {
                     insideSvgOpacityTransition = true;
                     const graphSvgContainer = document.getElementById("graph-svg-container");
                     graphSvgContainer.style.opacity = '0';

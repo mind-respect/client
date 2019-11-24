@@ -91,11 +91,8 @@ const Store = new Vuex.Store({
         setIsPatternFlow: function (state, isPatternFlow) {
             state.isPatternFlow = isPatternFlow;
         },
-        redraw: function (state, spec) {
-            state.redraws = {
-                refresh: Math.random(),
-                spec: spec
-            };
+        redraw: function (state, options) {
+            state.redraws = options || {};
         },
         zoom: function (state, zoom) {
             state.zoom = zoom;
@@ -168,8 +165,8 @@ const Store = new Vuex.Store({
         setIsPatternFlow: function (action, setIsPatternFlow) {
             action.commit('setIsPatternFlow', setIsPatternFlow);
         },
-        redraw: function (action, spec) {
-            action.commit('redraw', spec);
+        redraw: function (action, options) {
+            action.commit('redraw', options);
         },
         zoom: function (action, zoom) {
             action.commit('zoom', zoom);
