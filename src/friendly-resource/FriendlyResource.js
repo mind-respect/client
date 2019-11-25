@@ -417,8 +417,9 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             relation
         );
     }
-    let previousTop = document.scrollingElement.scrollTop;
-    let previousLeft = document.scrollingElement.scrollLeft;
+    const centerHtml = CurrentSubGraph.get().center.getHtml();
+    let firstOffsetDivLeft = centerHtml.offsetParent.offsetParent.offsetLeft;
+    let firstOffsetDivTop = centerHtml.offsetParent.offsetParent.offsetTop;
     const firstBoxes = {};
     CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
         const html = graphElement.getHtml();
@@ -476,12 +477,21 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             });
         });
         setTimeout(() => {
+            let closestChildVertex = this.getClosestChildrenOfType(GraphElementType.Vertex)[0];
+            if (Scroll.isBubbleTreeFullyOnScreen(closestChildVertex)) {
+                const html = CurrentSubGraph.get().center.getHtml();
+                let lastOffsetDiv = html.offsetParent.offsetParent;
+                let deltaX = firstOffsetDivLeft - lastOffsetDiv.offsetLeft;
+                let deltaY = firstOffsetDivTop - lastOffsetDiv.offsetTop;
+                document.scrollingElement.style['scroll-behavior'] = 'smooth';
+                document.scrollingElement.scrollLeft = document.scrollingElement.scrollLeft - deltaX;
+                document.scrollingElement.scrollTop = document.scrollingElement.scrollTop - deltaY;
+                document.scrollingElement.style['scroll-behavior'] = 'inherit';
+            } else {
+                Scroll.centerBubbleForTreeIfApplicable(closestChildVertex);
+            }
             Store.dispatch("redraw", {fadeIn: true});
-            // document.scrollingElement.style['scroll-behavior'] = 'smooth';
-            // document.scrollingElement.scrollTop = previousTop;
-            // document.scrollingElement.scrollLeft = previousLeft;
-            // document.scrollingElement.style['scroll-behavior'] = 'inherit';
-        }, 650)
+        }, 700)
     });
 };
 

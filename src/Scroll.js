@@ -166,16 +166,7 @@ const Scroll = {
         if (bubble.isEditFlow) {
             return Promise.resolve();
         }
-        let isDeepestElementOnScreen = true;
-        if (isForTree) {
-            let deepestElement = bubble.getDeepestDescendant().getLabelHtml();
-            isDeepestElementOnScreen = deepestElement && Scroll.isElementFullyOnScreen(deepestElement);
-        }
-        let element = bubble.getLabelHtml();
-        if (!element) {
-            return Promise.resolve();
-        }
-        if (!isDeepestElementOnScreen || !Scroll.isElementFullyOnScreen(element)) {
+        if ((isForTree && !Scroll.isBubbleTreeFullyOnScreen(bubble)) || !Scroll.isElementFullyOnScreen(bubble.getLabelHtml())) {
             return Scroll.goToGraphElement(bubble)
         } else {
             return Promise.resolve();
@@ -184,7 +175,22 @@ const Scroll = {
 
 };
 
+Scroll.isBubbleTreeFullyOnScreen = function (bubble) {
+    let html = bubble.getHtml();
+    if(!html){
+        return true;
+    }
+    return Scroll.isElementFullyOnScreen(
+        html.closest('.vertex-tree-container')
+    ) && Scroll.isElementFullyOnScreen(
+        bubble.getLabelHtml()
+    );
+};
+
 Scroll.isElementFullyOnScreen = function (elem) {
+    if (!elem) {
+        return true;
+    }
     let rect = elem.getBoundingClientRect();
     let windowHeight = Math.max(window.innerHeight, document.documentElement.clientHeight);
     let windowWidth = Math.max(window.innerWidth, document.documentElement.clientWidth);

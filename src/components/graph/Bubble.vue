@@ -105,6 +105,7 @@
                                                     v-html="label()"
                                                     @focus="focus"
                                                     @keydown="keydown"
+                                                    @keyup="keyup"
                                                     @paste="paste"
                                                     :style="labelFont"
                                                     ref="vertexLabel"
@@ -208,6 +209,7 @@
                                                  v-if="!bubble.isMetaRelation()"
                                                  v-text="label()"
                                                  @keydown="keydown"
+                                                 @keyup="keyup"
                                                  :style="labelFont"
                                                  :class="{
                                                         'unselectable' : !isEditFlow
@@ -489,9 +491,6 @@
                 }
                 this.bubble.isEditFlow = true;
                 this.isEditFlow = true;
-                this.$store.dispatch("redraw", {
-                    'fadeOut': true
-                });
                 GraphUi.disableDragScroll();
                 this.bubble.focus(event);
             },
@@ -505,9 +504,6 @@
                     document.title = this.bubble.getTextOrDefault() + " | MindRespect";
                 }
                 GraphUi.enableDragScroll();
-                this.$store.dispatch("redraw", {
-                    'fadeIn': true
-                });
                 this.$store.dispatch("similarBubblesRefresh");
             },
             focus: function () {
@@ -519,9 +515,6 @@
                 this.bubble.isEditFlow = true;
                 this.$nextTick(() => {
                     GraphUi.disableDragScroll();
-                    this.$store.dispatch("redraw", {
-                        'fadeOut': true
-                    });
                 });
             },
             keydown: function (event) {
@@ -529,6 +522,10 @@
                     event.preventDefault();
                     return this.bubble.getLabelHtml().blur();
                 }
+                // this.$store.dispatch("redraw");
+            },
+            keyup: function () {
+                this.$store.dispatch("redraw");
             },
             mouseDown: function (event) {
                 if (this.isEditFlow) {
