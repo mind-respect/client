@@ -33,7 +33,6 @@ const Store = new Vuex.Store({
         isDescriptionFlow: false,
         isListViewFlow: false,
         isFontFlow: false,
-        isEditFlow: false,
         isPatternFlow: false,
         redraws: Math.random(),
         sideMenuFlow: false,
@@ -42,7 +41,8 @@ const Store = new Vuex.Store({
         labelRefresh: Math.random(),
         noteRefresh: Math.random(),
         tagRefresh: Math.random(),
-        shareRefresh: Math.random()
+        shareRefresh: Math.random(),
+        similarBubblesRefresh: Math.random()
     },
     mutations: {
         setUser: function (state, user) {
@@ -84,9 +84,6 @@ const Store = new Vuex.Store({
         },
         setIsFontFlow: function (state, isFontFlow) {
             state.isFontFlow = isFontFlow;
-        },
-        setIsEditFlow: function (state, isEditFlow) {
-            state.isEditFlow = isEditFlow;
         },
         setIsPatternFlow: function (state, isPatternFlow) {
             state.isPatternFlow = isPatternFlow;
@@ -132,6 +129,9 @@ const Store = new Vuex.Store({
         },
         shareRefresh: function (state, key) {
             state.shareRefresh = key;
+        },
+        similarBubblesRefresh: function (state, key) {
+            state.similarBubblesRefresh = key;
         }
     },
     actions: {
@@ -158,9 +158,6 @@ const Store = new Vuex.Store({
         },
         setIsFontFlow: function (action, isFontFlow) {
             action.commit('setIsFontFlow', isFontFlow);
-        },
-        setIsEditFlow: function (action, setIsEditFlow) {
-            action.commit('setIsEditFlow', setIsEditFlow);
         },
         setIsPatternFlow: function (action, setIsPatternFlow) {
             action.commit('setIsPatternFlow', setIsPatternFlow);
@@ -200,6 +197,9 @@ const Store = new Vuex.Store({
         },
         shareRefresh: function (action) {
             action.commit('shareRefresh', IdUri.uuid());
+        },
+        similarBubblesRefresh: function (action) {
+            action.commit('similarBubblesRefresh', IdUri.uuid());
         }
     }
 });

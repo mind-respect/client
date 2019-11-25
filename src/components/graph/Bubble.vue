@@ -21,9 +21,6 @@
                         </Children>
                         <ChildNotice :bubble="bubble"
                                      @expanded="refreshChildren()"
-                                     :class="{
-                                        'blur-overlay': !isEditFlow && $store.state.isEditFlow
-                                     }"
                                      v-if="canExpand() && !canShowChildren()"></ChildNotice>
                     </div>
                 </div>
@@ -76,8 +73,7 @@
                                             :class="{
                                             'reverse': isLeft,
                                             'desktop': $vuetify.breakpoint.lgAndUp,
-                                            'mobile': $vuetify.breakpoint.mdAndDown,
-                                            'blur-overlay': !isEditFlow && $store.state.isEditFlow
+                                            'mobile': $vuetify.breakpoint.mdAndDown
                                     }"
                                             @click="click"
                                             @mouseup="mouseup"
@@ -161,8 +157,7 @@
                                 'pl-12 pr-1': bubble.isEdge() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
                                 'pl-1 pr-12': bubble.isEdge() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
                                 'pl-6': (bubble.isGroupRelation() && !isLeft),
-                                'pr-6': (bubble.isGroupRelation() && isLeft),
-                                'blur-overlay': !isEditFlow && $store.state.isEditFlow
+                                'pr-6': (bubble.isGroupRelation() && isLeft)
                              }"
                         >
                             <!--                            <v-skeleton-loader type="button"-->
@@ -247,10 +242,6 @@
                         </Children>
                         <ChildNotice :bubble="bubble"
                                      @expanded="refreshChildren()"
-                                     class=""
-                                     :class="{
-                                        'blur-overlay': !isEditFlow && $store.state.isEditFlow
-                                     }"
                                      v-if="canExpand() && !canShowChildren()"></ChildNotice>
                     </div>
                 </div>
@@ -498,7 +489,9 @@
                 }
                 this.bubble.isEditFlow = true;
                 this.isEditFlow = true;
-                this.$store.dispatch("setIsEditFlow", true);
+                this.$store.dispatch("redraw", {
+                    'fadeOut': true
+                });
                 GraphUi.disableDragScroll();
                 this.bubble.focus(event);
             },
@@ -512,8 +505,10 @@
                     document.title = this.bubble.getTextOrDefault() + " | MindRespect";
                 }
                 GraphUi.enableDragScroll();
-                this.$store.dispatch("setIsEditFlow", false);
-                this.$store.dispatch("redraw");
+                this.$store.dispatch("redraw", {
+                    'fadeIn': true
+                });
+                this.$store.dispatch("similarBubblesRefresh");
             },
             focus: function () {
                 this.showMenu = false;
@@ -524,7 +519,9 @@
                 this.bubble.isEditFlow = true;
                 this.$nextTick(() => {
                     GraphUi.disableDragScroll();
-                    this.$store.dispatch("setIsEditFlow", true);
+                    this.$store.dispatch("redraw", {
+                        'fadeOut': true
+                    });
                 });
             },
             keydown: function (event) {

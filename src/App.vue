@@ -482,10 +482,6 @@
         user-select: none;
     }
 
-    .blur-overlay {
-        filter: blur(4px);
-    }
-
     .v-toolbar__content {
         padding: 6px;
     }

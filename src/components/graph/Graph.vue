@@ -59,7 +59,7 @@
                 <svg
                         v-if="redrawKey"
                         :key="redrawKey"
-                        v-show="!$store.state.isEditFlow && center.draw && !$store.state.isLoading && !center.isEditFlow"
+                        v-show="!$store.state.isLoading"
                         style="position:absolute;overflow:visible; top:0; left:0; height:100%; width:100%;z-index:-1;"
                         version="1.1"
                         xmlns="http://www.w3.org/2000/svg"
@@ -528,6 +528,15 @@
                         setTimeout(() => {
                             insideSvgOpacityTransition = false;
                         }, 500)
+                    });
+                }
+                if (this.$store.state.redraws.fadeOut) {
+                    const graphSvgContainer = document.getElementById("graph-svg-container");
+                    graphSvgContainer.style.opacity = '1';
+                    graphSvgContainer.style.transition = 'opacity 0s';
+                    requestAnimationFrame(() => {
+                        graphSvgContainer.style.opacity = '0';
+                        graphSvgContainer.style.transition = 'opacity 250ms';
                     });
                 }
             },

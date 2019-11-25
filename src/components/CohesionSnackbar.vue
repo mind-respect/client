@@ -158,15 +158,15 @@
                 let single = Selection.getSingle();
                 return single !== undefined && single.controller().addIdentificationCanDo();
             },
-            isEditFlow: function () {
-                return this.$store.state.isEditFlow;
+            similarBubblesRefresh: function () {
+                return this.$store.state.similarBubblesRefresh;
             }
         },
         watch: {
             selected: function () {
                 // this.tryRefresh();
             },
-            isEditFlow: function () {
+            similarBubblesRefresh: function () {
                 this.tryRefresh();
             }
         },

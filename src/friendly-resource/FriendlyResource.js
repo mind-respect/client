@@ -129,7 +129,6 @@ FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
 
 FriendlyResource.FriendlyResource.prototype.focus = function (event) {
     GraphUi.disableDragScroll();
-    Store.dispatch("setIsEditFlow", true);
     let interval;
     if (!focus.bind(this)()) {
         interval = setInterval(focus.bind(this), 100);
@@ -458,7 +457,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         );
     }
     await Vue.nextTick();
-    CurrentSubGraph.get().center.draw = false;
+    Store.dispatch("redraw", {fadeOut: true});
     requestAnimationFrame(() => {
         CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
             const html = graphElement.getHtml();
@@ -477,7 +476,6 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             });
         });
         setTimeout(() => {
-            CurrentSubGraph.get().center.draw = true;
             Store.dispatch("redraw", {fadeIn: true});
             // document.scrollingElement.style['scroll-behavior'] = 'smooth';
             // document.scrollingElement.scrollTop = previousTop;
