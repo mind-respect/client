@@ -418,8 +418,8 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         );
     }
     const centerHtml = CurrentSubGraph.get().center.getHtml();
-    let firstOffsetDivLeft = centerHtml.offsetParent.offsetParent.offsetLeft;
-    let firstOffsetDivTop = centerHtml.offsetParent.offsetParent.offsetTop;
+    const leftBefore = centerHtml.offsetParent.offsetParent.offsetLeft;
+    const topBefore = centerHtml.offsetParent.offsetParent.offsetTop;
     const firstBoxes = {};
     CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
         const html = graphElement.getHtml();
@@ -459,40 +459,42 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
     }
     await Vue.nextTick();
     Store.dispatch("redraw", {fadeOut: true});
-    requestAnimationFrame(() => {
-        CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
-            const html = graphElement.getHtml();
-            if (!html) {
-                return;
-            }
-            const firstBox = firstBoxes[graphElement.getId()];
-            const lastBox = html.getBoundingClientRect();
-            const deltaX = firstBox.left - lastBox.left;
-            const deltaY = firstBox.top - lastBox.top;
-            html.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-            html.style.transition = 'transform 0s';
-            requestAnimationFrame(() => {
-                html.style.transform = '';
-                html.style.transition = 'transform 500ms';
+    setTimeout(() => {
+        requestAnimationFrame(() => {
+            CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
+                const html = graphElement.getHtml();
+                if (!html) {
+                    return;
+                }
+                const firstBox = firstBoxes[graphElement.getId()];
+                const lastBox = html.getBoundingClientRect();
+                const deltaX = firstBox.left - lastBox.left;
+                const deltaY = firstBox.top - lastBox.top;
+                html.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+                html.style.transition = 'transform 0s';
+                requestAnimationFrame(() => {
+                    html.style.transform = '';
+                    html.style.transition = 'transform 500ms';
+                });
             });
+            setTimeout(() => {
+                let closestChildVertex = this.getClosestChildrenOfType(GraphElementType.Vertex)[0];
+                if (Scroll.isBubbleTreeFullyOnScreen(closestChildVertex)) {
+                    const html = CurrentSubGraph.get().center.getHtml();
+                    const afterOffset = html.offsetParent.offsetParent;
+                    const deltaX = afterOffset.offsetLeft - leftBefore;
+                    const deltaY = afterOffset.offsetTop - topBefore;
+                    document.scrollingElement.style['scroll-behavior'] = 'smooth';
+                    document.scrollingElement.scrollLeft = document.scrollingElement.scrollLeft + deltaX;
+                    document.scrollingElement.scrollTop = document.scrollingElement.scrollTop + deltaY;
+                    document.scrollingElement.style['scroll-behavior'] = 'inherit';
+                } else {
+                    Scroll.centerBubbleForTreeIfApplicable(closestChildVertex);
+                }
+                Store.dispatch("redraw", {fadeIn: true});
+            }, 700);
         });
-        setTimeout(() => {
-            let closestChildVertex = this.getClosestChildrenOfType(GraphElementType.Vertex)[0];
-            if (Scroll.isBubbleTreeFullyOnScreen(closestChildVertex)) {
-                const html = CurrentSubGraph.get().center.getHtml();
-                let lastOffsetDiv = html.offsetParent.offsetParent;
-                let deltaX = firstOffsetDivLeft - lastOffsetDiv.offsetLeft;
-                let deltaY = firstOffsetDivTop - lastOffsetDiv.offsetTop;
-                document.scrollingElement.style['scroll-behavior'] = 'smooth';
-                document.scrollingElement.scrollLeft = document.scrollingElement.scrollLeft - deltaX;
-                document.scrollingElement.scrollTop = document.scrollingElement.scrollTop - deltaY;
-                document.scrollingElement.style['scroll-behavior'] = 'inherit';
-            } else {
-                Scroll.centerBubbleForTreeIfApplicable(closestChildVertex);
-            }
-            Store.dispatch("redraw", {fadeIn: true});
-        }, 700)
-    });
+    }, 10);
 };
 
 FriendlyResource.FriendlyResource.prototype.revertIdentificationIntegration = function (identifier) {
