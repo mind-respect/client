@@ -29,7 +29,8 @@
                     'vh-center':isCenter,
                     'left':!isLeft && !isCenter,
                     'pl-12': !canExpand() && (!isCenter && bubble.isVertexType() && isLeft && bubble.rightBubbles.length === 0) || (isCenter && bubble.leftBubbles.length === 0),
-                    'pr-12': !canExpand() && (bubble.isVertexType() && (!isLeft || isCenter) && bubble.rightBubbles.length === 0)
+                    'pr-12': !canExpand() && (bubble.isVertexType() && (!isLeft || isCenter) && bubble.rightBubbles.length === 0),
+                    'edit-flow' : isEditFlow
             }"
                      :id="bubble.uiId"
                 >
@@ -105,7 +106,6 @@
                                                     v-html="label()"
                                                     @focus="focus"
                                                     @keydown="keydown"
-                                                    @keyup="keyup"
                                                     @paste="paste"
                                                     :style="labelFont"
                                                     ref="vertexLabel"
@@ -209,7 +209,6 @@
                                                  v-if="!bubble.isMetaRelation()"
                                                  v-text="label()"
                                                  @keydown="keydown"
-                                                 @keyup="keyup"
                                                  :style="labelFont"
                                                  :class="{
                                                         'unselectable' : !isEditFlow
@@ -267,6 +266,11 @@
     import linkifyStr from 'linkifyjs/string'
     import InLabelButtons from "@/components/graph/bubble/InLabelButtons";
     import Dragged from '@/Dragged'
+
+    let beforeMoveSvgBox;
+
+    let bubbleContainer;
+    let bubbleContainerClone;
 
     export default {
         name: "Bubble",
@@ -483,20 +487,14 @@
                     }
                 });
             },
-            dblclick: function (event) {
-                event.stopPropagation();
-                this.showMenu = false;
-                if (MindMapInfo.isViewOnly() || this.bubble.isEditFlow || this.bubble.isMetaRelation()) {
-                    return;
-                }
-                this.bubble.isEditFlow = true;
-                this.isEditFlow = true;
-                GraphUi.disableDragScroll();
-                this.bubble.focus(event);
-            },
             leaveEditFlow: function () {
+                bubbleContainerClone.parentNode.removeChild(bubbleContainerClone);
                 this.bubble.isEditFlow = false;
                 this.isEditFlow = false;
+                if (this.isLeft) {
+                    bubbleContainer.style['right'] = '0';
+                }
+                bubbleContainer.style.width='auto';
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
                 this.bubble.controller().setLabel(labelHtml.innerHTML);
@@ -505,11 +503,37 @@
                 }
                 GraphUi.enableDragScroll();
                 this.$store.dispatch("similarBubblesRefresh");
+                this.$store.dispatch("redraw");
+            },
+            dblclick: function (event) {
+                event.stopPropagation();
+                this.showMenu = false;
+                if (MindMapInfo.isViewOnly() || this.bubble.isEditFlow || this.bubble.isMetaRelation()) {
+                    return;
+                }
+                this.bubble.isEditFlow = true;
+                this.bubble.focus(event).then(() => {
+                    this.setupFocus();
+                    GraphUi.disableDragScroll();
+                });
             },
             focus: function () {
                 this.showMenu = false;
-                if (this.isEditFlow) {
+                if (this.isEditFlow || this.bubble.isEditFlow) {
                     return;
+                }
+                this.setupFocus();
+            },
+            setupFocus: function () {
+                bubbleContainer = this.bubble.getHtml().closest('.bubble-container');
+                bubbleContainerClone = bubbleContainer.cloneNode(true);
+                bubbleContainer.parentNode.insertBefore(bubbleContainerClone, bubbleContainer);
+                bubbleContainerClone.style.visibility = 'hidden';
+                if (this.isLeft) {
+                    bubbleContainer.style.right = '0';
+                }
+                if(this.bubble.isLeaf()){
+                    bubbleContainer.style.width='500px';
                 }
                 this.isEditFlow = true;
                 this.bubble.isEditFlow = true;
@@ -520,12 +544,10 @@
             keydown: function (event) {
                 if ([KeyCode.KEY_RETURN, KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {
                     event.preventDefault();
-                    return this.bubble.getLabelHtml().blur();
+                    this.bubble.getLabelHtml().blur();
+                    this.leaveEditFlow();
+                    return;
                 }
-                // this.$store.dispatch("redraw");
-            },
-            keyup: function () {
-                this.$store.dispatch("redraw");
             },
             mouseDown: function (event) {
                 if (this.isEditFlow) {
@@ -834,6 +856,16 @@
     .bubble-container {
         /*position relative for absolute vertex-drop-arrow-top-bottom-drop*/
         position: relative;
+        flex-shrink: 0;
+
+        &.edit-flow {
+            position: absolute;
+            z-index: 6;
+
+            .vertex .in-bubble-content {
+                background-color: white;
+            }
+        }
     }
 
     .edit-flow {

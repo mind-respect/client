@@ -128,31 +128,33 @@ FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.focus = function (event) {
-    GraphUi.disableDragScroll();
-    let interval;
-    if (!focus.bind(this)()) {
-        interval = setInterval(focus.bind(this), 100);
-    }
+    return new Promise((resolve) => {
+        GraphUi.disableDragScroll();
+        let interval;
+        if (!focus.bind(this)()) {
+            interval = setInterval(focus.bind(this), 100);
+        }
 
-    function focus() {
-        setTimeout(() => {
-            console.log("in interval");
-            let labelHtml = this.getLabelHtml();
-            if (!labelHtml) {
-                return false;
-            }
-            if (interval) {
-                clearInterval(interval);
-            }
-            labelHtml.contentEditable = "true";
-            if (event) {
-                Focus.focusAtPosition(event, labelHtml);
-            } else {
-                Focus.focusEnd(labelHtml);
-            }
-        });
-        return true;
-    }
+        function focus() {
+            setTimeout(() => {
+                let labelHtml = this.getLabelHtml();
+                if (!labelHtml) {
+                    return false;
+                }
+                if (interval) {
+                    clearInterval(interval);
+                }
+                labelHtml.contentEditable = "true";
+                if (event) {
+                    Focus.focusAtPosition(event, labelHtml);
+                } else {
+                    Focus.focusEnd(labelHtml);
+                }
+                resolve();
+            });
+            return true;
+        }
+    });
 };
 
 FriendlyResource.FriendlyResource.prototype.setLabel = function (label) {
@@ -435,7 +437,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             //     this.revertIdentificationIntegration(identification);
             // }
         }
-        this.getParentBubble().removeChild(this);
+        this.getParentBubble().removeChild(this, false, true);
         let parentVertex = otherBubble.isVertex() ? otherBubble : otherBubble.getParentVertex();
         this.setParentVertex(
             parentVertex
@@ -445,7 +447,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         let parentBubble = this.getParentFork();
         let otherParentBubble = otherBubble.getParentFork();
         let isTemporaryRemove = parentBubble.isSameBubble(otherParentBubble);
-        parentBubble.removeChild(this, isTemporaryRemove);
+        parentBubble.removeChild(this, isTemporaryRemove, true);
         this.direction = otherBubble.direction;
         let index = otherParentBubble.getChildIndex(otherBubble, MoveRelation.Before === relation);
         this.setParentVertex(
@@ -457,44 +459,42 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             index
         );
     }
+    Store.dispatch("redraw", {hide: true});
     await Vue.nextTick();
-    Store.dispatch("redraw", {fadeOut: true});
-    setTimeout(() => {
-        requestAnimationFrame(() => {
-            CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
-                const html = graphElement.getHtml();
-                if (!html) {
-                    return;
-                }
-                const firstBox = firstBoxes[graphElement.getId()];
-                const lastBox = html.getBoundingClientRect();
-                const deltaX = firstBox.left - lastBox.left;
-                const deltaY = firstBox.top - lastBox.top;
-                html.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-                html.style.transition = 'transform 0s';
-                requestAnimationFrame(() => {
-                    html.style.transform = '';
-                    html.style.transition = 'transform 500ms';
-                });
+    requestAnimationFrame(() => {
+        CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
+            const html = graphElement.getHtml();
+            if (!html) {
+                return;
+            }
+            const firstBox = firstBoxes[graphElement.getId()];
+            const lastBox = html.getBoundingClientRect();
+            const deltaX = firstBox.left - lastBox.left;
+            const deltaY = firstBox.top - lastBox.top;
+            html.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+            html.style.transition = 'transform 0s';
+            requestAnimationFrame(() => {
+                html.style.transform = '';
+                html.style.transition = 'transform 500ms';
             });
-            setTimeout(() => {
-                let closestChildVertex = this.getClosestChildrenOfType(GraphElementType.Vertex)[0];
-                if (Scroll.isBubbleTreeFullyOnScreen(closestChildVertex)) {
-                    const html = CurrentSubGraph.get().center.getHtml();
-                    const afterOffset = html.offsetParent.offsetParent;
-                    const deltaX = afterOffset.offsetLeft - leftBefore;
-                    const deltaY = afterOffset.offsetTop - topBefore;
-                    document.scrollingElement.style['scroll-behavior'] = 'smooth';
-                    document.scrollingElement.scrollLeft = document.scrollingElement.scrollLeft + deltaX;
-                    document.scrollingElement.scrollTop = document.scrollingElement.scrollTop + deltaY;
-                    document.scrollingElement.style['scroll-behavior'] = 'inherit';
-                } else {
-                    Scroll.centerBubbleForTreeIfApplicable(closestChildVertex);
-                }
-                Store.dispatch("redraw", {fadeIn: true});
-            }, 700);
         });
-    }, 10);
+        setTimeout(() => {
+            let closestChildVertex = this.getClosestChildrenOfType(GraphElementType.Vertex)[0];
+            if (Scroll.isBubbleTreeFullyOnScreen(closestChildVertex)) {
+                const html = CurrentSubGraph.get().center.getHtml();
+                const afterOffset = html.offsetParent.offsetParent;
+                const deltaX = afterOffset.offsetLeft - leftBefore;
+                const deltaY = afterOffset.offsetTop - topBefore;
+                document.scrollingElement.style['scroll-behavior'] = 'smooth';
+                document.scrollingElement.scrollLeft = document.scrollingElement.scrollLeft + deltaX;
+                document.scrollingElement.scrollTop = document.scrollingElement.scrollTop + deltaY;
+                document.scrollingElement.style['scroll-behavior'] = 'inherit';
+            } else {
+                Scroll.centerBubbleForTreeIfApplicable(closestChildVertex);
+            }
+            Store.dispatch("redraw", {fadeIn: true});
+        }, 700);
+    });
 };
 
 FriendlyResource.FriendlyResource.prototype.revertIdentificationIntegration = function (identifier) {

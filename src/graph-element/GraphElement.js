@@ -98,12 +98,14 @@ GraphElement.initMenuHandlerGetters = function () {
     controllerGetters[GraphElementType.MetaGroupVertex] = GraphDisplayer.getMetaGroupVertexController;
     controllerGetters[GraphElementType.VertexSkeleton] = function () {
         return {
-            VertexSkeletonController: function(){}
+            VertexSkeletonController: function () {
+            }
         };
     };
     controllerGetters[GraphElementType.RelationSkeleton] = function () {
         return {
-            RelationSkeletonController: function(){}
+            RelationSkeletonController: function () {
+            }
         };
     };
 };
@@ -251,10 +253,13 @@ GraphElement.GraphElement.prototype.getRelevantTags = function () {
     });
 };
 
-GraphElement.GraphElement.prototype.refreshChildren = function () {
+GraphElement.GraphElement.prototype.refreshChildren = function (avoidRedraw) {
     this.childrenKey = IdUri.uuid();
     if (this.component) {
         this.component.refreshChildren();
+        if (avoidRedraw === true) {
+            return;
+        }
         Vue.nextTick(() => {
             Store.dispatch("redraw");
             setTimeout(() => {

@@ -348,7 +348,7 @@ Vertex.prototype.remove = function () {
     this.getParentBubble().remove();
 };
 
-Vertex.prototype.removeChild = function (child, isTemporary) {
+Vertex.prototype.removeChild = function (child, isTemporary, avoidRedraw) {
     let childrenArray = this.isCenter && child.isToTheLeft() ? this.leftBubbles : this.rightBubbles;
     let removedChild;
     let l = childrenArray.length;
@@ -361,7 +361,7 @@ Vertex.prototype.removeChild = function (child, isTemporary) {
         this.decrementNumberOfConnectedEdges();
     }
     if (!isTemporary) {
-        this.refreshChildren();
+        this.refreshChildren(avoidRedraw);
     }
 };
 

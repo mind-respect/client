@@ -445,10 +445,7 @@ GraphElementController.prototype._moveToExecute = async function (otherEdge, isA
     } else {
         model.moveBelow(otherEdge);
     }
-    otherEdge.getParentFork().refreshChildren();
-    Vue.nextTick(() => {
-        Store.dispatch("redraw")
-    });
+    otherEdge.getParentFork().refreshChildren(true);
     if (parentOfOtherBubble.isGroupRelation()) {
         let parentGroupRelation = parentOfOtherBubble;
         do {
@@ -482,7 +479,6 @@ GraphElementController.prototype._moveToExecute = async function (otherEdge, isA
         //I don't know why I have to Selection.reset() to select the same bubble.
         Selection.removeAll();
         Selection.setToSingle(model);
-        Store.dispatch("redraw");
         return this.model();
     });
 };

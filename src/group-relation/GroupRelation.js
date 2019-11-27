@@ -63,7 +63,7 @@ GroupRelation.prototype.hasFewEnoughBubblesToExpand = function () {
         nbChild < api.EXPAND_UNDER_NB_CHILD;
 };
 
-GroupRelation.prototype.removeChild = function (child, isTemporary) {
+GroupRelation.prototype.removeChild = function (child, isTemporary, avoidRedraw) {
     let l = this.children.length;
     let removedChild;
     while (l--) {
@@ -87,7 +87,7 @@ GroupRelation.prototype.removeChild = function (child, isTemporary) {
         if (this.children.length === 0) {
             this.getParentBubble().removeChild(this);
         }
-        this.refreshChildren();
+        this.refreshChildren(avoidRedraw);
     }
 };
 

@@ -6,8 +6,10 @@
     <v-layout @contextmenu="showContextMenu" style="height:100%;width:100%;" id="graph-container">
         <v-divider></v-divider>
         <div id="drawn_graph" data-zoom="9" class="vh-center">
-            <v-layout class='root-vertex-super-container vh-center' :style="zoomScale"
-                      @dragstart="preventUndesirableDragging" :key="childrenKey" @mousedown="mousedown">
+            <v-layout class='root-vertex-super-container vh-center'
+                      @dragstart="preventUndesirableDragging" :key="childrenKey" @mousedown="mousedown"
+                      :style="zoomScale"
+            >
                 <v-flex grow class="vertices-children-container left-oriented pt-12 pb-12" @dragover="dragOver"
                         @dragleave="dragLeave" @drop="childrenDropLeft" @contextmenu="contextMenuLeft"
                         v-if="center !== null"
@@ -63,6 +65,7 @@
                         style="position:absolute;overflow:visible; top:0; left:0; height:100%; width:100%;z-index:-1;"
                         version="1.1"
                         xmlns="http://www.w3.org/2000/svg"
+                        id="edgesSvg"
                 >
                     <path
                             :d="svg"
@@ -346,6 +349,7 @@
                     let center = _center;
                     document.title = center.getTextOrDefault() + " | MindRespect";
                     this.center = center;
+                    this.$store.dispatch("redraw", {fadeOut: true});
                     this.handleResize();
                     this.loaded = true;
                     await this.$nextTick();
@@ -362,13 +366,12 @@
                     Scroll.goToGraphElement(this.center, true).then(async () => {
                         await this.$nextTick();
                         this.showLoading = false;
-                        this.svg = new GraphDraw(this.center).build();
                         await this.$nextTick();
                         await this.$nextTick();
                         this.strokeColor = Color.EdgeColor;
                         setTimeout(() => {
-                            this.redrawKey = Math.random();
-                        }, 50);
+                            this.$store.dispatch("redraw", {fadeIn: true})
+                        }, 10);
                     });
                     CurrentSubGraph.get().component = this;
                 }
@@ -511,6 +514,10 @@
         watch: {
             redraws: async function () {
                 if (this.showLoading) {
+                    return;
+                }
+                if (this.$store.state.redraws.hide === true) {
+                    this.redrawKey = null;
                     return;
                 }
                 await this.$nextTick();
