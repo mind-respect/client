@@ -488,13 +488,15 @@
                 });
             },
             leaveEditFlow: function () {
-                bubbleContainerClone.parentNode.removeChild(bubbleContainerClone);
+                if (bubbleContainerClone && bubbleContainerClone.parentNode) {
+                    bubbleContainerClone.parentNode.removeChild(bubbleContainerClone);
+                }
                 this.bubble.isEditFlow = false;
                 this.isEditFlow = false;
                 if (this.isLeft) {
                     bubbleContainer.style['right'] = '0';
                 }
-                bubbleContainer.style.width='auto';
+                bubbleContainer.style.width = 'auto';
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
                 this.bubble.controller().setLabel(labelHtml.innerHTML);
@@ -532,8 +534,8 @@
                 if (this.isLeft) {
                     bubbleContainer.style.right = '0';
                 }
-                if(this.bubble.isLeaf()){
-                    bubbleContainer.style.width='500px';
+                if (this.bubble.isLeaf()) {
+                    bubbleContainer.style.width = '500px';
                 }
                 this.isEditFlow = true;
                 this.bubble.isEditFlow = true;
