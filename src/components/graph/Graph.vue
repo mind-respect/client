@@ -10,7 +10,8 @@
                       @dragstart="preventUndesirableDragging" :key="childrenKey" @mousedown="mousedown"
                       :style="zoomScale"
             >
-                <v-flex grow class="vertices-children-container left-oriented pt-12 pb-12" @dragover="dragOver"
+                <v-flex grow class="vertices-children-container left-oriented pt-12 pb-12"
+                        @dragover="dragOver"
                         @dragleave="dragLeave" @drop="childrenDropLeft" @contextmenu="contextMenuLeft"
                         v-if="center !== null"
                 >
@@ -37,7 +38,8 @@
                                              style="" v-show="showLoading"></v-progress-circular>
                     </div>
                 </div>
-                <v-flex grow class="vertices-children-container right-oriented pt-12 pb-12" @dragover="dragOver"
+                <v-flex grow class="vertices-children-container right-oriented pt-12 pb-12"
+                        @dragover="dragOver"
                         @dragleave="dragLeave" @drop="childrenDropRight" @contextmenu="contextMenuRight"
                         v-if="center !== null"
                 >
@@ -57,11 +59,12 @@
             <div
                     class="svg-container"
                     id="graph-svg-container"
+                    v-if="redrawKey"
+                    :key="redrawKey"
+                    v-show="!$store.state.isLoading"
+                    style="position:absolute;overflow:visible; top:0; left:0; height:100%; width:100%;z-index:-1;"
             >
                 <svg
-                        v-if="redrawKey"
-                        :key="redrawKey"
-                        v-show="!$store.state.isLoading"
                         style="position:absolute;overflow:visible; top:0; left:0; height:100%; width:100%;z-index:-1;"
                         version="1.1"
                         xmlns="http://www.w3.org/2000/svg"
@@ -357,7 +360,7 @@
                     Selection.setToSingle(this.center, true);
                     this.$store.dispatch("setIsPatternFlow", this.center.isPattern());
                     this.usePatternSheet = this.center.isPattern();
-                    AppController.refreshFont();
+                    await AppController.refreshFont();
                     await this.$nextTick();
                     if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
                         center.focus();
@@ -555,6 +558,7 @@
 </script>
 
 <style lang="scss">
+
     $horizontalPaddingHighest: 3.5;
 
     @mixin zoom {
@@ -657,7 +661,6 @@
         /*display: flex;*/
         /*justify-content: center;*/
         /*align-items: center;*/
-        min-height: 200%;
         min-width: 200%;
         z-index: 1;
         position: relative;
@@ -683,7 +686,12 @@
         margin-right: 900px !important;
         margin-top: 150px;
         margin-bottom: 150px;
-        /*padding:25% !important;*/
+        /*
+        padding-top:150px and padding-bottom:150px
+        to try to prevent height jump in Firefox when adding text to a bubble
+        */
+        padding-top: 150px;
+        padding-bottom: 150px;
     }
 
     .root-vertex-super-container > .vertices-children-container {

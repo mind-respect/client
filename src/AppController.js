@@ -130,25 +130,33 @@ api.fontPicker = function () {
 };
 
 api.refreshFont = function (justChanged) {
-    let font = CurrentSubGraph.get().center.getFont();
-    if (!justChanged && GraphElement.DEFAULT_FONT.family === font.family) {
-        return;
-    }
-    // let fontFile = new FontFace(font.family, 'url(fonts/junction-regular.woff)');
+    return new Promise((resolve) => {
+        let font = CurrentSubGraph.get().center.getFont();
+        if (!justChanged && GraphElement.DEFAULT_FONT.family === font.family) {
+            resolve();
+            return;
+        }
+        // let fontFile = new FontFace(font.family, 'url(fonts/junction-regular.woff)');
 
-    let link = document.createElement("link");
-    link.setAttribute("rel", "stylesheet");
-    link.setAttribute("type", "text/css");
-    link.setAttribute("href", "https://fonts.googleapis.com/css?family=" + font.family.replace(/ /g, '+'));
-    link.onload = () => {
-        CurrentSubGraph.get().center.refreshChildren();
-        setTimeout(() => {
-            Vue.nextTick(() => {
-                Store.dispatch("redraw");
-            });
-        }, 100)
-    };
-    document.getElementsByTagName("head")[0].appendChild(link);
+        let link = document.createElement("link");
+        link.setAttribute("rel", "stylesheet");
+        link.setAttribute("type", "text/css");
+        link.setAttribute("href", "https://fonts.googleapis.com/css?family=" + font.family.replace(/ /g, '+'));
+        link.onload = () => {
+            if (justChanged) {
+                CurrentSubGraph.get().center.refreshChildren();
+                setTimeout(() => {
+                    Vue.nextTick(() => {
+                        Store.dispatch("redraw");
+                    });
+                    resolve();
+                }, 100)
+            } else {
+                resolve();
+            }
+        };
+        document.getElementsByTagName("head")[0].appendChild(link);
+    })
 };
 
 

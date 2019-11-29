@@ -488,15 +488,15 @@
                 });
             },
             leaveEditFlow: function () {
-                if (bubbleContainerClone && bubbleContainerClone.parentNode) {
-                    bubbleContainerClone.parentNode.removeChild(bubbleContainerClone);
+                if (this.bubbleContainerClone && this.bubbleContainerClone.parentNode) {
+                    this.bubbleContainerClone.parentNode.removeChild(this.bubbleContainerClone);
                 }
                 this.bubble.isEditFlow = false;
                 this.isEditFlow = false;
                 if (this.isLeft) {
-                    bubbleContainer.style['right'] = '0';
+                    this.bubbleContainer.style['right'] = '0';
                 }
-                bubbleContainer.style.width = 'auto';
+                this.bubbleContainer.style.width = 'auto';
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
                 this.bubble.controller().setLabel(labelHtml.innerHTML);
@@ -527,15 +527,15 @@
                 this.setupFocus();
             },
             setupFocus: function () {
-                bubbleContainer = this.bubble.getHtml().closest('.bubble-container');
-                bubbleContainerClone = bubbleContainer.cloneNode(true);
-                bubbleContainer.parentNode.insertBefore(bubbleContainerClone, bubbleContainer);
-                bubbleContainerClone.style.visibility = 'hidden';
+                this.bubbleContainer = this.bubble.getHtml().closest('.bubble-container');
+                this.bubbleContainerClone = this.bubbleContainer.cloneNode(true);
+                this.bubbleContainer.parentNode.insertBefore(this.bubbleContainerClone, this.bubbleContainer);
+                this.bubbleContainerClone.style.visibility = 'hidden';
                 if (this.isLeft) {
-                    bubbleContainer.style.right = '0';
+                    this.bubbleContainer.style.right = '0';
                 }
                 if (this.bubble.isLeaf()) {
-                    bubbleContainer.style.width = '500px';
+                    this.bubbleContainer.style.width = '500px';
                 }
                 this.isEditFlow = true;
                 this.bubble.isEditFlow = true;
@@ -863,18 +863,12 @@
         &.edit-flow {
             position: absolute;
             z-index: 6;
+            max-width: 500px;
 
             .vertex .in-bubble-content {
                 background-color: white;
             }
         }
-    }
-
-    .edit-flow {
-        position: absolute !important;
-        /*width: 500px;*/
-        max-width: 500px;
-        z-index: 99999;
     }
 
     .vertex .in-bubble-content {
@@ -920,5 +914,4 @@
     .image-container-min-height {
         min-height: 60px;
     }
-
 </style>
