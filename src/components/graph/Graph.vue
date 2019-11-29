@@ -27,11 +27,12 @@
                         </v-flex>
                     </v-layout>
                 </v-flex>
-                <div class="vh-center">
+                <div class="vh-center center-component-container">
                     <Bubble
                             :bubble="center"
                             direction="center"
                             v-if="center !== null"
+                            class="center-component"
                     ></Bubble>
                     <div id="temp-center" v-if="center === null">
                         <v-progress-circular indeterminate color="third" size="75"

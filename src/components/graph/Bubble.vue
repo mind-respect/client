@@ -30,7 +30,8 @@
                     'left':!isLeft && !isCenter,
                     'pl-12': !canExpand() && (!isCenter && bubble.isVertexType() && isLeft && bubble.rightBubbles.length === 0) || (isCenter && bubble.leftBubbles.length === 0),
                     'pr-12': !canExpand() && (bubble.isVertexType() && (!isLeft || isCenter) && bubble.rightBubbles.length === 0),
-                    'edit-flow' : isEditFlow
+                    'edit-flow' : isEditFlow,
+                    'edit-flow-non-center' : isEditFlow && !isCenter
             }"
                      :id="bubble.uiId"
                 >
@@ -497,6 +498,9 @@
                     this.bubbleContainer.style['right'] = '0';
                 }
                 this.bubbleContainer.style.width = 'auto';
+                if (this.isCenter) {
+                    this.bubbleContainer.style.position = 'inherit';
+                }
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
                 this.bubble.controller().setLabel(labelHtml.innerHTML);
@@ -527,9 +531,14 @@
                 this.setupFocus();
             },
             setupFocus: function () {
-                this.bubbleContainer = this.bubble.getHtml().closest('.bubble-container');
+                this.bubbleContainer = this.bubble.getHtml().closest(
+                    this.isCenter ? ".center-component" : ".bubble-container"
+                );
                 this.bubbleContainerClone = this.bubbleContainer.cloneNode(true);
                 this.bubbleContainer.parentNode.insertBefore(this.bubbleContainerClone, this.bubbleContainer);
+                if (this.isCenter) {
+                    this.bubbleContainer.style.position = "absolute";
+                }
                 this.bubbleContainerClone.style.visibility = 'hidden';
                 if (this.isLeft) {
                     this.bubbleContainer.style.right = '0';
@@ -860,8 +869,11 @@
         position: relative;
         flex-shrink: 0;
 
-        &.edit-flow {
+        &.edit-flow-non-center {
             position: absolute;
+        }
+
+        &.edit-flow {
             z-index: 6;
             max-width: 500px;
 
