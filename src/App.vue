@@ -536,5 +536,10 @@
         font-size: 14px;
     }
 
+    [contenteditable] {
+        -webkit-user-select: text;
+        user-select: text;
+    }
+
 </style>
 
