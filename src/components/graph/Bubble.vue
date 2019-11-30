@@ -270,10 +270,10 @@
     import InLabelButtons from "@/components/graph/bubble/InLabelButtons";
     import Dragged from '@/Dragged'
 
-    let beforeMoveSvgBox;
-
     let bubbleContainer;
     let bubbleContainerClone;
+    let descendantsAnimateInfo;
+    let textLengthBeforeEdit = 0;
 
     export default {
         name: "Bubble",
@@ -490,29 +490,6 @@
                     }
                 });
             },
-            leaveEditFlow: function () {
-                if (this.bubbleContainerClone && this.bubbleContainerClone.parentNode) {
-                    this.bubbleContainerClone.parentNode.removeChild(this.bubbleContainerClone);
-                }
-                this.bubble.isEditFlow = false;
-                this.isEditFlow = false;
-                if (this.isLeft) {
-                    this.bubbleContainer.style['right'] = '0';
-                }
-                this.bubbleContainer.style.width = 'auto';
-                if (this.isCenter) {
-                    this.bubbleContainer.style.position = 'inherit';
-                }
-                let labelHtml = this.bubble.getLabelHtml();
-                labelHtml.contentEditable = "false";
-                this.bubble.controller().setLabel(labelHtml.innerHTML);
-                if (this.isCenter) {
-                    document.title = this.bubble.getTextOrDefault() + " | MindRespect";
-                }
-                GraphUi.enableDragScroll();
-                this.$store.dispatch("similarBubblesRefresh");
-                this.$store.dispatch("redraw");
-            },
             dblclick: function (event) {
                 event.stopPropagation();
                 this.showMenu = false;
@@ -533,20 +510,24 @@
                 this.setupFocus();
             },
             setupFocus: function () {
-                this.bubbleContainer = this.bubble.getHtml().closest(
+                textLengthBeforeEdit = this.bubble.getLabel().length;
+                descendantsAnimateInfo = UiUtils.buildElementsAnimationData(
+                    CurrentSubGraph.get().getGraphElements()
+                );
+                bubbleContainer = this.bubble.getHtml().closest(
                     this.isCenter ? ".center-component" : ".bubble-container"
                 );
-                this.bubbleContainerClone = this.bubbleContainer.cloneNode(true);
-                this.bubbleContainer.parentNode.insertBefore(this.bubbleContainerClone, this.bubbleContainer);
+                bubbleContainerClone = bubbleContainer.cloneNode(true);
+                bubbleContainer.parentNode.insertBefore(bubbleContainerClone, bubbleContainer);
                 if (this.isCenter) {
-                    this.bubbleContainer.style.position = "absolute";
+                    bubbleContainer.style.position = "absolute";
                 }
-                this.bubbleContainerClone.style.visibility = 'hidden';
+                bubbleContainerClone.style.visibility = 'hidden';
                 if (this.isLeft) {
-                    this.bubbleContainer.style.right = '0';
+                    bubbleContainer.style.right = '0';
                 }
                 if (this.bubble.isLeaf()) {
-                    this.bubbleContainer.style.width = '500px';
+                    bubbleContainer.style.width = '500px';
                 }
                 this.isEditFlow = true;
                 this.bubble.isEditFlow = true;
@@ -559,7 +540,37 @@
                     event.preventDefault();
                     this.bubble.getLabelHtml().blur();
                     this.leaveEditFlow();
-                    return;
+                }
+            },
+            leaveEditFlow: function () {
+                if (bubbleContainerClone && bubbleContainerClone.parentNode) {
+                    bubbleContainerClone.parentNode.removeChild(bubbleContainerClone);
+                }
+                this.bubble.isEditFlow = false;
+                this.isEditFlow = false;
+                if (this.isLeft) {
+                    bubbleContainer.style['right'] = '0';
+                }
+                bubbleContainer.style.width = 'auto';
+                if (this.isCenter) {
+                    bubbleContainer.style.position = 'inherit';
+                }
+                let labelHtml = this.bubble.getLabelHtml();
+                labelHtml.contentEditable = "false";
+                this.bubble.controller().setLabel(labelHtml.innerHTML);
+                if (this.isCenter) {
+                    document.title = this.bubble.getTextOrDefault() + " | MindRespect";
+                }
+                GraphUi.enableDragScroll();
+                this.$store.dispatch("similarBubblesRefresh");
+                this.$store.dispatch("redraw");
+                if (this.bubble.getLabel().length !== textLengthBeforeEdit) {
+                    this.$nextTick(async () => {
+                        await UiUtils.animateGraphElementsWithAnimationData(
+                            this.bubble.getDescendants(),
+                            descendantsAnimateInfo
+                        );
+                    });
                 }
             },
             mouseDown: function (event) {
