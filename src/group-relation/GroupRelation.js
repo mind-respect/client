@@ -158,7 +158,7 @@ GroupRelation.prototype.getFirstEdge = function () {
     return firstEdge;
 };
 
-GroupRelation.prototype.expand = async function (avoidCenter, isChildExpand) {
+GroupRelation.prototype.expand = async function (avoidCenter, isFirstExpand) {
     if (!this.canExpand()) {
         return;
     }
@@ -171,7 +171,7 @@ GroupRelation.prototype.expand = async function (avoidCenter, isChildExpand) {
     FriendlyResource.FriendlyResource.prototype.expand.call(
         this,
         avoidCenter,
-        isChildExpand
+        isFirstExpand
     );
     await Vue.nextTick();
     Store.dispatch("redraw");

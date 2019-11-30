@@ -27,7 +27,9 @@ api.getCenterOffsetCoordinates = function (center) {
 api.buildElementsAnimationData = function (graphElements) {
     return graphElements.reduce((boxes, graphElement) => {
         const html = graphElement.getHtml();
-        boxes[graphElement.getId()] = html.getBoundingClientRect();
+        if (html) {
+            boxes[graphElement.getId()] = html.getBoundingClientRect();
+        }
         return boxes;
     }, {});
 

@@ -54,7 +54,7 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
                 this.model()
             );
             triple.destination.focus();
-            //would need to redraw but focus hides drawing
+            Store.dispatch("redraw");
         });
         if (ShareLevel.PRIVATE === this.model().model().getShareLevel()) {
             triple.destination.setShareLevel(ShareLevel.PRIVATE);
@@ -365,7 +365,7 @@ VertexController.prototype.copy = function () {
 
 };
 
-VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isChildExpand) {
+VertexController.prototype.expand = function (avoidCenter, avoidExpandChild) {
     if (!this.expandCanDo()) {
         this.model().isExpanded = true;
         return Promise.resolve();
@@ -378,7 +378,6 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
     LoadingFlow.enterNoSpinner();
     this.model().loading = false;
     avoidExpandChild = avoidExpandChild || false;
-    isChildExpand = isChildExpand || false;
     this.model().beforeExpand();
     if (!this.model().isExpanded) {
         if (!this.model().isCollapsed) {
@@ -402,7 +401,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, isC
         promise = this.expandDescendantsIfApplicable();
     }
     return promise.then(() => {
-        this.model().expand(avoidCenter, isChildExpand);
+        this.model().expand(avoidCenter, true);
         Vue.nextTick(() => {
             LoadingFlow.leave();
         });

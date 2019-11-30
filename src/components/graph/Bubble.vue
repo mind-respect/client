@@ -565,11 +565,17 @@
                 this.$store.dispatch("similarBubblesRefresh");
                 this.$store.dispatch("redraw");
                 if (this.bubble.getLabel().length !== textLengthBeforeEdit) {
-                    this.$nextTick(async () => {
-                        await UiUtils.animateGraphElementsWithAnimationData(
-                            this.bubble.getDescendants(),
-                            descendantsAnimateInfo
-                        );
+                    this.$nextTick(() => {
+                        setTimeout(async () => {
+                            await UiUtils.animateGraphElementsWithAnimationData(
+                                this.bubble.getDescendants(),
+                                descendantsAnimateInfo
+                            );
+                            setTimeout(() => {
+                                this.$store.dispatch("redraw");
+                            }, 700)
+                        }, 100)
+
                     });
                 }
             },

@@ -285,11 +285,11 @@ Vertex.prototype.collapse = function (preventScroll) {
     );
 };
 
-Vertex.prototype.expand = function (avoidCenter, isChildExpand) {
+Vertex.prototype.expand = function (avoidCenter, isFirstExpand) {
     FriendlyResource.FriendlyResource.prototype.expand.call(
         this,
         avoidCenter,
-        isChildExpand
+        isFirstExpand
     );
     if (this.rightBubblesCollapsed !== null) {
         this.rightBubbles = this.rightBubblesCollapsed;

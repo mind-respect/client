@@ -632,15 +632,15 @@ FriendlyResource.FriendlyResource.prototype._getNextBubble = function (bottom) {
     return nextBubble;
 };
 
-FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isChildExpand) {
-    if (!this.isCenter && !this.canExpand()) {
+FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isFirstExpand) {
+    if (!isFirstExpand && !this.isCenter && !this.canExpand()) {
         return;
     }
     this.loading = false;
     this.isExpanded = true;
     this.isCollapsed = false;
     this.refreshChildren();
-    if (avoidCenter !== true && !isChildExpand) {
+    if (avoidCenter !== true) {
         Vue.nextTick(() => {
             setTimeout(() => {
                 Scroll.centerBubbleForTreeIfApplicable(this);

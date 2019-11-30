@@ -337,8 +337,7 @@
                     await this.$nextTick();
                     this.strokeColor = Color.SkeletonColor;
                     requestAnimationFrame(() => {
-                        this.svg = new GraphDraw(this.center).build();
-                        this.redrawKey = Math.random();
+                        this.$store.dispatch("redraw");
                         Breakpoint.set(this.$vuetify.breakpoint);
                         Scroll.goToGraphElement(this.center, true);
                     });
@@ -525,31 +524,34 @@
                     return;
                 }
                 await this.$nextTick();
-                this.svg = new GraphDraw(this.center).build();
-                this.redrawKey = Math.random();
-                await this.$nextTick();
-                if (this.$store.state.redraws.fadeIn && !insideSvgOpacityTransition) {
-                    insideSvgOpacityTransition = true;
-                    const graphSvgContainer = document.getElementById("graph-svg-container");
-                    graphSvgContainer.style.opacity = '0';
-                    graphSvgContainer.style.transition = 'opacity 0s';
-                    requestAnimationFrame(() => {
-                        graphSvgContainer.style.opacity = '1';
-                        graphSvgContainer.style.transition = 'opacity 500ms';
-                        setTimeout(() => {
-                            insideSvgOpacityTransition = false;
-                        }, 500)
-                    });
-                }
-                if (this.$store.state.redraws.fadeOut) {
-                    const graphSvgContainer = document.getElementById("graph-svg-container");
-                    graphSvgContainer.style.opacity = '1';
-                    graphSvgContainer.style.transition = 'opacity 0s';
-                    requestAnimationFrame(() => {
+                requestAnimationFrame(async() => {
+                    await this.$nextTick();
+                    this.svg = new GraphDraw(this.center).build();
+                    this.redrawKey = Math.random();
+                    await this.$nextTick();
+                    if (this.$store.state.redraws.fadeIn && !insideSvgOpacityTransition) {
+                        insideSvgOpacityTransition = true;
+                        const graphSvgContainer = document.getElementById("graph-svg-container");
                         graphSvgContainer.style.opacity = '0';
-                        graphSvgContainer.style.transition = 'opacity 250ms';
-                    });
-                }
+                        graphSvgContainer.style.transition = 'opacity 0s';
+                        requestAnimationFrame(() => {
+                            graphSvgContainer.style.opacity = '1';
+                            graphSvgContainer.style.transition = 'opacity 500ms';
+                            setTimeout(() => {
+                                insideSvgOpacityTransition = false;
+                            }, 500)
+                        });
+                    }
+                    if (this.$store.state.redraws.fadeOut) {
+                        const graphSvgContainer = document.getElementById("graph-svg-container");
+                        graphSvgContainer.style.opacity = '1';
+                        graphSvgContainer.style.transition = 'opacity 0s';
+                        requestAnimationFrame(() => {
+                            graphSvgContainer.style.opacity = '0';
+                            graphSvgContainer.style.transition = 'opacity 250ms';
+                        });
+                    }
+                });
             },
             isPatternFlow: function () {
                 this.usePatternSheet = this.$store.state.isPatternFlow;

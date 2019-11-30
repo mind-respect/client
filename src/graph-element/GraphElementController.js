@@ -165,11 +165,11 @@ GraphElementController.prototype.expandCanDo = function () {
     );
 };
 
-GraphElementController.prototype.expand = function (avoidCenter, avoidExpandChild, isChildExpand) {
+GraphElementController.prototype.expand = function (avoidCenter) {
     let promise = this.expandDescendantsIfApplicable();
     return promise.then(() => {
         this.model().expand(avoidCenter);
-        var expandChildCalls = [];
+        const expandChildCalls = [];
         this.model().visitClosestChildVertices(function (childVertex) {
             if (childVertex.getNumberOfChild() === 1) {
                 expandChildCalls.push(
