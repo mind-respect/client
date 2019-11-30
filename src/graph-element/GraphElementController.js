@@ -9,7 +9,6 @@ import Command from '@/Command'
 import Selection from '@/Selection'
 import Store from '@/store'
 import router from '@/router'
-import Scroll from '@/Scroll'
 import Vue from 'vue'
 import TagService from '@/identifier/TagService'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
@@ -583,6 +582,7 @@ GraphElementController.prototype.relateToDistantVertexWithUri = function (distan
             GraphElementService.changeChildrenIndex(
                 parentVertex
             );
+            Store.dispatch("redraw");
         });
     });
 };

@@ -32,8 +32,8 @@
                     'left':!isLeft && !isCenter,
                     'pl-12': !canExpand() && (!isCenter && bubble.isVertexType() && isLeft && bubble.rightBubbles.length === 0) || (isCenter && bubble.leftBubbles.length === 0),
                     'pr-12': !canExpand() && (bubble.isVertexType() && (!isLeft || isCenter) && bubble.rightBubbles.length === 0),
-                    'edit-flow' : isEditFlow,
-                    'edit-flow-non-center' : isEditFlow && !isCenter
+                    'edit-flow' : isEditFlow && !preventAbsoluteOnFocus,
+                    'edit-flow-non-center' : isEditFlow && !isCenter && !preventAbsoluteOnFocus
             }"
                      :id="bubble.uiId"
                 >
@@ -304,7 +304,8 @@
                 inLabelMenuKey: IdUri.uuid(),
                 imageRefresh: IdUri.uuid(),
                 isEditFlow: false,
-                imageUrl: false
+                imageUrl: false,
+                preventAbsoluteOnFocus: false
             }
         },
         // updated: function () {
@@ -514,20 +515,25 @@
                 descendantsAnimateInfo = UiUtils.buildElementsAnimationData(
                     CurrentSubGraph.get().getGraphElements()
                 );
-                bubbleContainer = this.bubble.getHtml().closest(
-                    this.isCenter ? ".center-component" : ".bubble-container"
-                );
-                bubbleContainerClone = bubbleContainer.cloneNode(true);
-                bubbleContainer.parentNode.insertBefore(bubbleContainerClone, bubbleContainer);
-                if (this.isCenter) {
-                    bubbleContainer.style.position = "absolute";
-                }
-                bubbleContainerClone.style.visibility = 'hidden';
-                if (this.isLeft) {
-                    bubbleContainer.style.right = '0';
-                }
-                if (this.bubble.isLeaf()) {
-                    bubbleContainer.style.width = '500px';
+                if (this.isCenter && this.bubble.getNumberOfChild() === 0) {
+                    this.preventAbsoluteOnFocus = true;
+                } else {
+                    this.preventAbsoluteOnFocus = false;
+                    bubbleContainer = this.bubble.getHtml().closest(
+                        this.isCenter ? ".center-component" : ".bubble-container"
+                    );
+                    bubbleContainerClone = bubbleContainer.cloneNode(true);
+                    bubbleContainer.parentNode.insertBefore(bubbleContainerClone, bubbleContainer);
+                    if (this.isCenter) {
+                        bubbleContainer.style.position = "absolute";
+                    }
+                    bubbleContainerClone.style.visibility = 'hidden';
+                    if (this.isLeft) {
+                        bubbleContainer.style.right = '0';
+                    }
+                    if (this.bubble.isLeaf()) {
+                        bubbleContainer.style.width = '500px';
+                    }
                 }
                 this.isEditFlow = true;
                 this.bubble.isEditFlow = true;
@@ -543,18 +549,20 @@
                 }
             },
             leaveEditFlow: function () {
-                if (bubbleContainerClone && bubbleContainerClone.parentNode) {
-                    bubbleContainerClone.parentNode.removeChild(bubbleContainerClone);
+                if (bubbleContainerClone) {
+                    if (bubbleContainerClone.parentNode) {
+                        bubbleContainerClone.parentNode.removeChild(bubbleContainerClone);
+                    }
+                    if (this.isLeft) {
+                        bubbleContainer.style['right'] = '0';
+                    }
+                    bubbleContainer.style.width = 'auto';
+                    if (this.isCenter) {
+                        bubbleContainer.style.position = 'inherit';
+                    }
                 }
                 this.bubble.isEditFlow = false;
                 this.isEditFlow = false;
-                if (this.isLeft) {
-                    bubbleContainer.style['right'] = '0';
-                }
-                bubbleContainer.style.width = 'auto';
-                if (this.isCenter) {
-                    bubbleContainer.style.position = 'inherit';
-                }
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
                 this.bubble.controller().setLabel(labelHtml.innerHTML);
