@@ -177,7 +177,7 @@ const Scroll = {
 
 Scroll.isBubbleTreeFullyOnScreen = function (bubble) {
     let html = bubble.getHtml();
-    if(!html){
+    if (!html) {
         return true;
     }
     return Scroll.isElementFullyOnScreen(

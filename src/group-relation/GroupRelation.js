@@ -159,6 +159,9 @@ GroupRelation.prototype.getFirstEdge = function () {
 };
 
 GroupRelation.prototype.expand = async function (avoidCenter, isChildExpand) {
+    if (!this.canExpand()) {
+        return;
+    }
     if (this.childrenCollapsed !== null) {
         this.children = this.childrenCollapsed;
         this.childrenCollapsed = null;

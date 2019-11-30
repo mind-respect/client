@@ -13,6 +13,8 @@ import EdgeServiceMock from './EdgeServiceMock'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Store from '@/store'
 import MindMapInfo from '@/MindMapInfo'
+import UiUtils from '@/UiUtils'
+import Scroll from '@/Scroll'
 
 const crypto = require('crypto');
 
@@ -49,6 +51,18 @@ api.applyDefault = function () {
     Store.dispatch("setIsViewOnly", true);
     jest.spyOn(MindMapInfo, "isViewOnly").mockImplementation(() => {
         return false;
+    });
+    jest.spyOn(UiUtils, "getCenterOffsetCoordinates").mockImplementation(() => {
+        return {};
+    });
+    jest.spyOn(UiUtils, "buildElementsAnimationData").mockImplementation(() => {
+        return {};
+    });
+    jest.spyOn(UiUtils, "animateGraphElementsWithAnimationData").mockImplementation(() => {
+        return Promise.resolve();
+    });
+    jest.spyOn(Scroll, "centerElement").mockImplementation(() => {
+        return;
     });
     jest.spyOn(MindMapInfo, "defineIsViewOnly").mockImplementation(() => {
         return false;

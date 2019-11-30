@@ -332,9 +332,8 @@ VertexController.prototype.becomeParent = function (child) {
         uiChild.moveToParent(
             this.model()
         );
-        this.model().refreshChildren();
+        this.model().refreshChildren(true);
         Vue.nextTick(() => {
-            Store.dispatch("redraw");
             GraphElementService.changeChildrenIndex(this.model());
         });
     });
