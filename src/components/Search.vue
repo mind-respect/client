@@ -86,19 +86,15 @@
             };
         },
         mounted: function () {
-            let menuClass = "search-menu";
-            if (this.$vuetify.breakpoint.lgAndUp) {
-                menuClass += " top-search top-search-desktop";
-            }
             this.menuProps = {
-                "nudge-left": 50,
                 "max-width": 800,
-                "contentClass": menuClass
+                "contentClass": "main-search-menu search-menu"
             };
             this.loaded = true;
         },
         watch: {
             searchText: function (val) {
+                this.setMenuPosition();
                 val && val !== this.select && this.querySelections(val)
             }
         },
@@ -126,6 +122,14 @@
                     this.$refs.loadMore.reset(results.length, searchText);
                 });
             },
+            setMenuPosition: function () {
+                const menu = document.getElementsByClassName('main-search-menu')[0];
+                if (!menu) {
+                    return;
+                }
+                const autocompleteRect = this.$refs.search.$el.getBoundingClientRect();
+                menu.style.left = autocompleteRect.x + "px";
+            },
             loadMore: function (callback) {
                 SearchService.searchForAllOwnResources(this.searchText, this.items.length).then((results) => {
                     this.items = this.items.concat(results);
@@ -143,18 +147,15 @@
 </script>
 
 <style>
+    .main-search-menu {
+        /*43px is toolbar height*/
+        top: 43px;
+    }
+
     .search-menu .v-list__item {
         height: auto;
         min-height: 48px;
         max-height: 105px;
-    }
-
-    .top-search {
-        position: fixed;
-    }
-
-    .top-search-desktop {
-        left: 32% !important;
     }
 
 </style>
