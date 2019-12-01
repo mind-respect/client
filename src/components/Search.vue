@@ -6,7 +6,7 @@
     <v-autocomplete
             v-if="$store.state.user && loaded"
             ref="search"
-            prepend-icon="search"
+            :prepend-icon="prependIcon"
             v-model="selectedSearchResult"
             :items="items"
             item-value="uri"
@@ -87,7 +87,6 @@
         },
         mounted: function () {
             this.menuProps = {
-                "max-width": 800,
                 "contentClass": "main-search-menu search-menu"
             };
             this.loaded = true;
@@ -112,6 +111,7 @@
             },
             blur: function () {
                 GraphUi.enableDragScroll();
+                this.$emit('leaveSearchFlow')
             },
             selectSearchResult: function () {
                 this.$router.push(
@@ -136,7 +136,13 @@
                     return;
                 }
                 const autocompleteRect = this.$refs.search.$el.getBoundingClientRect();
-                menu.style.left = autocompleteRect.x + "px";
+                if (this.$vuetify.breakpoint.smAndDown) {
+                    menu.style.left = "0";
+                    menu.style.position = "fixed"
+                } else {
+                    menu.style.left = autocompleteRect.x + "px";
+                    menu.style.width = autocompleteRect.width + "px";
+                }
             },
             loadMore: function (callback) {
                 SearchService.searchForAllOwnResources(this.searchText, this.items.length).then((results) => {
@@ -149,6 +155,16 @@
                     this.$refs.search.reset();
                     this.$refs.search.blur();
                 })
+            },
+            enterSearchFlow: function () {
+                this.$nextTick(() => {
+                    this.$refs.search.focus();
+                });
+            }
+        },
+        computed: {
+            prependIcon: function () {
+                return this.$vuetify.breakpoint.smAndDown ? "" : "search";
             }
         }
     }
@@ -158,6 +174,7 @@
     .main-search-menu {
         /*43px is toolbar height*/
         top: 43px !important;
+        width: 100%;
     }
 
     .search-menu .v-list__item {

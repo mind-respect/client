@@ -15,31 +15,39 @@
                     }"
                     style="z-index:4;"
             >
-                <v-toolbar-title>
-                    <router-link to="/welcome" class="no-style-link vh-center mr-4">
+                <v-toolbar-title v-show="!showSearch || $vuetify.breakpoint.mdAndUp">
+                    <router-link to="/welcome" class="no-style-link vh-center" :class="{
+                        'mr-4' : $vuetify.breakpoint.mdAndUp
+                        }">
                         <v-img
                                 :src="require('@/assets/logo-horizontal-black-small.png')"
                                 height="44"
                                 width="223"
                                 alt="mindrespect.com"
-                                v-if="$vuetify.breakpoint.mdAndUp"
+                                v-if="$vuetify.breakpoint.lgAndUp"
                         ></v-img>
                         <v-img
                                 :src="require('@/assets/MR.png')"
                                 height="35"
                                 width="51"
                                 alt="MR"
-                                class="mt-1 ml-4"
-                                v-if="$vuetify.breakpoint.smAndDown && !isGraphRoute"
+                                class="mt-1"
+                                :class="{
+                                    'ml-2': $vuetify.breakpoint.smAndUp
+                                }"
+                                v-if="$vuetify.breakpoint.mdAndDown"
                         ></v-img>
                     </router-link>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
-                <Search class="mt-6"></Search>
-                <v-spacer></v-spacer>
-                <v-btn icon @click="$refs.docsFlow.enter()" v-if="isGraphRoute">
-                    <v-icon>help</v-icon>
+                <v-btn icon v-show="showSearch && $vuetify.breakpoint.smAndDown" @click="leaveSearchFlow">
+                    <v-icon color="primary">keyboard_backspace</v-icon>
                 </v-btn>
+                <Search class="mt-6" v-show="showSearch || $vuetify.breakpoint.mdAndUp" ref="search"
+                        @leaveSearchFlow="leaveSearchFlow"></Search>
+                <v-spacer></v-spacer>
+                <ToolbarGraphButtons v-if="$store.state.user" @enterSearchFlow="enterSearchFlow"
+                                     ref="toolBar"></ToolbarGraphButtons>
                 <v-btn text light
                        v-if="$store.state.user === undefined"
                        @click="loginDialog = true"
@@ -76,7 +84,6 @@
                         Français
                     </span>
                 </v-btn>
-                <ToolbarGraphButtons v-if="$store.state.user"></ToolbarGraphButtons>
             </v-app-bar>
         </div>
         <SideMenu v-if="isGraphRoute"></SideMenu>
@@ -274,10 +281,19 @@
                 isLoading: false,
                 hasLoadingSpinner: true,
                 forgotPasswordDialog: false,
-                changePasswordDialog: false
+                changePasswordDialog: false,
+                showSearch: this.$vuetify.breakpoint.mdAndUp
             };
         },
         methods: {
+            enterSearchFlow: function () {
+                this.showSearch = true;
+                this.$refs.search.enterSearchFlow();
+            },
+            leaveSearchFlow: function () {
+                this.showSearch = false;
+                this.$refs.toolBar.leaveSearchFlow();
+            },
             isLoginUrl: function () {
                 return LoginPages.indexOf(this.$route.name) > -1;
             },

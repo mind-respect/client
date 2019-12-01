@@ -16,49 +16,6 @@
             </v-btn>
         </template>
         <v-list>
-            <v-list-item v-if="$store.state.user && $vuetify.breakpoint.mdAndDown"
-                         :to="'/user/' + $store.state.user.username" :disabled="$route.name === 'UserHome'">
-                <v-list-item-action>
-                    <v-icon>
-                        filter_center_focus
-                    </v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{$t('centers')}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item v-if="isGraphRoute && $vuetify.breakpoint.mdAndDown" @click="zoomOut">
-                <v-list-item-action>
-                    <v-icon>zoom_out</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{$t('button:zoomOut')}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item v-if="isGraphRoute && $vuetify.breakpoint.mdAndDown" @click="zoomIn">
-                <v-list-item-action>
-                    <v-icon>zoom_in</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{$t('button:zoomIn')}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item v-if="$store.state.user && $vuetify.breakpoint.mdAndDown" @click="createVertex">
-                <v-list-item-action>
-                    <v-icon color="third">add</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{$t('button:createVertex')}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
             <v-list-item @click="expandAll" :disabled="!canExpandAll"
                          v-if="isGraphRoute">
                 <v-list-item-action>
@@ -240,19 +197,6 @@
             });
             return {
                 backgroundColor: null,
-                zoomInButton: {
-                    action: "zoomIn",
-                    icon: "zoom_in",
-                    ctrlShortcut: "&plus;",
-                    controller: AppController
-                },
-                zoomOutButton: {
-                    action: "zoomOut",
-                    icon: "zoom_out",
-                    ctrlShortcut: "&minus;",
-                    controller: AppController,
-                    disableNotHide: true
-                },
                 patternDialog: false,
                 makePatternLoading: false
             }
@@ -276,15 +220,6 @@
             },
             enterPatternFlow: function () {
                 this.patternDialog = true;
-            },
-            zoomIn: function () {
-                AppController.zoomIn();
-            },
-            zoomOut: function () {
-                AppController.zoomOut();
-            },
-            createVertex: function () {
-                AppController.createVertex();
             },
             expandAll: function () {
                 GraphController.expandAll();

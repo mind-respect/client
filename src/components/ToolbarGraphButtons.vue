@@ -1,24 +1,29 @@
 <template>
     <div>
+        <v-btn icon v-if="isGraphRoute && $vuetify.breakpoint.smAndDown" @click="enterSearchFlow"
+               v-show="!isSearchFlow">
+            <v-icon color="primary">search</v-icon>
+        </v-btn>
+        <!--        <v-btn icon @click="$refs.docsFlow.enter()" v-if="isGraphRoute">-->
+        <!--            <v-icon>help</v-icon>-->
+        <!--        </v-btn>-->
         <v-btn :to="'/user/' + $store.state.user.username"
-               v-if="$store.state.user && $vuetify.breakpoint.lgAndUp" text exact
-               :icon="$vuetify.breakpoint.mdAndDown" :isInTopMenu="true">
+               v-if="$store.state.user" text exact
+               :icon="$vuetify.breakpoint.mdAndDown" :isInTopMenu="true" v-show="!isSearchFlow">
             <v-icon :class="{
                     'mr-2' : $vuetify.breakpoint.lgAndUp
-                }">
+                }" color="primary">
                 filter_center_focus
             </v-icon>
             <span v-if="$vuetify.breakpoint.lgAndUp">
                     {{$t('centers')}}
                 </span>
         </v-btn>
-        <!--                <Button :button="undoButton" v-if="isGraphRoute"></Button>-->
-        <!--                <Button :button="redoButton" v-if="isGraphRoute"></Button>-->
-        <Button :button="zoomOutButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp" :isInTopMenu="true"></Button>
-        <Button :button="zoomInButton" v-if="isGraphRoute && $vuetify.breakpoint.lgAndUp" :isInTopMenu="true"></Button>
+        <Button :button="zoomOutButton" v-if="isGraphRoute" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
+        <Button :button="zoomInButton" v-if="isGraphRoute" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
         <Button :button="createVertexButton" :hightlight="true"
-                v-if="$store.state.user && $vuetify.breakpoint.lgAndUp" :isInTopMenu="true"></Button>
-        <SettingsMenu></SettingsMenu>
+                v-if="$store.state.user" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
+        <SettingsMenu v-show="!isSearchFlow"></SettingsMenu>
     </div>
 </template>
 
@@ -33,6 +38,7 @@
         },
         data: function () {
             return {
+                isSearchFlow: false,
                 undoButton: {
                     action: "undo",
                     icon: "undo",
@@ -65,6 +71,15 @@
                     icon: "add",
                     controller: AppController
                 }
+            }
+        },
+        methods: {
+            enterSearchFlow: function () {
+                this.isSearchFlow = true;
+                this.$emit('enterSearchFlow');
+            },
+            leaveSearchFlow: function () {
+                this.isSearchFlow = false;
             }
         },
         computed: {
