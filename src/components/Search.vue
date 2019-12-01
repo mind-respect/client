@@ -175,6 +175,7 @@
         /*43px is toolbar height*/
         top: 43px !important;
         width: 100%;
+        max-width: 800px;
     }
 
     .search-menu .v-list__item {
