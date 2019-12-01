@@ -404,6 +404,17 @@
         height: 100%;
     }
 
+    /*
+    Trying to avoid white block at bottom with height :100% but it's not really working
+    */
+    .v-content {
+        height: 100%;
+    }
+
+    .v-content__wrap {
+        height: 100%;
+    }
+
     .secondary-color {
         color: #1A237E !important;
     }

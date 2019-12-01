@@ -655,25 +655,18 @@
     }
 
     #drawn_graph {
-        /*position: absolute;*/
-        /*padding: 25%;*/
-        /*top: 0;*/
-        /*left: 0;*/
-        /*min-width: 100%;*/
-        /*min-height:100%;*/
-        /*display: flex;*/
-        /*justify-content: center;*/
-        /*align-items: center;*/
         min-width: 200%;
         z-index: 1;
         position: relative;
-        /*padding: 100%;*/
         top: 0;
         display: flex;
         justify-content: center;
         align-items: center;
         flex-shrink: 0;
-        padding: 0;
+        /*
+        padding-bottom:30% because root-vertex-super-container is margin-bottom 150px;
+        */
+        padding: 30% 0 30% 0;
     }
 
     [draggable=true] {
