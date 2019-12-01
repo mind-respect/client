@@ -99,10 +99,18 @@
             }
         },
         methods: {
-            focus: () => {
+            focus: function () {
                 GraphUi.disableDragScroll();
+                this.$nextTick(async () => {
+                    await this.$nextTick();
+                    await this.$nextTick();
+                    await this.$nextTick();
+                    setTimeout(() => {
+                        this.setMenuPosition();
+                    }, 100)
+                });
             },
-            blur: () => {
+            blur: function () {
                 GraphUi.enableDragScroll();
             },
             selectSearchResult: function () {
@@ -149,7 +157,7 @@
 <style>
     .main-search-menu {
         /*43px is toolbar height*/
-        top: 43px;
+        top: 43px !important;
     }
 
     .search-menu .v-list__item {
