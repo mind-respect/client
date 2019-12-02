@@ -75,7 +75,7 @@
                 </v-list-item-action>
                 <v-list-item-content>
                     <v-list-item-title>
-                        {{$t('side:becomePattern')}}
+                        {{$t('settings:becomePattern')}}
                     </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
@@ -86,7 +86,7 @@
                 </v-list-item-action>
                 <v-list-item-content>
                     <v-list-item-title>
-                        {{$t('side:removePattern')}}
+                        {{$t('settings:removePattern')}}
                     </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
@@ -157,12 +157,12 @@
         components: {
         },
         data: function () {
-            I18n.i18next.addResources("en", "side", {
+            I18n.i18next.addResources("en", "settings", {
                 becomePattern: "Create pattern",
                 removePattern: "Remove the pattern",
                 documentation: "Documentation"
             });
-            I18n.i18next.addResources("fr", "side", {
+            I18n.i18next.addResources("fr", "settings", {
                 becomePattern: "Créer un pattern",
                 removePattern: "Enlever le pattern",
                 documentation: "Documentation"

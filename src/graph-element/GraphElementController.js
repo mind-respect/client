@@ -725,8 +725,17 @@ GraphElementController.prototype.deselect = function () {
     }
 };
 
+GraphElementController.prototype.setShareLevel = function () {
+    return Promise.resolve();
+};
+
 GraphElementController.prototype.setShareLevelCanDo = function () {
-    return false;
+    if (this.isSingle() || MindMapInfo.isViewOnly()) {
+        return false;
+    }
+    return this.getModelArray().some((model) => {
+        return model.isVertex() && model.controller().setShareLevelCanDo();
+    });
 };
 
 export default api;

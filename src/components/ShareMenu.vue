@@ -31,6 +31,7 @@
     import I18n from '@/I18n'
     import Selection from '@/Selection'
     import ShareLevel from '@/vertex/ShareLevel'
+    import GraphDisplayer from '@/graph/GraphDisplayer'
 
     export default {
         name: "ShareMenu",
@@ -67,7 +68,12 @@
                 return this.$store.state.selected;
             },
             controller: function () {
-                return Selection.controller();
+                const VertexController = GraphDisplayer.getVertexMenuHandler();
+                return new VertexController.VertexController(
+                    Selection.getSelectedElements().filter((graphElement) => {
+                        return graphElement.isVertex();
+                    })
+                );
             },
             bubbleUrl: function () {
                 return Selection.getSingle().uri().absoluteUrl();
