@@ -167,7 +167,7 @@ GraphElementController.prototype.expandCanDo = function () {
 GraphElementController.prototype.expand = function (avoidCenter) {
     let promise = this.expandDescendantsIfApplicable();
     return promise.then(() => {
-        this.model().expand(avoidCenter);
+        this.model().expand(avoidCenter, true);
         const expandChildCalls = [];
         this.model().visitClosestChildVertices(function (childVertex) {
             if (childVertex.getNumberOfChild() === 1) {
