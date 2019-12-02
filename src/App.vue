@@ -47,7 +47,10 @@
                         @leaveSearchFlow="leaveSearchFlow"></Search>
                 <v-spacer></v-spacer>
                 <ToolbarGraphButtons v-if="$store.state.user" @enterSearchFlow="enterSearchFlow"
-                                     ref="toolBar"></ToolbarGraphButtons>
+                                     ref="toolBar"
+                                     @enterDocsFlow="$refs.docsFlow.enter()"
+                                     @enterPatternFlow="patternDialog = true"
+                ></ToolbarGraphButtons>
                 <v-btn text light
                        v-if="$store.state.user === undefined"
                        @click="loginDialog = true"
@@ -151,6 +154,40 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="patternDialog" width="600">
+            <v-card>
+                <v-card-title>
+                    {{$t('areYouSure')}}
+                    <v-spacer></v-spacer>
+                    <v-btn @click="patternDialog=false" icon>
+                        <v-icon>
+                            close
+                        </v-icon>
+                    </v-btn>
+                </v-card-title>
+                <v-card-text class="body-1">
+                    <p>
+                        {{$t('app:patternInfo')}}
+                    </p>
+                    <p>
+                        {{$t('app:patternInfo2')}}
+                    </p>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn @click="becomeAPattern" :loading="makePatternLoading" :disabled="makePatternLoading"
+                           color="secondary">
+                        <v-icon class="mr-2">
+                            stars
+                        </v-icon>
+                        {{$t('app:makeAPattern')}}
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn @click="patternDialog=false" text>
+                        {{$t('cancel')}}
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
         <DocsDialog ref="docsFlow"></DocsDialog>
     </v-app>
 </template>
@@ -164,6 +201,8 @@
     import KeyboardActions from '@/KeyboardActions'
     import VueClipboard from 'vue-clipboard2'
     import I18n from '@/I18n'
+    import AppController from '@/AppController'
+    import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
     const LoginPages = ['login', 'LoginFriendshipConfirm'];
 
@@ -177,7 +216,7 @@
             ForgotPasswordForm: () => import('@/components/home/ForgotPasswordForm'),
             ChangePasswordForm: () => import('@/components/home/ChangePasswordForm'),
             Search: () => import('@/components/Search'),
-            DocsDialog: () => import('@/components/DocsDialog'),
+            DocsDialog: () => import('@/components/DocsDialog')
         },
         data: function () {
             I18n.i18next.addResources("en", "button", {
@@ -224,7 +263,7 @@
                 "fontPicker": "Font picker",
                 "setShareLevel": "Share",
                 "createVertex": "Create a new bubble",
-                close: "Close"
+                close: "Close",
             });
             I18n.i18next.addResources("fr", "button", {
                 "select": "Sélection à la main",
@@ -272,6 +311,18 @@
                 "createVertex": "Créer une nouvelle bulle",
                 close: "Fermer"
             });
+
+            I18n.i18next.addResources("en", "app", {
+                makeAPattern: "Make this map a pattern",
+                patternInfo: "Other users will be able to copy this map and use it as a starting point to add their own ideas.",
+                patternInfo2: "All bubbles on this map, even those under bubbles to expand, will be public."
+            });
+
+            I18n.i18next.addResources("fr", "app", {
+                makeAPattern: "Faire de cette carte un pattern",
+                patternInfo: "D'autres usagers pourront copier cette carte et l'utiliser comme point de départ pour y ajouter leurs propres idées.",
+                patternInfo2: "Toutes les bulles de cette carte, même celles qui sont sous des bulles à expandre, seront publiques.",
+            });
             return {
                 clipped: false,
                 dataLoaded: false,
@@ -282,10 +333,23 @@
                 hasLoadingSpinner: true,
                 forgotPasswordDialog: false,
                 changePasswordDialog: false,
-                showSearch: this.$vuetify.breakpoint.mdAndUp
+                showSearch: this.$vuetify.breakpoint.mdAndUp,
+                patternDialog: false,
+                makePatternLoading: false
             };
         },
         methods: {
+            becomeAPattern: function () {
+                this.makePatternLoading = true;
+                AppController.becomeAPattern().then(() => {
+                    CurrentSubGraph.get().getVertices().forEach((vertex) => {
+                        vertex.makePublic();
+                        vertex.refreshButtons();
+                    });
+                    this.patternDialog = false;
+                    this.makePatternLoading = false;
+                })
+            },
             enterSearchFlow: function () {
                 this.showSearch = true;
                 this.$refs.search.enterSearchFlow();
