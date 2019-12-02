@@ -16,6 +16,7 @@ import EdgeService from '@/edge/EdgeService'
 import Vertex from '@/vertex/Vertex'
 import Edge from '@/edge/Edge'
 import SubGraphController from '@/graph/SubGraphController'
+import GraphDisplayer from '@/graph/GraphDisplayer'
 
 const api = {};
 let bubbleCutClipboard;
@@ -731,12 +732,56 @@ GraphElementController.prototype.setShareLevel = function () {
 };
 
 GraphElementController.prototype.setShareLevelCanDo = function () {
-    if (this.isSingle() || MindMapInfo.isViewOnly()) {
-        return false;
-    }
     return this.getModelArray().some((model) => {
         return model.isVertex() && model.controller().setShareLevelCanDo();
     });
 };
+
+GraphElementController.prototype.makePublic = function () {
+    return GraphDisplayer.getVertexMenuHandler().fromDifferentGraphElements(
+        this.getModelArray()
+    ).makePublic();
+};
+
+GraphElementController.prototype.makePublicCanDo = function () {
+    if (this.isSingle()) {
+        return false;
+    }
+    const atLeastOneSelectedVertex = this.getModelArray().some((model) => {
+        return model.isVertex();
+    });
+    if (!atLeastOneSelectedVertex) {
+        return false;
+    }
+    return this.getModelArray().every((model) => {
+        return !model.isVertex() || (
+            model.isVertex() && model.controller().makePublicCanDo()
+        );
+    });
+};
+
+GraphElementController.prototype.makePrivate = function () {
+    return GraphDisplayer.getVertexMenuHandler().fromDifferentGraphElements(
+        this.getModelArray()
+    ).makePrivate();
+};
+
+GraphElementController.prototype.makePrivateCanDo = function () {
+    if (this.isSingle()) {
+        return false;
+    }
+    const atLeastOneSelectedVertex = this.getModelArray().some((model) => {
+        return model.isVertex();
+    });
+    if (!atLeastOneSelectedVertex) {
+        return false;
+    }
+    return this.getModelArray().every((model) => {
+        return !model.isVertex() || (
+            model.isVertex() && model.controller().makePrivateCanDo()
+        );
+    });
+};
+
 
 export default api;

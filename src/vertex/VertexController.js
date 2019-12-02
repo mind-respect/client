@@ -18,6 +18,14 @@ import CurrentSubGraph from "@/graph/CurrentSubGraph";
 
 const api = {};
 
+api.fromDifferentGraphElements = function (graphElements) {
+    return new VertexController(
+        graphElements.filter((graphElement) => {
+            return graphElement.isVertex();
+        })
+    );
+};
+
 function VertexController(vertices) {
     this.vertices = vertices;
     GraphElementController.GraphElementController.prototype.init.call(

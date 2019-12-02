@@ -68,11 +68,8 @@
                 return this.$store.state.selected;
             },
             controller: function () {
-                const VertexController = GraphDisplayer.getVertexMenuHandler();
-                return new VertexController.VertexController(
-                    Selection.getSelectedElements().filter((graphElement) => {
-                        return graphElement.isVertex();
-                    })
+                return GraphDisplayer.getVertexMenuHandler().fromDifferentGraphElements(
+                    Selection.getSelectedElements()
                 );
             },
             bubbleUrl: function () {
