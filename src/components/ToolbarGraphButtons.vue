@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn icon v-if="isGraphRoute && $vuetify.breakpoint.smAndDown" @click="enterSearchFlow"
+        <v-btn icon v-if="$store.state.user && $vuetify.breakpoint.smAndDown" @click="enterSearchFlow"
                v-show="!isSearchFlow">
             <v-icon color="primary">search</v-icon>
         </v-btn>
