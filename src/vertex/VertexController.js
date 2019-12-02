@@ -272,11 +272,6 @@ VertexController.prototype.makePublic = function () {
     return this.setShareLevelDo(ShareLevel.PUBLIC);
 };
 
-VertexController.prototype.setShareLevel = function () {
-    Store.dispatch("setSideMenuFlow", 3);
-    return Promise.resolve();
-};
-
 VertexController.prototype.setShareLevelCanDo = function () {
     return !Store.state.isPatternFlow && this.isOwned();
 };

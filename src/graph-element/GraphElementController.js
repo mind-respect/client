@@ -726,6 +726,7 @@ GraphElementController.prototype.deselect = function () {
 };
 
 GraphElementController.prototype.setShareLevel = function () {
+    Store.dispatch("setSideMenuFlow", 3);
     return Promise.resolve();
 };
 
