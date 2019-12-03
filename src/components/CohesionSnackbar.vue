@@ -33,7 +33,7 @@
             <v-card v-show="!loading">
                 <v-card-title>
                     <v-spacer></v-spacer>
-                    <v-btn text class="subtitle-1 font-weight-bold" @click="hasConfirmToEnterFlow = false">
+                    <v-btn text class="font-weight-bold" @click="hasConfirmToEnterFlow = false" small color="secondary">
                         {{$t('cohesion:similarBubble')}}
                         <v-icon class="ml-2">expand_more</v-icon>
                     </v-btn>
