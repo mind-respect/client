@@ -152,40 +152,33 @@
         <ListView></ListView>
         <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>
         <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
-        <v-bottom-sheet v-model="usePatternSheet" hide-overlay persistent attach="#drawn_graph" no-click-animation
+        <v-btn
+                color="white"
+                large
+                @click="usePatternConfirmFlow = true"
+                v-show="!usePatternConfirmFlow"
+                :disabled="usePatternLoading"
+                fixed
+                bottom
+                class="mb-4"
+                style="left:50%;z-index:1;"
+                v-if="$store.state.isPatternFlow"
+        >
+            <v-icon class="mr-2">
+                stars
+            </v-icon>
+            {{$t('graph:usePattern')}}
+        </v-btn>
+        <v-bottom-sheet no-click-animation
+                        v-model="usePatternConfirmFlow"
+                        :internal-activator="true"
                         :inset="$vuetify.breakpoint.mdAndUp"
                         :content-class="usePatternContentClass">
             <v-sheet class="text-center">
                 <v-layout wrap>
-                    <v-flex xs12 class="h-center pb-4 pt-4" :class="{
-                        'v-center':  !usePatternConfirmFlow
-                    }">
-                        <v-btn
-                                color="secondary"
-                                text
-                                large
-                                @click="usePatternConfirmFlow = true"
-                                v-show="!usePatternConfirmFlow"
-                                :disabled="usePatternLoading"
-                        >
-                            <v-icon class="mr-2">
-                                stars
-                            </v-icon>
-                            {{$t('graph:usePattern')}}
-                        </v-btn>
-                        <v-btn
-                                color="primary"
-                                text
-                                @click="usePatternConfirmFlow = false"
-                                v-show="usePatternConfirmFlow"
-                                :disabled="usePatternLoading"
-                        >
-                            {{$t('cancel')}}
-                        </v-btn>
-                    </v-flex>
-                    <v-flex xs12 class="text-center" v-show="usePatternConfirmFlow">
+                    <v-flex xs12 class="text-center">
                         <v-card flat>
-                            <v-card-text class="subtitle-1 pl-4 pr-4 text-center pb-0 pt-0">
+                            <v-card-text class="subtitle-1 pl-4 pr-4 text-center pb-0 pt-4">
                                 <p>
                                     {{$t('graph:usePatternInfo1')}}
                                 </p>
@@ -207,10 +200,17 @@
                                     </v-icon>
                                     {{$t('confirm')}}
                                 </v-btn>
+                                <v-btn
+                                        class="mt-5 mb-5 ml-12"
+                                        text
+                                        @click="usePatternConfirmFlow = false"
+                                        :disabled="usePatternLoading"
+                                >
+                                    {{$t('cancel')}}
+                                </v-btn>
                                 <v-spacer></v-spacer>
                             </v-card-actions>
                         </v-card>
-
                     </v-flex>
                 </v-layout>
             </v-sheet>
@@ -524,7 +524,7 @@
                     return;
                 }
                 await this.$nextTick();
-                requestAnimationFrame(async() => {
+                requestAnimationFrame(async () => {
                     await this.$nextTick();
                     this.svg = new GraphDraw(this.center).build();
                     this.redrawKey = Math.random();
