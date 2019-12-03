@@ -1,103 +1,103 @@
 <template>
-    <v-bottom-sheet
-            v-model="snackbar"
-            multi-line
-            :timeout="0"
-            color="white"
-            class="cohesive-snackbar"
-            bottom
-            style="opacity:0.9"
-            hide-overlay
-            :scrollable="!loading"
-    >
-        <v-card v-show="loading" flat class="vh-center" width="100%" style="height:200px;">
-            <v-progress-circular indeterminate color="third" size="50"></v-progress-circular>
-        </v-card>
-        <v-card v-show="!loading">
-            <v-card-title>
-                <v-spacer></v-spacer>
-                <span class="mt-2 mb-2 subtitle-1 font-weight-bold">
-                                    {{$t('cohesion:similarBubble')}}
-                                </span>
-                <v-spacer></v-spacer>
-                <v-badge
-                        color="third"
-                        @click="snackbar = false"
-                >
-                    <template v-slot:badge @click="snackbar=false">
-                        <v-icon dark @click="snackbar=false">
-                            close
-                        </v-icon>
-                    </template>
-                    <v-btn
-                            small
-                            color="third"
-                            text
-                            class="ma-0 pa-1"
-                            @click="snackbar=false"
-                    >
-                        {{$t('close')}}
+    <div>
+        <v-bottom-navigation
+                v-if="isSimilarBubblesNotice"
+                class="text-center"
+                fixed
+                :value="0"
+        >
+            <v-btn
+                    color="secondary"
+                    text
+                    large
+                    @click="hasConfirmToEnterFlow = true"
+            >
+                {{$t('cohesion:similarBubble')}}
+                <v-icon>expand_less</v-icon>
+            </v-btn>
+        </v-bottom-navigation>
+        <v-bottom-sheet
+                v-model="hasConfirmToEnterFlow"
+                multi-line
+                :timeout="0"
+                color="white"
+                class="cohesive-snackbar"
+                bottom
+                style="opacity:0.9"
+                hide-overlay
+                :scrollable="!loading"
+        >
+            <v-card v-show="loading" flat class="vh-center" width="100%" style="height:200px;">
+                <v-progress-circular indeterminate color="third" size="50"></v-progress-circular>
+            </v-card>
+            <v-card v-show="!loading">
+                <v-card-title>
+                    <v-spacer></v-spacer>
+                    <v-btn text class="subtitle-1 font-weight-bold" @click="hasConfirmToEnterFlow = false">
+                        {{$t('cohesion:similarBubble')}}
+                        <v-icon class="ml-2">expand_more</v-icon>
                     </v-btn>
-                </v-badge>
-            </v-card-title>
-            <v-card-text style="height: 200px;" id="cohesion-scroll-container">
-                <v-radio-group v-model="selectedUri" class="mt-0 cohesion-radio-group">
-                    <v-layout wrap>
-                        <v-flex xs12 md3
-                                v-for="(item, index) in results"
-                        >
-                            <v-list two-line>
-                                <v-list-item>
-                                    <v-list-item-action>
-                                        <v-radio
-                                                :value="item.uri"
-                                                :key="index" color="primary"
-                                                on-icon="radio_button_checked"
-                                                off-icon="radio_button_unchecked"
-                                        ></v-radio>
-                                    </v-list-item-action>
-                                    <v-list-item-content>
-                                        <SearchResultContent :item="item" class="mr-2"></SearchResultContent>
-                                    </v-list-item-content>
-                                    <SearchResultAction :item="item"></SearchResultAction>
-                                    <v-list-item-action>
-                                        <v-btn icon :href="urlFromUri(item.uri)" target="_blank">
-                                            <v-icon color="secondary">open_in_new</v-icon>
-                                        </v-btn>
-                                    </v-list-item-action>
-                                </v-list-item>
-                            </v-list>
-                        </v-flex>
-                        <v-flex xs12
-                                md3
-                                class="vh-center"
-                                v-show="showLoadMore"
-                        >
-                            <v-btn color="secondary" text @click="loadMore()">
-                                ... {{$t('moreResults')}}
-                            </v-btn>
-                        </v-flex>
-                    </v-layout>
-                </v-radio-group>
-            </v-card-text>
-            <v-card-actions class="vh-center">
-                <v-btn color="secondary" class="ma-0 mr-8" @click="tag"
-                       :disabled="!addTagCanDo">
-                    <v-icon class="mr-2">
-                        label
-                    </v-icon>
-                    {{$t('cohesion:tag')}}
-                </v-btn>
-                <v-btn color="secondary" class="ma-0 ml-8" :disabled="!mergeCanDo"
-                       @click="merge">
-                    <v-icon class="mr-2">
-                        merge_type
-                    </v-icon>
-                    {{$t('cohesion:merge')}}
-                </v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-bottom-sheet>
+                    <v-spacer></v-spacer>
+                </v-card-title>
+                <v-card-text style="height: 200px;" id="cohesion-scroll-container">
+                    <v-radio-group v-model="selectedUri" class="mt-0 cohesion-radio-group">
+                        <v-layout wrap>
+                            <v-flex xs12 md3
+                                    v-for="(item, index) in results"
+                            >
+                                <v-list two-line>
+                                    <v-list-item>
+                                        <v-list-item-action>
+                                            <v-radio
+                                                    :value="item.uri"
+                                                    :key="index" color="primary"
+                                                    on-icon="radio_button_checked"
+                                                    off-icon="radio_button_unchecked"
+                                            ></v-radio>
+                                        </v-list-item-action>
+                                        <v-list-item-content>
+                                            <SearchResultContent :item="item" class="mr-2"></SearchResultContent>
+                                        </v-list-item-content>
+                                        <SearchResultAction :item="item"></SearchResultAction>
+                                        <v-list-item-action>
+                                            <v-btn icon :href="urlFromUri(item.uri)" target="_blank">
+                                                <v-icon color="secondary">open_in_new</v-icon>
+                                            </v-btn>
+                                        </v-list-item-action>
+                                    </v-list-item>
+                                </v-list>
+                            </v-flex>
+                            <v-flex xs12
+                                    md3
+                                    class="vh-center"
+                                    v-show="showLoadMore"
+                            >
+                                <v-btn color="secondary" text @click="loadMore()">
+                                    ... {{$t('moreResults')}}
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
+                    </v-radio-group>
+                </v-card-text>
+                <v-card-actions class="vh-center">
+                    <v-btn color="secondary" class="ma-0 mr-8" @click="tag"
+                           :disabled="!addTagCanDo">
+                        <v-icon class="mr-2">
+                            label
+                        </v-icon>
+                        {{$t('cohesion:tag')}}
+                    </v-btn>
+                    <v-btn color="secondary" class="ma-0 ml-8" :disabled="!mergeCanDo"
+                           @click="merge">
+                        <v-icon class="mr-2">
+                            merge_type
+                        </v-icon>
+                        {{$t('cohesion:merge')}}
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-bottom-sheet>
+    </div>
 </template>
 
 <script>
@@ -117,7 +117,8 @@
         },
         data: function () {
             return {
-                snackbar: false,
+                isSimilarBubblesNotice: false,
+                hasConfirmToEnterFlow: false,
                 loading: false,
                 selectedUri: null,
                 results: [],
@@ -164,13 +165,18 @@
         },
         watch: {
             selected: function () {
-                // this.tryRefresh();
+                this.hasConfirmToEnterFlow = false;
+                this.isSimilarBubblesNotice = false;
             },
             similarBubblesRefresh: function () {
                 this.tryRefresh();
             }
         },
         methods: {
+            leaveFlow: function () {
+                this.hasConfirmToEnterFlow = false;
+                this.isSimilarBubblesNotice = false;
+            },
             merge: function () {
                 this.loading = true;
                 Selection.getSingle().controller().convertToDistantBubbleWithUri(
@@ -179,7 +185,7 @@
                     return this.$nextTick();
                 }).then(() => {
                     this.loading = false;
-                    this.snackbar = false;
+                    this.leaveFlow();
                 });
             },
             tag: function () {
@@ -191,7 +197,7 @@
                 let bubble = Selection.getSingle();
                 if (bubble.hasIdentification(identifier)) {
                     this.loading = false;
-                    this.snackbar = false;
+                    this.leaveFlow();
                     return false;
                 }
                 identifier.makeGeneric();
@@ -207,7 +213,7 @@
                     return this.$nextTick();
                 }).then(() => {
                     this.loading = false;
-                    this.snackbar = false;
+                    this.leaveFlow();
                     this.$store.dispatch("redraw");
                 })
             },
@@ -229,7 +235,7 @@
                 }
             },
             refresh: function () {
-                this.snackbar = false;
+                this.leaveFlow();
                 this.loading = false;
                 this.showLoadMore = true;
                 this.nbLoadResults = 0;
@@ -278,7 +284,7 @@
                         this.selectedUri = results[0].uri;
                     }
                     this.results = this.results.concat(results);
-                    this.snackbar = true;
+                    this.isSimilarBubblesNotice = true;
                     if (this.nbLoadResults === 0) {
                         this.$nextTick(() => {
                             document.getElementById("cohesion-scroll-container").scrollTop = 0;
