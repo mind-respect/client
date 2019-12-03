@@ -55,6 +55,7 @@
                                              @touchstart="touchstart($event, center)"
                                              @touchmove="touchmove($event, center)"
                                              @touchend="touchend($event, center)"
+                                             @contextmenu="contextMenu($event, center)"
                                 >
                                     <v-list-item-content>
                                         <v-list-item-title class="subtitle-1 font-weight-bold">
@@ -252,6 +253,13 @@
             });
         },
         methods: {
+            contextMenu: function (event, center) {
+                if (this.$vuetify.breakpoint.mdAndUp) {
+                    return;
+                }
+                event.preventDefault();
+                this.$store.dispatch('userHomeSelectedCenter', center);
+            },
             touchstart: function (event, center) {
                 if (this.flow !== 'centers' || !this.isOwner) {
                     return;

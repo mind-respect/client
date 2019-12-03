@@ -46,6 +46,19 @@
                 <Search class="mt-6" v-show="showSearch || $vuetify.breakpoint.mdAndUp" ref="search"
                         @leaveSearchFlow="leaveSearchFlow"></Search>
                 <v-spacer></v-spacer>
+                <v-btn icon color="third" v-if="$store.state.userHomeSelectedCenter" v-show="!showSearch"
+                       :href="$store.state.userHomeSelectedCenter.uri().url()"
+                       target="_blank">
+                    <v-icon>
+                        open_in_new
+                    </v-icon>
+                </v-btn>
+                <v-btn icon color="third" v-if="$store.state.userHomeSelectedCenter" v-show="!showSearch"
+                       @click="copyUserHomeSelectedCenterUrl">
+                    <v-icon>
+                        link
+                    </v-icon>
+                </v-btn>
                 <ToolbarGraphButtons v-if="$store.state.user" @enterSearchFlow="enterSearchFlow"
                                      ref="toolBar"
                                      @enterDocsFlow="$refs.docsFlow.enter()"
@@ -339,6 +352,11 @@
             };
         },
         methods: {
+            copyUserHomeSelectedCenterUrl: function () {
+                this.$copyText(
+                    this.$store.userHomeSelectedCenter.uri().absoluteUrl()
+                )
+            },
             becomeAPattern: function () {
                 this.makePatternLoading = true;
                 AppController.becomeAPattern().then(() => {

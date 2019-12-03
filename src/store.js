@@ -42,7 +42,8 @@ const Store = new Vuex.Store({
         noteRefresh: Math.random(),
         tagRefresh: Math.random(),
         shareRefresh: Math.random(),
-        similarBubblesRefresh: Math.random()
+        similarBubblesRefresh: Math.random(),
+        userHomeSelectedCenter : null
     },
     mutations: {
         setUser: function (state, user) {
@@ -132,6 +133,9 @@ const Store = new Vuex.Store({
         },
         similarBubblesRefresh: function (state, key) {
             state.similarBubblesRefresh = key;
+        },
+        userHomeSelectedCenter: function(state, center){
+            state.userHomeSelectedCenter = center;
         }
     },
     actions: {
@@ -200,6 +204,9 @@ const Store = new Vuex.Store({
         },
         similarBubblesRefresh: function (action) {
             action.commit('similarBubblesRefresh', IdUri.uuid());
+        },
+        userHomeSelectedCenter: function(action, center){
+            action.commit('userHomeSelectedCenter', center);
         }
     }
 });

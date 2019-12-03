@@ -457,6 +457,7 @@
             if (this.isTesting) {
                 return;
             }
+            this.$store.dispatch('userHomeSelectedCenter', null);
             document.scrollingElement.scrollTop = 0;
             this.reload();
         },
@@ -488,6 +489,7 @@
         ,
         watch: {
             tabMenu: function () {
+                this.$store.dispatch('userHomeSelectedCenter', null);
                 document.title = "MindRespect.com";
                 let pathName;
                 if (this.tabMenu === 0) {
