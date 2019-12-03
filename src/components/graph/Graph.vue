@@ -152,23 +152,26 @@
         <ListView></ListView>
         <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>
         <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
-        <v-btn
-                color="white"
-                large
-                @click="usePatternConfirmFlow = true"
-                v-show="!usePatternConfirmFlow"
-                :disabled="usePatternLoading"
+        <v-bottom-navigation
+                v-if="$store.state.isPatternFlow && !usePatternConfirmFlow"
+                class="text-center"
                 fixed
-                bottom
-                class="mb-4"
-                style="left:50%;z-index:1;"
-                v-if="$store.state.isPatternFlow"
+                :value="0"
         >
-            <v-icon class="mr-2">
-                stars
-            </v-icon>
-            {{$t('graph:usePattern')}}
-        </v-btn>
+            <v-btn
+                    color="secondary"
+                    text
+                    large
+                    @click="usePatternConfirmFlow = true"
+                    v-show="!usePatternConfirmFlow"
+                    :disabled="usePatternLoading"
+            >
+                {{$t('graph:usePattern')}}
+                <v-icon class="">
+                    stars
+                </v-icon>
+            </v-btn>
+        </v-bottom-navigation>
         <v-bottom-sheet no-click-animation
                         v-model="usePatternConfirmFlow"
                         :internal-activator="true"
