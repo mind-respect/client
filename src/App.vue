@@ -54,7 +54,7 @@
                     </v-icon>
                 </v-btn>
                 <v-btn icon color="third" v-if="$store.state.userHomeSelectedCenter && $route.name.indexOf('UserHome') > -1" v-show="!showSearch"
-                       @click="copyUserHomeSelectedCenterUrl">
+                       @click="copyUserHomeSelectedCenterUrl()">
                     <v-icon>
                         link
                     </v-icon>
@@ -354,7 +354,7 @@
         methods: {
             copyUserHomeSelectedCenterUrl: function () {
                 this.$copyText(
-                    this.$store.userHomeSelectedCenter.uri().absoluteUrl()
+                    this.$store.state.userHomeSelectedCenter.uri().absoluteUrl()
                 )
             },
             becomeAPattern: function () {
