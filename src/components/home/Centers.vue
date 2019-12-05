@@ -404,6 +404,7 @@
                         this.centers.splice(l, 1);
                     }
                 }
+                this.$store.dispatch('userHomeSelectedCenter', null);
             },
             cancelRemove: function () {
                 this.removeSnackbar = false;
