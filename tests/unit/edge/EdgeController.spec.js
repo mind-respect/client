@@ -6,6 +6,9 @@ import TestUtil from '../util/TestUtil'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import IdUri from '@/IdUri'
 import ConvertVertexToGroupRelationScenario from "../scenario/ConvertVertexToGroupRelationScenario";
+import LeaveContextChoiceAScenario from "../scenario/LeaveContextChoiceAScenario";
+import LeaveContextTechChoiceScenarioScenario from "../scenario/LeaveContextChoiceAScenario";
+import LeaveContextTechChoiceScenario from "../scenario/LeaveContextTechChoiceScenario";
 
 describe("EdgeController", () => {
     describe("remove", function () {
@@ -565,7 +568,7 @@ describe("EdgeController", () => {
                 )
             ).toBeTruthy();
         });
-        it("can become parent of one of its descendant", async ()=>{
+        it("can become parent of one of its descendant", async () => {
             let scenario = await new ConvertVertexToGroupRelationScenario();
             let center = scenario.getCenterInTree();
             let relation = center.getNextBubble();
@@ -648,6 +651,51 @@ describe("EdgeController", () => {
             expect(
                 book1Rel.getIdentifiers().length
             ).toBe(1)
+        });
+    });
+    describe("leaveContextDo", function () {
+        it("removes the edge when copied and tagged bubble is parent vertex", async () => {
+            let scenario = await new LeaveContextChoiceAScenario();
+            let center = scenario.getCenterInTree();
+            let techChoice = TestUtil.getChildDeepWithLabel(center, "tech choice");
+            let relation = techChoice.getParentBubble();
+            relation.setLabel("rel label");
+            expect(relation.isEdge()).toBeTruthy();
+            expect(
+                TestUtil.hasChildWithLabel(center, "rel label")
+            ).toBeTruthy();
+            await relation.controller().leaveContextDo();
+            expect(
+                TestUtil.hasChildWithLabel(center, "rel label")
+            ).toBeFalsy();
+        });
+        it("changes destination vertex to a tag when it's children", async () => {
+            let scenario = await new LeaveContextTechChoiceScenario();
+            let center = scenario.getCenterInTree();
+            let choiceA = TestUtil.getChildDeepWithLabel(center, "choice a");
+            let relation = choiceA.getParentBubble();
+            relation.setLabel("rel label");
+            expect(relation.isEdge()).toBeTruthy();
+            expect(
+                TestUtil.hasChildWithLabel(center, "rel label")
+            ).toBeTruthy();
+            expect(
+                choiceA.getIdentifiers().length
+            ).toBe(0);
+            expect(
+                choiceA.getNumberOfChild()
+            ).toBe(2);
+            await relation.controller().leaveContextDo();
+            expect(
+                TestUtil.hasChildWithLabel(center, "rel label")
+            ).toBeTruthy();
+            choiceA = TestUtil.getChildDeepWithLabel(center, "choice a");
+            expect(
+                choiceA.getIdentifiers().length
+            ).toBe(1);
+            expect(
+                choiceA.getNumberOfChild()
+            ).toBe(0);
         });
     });
 });

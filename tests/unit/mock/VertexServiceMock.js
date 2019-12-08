@@ -9,6 +9,7 @@ api.applyDefault = function () {
     spies["addTuple"] = api.addTuple();
     spies["makePublic"] = api.makePublic();
     spies["makePrivate"] = api.makePrivate();
+    spies["createVertex"] = api.createVertex();
     return spies;
 };
 
@@ -42,5 +43,12 @@ api.makePrivate = function () {
         return Promise.resolve();
     });
 };
+
+api.createVertex = function () {
+    return jest.spyOn(VertexService, "createVertex").mockImplementation(function () {
+        return Promise.resolve(TestUtil.generateVertex());
+    });
+};
+
 
 export default api;

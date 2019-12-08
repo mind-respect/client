@@ -72,7 +72,7 @@
         <v-card flat class="pt-0">
             <v-card-text class="pt-0" id="tagMenu"></v-card-text>
         </v-card>
-        <v-card min-height="150" flat class="pt-0 text-center" id="poire">
+        <v-card min-height="150" flat class="pt-0 text-center">
             <v-progress-circular indeterminate color="third" v-if="tagLoading"></v-progress-circular>
             <v-skeleton-loader
                     type="list-item-avatar-two-line"

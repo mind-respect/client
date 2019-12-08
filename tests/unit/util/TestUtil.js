@@ -131,6 +131,13 @@ api.logChildren = function (bubble) {
         })
     );
 };
+api.logDescendants = function (bubble) {
+    console.log(
+        bubble.getDescendants().map((a) => {
+            return a.getLabel();
+        })
+    );
+};
 
 export default api;
 

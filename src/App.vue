@@ -46,14 +46,18 @@
                 <Search class="mt-6" v-show="showSearch || $vuetify.breakpoint.mdAndUp" ref="search"
                         @leaveSearchFlow="leaveSearchFlow"></Search>
                 <v-spacer></v-spacer>
-                <v-btn icon color="third" v-if="$store.state.userHomeSelectedCenter && $route.name.indexOf('UserHome') > -1" v-show="!showSearch"
+                <v-btn icon color="third"
+                       v-if="$store.state.userHomeSelectedCenter && $route.name.indexOf('UserHome') > -1"
+                       v-show="!showSearch"
                        :href="$store.state.userHomeSelectedCenter.uri().url()"
                        target="_blank">
                     <v-icon>
                         open_in_new
                     </v-icon>
                 </v-btn>
-                <v-btn icon color="third" v-if="$store.state.userHomeSelectedCenter && $route.name.indexOf('UserHome') > -1" v-show="!showSearch"
+                <v-btn icon color="third"
+                       v-if="$store.state.userHomeSelectedCenter && $route.name.indexOf('UserHome') > -1"
+                       v-show="!showSearch"
                        @click="copyUserHomeSelectedCenterUrl()">
                     <v-icon>
                         link
@@ -277,6 +281,7 @@
                 "setShareLevel": "Share",
                 "createVertex": "Create a new bubble",
                 close: "Close",
+                leaveContext: "Split into 2 cards that share a tag"
             });
             I18n.i18next.addResources("fr", "button", {
                 "select": "Sélection à la main",
@@ -322,7 +327,8 @@
                 "fontPicker": "Polices",
                 "setShareLevel": "Partager",
                 "createVertex": "Créer une nouvelle bulle",
-                close: "Fermer"
+                close: "Fermer",
+                leaveContext: "Séparer en 2 cartes qui partagent un étiquette"
             });
 
             I18n.i18next.addResources("en", "app", {
@@ -648,6 +654,10 @@
     [contenteditable] {
         -webkit-user-select: text;
         user-select: text;
+    }
+
+    .line-through {
+        text-decoration: line-through;
     }
 
 </style>

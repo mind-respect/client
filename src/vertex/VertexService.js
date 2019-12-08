@@ -15,7 +15,11 @@ const api = {};
 api.createPromise = Promise.resolve();
 
 api.createVertex = function () {
-    return Service.api().post(IdUri.vertexBaseUri());
+    return Service.api().post(IdUri.vertexBaseUri()).then((response) => {
+        return Vertex.fromServerFormat(
+            response.data
+        );
+    });
 };
 api.addTuple = function (vertex) {
     let newVertexId = IdUri.uuid();

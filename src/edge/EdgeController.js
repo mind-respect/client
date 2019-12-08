@@ -11,6 +11,7 @@ import GroupRelation from '@/group-relation/GroupRelation'
 import GraphElementService from '@/graph-element/GraphElementService'
 import Store from '@/store'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
+import VertexService from '@/vertex/VertexService'
 
 const api = {};
 api.RelationController = EdgeController;
@@ -265,6 +266,43 @@ EdgeController.prototype.addTagToChildVertex = function (tag) {
         tag,
         true
     );
+};
+
+EdgeController.prototype.leaveContextCanDo = function () {
+    return this.isSingleAndOwned();
+};
+
+EdgeController.prototype.leaveContext = function () {
+    Store.dispatch("isNewContextFlow", true);
+};
+
+EdgeController.prototype.leaveContextDo = async function () {
+    const original = this.model().getDestinationVertex();
+    const isRemoveFlow = this.model().getParentVertex().getUri() === original.getUri();
+    const newVertex = await VertexService.createVertex();
+    const newVertexController = newVertex.controller();
+    const addIdentifiersPromise = newVertexController.addIdentifiers(
+        original.getIdentifiersIncludingSelf(),
+        true
+    );
+    return Promise.all([
+        newVertexController.setLabel(original.getLabel()),
+        newVertexController.setShareLevelDo(original.getShareLevel()),
+        addIdentifiersPromise,
+        EdgeService.changeDestinationVertex(
+            newVertex,
+            this.model()
+        )
+    ]).then(() => {
+        if (isRemoveFlow) {
+            this.model().remove();
+        } else {
+            this.model().setDestinationVertex(newVertex);
+            this.model().refreshChildren();
+            GraphElementService.changeChildrenIndex(this.model().getParentVertex());
+        }
+        return newVertex;
+    });
 };
 
 export default api;

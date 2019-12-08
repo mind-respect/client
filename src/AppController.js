@@ -52,12 +52,8 @@ api.zoom = function (adjust) {
     })
 };
 
-api.createVertex = function (label, isPattern, isPublic) {
-    return VertexService.createVertex().then(function (response) {
-        let serverFormat = response.data;
-        let newVertex = Vertex.fromServerFormat(
-            serverFormat
-        );
+api.createVertex = function (label, isPattern, isPublic, avoidRedirect) {
+    return VertexService.createVertex().then((newVertex) => {
         let promise = Promise.resolve();
         if (label) {
             newVertex.setLabel(label);
@@ -71,10 +67,12 @@ api.createVertex = function (label, isPattern, isPublic) {
         if (isPublic) {
             newVertex.makePublic();
         }
-        return promise.then(function () {
-            router.push(
-                newVertex.uri().url()
-            );
+        return promise.then(() => {
+            if (avoidRedirect !== true) {
+                router.push(
+                    newVertex.uri().url()
+                );
+            }
             return newVertex;
         });
     });

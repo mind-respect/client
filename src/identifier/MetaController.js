@@ -196,11 +196,7 @@ MetaController.prototype.identifyCanDo = function () {
 };
 
 MetaController.prototype.addChild = function () {
-    return VertexService.createVertex().then((response) => {
-        let serverFormat = response.data;
-        let newVertex = Vertex.fromServerFormat(
-            serverFormat
-        );
+    return VertexService.createVertex().then((newVertex) => {
         FriendlyResourceService.updateLabel(
             newVertex,
             ""

@@ -159,6 +159,10 @@
                         ctrlShortcut: "O"
                     },
                     {
+                        icon: "call_split",
+                        action: "leaveContext"
+                    },
+                    {
                         icon: "delete",
                         action: "remove"
                     },

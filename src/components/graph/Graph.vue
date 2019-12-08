@@ -152,6 +152,7 @@
         <ListView></ListView>
         <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>
         <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
+        <NewContextDialog></NewContextDialog>
         <v-bottom-navigation
                 v-if="$store.state.isPatternFlow && !usePatternConfirmFlow"
                 class="text-center"
@@ -218,18 +219,6 @@
                 </v-layout>
             </v-sheet>
         </v-bottom-sheet>
-        <!--        <v-btn @click="usePattern"-->
-        <!--               fixed-->
-        <!--               bottom-->
-        <!--               right-->
-        <!--               color="secondary"-->
-        <!--               style="z-index:2;" class="mr-12 mb-12"-->
-        <!--               :disabled="usePatternLoading"-->
-        <!--               :loading="usePatternLoading"-->
-        <!--               v-if="$store.state.isPatternFlow"-->
-        <!--        >-->
-        <!--            {{$t('graph:usePattern')}}-->
-        <!--        </v-btn>-->
     </v-layout>
 </template>
 
@@ -270,7 +259,8 @@
             FontDialog: () => import('@/components/FontDialog'),
             ListView: () => import('@/components/ListView'),
             CohesionSnackbar: () => import('@/components/CohesionSnackbar'),
-            AddExistingBubbleDialog: () => import('@/components/AddExistingBubbleDialog')
+            AddExistingBubbleDialog: () => import('@/components/AddExistingBubbleDialog'),
+            NewContextDialog: () => import('@/components/NewContextDialog')
         },
         data: function () {
             I18n.i18next.addResources("en", "graph", {
