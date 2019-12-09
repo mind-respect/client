@@ -163,11 +163,12 @@ Identification.Identification.prototype.getJsonFormat = function () {
     return serverFormat;
 };
 
-Identification.Identification.prototype.getNbReferences = function () {
+Identification.Identification.prototype.incrementNbReferences = function () {
     if (this.identificationServerFormat.nbReferences === undefined) {
-        return 0;
+        this.identificationServerFormat.nbReferences = 1;
+        return;
     }
-    return this.identificationServerFormat.nbReferences;
+    return this.identificationServerFormat.nbReferences++;
 };
 
 Identification.Identification.prototype.getNbReferences = function () {

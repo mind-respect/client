@@ -295,6 +295,10 @@ EdgeController.prototype.leaveContextDo = async function () {
         )
     ]).then(() => {
         if (isRemoveFlow) {
+            this.model().getParentVertex().addIdentifications(
+                newVertex.getIdentifiers()
+            );
+            this.model().getParentVertex().getSelfTag().incrementNbReferences();
             this.model().remove();
         } else {
             this.model().setDestinationVertex(newVertex);

@@ -697,5 +697,20 @@ describe("EdgeController", () => {
                 choiceA.getNumberOfChild()
             ).toBe(0);
         });
+        it("increments number of references of tag to parent when destination vertex is removed", async ()=>{
+            let scenario = await new LeaveContextChoiceAScenario();
+            let center = scenario.getCenterInTree();
+            let techChoice = TestUtil.getChildDeepWithLabel(center, "tech choice");
+            let relation = techChoice.getParentBubble();
+            relation.setLabel("rel label");
+            expect(relation.isEdge()).toBeTruthy();
+            expect(
+                center.getIdentifiersIncludingSelf()[0].getNbReferences()
+            ).toBe(0);
+            await relation.controller().leaveContextDo();
+            expect(
+                center.getIdentifiersIncludingSelf()[0].getNbReferences()
+            ).toBe(1);
+        });
     });
 });

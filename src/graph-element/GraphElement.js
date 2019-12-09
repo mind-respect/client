@@ -219,7 +219,7 @@ GraphElement.GraphElement.prototype.getIdentifiers = function () {
     });
 };
 
-GraphElement.GraphElement.prototype.getIdentifiersIncludingSelf = function () {
+GraphElement.GraphElement.prototype.getIdentifiersIncludingSelf = function (preventBuildingSelf) {
     let identifiers = [];
     let isSelfTagAlreadyIncluded = false;
     this.identifiers.forEach((identifier) => {
@@ -228,7 +228,7 @@ GraphElement.GraphElement.prototype.getIdentifiersIncludingSelf = function () {
         }
         identifiers.push(identifier);
     });
-    if (!isSelfTagAlreadyIncluded) {
+    if (!isSelfTagAlreadyIncluded && !preventBuildingSelf) {
         identifiers.unshift(
             this.buildSelfIdentifier()
         );
@@ -313,9 +313,19 @@ GraphElement.GraphElement.prototype._buildIdentifications = function () {
         )
     });
 };
-GraphElement.GraphElement.prototype.hasIdentification = function (identifierToTest) {
-    return this.getIdentifiersIncludingSelf().some((identifier) => {
-        return identifier.getExternalResourceUri() === identifierToTest.getExternalResourceUri();
+
+GraphElement.GraphElement.prototype.hasTagNotBuildingSelf = function (tag) {
+    return this._hasTagBuildingSelfOrNot(tag, true);
+};
+
+GraphElement.GraphElement.prototype.hasIdentification = function (tag) {
+    return this._hasTagBuildingSelfOrNot(tag, false);
+
+};
+
+GraphElement.GraphElement.prototype._hasTagBuildingSelfOrNot = function (tag, preventBuildingSelf) {
+    return this.getIdentifiersIncludingSelf(preventBuildingSelf).some((identifier) => {
+        return identifier.getExternalResourceUri() === tag.getExternalResourceUri();
     })
 };
 
@@ -362,7 +372,7 @@ GraphElement.GraphElement.prototype.addIdentifications = function (identificatio
     });
 };
 GraphElement.GraphElement.prototype.addIdentification = function (identification) {
-    if (this.hasIdentification(identification)) {
+    if (this.hasTagNotBuildingSelf(identification)) {
         return;
     }
     if (!identification.hasRelationExternalUri()) {
