@@ -412,7 +412,7 @@ FriendlyResource.FriendlyResource.prototype.getDuplicates = function () {
 
 FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble, relation) {
     if (this.isGroupRelation()) {
-        this.expand();
+        await this.expand();
     }
     if (this.isVertexType()) {
         return this.getParentBubble().moveTo(
@@ -475,7 +475,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         } else {
             Scroll.centerBubbleForTreeIfApplicable(closestChildVertex);
         }
-        CurrentSubGraph.get().getGraphElements().forEach((graphElement)=>{
+        CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
             graphElement.draw = true;
         });
         Store.dispatch("redraw");
