@@ -513,7 +513,7 @@
             setupFocus: function () {
                 textLengthBeforeEdit = this.bubble.getLabel().length;
                 descendantsAnimateInfo = UiUtils.buildElementsAnimationData(
-                    CurrentSubGraph.get().getGraphElements()
+                    this.bubble.getDescendants()
                 );
                 if (this.isCenter && this.bubble.getNumberOfChild() === 0) {
                     this.preventAbsoluteOnFocus = true;
@@ -549,6 +549,10 @@
                 }
             },
             leaveEditFlow: function () {
+                if (this.isLeavingEditFlow) {
+                    return;
+                }
+                this.isLeavingEditFlow = true;
                 if (bubbleContainerClone) {
                     if (bubbleContainerClone.parentNode) {
                         bubbleContainerClone.parentNode.removeChild(bubbleContainerClone);
@@ -583,6 +587,7 @@
                                 descendant.draw = true;
                             });
                             this.$store.dispatch("redraw");
+                            this.isLeavingEditFlow = false;
                         }, 500)
                     });
                 }

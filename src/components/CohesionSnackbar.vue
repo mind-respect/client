@@ -287,7 +287,10 @@
                     this.isSimilarBubblesNotice = true;
                     if (this.nbLoadResults === 0) {
                         this.$nextTick(() => {
-                            document.getElementById("cohesion-scroll-container").scrollTop = 0;
+                            const scrollContainer = document.getElementById("cohesion-scroll-container");
+                            if (scrollContainer) {
+                                scrollContainer.scrollTop = 0;
+                            }
                         });
                     }
                     this.nbLoadResults++
