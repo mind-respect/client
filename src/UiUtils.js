@@ -36,27 +36,33 @@ api.buildElementsAnimationData = function (graphElements) {
 };
 
 api.animateGraphElementsWithAnimationData = function (graphElements, firstBoxes) {
-    return new Promise((resolve) => {
-        requestAnimationFrame(() => {
-            graphElements.forEach((graphElement) => {
+    return Promise.all(graphElements.map((graphElement) => {
+        return new Promise((resolve) => {
+            requestAnimationFrame(() => {
                 const html = graphElement.getHtml();
                 if (!html) {
+                    resolve();
                     return;
                 }
                 const firstBox = firstBoxes[graphElement.getId()];
                 const lastBox = html.getBoundingClientRect();
                 const deltaX = firstBox.left - lastBox.left;
                 const deltaY = firstBox.top - lastBox.top;
-                html.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-                html.style.transition = 'transform 0s';
-                requestAnimationFrame(() => {
-                    html.style.transform = '';
-                    html.style.transition = 'transform 500ms';
+                if (deltaX === 0 && deltaY === 0) {
                     resolve();
-                });
+                } else {
+                    graphElement.draw = false;
+                    html.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+                    html.style.transition = 'transform 0s';
+                    requestAnimationFrame(() => {
+                        html.style.transform = '';
+                        html.style.transition = 'transform 500ms';
+                        resolve();
+                    });
+                }
             });
         });
-    });
+    }));
 };
 
 export default api;

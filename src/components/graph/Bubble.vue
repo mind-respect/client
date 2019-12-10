@@ -573,17 +573,17 @@
                 this.$store.dispatch("similarBubblesRefresh");
                 this.$store.dispatch("redraw");
                 if (this.bubble.getLabel().length !== textLengthBeforeEdit) {
-                    this.$nextTick(() => {
-                        setTimeout(async () => {
-                            await UiUtils.animateGraphElementsWithAnimationData(
-                                this.bubble.getDescendants(),
-                                descendantsAnimateInfo
-                            );
-                            setTimeout(() => {
-                                this.$store.dispatch("redraw");
-                            }, 700)
-                        }, 100)
-
+                    this.$nextTick(async () => {
+                        await UiUtils.animateGraphElementsWithAnimationData(
+                            this.bubble.getDescendants(),
+                            descendantsAnimateInfo
+                        );
+                        setTimeout(() => {
+                            this.bubble.getDescendants().forEach((descendant) => {
+                                descendant.draw = true;
+                            });
+                            this.$store.dispatch("redraw");
+                        }, 500)
                     });
                 }
             },

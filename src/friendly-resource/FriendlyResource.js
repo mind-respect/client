@@ -456,12 +456,12 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             index
         );
     }
-    Store.dispatch("redraw", {hide: true});
     await Vue.nextTick();
     await UiUtils.animateGraphElementsWithAnimationData(
         CurrentSubGraph.get().getGraphElements(),
         firstBoxes
     );
+    Store.dispatch("redraw");
     setTimeout(() => {
         let closestChildVertex = this.getClosestChildrenOfType(GraphElementType.Vertex)[0];
         if (Scroll.isBubbleTreeFullyOnScreen(closestChildVertex)) {
@@ -475,8 +475,11 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         } else {
             Scroll.centerBubbleForTreeIfApplicable(closestChildVertex);
         }
-        Store.dispatch("redraw", {fadeIn: true});
-    }, 700);
+        CurrentSubGraph.get().getGraphElements().forEach((graphElement)=>{
+            graphElement.draw = true;
+        });
+        Store.dispatch("redraw");
+    }, 500);
 };
 
 FriendlyResource.FriendlyResource.prototype.revertIdentificationIntegration = function (identifier) {

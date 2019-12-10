@@ -44,7 +44,9 @@ EdgeDrawing.prototype.redraw = function () {
     this.bubbleRect = element.getBoundingClientRect();
     this.topPosition = this.topPositionCalculate();
     this.bottomPosition = this.bottomPositionCalculate();
-    this.children = this.bubble.getNextChildren(this.isLeft);
+    this.children = this.bubble.getNextChildren(this.isLeft).filter((child)=>{
+        return child.draw;
+    });
     if (this.bubble.isEdge()) {
         return true;
     }
@@ -144,7 +146,7 @@ EdgeDrawing.prototype.drawChildren = function () {
         if (child.isEdge() && child.isInverse()) {
             lines += this.inverseArrowHead(childPosition)
         }
-        if (child.isSameBubble(this.highestChild) || child.isSameBubble(this.lowestChild) || !child.draw) {
+        if (child.isSameBubble(this.highestChild) || child.isSameBubble(this.lowestChild)) {
             return lines;
         }
         if (!childPosition) {
