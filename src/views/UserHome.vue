@@ -527,7 +527,5 @@
 </script>
 
 <style>
-    .add-button-desktop {
-        margin-top: -25px;
-    }
+
 </style>

@@ -1,20 +1,23 @@
 <template>
     <v-card class="centers-card">
+        <v-tooltip v-if="isOwner" left>
+            <template v-slot:activator="{ on }">
+                <v-btn color="third" fab fixed @click="$emit('create')" dark
+                       :large="$vuetify.breakpoint.smAndDown"
+                       :x-large="$vuetify.breakpoint.mdAndUp"
+                       bottom right class="right" :class="{
+                                        'mb-2 mr-4' : $vuetify.breakpoint.smAndDown,
+                                        'mb-6 mr-12': $vuetify.breakpoint.mdAndUp
+                                       }">
+                    <v-icon large>add</v-icon>
+                </v-btn>
+            </template>
+            <span>{{$t('userhome:createInfo')}}</span>
+        </v-tooltip>
         <v-card class="ma-0 pa-0" min-height="200" :class="{
                         'vh-center': !loaded
                     }">
             <v-card-text class="pt-0">
-                <v-tooltip v-if="isOwner" left>
-                    <template v-slot:activator="{ on }">
-                        <v-btn color="third" fab @click="$emit('create')" dark large bottom
-                               absolute right class="mr-6 right" style="z-index:0;" :class="{
-                                        'add-button-desktop' : $vuetify.breakpoint.mdAndUp
-                                       }">
-                            <v-icon large>add</v-icon>
-                        </v-btn>
-                    </template>
-                    <span>{{$t('userhome:createInfo')}}</span>
-                </v-tooltip>
                 <v-layout wrap
                           class="pt-0"
                           :class="{
