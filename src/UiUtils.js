@@ -35,7 +35,9 @@ api.buildElementsAnimationData = function (graphElements) {
 
 };
 
-api.animateGraphElementsWithAnimationData = function (graphElements, firstBoxes) {
+api.animateGraphElementsWithAnimationData = function (graphElements, firstBoxes, options) {
+    options = options || {};
+    const duration = options.duration || 500;
     return Promise.all(graphElements.map((graphElement) => {
         return new Promise((resolve) => {
             requestAnimationFrame(() => {
@@ -51,12 +53,12 @@ api.animateGraphElementsWithAnimationData = function (graphElements, firstBoxes)
                 if (deltaX === 0 && deltaY === 0) {
                     resolve();
                 } else {
-                    graphElement.draw = false;
+                    graphElement.draw = options.dontHideEdges === true;
                     html.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
                     html.style.transition = 'transform 0s';
                     requestAnimationFrame(() => {
                         html.style.transform = '';
-                        html.style.transition = 'transform 500ms';
+                        html.style.transition = 'transform ' + duration + 'ms';
                         resolve();
                     });
                 }

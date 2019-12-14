@@ -580,7 +580,11 @@
                     this.$nextTick(async () => {
                         await UiUtils.animateGraphElementsWithAnimationData(
                             this.bubble.getDescendants(),
-                            descendantsAnimateInfo
+                            descendantsAnimateInfo,
+                            {
+                                duration: 250,
+                                dontHideEdges: true
+                            }
                         );
                         setTimeout(() => {
                             this.bubble.getDescendants().forEach((descendant) => {
