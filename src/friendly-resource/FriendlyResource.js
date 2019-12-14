@@ -760,16 +760,18 @@ FriendlyResource.FriendlyResource.prototype.visitClosestChildRelations = functio
     );
 };
 
-FriendlyResource.FriendlyResource.prototype.getClosestChildRelations = function () {
+FriendlyResource.FriendlyResource.prototype.getClosestChildRelations = function (getEventIfCollapsed) {
     return this.getClosestChildrenOfType(
-        GraphElementType.Relation
+        GraphElementType.Relation,
+        getEventIfCollapsed
     );
 };
 
 
-FriendlyResource.FriendlyResource.prototype.getClosestChildrenOfType = function (type) {
+FriendlyResource.FriendlyResource.prototype.getClosestChildrenOfType = function (type, getEventIfCollapsed) {
     return this.getClosestChildrenInTypes(
-        [type]
+        [type],
+            getEventIfCollapsed
     );
 };
 

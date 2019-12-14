@@ -161,19 +161,17 @@ GroupRelationController.prototype.noteDo = function (note) {
 GroupRelationController.prototype.becomeExParent = function (movedEdge) {
     let promises = [];
     let previousParentGroupRelation = this.model().getGreatestGroupRelationAncestor();
-    previousParentGroupRelation.getIdentifiersAtAnyDepth().forEach((identifier) => {
-        identifier = identifier.getExternalResourceUri() === movedEdge.getUri() ? identifier :
-            movedEdge.model().getIdentifierHavingExternalUri(
-                identifier.getExternalResourceUri()
-            );
-        if (identifier) {
-            promises.push(
-                movedEdge.controller().removeIdentifier(
-                    identifier,
-                    true
-                )
-            );
-        }
+    let groupRelationToStop;
+    if (movedEdge.isGroupRelation()) {
+        groupRelationToStop = movedEdge;
+    }
+    previousParentGroupRelation.getIdentifiersAtAnyDepth(groupRelationToStop).forEach((identifier) => {
+        promises.push(
+            movedEdge.controller().removeIdentifier(
+                identifier,
+                true
+            )
+        );
     });
     return Promise.all(promises);
 };
@@ -217,6 +215,24 @@ GroupRelationController.prototype.replaceParentVertex = function (newParentVerte
 
 GroupRelationController.prototype.addIdentificationCanDo = function () {
     return false;
+};
+
+GroupRelationController.prototype.removeIdentifier = function (tag, preventMoving) {
+    return Promise.all(
+        this.model().getClosestChildRelations(true).map((edge) => {
+            return edge.controller().removeIdentifier(tag, true)
+        })
+    ).then(async () => {
+        if (!preventMoving) {
+            this.model().moveBelow(
+                this.model().getParentBubble()
+            );
+            await Vue.nextTick();
+            GraphElementService.changeChildrenIndex(
+                this.model().getParentVertex()
+            );
+        }
+    });
 };
 
 export default api;

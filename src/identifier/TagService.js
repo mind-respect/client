@@ -14,9 +14,9 @@ TagService.add = function (graphElement, identification) {
     });
 };
 
-TagService.remove = function (graphElementUri, identification) {
+TagService.remove = function (graphElementUri, tag) {
     return Service.geApi().delete(
-        graphElementUri + '/identification?uri=' + identification.getUri()
+        graphElementUri + '/identification?uri=' + tag.getUri()
     )
 };
 

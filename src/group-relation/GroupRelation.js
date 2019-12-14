@@ -256,16 +256,32 @@ GroupRelation.prototype.setParentVertex = function (vertex) {
     });
 };
 
-GroupRelation.prototype.getIdentifiersAtAnyDepth = function () {
-    let identifiers = [].concat(this.identifiers);
+GroupRelation.prototype.getGroupRelationInSequenceWithTag = function (tag) {
+    return this.getGreatestGroupRelationAncestor().getSerialGroupRelations().filter((groupRelation) => {
+        return groupRelation.hasIdentification(tag);
+    })[0];
+};
+
+GroupRelation.prototype.getIdentifiersAtAnyDepth = function (groupRelationToStop) {
+    return Array.prototype.concat.apply([], this.getSerialGroupRelations(
+        groupRelationToStop
+    ).map((groupRelation) => {
+        return groupRelation.getIdentifiers()
+    }));
+};
+
+GroupRelation.prototype.getSerialGroupRelations = function (groupRelationToStop) {
+    let groupRelationsAtAnyDepth = [].concat(this);
     this.getChildGroupRelations().forEach(function (childGroupRelation) {
-        identifiers = identifiers.concat(childGroupRelation.getIdentifiersAtAnyDepth());
+        if (!groupRelationToStop || childGroupRelation.getUri() !== groupRelationToStop.getUri()) {
+            groupRelationsAtAnyDepth = groupRelationsAtAnyDepth.concat(childGroupRelation.getSerialGroupRelations(groupRelationToStop));
+        }
     });
-    return identifiers;
+    return groupRelationsAtAnyDepth;
 };
 
 GroupRelation.prototype.getChildGroupRelations = function () {
-    return this.getNextChildren().filter((groupRelation) => {
+    return this.getNextChildrenEvenIfCollapsed().filter((groupRelation) => {
         return groupRelation.getGraphElementType() === GraphElementType.GroupRelation;
     });
 };

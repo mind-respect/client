@@ -5,6 +5,8 @@ import GroupRelationHavingAVertexChildWithOneChild from '../scenario/GroupRelati
 import GraphServiceMock from '../mock/GraphServiceMock'
 import TestUtil from '../util/TestUtil'
 import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
+import TwoLevelGroupRelationScenario from "../scenario/TwoLevelGroupRelationScenario";
+import TagService from "@/identifier/TagService";
 
 
 describe("GroupRelationController", () => {
@@ -173,6 +175,157 @@ describe("GroupRelationController", () => {
             );
             expect(
                 r1.isGroupRelation()
+            ).toBeFalsy();
+        });
+        it("removes the tag related to the right group relation", async () => {
+            let scenario = await new TwoLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let group1 = TestUtil.getChildWithLabel(center, "group1");
+            expect(
+                group1.isGroupRelation()
+            ).toBeTruthy();
+            let group2 = TestUtil.getChildWithLabel(group1, "group2");
+            expect(
+                group2.isGroupRelation()
+            ).toBeTruthy();
+
+            let graphElementUris = [];
+            let removedTagsUri = [];
+            const removeTagSpy = jest.spyOn(TagService, "remove").mockImplementation((graphElementUri, tag) => {
+                graphElementUris.push(graphElementUri);
+                removedTagsUri.push(tag.getUri());
+                return Promise.resolve();
+            });
+            group1.expand();
+            await group1.controller().becomeExParent(group2);
+            expect(removeTagSpy).toHaveBeenCalled();
+            group2.expand();
+            expect(graphElementUris.indexOf(
+                group2.getNextBubble().getUri()
+            ) > -1).toBeTruthy();
+            expect(removedTagsUri.indexOf(
+                group1.getIdentification().getUri()
+            ) > -1).toBeTruthy();
+            expect(removedTagsUri.indexOf(
+                group2.getIdentification().getUri()
+            ) > -1).toBeFalsy();
+        });
+        it("removes the tag related to the right group relation even if collapsed", async () => {
+            let scenario = await new TwoLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let group1 = TestUtil.getChildWithLabel(center, "group1");
+            let group2 = TestUtil.getChildWithLabel(group1, "group2");
+            let graphElementUris = [];
+            let removedTagsUri = [];
+            jest.spyOn(TagService, "remove").mockImplementation((graphElementUri, tag) => {
+                graphElementUris.push(graphElementUri);
+                removedTagsUri.push(tag.getUri());
+                return Promise.resolve();
+            });
+            group1.expand();
+            group2.collapse();
+            await group1.controller().becomeExParent(group2);
+            expect(graphElementUris.indexOf(
+                group2.getNextChildrenEvenIfCollapsed()[0].getUri()
+            ) > -1).toBeTruthy();
+            expect(removedTagsUri.indexOf(
+                group1.getIdentification().getUri()
+            ) > -1).toBeTruthy();
+            expect(removedTagsUri.indexOf(
+                group2.getIdentification().getUri()
+            ) > -1).toBeFalsy();
+        });
+        it("doesnt break moving below", async () => {
+            let scenario = await new TwoLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let group1 = TestUtil.getChildWithLabel(center, "group1");
+            let group2 = TestUtil.getChildWithLabel(group1, "group2");
+            jest.spyOn(TagService, "remove").mockImplementation(async () => {
+                //await next tick for move execution order
+                await scenario.nextTickPromise(1);
+                return Promise.resolve();
+            });
+            await group2.controller().moveBelow(group1);
+            expect(
+                group1.getDownBubble().getUri()
+            ).toBe(group2.getUri());
+        });
+    });
+    describe("removeIdentifier", () => {
+        it("can move a second level group relation out of the first level", async () => {
+            let scenario = await new TwoLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let group1 = TestUtil.getChildWithLabel(center, "group1");
+            let group2 = TestUtil.getChildWithLabel(group1, "group2");
+            expect(
+                TestUtil.hasChildWithLabel(
+                    center,
+                    "g21"
+                )
+            ).toBeFalsy();
+            group2.expand();
+            expect(
+                TestUtil.hasChildWithLabel(
+                    group2,
+                    "g21"
+                )
+            ).toBeTruthy();
+            let g21 = TestUtil.getChildWithLabel(
+                group2,
+                "g21"
+            );
+            await g21.controller().removeIdentifier(
+                group1.getIdentification()
+            );
+            expect(
+                TestUtil.hasChildWithLabel(
+                    center,
+                    "g21"
+                )
+            ).toBeTruthy();
+            expect(
+                TestUtil.hasChildWithLabel(
+                    group2,
+                    "g21"
+                )
+            ).toBeFalsy();
+        });
+        it("can move a second level group relation into the first level", async () => {
+            let scenario = await new TwoLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let group1 = TestUtil.getChildWithLabel(center, "group1");
+            let group2 = TestUtil.getChildWithLabel(group1, "group2");
+            group2.expand();
+            expect(
+                TestUtil.hasChildWithLabel(
+                    group1,
+                    "g21"
+                )
+            ).toBeFalsy();
+            expect(
+                TestUtil.hasChildWithLabel(
+                    group2,
+                    "g21"
+                )
+            ).toBeTruthy();
+            let g21 = TestUtil.getChildWithLabel(
+                group2,
+                "g21"
+            );
+            await g21.controller().removeIdentifier(
+                group2.getIdentification()
+            );
+            expect(
+                TestUtil.hasChildWithLabel(
+                    group1,
+                    "g21"
+                )
+            ).toBeTruthy();
+            expect(
+                TestUtil.hasChildWithLabel(
+                    group2,
+                    "g21"
+                )
             ).toBeFalsy();
         });
     });

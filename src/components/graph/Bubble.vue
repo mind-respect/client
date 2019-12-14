@@ -582,8 +582,7 @@
                             this.bubble.getDescendants(),
                             descendantsAnimateInfo,
                             {
-                                duration: 250,
-                                dontHideEdges: true
+                                duration: 250
                             }
                         );
                         setTimeout(() => {
@@ -592,7 +591,7 @@
                             });
                             this.$store.dispatch("redraw");
                             this.isLeavingEditFlow = false;
-                        }, 500)
+                        }, 250)
                     });
                 }
             },
