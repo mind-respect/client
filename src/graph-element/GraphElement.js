@@ -476,9 +476,9 @@ FriendlyResource.FriendlyResource.prototype.buildChildrenIndex = function (index
             let isLeft = leftRightIndexWhileCenter ? leftRightIndexWhileCenter.toTheLeft : child.isToTheLeft();
             childrenIndex[child.getUri()] = {
                 index: index,
-                toTheLeft: isLeft,
-                label: child.getLabel(),
-                type: child.getGraphElementType()
+                toTheLeft: isLeft
+                // label: child.getLabel(),
+                // type: child.getGraphElementType()
             };
             index++;
         }

@@ -180,8 +180,10 @@ Scroll.isBubbleTreeFullyOnScreen = function (bubble) {
     if (!html) {
         return true;
     }
-    return Scroll.isElementFullyOnScreen(
-        html.closest('.vertex-tree-container')
+    return (
+        !bubble.isExpanded || Scroll.isElementFullyOnScreen(
+            html.closest('.vertex-tree-container')
+        )
     ) && Scroll.isElementFullyOnScreen(
         bubble.getLabelHtml()
     );

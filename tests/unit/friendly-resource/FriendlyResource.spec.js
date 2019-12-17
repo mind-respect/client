@@ -590,6 +590,22 @@ describe("FriendlyResource", () => {
                 b1.canExpandDescendants()
             ).toBeFalsy();
         });
+        it("changes direction of children even if collasped", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let possession = scenario.getPossessionGroupRelation();
+            expect(possession.isToTheLeft()).toBeTruthy();
+            possession.collapse();
+            let underCollapse = possession.getNextChildrenEvenIfCollapsed()[0];
+            expect(underCollapse.isToTheLeft()).toBeTruthy();
+            let otherRelation = scenario.getOtherRelationInTree();
+            expect(otherRelation.isToTheLeft()).toBeFalsy();
+            await possession.controller().moveBelow(
+                otherRelation
+            );
+            expect(possession.isToTheLeft()).toBeFalsy();
+            underCollapse = possession.getNextChildrenEvenIfCollapsed()[0];
+            expect(underCollapse.isToTheLeft()).toBeFalsy();
+        });
     });
     describe("collapse", function () {
         xit("displays the hidden relations container after collapse", async () => {

@@ -411,9 +411,6 @@ FriendlyResource.FriendlyResource.prototype.getDuplicates = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble, relation) {
-    if (this.isGroupRelation()) {
-        await this.expand();
-    }
     if (this.isVertexType()) {
         return this.getParentBubble().moveTo(
             otherBubble,
@@ -456,6 +453,11 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             index
         );
     }
+    if (this.isCollapsed) {
+        this.getDescendantsEvenIfCollapsed().forEach((descendant) => {
+            descendant.direction = this.direction;
+        });
+    }
     await Vue.nextTick();
     await UiUtils.animateGraphElementsWithAnimationData(
         CurrentSubGraph.get().getGraphElements(),
@@ -463,7 +465,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
     );
     Store.dispatch("redraw");
     setTimeout(() => {
-        let closestChildVertex = this.getClosestChildrenOfType(GraphElementType.Vertex)[0];
+        let closestChildVertex = this.isExpanded ? this.getClosestChildrenOfType(GraphElementType.Vertex)[0] : this;
         if (Scroll.isBubbleTreeFullyOnScreen(closestChildVertex)) {
             const afterOffset = UiUtils.getCenterOffsetCoordinates(CurrentSubGraph.get().center);
             const deltaX = afterOffset.x - centerCoordinates.x;
@@ -683,8 +685,17 @@ FriendlyResource.FriendlyResource.prototype.getExpandableDescendants = function 
     });
 };
 
-FriendlyResource.FriendlyResource.prototype.getDescendants = function (toTheLeft, filter) {
-    return this.getNextChildren(toTheLeft).reduce((children, child) => {
+FriendlyResource.FriendlyResource.prototype.getDescendantsEvenIfCollapsed = function (toTheLeft, filter) {
+    return this.getDescendants(
+        toTheLeft,
+        filter,
+        true
+    );
+};
+
+FriendlyResource.FriendlyResource.prototype.getDescendants = function (toTheLeft, filter, evenIfCollapsed) {
+    const children = evenIfCollapsed ? this.getNextChildrenEvenIfCollapsed(toTheLeft) : this.getNextChildren(toTheLeft);
+    return children.reduce((children, child) => {
         if (filter && !filter(child)) {
             return children;
         }
@@ -771,7 +782,7 @@ FriendlyResource.FriendlyResource.prototype.getClosestChildRelations = function 
 FriendlyResource.FriendlyResource.prototype.getClosestChildrenOfType = function (type, getEventIfCollapsed) {
     return this.getClosestChildrenInTypes(
         [type],
-            getEventIfCollapsed
+        getEventIfCollapsed
     );
 };
 
