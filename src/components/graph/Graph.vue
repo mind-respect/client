@@ -10,7 +10,7 @@
                       @dragstart="preventUndesirableDragging" :key="childrenKey" @mousedown="mousedown"
                       :style="zoomScale"
             >
-                <v-flex grow class="vertices-children-container left-oriented pt-12 pb-12"
+                <v-flex grow class="vertices-children-container left-oriented pt-12 pb-12 pl-12 mt-12 mb-12"
                         @dragover="dragOver"
                         @dragleave="dragLeave" @drop="childrenDropLeft" @contextmenu="contextMenuLeft"
                         v-if="center !== null"
@@ -39,7 +39,7 @@
                                              style="" v-show="showLoading"></v-progress-circular>
                     </div>
                 </div>
-                <v-flex grow class="vertices-children-container right-oriented pt-12 pb-12"
+                <v-flex grow class="vertices-children-container right-oriented pt-12 pb-12 pr-12 mt-12 mb-12"
                         @dragover="dragOver"
                         @dragleave="dragLeave" @drop="childrenDropRight" @contextmenu="contextMenuRight"
                         v-if="center !== null"

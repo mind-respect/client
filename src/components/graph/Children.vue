@@ -7,7 +7,7 @@
         <div class="vertices-children-container" v-if="!isCenter && bubble.isVertexType()">
             <div v-for="child in bubble.rightBubbles" :class="{
                         'mt-6 mb-6' : bubble.rightBubbles.length === 2,
-                        'mt-0 mb-0' : bubble.rightBubbles.length > 2
+                        'mt-2 mb-2' : bubble.rightBubbles.length > 2
                         }"
                  :key="child.uiId"
             >

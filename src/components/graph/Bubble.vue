@@ -903,14 +903,13 @@
         /*position relative for absolute vertex-drop-arrow-top-bottom-drop*/
         position: relative;
         flex-shrink: 0;
-
+        width :auto;
         &.edit-flow-non-center {
             position: absolute;
         }
 
         &.edit-flow {
             z-index: 6;
-            max-width: 500px;
 
             .vertex .in-bubble-content {
                 background-color: white;
