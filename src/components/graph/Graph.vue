@@ -474,6 +474,7 @@
             handleResize: function () {
                 Breakpoint.set(this.$vuetify.breakpoint);
                 this.$store.dispatch("redraw");
+                this.arrowHeadLength = this.$vuetify.breakpoint.smAndDown ? 4 : 6;
                 /*
                     cannot scroll center on resize on mobile
                     because it keeps on getting resized because of
@@ -526,7 +527,7 @@
                 await this.$nextTick();
                 requestAnimationFrame(async () => {
                     await this.$nextTick();
-                    this.svg = new GraphDraw(this.center).build();
+                    this.svg = new GraphDraw(this.center, this.arrowHeadLength).build();
                     this.redrawKey = Math.random();
                     await this.$nextTick();
                     if (this.$store.state.redraws.fadeIn && !insideSvgOpacityTransition) {

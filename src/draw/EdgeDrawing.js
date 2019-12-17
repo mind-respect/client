@@ -9,11 +9,11 @@ const smallInnerMargin = 15;
 const inBetweenXAdjust = 20;
 const farDistanceStandard = 30;
 const farDistanceForCenter = 33;
-const arrowHeadLength = 6;
 
-function EdgeDrawing(bubble, isLeft) {
+function EdgeDrawing(bubble, isLeft, arrowHeadLength) {
     this.bubble = bubble;
     this.isLeft = isLeft;
+    this.arrowHeadLength = arrowHeadLength || 6;
 }
 
 EdgeDrawing.prototype.build = function () {
@@ -44,7 +44,7 @@ EdgeDrawing.prototype.redraw = function () {
     this.bubbleRect = element.getBoundingClientRect();
     this.topPosition = this.topPositionCalculate();
     this.bottomPosition = this.bottomPositionCalculate();
-    this.children = this.bubble.getNextChildren(this.isLeft).filter((child)=>{
+    this.children = this.bubble.getNextChildren(this.isLeft).filter((child) => {
         return child.draw;
     });
     if (this.bubble.isEdge()) {
@@ -218,16 +218,16 @@ EdgeDrawing.prototype.arrowHead = function (startX, endX, y) {
     let middleXAdjust = endX - startX;
     middleXAdjust += this.isLeft ? this.bubbleRect.width * -1 : this.bubbleRect.width;
     middleXAdjust /= 2;
-    middleXAdjust += this.isLeft ? arrowHeadLength * -1 : arrowHeadLength;
+    middleXAdjust += this.isLeft ? this.arrowHeadLength * -1 : this.arrowHeadLength;
     let middleX = startX + middleXAdjust;
-    let xAdjust = arrowHeadLength;
+    let xAdjust = this.arrowHeadLength;
     if (!this.isLeft) {
         xAdjust *= -1
     }
     lines += "M " + middleX + "," + y + " " +
-        "L " + (middleX + xAdjust) + " " + (y - arrowHeadLength) + " " +
+        "L " + (middleX + xAdjust) + " " + (y - this.arrowHeadLength) + " " +
         "M " + middleX + "," + (y) + " " +
-        "L " + (middleX + xAdjust) + " " + (y + arrowHeadLength) + " ";
+        "L " + (middleX + xAdjust) + " " + (y + this.arrowHeadLength) + " ";
     return lines;
 };
 
@@ -236,7 +236,7 @@ EdgeDrawing.prototype.inverseArrowHead = function (childPosition) {
         x: this.topPosition.x,
         y: childPosition.y
     };
-    let xAdjust = arrowHeadLength;
+    let xAdjust = this.arrowHeadLength;
     if (this.isLeft) {
         position.x -= arcRadiusStandard + 20;
         xAdjust *= -1
@@ -244,9 +244,9 @@ EdgeDrawing.prototype.inverseArrowHead = function (childPosition) {
         position.x += arcRadiusStandard + 20;
     }
     return "M " + position.x + "," + position.y + " " +
-        "L " + (position.x + xAdjust) + " " + (position.y - arrowHeadLength) + " " +
+        "L " + (position.x + xAdjust) + " " + (position.y - this.arrowHeadLength) + " " +
         "M " + position.x + "," + position.y + " " +
-        "L " + (position.x + xAdjust) + " " + (position.y + arrowHeadLength) + " "
+        "L " + (position.x + xAdjust) + " " + (position.y + this.arrowHeadLength) + " "
 };
 
 EdgeDrawing.prototype.getBubbleElement = function (bubble) {
