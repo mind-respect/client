@@ -282,7 +282,6 @@
                 redrawKey: null,
                 showLoading: true,
                 strokeColor: Color.EdgeColor,
-                strokeWidth: this.$vuetify.breakpoint.mdAndDown ? 1 : 2,
                 svg: null,
                 usePatternLoading: false,
                 contextMenu: false,
@@ -474,7 +473,6 @@
             handleResize: function () {
                 Breakpoint.set(this.$vuetify.breakpoint);
                 this.$store.dispatch("redraw");
-                this.arrowHeadLength = this.$vuetify.breakpoint.smAndDown ? 4 : 6;
                 /*
                     cannot scroll center on resize on mobile
                     because it keeps on getting resized because of
@@ -486,6 +484,12 @@
             }
         },
         computed: {
+            strokeWidth: function () {
+                return (this.$vuetify.breakpoint.mdAndDown ? 1 : 2) * this.$store.state.zoom;
+            },
+            arrowHeadLength: function () {
+                return (this.$vuetify.breakpoint.smAndDown ? 4 : 6) * this.$store.state.zoom;
+            },
             canExpandAll: function () {
                 return GraphController.expandAllCanDo();
             },
