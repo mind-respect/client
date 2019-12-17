@@ -574,7 +574,9 @@
                 GraphUi.enableDragScroll();
                 this.$store.dispatch("similarBubblesRefresh");
                 this.$store.dispatch("redraw");
-                if (this.bubble.getLabel().length !== textLengthBeforeEdit) {
+                if (this.bubble.getLabel().length === textLengthBeforeEdit) {
+                    this.isLeavingEditFlow = false;
+                } else {
                     this.$nextTick(async () => {
                         await UiUtils.animateGraphElementsWithAnimationData(
                             this.bubble.getDescendants(),
