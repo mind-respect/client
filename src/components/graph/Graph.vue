@@ -313,7 +313,6 @@
             Scroll.centerElement(
                 document.getElementById('temp-center')
             );
-            let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : GraphElement.withUri(centerUri);
             if (this.$route.params.nbChild !== undefined) {
                 this.center = new VertexSkeleton();
                 this.center.makeCenter();
@@ -333,9 +332,17 @@
                         this.$store.dispatch("redraw");
                         Breakpoint.set(this.$vuetify.breakpoint);
                         Scroll.goToGraphElement(this.center, true);
+                        /*
+                        *   this.center = null because otherwise
+                        *   when I move first level vertices on the left,
+                        *   it changes all the bubbles position and I don't why.
+                        *   Happens only when skeletons first show.
+                        */
+                        this.center = null;
                     });
                 });
             }
+            let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : GraphElement.withUri(centerUri);
             let promise = center.isMeta() ?
                 MetaController.withMeta(center).loadGraph() :
                 SubGraphController.withVertex(

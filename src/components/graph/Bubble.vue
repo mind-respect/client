@@ -3,9 +3,7 @@
   -->
 
 <template>
-    <div v-if="loaded" class="unselectable mb-1" :class="{
-        'mt-1' : !isCenter || !isEditFlow
-    }">
+    <div v-if="loaded" class="unselectable mb-1">
         <v-layout
                 :class="{
         'vertex-tree-container': !isCenter,
