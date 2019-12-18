@@ -200,7 +200,7 @@
                                         >
                                             <InLabelButtons :bubble="bubble" :isLeft="isLeft" :isCenter="isCenter"
                                                             class="vh-center"
-                                                            v-if="!isShrinked" :key="inLabelMenuKey"></InLabelButtons>
+                                                            v-if="!isShrinked && !bubble.isLabelEmpty()" :key="inLabelMenuKey"></InLabelButtons>
                                             <div class="bubble-label white--text"
                                                  @blur="leaveEditFlow"
                                                  :data-placeholder="relationPlaceholder()"

@@ -279,6 +279,9 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
         yAdjust = -10;
     }
     yAdjust += this.zoomAdjust;
+    if (bubble.isGroupRelation()) {
+        yAdjust += 5;
+    }
     if (!element) {
         this.loaded = false;
         Vue.nextTick(() => {
