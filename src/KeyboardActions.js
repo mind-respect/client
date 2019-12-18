@@ -236,10 +236,6 @@ function defineCtrlPlusKeysAndTheirActions() {
     actions[KeyCode.KEY_M] = {
         action: "merge"
     };
-    actions[KeyCode.KEY_F] = {
-        action: "find",
-        isForAppController: true
-    };
     actions[KeyCode.KEY_B] = {
         action: "createVertex",
         isForAppController: true

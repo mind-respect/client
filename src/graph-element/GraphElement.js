@@ -460,7 +460,11 @@ GraphElement.GraphElement.prototype.getChildrenIndex = function () {
     return this._graphElementServerFormat.childrenIndex || {};
 };
 
-FriendlyResource.FriendlyResource.prototype.buildChildrenIndex = function (index) {
+GraphElement.GraphElement.prototype.isFromWikidata = function () {
+    return false;
+};
+
+GraphElement.GraphElement.prototype.buildChildrenIndex = function (index) {
     let whileCenterContextLeftRightIndex = this.isCenter ? {} : this.getChildrenIndex();
     index = index || 0;
     return this.getClosestChildrenInTypes(

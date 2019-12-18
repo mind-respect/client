@@ -59,6 +59,8 @@
     import AppController from '@/AppController'
     import IdUri from '@/IdUri'
     import GraphUi from '@/graph/GraphUi'
+    import KeyCode from 'keycode-js';
+    import UiUtils from '@/UiUtils'
 
     export default {
         name: "Search",
@@ -160,12 +162,25 @@
                 this.$nextTick(() => {
                     this.$refs.search.focus();
                 });
+            },
+            setupCtrlF: function (event) {
+                const isCtrlPressed = UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey;
+                if (isCtrlPressed && event.keyCode === KeyCode.KEY_F) {
+                    event.preventDefault();
+                    this.$refs.search.focus();
+                }
             }
         },
         computed: {
             prependIcon: function () {
                 return this.$vuetify.breakpoint.smAndDown ? "" : "search";
             }
+        },
+        created() {
+            window.addEventListener("keydown", this.setupCtrlF);
+        },
+        beforeDestroy: function () {
+            window.removeEventListener("keydown", this.setupCtrlF);
         }
     }
 </script>

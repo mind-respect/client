@@ -377,6 +377,10 @@
                     graphElementType = "identification";
                     nbChild = undefined;
                 }
+                if (graphElementType === "relation") {
+                    graphElementType = "edge";
+                    nbChild = undefined;
+                }
                 this.$router.push({
                     name: "Center",
                     params: {
