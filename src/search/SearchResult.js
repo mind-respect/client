@@ -15,6 +15,7 @@ api.fromServerFormatArray = function (searchResultsServerFormat) {
 };
 api.fromServerFormat = function (searchResult) {
     switch (searchResult.type.toLowerCase()) {
+        case GraphElementType.Relation:
         case GraphElementType.Edge :
             // var sourceVertex = Vertex.fromServerFormat(
             //         searchResult.edge.sourceVertex
@@ -87,10 +88,14 @@ api._buildSchemaSomethingToDistinguish = function (schema) {
         )
     );
 };
-api.forGraphElementAndItsType = function (graphElement, graphElementType) {
+api.fromGraphElement = function (graphElement) {
     return new SearchResult(
         graphElement,
-        graphElementType
+        graphElement.getGraphElementType(),
+        {}, {
+            type: graphElement.getGraphElementType(),
+            context: {}
+        }
     );
 };
 api.formatRelationsName = function (relationsName) {
