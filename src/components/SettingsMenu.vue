@@ -97,7 +97,7 @@
                 </v-list-item-action>
                 <v-list-item-content>
                     <v-list-item-title>
-                        {{$t('side:documentation')}}
+                        {{$t('settings:documentation')}}
                     </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>

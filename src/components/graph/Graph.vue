@@ -5,7 +5,7 @@
 <template>
     <v-layout @contextmenu="showContextMenu" style="height:100%;width:100%;" id="graph-container">
         <v-divider></v-divider>
-        <div id="drawn_graph" data-zoom="9" class="vh-center">
+        <div id="drawn_graph" data-zoom="9" class="vh-center" :key="drawnGraphKey">
             <v-layout class='root-vertex-super-container vh-center'
                       @dragstart="preventUndesirableDragging" :key="childrenKey" @mousedown="mousedown"
                       :style="zoomScale"
@@ -291,7 +291,8 @@
                 backgroundColor: null,
                 childrenKey: IdUri.uuid(),
                 usePatternSheet: null,
-                usePatternConfirmFlow: null
+                usePatternConfirmFlow: null,
+                drawnGraphKey: IdUri.uuid()
             }
         },
         mounted: function () {
@@ -331,13 +332,6 @@
                         this.$store.dispatch("redraw");
                         Breakpoint.set(this.$vuetify.breakpoint);
                         Scroll.goToGraphElement(this.center, true);
-                        /*
-                        *   this.center = null because otherwise
-                        *   when I move first level vertices on the left,
-                        *   it changes all the bubbles position and I don't why.
-                        *   Happens only when skeletons first show.
-                        */
-                        this.center = null;
                     });
                 });
             }
@@ -348,6 +342,16 @@
                     center
                 ).load();
             promise.then(async (_center) => {
+                    /*
+                    *   this.center = null;this.drawnGraphKey = IdUri.uuid();await this.$nextTick();
+                    *   because otherwise
+                    *   when I move first level vertices on the left,
+                    *   it changes all the bubbles position and I don't why.
+                    *   Happens only when skeletons first show.
+                    */
+                    this.center = null;
+                    this.drawnGraphKey = IdUri.uuid();
+                    await this.$nextTick();
                     let center = _center;
                     document.title = center.getTextOrDefault() + " | MindRespect";
                     this.center = center;
@@ -386,6 +390,8 @@
             window.addEventListener('resize', this.handleResize);
         },
         beforeDestroy: function () {
+            CurrentSubGraph.set(SubGraph.empty());
+            Selection.reset();
             window.removeEventListener('resize', this.handleResize);
         },
         methods: {

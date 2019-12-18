@@ -89,12 +89,22 @@ api._buildSchemaSomethingToDistinguish = function (schema) {
     );
 };
 api.fromGraphElement = function (graphElement) {
+    let somethingToDistinguish = graphElement.isEdge() ? [
+        graphElement.getSourceVertex().getLabel(),
+        graphElement.getDestinationVertex().getLabel()
+    ].join(", ") : "";
+    let context = {};
+    if (graphElement.isVertex()) {
+        [].concat(graphElement.getParentVertex()).concat(graphElement.getClosestChildVertices()).forEach((surroundVertex) => {
+            context[surroundVertex.getUri()] = surroundVertex.getLabel();
+        });
+    }
     return new SearchResult(
         graphElement,
         graphElement.getGraphElementType(),
-        {}, {
+        somethingToDistinguish, {
             type: graphElement.getGraphElementType(),
-            context: {}
+            context: context
         }
     );
 };

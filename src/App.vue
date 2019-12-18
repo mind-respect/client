@@ -334,13 +334,17 @@
             I18n.i18next.addResources("en", "app", {
                 makeAPattern: "Make this map a pattern",
                 patternInfo: "Other users will be able to copy this map and use it as a starting point to add their own ideas.",
-                patternInfo2: "All bubbles on this map, even those under bubbles to expand, will be public."
+                patternInfo2: "All bubbles on this map, even those under bubbles to expand, will be public.",
+                on: "On",
+                thisMap: "this map"
             });
 
             I18n.i18next.addResources("fr", "app", {
                 makeAPattern: "Faire de cette carte un pattern",
                 patternInfo: "D'autres usagers pourront copier cette carte et l'utiliser comme point de départ pour y ajouter leurs propres idées.",
                 patternInfo2: "Toutes les bulles de cette carte, même celles qui sont sous des bulles à expandre, seront publiques.",
+                on: "Sur",
+                thisMap: "cette carte"
             });
             return {
                 clipped: false,

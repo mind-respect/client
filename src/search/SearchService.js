@@ -24,7 +24,7 @@ api.searchForAllOwnResources = function (searchText, nbSkip) {
     let providers = [
         api._searchForAllOwnResources(searchText, nbSkip)
     ];
-    if (!nbSkip) {
+    if (!nbSkip && CurrentSubGraph.get().center) {
         providers.push(
             api._searchForResourcesOnThisMap(searchText)
         );
@@ -53,7 +53,7 @@ api._searchForResourcesOnThisMap = function (searchText) {
                 url: graphElement.uri().absoluteUrl(),
                 label: graphElement.getLabel(),
                 description: graphElement.getComment(),
-                isCenter: graphElement.isCenter,
+                isCenter: false,
                 getImageUrl: (searchResult) => {
                     let graphElement = searchResult.original.getGraphElement();
                     if (!graphElement.hasImages()) {

@@ -1,7 +1,14 @@
 <template>
     <v-list-item-content>
         <v-list-item-title>
-            {{item.label}}
+            <v-badge color="transparent">
+                <template v-slot:badge>
+                    <v-icon>
+                        {{item.original.getIcon(item)}}
+                    </v-icon>
+                </template>
+                {{item.label}}
+            </v-badge>
         </v-list-item-title>
         <v-list-item-subtitle>
             <span v-if="item.source ==='wikidata'">
