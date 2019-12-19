@@ -3,7 +3,10 @@
         <v-list-item-title>
             <v-badge color="transparent">
                 <template v-slot:badge>
-                    <v-icon>
+                    <v-icon v-if="item.source ==='wikidata'">
+                        label
+                    </v-icon>
+                    <v-icon v-else>
                         {{item.original.getIcon(item)}}
                     </v-icon>
                 </template>

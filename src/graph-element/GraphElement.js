@@ -464,6 +464,10 @@ GraphElement.GraphElement.prototype.isFromWikidata = function () {
     return false;
 };
 
+GraphElement.GraphElement.prototype.isTagFromWikipedia = function () {
+    return false;
+};
+
 GraphElement.GraphElement.prototype.buildChildrenIndex = function (index) {
     let whileCenterContextLeftRightIndex = this.isCenter ? {} : this.getChildrenIndex();
     index = index || 0;
