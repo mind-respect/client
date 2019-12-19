@@ -61,6 +61,8 @@
     import GraphUi from '@/graph/GraphUi'
     import KeyCode from 'keycode-js';
     import UiUtils from '@/UiUtils'
+    import Selection from '@/Selection'
+    import CurrentSubGraph from "@/graph/CurrentSubGraph";
 
     export default {
         name: "Search",
@@ -116,11 +118,22 @@
                 this.$emit('leaveSearchFlow')
             },
             selectSearchResult: function () {
-                this.$router.push(
-                    IdUri.htmlUrlForBubbleUri(
-                        this.selectedSearchResult.uri
-                    )
-                );
+                const currentSubGraph = CurrentSubGraph.get();
+                if (currentSubGraph.center && currentSubGraph.hasUri(this.selectedSearchResult.uri)) {
+                    const graphElement = currentSubGraph.getHavingUri(this.selectedSearchResult.uri);
+                    graphElement.getAncestors().forEach((ancestor) => {
+                        ancestor.expand();
+                    });
+                    Selection.setToSingle(
+                        graphElement
+                    );
+                } else {
+                    this.$router.push(
+                        IdUri.htmlUrlForBubbleUri(
+                            this.selectedSearchResult.uri
+                        )
+                    );
+                }
                 this.$refs.search.reset();
                 this.$refs.search.blur();
             },

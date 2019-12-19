@@ -46,7 +46,7 @@ api._searchForAllOwnResources = function (searchText, nbSkip) {
 api._searchForResourcesOnThisMap = function (searchText) {
     return Promise.resolve(
         CurrentSubGraph.get().getGraphElements().filter((graphElement) => {
-            return graphElement.getLabel().indexOf(searchText) > -1;
+            return !graphElement.isGroupRelation() && graphElement.getLabel().indexOf(searchText) > -1;
         }).map((graphElement) => {
             return {
                 uri: graphElement.getUri(),

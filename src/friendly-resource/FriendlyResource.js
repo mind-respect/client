@@ -708,6 +708,15 @@ FriendlyResource.FriendlyResource.prototype.getDescendants = function (toTheLeft
     }, []);
 };
 
+FriendlyResource.FriendlyResource.prototype.getAncestors = function () {
+    if (this.isCenter) {
+        return [];
+    }
+    return [
+        this.getParentBubble()
+    ].concat(this.getParentBubble().getAncestors());
+};
+
 FriendlyResource.FriendlyResource.prototype.visitDescendants = function (visitor) {
     this.visitAllImmediateChild(function (child) {
         visitor(child);
