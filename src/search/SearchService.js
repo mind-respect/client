@@ -111,9 +111,17 @@ function formattedOwnResults(results) {
 
 function resultsFromProviders(providers) {
     let allResults = [];
+    let seen = new Set();
     providers.forEach((provider) => {
         provider.then((results) => {
-            allResults = allResults.concat(results);
+            allResults = allResults.concat(results.filter((result) => {
+                if (seen.has(result.uri)) {
+                    return false;
+                } else {
+                    seen.add(result.uri);
+                    return true;
+                }
+            }));
         })
     });
     return Promise.all(providers).then(() => {
