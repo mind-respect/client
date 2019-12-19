@@ -55,7 +55,7 @@
                                                     off-icon="radio_button_unchecked"
                                             ></v-radio>
                                         </v-list-item-action>
-                                        <v-list-item-content>
+                                        <v-list-item-content class="">
                                             <SearchResultContent :item="item" class="mr-2"></SearchResultContent>
                                         </v-list-item-content>
                                         <SearchResultAction :item="item"></SearchResultAction>
@@ -109,8 +109,10 @@
     import Identification from '@/identifier/Identification'
     import IdUri from '@/IdUri'
 
+    const cacheByUri = {};
+
     export default {
-        name: "CohesionSnackbar",
+        name: "SimilarBubbles",
         components: {
             SearchResultContent,
             SearchResultAction
@@ -167,6 +169,9 @@
             selected: function () {
                 this.hasConfirmToEnterFlow = false;
                 this.isSimilarBubblesNotice = false;
+                if (Selection.isSingle()) {
+                    this.restoreCache();
+                }
             },
             similarBubblesRefresh: function () {
                 this.tryRefresh();
@@ -293,13 +298,33 @@
                             }
                         });
                     }
-                    this.nbLoadResults++
+                    this.nbLoadResults++;
+                    this.saveInCache();
                 });
             },
             getSelectedResult: function () {
                 return this.results.filter((result) => {
                     return result.uri === this.selectedUri;
                 })[0];
+            },
+            saveInCache: function () {
+                cacheByUri[Selection.getSingle().getUri()] = {
+                    nbLoadResults: this.nbLoadResults,
+                    results: this.results,
+                    showLoadMore: this.showLoadMore,
+                    selectedUri: this.selectedUri
+                };
+            },
+            restoreCache: function () {
+                const cache = cacheByUri[Selection.getSingle().getUri()];
+                if (!cache) {
+                    return;
+                }
+                this.nbLoadResults = cache.nbLoadResults;
+                this.results = cache.results;
+                this.showLoadMore = cache.showLoadMore;
+                this.selectedUri = cache.selectedUri;
+                this.isSimilarBubblesNotice = true;
             }
         }
     }

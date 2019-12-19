@@ -150,7 +150,7 @@
         <DescriptionDialog></DescriptionDialog>
         <FontDialog></FontDialog>
         <ListView></ListView>
-        <CohesionSnackbar v-if="isOwner"></CohesionSnackbar>
+        <SimilarBubbles v-if="isOwner"></SimilarBubbles>
         <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
         <NewContextDialog></NewContextDialog>
         <v-bottom-navigation
@@ -258,7 +258,7 @@
             DescriptionDialog: () => import('@/components/DescriptionDialog'),
             FontDialog: () => import('@/components/FontDialog'),
             ListView: () => import('@/components/ListView'),
-            CohesionSnackbar: () => import('@/components/CohesionSnackbar'),
+            SimilarBubbles: () => import('@/components/SimilarBubbles'),
             AddExistingBubbleDialog: () => import('@/components/AddExistingBubbleDialog'),
             NewContextDialog: () => import('@/components/NewContextDialog')
         },
