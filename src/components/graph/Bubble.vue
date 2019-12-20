@@ -200,7 +200,8 @@
                                         >
                                             <InLabelButtons :bubble="bubble" :isLeft="isLeft" :isCenter="isCenter"
                                                             class="vh-center"
-                                                            v-if="!isShrinked && !bubble.isLabelEmpty()" :key="inLabelMenuKey"></InLabelButtons>
+                                                            v-if="!isShrinked && !bubble.isLabelEmpty()"
+                                                            :key="inLabelMenuKey"></InLabelButtons>
                                             <div class="bubble-label white--text"
                                                  @blur="leaveEditFlow"
                                                  :data-placeholder="relationPlaceholder()"
@@ -546,7 +547,7 @@
                     this.leaveEditFlow();
                 }
             },
-            leaveEditFlow: function () {
+            leaveEditFlow: async function () {
                 if (this.isLeavingEditFlow) {
                     return;
                 }
@@ -567,6 +568,8 @@
                 this.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
+                //await this.$nextTick(); to prevent unwanted scrolling after leaving edit flow
+                await this.$nextTick();
                 this.bubble.controller().setLabel(labelHtml.innerHTML);
                 if (this.isCenter) {
                     document.title = this.bubble.getTextOrDefault() + " | MindRespect";
@@ -728,14 +731,6 @@
         margin: 0 0 0 0;
 
         &.selected {
-            .bubble-label {
-                &:empty:not(:focus):after {
-                    content: attr(data-placeholder);
-                    color: grey;
-                    font-style: italic;
-                }
-            }
-
             z-index: 11;
 
             .in-bubble-content {
@@ -758,11 +753,11 @@
         .bubble-label {
             text-align: center;
             color: black;
+            max-width: 100%;
+            text-align: left;
 
             &:empty {
-                text-align: left;
                 color: grey;
-                max-width: 100%;
 
                 &:after {
                     content: attr(data-placeholder);
