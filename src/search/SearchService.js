@@ -24,7 +24,7 @@ api.searchForAllOwnResources = function (searchText, nbSkip) {
     let providers = [
         api._searchForAllOwnResources(searchText, nbSkip)
     ];
-    if (!nbSkip && CurrentSubGraph.get().center) {
+    if (!nbSkip && CurrentSubGraph.get()) {
         providers.push(
             api._searchForResourcesOnThisMap(searchText)
         );

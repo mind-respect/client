@@ -27,7 +27,7 @@
         methods: {
             isOnMap: function () {
                 const subGraph = CurrentSubGraph.get();
-                return subGraph.center && subGraph.hasUri(this.item.uri)
+                return subGraph && subGraph.hasUri(this.item.uri)
             }
         }
     }

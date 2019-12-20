@@ -368,7 +368,7 @@ VertexController.prototype.copy = function () {
 
 };
 
-VertexController.prototype.expand = function (avoidCenter, avoidExpandChild) {
+VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, avoidShowingLoad) {
     if (!this.expandCanDo()) {
         this.model().isExpanded = true;
         return Promise.resolve();
@@ -378,7 +378,9 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild) {
         return Promise.resolve();
     }
     let promise = Promise.resolve();
-    LoadingFlow.enterNoSpinner();
+    if (!avoidShowingLoad) {
+        LoadingFlow.enterNoSpinner();
+    }
     this.model().loading = false;
     avoidExpandChild = avoidExpandChild || false;
     this.model().beforeExpand();
@@ -405,9 +407,11 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild) {
     }
     return promise.then(() => {
         this.model().expand(avoidCenter, true);
-        Vue.nextTick(() => {
-            LoadingFlow.leave();
-        });
+        if (!avoidShowingLoad) {
+            Vue.nextTick(() => {
+                LoadingFlow.leave();
+            });
+        }
     });
 };
 

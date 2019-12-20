@@ -1,5 +1,3 @@
-import SubGraph from '@/graph/SubGraph'
-
 const CurrentSubGraph = {};
 
 CurrentSubGraph.set = function (graph) {
@@ -7,7 +5,7 @@ CurrentSubGraph.set = function (graph) {
 };
 
 CurrentSubGraph.get = function () {
-    return CurrentSubGraph.graph ? CurrentSubGraph.graph : SubGraph.empty();
+    return CurrentSubGraph.graph;
 };
 
 CurrentSubGraph.graphElementsAsIds = function (graphElements) {

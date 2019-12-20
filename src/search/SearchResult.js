@@ -104,6 +104,7 @@ api.fromGraphElement = function (graphElement) {
         graphElement.getGraphElementType(),
         somethingToDistinguish, {
             type: graphElement.getGraphElementType(),
+            graphElementType: graphElement.getGraphElementType(),
             context: context
         }
     );

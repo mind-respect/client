@@ -18,6 +18,11 @@
                             :items="items"
                             open-all
                             ref="copyTree"
+                            transition
+                            :load-children="expand"
+                            hoverable
+                            open-on-click
+                            rounded
                     >
                         <template v-slot:label="{ item }">
                             <span class="font-italic">{{item.edgeLabel}}</span>
@@ -72,6 +77,13 @@
             }
         },
         methods: {
+            expand: function (item) {
+                const graphElement = CurrentSubGraph.get().getHavingUri(item.uri);
+                return graphElement.controller().expand(true, true, true).then(() => {
+                    item.children = this.buildItemChildren(graphElement);
+                    graphElement.collapse();
+                });
+            },
             copy: function () {
                 this.selectText(this.$refs.copyList);
                 document.execCommand("copy");
@@ -84,23 +96,35 @@
                 }
                 let content = parent.edgeLabel + " " + this.linkify(parent.label);
                 content += "<ul>";
-                parent.children.forEach((child) => {
-                    content += "<li>";
-                    content += this.htmlList(child);
-                    content += "</li>";
-                });
+                if (parent.children) {
+                    parent.children.forEach((child) => {
+                        content += "<li>";
+                        content += this.htmlList(child);
+                        content += "</li>";
+                    });
+                }
                 content += "</ul>";
                 return content;
             },
             forkAsItem: function (fork) {
-                return {
+                const item = {
                     id: fork.getId(),
+                    uri: fork.getUri(),
                     edgeLabel: this.getEdgeLabel(fork),
-                    label: fork.getLabelOrDefault(),
-                    children: fork.getClosestChildrenInTypes(GraphElementType.Fork).map((childFork) => {
-                        return this.forkAsItem(childFork)
-                    })
+                    label: fork.getLabelOrDefault()
+                };
+                if (fork.canExpand()) {
+                    item.children = [];
                 }
+                if (!fork.isLeaf()) {
+                    item.children = this.buildItemChildren(fork);
+                }
+                return item;
+            },
+            buildItemChildren: function (fork) {
+                return fork.getClosestChildrenInTypes(GraphElementType.Fork).map((childFork) => {
+                    return this.forkAsItem(childFork)
+                });
             },
             getEdgeLabel: function (item) {
                 let parentBubble = item.getParentBubble();
