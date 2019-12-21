@@ -75,11 +75,9 @@ function keyDownHandler(event) {
     // console.log(event.which);
     let target = event.target;
     let isWorkingOnSomething = [
-        "BODY",
-        "BUTTON",
-        "A",
-        "SPAN"
-    ].indexOf(target.tagName) === -1;
+        "input",
+        "button",
+    ].indexOf(target.tagName.toLowerCase()) > -1 || target.isContentEditable;
     let isCombineKeyPressed = UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey;
     if (isWorkingOnSomething) {
         if (event.keyCode === KeyCode.KEY_ESCAPE) {

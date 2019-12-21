@@ -541,8 +541,9 @@
                 });
             },
             keydown: function (event) {
-                if ([KeyCode.KEY_RETURN, KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {
+                if (this.isEditFlow && [KeyCode.KEY_RETURN, KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {
                     event.preventDefault();
+                    event.stopPropagation();
                     this.bubble.getLabelHtml().blur();
                     this.leaveEditFlow();
                 }
@@ -564,7 +565,6 @@
                         bubbleContainer.style.position = 'inherit';
                     }
                 }
-                this.bubble.isEditFlow = false;
                 this.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
@@ -898,7 +898,8 @@
         /*position relative for absolute vertex-drop-arrow-top-bottom-drop*/
         position: relative;
         flex-shrink: 0;
-        width :auto;
+        width: auto;
+
         &.edit-flow-non-center {
             position: absolute;
         }
