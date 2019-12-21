@@ -227,6 +227,12 @@ api.SubGraph.prototype.getHavingUri = function (uri) {
     if (this.edges[uri] !== undefined) {
         return this.edges[uri][0];
     }
+    let groupRelation = this.groupRelations.filter((groupRelation) => {
+        return groupRelation.getUri() === uri;
+    });
+    if (groupRelation.length) {
+        return groupRelation[0];
+    }
 };
 
 api.SubGraph.prototype.getVertexWithUriAndId = function (uri, id) {
