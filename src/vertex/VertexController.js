@@ -403,7 +403,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, avo
         }
     } else {
         this.model().loading = false;
-        promise = this.expandDescendantsIfApplicable();
+        promise = avoidExpandChild ? Promise.resolve() : this.expandDescendantsIfApplicable();
     }
     return promise.then(() => {
         this.model().expand(avoidCenter, true);
