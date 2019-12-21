@@ -23,6 +23,7 @@ describe("Selection", () => {
     it("gets only vertices if selected bubble is vertex", async () => {
         let scenario = await new ThreeScenario();
         let center = scenario.getBubble1InTree();
+        await scenario.nextTickPromise();
         expect(
             Selection.getSelectedElements().filter((selected) => {
                 return selected.isEdge();

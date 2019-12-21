@@ -734,6 +734,7 @@ describe("FriendlyResource", () => {
             let scenario = await new GroupRelationsScenario();
             let groupRelation = scenario.getPossessionGroupRelation();
             groupRelation.expand();
+            await scenario.nextTickPromise();
             let vertexAbove = TestUtil.getChildWithLabel(
                 groupRelation,
                 "Possession of book 1"
@@ -742,6 +743,7 @@ describe("FriendlyResource", () => {
                 vertexAbove.isVertex()
             ).toBeTruthy();
             let vertexUnder = vertexAbove.getDownBubble();
+            await scenario.nextTickPromise();
             expect(
                 vertexUnder.isVertex()
             ).toBeTruthy();
@@ -749,6 +751,7 @@ describe("FriendlyResource", () => {
                 Selection.isSelected(vertexUnder)
             ).toBeFalsy();
             await vertexAbove.controller().removeDo();
+            await scenario.nextTickPromise();
             expect(
                 Selection.isSelected(vertexUnder)
             ).toBeTruthy();

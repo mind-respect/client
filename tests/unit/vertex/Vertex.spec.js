@@ -195,6 +195,10 @@ describe('Vertex', () => {
         let scenario = await new GroupRelationsScenario();
         let otherBubble = scenario.getOtherRelationInTree().getNextBubble();
         await otherBubble.controller().remove();
+        await scenario.nextTickPromise();
+        expect(
+            Selection.isSingle()
+        ).toBeTruthy();
         expect(
             Selection.getSingle().isVertex()
         ).toBeTruthy();

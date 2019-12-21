@@ -276,7 +276,6 @@
                 addExistingBubble: "Ajouter une bulle existante"
             });
             return {
-                loaded: false,
                 center: null,
                 centerServerFormat: null,
                 redrawKey: null,
@@ -295,7 +294,7 @@
                 drawnGraphKey: IdUri.uuid()
             }
         },
-        mounted: function () {
+        mounted: async function () {
             this.showLoading = true;
             this.usePatternConfirmFlow = false;
             CurrentSubGraph.set(SubGraph.empty());
@@ -357,7 +356,6 @@
                     this.center = center;
                     this.$store.dispatch("redraw", {fadeOut: true});
                     this.handleResize();
-                    this.loaded = true;
                     await this.$nextTick();
                     Color.refreshBackgroundColor();
                     Selection.setToSingle(this.center, true);
