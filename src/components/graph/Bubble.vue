@@ -503,6 +503,7 @@
                 });
             },
             focus: function () {
+                this.bubble.preventLeaveEditFlow = false;
                 this.showMenu = false;
                 if (this.isEditFlow || this.bubble.isEditFlow) {
                     return;
@@ -531,7 +532,7 @@
                         bubbleContainer.style.right = '0';
                     }
                     if (this.bubble.isLeaf()) {
-                        bubbleContainer.style.width = '500px';
+                        bubbleContainer.style.width = '600px';
                     }
                 }
                 this.isEditFlow = true;
@@ -549,7 +550,8 @@
                 }
             },
             leaveEditFlow: async function () {
-                if (this.isLeavingEditFlow) {
+                if (this.isLeavingEditFlow || this.bubble.preventLeaveEditFlow) {
+                    this.bubble.preventLeaveEditFlow = false;
                     return;
                 }
                 this.isLeavingEditFlow = true;
@@ -566,6 +568,7 @@
                     }
                 }
                 this.isEditFlow = false;
+                this.bubble.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
                 //await this.$nextTick(); to prevent unwanted scrolling after leaving edit flow

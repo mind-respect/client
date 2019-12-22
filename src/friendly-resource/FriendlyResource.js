@@ -146,6 +146,7 @@ FriendlyResource.FriendlyResource.prototype.focus = function (event) {
                     clearInterval(interval);
                 }
                 labelHtml.contentEditable = "true";
+                this.preventLeaveEditFlow = true;
                 if (event) {
                     Focus.focusAtPosition(event, labelHtml);
                 } else {

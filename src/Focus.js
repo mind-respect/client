@@ -3,6 +3,12 @@
  */
 export default {
     focusEnd: function (element) {
+        /*
+            calling blur before focus because somehow sometimes in firefox,
+            the element is blurred but not really
+            so the focus event is not triggered and this causes problems
+         */
+        element.blur();
         element.focus();
         if (typeof window.getSelection != "undefined"
             && typeof document.createRange != "undefined") {
@@ -20,6 +26,12 @@ export default {
         }
     },
     focusAtPosition: function (event, element) {
+        /*
+            calling blur before focus because somehow sometimes in firefox,
+            the element is blurred but not really
+            so the focus event is not triggered and this causes problems
+         */
+        element.blur();
         element.focus();
         if (element.innerHTML.trim() === "") {
             return;
