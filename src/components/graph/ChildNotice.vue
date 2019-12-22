@@ -71,7 +71,7 @@
             this.loaded = true;
         },
         methods: {
-            click: function () {
+            click: async function () {
                 let expandedDuplicate = this.bubble.getExpandedDuplicates();
                 if (expandedDuplicate.length) {
                     Selection.setToSingle(expandedDuplicate[0]);
@@ -79,15 +79,18 @@
                     return;
                 }
                 this.loading = this.bubble.loading = true;
-                this.bubble.controller().expand().then(() => {
+                Selection.setToSingle(this.bubble);
+                await this.$nextTick();
+                /*
+                * waiting Selection.setToSingle(this.bubble); is complete with await this.$nextTick()
+                * because setToSingle scrolls to bubble and expand to and sometimes 2 scrolls to bubble would be called
+                */
+                this.bubble.controller().expand().then(async () => {
                     this.$emit("expanded");
-                    this.$nextTick(() => {
-                        Selection.setToSingle(this.bubble);
-                        Store.dispatch("redraw");
-                        this.$nextTick(() => {
-                            this.loading = this.bubble.loading = false;
-                        });
-                    });
+                    await this.$nextTick();
+                    Store.dispatch("redraw");
+                    await this.$nextTick();
+                    this.loading = this.bubble.loading = false;
                 });
             }
         }
