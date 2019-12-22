@@ -570,7 +570,11 @@
                 this.bubble.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
-                const text = UiUtils.removeHtmlFromString(labelHtml.innerHTML);
+                /*
+                * Not removingHtml from labelHtml.innerHTML because sometimes user,
+                * may want to write html or something in his/her bubble.
+                */
+                const text = labelHtml.innerHTML;
                 /*
                 * await this.$nextTick(); to prevent unwanted scrolling after leaving edit flow
                 */
