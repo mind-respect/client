@@ -171,7 +171,7 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="patternDialog" width="600">
+        <v-dialog v-if="patternDialog" v-model="patternDialog" width="600">
             <v-card>
                 <v-card-title>
                     {{$t('areYouSure')}}
@@ -189,8 +189,18 @@
                     <p>
                         {{$t('app:patternInfo2')}}
                     </p>
+                    <v-alert
+                            border="left"
+                            colored-border
+                            type="info"
+                            color="secondary"
+                            elevation="2"
+                    >
+                        {{$t('app:patternInfo3')}}
+                    </v-alert>
+                    <ListView :collapse="true"></ListView>
                 </v-card-text>
-                <v-card-actions>
+                <v-card-actions fixed>
                     <v-btn @click="becomeAPattern" :loading="makePatternLoading" :disabled="makePatternLoading"
                            color="secondary">
                         <v-icon class="mr-2">
@@ -233,7 +243,8 @@
             ForgotPasswordForm: () => import('@/components/home/ForgotPasswordForm'),
             ChangePasswordForm: () => import('@/components/home/ChangePasswordForm'),
             Search: () => import('@/components/Search'),
-            DocsDialog: () => import('@/components/DocsDialog')
+            DocsDialog: () => import('@/components/DocsDialog'),
+            ListView: () => import('@/components/ListView')
         },
         data: function () {
             I18n.i18next.addResources("en", "button", {
@@ -335,6 +346,7 @@
                 makeAPattern: "Make this map a pattern",
                 patternInfo: "Other users will be able to copy this map and use it as a starting point to add their own ideas.",
                 patternInfo2: "All bubbles on this map, even those under bubbles to expand, will be public.",
+                patternInfo3: "Check that this map only contains bubbles that you want to share.",
                 on: "On",
                 thisMap: "this map"
             });
@@ -343,6 +355,7 @@
                 makeAPattern: "Faire de cette carte un pattern",
                 patternInfo: "D'autres usagers pourront copier cette carte et l'utiliser comme point de départ pour y ajouter leurs propres idées.",
                 patternInfo2: "Toutes les bulles de cette carte, même celles qui sont sous des bulles à expandre, seront publiques.",
+                patternInfo3: "Vérifiez que cette carte ne contient que des bulles que vous voulez partager.",
                 on: "Sur",
                 thisMap: "cette carte"
             });

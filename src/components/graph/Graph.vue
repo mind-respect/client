@@ -149,7 +149,7 @@
         <RemoveTagDialog></RemoveTagDialog>
         <DescriptionDialog></DescriptionDialog>
         <FontDialog></FontDialog>
-        <ListView></ListView>
+        <ListViewDialog></ListViewDialog>
         <SimilarBubbles v-if="isOwner"></SimilarBubbles>
         <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
         <NewContextDialog></NewContextDialog>
@@ -257,7 +257,7 @@
             RemoveTagDialog: () => import('@/components/RemoveTagDialog'),
             DescriptionDialog: () => import('@/components/DescriptionDialog'),
             FontDialog: () => import('@/components/FontDialog'),
-            ListView: () => import('@/components/ListView'),
+            ListViewDialog: () => import('@/components/ListViewDialog'),
             SimilarBubbles: () => import('@/components/SimilarBubbles'),
             AddExistingBubbleDialog: () => import('@/components/AddExistingBubbleDialog'),
             NewContextDialog: () => import('@/components/NewContextDialog')

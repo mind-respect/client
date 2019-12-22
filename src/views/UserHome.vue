@@ -318,7 +318,6 @@
                 friendshipSuccess: "Vous êtes maintenant ami avec"
             });
             return {
-                isListView: true,
                 centers: null,
                 pagination: {
                     sortBy: 'name'

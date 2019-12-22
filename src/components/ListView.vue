@@ -1,110 +1,52 @@
 <template>
-    <div v-if="dialog">
-        <v-dialog v-model="dialog" width="900">
-            <v-card>
-                <v-card-title class="pb-0">
-                    <v-btn text small color="secondary"
-                           @click="copy()">
-                        <v-icon class="mr-2">content_copy</v-icon>
-                        {{$t('copy')}}
-                    </v-btn>
-                    <v-spacer></v-spacer>
-                    <v-btn icon @click="dialog = false">
-                        <v-icon>close</v-icon>
-                    </v-btn>
-                </v-card-title>
-                <v-card-text class="pt-0">
-                    <v-treeview
-                            :items="items"
-                            open-all
-                            ref="copyTree"
-                            transition
-                            :load-children="expand"
-                            hoverable
-                            open-on-click
-                            rounded
-                    >
-                        <template v-slot:label="{ item }">
-                            <span class="font-italic">{{item.edgeLabel}}</span>
-                            <span v-html="linkify(item.label)"></span>
-                        </template>
-                    </v-treeview>
-                </v-card-text>
-            </v-card>
-        </v-dialog>
+    <div v-if="items">
+        <v-treeview
+                :items="items"
+                :open-all="!collapse"
+                ref="copyTree"
+                transition
+                :load-children="expand"
+                hoverable
+                open-on-click
+                rounded
+        >
+            <template v-slot:label="{ item }">
+                <span class="font-italic">{{item.edgeLabel}}</span>
+                <span v-html="linkify(item.label)"></span>
+            </template>
+        </v-treeview>
         <div ref="copyList" v-html="htmlList()" style="position:absolute;top:-10000px; left:-10000px;"></div>
     </div>
 </template>
 
 <script>
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
-    import GraphUi from '@/graph/GraphUi'
     import GraphElementType from '@/graph-element/GraphElementType'
     import linkifyHtml from 'linkifyjs/html'
 
     export default {
         name: "ListView",
+        props:['collapse'],
         data: function () {
             return {
-                dialog: false,
                 items: null
             }
         },
         mounted: function () {
-            this.$store.dispatch("setIsListViewFlow", false)
-        },
-        computed: {
-            isListViewFlow: function () {
-                return this.$store.state.isListViewFlow;
-            }
-        },
-        watch: {
-            isListViewFlow: function () {
-                if (this.isListViewFlow) {
-                    this.items = [
-                        this.forkAsItem(CurrentSubGraph.get().center)
-                    ];
-                    this.dialog = true;
-                }
-            },
-            dialog: function () {
-                if (this.dialog === false) {
-                    this.$store.dispatch("setIsListViewFlow", false);
-                    GraphUi.enableDragScroll();
-                } else {
-                    GraphUi.disableDragScroll();
-                }
-            }
+            this.rebuild();
         },
         methods: {
+            rebuild: function () {
+                this.items = [
+                    this.forkAsItem(CurrentSubGraph.get().center)
+                ];
+            },
             expand: function (item) {
                 const graphElement = CurrentSubGraph.get().getHavingUri(item.uri);
                 return graphElement.controller().expand(true, true, true).then(() => {
                     item.children = this.buildItemChildren(graphElement);
                     graphElement.collapse();
                 });
-            },
-            copy: function () {
-                this.selectText(this.$refs.copyList);
-                document.execCommand("copy");
-            },
-            htmlList: function (parent) {
-                let isRoot = false;
-                if (!parent) {
-                    isRoot = true;
-                    parent = this.items[0];
-                }
-                let content = parent.edgeLabel + " " + this.linkify(parent.label);
-                content += "<ul>";
-                if (parent.children) {
-                    parent.children.forEach((child) => {
-                        content += "<li>";
-                        content += this.htmlList(child);
-                        content += "</li>";
-                    });
-                }
-                content += "</ul>";
-                return content;
             },
             forkAsItem: function (fork) {
                 const item = {
@@ -151,6 +93,28 @@
                     window.getSelection().addRange(range);
                 }
             },
+            copy: function () {
+                this.selectText(this.$refs.copyList);
+                document.execCommand("copy");
+            },
+            htmlList: function (parent) {
+                let isRoot = false;
+                if (!parent) {
+                    isRoot = true;
+                    parent = this.items[0];
+                }
+                let content = parent.edgeLabel + " " + this.linkify(parent.label);
+                content += "<ul>";
+                if (parent.children) {
+                    parent.children.forEach((child) => {
+                        content += "<li>";
+                        content += this.htmlList(child);
+                        content += "</li>";
+                    });
+                }
+                content += "</ul>";
+                return content;
+            }
         }
     }
 </script>
