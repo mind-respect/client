@@ -384,8 +384,7 @@
                 return this.menuFlow === 'buttons' ? 250 : "auto";
             },
             label: function () {
-                let doc = new DOMParser().parseFromString(this.bubble.getFriendlyJson().label, 'text/html');
-                let text = doc.body.textContent || "";
+                let text = UiUtils.removeHtmlFromString(this.bubble.getFriendlyJson().label);
                 //setting draggable: "false" because otherwise you can't drag the bubble when pressing on link
                 return this.isEditFlow ? text : linkifyStr(text, {
                     attributes: {
@@ -571,9 +570,14 @@
                 this.bubble.isEditFlow = false;
                 let labelHtml = this.bubble.getLabelHtml();
                 labelHtml.contentEditable = "false";
-                //await this.$nextTick(); to prevent unwanted scrolling after leaving edit flow
+                const text = UiUtils.removeHtmlFromString(labelHtml.innerHTML);
+                /*
+                * await this.$nextTick(); to prevent unwanted scrolling after leaving edit flow
+                */
                 await this.$nextTick();
-                this.bubble.controller().setLabel(labelHtml.innerHTML);
+                this.bubble.controller().setLabel(
+                    text
+                );
                 if (this.isCenter) {
                     document.title = this.bubble.getTextOrDefault() + " | MindRespect";
                 }

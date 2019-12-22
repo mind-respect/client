@@ -16,6 +16,11 @@ api.isChrome = function () {
     return _isChrome;
 };
 
+api.removeHtmlFromString = function(string){
+    let doc = new DOMParser().parseFromString(string, 'text/html');
+    return doc.body.textContent || "";
+};
+
 api.getCenterOffsetCoordinates = function (center) {
     const centerHtml = center.getHtml();
     return {
