@@ -177,6 +177,7 @@
                                     right
                                     color="white"
                                     offset-y
+                                    nudge-bottom="15"
                                     class="pa-0 ma-0"
                                     :open-on-click="false"
                             >
