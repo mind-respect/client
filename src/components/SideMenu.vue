@@ -3,7 +3,7 @@
             stateless
             style="margin-top:43px;"
             :value="true"
-            v-show="$vuetify.breakpoint.mdAndUp || (!isSingle || $store.state.sideMenuFlow !== false)"
+            v-show="$vuetify.breakpoint.mdAndUp || ($store.state.selected.length > 1 || $store.state.sideMenuFlow !== false)"
             fixed
             :width="mainWidth"
             :mini-variant="$store.state.sideMenuFlow === false"
@@ -40,7 +40,8 @@
                                     v-show="$store.state.selected.length ===0"
                             >
                             </v-skeleton-loader>
-                            <div class="font-weight-bold side-menu-label" :key="$store.state.labelRefresh + 'sideMenu'" v-if="isSingle">
+                            <div class="font-weight-bold side-menu-label" :key="$store.state.labelRefresh + 'sideMenu'"
+                                 v-if="isSingle">
                                 {{selected.getLabel()}}
                             </div>
                             <div class="font-italic" v-if="isSingle">
