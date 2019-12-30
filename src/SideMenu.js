@@ -2,7 +2,7 @@ import Store from '@/store'
 import Breakpoint from '@/Breakpoint'
 
 const api = {
-    EXPANDED_WIDTH: 400,
+    EXPANDED_WIDTH: 415,
     MINI_WIDTH: 110,
     getWidth: () => {
         if (Breakpoint.isMobile()) {

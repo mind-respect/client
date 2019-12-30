@@ -83,8 +83,16 @@
                     },
                     {
                         icon: "label",
+                        action: "addTag",
+                        badge: "<v-icon dark>add</v-icon>"
+                    },
+                    {
+                        icon: "label",
                         action: "identify",
-                        ctrlShortcut: "G"
+                        ctrlShortcut: "G",
+                        badge: function (bubble) {
+                            return bubble.getIdentifiers().length;
+                        }
                     },
                     // {
                     //     icon: "label",

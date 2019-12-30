@@ -148,7 +148,7 @@
                     :value="true"
                     right
                     mini-variant
-                    mini-variant-width="60"
+                    mini-variant-width="80"
                     stateless
                     id="buttonsDrawer"
             >

@@ -4,42 +4,48 @@
 
 <template>
     <span v-if="button.disableNotHide || canDo(button)">
-    <v-tooltip
-            open-delay="0"
-            close-delay="0"
-            bottom
-            allow-overflow
-            :attach="attach"
-            max-width="400"
-            :content-class="contentClass"
-    >
-        <template v-slot:activator="{ on }">
-            <span v-on="on">
-                <slot name="button" v-if="$slots.button"></slot>
-                <v-btn
-                        v-else
-                        icon
-                        large
-                        class="ma-1"
-                        :color="color"
-                        @click="performAction(button, $event)"
-                        :disabled="button.disableNotHide && !canDo(button)"
-                >
-                    <v-icon :class="button.iconClass" :large="hightlight">
-                        {{getIcon(button)}}
-                    </v-icon>
-                </v-btn>
-            </span>
-        </template>
-        <slot name="tooltipContent" v-if="$slots.tooltipContent"></slot>
-        <span v-else>
-                {{$t('button:' + button.action)}}
-                <span v-if="button.ctrlShortcut">
-                    ({{ctrlKey}}+<span v-html="button.ctrlShortcut"></span>)
+        <v-tooltip
+                open-delay="0"
+                close-delay="0"
+                bottom
+                allow-overflow
+                :attach="attach"
+                max-width="400"
+                :content-class="contentClass"
+        >
+            <template v-slot:activator="{ on }">
+                <span v-on="on">
+                    <v-badge color="third" class="button-menu-badge" :overlap="true">
+                        <template v-slot:badge v-if="button.badge || button.badgeIcon">
+                            <span v-html="getBadge()" v-if="button.badge"></span>
+                            <v-icon dark v-if="button.badgeIcon">{{button.badgeIcon}}</v-icon>
+                        </template>
+                        <slot name="button" v-if="$slots.button"></slot>
+                        <v-btn
+                                v-else
+                                icon
+                                large
+                                class="ma-1"
+                                :color="color"
+                                @click="performAction(button, $event)"
+                                :disabled="button.disableNotHide && !canDo(button)"
+                        >
+                            <v-icon :class="button.iconClass" :large="hightlight">
+                                {{getIcon(button)}}
+                            </v-icon>
+                        </v-btn>
+                    </v-badge>
                 </span>
-            </span>
-    </v-tooltip>
-        </span>
+            </template>
+            <slot name="tooltipContent" v-if="$slots.tooltipContent"></slot>
+            <span v-else>
+                    {{$t('button:' + button.action)}}
+                    <span v-if="button.ctrlShortcut">
+                        ({{ctrlKey}}+<span v-html="button.ctrlShortcut"></span>)
+                    </span>
+                </span>
+        </v-tooltip>
+    </span>
 </template>
 
 <script>
@@ -78,6 +84,12 @@
             }
         },
         methods: {
+            getBadge: function () {
+                return typeof this.button.badge === "function" ?
+                    this.button.badge(
+                        this.controller.model()
+                    ) : this.button.badge;
+            },
             performAction: function (button) {
                 let controller = this.getController(button);
                 let promise = controller[
@@ -142,4 +154,5 @@
         white-space: nowrap;
         margin-top: 10px;
     }
+
 </style>
