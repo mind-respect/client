@@ -84,21 +84,16 @@
                     {
                         icon: "label",
                         action: "addTag",
-                        badge: "<v-icon dark>add</v-icon>"
+                        badgeIcon: "add"
                     },
                     {
                         icon: "label",
-                        action: "identify",
+                        action: "showTags",
                         ctrlShortcut: "G",
                         badge: function (bubble) {
                             return bubble.getIdentifiers().length;
                         }
                     },
-                    // {
-                    //     icon: "label",
-                    //     action: "identifyWhenMany",
-                    //     ctrlShortcut: "G"
-                    // },
                     {
                         icon: "lock",
                         action: "makePrivate",

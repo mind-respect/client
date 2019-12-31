@@ -146,6 +146,7 @@
             </v-list>
         </v-menu>
         <RemoveDialog></RemoveDialog>
+        <AddTagDialog></AddTagDialog>
         <RemoveTagDialog></RemoveTagDialog>
         <DescriptionDialog></DescriptionDialog>
         <FontDialog></FontDialog>
@@ -260,7 +261,8 @@
             ListViewDialog: () => import('@/components/ListViewDialog'),
             SimilarBubbles: () => import('@/components/SimilarBubbles'),
             AddExistingBubbleDialog: () => import('@/components/AddExistingBubbleDialog'),
-            NewContextDialog: () => import('@/components/NewContextDialog')
+            NewContextDialog: () => import('@/components/NewContextDialog'),
+            AddTagDialog: () => import('@/components/AddTagDialog')
         },
         data: function () {
             I18n.i18next.addResources("en", "graph", {

@@ -130,15 +130,20 @@ GraphElementController.prototype.visitOtherInstancesCanDo = function () {
     return false;
 };
 
-GraphElementController.prototype.identifyCanDo = function () {
+GraphElementController.prototype.addTagCanDo = function () {
     return this.isSingle() && this.isOwned();
 };
 
-GraphElementController.prototype.identifyWhenManyCanDo = function () {
-    return this.isSingle() && this.model().getIdentifiers().length > 1;
+GraphElementController.prototype.addTag = function () {
+    Store.dispatch("setIsAddTagFlow", true);
+    return Promise.resolve();
 };
 
-GraphElementController.prototype.identifyWhenMany = GraphElementController.prototype.identify = function () {
+GraphElementController.prototype.showTagsCanDo = function () {
+    return this.isSingle() && this.isOwned() && this.model().getIdentifiers().length > 0;
+};
+
+GraphElementController.prototype.showTags = function () {
     Store.dispatch("setSideMenuFlow", 1);
     return Promise.resolve();
 };

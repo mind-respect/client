@@ -74,17 +74,6 @@
                                 </v-badge>
                             </v-tab>
                             <v-tab class="primary--text side-tab">
-                                <v-badge color="transparent" :key="$store.state.tagRefresh + 'tagMenuHeader'">
-                                    <template v-slot:badge>
-                                        <v-icon color="third"
-                                                v-if="selected && selected.hasIdentifications()">
-                                            brightness_1
-                                        </v-icon>
-                                    </template>
-                                    <v-icon>label</v-icon>
-                                </v-badge>
-                            </v-tab>
-                            <v-tab class="primary--text side-tab">
                                 <v-icon>merge_type</v-icon>
                             </v-tab>
                             <v-tab class="primary--text side-tab">
@@ -102,21 +91,6 @@
                                         :bubble="selected"
                                         v-show="noteCanDo || !selected"
                                 ></NoteMenu>
-                            </v-tab-item>
-                            <v-tab-item>
-                                <p
-                                        v-show="!tagCanDo"
-                                        class="pt-4 grey--text text-center"
-                                        v-if="$store.state.selected.length > 0"
-                                >
-                                    {{$t('side:tagCantDo')}}
-                                </p>
-                                <TagMenu
-                                        @focus="focus"
-                                        @blur="blur"
-                                        :bubble="selected"
-                                        v-show="tagCanDo || !selected"
-                                ></TagMenu>
                             </v-tab-item>
                             <v-tab-item>
                                 <p v-show="!mergeCanDo"
@@ -227,7 +201,7 @@
                     return false;
                 }
                 let single = Selection.getSingle();
-                return single && (single.controller().identifyCanDo() || single.isMeta() || single.hasIdentifications());
+                return single && (single.controller().showTagsCanDo() || single.isMeta() || single.hasIdentifications());
             },
             mergeCanDo: function () {
                 if (!Selection.isSingle()) {

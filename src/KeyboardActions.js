@@ -174,8 +174,6 @@ function defineCtrlPlusKeysAndTheirActions() {
     let actions = {};
     actions[KeyCode.KEY_G] = [{
         action: "identify"
-    }, {
-        action: "identifyWhenMany"
     }];
     actions[KeyCode.KEY_A] = {
         action: "selectTree"

@@ -216,6 +216,7 @@
             </v-card>
         </v-dialog>
         <DocsDialog ref="docsFlow"></DocsDialog>
+
     </v-app>
 </template>
 
@@ -251,8 +252,8 @@
                 "select": "Hand selector",
                 "group": "Merge bubbles into one",
                 "addChild": "Add a child (tab)",
-                "identify": "Tags",
-                "identifyWhenMany": "Tags",
+                "addTag": "Add tag",
+                "showTags": "Tags",
                 "compare": "Compare with another user",
                 "reverseToRight": "Invert relation",
                 "reverseToLeft": "Invert relation",
@@ -298,8 +299,8 @@
                 "select": "Sélection à la main",
                 "group": "Créer une bulle à partir de celles sélectionnés",
                 "addChild": "Ajouter un enfant (tab)",
-                "identify": "Étiquettes",
-                "identifyWhenMany": "Étiquettes",
+                "addTag": "Ajouter étiquette",
+                "showTags": "Étiquettes",
                 "compare": "Comparer avec un autre usager",
                 "reverseToRight": "Inverser la relation",
                 "reverseToLeft": "Inverser la relation",

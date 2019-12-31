@@ -191,7 +191,7 @@ function buildEdgesGroupedBySourceVertex(metaSubGraph, centerVertex) {
     return edgesBySourceVertex;
 }
 
-MetaController.prototype.identifyCanDo = function () {
+MetaController.prototype.showTagsCanDo = function () {
     return false;
 };
 

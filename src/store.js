@@ -44,7 +44,8 @@ const Store = new Vuex.Store({
         shareRefresh: Math.random(),
         similarBubblesRefresh: Math.random(),
         userHomeSelectedCenter: null,
-        isNewContextFlow: false
+        isNewContextFlow: false,
+        isAddTagFlow: false
     },
     mutations: {
         setUser: function (state, user) {
@@ -140,6 +141,9 @@ const Store = new Vuex.Store({
         },
         isNewContextFlow: function (state, isNewContextFlow) {
             state.isNewContextFlow = isNewContextFlow;
+        },
+        setIsAddTagFlow: function (state, isAddTagFlow) {
+            state.isAddTagFlow = isAddTagFlow;
         }
     },
     actions: {
@@ -214,6 +218,9 @@ const Store = new Vuex.Store({
         },
         isNewContextFlow: function (action, isNewContextFlow) {
             action.commit('isNewContextFlow', isNewContextFlow);
+        },
+        setIsAddTagFlow: function (action, isAddTagFlow) {
+            action.commit('setIsAddTagFlow', isAddTagFlow);
         }
     }
 });

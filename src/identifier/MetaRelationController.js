@@ -53,7 +53,7 @@ MetaRelationController.prototype.remove = function (skipConfirmation) {
 MetaRelationController.prototype.cutCanDo = function () {
     return false;
 };
-MetaRelationController.prototype.identifyCanDo = function () {
+MetaRelationController.prototype.showTagsCanDo = function () {
     return false;
 };
 
