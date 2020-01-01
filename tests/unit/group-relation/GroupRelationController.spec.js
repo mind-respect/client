@@ -10,11 +10,11 @@ import TagService from "@/identifier/TagService";
 
 
 describe("GroupRelationController", () => {
-    it("can identify", async () => {
+    it("can show tags", async () => {
         let scenario = await new GroupRelationsScenario();
         let possessionInTree = scenario.getPossessionGroupRelation();
         expect(
-            possessionInTree.controller().identifyCanDo()
+            possessionInTree.controller().showTagsCanDo()
         ).toBeTruthy();
     });
     describe("addChild", function () {

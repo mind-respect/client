@@ -144,7 +144,7 @@ GraphElementController.prototype.showTagsCanDo = function () {
 };
 
 GraphElementController.prototype.showTags = function () {
-    Store.dispatch("setSideMenuFlow", 1);
+    //
     return Promise.resolve();
 };
 

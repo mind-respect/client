@@ -41,7 +41,7 @@
                             >
                             </v-skeleton-loader>
                             <div class="font-weight-bold side-menu-label" :key="$store.state.labelRefresh + 'sideMenu'"
-                                 v-if="isSingle">
+                                 v-if="isSingle && selected">
                                 {{selected.getLabel()}}
                             </div>
                             <div class="font-italic" v-if="isSingle">
@@ -211,7 +211,11 @@
                 return single && single.controller().mergeCanDo();
             },
             shareCanDo: function () {
-                return this.$store.state.selected.length > 0 && Selection.controller().setShareLevelCanDo();
+                if (this.$store.state.selected.length <= 0) {
+                    return false;
+                }
+                const controller = Selection.controller();
+                return controller.setShareLevelCanDo && controller.setShareLevelCanDo();
             },
             menuWidth: function () {
                 return this.$vuetify.breakpoint.mdAndDown ? this.mainWidth : 340;
