@@ -1,13 +1,11 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
 import colors from 'vuetify/es5/util/colors'
-import { preset } from 'vue-cli-plugin-vuetify-preset-basil/preset'
 
 Vue.use(Vuetify)
 
 // '067f88'
 export default new Vuetify({
-  preset,
     icons: {
         iconfont: 'md',
     },

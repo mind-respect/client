@@ -49,7 +49,6 @@
     "sass": "^1.22.9",
     "sass-loader": "^7.1.0",
     "vue-cli-plugin-vuetify": "^2.0.3",
-    "vue-cli-plugin-vuetify-preset-basil": "^1.0.1",
     "vue-template-compiler": "^2.6.10",
     "vuetify-loader": "^1.3.0",
     "vuetify-scss": "^1.4.0"

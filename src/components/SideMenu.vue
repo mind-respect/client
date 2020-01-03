@@ -42,7 +42,7 @@
                                     v-show="$store.state.selected.length ===0"
                             >
                             </v-skeleton-loader>
-                            <div class="side-menu-label" :key="$store.state.labelRefresh + 'sideMenu'"
+                            <div class="font-weight-bold side-menu-label" :key="$store.state.labelRefresh + 'sideMenu'"
                                  v-if="isSingle && selected">
                                 {{selected.getLabel()}}
                             </div>
