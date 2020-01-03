@@ -63,7 +63,7 @@
 <script>
     import Selection from '@/Selection'
     import I18n from '@/I18n'
-    import CurrentSubGraph from "@/graph/CurrentSubGraph";
+    import GraphElementType from "@/graph-element/GraphElementType";
     import Store from '@/store'
     import TagService from '@/identifier/TagService'
 
@@ -139,20 +139,25 @@
         },
         methods: {
             remove: async function () {
-                let tag = CurrentSubGraph.get().center.getOriginalMeta();
                 await Promise.all(this.bubbles.map((bubble) => {
-                    let parentVertex = bubble.getParentVertex();
-                    if (parentVertex.isMetaGroupVertex()) {
+                    let tag = bubble.getClosestAncestorInTypes([GraphElementType.Meta]).getOriginalMeta();
+                    let parentBubble = bubble.getClosestAncestorInTypes([
+                        GraphElementType.Vertex,
+                        GraphElementType.Edge,
+                        GraphElementType.Relation,
+                        GraphElementType.MetaGroupVertex
+                    ]);
+                    if (parentBubble.isMetaGroupVertex()) {
                         let promise = TagService.remove(bubble.getParentBubble().getEdgeUri(), tag);
-                        if (parentVertex.getNumberOfChild() === 1) {
-                            parentVertex.remove();
+                        if (parentBubble.getNumberOfChild() === 1) {
+                            parentBubble.remove();
                         } else {
                             bubble.remove();
                         }
                         return promise;
                     } else {
                         bubble.remove();
-                        return bubble.controller().removeIdentifier(tag);
+                        return parentBubble.controller().removeIdentifier(tag);
                     }
                 }));
                 Store.dispatch("redraw");

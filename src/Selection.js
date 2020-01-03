@@ -131,7 +131,9 @@ api._graphElementSelected = function (selected) {
                 selected.id
             );
         case GraphElementType.Meta:
-            return CurrentSubGraph.get().tags[0];
+            return CurrentSubGraph.get().getTagBubbleWithUiId(
+                selected.id
+            );
         default:
             return CurrentSubGraph.get().otherGraphElements[selected.id];
     }

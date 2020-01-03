@@ -564,4 +564,30 @@ describe('GraphElementController', () => {
     describe("becomeParent", () => {
 
     });
+
+    describe("showTags", () => {
+        it("shows tags as children", async () => {
+            let scenario = await new ThreeScenario();
+            let center = scenario.getCenterInTree();
+            let tag = TestUtil.dummyIdentifier();
+            tag.setLabel("new tag");
+            center.addIdentification(
+                tag
+            );
+            expect(
+                center.getNumberOfChild()
+            ).toBe(2);
+            await center.controller().showTags();
+            expect(
+                center.getNumberOfChild()
+            ).toBe(3);
+            let newTag = TestUtil.getChildDeepWithLabel(
+                center,
+                "new tag"
+            );
+            expect(
+                newTag
+            ).toBeDefined();
+        })
+    });
 });

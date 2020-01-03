@@ -18,6 +18,7 @@ import SubGraphController from '@/graph/SubGraphController'
 import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import GraphElement from '@/graph-element/GraphElement'
+import LoadingFlow from '@/LoadingFlow'
 import Color from '@/Color'
 
 const api = {};
@@ -36,7 +37,14 @@ function MetaController(metas) {
 
 MetaController.prototype = new GraphElementController.GraphElementController();
 
-MetaController.prototype.loadGraph = function () {
+MetaController.prototype.loadForParentIsAlreadyOnMap = function () {
+    return this.loadGraph(
+        true
+    );
+};
+
+MetaController.prototype.loadGraph = function (isParentAlreadyOnMap) {
+    isParentAlreadyOnMap = isParentAlreadyOnMap || false;
     let uri = this.model().getUri();
     return GraphService.getForCentralBubbleUri(uri).then((response) => {
         let metaSubGraph = MetaGraph.fromServerFormatAndCenterUri(
@@ -58,12 +66,14 @@ MetaController.prototype.loadGraph = function () {
     }).then((metaSubGraph) => {
         let centerTag = metaSubGraph.getMetaCenter();
         let centerBubble = this.model();
-        centerBubble.makeCenter();
-        centerBubble.setLabel(centerTag.getLabel());
-        centerBubble.setComment(centerTag.getComment());
-        centerBubble.setOriginalMeta(centerTag);
+        if (!isParentAlreadyOnMap) {
+            centerBubble.makeCenter();
+            centerBubble.setLabel(centerTag.getLabel());
+            centerBubble.setComment(centerTag.getComment());
+            centerBubble.setOriginalMeta(centerTag);
+            CurrentSubGraph.get().add(centerBubble);
+        }
         let subGraph = metaSubGraph.getSubGraph();
-        CurrentSubGraph.get().add(centerBubble);
         centerBubble.setChildrenIndex(
             subGraph.serverFormat.childrenIndexesCenterTag
         );
@@ -82,6 +92,10 @@ MetaController.prototype.loadGraph = function () {
             let vertex = subGraph.getVertexWithUri(
                 sourceVertexAndEdges.sourceVertex.getUri()
             );
+            let grandParent = centerBubble.getParentVertex();
+            if (grandParent && grandParent.isSameUri(vertex)) {
+                return;
+            }
             if (sourceVertexAndEdges.edges.length === 0) {
                 vertex.incrementNbConnectedEdges();
                 child = new MetaRelation(vertex, centerBubble);
@@ -128,6 +142,53 @@ MetaController.prototype.loadGraph = function () {
             GraphElementService.changeChildrenIndex(centerBubble)
         }
         return centerBubble;
+    });
+};
+
+MetaController.prototype.expand = function (avoidCenter, avoidExpandChild, avoidShowingLoad) {
+    if (!this.expandCanDo()) {
+        this.model().isExpanded = true;
+        return Promise.resolve();
+    }
+    if (avoidExpandChild && !this.model().canExpand()) {
+        this.model().isExpanded = true;
+        return Promise.resolve();
+    }
+    let promise = Promise.resolve();
+    if (!avoidShowingLoad) {
+        LoadingFlow.enterNoSpinner();
+    }
+    this.model().loading = false;
+    avoidExpandChild = avoidExpandChild || false;
+    this.model().beforeExpand();
+    if (!this.model().isExpanded) {
+        if (!this.model().isCollapsed) {
+            promise = this.loadForParentIsAlreadyOnMap().then(() => {
+                if (avoidExpandChild) {
+                    return true;
+                }
+                let expandChildCalls = [];
+                this.model().getClosestChildVertices().forEach((childVertex) => {
+                    if (childVertex.getNumberOfChild() === 1) {
+                        expandChildCalls.push(
+                            childVertex.controller().expand(true, true, true)
+                        );
+                    }
+                });
+                return Promise.all(expandChildCalls);
+            });
+        }
+    } else {
+        this.model().loading = false;
+        promise = avoidExpandChild ? Promise.resolve() : this.expandDescendantsIfApplicable();
+    }
+    return promise.then(() => {
+        this.model().expand(avoidCenter, true);
+        if (!avoidShowingLoad) {
+            Vue.nextTick(() => {
+                LoadingFlow.leave();
+            });
+        }
     });
 };
 
@@ -190,6 +251,10 @@ function buildEdgesGroupedBySourceVertex(metaSubGraph, centerVertex) {
     });
     return edgesBySourceVertex;
 }
+
+MetaController.prototype.addTagCanDo = function () {
+    return false;
+};
 
 MetaController.prototype.showTagsCanDo = function () {
     return false;

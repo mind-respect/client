@@ -22,12 +22,12 @@ function Meta() {
 
 Meta.prototype = new Vertex.Vertex();
 Meta.prototype.init = function (uri) {
-    this.uri = uri;
     Vertex.Vertex.apply(this);
     Vertex.Vertex.prototype.init.call(
         this,
         Vertex.buildServerFormatFromUri(uri)
     );
+    this.setUri(uri);
     return this;
 };
 Meta.prototype.getGraphElementType = function () {
@@ -40,6 +40,19 @@ Meta.prototype.setOriginalMeta = function (originalMeta) {
 
 Meta.prototype.getOriginalMeta = function () {
     return this.originalMeta;
+};
+
+Meta.prototype.getNumberOfChild = function () {
+    if (this.isExpanded) {
+        return this.getNextChildren().length;
+    }
+    let parentFork = this.getParentFork();
+    if (parentFork.isGroupRelation()) {
+        let nbChild = parentFork.getClosestChildrenOfType(GraphElementType.Relation).length;
+        return this.getOriginalMeta().getNbReferences() - nbChild;
+    } else {
+        return this.getOriginalMeta().getNbReferences() - 1;
+    }
 };
 
 export default api;

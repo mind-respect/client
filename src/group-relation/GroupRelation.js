@@ -257,9 +257,10 @@ GroupRelation.prototype.setParentVertex = function (vertex) {
 };
 
 GroupRelation.prototype.getGroupRelationInSequenceWithTag = function (tag) {
-    return this.getGreatestGroupRelationAncestor().getSerialGroupRelations().filter((groupRelation) => {
+    let groupRelationWithTag = this.getGreatestGroupRelationAncestor().getSerialGroupRelations().filter((groupRelation) => {
         return groupRelation.hasIdentification(tag);
-    })[0];
+    });
+    return groupRelationWithTag.length > 0 ? groupRelationWithTag[0] : false;
 };
 
 GroupRelation.prototype.getIdentifiersAtAnyDepth = function (groupRelationToStop) {

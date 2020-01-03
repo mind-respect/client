@@ -17,6 +17,8 @@ import Vertex from '@/vertex/Vertex'
 import Edge from '@/edge/Edge'
 import SubGraphController from '@/graph/SubGraphController'
 import GraphDisplayer from '@/graph/GraphDisplayer'
+import MetaRelation from "@/identifier/MetaRelation";
+import Meta from "@/identifier/Meta";
 
 const api = {};
 let bubbleCutClipboard;
@@ -140,11 +142,50 @@ GraphElementController.prototype.addTag = function () {
 };
 
 GraphElementController.prototype.showTagsCanDo = function () {
-    return this.isSingle() && this.isOwned() && this.model().getIdentifiers().length > 0;
+    return !this.model().areTagsShown && this.isSingle() && this.isOwned() && this.model().getIdentifiers().length > 0;
 };
 
 GraphElementController.prototype.showTags = function () {
-    //
+    return this.expand(true, true).then(() => {
+        this.model().getIdentifiers().forEach((tag) => {
+            this._addTagAsChild(tag);
+        });
+        this.model().areTagsShown = true;
+        Store.dispatch("redraw");
+    });
+};
+
+GraphElementController.prototype._addTagAsChild = function (tag) {
+    let tagBubble = Meta.withUri(
+        tag.getUri()
+    );
+    tagBubble.setLabel(tag.getLabel());
+    tagBubble.setComment(tag.getComment());
+    tagBubble.setImages(tag.getImages());
+    tagBubble.setOriginalMeta(tag);
+    CurrentSubGraph.get().add(tagBubble);
+    let tagRelation = new MetaRelation(
+        this.model().isVertexType() ? this.model() : this.model().getParentVertex(),
+        tagBubble
+    );
+    this.model().addChild(
+        tagRelation
+    );
+    CurrentSubGraph.get().add(tagRelation);
+};
+
+GraphElementController.prototype.hideTagsCanDo = function () {
+    return this.model().areTagsShown;
+};
+
+GraphElementController.prototype.hideTags = function () {
+    this.model().getNextChildren().forEach((child) => {
+        if (child.isMetaRelation()) {
+            child.remove();
+        }
+    });
+    this.model().areTagsShown = false;
+    Store.dispatch("redraw");
     return Promise.resolve();
 };
 
@@ -170,18 +211,20 @@ GraphElementController.prototype.expandCanDo = function () {
     );
 };
 
-GraphElementController.prototype.expand = function (avoidCenter) {
-    let promise = this.expandDescendantsIfApplicable();
+GraphElementController.prototype.expand = function (avoidCenter, avoidExpandChild) {
+    let promise = avoidExpandChild ? Promise.resolve() : this.expandDescendantsIfApplicable();
     return promise.then(() => {
         this.model().expand(avoidCenter, true);
         const expandChildCalls = [];
-        this.model().visitClosestChildVertices(function (childVertex) {
-            if (childVertex.getNumberOfChild() === 1) {
-                expandChildCalls.push(
-                    childVertex.controller().expand(true, true, true)
-                );
-            }
-        });
+        if (!avoidExpandChild) {
+            this.model().visitClosestChildVertices(function (childVertex) {
+                if (childVertex.getNumberOfChild() === 1) {
+                    expandChildCalls.push(
+                        childVertex.controller().expand(true, true, true)
+                    );
+                }
+            });
+        }
         return Promise.all(expandChildCalls);
     });
 };
@@ -314,6 +357,9 @@ GraphElementController.prototype.moveDownOneStep = function () {
 };
 
 GraphElementController.prototype._canMoveAboveOrUnder = function (otherEdge) {
+    if (this.model().isMeta()) {
+        return false;
+    }
     let graphElementToCompare = this.model().isVertex() ?
         this.model().getParentBubble() :
         this.model();
@@ -351,6 +397,9 @@ GraphElementController.prototype.moveAbove = function (otherEdge) {
 };
 
 GraphElementController.prototype._canMoveUnderParent = function (parent, forceLeft) {
+    if (this.model().isMeta()) {
+        return false;
+    }
     let newParentIsSelf = this.model().getUri() === parent.getUri();
     if (newParentIsSelf) {
         return false;
@@ -548,6 +597,11 @@ GraphElementController.prototype.addIdentification = function (identifier, preve
             );
             this.model().refreshImages();
             this.model().refreshButtons();
+            if (this.model().areTagsShown) {
+                identifications.forEach((tag) => {
+                    this._addTagAsChild(tag);
+                });
+            }
             return identifications;
         })
     });
@@ -699,6 +753,16 @@ GraphElementController.prototype.removeIdentifier = function (identifier, preven
             });
             this.model().refreshImages();
             this.model().refreshButtons();
+            if (this.model().areTagsShown === true) {
+                this.model().getNextChildren().forEach((child) => {
+                    if (child.isMetaRelation()) {
+                        let meta = child.getNextBubble();
+                        if (meta.getOriginalMeta().getExternalResourceUri() === identifier.getExternalResourceUri()) {
+                            child.remove();
+                        }
+                    }
+                });
+            }
         });
     });
 };

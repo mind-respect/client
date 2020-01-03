@@ -173,7 +173,9 @@ function defineNonCtrlPlusKeysAndTheirActions() {
 function defineCtrlPlusKeysAndTheirActions() {
     let actions = {};
     actions[KeyCode.KEY_G] = [{
-        action: "identify"
+        action: "showTags"
+    },{
+        action: "hideTags"
     }];
     actions[KeyCode.KEY_A] = {
         action: "selectTree"

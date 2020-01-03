@@ -9,6 +9,7 @@ import GraphElementController from '@/graph-element/GraphElementController'
 import VertexService from '@/vertex/VertexService'
 import Selection from '@/Selection'
 import MetaRelation from '@/identifier/MetaRelation'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 const api = {};
 
@@ -28,13 +29,14 @@ MetaGroupVertexController.prototype.addChild = function () {
         this.model()
     );
     let triple = addTuple.optimistic;
+    let tagBubble = this.model().getClosestAncestorInTypes([GraphElementType.Meta]);
     addTuple.promise.then(() => {
         triple.edge.controller().addIdentification(
-            CurrentSubGraph.get().center.getOriginalMeta(),
+            tagBubble.getOriginalMeta(),
             true
         );
     });
-    let metaRelation = new MetaRelation(triple.destination, CurrentSubGraph.get().center);
+    let metaRelation = new MetaRelation(triple.destination, tagBubble);
     metaRelation.setEdgeUri(triple.edge.getUri());
     this.model().addChild(
         metaRelation
@@ -69,7 +71,7 @@ MetaGroupVertexController.prototype.relateToDistantVertexWithUri = function (dis
         distantVertexUri,
         index,
         isLeft,
-        [CurrentSubGraph.get().center.getOriginalMeta()]
+        [this.model().getClosestAncestorInTypes([GraphElementType.Meta]).getOriginalMeta()]
     );
 };
 

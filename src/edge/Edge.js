@@ -88,6 +88,7 @@ api.Edge.prototype.init = function (edgeServerFormat, sourceVertex, destinationV
     );
     this._edgeServerFormat = edgeServerFormat;
     this.isExpanded = true;
+    this.children = [];
     return this;
 };
 
@@ -227,11 +228,29 @@ api.Edge.prototype.getLeftBubble = function () {
 api.Edge.prototype.getNextChildrenEvenIfCollapsed = api.Edge.prototype.getNextChildren = function () {
     return [
         this.getOtherVertex(this.getParentVertex())
-    ];
+    ].concat(this.children);
+};
+
+api.Edge.prototype.addChild = function (child) {
+    child.parentBubble = this;
+    child.parentVertex = this.parentVertex;
+    this.children.push(child);
+};
+
+api.Edge.prototype.removeChild = function (child, isTemporary, avoidRedraw) {
+    let l = this.children.length;
+    while (l--) {
+        if (this.children[l].getId() === child.getId()) {
+            this.children.splice(l, 1);
+        }
+    }
+    if (!isTemporary) {
+        this.refreshChildren(avoidRedraw);
+    }
 };
 
 api.Edge.prototype.getNumberOfChild = function () {
-    return 1;
+    return 1 + this.children.length;
 };
 
 api.Edge.prototype.isLeaf = function () {

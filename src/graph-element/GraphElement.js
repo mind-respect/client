@@ -111,6 +111,7 @@ GraphElement.initMenuHandlerGetters = function () {
 };
 
 GraphElement.GraphElement = function () {
+    this.areTagsShown = false;
 };
 
 GraphElement.wrapElementsInController = function (elements) {

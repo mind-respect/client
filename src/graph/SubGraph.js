@@ -265,6 +265,12 @@ api.SubGraph.prototype.getGroupRelationWithUiId = function (uiId) {
     })[0];
 };
 
+api.SubGraph.prototype.getTagBubbleWithUiId = function (uiId) {
+    return this.tags.filter((tag) => {
+        return tag.uiId === uiId;
+    })[0];
+};
+
 api.SubGraph.prototype.getCenter = function () {
     return this.getVertexWithUri(this.centerUri);
 };

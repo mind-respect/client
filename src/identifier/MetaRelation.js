@@ -2,15 +2,15 @@ import Edge from '@/edge/Edge'
 import GraphElementType from '@/graph-element/GraphElementType'
 import IdUri from '@/IdUri'
 
-function MetaRelation(tag, destinationVertex) {
+function MetaRelation(sourceVertex, destinationVertex) {
     Edge.Edge.apply(this);
     this.init(
         Edge.buildObjectWithUriOfSelfSourceAndDestinationVertex(
             IdUri.uuid(),
-            tag.getUri(),
+            sourceVertex.getUri(),
             destinationVertex.getUri()
         ),
-        tag,
+        sourceVertex,
         destinationVertex
     );
     destinationVertex.parentBubble = this;

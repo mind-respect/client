@@ -204,6 +204,9 @@ FriendlyResource.FriendlyResource.prototype.addImage = function (image) {
 FriendlyResource.FriendlyResource.prototype.getImage = function () {
     return this._images[0]
 };
+FriendlyResource.FriendlyResource.prototype.setImages = function (images) {
+    this._images = images;
+};
 FriendlyResource.FriendlyResource.prototype.getImages = function () {
     return this._images;
 };

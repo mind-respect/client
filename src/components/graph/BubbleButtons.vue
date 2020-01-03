@@ -95,6 +95,11 @@
                         }
                     },
                     {
+                        icon: "label_off",
+                        action: "hideTags",
+                        ctrlShortcut: "G"
+                    },
+                    {
                         icon: "lock",
                         action: "makePrivate",
                         ctrlShortcut: "P"

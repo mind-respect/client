@@ -44,7 +44,7 @@
                     </div>
                     <v-spacer v-if="isLeft && isLeaf"></v-spacer>
                     <div class="image_container">
-                        <v-img :src="imageUrl" max-height="90" v-if="imageUrl" @load="imageLoaded"></v-img>
+                        <v-img :src="imageUrl" max-height="90" v-if="imageUrl" @load="imageLoaded" min-width="60"></v-img>
                     </div>
                     <v-skeleton-loader type="chip" v-if="bubble.isVertexType() && bubble.isSkeleton()"
                                        class="bubble-label"></v-skeleton-loader>
@@ -218,7 +218,7 @@
                                                     }"
                                             ></div>
                                             <v-icon v-if="bubble.isMetaRelation()" color="white" small
-                                                    class="bubble-label unselectable"
+                                                    class="bubble-label unselectable meta-relation-icon"
                                                     v-show="!isShrinked">label
                                             </v-icon>
                                         </v-chip>
@@ -372,9 +372,21 @@
                 return this.bubble.canExpand();
             },
             refreshImages: function () {
-                let tagsWithImages = this.bubble.getIdentifiers().filter((tag) => {
-                    return tag.hasImages() && tag.getImage().urlForSmall;
-                });
+                let tagsWithImages = [];
+                if (this.bubble.isMeta()) {
+                    if (this.bubble.hasImages()) {
+                        tagsWithImages = [this.bubble];
+                    }
+                } else {
+                    tagsWithImages = this.bubble.getIdentifiers().filter((tag) => {
+                        let parentBubble = this.bubble.getParentBubble();
+                        if (parentBubble && parentBubble.isGroupRelation() && parentBubble.getGroupRelationInSequenceWithTag(tag)) {
+                            return false;
+                        } else {
+                            return tag.hasImages() && tag.getImage().urlForSmall;
+                        }
+                    });
+                }
                 this.imageUrl = tagsWithImages.length ? tagsWithImages[0].getImage().urlForSmall : false;
                 // this.imageRefresh = IdUri.uuid();
             },
@@ -846,12 +858,12 @@
     }
 
     .is-shrinked.empty-edge {
-        top: -5px;
+        top: calc(50% - 5px);
     }
 
     .empty-edge {
         position: absolute;
-        top: -15px;
+        top: calc(50% - 15px);
     }
 
     .empty-edge .bubble-label {
@@ -967,5 +979,9 @@
 
     .image-container-min-height {
         min-height: 60px;
+    }
+
+    .meta-relation-icon {
+        width: auto !important;
     }
 </style>

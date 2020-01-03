@@ -17,15 +17,30 @@
             </div>
         </div>
         <div class="vertices-children-container" v-if="bubble.isEdge()">
-            <Bubble
-                    v-if="isInverse"
-                    :bubble="bubble._sourceVertex"
-                    :direction="direction"
-            ></Bubble>
-            <Bubble v-else
-                    :bubble="bubble._destinationVertex"
-                    :direction="direction"
-            ></Bubble>
+            <div :class="{
+                    'mt-6 mb-6' : bubble.children.length === 2,
+                    'mt-2 mb-2' : bubble.children.length > 2
+                 }">
+                <Bubble
+                        v-if="isInverse"
+                        :bubble="bubble._sourceVertex"
+                        :direction="direction"
+                ></Bubble>
+                <Bubble v-else
+                        :bubble="bubble._destinationVertex"
+                        :direction="direction"
+                ></Bubble>
+            </div>
+            <div v-for="child in bubble.children" :key="child.uiId" v-if="bubble.isRelation()"
+                 :class="{
+                    'mt-6 mb-6' : bubble.children.length === 2,
+                    'mt-2 mb-2' : bubble.children.length > 2
+                 }"
+            >
+                <Bubble :bubble="child"
+                        :direction="direction"
+                ></Bubble>
+            </div>
         </div>
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()">
             <div v-for="child in bubble.children" :key="child.uiId"

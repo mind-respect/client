@@ -47,9 +47,6 @@ EdgeDrawing.prototype.redraw = function () {
     this.children = this.bubble.getNextChildren(this.isLeft).filter((child) => {
         return child.draw;
     });
-    if (this.bubble.isEdge()) {
-        return true;
-    }
     if (this.children.length > 1) {
         this.highestChild = this.children[0];
         this.lowestChild = this.children[this.children.length - 1];
@@ -122,7 +119,7 @@ EdgeDrawing.prototype.topBottomLineAtRight = function () {
     return lines
 };
 EdgeDrawing.prototype.isChildInBetween = function (childPosition) {
-    return this.bubbleRect.top < childPosition.rect.bottom && this.bubbleRect.bottom > childPosition.rect.top;
+    return this.bubble.isVertexType() && this.bubbleRect.top < childPosition.rect.bottom && this.bubbleRect.bottom > childPosition.rect.top;
 };
 
 EdgeDrawing.prototype.topDistanceWithChild = function (childPosition) {
@@ -147,6 +144,19 @@ EdgeDrawing.prototype.drawChildren = function () {
             lines += this.inverseArrowHead(childPosition)
         }
         if (child.isSameBubble(this.highestChild) || child.isSameBubble(this.lowestChild)) {
+            if (this.bubble.isEdge() && child.isSameBubble(this.highestChild)) {
+                if (!this.bubble.isInverse() && !child.isMetaRelation()) {
+                    let position = this.getMiddleSidePosition(this.highestChild);
+                    lines += "M " + position.x + " " + position.y + " ";
+                    lines += "H " + (childPosition.x);
+                    let childXPosition = childPosition.x;
+                    lines += this.arrowHead(
+                        this.getMiddleSidePosition(this.bubble).x,
+                        childXPosition,
+                        position.y
+                    );
+                }
+            }
             return lines;
         }
         if (!childPosition) {
@@ -159,7 +169,7 @@ EdgeDrawing.prototype.drawChildren = function () {
             });
             return;
         }
-        if (this.bubble.isEdge()) {
+        if (this.bubble.isEdge() && !child.isMetaRelation()) {
             let position = this.getMiddleSidePosition(this.bubble);
             lines += "M " + position.x + " " + position.y + " ";
             lines += "H " + (childPosition.x);
@@ -171,7 +181,6 @@ EdgeDrawing.prototype.drawChildren = function () {
                     position.y
                 );
             }
-            return lines;
         }
         let isChildInBetween = this.isChildInBetween(childPosition);
         let position = this.getMiddleSidePosition(this.bubble, true);
@@ -251,7 +260,7 @@ EdgeDrawing.prototype.inverseArrowHead = function (childPosition) {
 
 EdgeDrawing.prototype.getBubbleElement = function (bubble) {
     if (bubble.isEdge()) {
-        if (bubble.isShrinked()) {
+        if (bubble.isShrinked() || bubble.getNumberOfChild() > 1) {
             return bubble.getChip();
         } else {
             return bubble.getLabelHtml();
@@ -279,7 +288,10 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
         yAdjust = -10;
     }
     yAdjust += this.zoomAdjust;
-    if (bubble.isGroupRelation()) {
+    if (bubble.isVertex() && bubble.getParentBubble().isEdge() && bubble.getParentBubble().getNumberOfChild() > 1) {
+        yAdjust += 15;
+    }
+    if (bubble.isGroupRelation() || (bubble.isEdge() && bubble.getNumberOfChild() > 1)) {
         yAdjust += 5;
     }
     if (!element) {
@@ -326,9 +338,6 @@ EdgeDrawing.prototype.topPositionCalculate = function () {
         yAdjust = this.isLeft ? -24 : -45;
     } else {
         yAdjust = this.isLeft ? -24 : -45;
-    }
-    if (this.bubble.isEdge()) {
-        yAdjust = -65;
     }
     position.y = this.bubbleRect.top + yAdjust + document.scrollingElement.scrollTop;
     return position;
