@@ -15,8 +15,10 @@
         >
             <template v-slot:activator="{ on }">
                 <span v-on="on">
-                    <v-badge color="third" class="button-menu-badge" :overlap="true">
-                        <template v-slot:badge v-if="button.badge || button.badgeIcon">
+                    <v-badge
+                            color="third" class="button-menu-badge" :overlap="true" :value="button.badge !== undefined || button.badgeIcon !== undefined"
+                    >
+                        <template v-slot:badge>
                             <span v-html="getBadge()" v-if="button.badge"></span>
                             <v-icon dark v-if="button.badgeIcon">{{button.badgeIcon}}</v-icon>
                         </template>

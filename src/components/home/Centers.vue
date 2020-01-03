@@ -62,8 +62,9 @@
                                 >
                                     <v-list-item-content>
                                         <v-list-item-title class="subtitle-1 font-weight-bold">
-                                            <v-badge color="transparent">
-                                                <template v-slot:badge v-if="center.showIcon()">
+                                            <v-badge color="transparent" :value="center.showIcon()"
+                                                     class="center-label">
+                                                <template v-slot:badge>
                                                     <v-icon>
                                                         {{center.getIcon()}}
                                                     </v-icon>
@@ -527,6 +528,10 @@
 
     .center-list {
         border-radius: 0;
+    }
+
+    .center-label {
+        font-family: 'Roboto';
     }
 
 </style>

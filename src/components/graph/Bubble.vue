@@ -92,10 +92,8 @@
                                         <InLabelButtons :bubble="bubble" :isLeft="isLeft"
                                                         :isCenter="isCenter" :key="inLabelMenuKey"></InLabelButtons>
 
-
-                                        <v-badge color="third" :left="isLeft">
-                                            <template v-slot:badge
-                                                      v-if="bubble.isMeta() || (isCenter && $store.state.isPatternFlow)">
+                                        <v-badge color="third" :left="isLeft" :value="bubble.isMeta() || (isCenter && $store.state.isPatternFlow)">
+                                            <template v-slot:badge>
                                                 <v-icon dark v-if="bubble.isMeta()">label</v-icon>
                                                 <v-icon dark v-if="isCenter && $store.state.isPatternFlow">stars
                                                 </v-icon>

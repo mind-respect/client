@@ -9,6 +9,7 @@
             :mini-variant="$store.state.sideMenuFlow === false"
             :mini-variant-width="mainNavMiniWidth"
             touchless
+            color="white"
     >
         <v-layout fill-height>
             <v-navigation-drawer
@@ -19,6 +20,7 @@
                     v-show="$vuetify.breakpoint.lgAndUp || $store.state.sideMenuFlow !== false"
                     stateless
                     touchless
+                    color="white"
             >
                 <v-card flat class="text-center">
                     <v-btn @click="expand" small icon v-show="$store.state.sideMenuFlow === false"
@@ -40,7 +42,7 @@
                                     v-show="$store.state.selected.length ===0"
                             >
                             </v-skeleton-loader>
-                            <div class="font-weight-bold side-menu-label" :key="$store.state.labelRefresh + 'sideMenu'"
+                            <div class="side-menu-label" :key="$store.state.labelRefresh + 'sideMenu'"
                                  v-if="isSingle && selected">
                                 {{selected.getLabel()}}
                             </div>
@@ -126,6 +128,7 @@
                     mini-variant-width="80"
                     stateless
                     id="buttonsDrawer"
+                    color="white"
             >
                 <BubbleButtons :isInSideMenu="true" @refresh="buttonRefresh"></BubbleButtons>
             </v-navigation-drawer>
