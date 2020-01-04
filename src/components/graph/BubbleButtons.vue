@@ -91,7 +91,7 @@
                         action: "showTags",
                         ctrlShortcut: "G",
                         badge: function (bubble) {
-                            return bubble.getIdentifiers().length;
+                            return bubble.getTagsAndSelfIfRelevant().length;
                         }
                     },
                     {
