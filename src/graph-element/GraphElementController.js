@@ -142,12 +142,14 @@ GraphElementController.prototype.addTag = function () {
 };
 
 GraphElementController.prototype.showTagsCanDo = function () {
-    return !this.model().areTagsShown && this.isSingle() && this.isOwned() && this.model().getIdentifiers().length > 0;
+    return !this.model().areTagsShown && this.isSingle() && this.isOwned() && this.model().getTagsAndSelfIfRelevant().length > 0;
 };
 
 GraphElementController.prototype.showTags = function () {
     return this.expand(true, true).then(() => {
-        this.model().getIdentifiers().forEach((tag) => {
+        this.model().getTagsAndSelfIfRelevant().sort((a, b) => {
+            return b.getCreationDate() - a.getCreationDate();
+        }).forEach((tag) => {
             this._addTagAsChild(tag);
         });
         this.model().areTagsShown = true;
