@@ -65,7 +65,7 @@
                                             <v-badge color="transparent" :value="center.showIcon()"
                                                      class="center-label">
                                                 <template v-slot:badge>
-                                                    <v-icon>
+                                                    <v-icon color="primary">
                                                         {{center.getIcon()}}
                                                     </v-icon>
                                                 </template>

@@ -119,7 +119,7 @@
             },
             selectSearchResult: function () {
                 const currentSubGraph = CurrentSubGraph.get();
-                if (currentSubGraph.center && currentSubGraph.hasUri(this.selectedSearchResult.uri)) {
+                if (currentSubGraph && currentSubGraph.hasUri(this.selectedSearchResult.uri)) {
                     const graphElement = currentSubGraph.getHavingUri(this.selectedSearchResult.uri);
                     graphElement.getAncestors().forEach((ancestor) => {
                         ancestor.expand();
