@@ -159,9 +159,6 @@ const Scroll = {
         );
     },
     centerBubbleForTreeOrNotIfApplicable: async function (bubble, isForTree) {
-        if (!isForTree && Breakpoint.isMobile()) {
-            return Promise.resolve();
-        }
         await Vue.nextTick();
         if (bubble.isEditFlow) {
             return Promise.resolve();
