@@ -149,7 +149,7 @@ const Scroll = {
     centerBubbleForTreeIfApplicable: function (bubble) {
         return Scroll.centerBubbleForTreeOrNotIfApplicable(
             bubble,
-            false
+            !Breakpoint.isMobile()
         );
     },
     centerBubbleIfApplicable: function (bubble) {
