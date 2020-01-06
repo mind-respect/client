@@ -60,15 +60,12 @@
                                              @touchend="touchend($event, center)"
                                              @contextmenu="contextMenu($event, center)"
                                 >
-                                    <v-list-item-action v-if="center.getColors().background">
-                                        <v-avatar :color="center.getColors().background" size="26"></v-avatar>
-                                    </v-list-item-action>
                                     <v-list-item-content>
                                         <v-list-item-title class="subtitle-1 font-weight-bold">
-                                            <v-badge color="transparent" :value="center.showIcon()"
+                                            <v-badge color="transparent" :value="center.showIcon() || center.getColors().background !== undefined"
                                                      class="center-label">
                                                 <template v-slot:badge>
-                                                    <v-icon color="primary">
+                                                    <v-icon :color="center.getColors().background || 'grey'">
                                                         {{center.getIcon()}}
                                                     </v-icon>
                                                 </template>
@@ -260,7 +257,7 @@
             });
         },
         methods: {
-            color:function(center){
+            color: function (center) {
                 let backgroundColor = center.getColors().background;
                 if (!backgroundColor) {
                     return "";
