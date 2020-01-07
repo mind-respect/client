@@ -6,7 +6,7 @@
                 <v-spacer></v-spacer>
                 <v-icon
                         color="third"
-                        @click="dialog = false"
+                        @click="cancel"
                 >
                     close
                 </v-icon>
@@ -21,7 +21,7 @@
                     {{$t('confirm')}}
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn @click="dialog = false">
+                <v-btn @click="cancel">
                     {{$t('cancel')}}
                 </v-btn>
             </v-card-actions>
@@ -49,7 +49,8 @@
             });
             return {
                 dialog: false,
-                color: null
+                color: null,
+                originalColor: null
             }
         },
         computed: {
@@ -64,7 +65,7 @@
             isColorFlow: function () {
                 if (this.$store.state.isColorFlow) {
                     this.dialog = true;
-                    this.color = this.bubble.getColors().background || Color.DEFAULT_BACKGROUND_COLOR;
+                    this.originalColor = this.color = this.bubble.getColors().background || Color.DEFAULT_BACKGROUND_COLOR;
                 } else {
                     this.dialog = false;
                 }
@@ -75,29 +76,32 @@
                 }
             },
             color: function () {
-                this.bubble.setBackgroundColor(this.color);
-                if (this.bubble.isCenter) {
-                    Color.refreshBackgroundColor(this.color);
-                } else if (this.bubble.getNextChildren().length === 0) {
-                    this.bubble.refreshContent();
-                }
+                this.refreshColor();
             }
         },
         methods: {
+            cancel: function () {
+                this.refreshColor(this.originalColor);
+                this.dialog = false;
+            },
             confirm: function () {
-                this.bubble.setBackgroundColor(this.color);
+                this.refreshColor();
                 GraphElementService.saveColors(
                     this.bubble,
                     {
                         background: this.color
                     }
                 );
+                this.dialog = false;
+            },
+            refreshColor: function (color) {
+                color = color || this.color;
+                this.bubble.setBackgroundColor(color);
                 if (this.bubble.isCenter) {
-                    Color.refreshBackgroundColor(this.color);
+                    Color.refreshBackgroundColor(color);
                 } else if (this.bubble.getNextChildren().length === 0) {
                     this.bubble.refreshContent();
                 }
-                this.dialog = false;
             }
         }
     }
