@@ -119,8 +119,8 @@ MetaController.prototype.loadGraph = function (isParentAlreadyOnMap) {
                     CurrentSubGraph.get().add(grandChild);
                 });
                 if (vertex.getNumberOfChild() > 1) {
-                    vertex.expand();
-                    vertex.collapse();
+                    vertex.expand(true);
+                    vertex.collapse(true);
                 }
             }
         });
