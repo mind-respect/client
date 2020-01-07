@@ -160,6 +160,11 @@ Identification.Identification.prototype.hasRelationExternalUri = function () {
 Identification.Identification.prototype.getJsonFormat = function () {
     let serverFormat = this.getServerFormat();
     serverFormat.friendlyResource.images = this.getImagesServerFormat();
+    /*
+        serverFormat.friendlyResource.colors = JSON.stringify(serverFormat.friendlyResource.colors);
+        because colors are stored as string on server side
+    */
+    serverFormat.friendlyResource.colors = JSON.stringify(serverFormat.friendlyResource.colors);
     return serverFormat;
 };
 

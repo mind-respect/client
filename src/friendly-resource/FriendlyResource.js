@@ -112,6 +112,10 @@ FriendlyResource.FriendlyResource.prototype.getBackgroundColor = function () {
     return this.getColors().background || Color.DEFAULT_BACKGROUND_COLOR;
 };
 
+FriendlyResource.FriendlyResource.prototype.isBackgroundColorDefined = function () {
+    return this.getBackgroundColor() !== Color.DEFAULT_BACKGROUND_COLOR;
+};
+
 FriendlyResource.FriendlyResource.prototype.getId = function () {
     return this.uiId;
 };

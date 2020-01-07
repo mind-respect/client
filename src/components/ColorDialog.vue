@@ -1,12 +1,12 @@
 <template>
-    <v-bottom-sheet v-model="dialog" inset max-width="325" persistent mode="hex">
+    <v-bottom-sheet v-model="dialog" inset max-width="325" mode="hex">
         <v-card>
             <v-card-title>
                 {{$t('color:title')}}
                 <v-spacer></v-spacer>
                 <v-icon
                         color="third"
-                        @click="cancel"
+                        @click="dialog = false"
                 >
                     close
                 </v-icon>
@@ -17,11 +17,20 @@
                 </v-row>
             </v-card-text>
             <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn @click="useDefault()" small>
+                    <v-icon class="mr-2">
+                        clear
+                    </v-icon>
+                    {{$t('color:useDefault')}}
+                </v-btn>
+            </v-card-actions>
+            <v-card-actions>
                 <v-btn color="secondary" @click="confirm">
                     {{$t('confirm')}}
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn @click="cancel">
+                <v-btn @click="dialog = false">
                     {{$t('cancel')}}
                 </v-btn>
             </v-card-actions>
@@ -42,10 +51,12 @@
         },
         data: function () {
             I18n.i18next.addResources("en", "color", {
-                "title": "Define color"
+                "title": "Define color",
+                useDefault: "Default color"
             });
             I18n.i18next.addResources("fr", "color", {
-                "title": "Définir la couleur"
+                "title": "Définir la couleur",
+                useDefault: "Couleur par défaut"
             });
             return {
                 dialog: false,
@@ -72,7 +83,8 @@
             },
             dialog: function () {
                 if (this.dialog === false) {
-                    this.$store.dispatch("setIsColorFlow", false)
+                    this.$store.dispatch("setIsColorFlow", false);
+                    this.refreshColor(this.originalColor);
                 }
             },
             color: function () {
@@ -80,18 +92,24 @@
             }
         },
         methods: {
-            cancel: function () {
-                this.refreshColor(this.originalColor);
+            useDefault: function () {
+                GraphElementService.saveColors(
+                    this.bubble,
+                    {
+                        background: Color.DEFAULT_BACKGROUND_COLOR
+                    }
+                );
+                this.originalColor = Color.DEFAULT_BACKGROUND_COLOR;
                 this.dialog = false;
             },
             confirm: function () {
-                this.refreshColor();
                 GraphElementService.saveColors(
                     this.bubble,
                     {
                         background: this.color
                     }
                 );
+                this.originalColor = this.color;
                 this.dialog = false;
             },
             refreshColor: function (color) {

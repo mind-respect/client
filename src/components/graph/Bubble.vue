@@ -383,12 +383,31 @@
                 return "";
             },
             boxShadow: function () {
-                if (this.bubble.isCenter || this.bubble.isRelation()) {
-                    return "";
+                if (this.bubble.isCenter || this.bubble.isRelation() || this.bubble.isMeta()) {
+                    if (this.bubble.isMeta()) {
+                        let parentVertex = this.bubble.getParentVertex();
+                        if (!parentVertex.isBackgroundColorDefined() || this.bubble.getColors().background === parentVertex.getColors().background) {
+                            return ""
+                        }
+                    } else {
+                        return "";
+                    }
                 }
                 let backgroundColor = this.bubble.getColors().background;
-                if (!backgroundColor || backgroundColor === Color.DEFAULT_BACKGROUND_COLOR) {
-                    return ""
+                if (!this.bubble.isBackgroundColorDefined()) {
+                    let tagsWithColors = this.bubble.getRelevantTags().filter((tag) => {
+                        let parentBubble = this.bubble.getParentBubble();
+                        if (parentBubble && parentBubble.isGroupRelation() && parentBubble.getGroupRelationInSequenceWithTag(tag)) {
+                            return false;
+                        } else {
+                            return tag.isBackgroundColorDefined() && tag.getUri() !== CurrentSubGraph.get().center.getUri();
+                        }
+                    });
+                    if (tagsWithColors.length) {
+                        backgroundColor = tagsWithColors[0].getColors().background;
+                    } else {
+                        return "";
+                    }
                 }
                 // return "box-shadow: rgb(74, 83, 192) 20px 0px 0px 0px inset;border-radius:20px;";
                 let xOffset = this.isLeft ? 1 : -1;
@@ -400,8 +419,8 @@
             refreshImages: function () {
                 let tagsWithImages = [];
                 if (this.bubble.isMeta()) {
-                    if (this.bubble.hasImages()) {
-                        tagsWithImages = [this.bubble];
+                    if (this.bubble.getOriginalMeta().hasImages()) {
+                        tagsWithImages = [this.bubble.getOriginalMeta()];
                     }
                 } else {
                     tagsWithImages = this.bubble.getIdentifiers().filter((tag) => {
@@ -409,7 +428,7 @@
                         if (parentBubble && parentBubble.isGroupRelation() && parentBubble.getGroupRelationInSequenceWithTag(tag)) {
                             return false;
                         } else {
-                            return tag.hasImages() && tag.getImage().urlForSmall;
+                            return tag.hasImages() && tag.getImage().urlForSmall && tag.getUri() !== CurrentSubGraph.get().center.getUri();
                         }
                     });
                 }
