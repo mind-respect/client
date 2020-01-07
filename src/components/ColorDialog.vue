@@ -77,7 +77,9 @@
             },
             color: function () {
                 this.bubble.setBackgroundColor(this.color);
-                if(this.bubble.getNextChildren().length === 0){
+                if (this.bubble.isCenter) {
+                    Color.refreshBackgroundColor(this.color);
+                } else if (this.bubble.getNextChildren().length === 0) {
                     this.bubble.refreshContent();
                 }
             }
@@ -91,7 +93,9 @@
                         background: this.color
                     }
                 );
-                if(this.bubble.getNextChildren().length === 0){
+                if (this.bubble.isCenter) {
+                    Color.refreshBackgroundColor(this.color);
+                } else if (this.bubble.getNextChildren().length === 0) {
                     this.bubble.refreshContent();
                 }
                 this.dialog = false;
