@@ -398,7 +398,10 @@
                 if (!this.bubble.isBackgroundColorDefined()) {
                     let tagsWithColors = this.bubble.getRelevantTags().filter((tag) => {
                         let parentBubble = this.bubble.getParentBubble();
+                        let parentVertex = this.bubble.getParentVertex();
                         if (parentBubble && parentBubble.isGroupRelation() && parentBubble.getGroupRelationInSequenceWithTag(tag)) {
+                            return false;
+                        } else if (parentVertex.isMeta() && parentVertex.getOriginalMeta().getUri() === tag.getUri()) {
                             return false;
                         } else {
                             return tag.isBackgroundColorDefined() && tag.getUri() !== CurrentSubGraph.get().center.getUri();
@@ -425,9 +428,12 @@
                 } else {
                     tagsWithImages = this.bubble.getIdentifiers().filter((tag) => {
                         let parentBubble = this.bubble.getParentBubble();
+                        let parentVertex = this.bubble.getParentVertex();
                         if (parentBubble && parentBubble.isGroupRelation() && parentBubble.getGroupRelationInSequenceWithTag(tag)) {
                             return false;
-                        } else {
+                        } else if (parentVertex.isMeta() && parentVertex.getOriginalMeta().getUri() === tag.getUri()) {
+                            return false;
+                        }else {
                             return tag.hasImages() && tag.getImage().urlForSmall && tag.getUri() !== CurrentSubGraph.get().center.getUri();
                         }
                     });
