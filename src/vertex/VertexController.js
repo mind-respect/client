@@ -469,7 +469,7 @@ VertexController.prototype.mergeCanDo = function () {
 };
 
 VertexController.prototype.merge = function () {
-    Store.dispatch("setSideMenuFlow", 2);
+    Store.dispatch("setSideMenuFlow", 1);
     return Promise.resolve();
 };
 

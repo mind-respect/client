@@ -4,7 +4,6 @@
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Identification from '@/identifier/Identification'
 import IdUri from '@/IdUri'
-import Color from '@/Color'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Vue from 'vue'
@@ -172,7 +171,6 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
         graphElementServerFormat.friendlyResource
     );
     this.setChildrenIndex(this._graphElementServerFormat.childrenIndex);
-    this.setColors(this._graphElementServerFormat.colors);
     this.setFont(this._graphElementServerFormat.font);
     this._buildIdentifications();
     this.childrenKey = IdUri.uuid();
@@ -417,30 +415,6 @@ GraphElement.GraphElement.prototype.getPatternUri = function () {
     return decodeURIComponent(
         this._graphElementServerFormat.patternUri
     );
-};
-
-GraphElement.GraphElement.prototype.setColors = function (colors) {
-    if (colors && typeof colors === 'string') {
-        this._graphElementServerFormat.colors = JSON.parse(
-            colors
-        );
-    } else {
-        this._graphElementServerFormat.colors = colors || {
-            background: Color.DEFAULT_BACKGROUND_COLOR
-        }
-    }
-};
-
-GraphElement.GraphElement.prototype.getColors = function () {
-    return this._graphElementServerFormat.colors || {};
-};
-
-GraphElement.GraphElement.prototype.setBackgroundColor = function (backgroundColor) {
-    return this.getColors().background = backgroundColor;
-};
-
-GraphElement.GraphElement.prototype.getBackgroundColor = function () {
-    return this.getColors().background || Color.DEFAULT_BACKGROUND_COLOR;
 };
 
 GraphElement.GraphElement.prototype.setFont = function (font) {

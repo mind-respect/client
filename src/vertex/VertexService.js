@@ -109,13 +109,6 @@ api.mergeTo = function (vertex, distantVertexUri) {
     );
 };
 
-api.saveColors = function (colors) {
-    return Service.geApi().post(
-        CurrentSubGraph.get().center.getUri() + '/colors',
-        colors
-    );
-};
-
 api.listFonts = function () {
     let apiKey = process.env.VUE_APP_FONT_API_KEY_GOOGLE;
     return axios.get(

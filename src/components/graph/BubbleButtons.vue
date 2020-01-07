@@ -171,6 +171,10 @@
                         action: "leaveContext"
                     },
                     {
+                        icon: "color_lens",
+                        action: "setColor"
+                    },
+                    {
                         icon: "delete",
                         action: "remove"
                     },

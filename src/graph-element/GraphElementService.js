@@ -42,6 +42,14 @@ api.removeCollection = function (graphElements) {
     });
 };
 
+api.saveColors = function (bubble, colors) {
+    bubble = bubble || CurrentSubGraph.get().center;
+    return Service.geApi().post(
+        bubble.getUri() + '/colors',
+        colors
+    );
+};
+
 api._getGraphElementsUrl = function (graphElements) {
     return graphElements.map(function (graphElement) {
         return graphElement.getUri();

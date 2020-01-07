@@ -294,7 +294,8 @@
                 "setShareLevel": "Share",
                 "createVertex": "Create a new bubble",
                 close: "Close",
-                leaveContext: "Split into 2 cards that share a tag"
+                leaveContext: "Split into 2 cards that share a tag",
+                setColor : "Set color"
             });
             I18n.i18next.addResources("fr", "button", {
                 "select": "Sélection à la main",
@@ -342,7 +343,8 @@
                 "setShareLevel": "Partager",
                 "createVertex": "Créer une nouvelle bulle",
                 close: "Fermer",
-                leaveContext: "Séparer en 2 cartes qui partagent un étiquette"
+                leaveContext: "Séparer en 2 cartes qui partagent un étiquette",
+                setColor : "Définir la couleur"
             });
 
             I18n.i18next.addResources("en", "app", {

@@ -148,7 +148,7 @@
     import GraphController from '@/graph/GraphController'
     import AuthenticateService from "@/service/AuthenticateService";
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
-    import VertexService from '@/vertex/VertexService'
+    import GraphElementService from '@/graph-element/GraphElementService'
     import Color from '@/Color'
     import I18n from '@/I18n'
 
@@ -199,7 +199,7 @@
             },
             changeBackgroundColor: function () {
                 CurrentSubGraph.get().center.setBackgroundColor(this.backgroundColor);
-                VertexService.saveColors({
+                GraphElementService.saveColors({
                     background: this.backgroundColor
                 });
                 Color.refreshBackgroundColor(this.backgroundColor);

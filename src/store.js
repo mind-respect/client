@@ -45,7 +45,8 @@ const Store = new Vuex.Store({
         similarBubblesRefresh: Math.random(),
         userHomeSelectedCenter: null,
         isNewContextFlow: false,
-        isAddTagFlow: false
+        isAddTagFlow: false,
+        isColorFlow: false
     },
     mutations: {
         setUser: function (state, user) {
@@ -144,6 +145,9 @@ const Store = new Vuex.Store({
         },
         setIsAddTagFlow: function (state, isAddTagFlow) {
             state.isAddTagFlow = isAddTagFlow;
+        },
+        setIsColorFlow: function (state, isColorFlow) {
+            state.isColorFlow = isColorFlow;
         }
     },
     actions: {
@@ -221,6 +225,9 @@ const Store = new Vuex.Store({
         },
         setIsAddTagFlow: function (action, isAddTagFlow) {
             action.commit('setIsAddTagFlow', isAddTagFlow);
+        },
+        setIsColorFlow: function (action, isColorFlow) {
+            action.commit('setIsColorFlow', isColorFlow);
         }
     }
 });

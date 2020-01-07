@@ -147,6 +147,7 @@
         </v-menu>
         <RemoveDialog></RemoveDialog>
         <AddTagDialog></AddTagDialog>
+        <ColorDialog></ColorDialog>
         <RemoveTagDialog></RemoveTagDialog>
         <DescriptionDialog></DescriptionDialog>
         <FontDialog></FontDialog>
@@ -243,7 +244,7 @@
     import I18n from '@/I18n'
     import PatternService from "@/pattern/PatternService";
     import GraphController from '@/graph/GraphController'
-    import VertexService from '@/vertex/VertexService'
+    import GraphElementService from '@/graph-element/GraphElementService'
     import GraphUi from '@/graph/GraphUi'
     import VertexSkeleton from '@/vertex/VertexSkeleton'
     import RelationSkeleton from '@/edge/RelationSkeleton'
@@ -262,7 +263,8 @@
             SimilarBubbles: () => import('@/components/SimilarBubbles'),
             AddExistingBubbleDialog: () => import('@/components/AddExistingBubbleDialog'),
             NewContextDialog: () => import('@/components/NewContextDialog'),
-            AddTagDialog: () => import('@/components/AddTagDialog')
+            AddTagDialog: () => import('@/components/AddTagDialog'),
+            ColorDialog: () => import('@/components/ColorDialog')
         },
         data: function () {
             I18n.i18next.addResources("en", "graph", {
@@ -409,7 +411,7 @@
             },
             changeBackgroundColor: function () {
                 CurrentSubGraph.get().center.setBackgroundColor(this.backgroundColor);
-                VertexService.saveColors({
+                GraphElementService.saveColors({
                     background: this.backgroundColor
                 });
                 Color.refreshBackgroundColor(this.backgroundColor);

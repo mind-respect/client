@@ -157,6 +157,14 @@ GraphElementController.prototype.showTags = function () {
     });
 };
 
+GraphElementController.prototype.setColorCanDo = function () {
+    return this.isOwned() && this.isSingle() && !this.model().isRelation();
+};
+
+GraphElementController.prototype.setColor = function () {
+    Store.dispatch("setIsColorFlow", true);
+};
+
 GraphElementController.prototype._addTagAsChild = function (tag) {
     let tagBubble = Meta.withUri(
         tag.getUri()
@@ -165,6 +173,7 @@ GraphElementController.prototype._addTagAsChild = function (tag) {
     tagBubble.setComment(tag.getComment());
     tagBubble.setImages(tag.getImages());
     tagBubble.setOriginalMeta(tag);
+    tagBubble.setColors(tag.getColors());
     CurrentSubGraph.get().add(tagBubble);
     let tagRelation = new MetaRelation(
         this.model().isVertexType() ? this.model() : this.model().getParentVertex(),
@@ -181,11 +190,14 @@ GraphElementController.prototype.hideTagsCanDo = function () {
 };
 
 GraphElementController.prototype.hideTags = function () {
-    this.model().getNextChildren().forEach((child) => {
+    let children = this.model().getNextChildren();
+    let l = children.length;
+    while (l--) {
+        let child = children[l];
         if (child.isMetaRelation()) {
             child.remove();
         }
-    });
+    }
     this.model().areTagsShown = false;
     Store.dispatch("redraw");
     return Promise.resolve();
@@ -801,7 +813,7 @@ GraphElementController.prototype.deselect = function () {
 };
 
 GraphElementController.prototype.setShareLevel = function () {
-    Store.dispatch("setSideMenuFlow", 3);
+    Store.dispatch("setSideMenuFlow", 2);
     return Promise.resolve();
 };
 

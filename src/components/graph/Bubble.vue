@@ -9,7 +9,7 @@
         'vertex-tree-container': !isCenter,
         'bubble-container': isCenter
     }" :id="containerId">
-            <v-flex grow class="v-center drop-relative-container">
+            <v-flex grow class="v-center drop-relative-container" :style="containerBoxShadow">
                 <v-spacer v-if="isLeft"></v-spacer>
                 <div :key="childrenKey" v-if="isLeft && !isCenter">
                     <div :key="bubble.childrenKey">
@@ -32,7 +32,7 @@
                     'pr-12': !canExpand() && (bubble.isVertexType() && (!isLeft || isCenter) && bubble.rightBubbles.length === 0),
                     'edit-flow' : isEditFlow && !preventAbsoluteOnFocus,
                     'edit-flow-non-center' : isEditFlow && !isCenter && !preventAbsoluteOnFocus
-            }"
+                    }"
                      :id="bubble.uiId"
                 >
                     <div class="vertex-left-right-drop"
@@ -44,7 +44,8 @@
                     </div>
                     <v-spacer v-if="isLeft && isLeaf"></v-spacer>
                     <div class="image_container">
-                        <v-img :src="imageUrl" max-height="90" v-if="imageUrl" @load="imageLoaded" min-width="60"></v-img>
+                        <v-img :src="imageUrl" max-height="90" v-if="imageUrl" @load="imageLoaded"
+                               min-width="60"></v-img>
                     </div>
                     <v-skeleton-loader type="chip" v-if="bubble.isVertexType() && bubble.isSkeleton()"
                                        class="bubble-label"></v-skeleton-loader>
@@ -88,11 +89,13 @@
                                             @drop="labelDrop"
                                             @contextmenu="rightClick"
                                             :draggable="!isCenter && !isEditFlow"
+                                            :style="contentBoxShadow()"
                                     >
                                         <InLabelButtons :bubble="bubble" :isLeft="isLeft"
                                                         :isCenter="isCenter" :key="inLabelMenuKey"></InLabelButtons>
 
-                                        <v-badge color="third" :left="isLeft" :value="bubble.isMeta() || (isCenter && $store.state.isPatternFlow)">
+                                        <v-badge color="third" :left="isLeft"
+                                                 :value="bubble.isMeta() || (isCenter && $store.state.isPatternFlow)">
                                             <template v-slot:badge>
                                                 <v-icon dark v-if="bubble.isMeta()">label</v-icon>
                                                 <v-icon dark v-if="isCenter && $store.state.isPatternFlow">stars
@@ -142,7 +145,7 @@
                             :class="{
                             'selected' : bubble.isSelected,
                             'reverse': isLeft && !isCenter
-                            }">
+                                }">
                         <div class="image_container"></div>
                         <div class="in-bubble-content vh-center"
                              @click="click"
@@ -190,12 +193,13 @@
                                                 class="pt-0 pb-0 mt-0 mb-0 ma-0 pl-2 pr-2 label-chip vh-center"
                                                 transition="none"
                                                 :class="{
-                                            'reverse': isLeft,
-                                        'elevation-5': bubble.isSelected,
-                                        'is-inverse' : isInverse,
-                                        'is-shrinked' : isShrinked,
-                                        'empty-edge' : bubble.isEdge() && !isEditFlow && bubble.isLabelEmpty()
-                                    }"
+                                                    'reverse': isLeft,
+                                                    'elevation-5': bubble.isSelected,
+                                                     'is-inverse' : isInverse,
+                                                     'is-shrinked' : isShrinked,
+                                                     'empty-edge' : bubble.isEdge() && !isEditFlow && bubble.isLabelEmpty()
+                                                }"
+                                                :style="contentBoxShadow"
                                         >
                                             <InLabelButtons :bubble="bubble" :isLeft="isLeft" :isCenter="isCenter"
                                                             class="vh-center"
@@ -363,9 +367,33 @@
                     return false;
                 }
                 return this.bubble.isShrinked();
-            }
+            },
+            containerBoxShadow: function () {
+                if (this.bubble.getNextChildren().length > 0) {
+                    return this.boxShadow();
+                }
+                return "";
+            },
         },
         methods: {
+            contentBoxShadow: function () {
+                if (this.bubble.getNextChildren().length === 0) {
+                    return this.boxShadow();
+                }
+                return "";
+            },
+            boxShadow: function () {
+                if (this.bubble.isCenter || this.bubble.isRelation()) {
+                    return "";
+                }
+                let backgroundColor = this.bubble.getColors().background;
+                if (!backgroundColor || backgroundColor === Color.DEFAULT_BACKGROUND_COLOR) {
+                    return ""
+                }
+                // return "box-shadow: rgb(74, 83, 192) 20px 0px 0px 0px inset;border-radius:20px;";
+                let xOffset = this.isLeft ? 1 : -1;
+                return "box-shadow:" + backgroundColor + " " + xOffset + "px 0px 8px 2px;border-radius:20px;"
+            },
             canExpand: function () {
                 return this.bubble.canExpand();
             },

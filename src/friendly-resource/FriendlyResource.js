@@ -13,6 +13,7 @@ import Vue from 'vue'
 import GraphUi from '@/graph/GraphUi'
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
 import UiUtils from '@/UiUtils'
+import Color from '@/Color'
 
 const MoveRelation = {
     "Parent": "parent",
@@ -86,6 +87,30 @@ const FriendlyResource = {
 FriendlyResource.FriendlyResource = function () {
 };
 
+
+FriendlyResource.FriendlyResource.prototype.setColors = function (colors) {
+    if (colors && typeof colors === 'string') {
+        this._friendlyResourceServerFormat.colors = JSON.parse(
+            colors
+        );
+    } else {
+        this._friendlyResourceServerFormat.colors = colors || {
+            background: Color.DEFAULT_BACKGROUND_COLOR
+        }
+    }
+};
+
+FriendlyResource.FriendlyResource.prototype.getColors = function () {
+    return this._friendlyResourceServerFormat.colors || {};
+};
+
+FriendlyResource.FriendlyResource.prototype.setBackgroundColor = function (backgroundColor) {
+    return this.getColors().background = backgroundColor;
+};
+
+FriendlyResource.FriendlyResource.prototype.getBackgroundColor = function () {
+    return this.getColors().background || Color.DEFAULT_BACKGROUND_COLOR;
+};
 
 FriendlyResource.FriendlyResource.prototype.getId = function () {
     return this.uiId;
@@ -949,6 +974,7 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
     this.isCollapsed = false;
     this.isSelected = false;
     this.updateGraphElementType();
+    this.setColors(this._friendlyResourceServerFormat.colors);
     return this;
 };
 export default FriendlyResource;
