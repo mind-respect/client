@@ -199,7 +199,7 @@
                                                      'is-shrinked' : isShrinked,
                                                      'empty-edge' : bubble.isEdge() && !isEditFlow && bubble.isLabelEmpty()
                                                 }"
-                                                :style="contentBoxShadow"
+                                                :style="contentBoxShadow()"
                                         >
                                             <InLabelButtons :bubble="bubble" :isLeft="isLeft" :isCenter="isCenter"
                                                             class="vh-center"
@@ -369,8 +369,9 @@
                 return this.bubble.isShrinked();
             },
             containerBoxShadow: function () {
-                if (this.bubble.getNextChildren().length > 0) {
-                    return this.boxShadow();
+                let nbChild = this.bubble.getNextChildren().length;
+                if (nbChild > 0) {
+                    return this.boxShadow(nbChild > 1);
                 }
                 return "";
             },
@@ -378,11 +379,11 @@
         methods: {
             contentBoxShadow: function () {
                 if (this.bubble.getNextChildren().length === 0) {
-                    return this.boxShadow();
+                    return this.boxShadow(false);
                 }
                 return "";
             },
-            boxShadow: function () {
+            boxShadow: function (isInset) {
                 if (this.bubble.isCenter || this.bubble.isRelation() || this.bubble.isMeta()) {
                     if (this.bubble.isMeta()) {
                         let parentVertex = this.bubble.getParentVertex();
@@ -409,9 +410,8 @@
                         return "";
                     }
                 }
-                // return "box-shadow: rgb(74, 83, 192) 20px 0px 0px 0px inset;border-radius:20px;";
                 let xOffset = this.isLeft ? 1 : -1;
-                return "box-shadow:" + backgroundColor + " " + xOffset + "px 0px 8px 2px;border-radius:20px;"
+                return "box-shadow:" + (isInset ? "inset " : "") + backgroundColor + " " + xOffset + "px 0px 8px 2px;border-radius:20px;"
             },
             canExpand: function () {
                 return this.bubble.canExpand();
