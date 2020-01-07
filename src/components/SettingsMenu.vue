@@ -47,17 +47,6 @@
                     </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item @click="changeBackgroundColorMenu" v-if="isGraphRoute"
-                         :disabled="!changeBackgroundColorCanDo()">
-                <v-list-item-action>
-                    <v-icon class="">format_paint</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{$t('button:changeBackgroundColor')}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
             <v-list-item @click="listAll" v-if="isGraphRoute">
                 <v-list-item-action>
                     <v-icon class="">list</v-icon>
@@ -133,13 +122,6 @@
                 </v-list-item-content>
             </v-list-item>
         </v-list>
-        <input
-                id="background-color-picker"
-                v-show="false"
-                type="color"
-                v-model="backgroundColor"
-                @change="changeBackgroundColor"
-        >
     </v-menu>
 </template>
 
@@ -185,24 +167,6 @@
             },
             fontPicker: function () {
                 AppController.fontPicker();
-            },
-            changeBackgroundColorMenu: function () {
-                this.backgroundColor = CurrentSubGraph.get().center.getBackgroundColor();
-                this.$nextTick(() => {
-                    document.getElementById(
-                        "background-color-picker"
-                    ).click();
-                });
-            },
-            changeBackgroundColorCanDo: function () {
-                return AppController.changeBackgroundColorCanDo();
-            },
-            changeBackgroundColor: function () {
-                CurrentSubGraph.get().center.setBackgroundColor(this.backgroundColor);
-                GraphElementService.saveColors({
-                    background: this.backgroundColor
-                });
-                Color.refreshBackgroundColor(this.backgroundColor);
             },
             listAll: function () {
                 AppController.listAll();

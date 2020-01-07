@@ -78,13 +78,6 @@
                 </svg>
             </div>
         </div>
-        <input
-                id="background-color-picker"
-                v-show="false"
-                type="color"
-                v-model="backgroundColor"
-                @change="changeBackgroundColor"
-        >
         <v-menu
                 v-model="contextMenu"
                 :position-x="xContextMenu"
@@ -129,17 +122,6 @@
                     <v-list-item-content>
                         <v-list-item-title>
                             {{$t('button:fontPicker')}}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item @click="changeBackgroundColorMenu"
-                             :disabled="!changeBackgroundColorCanDo()">
-                    <v-list-item-action>
-                        <v-icon class="">format_paint</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{$t('button:changeBackgroundColor')}}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -421,14 +403,6 @@
             },
             fontPicker: function () {
                 AppController.fontPicker();
-            },
-            changeBackgroundColorMenu: function () {
-                this.backgroundColor = CurrentSubGraph.get().center.getBackgroundColor();
-                this.$nextTick(() => {
-                    document.getElementById(
-                        "background-color-picker"
-                    ).click();
-                });
             },
             contextMenuLeft: function (event) {
                 this.showContextMenu(event, true);

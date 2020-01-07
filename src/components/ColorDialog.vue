@@ -64,7 +64,6 @@
             isColorFlow: function () {
                 if (this.$store.state.isColorFlow) {
                     this.dialog = true;
-                    console.log(this.bubble.getColors().background || Color.DEFAULT_BACKGROUND_COLOR);
                     this.color = this.bubble.getColors().background || Color.DEFAULT_BACKGROUND_COLOR;
                 } else {
                     this.dialog = false;

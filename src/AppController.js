@@ -6,7 +6,6 @@ import Command from '@/Command'
 import VertexService from '@/vertex/VertexService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import MindMapInfo from '@/MindMapInfo'
-import Vertex from '@/vertex/Vertex'
 import GraphElement from '@/graph-element/GraphElement'
 import Store from '@/store'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
@@ -92,19 +91,6 @@ api.removePattern = function () {
     return VertexService.undoPattern(
         CurrentSubGraph.get().center
     );
-};
-
-api.changeBackgroundColorCanDo = function () {
-    if (!CurrentSubGraph.get() || !CurrentSubGraph.get().center) {
-        return false;
-    }
-    return !MindMapInfo.isViewOnly();
-};
-
-api.changeBackgroundColor = function () {
-    document.getElementById(
-        "background-color-picker"
-    ).click();
 };
 
 api.listAll = function () {
