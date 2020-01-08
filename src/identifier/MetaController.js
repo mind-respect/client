@@ -192,6 +192,14 @@ MetaController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
     });
 };
 
+MetaController.prototype.openWikipediaLinkCanDo = function () {
+    return this.isSingle() && this.model().wikipediaUrl;
+};
+
+MetaController.prototype.openWikipediaLink = function () {
+    window.open(this.model().wikipediaUrl, '_blank').focus();
+};
+
 function sortEdges(edges, metaGroupVertex) {
     let childrenIndex = metaGroupVertex.getChildrenIndex();
     return edges.sort((a, b) => {

@@ -16,11 +16,13 @@
             <template v-slot:activator="{ on }">
                 <span v-on="on">
                     <v-badge
-                            color="third" class="button-menu-badge" :overlap="true" :value="button.badge !== undefined || button.badgeIcon !== undefined"
+                            color="third" class="button-menu-badge" :overlap="true"
+                            :value="button.badge !== undefined || button.badgeIcon !== undefined || button.badgeImage !== undefined"
                     >
                         <template v-slot:badge>
                             <span v-html="getBadge()" v-if="button.badge"></span>
                             <v-icon dark v-if="button.badgeIcon">{{button.badgeIcon}}</v-icon>
+                            <img v-if="button.badgeImage" :src="button.badgeImage" width="15">
                         </template>
                         <slot name="button" v-if="$slots.button"></slot>
                         <v-btn
@@ -32,9 +34,10 @@
                                 @click="performAction(button, $event)"
                                 :disabled="button.disableNotHide && !canDo(button)"
                         >
-                            <v-icon :class="button.iconClass" :large="hightlight">
+                            <v-icon :class="button.iconClass" :large="hightlight" v-if="button.icon">
                                 {{getIcon(button)}}
                             </v-icon>
+                            <img v-else :src="button.image" width="30">
                         </v-btn>
                     </v-badge>
                 </span>

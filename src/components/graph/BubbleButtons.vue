@@ -45,6 +45,11 @@
                 single: null,
                 buttons: [
                     {
+                        icon: "link",
+                        badgeImage: "/wikipedia-white.svg",
+                        action: "openWikipediaLink"
+                    },
+                    {
                         action: "addChild",
                         icon: function () {
                             let single = Selection.getSingle();

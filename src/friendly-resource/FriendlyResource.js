@@ -593,7 +593,6 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
             bubbleAround = isDown ? closestVertices[0] : closestVertices[closestVertices.length - 1];
         }
     }
-
     if (this.isEdge()) {
         if (bubbleAround.isVertex()) {
             bubbleAround = isDown ? bubbleAround.getNextBubble() : bubbleAround.getNextBottomBubble();

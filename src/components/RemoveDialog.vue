@@ -160,9 +160,10 @@
         },
         methods: {
             remove: async function () {
-                await GraphElement.wrapElementsInController(this.selected.filter((selected) => {
+                let controller = GraphElement.wrapElementsInController(this.selected.filter((selected) => {
                     return selected.canRemove;
-                })).removeDo();
+                }));
+                await controller.removeDo();
                 return this.$store.dispatch("setIsRemoveFlow", false);
             },
             canRemove: function (graphElement) {

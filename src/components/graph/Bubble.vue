@@ -118,7 +118,7 @@
                                         </v-badge>
                                     </div>
                                 </template>
-                                <div :style="'background-color:' + backgroundColor">
+                                <div :style="'background-color:' + backgroundColor" class="pt-2">
                                     <BubbleButtons v-show="menuFlow === 'buttons'"
                                                    @refresh="refreshButtons"></BubbleButtons>
                                     <v-card :href="linkMenuHref" target="_blank" v-show="menuFlow === 'link'">
@@ -181,6 +181,7 @@
                                     nudge-bottom="15"
                                     class="pa-0 ma-0"
                                     :open-on-click="false"
+                                    allow-overflow
                             >
                                 <template v-slot:activator="{ on }">
                                     <div class="label-container">
