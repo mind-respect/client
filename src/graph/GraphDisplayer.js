@@ -41,4 +41,8 @@ api.getMetaGroupVertexController = function () {
     return _implementation.getMetaGroupVertexController();
 };
 
+api.getTagApi = function () {
+    return _implementation.getTagApi();
+};
+
 export default api;

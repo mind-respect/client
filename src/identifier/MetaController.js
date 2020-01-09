@@ -68,21 +68,10 @@ MetaController.prototype.loadGraph = function (isParentAlreadyOnMap) {
         let centerBubble = this.model();
         if (!isParentAlreadyOnMap) {
             centerBubble.makeCenter();
-            centerBubble.setLabel(centerTag.getLabel());
-            centerBubble.setComment(centerTag.getComment());
             centerBubble.setOriginalMeta(centerTag);
             CurrentSubGraph.get().add(centerBubble);
         }
         let subGraph = metaSubGraph.getSubGraph();
-        centerBubble.setChildrenIndex(
-            subGraph.serverFormat.childrenIndexesCenterTag
-        );
-        centerBubble.setColors(
-            subGraph.serverFormat.colorsCenterTag
-        );
-        centerBubble.setFont(
-            subGraph.serverFormat.fontCenterTag
-        );
         subGraph.center = centerBubble;
         let edgesBySourceVertex = buildEdgesGroupedBySourceVertex(metaSubGraph, centerBubble);
         let edges = [];

@@ -11,6 +11,8 @@ import MetaController from '@/identifier/MetaController'
 import GraphElementController from '@/graph-element/GraphElementController'
 import MetaRelationController from '@/identifier/MetaRelationController'
 import MetaGroupVertexController from '@/identifier/MetaGroupVertexController'
+import Identification from "../identifier/Identification";
+
 const api = {};
 
 api.name = function () {
@@ -45,6 +47,10 @@ api.getMetaRelationController = function () {
 
 api.getMetaGroupVertexController = function () {
     return MetaGroupVertexController;
+};
+
+api.getTagApi = function () {
+    return Identification;
 };
 
 export default api;

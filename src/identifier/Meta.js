@@ -35,6 +35,17 @@ Meta.prototype.getGraphElementType = function () {
 };
 
 Meta.prototype.setOriginalMeta = function (originalMeta) {
+    this.setLabel(originalMeta.getLabel());
+    this.setComment(originalMeta.getComment());
+    this.setChildrenIndex(
+        originalMeta.getChildrenIndex()
+    );
+    this.setColors(
+        originalMeta.getColors()
+    );
+    this.setFont(
+        originalMeta.getFont()
+    );
     this.originalMeta = originalMeta;
 };
 

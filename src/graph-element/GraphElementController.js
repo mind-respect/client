@@ -169,11 +169,7 @@ GraphElementController.prototype._addTagAsChild = function (tag) {
     let tagBubble = Meta.withUri(
         tag.getUri()
     );
-    tagBubble.setLabel(tag.getLabel());
-    tagBubble.setComment(tag.getComment());
-    tagBubble.setImages(tag.getImages());
     tagBubble.setOriginalMeta(tag);
-    tagBubble.setColors(tag.getColors());
     CurrentSubGraph.get().add(tagBubble);
     let tagRelation = new MetaRelation(
         this.model().isVertexType() ? this.model() : this.model().getParentVertex(),

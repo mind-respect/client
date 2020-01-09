@@ -1,6 +1,7 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
+import GraphElement from "@/graph-element/GraphElement";
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import IdUri from '@/IdUri'
 import WikidataUri from '@/wikidata/WikidataUri'
@@ -42,7 +43,9 @@ const Identification = {
     fromFriendlyResource: function (friendlyResource) {
         let identification = new Identification.Identification().init({
             externalResourceUri: friendlyResource.getUri(),
-            friendlyResource: FriendlyResource.clone(friendlyResource).getServerFormat()
+            graphElement: {
+                friendlyResource: FriendlyResource.clone(friendlyResource).getServerFormat()
+            }
         });
         identification.setLabel(
             friendlyResource.getLabel()
@@ -55,28 +58,32 @@ const Identification = {
     withUriLabelAndDescription: function (uri, label, description) {
         return new Identification.Identification().init({
             externalResourceUri: uri,
-            friendlyResource: FriendlyResource.withUriLabelAndDescription(
-                uri,
-                label,
-                description
-            ).getServerFormat()
+            graphElement: {
+                friendlyResource: FriendlyResource.withUriLabelAndDescription(
+                    uri,
+                    label,
+                    description
+                ).getServerFormat()
+            }
         });
     },
     withUriAndLabel: function (uri, label) {
         return new Identification.Identification().init({
             externalResourceUri: uri,
-            friendlyResource: FriendlyResource.withUriAndLabel(
-                uri,
-                label
-            ).getServerFormat()
+            graphElement: {
+                friendlyResource: FriendlyResource.withUriAndLabel(
+                    uri,
+                    label
+                ).getServerFormat()
+            }
         });
     },
     withUri: function (uri) {
         return new Identification.Identification().init({
             externalResourceUri: uri,
-            friendlyResource: FriendlyResource.withUri(
+            graphElement: GraphElement.buildObjectWithUri(
                 uri
-            ).getServerFormat()
+            )
         });
     },
     fromSearchResult: function (searchResult) {
@@ -92,16 +99,16 @@ const Identification = {
 Identification.Identification = function () {
 };
 
-Identification.Identification.prototype = new FriendlyResource.FriendlyResource();
+Identification.Identification.prototype = new GraphElement.GraphElement();
 
 Identification.Identification.prototype.init = function (serverFormat) {
     this.identificationServerFormat = serverFormat;
     FriendlyResource.FriendlyResource.apply(
         this
     );
-    FriendlyResource.FriendlyResource.prototype.init.call(
+    GraphElement.GraphElement.prototype.init.call(
         this,
-        serverFormat.friendlyResource
+        serverFormat.graphElement
     );
     return this;
 };
@@ -159,12 +166,14 @@ Identification.Identification.prototype.hasRelationExternalUri = function () {
 
 Identification.Identification.prototype.getJsonFormat = function () {
     let serverFormat = this.getServerFormat();
-    serverFormat.friendlyResource.images = this.getImagesServerFormat();
+    serverFormat.graphElement.friendlyResource.images = this.getImagesServerFormat();
     /*
         serverFormat.friendlyResource.colors = JSON.stringify(serverFormat.friendlyResource.colors);
         because colors are stored as string on server side
     */
-    serverFormat.friendlyResource.colors = JSON.stringify(serverFormat.friendlyResource.colors);
+    serverFormat.graphElement.friendlyResource.colors = JSON.stringify(serverFormat.graphElement.friendlyResource.colors);
+    serverFormat.graphElement.font = JSON.stringify(serverFormat.graphElement.font);
+    serverFormat.graphElement.childrenIndex = JSON.stringify(serverFormat.graphElement.childrenIndex);
     return serverFormat;
 };
 

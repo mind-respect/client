@@ -2,7 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
-import Identification from '@/identifier/Identification'
 import IdUri from '@/IdUri'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphElementType from '@/graph-element/GraphElementType'
@@ -41,7 +40,7 @@ const GraphElement = {
             friendlyResource: FriendlyResource.buildServerFormatFromUi(
                 graphElementUi
             ),
-            identifications: Identification.getServerFormatArrayFromFacadeArray(
+            identifications: GraphDisplayer.getTagApi().getServerFormatArrayFromFacadeArray(
                 graphElementUi.model().getIdentifiers()
             )
         }
@@ -306,7 +305,7 @@ GraphElement.GraphElement.prototype._buildIdentifications = function () {
         this._graphElementServerFormat.identifications
     ).forEach((identifier) => {
         this.identifiers.push(
-            Identification.fromServerFormat(
+            GraphDisplayer.getTagApi().fromServerFormat(
                 identifier
             )
         )
@@ -337,7 +336,7 @@ GraphElement.GraphElement.prototype.hasTagRelatedToUri = function (uri) {
 
 
 GraphElement.GraphElement.prototype.buildSelfIdentifier = function () {
-    let identification = Identification.fromFriendlyResource(
+    let identification = GraphDisplayer.getTagApi().fromFriendlyResource(
         this
     );
     identification.setLabel(
@@ -350,7 +349,7 @@ GraphElement.GraphElement.prototype.buildSelfIdentifier = function () {
 };
 
 GraphElement.GraphElement.prototype.buildTwiceSelfIdentifier = function () {
-    let identification = Identification.fromFriendlyResource(
+    let identification = GraphDisplayer.getTagApi().fromFriendlyResource(
         this
     );
     identification.makeExternalUriATwiceReference();
