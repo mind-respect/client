@@ -3,7 +3,9 @@
  */
 
 import GraphElementController from '@/graph-element/GraphElementController'
+import GraphElementType from "@/graph-element/GraphElementType";
 import Store from '@/store'
+import TagService from '@/identifier/TagService'
 
 const api = {};
 
@@ -49,6 +51,32 @@ MetaRelationController.prototype.remove = function (skipConfirmation) {
     //         this.getUi().remove();
     //     }.bind(this));
     // }
+};
+MetaRelationController.prototype.removeDo = function () {
+    return Promise.all(this.getModelArray().map((metaRelation) => {
+        let tag = metaRelation.getClosestAncestorInTypes([GraphElementType.Meta]).getOriginalMeta();
+        let parentBubble = metaRelation.getClosestAncestorInTypes([
+            GraphElementType.Vertex,
+            GraphElementType.Edge,
+            GraphElementType.Relation,
+            GraphElementType.MetaGroupVertex,
+            GraphElementType.Meta
+        ]);
+        if (parentBubble.isMetaGroupVertex()) {
+            let promise = TagService.remove(metaRelation.getEdgeUri(), tag);
+            if (parentBubble.getNumberOfChild() === 1) {
+                parentBubble.remove();
+            } else {
+                metaRelation.remove();
+            }
+            return promise;
+        } else {
+            metaRelation.remove();
+            return TagService.remove(metaRelation.getNextBubble().getUri(), tag)
+        }
+    })).then(() => {
+        Store.dispatch("redraw");
+    });
 };
 MetaRelationController.prototype.cutCanDo = function () {
     return false;

@@ -63,9 +63,7 @@
 <script>
     import Selection from '@/Selection'
     import I18n from '@/I18n'
-    import GraphElementType from "@/graph-element/GraphElementType";
-    import Store from '@/store'
-    import TagService from '@/identifier/TagService'
+    import MetaRelationController from '@/identifier/MetaRelationController'
 
     export default {
         name: "RemoveTagDialog",
@@ -139,28 +137,12 @@
         },
         methods: {
             remove: async function () {
-                await Promise.all(this.bubbles.map((bubble) => {
-                    let tag = bubble.getClosestAncestorInTypes([GraphElementType.Meta]).getOriginalMeta();
-                    let parentBubble = bubble.getClosestAncestorInTypes([
-                        GraphElementType.Vertex,
-                        GraphElementType.Edge,
-                        GraphElementType.Relation,
-                        GraphElementType.MetaGroupVertex
-                    ]);
-                    if (parentBubble.isMetaGroupVertex()) {
-                        let promise = TagService.remove(bubble.getParentBubble().getEdgeUri(), tag);
-                        if (parentBubble.getNumberOfChild() === 1) {
-                            parentBubble.remove();
-                        } else {
-                            bubble.remove();
-                        }
-                        return promise;
-                    } else {
-                        bubble.remove();
-                        return parentBubble.controller().removeIdentifier(tag);
-                    }
-                }));
-                Store.dispatch("redraw");
+                let controller = new MetaRelationController.MetaRelationController(
+                    this.bubbles.map((vertex) => {
+                        return vertex.getParentBubble();
+                    })
+                );
+                await controller.removeDo();
                 this.removeTagDialog = false;
             }
         }

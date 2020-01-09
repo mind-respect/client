@@ -45,11 +45,6 @@
                 single: null,
                 buttons: [
                     {
-                        icon: "link",
-                        badgeImage: "/wikipedia-white.svg",
-                        action: "openWikipediaLink"
-                    },
-                    {
                         action: "addChild",
                         icon: function () {
                             let single = Selection.getSingle();
@@ -61,6 +56,11 @@
                     {
                         icon: "arrow_downward",
                         action: "addSibling"
+                    },
+                    {
+                        icon: "link",
+                        badgeImage: "/wikipedia-white.svg",
+                        action: "openWikipediaLink"
                     },
                     {
                         icon: "unfold_more",
