@@ -2,6 +2,7 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import SubGraph from '@/graph/SubGraph'
+import Identification from "./Identification";
 
 const api = {};
 api.fromServerFormatAndCenterUri = function (serverFormat, centerUri) {
@@ -13,7 +14,7 @@ api.fromServerFormatAndCenterUri = function (serverFormat, centerUri) {
 api.MetaGraph = function (serverFormat, centerUri) {
     this.subGraph = SubGraph.fromServerFormat(serverFormat);
     this.centerUri = centerUri;
-    this.metaCenter = this._getMetaCenter();
+    this.metaCenter = Identification.fromServerFormat(serverFormat.centerTag);
 };
 
 api.MetaGraph.prototype.getMetaCenter = function () {
