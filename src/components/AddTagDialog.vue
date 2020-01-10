@@ -20,7 +20,7 @@
                         item-text="label"
                         return-object
                         :menu-props="menuProps"
-                        :searchLoading="searchLoading"
+                        :loading="searchLoading"
                         @change="selectSearchResult()"
                         cache-items
                         clearable
@@ -56,15 +56,7 @@
                         </v-list-item-action>
                     </v-list-item>
                 </v-autocomplete>
-                <div style="height:150px;" class="vh-center">
-                    <v-progress-circular
-                            :size="70"
-                            :width="3"
-                            color="third"
-                            indeterminate
-                            v-show="tagLoading"
-                    ></v-progress-circular>
-                </div>
+                <div style="height:150px;" class="vh-center"></div>
             </v-card-text>
         </v-card>
     </v-dialog>
@@ -213,7 +205,9 @@
                         return result;
                     });
                     this.searchLoading = false;
-                    this.$refs.loadMore.reset(results.length, this.search);
+                    if (this.$refs.loadMore) {
+                        this.$refs.loadMore.reset(results.length, this.search);
+                    }
                 });
             },
             loadMore: function (callback) {

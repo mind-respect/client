@@ -15,7 +15,7 @@
                     item-text="label"
                     return-object
                     :menu-props="menuProps"
-                    :searchLoading="searchLoading"
+                    :loading="searchLoading"
                     @change="selectSearchResult()"
                     cache-items
                     clearable
