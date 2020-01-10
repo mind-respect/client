@@ -214,8 +214,9 @@
     import Friends from '@/components/home/Friends.vue'
     import Centers from '@/components/home/Centers.vue'
     import FriendService from '@/friend/FriendService'
-    import UserService from '@/service/UserService'
     import AppController from '@/AppController'
+    import GraphDisplayer from '@/graph/GraphDisplayer'
+    import GraphDisplayerFactory from '@/graph/GraphDisplayerFactory'
 
     const WHEN_OWNER_ONLY_TAB_MENUS = [2, 3];
 
@@ -456,6 +457,11 @@
             if (this.isTesting) {
                 return;
             }
+            GraphDisplayer.setImplementation(
+                GraphDisplayerFactory.getByName(
+                    "relative_tree"
+                )
+            );
             this.$store.dispatch('userHomeSelectedCenter', null);
             document.scrollingElement.scrollTop = 0;
             this.reload();

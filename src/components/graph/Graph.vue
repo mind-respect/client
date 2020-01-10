@@ -388,16 +388,6 @@
             expandAll: function () {
                 GraphController.expandAll();
             },
-            changeBackgroundColorCanDo: function () {
-                return AppController.changeBackgroundColorCanDo();
-            },
-            changeBackgroundColor: function () {
-                CurrentSubGraph.get().center.setBackgroundColor(this.backgroundColor);
-                GraphElementService.saveColors({
-                    background: this.backgroundColor
-                });
-                Color.refreshBackgroundColor(this.backgroundColor);
-            },
             selectAllBubbles: function () {
                 GraphController.selectAllBubbles();
             },
