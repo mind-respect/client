@@ -7,7 +7,7 @@ import TestUtil from '../util/TestUtil'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import Selection from '@/Selection'
 import GraphElementType from '@/graph-element/GraphElementType'
-import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
+import RelationsAsTagScenario from "../scenario/RelationsAsTagScenario";
 
 describe("Edge", () => {
     it("can inverse", async () => {
@@ -143,7 +143,7 @@ describe("Edge", () => {
     });
 
     it("removes the parent group relation when removing the last relation under a group relation", async () => {
-        let scenario = await new RelationAsIdentifierScenario();
+        let scenario = await new RelationsAsTagScenario();
         let centerBubble = scenario.getCenterInTree();
         expect(
             TestUtil.hasChildWithLabel(
@@ -167,7 +167,7 @@ describe("Edge", () => {
     });
 
     it("removes the parent group relation when moving away the last relation under a group relation", async () => {
-        let scenario = await new RelationAsIdentifierScenario();
+        let scenario = await new RelationsAsTagScenario();
         let centerBubble = scenario.getCenterInTree();
         let bubbleNotUnderAGroupRelation = TestUtil.getChildWithLabel(
             centerBubble,

@@ -4,7 +4,6 @@ import ThreeScenario from "../scenario/ThreeScenario";
 import GroupRelationHavingAVertexChildWithOneChild from '../scenario/GroupRelationHavingAVertexChildWithOneChild'
 import GraphServiceMock from '../mock/GraphServiceMock'
 import TestUtil from '../util/TestUtil'
-import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
 import TwoLevelGroupRelationScenario from "../scenario/TwoLevelGroupRelationScenario";
 import TagService from "@/identifier/TagService";
 

@@ -1,7 +1,7 @@
 import Mock from '../mock/Mock'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
-import RelationWithMultipleIdentifiersScenario from "../scenario/RelationWithMultipleIdentifiersScenario";
-import RelationsAsIdentifierScenario from '../scenario/RelationsAsIdentifierScenario'
+import RelationWithMultipleTagsScenario from "../scenario/RelationWithMultipleTagsScenario";
+import RelationsAsTagScenario from '../scenario/RelationsAsTagScenario'
 import ThreeScenario from "../scenario/ThreeScenario"
 import GroupRelation from '@/group-relation/GroupRelation'
 import TestUtil from '../util/TestUtil'
@@ -29,10 +29,10 @@ describe("GroupRelation", function () {
         );
     });
     it("can have multiple identifiers", async () => {
-        let scenario = await new RelationWithMultipleIdentifiersScenario();
-        let relationWithMultipleIdentifiers = scenario.getComputerScientistRelation();
+        let scenario = await new RelationWithMultipleTagsScenario();
+        let relationWithMultipleTags = scenario.getComputerScientistRelation();
         let groupRelation = GroupRelation.usingIdentifiers(
-            relationWithMultipleIdentifiers.getIdentifiers()
+            relationWithMultipleTags.getIdentifiers()
         );
         expect(
             groupRelation.getIdentifiers().length
@@ -431,7 +431,7 @@ describe("GroupRelation", function () {
         expect(
             groupRelation.isExpanded
         ).toBeFalsy();
-        let otherScenario = await new RelationsAsIdentifierScenario();
+        let otherScenario = await new RelationsAsTagScenario();
         let centerWithLessRelations = otherScenario.getCenterInTree();
         expect(
             centerWithLessRelations.getNumberOfChild()
@@ -467,7 +467,7 @@ describe("GroupRelation", function () {
         ).toBeTruthy();
     });
     xit("can handle the case where it's a meta relation that is removed", async () => {
-        let scenario = new Scenarios.aroundEventIdentifier();
+        let scenario = new Scenarios.aroundEventTag();
         let eventBubble = scenario.getEventBubbleInTree();
         let metaRelation = eventBubble.getNextBubble();
         metaRelation.remove();

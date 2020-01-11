@@ -2249,7 +2249,7 @@ error: 'TestUtil' is defined but never used (no-unused-vars) at tests/unit/scena
   6 |     this.dataKey = "inverseRelation";
 
 
-error: 'GraphServiceMock' is defined but never used (no-unused-vars) at tests/unit/scenario/RelationsAsIdentifierScenario.js:2:8:
+error: 'GraphServiceMock' is defined but never used (no-unused-vars) at tests/unit/scenario/RelationsAsTagScenario.js:2:8:
   1 | import Scenario from './Scenario'
 > 2 | import GraphServiceMock from "../mock/GraphServiceMock";
     |        ^
@@ -2258,22 +2258,22 @@ error: 'GraphServiceMock' is defined but never used (no-unused-vars) at tests/un
   5 |     this.dataKey = "relationsAsIdentifier.graph";
 
 
-error: 'GraphElementType' is defined but never used (no-unused-vars) at tests/unit/scenario/SameLevelRelationsWithMoreThanOneCommonMetaScenario.js:2:8:
+error: 'GraphElementType' is defined but never used (no-unused-vars) at tests/unit/scenario/SameLevelRelationsWithMoreThanOneCommonTagScenario.js:2:8:
   1 | import Scenario from './Scenario'
 > 2 | import GraphElementType from '@/graph-element/GraphElementType'
     |        ^
   3 | import TestUtil from '../util/TestUtil'
   4 | 
-  5 | let SameLevelRelationsWithMoreThanOneCommonMetaScenario = function () {
+  5 | let SameLevelRelationsWithMoreThanOneCommonTagScenario = function () {
 
 
-error: 'TestUtil' is defined but never used (no-unused-vars) at tests/unit/scenario/SameLevelRelationsWithMoreThanOneCommonMetaScenario.js:3:8:
+error: 'TestUtil' is defined but never used (no-unused-vars) at tests/unit/scenario/SameLevelRelationsWithMoreThanOneCommonTagScenario.js:3:8:
   1 | import Scenario from './Scenario'
   2 | import GraphElementType from '@/graph-element/GraphElementType'
 > 3 | import TestUtil from '../util/TestUtil'
     |        ^
   4 | 
-  5 | let SameLevelRelationsWithMoreThanOneCommonMetaScenario = function () {
+  5 | let SameLevelRelationsWithMoreThanOneCommonTagScenario = function () {
   6 |     this.dataKey = "sameLevelRelationsWithMoreThanOneCommonMeta";
 
 

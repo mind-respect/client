@@ -454,14 +454,14 @@
             }
         },
         mounted: function () {
-            if (this.isTesting) {
-                return;
-            }
             GraphDisplayer.setImplementation(
                 GraphDisplayerFactory.getByName(
                     "relative_tree"
                 )
             );
+            if (this.isTesting) {
+                return;
+            }
             this.$store.dispatch('userHomeSelectedCenter', null);
             document.scrollingElement.scrollTop = 0;
             this.reload();

@@ -211,7 +211,7 @@ FriendlyResource.FriendlyResource.prototype.isCenterBubble = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.getParentBubble = function () {
-    return this.parentBubble;
+    return this.parentBubble || this;
 };
 
 FriendlyResource.FriendlyResource.prototype.hasChildren = function () {
@@ -951,7 +951,7 @@ FriendlyResource.FriendlyResource.prototype.model = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.getParentVertex = function () {
-    return this.parentVertex;
+    return this.parentVertex || this;
 };
 
 FriendlyResource.FriendlyResource.prototype.getIcon = function () {

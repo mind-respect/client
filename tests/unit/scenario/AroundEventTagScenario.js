@@ -2,7 +2,7 @@ import Scenario from './Scenario'
 
 
 let AroundEventTagScenario = function () {
-    this.dataKey = "centerMetaEventAndTodo.aroundEvent";
+    this.dataKey = "centerTagEventAndTodo.aroundEvent";
     return this.init();
 };
 

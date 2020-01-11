@@ -1,14 +1,13 @@
 import Mock from '../mock/Mock'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import TreeDisplayerCommon from '@/graph/TreeDisplayerCommon'
-import RelationWithMultipleIdentifiersScenario from "../scenario/RelationWithMultipleIdentifiersScenario";
+import RelationWithMultipleTagsScenario from "../scenario/RelationWithMultipleTagsScenario";
 import Identification from '@/identifier/Identification'
 import InverseRelationScenario from "../scenario/InverseRelationScenario";
 import RelationIn2GroupRelationsScenario from "../scenario/RelationIn2GroupRelationsScenario";
 import TestUtil from '../util/TestUtil'
 import GroupRelationSpecialCaseScenario from "../scenario/GroupRelationSpecialCaseScenario";
-import SameLevelRelationsWithMoreThanOneCommonMetaScenario
-    from "../scenario/SameLevelRelationsWithMoreThanOneCommonMetaScenario";
+import SameLevelRelationsWithMoreThanOneCommonTagScenario from "../scenario/SameLevelRelationsWithMoreThanOneCommonTagScenario";
 
 describe("TreeDisplayerCommon", function () {
     let similarRelationsScenario,
@@ -38,9 +37,9 @@ describe("TreeDisplayerCommon", function () {
 
     xit("creates only one group relation when different relations have multiple identifiers that are the same", async () => {
         await defineSimilarRelationsScenarioVariables();
-        let relationWithMultipleIdentifiersScenario = await new RelationWithMultipleIdentifiersScenario();
-        let graph = relationWithMultipleIdentifiersScenario.getGraph();
-        let centerVertexUri = relationWithMultipleIdentifiersScenario.getCenterBubbleUri();
+        let scenario = await new RelationWithMultipleTagsScenario();
+        let graph = scenario.getGraph();
+        let centerVertexUri = scenario.getCenterBubbleUri();
         TreeDisplayerCommon.setUiTreeInfoToVertices(
             graph,
             centerVertexUri
@@ -151,7 +150,7 @@ describe("TreeDisplayerCommon", function () {
     });
 
     xit("does not duplicate relations on the same level sharing more than one common meta", async () => {
-        let scenario = await new SameLevelRelationsWithMoreThanOneCommonMetaScenario();
+        let scenario = await new SameLevelRelationsWithMoreThanOneCommonTagScenario();
         let centerBubble = scenario.getCenterInTree();
         let groupRelation = TestUtil.getChildWithLabel(
             centerBubble,

@@ -56,7 +56,15 @@
                         </v-list-item-action>
                     </v-list-item>
                 </v-autocomplete>
-                <div style="height:150px;" class="vh-center"></div>
+                <div style="height:150px;" class="vh-center">
+                    <v-progress-circular
+                            :size="70"
+                            :width="3"
+                            color="third"
+                            indeterminate
+                            v-show="tagLoading"
+                    ></v-progress-circular>
+                </div>
             </v-card-text>
         </v-card>
     </v-dialog>

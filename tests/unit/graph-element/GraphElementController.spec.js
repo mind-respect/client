@@ -3,13 +3,13 @@ import ThreeScenario from "../scenario/ThreeScenario";
 import Selection from '@/Selection'
 import TestUtil from '../util/TestUtil'
 import CreationDateScenario from "../scenario/CreationDateScenario";
-import RelationAsIdentifierScenario from "../scenario/RelationsAsIdentifierScenario";
+import RelationsAsTagScenario from "../scenario/RelationsAsTagScenario";
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import Command from '@/Command'
 import AppController from '@/AppController'
 import GraphServiceMock from '../mock/GraphServiceMock'
-import SameLevelRelationsWithMoreThanOneCommonMetaScenario
-    from "../scenario/SameLevelRelationsWithMoreThanOneCommonMetaScenario";
+import SameLevelRelationsWithMoreThanOneCommonTagScenario
+    from "../scenario/SameLevelRelationsWithMoreThanOneCommonTagScenario";
 
 describe('GraphElementController', () => {
     describe("removeDo", () => {
@@ -31,7 +31,7 @@ describe('GraphElementController', () => {
         });
 
         it("selects the parent vertex after remove if it was the last vertex under a group relation", async () => {
-            let scenario = await new RelationAsIdentifierScenario();
+            let scenario = await new RelationsAsTagScenario();
             Selection.reset();
             let centerBubble = scenario.getCenterInTree();
             expect(
@@ -77,6 +77,9 @@ describe('GraphElementController', () => {
                     "Possession"
                 )
             ).toBeFalsy();
+        });
+        it("can remove a vertex under a meta that is not center", () => {
+
         });
     });
     xit("updates model label when accepting comparison", function () {
@@ -363,7 +366,7 @@ describe('GraphElementController', () => {
             ).toBeFalsy();
         });
         it("removes all the identifier to the relation under the group relation when moving under another bubble", async () => {
-            let scenario = await new SameLevelRelationsWithMoreThanOneCommonMetaScenario();
+            let scenario = await new SameLevelRelationsWithMoreThanOneCommonTagScenario();
             let centerBubble = scenario.getCenterInTree();
             let groupRelation = TestUtil.getChildWithLabel(
                 centerBubble,
@@ -393,7 +396,7 @@ describe('GraphElementController', () => {
             ).toBe(0);
         });
         it("adds all the identifier to the relation when moving under a group relation", async () => {
-            let scenario = await new SameLevelRelationsWithMoreThanOneCommonMetaScenario();
+            let scenario = await new SameLevelRelationsWithMoreThanOneCommonTagScenario();
             let centerBubble = scenario.getCenterInTree();
             let otherRelation = TestUtil.getChildWithLabel(
                 centerBubble,
@@ -420,7 +423,7 @@ describe('GraphElementController', () => {
         });
 
         it("does not add the identifiers related to the child group relations when moving under a group relation", async () => {
-            let scenario = await new SameLevelRelationsWithMoreThanOneCommonMetaScenario();
+            let scenario = await new SameLevelRelationsWithMoreThanOneCommonTagScenario();
             let centerBubble = scenario.getCenterInTree();
             let otherRelation = TestUtil.getChildWithLabel(
                 centerBubble,

@@ -3,7 +3,7 @@ import GraphServiceMock from "../mock/GraphServiceMock";
 
 
 let AroundTodoTagScenario = function () {
-    this.dataKey = "centerMetaEventAndTodo.aroundTodo";
+    this.dataKey = "centerTagEventAndTodo.aroundTodo";
     return this.init();
 };
 
@@ -20,7 +20,7 @@ AroundTodoTagScenario.prototype.getCenterInTree = function () {
 AroundTodoTagScenario.prototype.expandE3 = function (e3) {
     GraphServiceMock.getForCentralBubbleUri(
         Scenario.getTestData(
-            "centerMetaEventAndTodo.aroundE3"
+            "centerTagEventAndTodo.aroundE3"
         )
     );
     return e3.controller().expand();

@@ -400,7 +400,7 @@
                     let tagsWithColors = this.bubble.getRelevantTags().filter((tag) => {
                         let parentBubble = this.bubble.getParentBubble();
                         let parentVertex = this.bubble.getParentVertex();
-                        if (parentBubble && parentBubble.isGroupRelation() && parentBubble.getGroupRelationInSequenceWithTag(tag)) {
+                        if (parentBubble.isGroupRelation() && parentBubble.getGroupRelationInSequenceWithTag(tag)) {
                             return false;
                         } else if (parentVertex.isMeta() && parentVertex.getOriginalMeta().getUri() === tag.getUri()) {
                             return false;
@@ -430,11 +430,11 @@
                     tagsWithImages = this.bubble.getIdentifiers().filter((tag) => {
                         let parentBubble = this.bubble.getParentBubble();
                         let parentVertex = this.bubble.getParentVertex();
-                        if (parentBubble && parentBubble.isGroupRelation() && parentBubble.getGroupRelationInSequenceWithTag(tag)) {
+                        if (parentBubble.isGroupRelation() && parentBubble.getGroupRelationInSequenceWithTag(tag)) {
                             return false;
                         } else if (parentVertex.isMeta() && parentVertex.getOriginalMeta().getUri() === tag.getUri()) {
                             return false;
-                        }else {
+                        } else {
                             return tag.hasImages() && tag.getImage().urlForSmall && tag.getUri() !== CurrentSubGraph.get().center.getUri();
                         }
                     });
