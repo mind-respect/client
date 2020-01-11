@@ -54,7 +54,13 @@ MetaRelationController.prototype.remove = function (skipConfirmation) {
 };
 MetaRelationController.prototype.removeDo = function () {
     return Promise.all(this.getModelArray().map((metaRelation) => {
-        let tag = metaRelation.getClosestAncestorInTypes([GraphElementType.Meta]).getOriginalMeta();
+        let metaBubble;
+        if (metaRelation.getParentVertex().isVertex()) {
+            metaBubble = metaRelation.getOtherVertex(metaRelation.getParentVertex());
+        } else {
+            metaBubble = metaRelation.getClosestAncestorInTypes([GraphElementType.Meta]);
+        }
+        let tag = metaBubble.getOriginalMeta();
         let parentBubble = metaRelation.getClosestAncestorInTypes([
             GraphElementType.Vertex,
             GraphElementType.Edge,
@@ -62,18 +68,27 @@ MetaRelationController.prototype.removeDo = function () {
             GraphElementType.MetaGroupVertex,
             GraphElementType.Meta
         ]);
+        let taggedUri;
         if (parentBubble.isMetaGroupVertex()) {
-            let promise = TagService.remove(metaRelation.getEdgeUri(), tag);
+            taggedUri = metaRelation.getEdgeUri();
             if (parentBubble.getNumberOfChild() === 1) {
                 parentBubble.remove();
             } else {
                 metaRelation.remove();
             }
-            return promise;
         } else {
+            let taggedBubble;
+            if (parentBubble.isEdge() || parentBubble.isVertex()) {
+                taggedBubble = parentBubble;
+            } else {
+                taggedBubble = metaRelation.getOtherVertex(parentBubble);
+            }
+            taggedBubble.removeIdentifier(tag);
+            taggedBubble.refreshImages();
+            taggedUri = taggedBubble.getUri();
             metaRelation.remove();
-            return TagService.remove(metaRelation.getNextBubble().getUri(), tag)
         }
+        return TagService.remove(taggedUri, tag)
     })).then(() => {
         Store.dispatch("redraw");
     });
