@@ -550,7 +550,7 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
         isForTravel = false;
     }
     let indexAdjust = isDown ? 1 : -1;
-    let forkBubble = this.parentBubble;
+    let forkBubble = this.getParentBubble();
     let childBubble = this;
     let distance = 0;
     let forkBubbleNbChild = forkBubble.getNextChildren(this.isToTheLeft()).length;
@@ -558,7 +558,7 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
     while (!forkBubble.isCenter && (forkBubbleNbChild < 2 || (isDown && (childBubbleIndex + 1) === forkBubbleNbChild) || (!isDown && childBubbleIndex === 0))) {
         distance++;
         childBubble = forkBubble;
-        forkBubble = forkBubble.parentBubble;
+        forkBubble = forkBubble.getParentBubble();
         forkBubbleNbChild = forkBubble.getNextChildren(this.isToTheLeft()).length;
         childBubbleIndex = Math.max(
             forkBubble.getChildIndex(childBubble),

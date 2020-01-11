@@ -13,7 +13,6 @@ function MetaRelation(sourceVertex, destinationVertex) {
         sourceVertex,
         destinationVertex
     );
-    destinationVertex.parentBubble = this;
 }
 
 MetaRelation.prototype = new Edge.Edge();

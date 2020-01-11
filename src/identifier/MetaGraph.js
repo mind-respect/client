@@ -29,17 +29,6 @@ api.MetaGraph.prototype.getSubGraph = function () {
     return this.subGraph;
 };
 
-api.MetaGraph.prototype._getMetaCenter = function () {
-    let centerMeta;
-    this.subGraph.getGraphElements().forEach((graphElement) => {
-        graphElement.getIdentifiersIncludingSelf().forEach((identifier) => {
-            if (identifier.getUri() === this.centerUri) {
-                centerMeta = identifier;
-            }
-        });
-    });
-    return centerMeta;
-};
 api.MetaGraph.prototype.getCenterUri = function () {
     return this.centerUri;
 };

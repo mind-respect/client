@@ -19,7 +19,6 @@ import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import GraphElement from '@/graph-element/GraphElement'
 import LoadingFlow from '@/LoadingFlow'
-import Color from '@/Color'
 
 const api = {};
 
@@ -47,22 +46,10 @@ MetaController.prototype.loadGraph = function (isParentAlreadyOnMap) {
     isParentAlreadyOnMap = isParentAlreadyOnMap || false;
     let uri = this.model().getUri();
     return GraphService.getForCentralBubbleUri(uri).then((response) => {
-        let metaSubGraph = MetaGraph.fromServerFormatAndCenterUri(
+        return MetaGraph.fromServerFormatAndCenterUri(
             response.data,
             uri
         );
-        if (metaSubGraph.getMetaCenter()) {
-            return Promise.resolve(
-                metaSubGraph
-            );
-        } else {
-            MetaService.getForUri(
-                uri
-            ).then(function (metaCenter) {
-                metaSubGraph.setMetaCenter(metaCenter);
-                return metaSubGraph;
-            });
-        }
     }).then((metaSubGraph) => {
         let centerTag = metaSubGraph.getMetaCenter();
         let centerBubble = this.model();

@@ -10,6 +10,8 @@ import AppController from '@/AppController'
 import GraphServiceMock from '../mock/GraphServiceMock'
 import SameLevelRelationsWithMoreThanOneCommonTagScenario
     from "../scenario/SameLevelRelationsWithMoreThanOneCommonTagScenario";
+import SingleAndTaggedToEventScenario from '../scenario/SingleAndTaggedToEventScenario'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 describe('GraphElementController', () => {
     describe("removeDo", () => {
@@ -78,8 +80,26 @@ describe('GraphElementController', () => {
                 )
             ).toBeFalsy();
         });
-        it("can remove a vertex under a meta that is not center", () => {
-
+        it("can remove a vertex under a meta that is not center", async () => {
+            let scenario = await new SingleAndTaggedToEventScenario();
+            let single = scenario.getCenterInTree();
+            await single.controller().showTags();
+            let event = single.getNextBubble().getNextBubble();
+            expect(
+                event.getLabel()
+            ).toBe("Event");
+            await scenario.expandEventTag(event);
+            expect(
+                event.getNumberOfChild()
+            ).toBe(5);
+            let vertexUnderMeta = event.getNextBubble().getNextBubble();
+            expect(
+                vertexUnderMeta.getGraphElementType()
+            ).toBe(GraphElementType.Vertex);
+            await vertexUnderMeta.controller().removeDo();
+            expect(
+                event.getNumberOfChild()
+            ).toBe(4);
         });
     });
     xit("updates model label when accepting comparison", function () {
@@ -591,6 +611,27 @@ describe('GraphElementController', () => {
             expect(
                 newTag
             ).toBeDefined();
-        })
+        });
+        it("has the right parent bubble for the meta relation", async () => {
+            let scenario = await new SingleAndTaggedToEventScenario();
+            let single = scenario.getCenterInTree();
+            await single.controller().showTags();
+            let metaRelation = single.getNextBubble();
+            expect(
+                metaRelation.getGraphElementType()
+            ).toBe(GraphElementType.MetaRelation);
+            expect(
+                metaRelation.getParentBubble().getLabel()
+            ).toBe("single tagged to event");
+        });
+        it("has the right parent bubble for meta", async () => {
+            let scenario = await new SingleAndTaggedToEventScenario();
+            let single = scenario.getCenterInTree();
+            await single.controller().showTags();
+            let event = single.getNextBubble().getNextBubble();
+            expect(
+                event.getParentBubble().getParentBubble().getLabel()
+            ).toBe("single tagged to event");
+        });
     });
 });
