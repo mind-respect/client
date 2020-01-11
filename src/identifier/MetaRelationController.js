@@ -28,7 +28,9 @@ MetaRelationController.prototype.noteCanDo = function () {
     return false;
 };
 MetaRelationController.prototype.removeCanDo = function () {
-    return this.isOwned();
+    return this.isOwned() && this.getModelArray().some((metaRelation) => {
+        return !metaRelation.getParentBubble().isGroupRelation();
+    });
 };
 MetaRelationController.prototype.remove = function (skipConfirmation) {
     Store.dispatch("setIsRemoveTagFlow", true)
