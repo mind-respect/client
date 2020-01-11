@@ -119,7 +119,7 @@ EdgeDrawing.prototype.topBottomLineAtRight = function () {
     return lines
 };
 EdgeDrawing.prototype.isChildInBetween = function (childPosition) {
-    return this.bubble.isVertexType() && this.bubbleRect.top < childPosition.rect.bottom && this.bubbleRect.bottom > childPosition.rect.top;
+    return (this.bubble.isVertexType() || this.bubble.isGroupRelation()) && this.bubbleRect.top < childPosition.rect.bottom && this.bubbleRect.bottom > childPosition.rect.top;
 };
 
 EdgeDrawing.prototype.topDistanceWithChild = function (childPosition) {

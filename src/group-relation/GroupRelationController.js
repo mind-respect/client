@@ -34,6 +34,10 @@ GroupRelationController.prototype.addChildCanDo = function () {
     return this.isSingleAndOwned();
 };
 
+GroupRelationController.prototype.addTagCanDo = function () {
+    return false;
+};
+
 GroupRelationController.prototype.centerCanDo = function () {
     return false;
 };
