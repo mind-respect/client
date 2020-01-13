@@ -106,7 +106,7 @@
     import SearchResultContent from '@/components/search/SearchResultContent'
     import SearchResultAction from '@/components/search/SearchResultAction'
     import I18n from '@/I18n'
-    import Identification from '@/identifier/Identification'
+    import Tag from '@/tag/Tag'
     import IdUri from '@/IdUri'
 
     const cacheByUri = {};
@@ -196,7 +196,7 @@
             tag: function () {
                 this.loading = true;
                 const selectedResult = this.getSelectedResult();
-                const identifier = Identification.fromSearchResult(
+                const identifier = Tag.fromSearchResult(
                     selectedResult
                 );
                 let bubble = Selection.getSingle();

@@ -152,13 +152,12 @@
 </template>
 
 <script>
-    import IdUri from "@/IdUri";
     import SearchLoadMore from '@/components/search/SearchLoadMore'
     import SearchResultContent from '@/components/search/SearchResultContent'
     import SearchResultAction from '@/components/search/SearchResultAction'
     import I18n from '@/I18n'
     import SearchService from '@/search/SearchService'
-    import Identification from '@/identifier/Identification'
+    import Tag from '@/tag/Tag'
 
     export default {
         name: "TagMenu",
@@ -236,8 +235,8 @@
             },
             createTagWithNoRef: function () {
                 this.tagLoading = true;
-                let tag = Identification.withUriLabelAndDescription(
-                    Identification.generateVoidUri(),
+                let tag = Tag.withUriLabelAndDescription(
+                    Tag.generateVoidUri(),
                     this.search,
                     ""
                 );
@@ -290,7 +289,7 @@
             },
             selectSearchResult: function () {
                 this.tagLoading = true;
-                let identifier = Identification.fromSearchResult(
+                let identifier = Tag.fromSearchResult(
                     this.selectedSearchResult
                 );
                 if (this.bubble.hasIdentification(identifier)) {

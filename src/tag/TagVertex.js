@@ -11,17 +11,17 @@ api.getWhenEmptyLabel = function () {
     return I18n.i18next.t("tag:default");
 };
 api.withUri = function (uri) {
-    let meta = new Meta().init(
+    let meta = new TagVertex().init(
         uri
     );
     return meta;
 };
 
-function Meta() {
+function TagVertex() {
 }
 
-Meta.prototype = new Vertex.Vertex();
-Meta.prototype.init = function (uri) {
+TagVertex.prototype = new Vertex.Vertex();
+TagVertex.prototype.init = function (uri) {
     Vertex.Vertex.apply(this);
     Vertex.Vertex.prototype.init.call(
         this,
@@ -30,11 +30,11 @@ Meta.prototype.init = function (uri) {
     this.setUri(uri);
     return this;
 };
-Meta.prototype.getGraphElementType = function () {
+TagVertex.prototype.getGraphElementType = function () {
     return GraphElementType.Meta;
 };
 
-Meta.prototype.setOriginalMeta = function (originalMeta) {
+TagVertex.prototype.setOriginalMeta = function (originalMeta) {
     this.setLabel(originalMeta.getLabel());
     this.setComment(originalMeta.getComment());
     this.setChildrenIndex(
@@ -49,11 +49,11 @@ Meta.prototype.setOriginalMeta = function (originalMeta) {
     this.originalMeta = originalMeta;
 };
 
-Meta.prototype.getOriginalMeta = function () {
+TagVertex.prototype.getOriginalMeta = function () {
     return this.originalMeta;
 };
 
-Meta.prototype.getNumberOfChild = function () {
+TagVertex.prototype.getNumberOfChild = function () {
     if (this.isExpanded) {
         return this.getNextChildren().length;
     }

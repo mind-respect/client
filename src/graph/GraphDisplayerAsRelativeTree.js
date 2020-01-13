@@ -7,11 +7,11 @@ import GroupRelationController from '@/group-relation/GroupRelationController'
 import EdgeController from '@/edge/EdgeController'
 import GraphController from '@/graph/GraphController'
 import AppController from '@/AppController'
-import MetaController from '@/identifier/MetaController'
+import MetaController from '@/tag/TagVertexController'
 import GraphElementController from '@/graph-element/GraphElementController'
-import MetaRelationController from '@/identifier/MetaRelationController'
-import MetaGroupVertexController from '@/identifier/MetaGroupVertexController'
-import Identification from "../identifier/Identification";
+import MetaRelationController from '@/tag/TagRelationController'
+import MetaGroupVertexController from '@/tag/TagGroupVertexController'
+import Tag from "@/tag/Tag";
 
 const api = {};
 
@@ -50,7 +50,7 @@ api.getMetaGroupVertexController = function () {
 };
 
 api.getTagApi = function () {
-    return Identification;
+    return Tag;
 };
 
 export default api;

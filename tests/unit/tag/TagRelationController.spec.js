@@ -3,7 +3,7 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import AroundTodoTagScenario from "../scenario/AroundTodoTagScenario"
 import SingleAndTaggedToEventScenario from "../scenario/SingleAndTaggedToEventScenario";
 
-describe("MetaRelationController", () => {
+describe("TagRelationController", () => {
     describe("removeDo", () => {
         it("can when center is a tag", async () => {
             let scenario = await new AroundTodoTagScenario();

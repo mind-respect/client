@@ -2,7 +2,7 @@ import Edge from '@/edge/Edge'
 import GraphElementType from '@/graph-element/GraphElementType'
 import IdUri from '@/IdUri'
 
-function MetaRelation(sourceVertex, destinationVertex) {
+function TagRelation(sourceVertex, destinationVertex) {
     Edge.Edge.apply(this);
     this.init(
         Edge.buildObjectWithUriOfSelfSourceAndDestinationVertex(
@@ -15,23 +15,23 @@ function MetaRelation(sourceVertex, destinationVertex) {
     );
 }
 
-MetaRelation.prototype = new Edge.Edge();
+TagRelation.prototype = new Edge.Edge();
 
-MetaRelation.prototype.getGraphElementType = function () {
+TagRelation.prototype.getGraphElementType = function () {
     return GraphElementType.MetaRelation;
 };
 
-MetaRelation.prototype.setEdgeUri = function (edgeUri) {
+TagRelation.prototype.setEdgeUri = function (edgeUri) {
     this.edgeUri = edgeUri;
 };
 
-MetaRelation.prototype.getEdgeUri = function () {
+TagRelation.prototype.getEdgeUri = function () {
     return this.edgeUri;
 };
 
-MetaRelation.prototype.focus = function () {
+TagRelation.prototype.focus = function () {
     //do nothing
 };
 
 
-export default MetaRelation;
+export default TagRelation;

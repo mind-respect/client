@@ -82,18 +82,27 @@
         methods: {
             querySelections(term) {
                 this.loading = true;
-                SearchService.ownVertices(term).then((results) => {
-                    this.items = results;
+                let searchFunction = this.bubble.isMeta() ? SearchService.ownTagsOnly : SearchService.ownVertices;
+                searchFunction(term).then((results) => {
+                    this.items = results.map((result) => {
+                        result.disabled = this.bubble.getUri() === result.uri;
+                        return result;
+                    });
                     this.loading = false;
-                    this.$nextTick(()=>{
+                    this.$nextTick(() => {
                         this.$refs.mergeLoadMore.reset(results.length, term);
                     });
                 });
             },
             loadMore: function (callback) {
-                SearchService.ownVertices(this.search, this.items.length).then((results) => {
-                    this.items = this.items.concat(results);
-                    this.$nextTick(()=>{
+                let searchFunction = this.bubble.isMeta() ? SearchService.ownTagsOnly : SearchService.ownVertices;
+                searchFunction(this.search, this.items.length).then((results) => {
+                    this.items = this.items.concat(results.map((result) => {
+                            result.disabled = this.bubble.getUri() === result.uri;
+                            return result;
+                        })
+                    );
+                    this.$nextTick(() => {
                         callback(results.length, this.$refs.mergeSearch);
                     });
                 });

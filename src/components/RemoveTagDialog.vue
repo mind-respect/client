@@ -63,7 +63,7 @@
 <script>
     import Selection from '@/Selection'
     import I18n from '@/I18n'
-    import MetaRelationController from '@/identifier/MetaRelationController'
+    import TagRelationController from '@/tag/TagRelationController'
 
     export default {
         name: "RemoveTagDialog",
@@ -137,7 +137,7 @@
         },
         methods: {
             remove: async function () {
-                let controller = new MetaRelationController.MetaRelationController(
+                let controller = new TagRelationController.TagRelationController(
                     this.bubbles.map((vertex) => {
                         return vertex.getParentBubble();
                     })

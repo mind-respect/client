@@ -28,7 +28,7 @@ describe("GraphElement", () => {
         var graphWithCircularityScenario = new Scenarios.graphWithCircularityScenario();
         var bubble1 = graphWithCircularityScenario.getBubble1InTree();
         var bubble1Duplicate = graphWithCircularityScenario.getBubble1Duplicate();
-        var karaokeIdentification = Identification.fromFriendlyResource(
+        var karaokeIdentification = Tag.fromFriendlyResource(
             new Scenarios.getKaraokeSchemaGraph().getSchema()
         );
         expect(
@@ -147,7 +147,7 @@ describe("GraphElement", () => {
         var scenario = new Scenarios.threeBubblesGraph();
         var bubble1 = scenario.getBubble1InTree();
         bubble1.getModel().addIdentification(
-            Identification.fromFriendlyResource(
+            Tag.fromFriendlyResource(
                 bubble1.getModel()
             )
         );
@@ -175,7 +175,7 @@ describe("GraphElement", () => {
         var scenario = new Scenarios.threeBubblesGraph();
         var bubble1 = scenario.getBubble1InTree();
         bubble1.getModel().addIdentification(
-            Identification.fromFriendlyResource(
+            Tag.fromFriendlyResource(
                 bubble1.getModel()
             )
         );

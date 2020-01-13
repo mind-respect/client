@@ -1,5 +1,5 @@
 import Service from '@/Service'
-import Identification from '@/identifier/Identification'
+import Tag from '@/tag/Tag'
 
 const TagService = {};
 TagService.add = function (graphElement, identification) {
@@ -7,7 +7,7 @@ TagService.add = function (graphElement, identification) {
         graphElement.getUri() + '/identification',
         identification.getJsonFormat()
     ).then(function (response) {
-        return Identification.fromMultipleServerFormat(
+        return Tag.fromMultipleServerFormat(
             response.data,
             identification.getRelationExternalResourceUri()
         );

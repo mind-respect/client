@@ -1,21 +1,21 @@
 import Mock from '../mock/Mock'
 import AroundEventTagScenario from "../scenario/AroundEventTagScenario"
 import AroundTodoTagScenario from "../scenario/AroundTodoTagScenario"
-import MetaGraph from '@/identifier/MetaGraph'
+import TagGraph from '@/tag/TagGraph'
 import GraphElementType from '@/graph-element/GraphElementType'
 import TestUtil from '../util/TestUtil'
 import Selection from '@/Selection'
 import KeyCode from 'keycode-js';
 
-describe("MetaGraph", () => {
+describe("TagGraph", () => {
     it("can get the meta center identifier", async () => {
         let scenario = await new AroundEventTagScenario();
         let graph = scenario.getGraph();
-        let metaGraph = MetaGraph.fromServerFormatAndCenterUri(
+        let tagGraph = TagGraph.fromServerFormatAndCenterUri(
             graph,
             scenario.getCenterBubbleUri()
         );
-        let metaCenter = metaGraph.getMetaCenter(
+        let metaCenter = tagGraph.getMetaCenter(
             graph
         );
         expect(

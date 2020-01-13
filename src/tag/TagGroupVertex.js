@@ -1,7 +1,7 @@
 import Vertex from '@/vertex/Vertex'
 import GraphElementType from '@/graph-element/GraphElementType'
 
-function MetaGroupVertex(vertex) {
+function TagGroupVertex(vertex) {
     Vertex.Vertex.apply(this);
     this.init(
         Vertex.buildServerFormatFromUri(
@@ -13,10 +13,10 @@ function MetaGroupVertex(vertex) {
     this.setChildrenIndex(vertex.getChildrenIndex());
 }
 
-MetaGroupVertex.prototype = new Vertex.Vertex();
+TagGroupVertex.prototype = new Vertex.Vertex();
 
-MetaGroupVertex.prototype.getGraphElementType = function () {
+TagGroupVertex.prototype.getGraphElementType = function () {
     return GraphElementType.MetaGroupVertex;
 };
 
-export default MetaGroupVertex;
+export default TagGroupVertex;

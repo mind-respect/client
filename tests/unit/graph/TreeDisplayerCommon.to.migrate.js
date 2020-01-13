@@ -2,7 +2,7 @@ import Mock from '../mock/Mock'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import TreeDisplayerCommon from '@/graph/TreeDisplayerCommon'
 import RelationWithMultipleTagsScenario from "../scenario/RelationWithMultipleTagsScenario";
-import Identification from '@/identifier/Identification'
+import Tag from '@/tag/Tag'
 import InverseRelationScenario from "../scenario/InverseRelationScenario";
 import RelationIn2GroupRelationsScenario from "../scenario/RelationIn2GroupRelationsScenario";
 import TestUtil from '../util/TestUtil'
@@ -62,7 +62,7 @@ describe("TreeDisplayerCommon", function () {
         expect(
             groupRelationsHaveIdentifier(
                 centerVertex.groupRelationRoots,
-                Identification.fromFriendlyResource(
+                Tag.fromFriendlyResource(
                     otherRelation
                 )
             )

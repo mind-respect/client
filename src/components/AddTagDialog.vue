@@ -72,7 +72,7 @@
 
 <script>
     import I18n from '@/I18n'
-    import Identification from "@/identifier/Identification";
+    import Tag from "@/tag/Tag";
     import Selection from '@/Selection'
     import SearchService from '@/search/SearchService'
     import SearchLoadMore from '@/components/search/SearchLoadMore'
@@ -152,7 +152,7 @@
             },
             selectSearchResult: function () {
                 this.tagLoading = true;
-                let identifier = Identification.fromSearchResult(
+                let identifier = Tag.fromSearchResult(
                     this.selectedSearchResult
                 );
                 if (this.bubble.hasIdentification(identifier)) {
@@ -188,8 +188,8 @@
             },
             createTagWithNoRef: function () {
                 this.tagLoading = true;
-                let tag = Identification.withUriLabelAndDescription(
-                    Identification.generateVoidUri(),
+                let tag = Tag.withUriLabelAndDescription(
+                    Tag.generateVoidUri(),
                     this.search,
                     ""
                 );

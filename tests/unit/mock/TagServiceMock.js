@@ -1,5 +1,5 @@
 import TestUtil from '../util/TestUtil'
-import TagService from '@/identifier/TagService'
+import TagService from '@/tag/TagService'
 
 const api = {};
 const spies = {};

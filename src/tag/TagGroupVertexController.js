@@ -8,12 +8,12 @@ import CurrentSubGraph from "@/graph/CurrentSubGraph";
 import GraphElementController from '@/graph-element/GraphElementController'
 import VertexService from '@/vertex/VertexService'
 import Selection from '@/Selection'
-import MetaRelation from '@/identifier/MetaRelation'
+import TagRelation from '@/tag/TagRelation'
 import GraphElementType from '@/graph-element/GraphElementType'
 
 const api = {};
 
-function MetaGroupVertexController(vertices) {
+function TagGroupVertexController(vertices) {
     this.vertices = vertices;
     VertexController.VertexController.prototype.init.call(
         this,
@@ -21,10 +21,10 @@ function MetaGroupVertexController(vertices) {
     );
 }
 
-MetaGroupVertexController.prototype = new VertexController.VertexController();
+TagGroupVertexController.prototype = new VertexController.VertexController();
 
 
-MetaGroupVertexController.prototype.addChild = function () {
+TagGroupVertexController.prototype.addChild = function () {
     let addTuple = VertexService.addTuple(
         this.model()
     );
@@ -36,7 +36,7 @@ MetaGroupVertexController.prototype.addChild = function () {
             true
         );
     });
-    let metaRelation = new MetaRelation(triple.destination, tagBubble);
+    let metaRelation = new TagRelation(triple.destination, tagBubble);
     metaRelation.setEdgeUri(triple.edge.getUri());
     this.model().addChild(
         metaRelation
@@ -53,19 +53,19 @@ MetaGroupVertexController.prototype.addChild = function () {
     });
 };
 
-MetaGroupVertexController.prototype.addSiblingCanDo = function () {
+TagGroupVertexController.prototype.addSiblingCanDo = function () {
     return false;
 };
 
-MetaGroupVertexController.prototype.removeCanDo = function () {
+TagGroupVertexController.prototype.removeCanDo = function () {
     return false;
 };
 
-MetaGroupVertexController.prototype.mergeCanDo = function () {
+TagGroupVertexController.prototype.mergeCanDo = function () {
     return false;
 };
 
-MetaGroupVertexController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft) {
+TagGroupVertexController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft) {
     return GraphElementController.GraphElementController.prototype.relateToDistantVertexWithUri.call(
         this,
         distantVertexUri,
@@ -75,10 +75,10 @@ MetaGroupVertexController.prototype.relateToDistantVertexWithUri = function (dis
     );
 };
 
-MetaGroupVertexController.prototype.becomeParent = function (child, isLeft, index) {
+TagGroupVertexController.prototype.becomeParent = function (child, isLeft, index) {
     return Promise.resolve();
 };
 
-api.MetaGroupVertexController = MetaGroupVertexController;
+api.MetaGroupVertexController = TagGroupVertexController;
 
 export default api;

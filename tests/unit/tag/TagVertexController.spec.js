@@ -1,7 +1,7 @@
 import Mock from '../mock/Mock'
 import SingleAndTaggedToEventScenario from '../scenario/SingleAndTaggedToEventScenario'
 
-describe("MetaControllerSpec", () => {
+describe("TagVertexControllerSpec", () => {
     describe("expand", () => {
         it("has right parent bubble for child meta relation", async () => {
             let scenario = await new SingleAndTaggedToEventScenario();

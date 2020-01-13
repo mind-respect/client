@@ -2,13 +2,11 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import GraphElementController from '@/graph-element/GraphElementController'
-import MetaService from '@/identifier/MetaService'
-import GraphDisplayer from '@/graph/GraphDisplayer'
+import VertexController from '@/vertex/VertexController'
 import GraphService from '@/graph/GraphService'
-import MetaGraph from '@/identifier/MetaGraph'
-import MetaRelation from '@/identifier/MetaRelation'
-import MetaGroupVertex from '@/identifier/MetaGroupVertex'
+import TagGraph from '@/tag/TagGraph'
+import TagRelation from '@/tag/TagRelation'
+import TagGroupVertex from '@/tag/TagGroupVertex'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import VertexService from '@/vertex/VertexService'
 import Vertex from '@/vertex/Vertex'
@@ -18,35 +16,33 @@ import SubGraphController from '@/graph/SubGraphController'
 import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import GraphElement from '@/graph-element/GraphElement'
-import LoadingFlow from '@/LoadingFlow'
 
 const api = {};
 
 api.withMeta = function (meta) {
-    return new MetaController(meta);
+    return new TagVertexController(meta);
 };
 
-function MetaController(metas) {
+function TagVertexController(metas) {
     this.metas = metas;
-    GraphElementController.GraphElementController.prototype.init.call(
+    VertexController.VertexController.prototype.init.call(
         this,
         this.metas
     );
 }
 
-MetaController.prototype = new GraphElementController.GraphElementController();
-
-MetaController.prototype.loadForParentIsAlreadyOnMap = function () {
+TagVertexController.prototype = new VertexController.VertexController();
+TagVertexController.prototype.loadForParentIsAlreadyOnMap = function () {
     return this.loadGraph(
         true
     );
 };
 
-MetaController.prototype.loadGraph = function (isParentAlreadyOnMap) {
+TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap) {
     isParentAlreadyOnMap = isParentAlreadyOnMap || false;
     let uri = this.model().getUri();
     return GraphService.getForCentralBubbleUri(uri).then((response) => {
-        return MetaGraph.fromServerFormatAndCenterUri(
+        return TagGraph.fromServerFormatAndCenterUri(
             response.data,
             uri
         );
@@ -74,20 +70,20 @@ MetaController.prototype.loadGraph = function (isParentAlreadyOnMap) {
             }
             if (sourceVertexAndEdges.edges.length === 0) {
                 vertex.incrementNbConnectedEdges();
-                child = new MetaRelation(vertex, centerBubble);
+                child = new TagRelation(vertex, centerBubble);
                 edges.push(child);
             } else {
-                vertex = new MetaGroupVertex(
+                vertex = new TagGroupVertex(
                     vertex
                 );
                 CurrentSubGraph.get().add(vertex);
-                child = new MetaRelation(vertex, centerBubble);
+                child = new TagRelation(vertex, centerBubble);
                 edges.push(child);
                 sortEdges(sourceVertexAndEdges.edges, vertex).forEach((edgeBetweenGroupAndDestination) => {
                     let destinationVertex = subGraph.getVertexWithUri(
                         edgeBetweenGroupAndDestination.getDestinationVertex().getUri()
                     );
-                    let grandChild = new MetaRelation(destinationVertex, vertex);
+                    let grandChild = new TagRelation(destinationVertex, vertex);
                     grandChild.setEdgeUri(
                         edgeBetweenGroupAndDestination.getUri()
                     );
@@ -121,58 +117,11 @@ MetaController.prototype.loadGraph = function (isParentAlreadyOnMap) {
     });
 };
 
-MetaController.prototype.expand = function (avoidCenter, avoidExpandChild, avoidShowingLoad) {
-    if (!this.expandCanDo()) {
-        this.model().isExpanded = true;
-        return Promise.resolve();
-    }
-    if (avoidExpandChild && !this.model().canExpand()) {
-        this.model().isExpanded = true;
-        return Promise.resolve();
-    }
-    let promise = Promise.resolve();
-    if (!avoidShowingLoad) {
-        LoadingFlow.enterNoSpinner();
-    }
-    this.model().loading = false;
-    avoidExpandChild = avoidExpandChild || false;
-    this.model().beforeExpand();
-    if (!this.model().isExpanded) {
-        if (!this.model().isCollapsed) {
-            promise = this.loadForParentIsAlreadyOnMap().then(() => {
-                if (avoidExpandChild) {
-                    return true;
-                }
-                let expandChildCalls = [];
-                this.model().getClosestChildVertices().forEach((childVertex) => {
-                    if (childVertex.getNumberOfChild() === 1) {
-                        expandChildCalls.push(
-                            childVertex.controller().expand(true, true, true)
-                        );
-                    }
-                });
-                return Promise.all(expandChildCalls);
-            });
-        }
-    } else {
-        this.model().loading = false;
-        promise = avoidExpandChild ? Promise.resolve() : this.expandDescendantsIfApplicable();
-    }
-    return promise.then(() => {
-        this.model().expand(avoidCenter, true);
-        if (!avoidShowingLoad) {
-            Vue.nextTick(() => {
-                LoadingFlow.leave();
-            });
-        }
-    });
-};
-
-MetaController.prototype.openWikipediaLinkCanDo = function () {
+TagVertexController.prototype.openWikipediaLinkCanDo = function () {
     return this.isSingle() && this.model().wikipediaUrl;
 };
 
-MetaController.prototype.openWikipediaLink = function () {
+TagVertexController.prototype.openWikipediaLink = function () {
     window.open(this.model().wikipediaUrl, '_blank').focus();
 };
 
@@ -236,15 +185,15 @@ function buildEdgesGroupedBySourceVertex(metaSubGraph, centerVertex) {
     return edgesBySourceVertex;
 }
 
-MetaController.prototype.addTagCanDo = function () {
+TagVertexController.prototype.addTagCanDo = function () {
     return false;
 };
 
-MetaController.prototype.showTagsCanDo = function () {
+TagVertexController.prototype.showTagsCanDo = function () {
     return false;
 };
 
-MetaController.prototype.addChild = function () {
+TagVertexController.prototype.addChild = function () {
     return VertexService.createVertex().then((newVertex) => {
         FriendlyResourceService.updateLabel(
             newVertex,
@@ -254,7 +203,7 @@ MetaController.prototype.addChild = function () {
             this.model().getOriginalMeta(),
             true
         );
-        let newEdge = new MetaRelation(newVertex, this.model());
+        let newEdge = new TagRelation(newVertex, this.model());
         this.model().addChild(
             newEdge
         );
@@ -269,13 +218,13 @@ MetaController.prototype.addChild = function () {
     });
 };
 
-MetaController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft) {
+TagVertexController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft) {
     SubGraphController.withVertex(
         Vertex.withUri(
             distantVertexUri
         )
     ).loadNonCenter().then((distantVertex) => {
-        let newEdge = new MetaRelation(distantVertex, this.model());
+        let newEdge = new TagRelation(distantVertex, this.model());
         distantVertex.parentBubble = newEdge;
         distantVertex.parentVertex = this.model();
         distantVertex.controller().addIdentification(
@@ -300,28 +249,29 @@ MetaController.prototype.relateToDistantVertexWithUri = function (distantVertexU
     });
 };
 
-MetaController.prototype.convertToDistantBubbleWithUriCanDo = function () {
-    return true;
+TagVertexController.prototype.convertToDistantBubbleWithUriCanDo = function (distantVertexUri) {
+    return this.model().getUri() !== distantVertexUri;
 };
+//
+// TagVertexController.prototype.convertToDistantBubbleWithUri = function (distantTagUri) {
+//     if (!this.convertToDistantBubbleWithUriCanDo(distantTagUri)) {
+//         return Promise.reject();
+//     }
+//     let beforeMergeLabel = this.model().getLabel();
+//     return TagService.mergeTo(this.model(), distantTagUri).then(() => {
+//         this.getUi().mergeTo(distantTagUri);
+//         return GraphDisplayer.displayForMetaWithUri(
+//             distantTagUri
+//         );
+//     });
+// };
 
-MetaController.prototype.convertToDistantBubbleWithUri = function (distantTagUri) {
-    if (!this.convertToDistantBubbleWithUriCanDo(distantTagUri)) {
-        return Promise.reject();
-    }
-    this.getUi().beforeConvertToDistantBubbleWithUri();
-    return MetaService.mergeTo(this.model(), distantTagUri).then(() => {
-        this.getUi().mergeTo(distantTagUri);
-        return GraphDisplayer.displayForMetaWithUri(
-            distantTagUri
-        );
-    });
-};
 
-MetaController.prototype.mergeCanDo = function () {
+TagVertexController.prototype.setShareLevelCanDo = function () {
     return false;
 };
 
-MetaController.prototype.becomeParent = function (child, isLeft, index) {
+TagVertexController.prototype.becomeParent = function (child, isLeft, index) {
     return Promise.resolve();
     // let promises = [];
     // debugger;
@@ -340,6 +290,6 @@ MetaController.prototype.becomeParent = function (child, isLeft, index) {
 
 };
 
-api.MetaController = MetaController;
+api.MetaController = TagVertexController;
 
 export default api;

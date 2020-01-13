@@ -128,7 +128,7 @@ api.Scenario.prototype.tagWithLabel = function (label) {
 };
 
 api.Scenario.prototype.tagWithLabelInTree = function (label) {
-    return CurrentSubGraph.get().tags.filter((tag) => {
+    return CurrentSubGraph.get().tagVertices.filter((tag) => {
         return tag.getLabel() === label;
     })[0];
 };

@@ -20,6 +20,11 @@ api.tags = function (term, nbSkip) {
     }
     return resultsFromProviders(providers);
 };
+api.ownTagsOnly = function (term, nbSkip) {
+    return resultsFromProviders([
+        api.searchForAllOwnResources(term, nbSkip)
+    ]);
+};
 api.searchForAllOwnResources = function (searchText, nbSkip) {
     let providers = [
         api._searchForAllOwnResources(searchText, nbSkip)

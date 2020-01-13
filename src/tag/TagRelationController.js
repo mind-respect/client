@@ -5,11 +5,11 @@
 import GraphElementController from '@/graph-element/GraphElementController'
 import GraphElementType from "@/graph-element/GraphElementType";
 import Store from '@/store'
-import TagService from '@/identifier/TagService'
+import TagService from '@/tag/TagService'
 
 const api = {};
 
-function MetaRelationController(relations) {
+function TagRelationController(relations) {
     this.relations = relations;
     GraphElementController.GraphElementController.prototype.init.call(
         this,
@@ -17,22 +17,22 @@ function MetaRelationController(relations) {
     );
 }
 
-MetaRelationController.prototype = new GraphElementController.GraphElementController();
-MetaRelationController.prototype.focusCanDo = function () {
+TagRelationController.prototype = new GraphElementController.GraphElementController();
+TagRelationController.prototype.focusCanDo = function () {
     return false;
 };
-MetaRelationController.prototype.centerCanDo = function () {
+TagRelationController.prototype.centerCanDo = function () {
     return false;
 };
-MetaRelationController.prototype.noteCanDo = function () {
+TagRelationController.prototype.noteCanDo = function () {
     return false;
 };
-MetaRelationController.prototype.removeCanDo = function () {
+TagRelationController.prototype.removeCanDo = function () {
     return this.isOwned() && this.getModelArray().some((metaRelation) => {
         return !metaRelation.getParentBubble().isGroupRelation();
     });
 };
-MetaRelationController.prototype.remove = function (skipConfirmation) {
+TagRelationController.prototype.remove = function (skipConfirmation) {
     Store.dispatch("setIsRemoveTagFlow", true)
     // if (skipConfirmation) {
     //     return doIt.bind(this)();
@@ -54,7 +54,7 @@ MetaRelationController.prototype.remove = function (skipConfirmation) {
     //     }.bind(this));
     // }
 };
-MetaRelationController.prototype.removeDo = function () {
+TagRelationController.prototype.removeDo = function () {
     return Promise.all(this.getModelArray().map((metaRelation) => {
         let metaBubble;
         if (metaRelation.getParentVertex().isVertex()) {
@@ -95,30 +95,30 @@ MetaRelationController.prototype.removeDo = function () {
         Store.dispatch("redraw");
     });
 };
-MetaRelationController.prototype.cutCanDo = function () {
+TagRelationController.prototype.cutCanDo = function () {
     return false;
 };
 
-MetaRelationController.prototype.addTagCanDo = function () {
+TagRelationController.prototype.addTagCanDo = function () {
     return false;
 };
 
-MetaRelationController.prototype.showTagsCanDo = function () {
+TagRelationController.prototype.showTagsCanDo = function () {
     return false;
 };
 
-MetaRelationController.prototype.collapseCanDo = function () {
+TagRelationController.prototype.collapseCanDo = function () {
     return false;
 };
 
-MetaRelationController.prototype.expandCanDo = function () {
+TagRelationController.prototype.expandCanDo = function () {
     return false;
 };
 
-MetaRelationController.prototype.selectTreeCanDo = function () {
+TagRelationController.prototype.selectTreeCanDo = function () {
     return false;
 };
 
-api.MetaRelationController = MetaRelationController;
+api.MetaRelationController = TagRelationController;
 
 export default api;

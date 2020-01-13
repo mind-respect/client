@@ -11,7 +11,7 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import ShareLevel from '@/vertex/ShareLevel'
 import SubGraphController from '@/graph/SubGraphController'
 import LoadingFlow from '@/LoadingFlow'
-import Scroll from '@/Scroll'
+import TagVertexService from '@/tag/TagVertexService'
 import Vue from 'vue'
 import Store from '@/store'
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
@@ -386,7 +386,8 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, avo
     this.model().beforeExpand();
     if (!this.model().isExpanded) {
         if (!this.model().isCollapsed) {
-            promise = this.subGraphController.loadForParentIsAlreadyOnMap().then(() => {
+            let controller = this.model().isMeta() ? this : this.subGraphController;
+            promise = controller.loadForParentIsAlreadyOnMap().then(() => {
                 if (avoidExpandChild) {
                     return true;
                 }
@@ -438,15 +439,29 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
         return Promise.reject();
     }
     let beforeMergeLabel = this.model().getLabel();
-    return VertexService.mergeTo(this.model(), distantVertexUri).then(() => {
+    let mergeService = this.model().isMeta() ? TagVertexService.mergeTo : VertexService.mergeTo;
+    return mergeService(this.model(), distantVertexUri).then(() => {
         this.model().loading = true;
         this.model().resetChildren();
         this.model().expand();
+        let modelUri = this.model().getUri();
+        if (this.model().isMeta()) {
+            CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
+                graphElement.getIdentifiers().forEach((tag) => {
+                    if (tag.getUri() === modelUri) {
+                        tag.setUri(modelUri)
+                    }
+                });
+            })
+        } else {
+            this.model().getDuplicates().forEach((duplicate) => {
+                duplicate.setUri(distantVertexUri);
+            });
+        }
         this.model().setUri(distantVertexUri);
         CurrentSubGraph.get().add(this.model());
-        return SubGraphController.withVertex(
-            this.model()
-        ).loadForParentIsAlreadyOnMap();
+        let controller = this.model().isMeta() ? this : this.subGraphController;
+        return controller.loadForParentIsAlreadyOnMap();
     }).then(() => {
         if (beforeMergeLabel.toLowerCase().trim() !== this.model().getLabel().toLowerCase().trim()) {
             let concatenatedLabel = beforeMergeLabel + " " + this.model().getLabel();

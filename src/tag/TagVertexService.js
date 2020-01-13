@@ -2,7 +2,7 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import Identification from '@/identifier/Identification'
+import Tag from '@/tag/Tag'
 import IdUri from '@/IdUri'
 import Service from '@/Service'
 
@@ -11,7 +11,7 @@ api.getForUri = function (uri) {
     return Service.geApi().get(
         uri
     ).then(function (response) {
-        return Identification.fromServerFormat(
+        return Tag.fromServerFormat(
             response.data
         );
     });

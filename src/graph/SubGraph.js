@@ -48,12 +48,12 @@ api.SubGraph = function (graph, centerUri, buildFacade) {
         this._buildVertices();
         this._buildEdges();
         this.groupRelations = [];
-        this.tags = [];
+        this.tagVertices = [];
     } else {
         this.edges = graph.edges;
         this.vertices = graph.vertices;
         this.groupRelations = graph.groupRelations || [];
-        this.tags = graph.tags || [];
+        this.tagVertices = graph.tags || [];
     }
     if (centerUri) {
         this.centerUri = centerUri;
@@ -65,7 +65,7 @@ api.SubGraph.prototype.add = function (graphElement) {
         graphElement.parentBubble = graphElement.parentVertex = graphElement;
     }
     if (graphElement.isMeta()) {
-        this.tags.push(graphElement);
+        this.tagVertices.push(graphElement);
     } else if (graphElement.isEdge()) {
         this.addEdge(graphElement);
         let endVertex = graphElement.isInverse() ? graphElement.getSourceVertex() : graphElement.getDestinationVertex();
@@ -140,6 +140,20 @@ api.SubGraph.prototype.remove = function (graphElement) {
         this.removeVertex(graphElement);
     } else if (graphElement.isGroupRelation()) {
         this.removeGroupRelation(graphElement);
+    } else if (graphElement.isMeta()) {
+        this.removeTag(graphElement);
+    }
+};
+
+api.SubGraph.prototype.removeTag = function (tag) {
+    let l = this.tagVertices.length;
+    while (l--) {
+        if (this.tagVertices[l].getId() === tag.getId()) {
+            this.tagVertices.splice(l, 1);
+            tag.getNextChildren().forEach((child) => {
+                this.remove(child)
+            });
+        }
     }
 };
 
@@ -266,7 +280,7 @@ api.SubGraph.prototype.getGroupRelationWithUiId = function (uiId) {
 };
 
 api.SubGraph.prototype.getTagBubbleWithUiId = function (uiId) {
-    return this.tags.filter((tag) => {
+    return this.tagVertices.filter((tag) => {
         return tag.uiId === uiId;
     })[0];
 };

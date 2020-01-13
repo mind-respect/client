@@ -1,6 +1,6 @@
 import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
-import Identification from '@/identifier/Identification'
+import Tag from '@/tag/Tag'
 import $ from 'jquery'
 
 const api = {};
@@ -34,7 +34,7 @@ api.generateIdentificationUri = function () {
     return "\/service\/users\/églantier\/graph\/identification\/" + generateUuid();
 };
 api.dummyIdentifier = function () {
-    let tag = Identification.withUri(
+    let tag = Tag.withUri(
         api.generateIdentificationUri()
     );
     tag.setExternalResourceUri(

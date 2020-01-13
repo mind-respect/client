@@ -212,14 +212,14 @@
     import Bubble from '@/components/graph/Bubble'
     import Selection from '@/Selection'
     import SubGraphController from '@/graph/SubGraphController'
-    import Meta from '@/identifier/Meta'
+    import TagVertex from '@/tag/TagVertex'
     import Color from '@/Color'
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import SubGraph from '@/graph/SubGraph'
     import Scroll from '@/Scroll'
     import AppController from '@/AppController'
     import Breakpoint from '@/Breakpoint'
-    import MetaController from '@/identifier/MetaController'
+    import TagVertexController from '@/tag/TagVertexController'
     import GraphElement from "@/graph-element/GraphElement";
     import GraphDraw from '@/draw/GraphDraw'
     import Dragged from '@/Dragged'
@@ -320,9 +320,9 @@
                     });
                 });
             }
-            let center = IdUri.isMetaUri(centerUri) ? Meta.withUri(centerUri) : GraphElement.withUri(centerUri);
+            let center = IdUri.isMetaUri(centerUri) ? TagVertex.withUri(centerUri) : GraphElement.withUri(centerUri);
             let promise = center.isMeta() ?
-                MetaController.withMeta(center).loadGraph() :
+                TagVertexController.withMeta(center).loadGraph() :
                 SubGraphController.withVertex(
                     center
                 ).load();

@@ -5,7 +5,7 @@ import RelationsAsTagScenario from '../scenario/RelationsAsTagScenario'
 import ThreeScenario from "../scenario/ThreeScenario"
 import GroupRelation from '@/group-relation/GroupRelation'
 import TestUtil from '../util/TestUtil'
-import Identification from '@/identifier/Identification'
+import Tag from '@/tag/Tag'
 import IdUri from '@/IdUri'
 import CreationDateScenario from "../scenario/CreationDateScenario";
 import ConvertVertexToGroupRelationScenario from "../scenario/ConvertVertexToGroupRelationScenario";
@@ -173,7 +173,7 @@ describe("GroupRelation", function () {
             centerBubble,
             "other relation"
         );
-        let dummyIdentifier = Identification.withUriAndLabel(
+        let dummyIdentifier = Tag.withUriAndLabel(
             TestUtil.generateVertexUri(),
             "dummy identification"
         );
@@ -214,7 +214,7 @@ describe("GroupRelation", function () {
             centerBubble,
             "other relation"
         );
-        let dummyIdentifier = Identification.withUriAndLabel(
+        let dummyIdentifier = Tag.withUriAndLabel(
             TestUtil.generateVertexUri(),
             "dummy identification"
         );
@@ -260,7 +260,7 @@ describe("GroupRelation", function () {
             possessionGroupRelation.getNumberOfChild()
         ).toBe(3);
         let possessionRelation = possessionGroupRelation.getNextBubble();
-        let dummyIdentifier = Identification.withUriAndLabel(
+        let dummyIdentifier = Tag.withUriAndLabel(
             TestUtil.generateVertexUri(),
             "dummy identification"
         );
@@ -291,7 +291,7 @@ describe("GroupRelation", function () {
             "some identification"
         )).toBeFalsy();
 
-        let someIdentification = Identification.withUriAndLabel(
+        let someIdentification = Tag.withUriAndLabel(
             TestUtil.generateVertexUri(),
             "some identification"
         );
@@ -334,7 +334,7 @@ describe("GroupRelation", function () {
         expect(
             r2ChildOfCenterBubble.isGroupRelation()
         ).toBeFalsy();
-        let identificationToRelation2 = Identification.fromFriendlyResource(
+        let identificationToRelation2 = Tag.fromFriendlyResource(
             r2ChildOfCenterBubble.model()
         );
         let relation1 = TestUtil.getChildWithLabel(centerBubble, "r1");
@@ -366,7 +366,7 @@ describe("GroupRelation", function () {
             centerBubble,
             "r2"
         );
-        let identificationToRelation2 = Identification.fromFriendlyResource(
+        let identificationToRelation2 = Tag.fromFriendlyResource(
             r2ChildOfCenterBubble.model()
         );
         let relation1 = TestUtil.getChildWithLabel(centerBubble, "r1");
@@ -392,7 +392,7 @@ describe("GroupRelation", function () {
         let newRelation = TestUtil.getChildWithLabel(centerBubble, "");
         await newRelation.controller().setLabel("new relation");
         newRelation.setComment("some comment");
-        let identificationToNewRelation = Identification.fromFriendlyResource(
+        let identificationToNewRelation = Tag.fromFriendlyResource(
             newRelation
         );
         let relation1 = TestUtil.getChildWithLabel(centerBubble, "r1");

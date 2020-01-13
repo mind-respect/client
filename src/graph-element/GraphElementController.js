@@ -10,15 +10,15 @@ import Selection from '@/Selection'
 import Store from '@/store'
 import router from '@/router'
 import Vue from 'vue'
-import TagService from '@/identifier/TagService'
+import TagService from '@/tag/TagService'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import EdgeService from '@/edge/EdgeService'
 import Vertex from '@/vertex/Vertex'
 import Edge from '@/edge/Edge'
 import SubGraphController from '@/graph/SubGraphController'
 import GraphDisplayer from '@/graph/GraphDisplayer'
-import MetaRelation from "@/identifier/MetaRelation";
-import Meta from "@/identifier/Meta";
+import TagRelation from "@/tag/TagRelation";
+import TagVertex from "@/tag/TagVertex";
 
 const api = {};
 let bubbleCutClipboard;
@@ -166,12 +166,12 @@ GraphElementController.prototype.setColor = function () {
 };
 
 GraphElementController.prototype._addTagAsChild = function (tag) {
-    let tagBubble = Meta.withUri(
+    let tagBubble = TagVertex.withUri(
         tag.getUri()
     );
     tagBubble.setOriginalMeta(tag);
     CurrentSubGraph.get().add(tagBubble);
-    let tagRelation = new MetaRelation(
+    let tagRelation = new TagRelation(
         this.model().isVertexType() ? this.model() : this.model().getParentVertex(),
         tagBubble
     );

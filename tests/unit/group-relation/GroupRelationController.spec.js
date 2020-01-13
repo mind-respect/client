@@ -5,7 +5,7 @@ import GroupRelationHavingAVertexChildWithOneChild from '../scenario/GroupRelati
 import GraphServiceMock from '../mock/GraphServiceMock'
 import TestUtil from '../util/TestUtil'
 import TwoLevelGroupRelationScenario from "../scenario/TwoLevelGroupRelationScenario";
-import TagService from "@/identifier/TagService";
+import TagService from "@/tag/TagService";
 
 
 describe("GroupRelationController", () => {

@@ -15,7 +15,7 @@ const RELATION_URIS = {
     "type": "type",
     "generic": "generic"
 };
-const Identification = {
+const Tag = {
     generateVoidUri: function () {
         return "/service" + UserService.currentUserUri() + "/void/ref/" + IdUri.uuid();
     },
@@ -23,7 +23,7 @@ const Identification = {
         return Object.values(
             serverFormat
         ).map((serverFormat) => {
-            let identifier = Identification.fromServerFormat(
+            let identifier = Tag.fromServerFormat(
                 serverFormat
             );
             identifier.setRelationExternalResourceUri(
@@ -38,10 +38,10 @@ const Identification = {
         });
     },
     fromServerFormat: function (serverFormat) {
-        return new Identification.Identification().init(serverFormat);
+        return new Tag.Tag().init(serverFormat);
     },
     fromFriendlyResource: function (friendlyResource) {
-        let identification = new Identification.Identification().init({
+        let identification = new Tag.Tag().init({
             externalResourceUri: friendlyResource.getUri(),
             graphElement: {
                 friendlyResource: FriendlyResource.clone(friendlyResource).getServerFormat()
@@ -56,7 +56,7 @@ const Identification = {
         return identification;
     },
     withUriLabelAndDescription: function (uri, label, description) {
-        return new Identification.Identification().init({
+        return new Tag.Tag().init({
             externalResourceUri: uri,
             graphElement: {
                 friendlyResource: FriendlyResource.withUriLabelAndDescription(
@@ -68,7 +68,7 @@ const Identification = {
         });
     },
     withUriAndLabel: function (uri, label) {
-        return new Identification.Identification().init({
+        return new Tag.Tag().init({
             externalResourceUri: uri,
             graphElement: {
                 friendlyResource: FriendlyResource.withUriAndLabel(
@@ -79,7 +79,7 @@ const Identification = {
         });
     },
     withUri: function (uri) {
-        return new Identification.Identification().init({
+        return new Tag.Tag().init({
             externalResourceUri: uri,
             graphElement: GraphElement.buildObjectWithUri(
                 uri
@@ -87,7 +87,7 @@ const Identification = {
         });
     },
     fromSearchResult: function (searchResult) {
-        let identification = Identification.withUriLabelAndDescription(
+        let identification = Tag.withUriLabelAndDescription(
             searchResult.uri,
             searchResult.label,
             searchResult.description
@@ -96,12 +96,12 @@ const Identification = {
     }
 };
 
-Identification.Identification = function () {
+Tag.Tag = function () {
 };
 
-Identification.Identification.prototype = new GraphElement.GraphElement();
+Tag.Tag.prototype = new GraphElement.GraphElement();
 
-Identification.Identification.prototype.init = function (serverFormat) {
+Tag.Tag.prototype.init = function (serverFormat) {
     this.identificationServerFormat = serverFormat;
     FriendlyResource.FriendlyResource.apply(
         this
@@ -113,58 +113,58 @@ Identification.Identification.prototype.init = function (serverFormat) {
     return this;
 };
 
-Identification.Identification.prototype.getExternalResourceUri = function () {
+Tag.Tag.prototype.getExternalResourceUri = function () {
     return decodeURIComponent(
         this.identificationServerFormat.externalResourceUri
     );
 };
 
-Identification.Identification.prototype.setExternalResourceUri = function (externalResourceUri) {
+Tag.Tag.prototype.setExternalResourceUri = function (externalResourceUri) {
     this.identificationServerFormat.externalResourceUri = externalResourceUri;
 };
 
-Identification.Identification.prototype.makeExternalUriATwiceReference = function () {
+Tag.Tag.prototype.makeExternalUriATwiceReference = function () {
     this.identificationServerFormat.externalResourceUri = this.identificationServerFormat.externalResourceUri + "/twice";
 };
 
-Identification.Identification.prototype.getServerFormat = function () {
+Tag.Tag.prototype.getServerFormat = function () {
     return this.identificationServerFormat;
 };
 
-Identification.Identification.prototype.makeGeneric = function () {
+Tag.Tag.prototype.makeGeneric = function () {
     this.setRelationExternalResourceUri(
         RELATION_URIS.generic
     );
     return this;
 };
-Identification.Identification.prototype.makeType = function () {
+Tag.Tag.prototype.makeType = function () {
     this.setRelationExternalResourceUri(
         RELATION_URIS.type
     );
     return this;
 };
-Identification.Identification.prototype.makeSameAs = function () {
+Tag.Tag.prototype.makeSameAs = function () {
     this.setRelationExternalResourceUri(
         RELATION_URIS.sameAs
     );
     return this;
 };
-Identification.Identification.prototype.refersToAGraphElement = function () {
+Tag.Tag.prototype.refersToAGraphElement = function () {
     return IdUri.isUriOfAGraphElement(
         this.getExternalResourceUri()
     );
 };
-Identification.Identification.prototype.setRelationExternalResourceUri = function (relationExternalResourceUri) {
+Tag.Tag.prototype.setRelationExternalResourceUri = function (relationExternalResourceUri) {
     return this.identificationServerFormat.relationExternalResourceUri = relationExternalResourceUri;
 };
-Identification.Identification.prototype.getRelationExternalResourceUri = function () {
+Tag.Tag.prototype.getRelationExternalResourceUri = function () {
     return this.identificationServerFormat.relationExternalResourceUri;
 };
-Identification.Identification.prototype.hasRelationExternalUri = function () {
+Tag.Tag.prototype.hasRelationExternalUri = function () {
     return undefined !== this.getRelationExternalResourceUri();
 };
 
-Identification.Identification.prototype.getJsonFormat = function () {
+Tag.Tag.prototype.getJsonFormat = function () {
     let serverFormat = this.getServerFormat();
     serverFormat.graphElement.friendlyResource.images = this.getImagesServerFormat();
     /*
@@ -177,7 +177,7 @@ Identification.Identification.prototype.getJsonFormat = function () {
     return serverFormat;
 };
 
-Identification.Identification.prototype.incrementNbReferences = function () {
+Tag.Tag.prototype.incrementNbReferences = function () {
     if (this.identificationServerFormat.nbReferences === undefined) {
         this.identificationServerFormat.nbReferences = 1;
         return;
@@ -185,35 +185,35 @@ Identification.Identification.prototype.incrementNbReferences = function () {
     return this.identificationServerFormat.nbReferences++;
 };
 
-Identification.Identification.prototype.getNbReferences = function () {
+Tag.Tag.prototype.getNbReferences = function () {
     if (this.identificationServerFormat.nbReferences === undefined) {
         return 0;
     }
     return this.identificationServerFormat.nbReferences;
 };
 
-Identification.Identification.prototype.isPublic = function () {
+Tag.Tag.prototype.isPublic = function () {
     return false;
 };
 
-Identification.Identification.prototype.hasIdentifications = function () {
+Tag.Tag.prototype.hasIdentifications = function () {
     return false;
 };
-Identification.Identification.prototype.getIdentifiers = function () {
+Tag.Tag.prototype.getIdentifiers = function () {
     return [this];
 };
 
-Identification.Identification.prototype.isPristine = function () {
+Tag.Tag.prototype.isPristine = function () {
     return false;
 };
 
-Identification.Identification.prototype.getFont = function () {
+Tag.Tag.prototype.getFont = function () {
     return {
         family: 'Roboto'
     };
 };
 
-Identification.Identification.prototype.buildExternalUrls = function () {
+Tag.Tag.prototype.buildExternalUrls = function () {
     this.url = this.uri().url();
     let externalUri = this.getExternalResourceUri();
     if (this.externalUrl) {
@@ -227,22 +227,22 @@ Identification.Identification.prototype.buildExternalUrls = function () {
     });
 };
 
-Identification.Identification.prototype.isFromWikidata = function () {
+Tag.Tag.prototype.isFromWikidata = function () {
     return WikidataUri.isAWikidataUri(
         this.getExternalResourceUri()
     );
 };
 
-Identification.Identification.prototype.getIcon = function () {
+Tag.Tag.prototype.getIcon = function () {
     return Icon.getForTag(this);
 };
 
-Identification.Identification.prototype.getGraphElementType = function () {
+Tag.Tag.prototype.getGraphElementType = function () {
     return GraphElementType.Meta;
 };
 
-Identification.Identification.prototype.isVoidReferenceTag = function () {
+Tag.Tag.prototype.isVoidReferenceTag = function () {
     return this.getExternalResourceUri().indexOf("/void/ref/") > -1;
 };
 
-export default Identification;
+export default Tag;
