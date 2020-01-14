@@ -66,6 +66,18 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             centerVertex.setLabel(
                 centerFromServer.getLabel()
             );
+            centerVertex.setComment(
+                centerFromServer.getComment()
+            );
+            centerVertex.setBackgroundColor(
+                centerFromServer.getBackgroundColor()
+            );
+            centerVertex.setFont(
+                centerFromServer.getFont()
+            );
+            centerFromServer.getIdentifiers().forEach((tag) => {
+                centerVertex.addIdentification(tag);
+            });
             subGraph.vertices[centerVertex.getUri()] = [centerVertex];
         } else {
             if (isCenterOnMap) {

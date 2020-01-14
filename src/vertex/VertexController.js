@@ -15,6 +15,7 @@ import TagVertexService from '@/tag/TagVertexService'
 import Vue from 'vue'
 import Store from '@/store'
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
+import router from '@/router'
 
 const api = {};
 
@@ -439,6 +440,9 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
         return Promise.reject();
     }
     let beforeMergeLabel = this.model().getLabel();
+    let beforeMergeComment = this.model().getComment();
+    let isBackgroundColorDefined = this.model().isBackgroundColorDefined();
+    let isFontDefined = this.model().isFontDefined();
     let mergeService = this.model().isMeta() ? TagVertexService.mergeTo : VertexService.mergeTo;
     return mergeService(this.model(), distantVertexUri).then(() => {
         this.model().loading = true;
@@ -463,22 +467,60 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
         let controller = this.model().isMeta() ? this : this.subGraphController;
         return controller.loadForParentIsAlreadyOnMap();
     }).then((mergedWith) => {
+        let promises = [];
         if (beforeMergeLabel.toLowerCase().trim() !== mergedWith.getLabel().toLowerCase().trim()) {
             let concatenatedLabel = beforeMergeLabel + " " + mergedWith.getLabel();
             if (concatenatedLabel !== mergedWith.getLabel()) {
-                this.setLabel(
-                    concatenatedLabel
+                promises.push(
+                    this.setLabel(
+                        concatenatedLabel
+                    )
                 );
             }
         }
-        // if (this.model().isVertex()) {
-        //     mergedWith.getIdentifiers().forEach((tag) => {
-        //         this.model().addIdentification(tag);
-        //     });
-        // }
-        GraphElementService.changeChildrenIndex(
-            this.model().getParentVertex()
+        if (beforeMergeComment.toLowerCase().trim() !== mergedWith.getComment().toLowerCase().trim()) {
+            let concatenatedComment = beforeMergeComment + " " + mergedWith.getComment();
+            if (concatenatedComment !== mergedWith.getComment()) {
+                promises.push(
+                    this.noteDo(
+                        concatenatedComment
+                    )
+                );
+            }
+        }
+        if (isBackgroundColorDefined && !mergedWith.isBackgroundColorDefined()) {
+            promises.push(
+                mergedWith.controller().setBackgroundColor(
+                    this.model().getBackgroundColor()
+                )
+            );
+        }
+        if (mergedWith.isBackgroundColorDefined() && !isBackgroundColorDefined) {
+            this.model().setBackgroundColor(
+                mergedWith.getBackgroundColor()
+            );
+        }
+        if (isFontDefined && !mergedWith.isFontDefined()) {
+            promises.push(
+                VertexService.saveFont(
+                    mergedWith.getUri(),
+                    this.model().getFont()
+                )
+            );
+        }
+        promises.push(
+            GraphElementService.changeChildrenIndex(
+                this.model().getParentVertex()
+            )
         );
+        if (this.model().isCenter) {
+            Promise.all(promises).then(() => {
+                router.push(
+                    mergedWith.uri().url()
+                );
+            });
+            return;
+        }
         this.model().loading = false;
         this.model().refreshChildren();
     });

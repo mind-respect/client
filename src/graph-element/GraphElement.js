@@ -426,6 +426,10 @@ GraphElement.GraphElement.prototype.getFont = function () {
     return this._graphElementServerFormat.font || GraphElement.DEFAULT_FONT;
 };
 
+GraphElement.GraphElement.prototype.isFontDefined = function () {
+    return this.getFont() !== GraphElement.DEFAULT_FONT;
+};
+
 GraphElement.GraphElement.prototype.setChildrenIndex = function (childrenIndex) {
     return this._graphElementServerFormat.childrenIndex = childrenIndex && typeof childrenIndex === 'string' ?
         JSON.parse(childrenIndex) :

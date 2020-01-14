@@ -165,11 +165,12 @@ GraphElementController.prototype.setColor = function () {
     Store.dispatch("setIsColorFlow", true);
 };
 
-GraphElementController.prototype.setColorDo = function (colors) {
+GraphElementController.prototype.setBackgroundColor = function (backgroundColor) {
     let model = this.model().isGroupRelation() ? this.model().getIdentification() : this.model();
-    GraphElementService.saveColors(
+    model.setBackgroundColor(backgroundColor);
+    return GraphElementService.saveColors(
         model.getUri(),
-        colors
+        model.getColors()
     );
 };
 

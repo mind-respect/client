@@ -116,9 +116,9 @@ api.listFonts = function () {
     );
 };
 
-api.saveFont = function (font) {
+api.saveFont = function (uri, font) {
     return Service.geApi().post(
-        CurrentSubGraph.get().center.getUri() + '/font',
+        uri + '/font',
         font
     );
 };

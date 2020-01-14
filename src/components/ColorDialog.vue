@@ -93,16 +93,16 @@
         },
         methods: {
             useDefault: function () {
-                this.bubble.controller().setColorDo({
-                    background: Color.DEFAULT_BACKGROUND_COLOR
-                });
+                this.bubble.controller().setBackgroundColor(
+                    Color.DEFAULT_BACKGROUND_COLOR
+                );
                 this.originalColor = Color.DEFAULT_BACKGROUND_COLOR;
                 this.dialog = false;
             },
             confirm: function () {
-                this.bubble.controller().setColorDo({
-                    background: this.color
-                });
+                this.bubble.controller().setBackgroundColor(
+                    this.color
+                );
                 this.originalColor = this.color;
                 this.dialog = false;
             },

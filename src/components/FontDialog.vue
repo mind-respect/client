@@ -180,7 +180,10 @@
                 this.center.setFont(
                     font
                 );
-                VertexService.saveFont(font).then(() => {
+                VertexService.saveFont(
+                    CurrentSubGraph.get().center.getUri(),
+                    font
+                ).then(() => {
                     this.dialog = false;
                 });
                 AppController.refreshFont(true);
