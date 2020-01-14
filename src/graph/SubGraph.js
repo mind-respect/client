@@ -223,7 +223,7 @@ api.SubGraph.prototype.getVertices = function () {
 };
 
 api.SubGraph.prototype.getGraphElements = function () {
-    return this.groupRelations.concat(this.getEdges()).concat(this.getVertices());
+    return this.groupRelations.concat(this.getEdges()).concat(this.getVertices()).concat(this.tagVertices);
 };
 
 api.SubGraph.prototype.getVertexWithUri = function (uri) {

@@ -76,7 +76,7 @@
             isColorFlow: function () {
                 if (this.$store.state.isColorFlow) {
                     this.dialog = true;
-                    this.originalColor = this.color = this.bubble.getColors().background || Color.DEFAULT_BACKGROUND_COLOR;
+                    this.originalColor = this.color = this.bubble.getBackgroundColor();
                 } else {
                     this.dialog = false;
                 }
@@ -93,22 +93,16 @@
         },
         methods: {
             useDefault: function () {
-                GraphElementService.saveColors(
-                    this.bubble,
-                    {
-                        background: Color.DEFAULT_BACKGROUND_COLOR
-                    }
-                );
+                this.bubble.controller().setColorDo({
+                    background: Color.DEFAULT_BACKGROUND_COLOR
+                });
                 this.originalColor = Color.DEFAULT_BACKGROUND_COLOR;
                 this.dialog = false;
             },
             confirm: function () {
-                GraphElementService.saveColors(
-                    this.bubble,
-                    {
-                        background: this.color
-                    }
-                );
+                this.bubble.controller().setColorDo({
+                    background: this.color
+                });
                 this.originalColor = this.color;
                 this.dialog = false;
             },

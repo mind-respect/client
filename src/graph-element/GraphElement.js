@@ -336,16 +336,18 @@ GraphElement.GraphElement.prototype.hasTagRelatedToUri = function (uri) {
 
 
 GraphElement.GraphElement.prototype.buildSelfIdentifier = function () {
-    let identification = GraphDisplayer.getTagApi().fromFriendlyResource(
+    let tag = GraphDisplayer.getTagApi().fromFriendlyResource(
         this
     );
-    identification.setLabel(
+    FriendlyResource.FriendlyResource.prototype.setLabel.call(
+        tag,
         this.getLabel()
     );
-    identification.setComment(
+    FriendlyResource.FriendlyResource.prototype.setComment.call(
+        tag,
         this.getComment()
     );
-    return identification;
+    return tag;
 };
 
 GraphElement.GraphElement.prototype.buildTwiceSelfIdentifier = function () {

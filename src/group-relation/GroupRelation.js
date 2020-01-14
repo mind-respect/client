@@ -310,6 +310,18 @@ GroupRelation.prototype.getWhenEmptyLabel = function () {
     return I18n.i18next.t("groupRelation:default");
 };
 
+GroupRelation.prototype.setBackgroundColor = function (backgroundColor) {
+    this.getIdentification().setBackgroundColor(backgroundColor);
+};
+
+GroupRelation.prototype.getColors = function () {
+    return this.getIdentification().getColors();
+};
+
+GroupRelation.prototype.getBackgroundColor = function () {
+    return this.getIdentification().getBackgroundColor()
+};
+
 api.GroupRelation = GroupRelation;
 
 export default api;

@@ -462,15 +462,20 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
         CurrentSubGraph.get().add(this.model());
         let controller = this.model().isMeta() ? this : this.subGraphController;
         return controller.loadForParentIsAlreadyOnMap();
-    }).then(() => {
-        if (beforeMergeLabel.toLowerCase().trim() !== this.model().getLabel().toLowerCase().trim()) {
-            let concatenatedLabel = beforeMergeLabel + " " + this.model().getLabel();
-            if (concatenatedLabel !== this.model().getLabel()) {
+    }).then((mergedWith) => {
+        if (beforeMergeLabel.toLowerCase().trim() !== mergedWith.getLabel().toLowerCase().trim()) {
+            let concatenatedLabel = beforeMergeLabel + " " + mergedWith.getLabel();
+            if (concatenatedLabel !== mergedWith.getLabel()) {
                 this.setLabel(
                     concatenatedLabel
                 );
             }
         }
+        // if (this.model().isVertex()) {
+        //     mergedWith.getIdentifiers().forEach((tag) => {
+        //         this.model().addIdentification(tag);
+        //     });
+        // }
         GraphElementService.changeChildrenIndex(
             this.model().getParentVertex()
         );

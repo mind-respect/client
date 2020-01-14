@@ -125,13 +125,12 @@ describe("EdgeController", () => {
             ).toBe(relation1Uri);
         });
 
-
         it("when a relation has an identifier adding a child changes to a group relation where the identifier is not the relation but the identifier", async () => {
             let threeBubblesScenario = await new ThreeScenario();
             let bubble1 = threeBubblesScenario.getBubble1InTree();
             let relation1 = TestUtil.getChildWithLabel(bubble1, "r1");
             let tag = TestUtil.dummyIdentifier();
-            tag.setLabel("moustache")
+            tag.setLabel("moustache");
             relation1.model().addIdentification(tag);
             await new EdgeController.RelationController(
                 relation1

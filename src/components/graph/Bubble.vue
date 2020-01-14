@@ -388,7 +388,7 @@
                 if (this.bubble.isCenter || this.bubble.isRelation() || this.bubble.isMeta()) {
                     if (this.bubble.isMeta()) {
                         let parentVertex = this.bubble.getParentVertex();
-                        if (!parentVertex.isBackgroundColorDefined() || this.bubble.getColors().background === parentVertex.getColors().background) {
+                        if (!parentVertex.isBackgroundColorDefined() || this.bubble.getBackgroundColor() === parentVertex.getBackgroundColor()) {
                             return ""
                         }
                     } else {

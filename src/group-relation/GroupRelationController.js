@@ -134,9 +134,6 @@ GroupRelationController.prototype.relateToDistantVertexWithUri = function (dista
 
 
 GroupRelationController.prototype.setLabel = function (newLabel) {
-    this.model().setLabel(
-        newLabel
-    );
     let tag = this.model().getIdentification();
     tag.setLabel(
         newLabel
@@ -148,9 +145,6 @@ GroupRelationController.prototype.setLabel = function (newLabel) {
 };
 
 GroupRelationController.prototype.noteDo = function (note) {
-    this.model().setComment(
-        note
-    );
     let tag = this.model().getIdentification();
     tag.setComment(
         note
@@ -195,14 +189,6 @@ GroupRelationController.prototype.remove = function () {
 GroupRelationController.prototype.addIdentification = function (tag) {
     return Promise.all(
         this.model().getClosestChildRelations().map((child) => {
-            return child.controller().addIdentification(tag, true);
-        })
-    );
-};
-
-GroupRelationController.prototype.addTagToChildVertex = function (tag) {
-    return Promise.all(
-        this.model().getClosestChildVertices().map((child) => {
             return child.controller().addIdentification(tag, true);
         })
     );

@@ -9,6 +9,7 @@ import WikidataService from '@/wikidata/WikidataService'
 import Icon from '@/Icon'
 import GraphElementType from '@/graph-element/GraphElementType'
 import UserService from "@/service/UserService";
+import CurrentSubGraph from "../graph/CurrentSubGraph";
 
 const RELATION_URIS = {
     "sameAs": "same-as",
@@ -41,19 +42,21 @@ const Tag = {
         return new Tag.Tag().init(serverFormat);
     },
     fromFriendlyResource: function (friendlyResource) {
-        let identification = new Tag.Tag().init({
+        let tag = new Tag.Tag().init({
             externalResourceUri: friendlyResource.getUri(),
             graphElement: {
                 friendlyResource: FriendlyResource.clone(friendlyResource).getServerFormat()
             }
         });
-        identification.setLabel(
+        FriendlyResource.FriendlyResource.prototype.setLabel.call(
+            tag,
             friendlyResource.getLabel()
         );
-        identification.setComment(
+        FriendlyResource.FriendlyResource.prototype.setLabel.call(
+            tag,
             friendlyResource.getComment()
         );
-        return identification;
+        return tag;
     },
     withUriLabelAndDescription: function (uri, label, description) {
         return new Tag.Tag().init({
@@ -165,7 +168,7 @@ Tag.Tag.prototype.hasRelationExternalUri = function () {
 };
 
 Tag.Tag.prototype.getJsonFormat = function () {
-    let serverFormat = this.getServerFormat();
+    let serverFormat = JSON.parse(JSON.stringify(this.getServerFormat()));
     serverFormat.graphElement.friendlyResource.images = this.getImagesServerFormat();
     /*
         serverFormat.friendlyResource.colors = JSON.stringify(serverFormat.friendlyResource.colors);
@@ -243,6 +246,54 @@ Tag.Tag.prototype.getGraphElementType = function () {
 
 Tag.Tag.prototype.isVoidReferenceTag = function () {
     return this.getExternalResourceUri().indexOf("/void/ref/") > -1;
+};
+
+Tag.Tag.prototype.setBackgroundColor = function (backgroundColor) {
+    this._applyToAllTags(function (tag) {
+        FriendlyResource.FriendlyResource.prototype.setBackgroundColor.call(
+            tag,
+            backgroundColor
+        );
+    });
+};
+
+Tag.Tag.prototype.setLabel = function (label) {
+    this._applyToAllTags(function (tag) {
+        FriendlyResource.FriendlyResource.prototype.setLabel.call(
+            tag,
+            label
+        );
+    });
+};
+
+Tag.Tag.prototype.setComment = function (comment) {
+    this._applyToAllTags(function (tag) {
+        FriendlyResource.FriendlyResource.prototype.setComment.call(
+            tag,
+            comment
+        );
+    });
+};
+
+Tag.Tag.prototype._applyToAllTags = function (visitor) {
+    visitor(this);
+    CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
+        let tag;
+        if (graphElement.isMeta() && graphElement.getOriginalMeta().getUri() === this.getUri()) {
+            tag = graphElement.getOriginalMeta();
+            visitor(graphElement);
+        } else if (graphElement.isGroupRelation() && graphElement.getIdentification().getUri() === this.getUri()) {
+            tag = graphElement.getIdentification();
+            visitor(graphElement);
+        } else {
+            tag = graphElement.getIdentifierHavingExternalUri(
+                this.getExternalResourceUri()
+            );
+        }
+        if (tag) {
+            visitor(tag);
+        }
+    });
 };
 
 export default Tag;

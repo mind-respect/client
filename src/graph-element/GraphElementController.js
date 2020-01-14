@@ -165,12 +165,20 @@ GraphElementController.prototype.setColor = function () {
     Store.dispatch("setIsColorFlow", true);
 };
 
+GraphElementController.prototype.setColorDo = function (colors) {
+    let model = this.model().isGroupRelation() ? this.model().getIdentification() : this.model();
+    GraphElementService.saveColors(
+        model.getUri(),
+        colors
+    );
+};
+
 GraphElementController.prototype._addTagAsChild = function (tag) {
     let tagBubble = TagVertex.withUri(
         tag.getUri()
     );
-    tagBubble.setOriginalMeta(tag);
     CurrentSubGraph.get().add(tagBubble);
+    tagBubble.setOriginalMeta(tag);
     let tagRelation = new TagRelation(
         this.model().isVertexType() ? this.model() : this.model().getParentVertex(),
         tagBubble

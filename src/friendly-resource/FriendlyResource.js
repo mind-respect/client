@@ -101,7 +101,10 @@ FriendlyResource.FriendlyResource.prototype.setColors = function (colors) {
 };
 
 FriendlyResource.FriendlyResource.prototype.getColors = function () {
-    return this._friendlyResourceServerFormat.colors || {};
+    if (!this._friendlyResourceServerFormat.colors) {
+        this._friendlyResourceServerFormat.colors = {};
+    }
+    return this._friendlyResourceServerFormat.colors;
 };
 
 FriendlyResource.FriendlyResource.prototype.setBackgroundColor = function (backgroundColor) {

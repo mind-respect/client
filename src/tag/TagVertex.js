@@ -5,6 +5,7 @@
 import Vertex from '@/vertex/Vertex'
 import I18n from '@/I18n'
 import GraphElementType from '@/graph-element/GraphElementType'
+import FriendlyResource from "../friendly-resource/FriendlyResource";
 
 const api = {};
 api.getWhenEmptyLabel = function () {
@@ -35,6 +36,7 @@ TagVertex.prototype.getGraphElementType = function () {
 };
 
 TagVertex.prototype.setOriginalMeta = function (originalMeta) {
+    this.originalMeta = originalMeta;
     this.setLabel(originalMeta.getLabel());
     this.setComment(originalMeta.getComment());
     this.setChildrenIndex(
@@ -46,7 +48,6 @@ TagVertex.prototype.setOriginalMeta = function (originalMeta) {
     this.setFont(
         originalMeta.getFont()
     );
-    this.originalMeta = originalMeta;
 };
 
 TagVertex.prototype.getOriginalMeta = function () {
@@ -65,5 +66,19 @@ TagVertex.prototype.getNumberOfChild = function () {
         return this.getOriginalMeta().getNbReferences() - 1;
     }
 };
+
+TagVertex.prototype.setBackgroundColor = function (backgroundColor) {
+    this.getOriginalMeta().setBackgroundColor(backgroundColor);
+};
+
+TagVertex.prototype.setLabel = function (label) {
+    this.getOriginalMeta().setLabel(label);
+};
+
+TagVertex.prototype.setComment = function (label) {
+    this.getOriginalMeta().setComment(label);
+};
+
+
 
 export default api;

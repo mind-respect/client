@@ -42,10 +42,9 @@ api.removeCollection = function (graphElements) {
     });
 };
 
-api.saveColors = function (bubble, colors) {
-    bubble = bubble || CurrentSubGraph.get().center;
+api.saveColors = function (uri, colors) {
     return Service.geApi().post(
-        bubble.getUri() + '/colors',
+        uri + '/colors',
         colors
     );
 };
