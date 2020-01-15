@@ -322,6 +322,11 @@ GroupRelation.prototype.getBackgroundColor = function () {
     return this.getIdentification().getBackgroundColor()
 };
 
+GroupRelation.prototype.setNbReferences = function (nbReferences) {
+    this.getIdentification().setNbReferences(nbReferences);
+};
+
+
 api.GroupRelation = GroupRelation;
 
 export default api;

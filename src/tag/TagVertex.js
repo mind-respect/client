@@ -37,6 +37,7 @@ TagVertex.prototype.getGraphElementType = function () {
 
 TagVertex.prototype.setOriginalMeta = function (originalMeta) {
     this.originalMeta = originalMeta;
+    this.addIdentification(originalMeta);
     this.setLabel(originalMeta.getLabel());
     this.setComment(originalMeta.getComment());
     this.setChildrenIndex(
@@ -48,6 +49,9 @@ TagVertex.prototype.setOriginalMeta = function (originalMeta) {
     this.setFont(
         originalMeta.getFont()
     );
+    this.setNbReferences(
+        originalMeta.getNbReferences()
+    )
 };
 
 TagVertex.prototype.getOriginalMeta = function () {
@@ -79,6 +83,9 @@ TagVertex.prototype.setComment = function (label) {
     this.getOriginalMeta().setComment(label);
 };
 
+TagVertex.prototype.setNbReferences = function (nbReferences) {
+    this.getOriginalMeta().setNbReferences(nbReferences);
+};
 
 
 export default api;

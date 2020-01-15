@@ -453,7 +453,7 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
             CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
                 graphElement.getIdentifiers().forEach((tag) => {
                     if (tag.getUri() === modelUri) {
-                        tag.setUri(modelUri)
+                        tag.setUri(distantVertexUri)
                     }
                 });
             })

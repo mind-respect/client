@@ -195,6 +195,14 @@ Tag.Tag.prototype.getNbReferences = function () {
     return this.identificationServerFormat.nbReferences;
 };
 
+Tag.Tag.prototype.setNbReferences = function (nbReferences) {
+    this._applyToAllTags(function (tag) {
+        if (tag.identificationServerFormat) {
+            tag.identificationServerFormat.nbReferences = nbReferences;
+        }
+    });
+};
+
 Tag.Tag.prototype.isPublic = function () {
     return false;
 };

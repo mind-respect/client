@@ -50,18 +50,7 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap) {
         let centerTag = metaSubGraph.getMetaCenter();
         let centerBubble = this.model();
         if (isParentAlreadyOnMap) {
-            centerBubble.setLabel(
-                centerTag.getLabel()
-            );
-            centerBubble.setComment(
-                centerTag.getComment()
-            );
-            centerBubble.setBackgroundColor(
-                centerTag.getBackgroundColor()
-            );
-            centerBubble.setFont(
-                centerTag.getFont()
-            );
+            centerBubble.setOriginalMeta(centerTag);
         } else {
             centerBubble.makeCenter();
             CurrentSubGraph.get().add(centerBubble);
