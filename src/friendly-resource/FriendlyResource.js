@@ -115,6 +115,39 @@ FriendlyResource.FriendlyResource.prototype.getBackgroundColor = function () {
     return this.getColors().background || Color.DEFAULT_BACKGROUND_COLOR;
 };
 
+FriendlyResource.FriendlyResource.prototype.resolveBackgroundColor = function () {
+    if (this.isRelation() || this.isMeta()) {
+        if (this.isMeta()) {
+            let parentVertex = this.getParentVertex();
+            if (!parentVertex.isBackgroundColorDefined() || this.getBackgroundColor() === parentVertex.getBackgroundColor()) {
+                return Color.DEFAULT_BACKGROUND_COLOR;
+            }
+        } else {
+            return Color.DEFAULT_BACKGROUND_COLOR;
+        }
+    }
+    let backgroundColor = this.getBackgroundColor();
+    if (!this.isBackgroundColorDefined()) {
+        let tagsWithColors = this.getRelevantTags().filter((tag) => {
+            let parentBubble = this.getParentBubble();
+            let parentVertex = this.getParentVertex();
+            if (parentBubble.isGroupRelation() && parentBubble.getGroupRelationInSequenceWithTag(tag)) {
+                return false;
+            } else if (parentVertex.isMeta() && parentVertex.getOriginalMeta().getUri() === tag.getUri()) {
+                return false;
+            } else {
+                return tag.isBackgroundColorDefined() && (!CurrentSubGraph.get() || tag.getUri() !== CurrentSubGraph.get().center.getUri());
+            }
+        });
+        if (tagsWithColors.length) {
+            backgroundColor = tagsWithColors[0].getColors().background;
+        } else {
+            return Color.DEFAULT_BACKGROUND_COLOR;
+        }
+    }
+    return backgroundColor
+};
+
 FriendlyResource.FriendlyResource.prototype.isBackgroundColorDefined = function () {
     return this.getBackgroundColor() !== Color.DEFAULT_BACKGROUND_COLOR;
 };

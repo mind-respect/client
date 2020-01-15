@@ -62,10 +62,11 @@
                                 >
                                     <v-list-item-content>
                                         <v-list-item-title class="subtitle-1 font-weight-bold">
-                                            <v-badge color="transparent" :value="center.showIcon() || center.getColors().background !== undefined"
+                                            <v-badge color="transparent"
+                                                     :value="center.showIcon() || center.isColorDefined"
                                                      class="center-label">
                                                 <template v-slot:badge>
-                                                    <v-icon :color="center.getColors().background || 'grey'">
+                                                    <v-icon :color="center.color">
                                                         {{center.getIcon()}}
                                                     </v-icon>
                                                 </template>
@@ -209,6 +210,7 @@
     import LoadingFlow from "@/LoadingFlow";
     import IdUri from '@/IdUri'
     import Touch from 'vuetify/es5/directives/touch'
+    import Color from "../../Color";
 
     const ADDRESS_BAR_HEIGHT = 60;
 
@@ -257,13 +259,6 @@
             });
         },
         methods: {
-            color: function (center) {
-                let backgroundColor = center.getColors().background;
-                if (!backgroundColor) {
-                    return "";
-                }
-                return "box-shadow:" + backgroundColor + " -16px 0px 20px 2px;border-radius:20px;"
-            },
             contextMenu: function (event, center) {
                 if (this.$vuetify.breakpoint.mdAndUp) {
                     return;

@@ -217,6 +217,7 @@
     import AppController from '@/AppController'
     import GraphDisplayer from '@/graph/GraphDisplayer'
     import GraphDisplayerFactory from '@/graph/GraphDisplayerFactory'
+    import CurrentSubGraph from "../graph/CurrentSubGraph";
 
     const WHEN_OWNER_ONLY_TAB_MENUS = [2, 3];
 
@@ -454,6 +455,7 @@
             }
         },
         mounted: function () {
+            CurrentSubGraph.set(undefined);
             GraphDisplayer.setImplementation(
                 GraphDisplayerFactory.getByName(
                     "relative_tree"

@@ -385,34 +385,15 @@
                 return "";
             },
             boxShadow: function (isInset) {
-                if (this.bubble.isCenter || this.bubble.isRelation() || this.bubble.isMeta()) {
-                    if (this.bubble.isMeta()) {
-                        let parentVertex = this.bubble.getParentVertex();
-                        if (!parentVertex.isBackgroundColorDefined() || this.bubble.getBackgroundColor() === parentVertex.getBackgroundColor()) {
-                            return ""
-                        }
-                    } else {
-                        return "";
-                    }
+                let backgroundColor = this.bubble.resolveBackgroundColor();
+                if (this.bubble.isCenter) {
+                    Color.refreshBackgroundColor(
+                        backgroundColor
+                    );
+                    return;
                 }
-                let backgroundColor = this.bubble.getColors().background;
-                if (!this.bubble.isBackgroundColorDefined()) {
-                    let tagsWithColors = this.bubble.getRelevantTags().filter((tag) => {
-                        let parentBubble = this.bubble.getParentBubble();
-                        let parentVertex = this.bubble.getParentVertex();
-                        if (parentBubble.isGroupRelation() && parentBubble.getGroupRelationInSequenceWithTag(tag)) {
-                            return false;
-                        } else if (parentVertex.isMeta() && parentVertex.getOriginalMeta().getUri() === tag.getUri()) {
-                            return false;
-                        } else {
-                            return tag.isBackgroundColorDefined() && tag.getUri() !== CurrentSubGraph.get().center.getUri();
-                        }
-                    });
-                    if (tagsWithColors.length) {
-                        backgroundColor = tagsWithColors[0].getColors().background;
-                    } else {
-                        return "";
-                    }
+                if (backgroundColor === Color.DEFAULT_BACKGROUND_COLOR) {
+                    return;
                 }
                 let xOffset = this.isLeft ? 1 : -1;
                 return "box-shadow:" + (isInset ? "inset " : "") + backgroundColor + " " + xOffset + "px 0px 8px 2px;border-radius:20px;"

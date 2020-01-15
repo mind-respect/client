@@ -8,6 +8,7 @@ import DateUtil from '@/DateUtil'
 import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Icon from '@/Icon'
+import Color from '@/Color'
 
 export default {
     fromServerFormat: function (centersServerFormat) {
@@ -36,7 +37,17 @@ CenterGraphElement.prototype.init = function (serverFormat) {
         this,
         this.centerGraphElementServerFormat.graphElement
     );
+    this.color = this.resolveColor();
+    this.isColorDefined = this.color !== 'grey';
     return this;
+};
+
+CenterGraphElement.prototype.resolveColor = function () {
+    let backgroundColor = this.resolveBackgroundColor();
+    if (backgroundColor === Color.DEFAULT_BACKGROUND_COLOR) {
+        return 'grey';
+    }
+    return backgroundColor;
 };
 
 CenterGraphElement.prototype.getNbNeighborsFromFlow = function (flow, isOwner) {

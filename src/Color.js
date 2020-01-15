@@ -12,7 +12,7 @@ const Color = {
         return 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + 96 + '%)';
     },
     refreshBackgroundColor: function (backgroundColor) {
-        backgroundColor = backgroundColor || CurrentSubGraph.get().center.getBackgroundColor();
+        backgroundColor = backgroundColor || CurrentSubGraph.get().center.resolveBackgroundColor();
         let drawnGraph = document.getElementById("drawn_graph");
         if (drawnGraph) {
             drawnGraph.style.background = "radial-gradient(rgba(0, 0, 0, 0) 15%, " + backgroundColor + " 100%"
