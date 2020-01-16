@@ -47,9 +47,30 @@
                                 'center-flex' : centers && centers.length && loaded && $vuetify.breakpoint.smAndDown
                             }"
                     >
+                        <div class="subtitle-1 font-weight-bold mt-2 mb-2" v-if="center.tagIndex !== undefined">
+                                            <span>
+                                                <v-icon v-show="center.tagIndex > 0"
+                                                        @click="center.tagIndex--">chevron_left</v-icon>
+                                                <v-chip
+                                                        class="mt-0 ml-0"
+                                                        :color="center.getRelevantTags()[center.tagIndex].getBackgroundColor()"
+                                                        :dark="shouldTextBeWhiteFromBackgroundColor(center.getRelevantTags()[center.tagIndex].getBackgroundColor())"
+                                                        small
+                                                        :to="center.getRelevantTags()[center.tagIndex].uri().url()"
+                                                >
+                                                    <v-icon left small>label</v-icon>
+                                                    {{center.getRelevantTags()[center.tagIndex].getLabel()}}
+                                                </v-chip>
+                                                <v-btn icon v-show="center.tagIndex + 1 < center.nbTags"
+                                                       @click="center.tagIndex++">
+                                                    <v-icon>chevron_right</v-icon>
+                                                </v-btn>
+                                            </span>
+                        </div>
                         <v-hover>
                             <v-list two-line slot-scope="{ hover }" :class="{
-                                    'center-list': centers && centers.length && loaded && $vuetify.breakpoint.smAndDown
+                                    'center-list': centers && centers.length && loaded && $vuetify.breakpoint.smAndDown,
+                                    'pt-0' :center.tagIndex !== undefined
                                 }">
                                 <v-list-item @click="go($event, center)"
                                              v-touch="{
@@ -60,7 +81,9 @@
                                              @touchend="touchend($event, center)"
                                              @contextmenu="contextMenu($event, center)"
                                 >
-                                    <v-list-item-content>
+                                    <v-list-item-content :class="{
+                                        'pt-0' :center.tagIndex !== undefined
+                                    }">
                                         <v-list-item-title class="subtitle-1 font-weight-bold">
                                             <v-badge color="transparent"
                                                      :value="center.showIcon() || center.isColorDefined"
@@ -70,7 +93,18 @@
                                                         {{center.getIcon()}}
                                                     </v-icon>
                                                 </template>
-                                                {{center.getLabel()}}
+                                                <v-chip
+                                                        v-if="center.isMeta()"
+                                                        :color="center.getBackgroundColor()"
+                                                        :dark="shouldTextBeWhiteFromBackgroundColor(center.getBackgroundColor())"
+                                                        @click="go($event, center)"
+                                                >
+                                                    <v-icon left small>label</v-icon>
+                                                    {{center.getLabel()}}
+                                                </v-chip>
+                                                <span v-else>
+                                                    {{center.getLabel()}}
+                                                </span>
                                             </v-badge>
                                             <v-icon class="ml-4 mb-1 float-right" color="grey"
                                                     v-if="!center.isPattern()"
@@ -250,6 +284,10 @@
                     this.isSwiping = false;
                     center.labelSearch = center.getLabel();
                     center.contextSearch = Object.values(center.getContext()).join(' ');
+                    if (center.hasIdentifications()) {
+                        center.tagIndex = 0;
+                        center.nbTags = center.getRelevantTags().length;
+                    }
                     return center;
                 });
                 this.loaded = true;
@@ -259,6 +297,9 @@
             });
         },
         methods: {
+            shouldTextBeWhiteFromBackgroundColor: function(hexColor){
+                return Color.getContrast(hexColor) === 'white'
+            },
             contextMenu: function (event, center) {
                 if (this.$vuetify.breakpoint.mdAndUp) {
                     return;

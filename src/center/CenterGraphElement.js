@@ -37,8 +37,10 @@ CenterGraphElement.prototype.init = function (serverFormat) {
         this,
         this.centerGraphElementServerFormat.graphElement
     );
-    this.color = this.resolveColor();
-    this.isColorDefined = this.color !== 'grey';
+    if(!this.isMeta()){
+        this.color = this.resolveColor();
+        this.isColorDefined = this.color !== 'grey';
+    }
     return this;
 };
 
@@ -142,7 +144,7 @@ CenterGraphElement.prototype.isPattern = function () {
 };
 
 CenterGraphElement.prototype.showIcon = function () {
-    return this.isPattern() || !IdUri.isVertexUri(this.getUri());
+    return !this.isMeta() && (this.isPattern() || !IdUri.isVertexUri(this.getUri()));
 };
 
 

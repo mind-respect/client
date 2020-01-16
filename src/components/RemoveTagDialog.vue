@@ -137,7 +137,7 @@
         },
         methods: {
             remove: async function () {
-                let controller = new TagRelationController.TagRelationController(
+                let controller = new TagRelationController.MetaRelationController(
                     this.bubbles.map((vertex) => {
                         return vertex.getParentBubble();
                     })

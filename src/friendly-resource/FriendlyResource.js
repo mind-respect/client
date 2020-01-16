@@ -119,7 +119,7 @@ FriendlyResource.FriendlyResource.prototype.resolveBackgroundColor = function ()
     if (this.isRelation() || this.isMeta()) {
         if (this.isMeta()) {
             let parentVertex = this.getParentVertex();
-            if (!parentVertex.isBackgroundColorDefined() || this.getBackgroundColor() === parentVertex.getBackgroundColor()) {
+            if (!this.isCenter && (!parentVertex.isBackgroundColorDefined() || this.getBackgroundColor() === parentVertex.getBackgroundColor())) {
                 return Color.DEFAULT_BACKGROUND_COLOR;
             }
         } else {

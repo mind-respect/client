@@ -11,8 +11,18 @@ const Color = {
         var hsl = Color.hex2Hsl(color);
         return 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + 96 + '%)';
     },
+    getContrast: function (hexcolor) {
+        // https://stackoverflow.com/a/11868398
+        hexcolor = hexcolor.replace("#", "");
+        let  r = parseInt(hexcolor.substr(0,2),16);
+        let g = parseInt(hexcolor.substr(2,2),16);
+        let b = parseInt(hexcolor.substr(4,2),16);
+        let yiq = ((r*299)+(g*587)+(b*114))/1000;
+        return (yiq >= 128) ? 'black' : 'white';
+    },
     refreshBackgroundColor: function (backgroundColor) {
-        backgroundColor = backgroundColor || CurrentSubGraph.get().center.resolveBackgroundColor();
+        let center = CurrentSubGraph.get().center;
+        backgroundColor = backgroundColor || center.resolveBackgroundColor();
         let drawnGraph = document.getElementById("drawn_graph");
         if (drawnGraph) {
             drawnGraph.style.background = "radial-gradient(rgba(0, 0, 0, 0) 15%, " + backgroundColor + " 100%"
