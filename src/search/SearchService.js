@@ -22,7 +22,7 @@ api.tags = function (term, nbSkip) {
 };
 api.ownTagsOnly = function (term, nbSkip) {
     return resultsFromProviders([
-        api.searchForAllOwnResources(term, nbSkip)
+        api._ownTagsOnly(term, nbSkip)
     ]);
 };
 api.searchForAllOwnResources = function (searchText, nbSkip) {
@@ -36,6 +36,7 @@ api.searchForAllOwnResources = function (searchText, nbSkip) {
     }
     return resultsFromProviders(providers);
 };
+
 api._searchForAllOwnResources = function (searchText, nbSkip) {
     return Service.api().post(
         UserService.currentUserUri() + "/search/own_all_resource/auto_complete",
@@ -86,6 +87,18 @@ api.ownVertices = function (searchText, nbSkip) {
         }
     ).then((response) => {
         return formattedOwnResults(response.data);
+    });
+};
+
+api._ownTagsOnly = function (searchText, nbSkip) {
+    return Service.api().post(
+        UserService.currentUserUri() + "/search/own_tags/auto_complete",
+        {
+            "searchText": searchText,
+            nbSkip: nbSkip
+        }
+    ).then((response) => {
+        return formattedOwnResults(response.data)
     });
 };
 
