@@ -351,7 +351,7 @@ VertexController.prototype.becomeParent = function (child) {
         );
         if (!child.isGroupRelation()) {
             promises.push(
-                movedEdge.getParentBubble().controller().becomeExParent(movedEdge)
+                movedEdge.getParentBubble().controller().becomeExParent(movedEdge, this.model())
             );
         }
     }

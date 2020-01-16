@@ -7,8 +7,8 @@ import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import IdUri from '@/IdUri'
 import ConvertVertexToGroupRelationScenario from "../scenario/ConvertVertexToGroupRelationScenario";
 import LeaveContextChoiceAScenario from "../scenario/LeaveContextChoiceAScenario";
-import LeaveContextTechChoiceScenarioScenario from "../scenario/LeaveContextChoiceAScenario";
 import LeaveContextTechChoiceScenario from "../scenario/LeaveContextTechChoiceScenario";
+import TwoLevelGroupRelationScenario from "../scenario/TwoLevelGroupRelationScenario";
 
 describe("EdgeController", () => {
     describe("remove", function () {
@@ -196,6 +196,35 @@ describe("EdgeController", () => {
                 newGroupRelation.getNumberOfChild()
             ).toBe(2);
         });
+        it("adds self as identifier when under a group relation", async () => {
+            let scenario = await new TwoLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+
+            let group1 = TestUtil.getChildWithLabel(center, "group1");
+            let group2 = TestUtil.getChildWithLabel(group1, "group2");
+            group2.expand();
+            let g22 = TestUtil.getChildWithLabel(group2, "g22");
+            let g23 = TestUtil.getChildWithLabel(group2, "g23");
+            expect(
+                g23.hasIdentification(group2.getIdentification())
+            ).toBeTruthy();
+            expect(
+                g23.hasIdentification(group1.getIdentification())
+            ).toBeTruthy();
+            expect(
+                g23.getIdentifierHavingExternalUri(g22.getUri())
+            ).toBeFalsy();
+            await g23.getNextBubble().controller().moveUnderParent(g22);
+            expect(
+                g23.hasIdentification(group2.getIdentification())
+            ).toBeTruthy();
+            expect(
+                g23.hasIdentification(group1.getIdentification())
+            ).toBeTruthy();
+            expect(
+                g23.getIdentifierHavingExternalUri(g22.getUri())
+            ).not.toBeFalsy();
+        });
     });
 
     //todo
@@ -293,10 +322,12 @@ describe("EdgeController", () => {
             "EdgeService",
             "changeSourceVertex"
         );
+        changeSourceVertexSpy.mockClear();
         let changeDestinationVertexSpy = Mock.getSpy(
             "EdgeService",
             "changeDestinationVertex"
         );
+        changeDestinationVertexSpy.mockClear();
         let scenario = await new ThreeScenario();
         let b1 = scenario.getBubble1InTree();
         let r1 = TestUtil.getChildWithLabel(
@@ -696,7 +727,7 @@ describe("EdgeController", () => {
                 choiceA.getNumberOfChild()
             ).toBe(0);
         });
-        it("increments number of references of tag to parent when destination vertex is removed", async ()=>{
+        it("increments number of references of tag to parent when destination vertex is removed", async () => {
             let scenario = await new LeaveContextChoiceAScenario();
             let center = scenario.getCenterInTree();
             let techChoice = TestUtil.getChildDeepWithLabel(center, "tech choice");

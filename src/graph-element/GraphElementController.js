@@ -503,7 +503,7 @@ GraphElementController.prototype._moveToExecute = async function (otherEdge, isA
     let parentOfOtherBubble = otherEdge.getParentBubble();
     if (!parentOfOtherBubble.isSameUri(movedEdge.getParentBubble())) {
         promises.push(
-            movedEdge.getParentBubble().controller().becomeExParent(movedEdge)
+            movedEdge.getParentBubble().controller().becomeExParent(movedEdge, otherEdge)
         );
     }
     // if (parentOfOtherBubble.isMeta()) {

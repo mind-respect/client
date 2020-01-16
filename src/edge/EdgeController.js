@@ -91,16 +91,16 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
     }
     let promises = [];
     Selection.removeAll();
-    let parentFork = this.model().getParentFork();
+    let previousParentFork = this.model().getParentFork();
     let childParentFork = adoptedChild.getParentFork();
     promises.push(
-        childParentFork.controller().becomeExParent(adoptedChild)
+        childParentFork.controller().becomeExParent(adoptedChild, this.model())
     );
     childParentFork.removeChild(adoptedChild, false, true);
     let newGroupRelation = this._convertToGroupRelation();
     adoptedChild.setParentVertex(this.model().getParentVertex());
     newGroupRelation.addChild(adoptedChild);
-    parentFork.replaceChild(
+    previousParentFork.replaceChild(
         this.model(),
         newGroupRelation
     );
@@ -115,7 +115,7 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
     } else {
         moveEdge.bind(this)(adoptedChild);
     }
-    parentFork.refreshChildren();
+    previousParentFork.refreshChildren();
     return Promise.all(promises).then(() => {
         CurrentSubGraph.get().add(newGroupRelation);
         newGroupRelation.expand(true);
@@ -128,7 +128,7 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
     });
 
     function moveEdge(movedEdge) {
-        let identifiers = this.model().hasIdentifications() ?
+        let identifiers = this.model().hasIdentifications() && !previousParentFork.isGroupRelation() ?
             this.model().getIdentifiers() :
             this.model().getIdentifiersIncludingSelf();
         promises.push(

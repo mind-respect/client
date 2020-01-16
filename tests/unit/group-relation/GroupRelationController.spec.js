@@ -196,7 +196,7 @@ describe("GroupRelationController", () => {
                 return Promise.resolve();
             });
             group1.expand();
-            await group1.controller().becomeExParent(group2);
+            await group1.controller().becomeExParent(group2, center);
             expect(removeTagSpy).toHaveBeenCalled();
             group2.expand();
             expect(graphElementUris.indexOf(
@@ -223,7 +223,7 @@ describe("GroupRelationController", () => {
             });
             group1.expand();
             group2.collapse();
-            await group1.controller().becomeExParent(group2);
+            await group1.controller().becomeExParent(group2, center);
             expect(graphElementUris.indexOf(
                 group2.getNextChildrenEvenIfCollapsed()[0].getUri()
             ) > -1).toBeTruthy();
@@ -248,6 +248,21 @@ describe("GroupRelationController", () => {
             expect(
                 group1.getDownBubble().getUri()
             ).toBe(group2.getUri());
+        });
+        it("prevents removing tag when new parent is in the same series of group relations", async () => {
+            let scenario = await new TwoLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let group1 = TestUtil.getChildWithLabel(center, "group1");
+            let group2 = TestUtil.getChildWithLabel(group1, "group2");
+            group2.expand();
+            let g22 = TestUtil.getChildWithLabel(group2, "g22");
+            let g23 = TestUtil.getChildWithLabel(group2, "g23");
+            TagService.remove.mockClear();
+            jest.spyOn(TagService, "remove");
+            await g23.getNextBubble().controller().moveUnderParent(g22);
+            expect(
+                TagService.remove
+            ).toHaveBeenCalledTimes(0)
         });
     });
     describe("removeIdentifier", () => {

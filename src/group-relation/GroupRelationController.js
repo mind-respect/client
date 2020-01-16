@@ -156,9 +156,15 @@ GroupRelationController.prototype.noteDo = function (note) {
     });
 };
 
-GroupRelationController.prototype.becomeExParent = function (movedEdge) {
+GroupRelationController.prototype.becomeExParent = function (movedEdge, newParent) {
     let promises = [];
     let previousParentGroupRelation = this.model().getGreatestGroupRelationAncestor();
+    let isMovingUnderSameGroupRelation = previousParentGroupRelation.getSerialGroupRelations().some((groupRelation) => {
+        return newParent.getParentBubble().getId() === groupRelation.getId();
+    });
+    if (isMovingUnderSameGroupRelation) {
+        return Promise.resolve();
+    }
     let groupRelationToStop;
     if (movedEdge.isGroupRelation()) {
         groupRelationToStop = movedEdge;
