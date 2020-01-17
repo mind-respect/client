@@ -80,7 +80,6 @@
                                                         @click="go($event, center)"
                                                         label
                                                 >
-                                                    <v-icon left small>label</v-icon>
                                                     {{center.getLabel()}}
                                                 </v-chip>
                                                 <span v-else>
