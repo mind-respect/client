@@ -65,11 +65,11 @@
                                         'pb-0' :center.tagIndex !== undefined
                                     }">
                                         <v-list-item-title class="subtitle-1 font-weight-bold">
-                                            <v-badge color="transparent"
+                                            <v-badge :color="center.color"
                                                      :value="!center.isMeta() && (center.showIcon() || center.isColorDefined)"
                                                      class="center-label">
                                                 <template v-slot:badge>
-                                                    <v-icon :color="center.color">
+                                                    <v-icon :dark="shouldTextBeWhiteFromBackgroundColor(center.color)">
                                                         {{center.getIcon()}}
                                                     </v-icon>
                                                 </template>
