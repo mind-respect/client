@@ -186,7 +186,6 @@
                                     small
                                     :dark="shouldTextBeWhiteFromBackgroundColor(tag.getChipBackgroundColor())"
                                     :to="tag.uri().url()"
-                                    outlined
                             >
                                 {{tag.getLabel()}}
                             </v-chip>
