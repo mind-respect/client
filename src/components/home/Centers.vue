@@ -69,7 +69,7 @@
                                                      :value="!center.isMeta() && (center.showIcon() || center.isColorDefined)"
                                                      class="center-label">
                                                 <template v-slot:badge>
-                                                    <v-icon :dark="shouldTextBeWhiteFromBackgroundColor(center.color)">
+                                                    <v-icon :dark="center.color && shouldTextBeWhiteFromBackgroundColor(center.color)">
                                                         {{center.getIcon()}}
                                                     </v-icon>
                                                 </template>

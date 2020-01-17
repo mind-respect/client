@@ -9,6 +9,7 @@ import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Icon from '@/Icon'
 import Color from '@/Color'
+import colors from "vuetify/es5/util/colors";
 
 export default {
     fromServerFormat: function (centersServerFormat) {
@@ -39,7 +40,7 @@ CenterGraphElement.prototype.init = function (serverFormat) {
     );
     if (!this.isMeta()) {
         this.color = this.resolveColor();
-        this.isColorDefined = this.color !== 'grey';
+        this.isColorDefined = this.color !== colors.grey.base;
     }
     return this;
 };
@@ -47,7 +48,7 @@ CenterGraphElement.prototype.init = function (serverFormat) {
 CenterGraphElement.prototype.resolveColor = function () {
     let backgroundColor = this.resolveBackgroundColor();
     if (backgroundColor === Color.DEFAULT_BACKGROUND_COLOR) {
-        return 'grey';
+        return colors.grey.base;
     }
     return backgroundColor;
 };
