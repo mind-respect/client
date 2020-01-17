@@ -37,7 +37,7 @@ CenterGraphElement.prototype.init = function (serverFormat) {
         this,
         this.centerGraphElementServerFormat.graphElement
     );
-    if(!this.isMeta()){
+    if (!this.isMeta()) {
         this.color = this.resolveColor();
         this.isColorDefined = this.color !== 'grey';
     }
@@ -146,5 +146,7 @@ CenterGraphElement.prototype.isPattern = function () {
 CenterGraphElement.prototype.showIcon = function () {
     return !this.isMeta() && (this.isPattern() || !IdUri.isVertexUri(this.getUri()));
 };
+
+
 
 

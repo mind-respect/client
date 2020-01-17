@@ -525,7 +525,7 @@ GraphElement.GraphElement.prototype.getIcon = function () {
 };
 
 GraphElement.GraphElement.prototype.showIcon = function () {
-    return !IdUri.isVertexUri(this.getUri())
+    return !this.isMeta() && !IdUri.isVertexUri(this.getUri())
 };
 
 GraphElement.GraphElement.prototype.isSkeleton = function () {

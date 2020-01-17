@@ -47,30 +47,10 @@
                                 'center-flex' : centers && centers.length && loaded && $vuetify.breakpoint.smAndDown
                             }"
                     >
-                        <div class="subtitle-1 font-weight-bold mt-2 mb-2" v-if="center.tagIndex !== undefined">
-                                            <span>
-                                                <v-icon v-show="center.tagIndex > 0"
-                                                        @click="center.tagIndex--">chevron_left</v-icon>
-                                                <v-chip
-                                                        class="mt-0 ml-0"
-                                                        :color="center.getRelevantTags()[center.tagIndex].getBackgroundColor()"
-                                                        :dark="shouldTextBeWhiteFromBackgroundColor(center.getRelevantTags()[center.tagIndex].getBackgroundColor())"
-                                                        small
-                                                        :to="center.getRelevantTags()[center.tagIndex].uri().url()"
-                                                >
-                                                    <v-icon left small>label</v-icon>
-                                                    {{center.getRelevantTags()[center.tagIndex].getLabel()}}
-                                                </v-chip>
-                                                <v-btn icon v-show="center.tagIndex + 1 < center.nbTags"
-                                                       @click="center.tagIndex++">
-                                                    <v-icon>chevron_right</v-icon>
-                                                </v-btn>
-                                            </span>
-                        </div>
                         <v-hover>
                             <v-list two-line slot-scope="{ hover }" :class="{
                                     'center-list': centers && centers.length && loaded && $vuetify.breakpoint.smAndDown,
-                                    'pt-0' :center.tagIndex !== undefined
+                                    'pb-0' :center.tagIndex !== undefined
                                 }">
                                 <v-list-item @click="go($event, center)"
                                              v-touch="{
@@ -82,11 +62,11 @@
                                              @contextmenu="contextMenu($event, center)"
                                 >
                                     <v-list-item-content :class="{
-                                        'pt-0' :center.tagIndex !== undefined
+                                        'pb-0' :center.tagIndex !== undefined
                                     }">
                                         <v-list-item-title class="subtitle-1 font-weight-bold">
                                             <v-badge color="transparent"
-                                                     :value="center.showIcon() || center.isColorDefined"
+                                                     :value="!center.isMeta() && (center.showIcon() || center.isColorDefined)"
                                                      class="center-label">
                                                 <template v-slot:badge>
                                                     <v-icon :color="center.color">
@@ -95,9 +75,10 @@
                                                 </template>
                                                 <v-chip
                                                         v-if="center.isMeta()"
-                                                        :color="center.getBackgroundColor()"
-                                                        :dark="shouldTextBeWhiteFromBackgroundColor(center.getBackgroundColor())"
+                                                        :color="center.getChipBackgroundColor()"
+                                                        :dark="shouldTextBeWhiteFromBackgroundColor(center.getChipBackgroundColor())"
                                                         @click="go($event, center)"
+                                                        label
                                                 >
                                                     <v-icon left small>label</v-icon>
                                                     {{center.getLabel()}}
@@ -193,6 +174,22 @@
                                 </v-list-item>
                             </v-list>
                         </v-hover>
+                        <v-chip-group
+                                multiple
+                                active-class="primary--text"
+                                v-if="center.tagIndex !== undefined"
+                                class="subtitle-1 font-weight-bold tag-chip-group"
+                        >
+                            <v-chip
+                                    v-for="tag in center.getRelevantTags()"
+                                    :color="tag.getChipBackgroundColor()"
+                                    small
+                                    :dark="shouldTextBeWhiteFromBackgroundColor(tag.getChipBackgroundColor())"
+                                    :to="tag.uri().url()"
+                            >
+                                {{tag.getLabel()}}
+                            </v-chip>
+                        </v-chip-group>
                     </v-flex>
                     <v-flex xs12 :md3="$store.state.areCentersInGridView"
                             v-for="i in 16" v-if="isBottom">
@@ -297,7 +294,7 @@
             });
         },
         methods: {
-            shouldTextBeWhiteFromBackgroundColor: function(hexColor){
+            shouldTextBeWhiteFromBackgroundColor: function (hexColor) {
                 return Color.getContrast(hexColor) === 'white'
             },
             contextMenu: function (event, center) {
@@ -575,6 +572,10 @@
 
     .center-label {
         font-family: 'Roboto';
+    }
+
+    .tag-chip-group {
+        background-color: white;
     }
 
 </style>

@@ -14,6 +14,7 @@ import GraphUi from '@/graph/GraphUi'
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
 import UiUtils from '@/UiUtils'
 import Color from '@/Color'
+import vuetify from "../plugins/vuetify";
 
 const MoveRelation = {
     "Parent": "parent",
@@ -113,6 +114,13 @@ FriendlyResource.FriendlyResource.prototype.setBackgroundColor = function (backg
 
 FriendlyResource.FriendlyResource.prototype.getBackgroundColor = function () {
     return this.getColors().background || Color.DEFAULT_BACKGROUND_COLOR;
+};
+
+FriendlyResource.FriendlyResource.prototype.getChipBackgroundColor = function () {
+    let backgroundColor = this.getBackgroundColor();
+    return backgroundColor === Color.DEFAULT_BACKGROUND_COLOR ?
+        vuetify.userPreset.theme.themes.light.secondary :
+        backgroundColor;
 };
 
 FriendlyResource.FriendlyResource.prototype.resolveBackgroundColor = function () {
