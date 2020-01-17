@@ -14,7 +14,7 @@ import GraphUi from '@/graph/GraphUi'
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
 import UiUtils from '@/UiUtils'
 import Color from '@/Color'
-import vuetify from "../plugins/vuetify";
+import colors from 'vuetify/es5/util/colors'
 
 const MoveRelation = {
     "Parent": "parent",
@@ -119,7 +119,7 @@ FriendlyResource.FriendlyResource.prototype.getBackgroundColor = function () {
 FriendlyResource.FriendlyResource.prototype.getChipBackgroundColor = function () {
     let backgroundColor = this.getBackgroundColor();
     return backgroundColor === Color.DEFAULT_BACKGROUND_COLOR ?
-        vuetify.userPreset.theme.themes.light.secondary :
+        colors.indigo.darken4 :
         backgroundColor;
 };
 
@@ -256,10 +256,6 @@ FriendlyResource.FriendlyResource.prototype.isCenterBubble = function () {
 
 FriendlyResource.FriendlyResource.prototype.getParentBubble = function () {
     return this.parentBubble || this;
-};
-
-FriendlyResource.FriendlyResource.prototype.hasChildren = function () {
-    return this.getNextChildren().length > 0;
 };
 
 FriendlyResource.FriendlyResource.prototype.getComment = function () {

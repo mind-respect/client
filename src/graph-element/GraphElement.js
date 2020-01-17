@@ -268,6 +268,10 @@ GraphElement.GraphElement.prototype.refreshChildren = function (avoidRedraw) {
     }
 };
 
+GraphElement.GraphElement.prototype.hasChildren = function () {
+    return this.getNextChildren().length > 0;
+};
+
 GraphElement.GraphElement.prototype.refreshContent = function () {
     if (this.component) {
         this.component.refreshContent();
