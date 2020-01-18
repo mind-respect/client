@@ -63,6 +63,10 @@
                         action: "openWikipediaLink"
                     },
                     {
+                        icon: "edit",
+                        action: "focus"
+                    },
+                    {
                         icon: "unfold_more",
                         action: "expand",
                         ctrlShortcut: "E"

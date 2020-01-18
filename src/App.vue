@@ -252,6 +252,7 @@
                 "select": "Hand selector",
                 "group": "Merge bubbles into one",
                 "addChild": "Add a child (tab)",
+                focus: "Write",
                 "addTag": "Add tag",
                 showTags: "Show tags",
                 hideTags: "Hide tags",
@@ -295,13 +296,14 @@
                 "createVertex": "Create a new bubble",
                 close: "Close",
                 leaveContext: "Split into 2 cards that share a tag",
-                setColor : "Set color",
+                setColor: "Set color",
                 openWikipediaLink: "Open Wikipedia link"
             });
             I18n.i18next.addResources("fr", "button", {
                 "select": "Sélection à la main",
                 "group": "Créer une bulle à partir de celles sélectionnés",
                 "addChild": "Ajouter un enfant (tab)",
+                focus: "Écrire",
                 "addTag": "Ajouter étiquette",
                 showTags: "Montrer les étiquettes",
                 hideTags: "Cacher les étiquettes",
@@ -345,7 +347,7 @@
                 "createVertex": "Créer une nouvelle bulle",
                 close: "Fermer",
                 leaveContext: "Séparer en 2 cartes qui partagent un étiquette",
-                setColor : "Définir la couleur",
+                setColor: "Définir la couleur",
                 openWikipediaLink: "Ouvrir le lien wikipedia"
             });
 
