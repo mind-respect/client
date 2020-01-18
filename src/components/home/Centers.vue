@@ -87,7 +87,8 @@
                                                         </span>
                                                     </template>
                                                     <v-avatar :color="center.getChipBackgroundColor()" size="28">
-                                                        <v-icon :dark="shouldTextBeWhiteFromBackgroundColor(center.getChipBackgroundColor())" small>
+                                                        <v-icon :dark="shouldTextBeWhiteFromBackgroundColor(center.getChipBackgroundColor())"
+                                                                small>
                                                             label
                                                         </v-icon>
                                                     </v-avatar>
@@ -180,29 +181,7 @@
                                 </v-list-item>
                             </v-list>
                         </v-hover>
-                        <v-chip-group
-                                multiple
-                                active-class="primary--text"
-                                v-if="center.tagIndex !== undefined"
-                                class="subtitle-1 font-weight-bold tag-chip-group"
-                        >
-                            <v-chip
-                                    :color="tag.getChipBackgroundColor()"
-                                    small
-                                    :dark="shouldTextBeWhiteFromBackgroundColor(tag.getChipBackgroundColor())"
-                                    :to="tag.uri().url()"
-                                    v-for="tag in center.getRelevantTags()"
-                            >
-                                {{tag.getLabel()}}
-                                <v-avatar
-                                        right
-                                        :color="ColorLuminance(tag.getChipBackgroundColor(), -0.25)"
-                                        :dark="true"
-                                >
-                                    {{tag.getNbReferences()}}
-                                </v-avatar>
-                            </v-chip>
-                        </v-chip-group>
+                        <Tags :tags="center.getRelevantTags()" v-if="center.tagIndex !== undefined"></Tags>
                     </v-flex>
                     <v-flex xs12 :md3="$store.state.areCentersInGridView"
                             v-for="i in 16" v-if="isBottom">
@@ -269,6 +248,9 @@
         directives: {
             Touch
         },
+        components: {
+            Tags: () => import('@/components/Tags'),
+        },
         data: function () {
             I18n.i18next.addResources("en", "centers", {
                 removedCenter: 'Removed from the list of centers'
@@ -307,37 +289,16 @@
             });
         },
         methods: {
-            ColorLuminance: function (hex, lum) {
-                // validate hex string
-                hex = String(hex).replace(/[^0-9a-f]/gi, '');
-                if (hex.length < 6) {
-                    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-                }
-                lum = lum || 0;
-
-                // convert to decimal and change luminosity
-                var rgb = "#", c, i;
-                for (i = 0; i < 3; i++) {
-                    c = parseInt(hex.substr(i * 2, 2), 16);
-                    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-                    rgb += ("00" + c).substr(c.length);
-                }
-
-                return rgb;
-            }
-            ,
             shouldTextBeWhiteFromBackgroundColor: function (hexColor) {
                 return Color.getContrast(hexColor) === 'white'
-            }
-            ,
+            },
             contextMenu: function (event, center) {
                 if (this.$vuetify.breakpoint.mdAndUp) {
                     return;
                 }
                 event.preventDefault();
                 this.$store.dispatch('userHomeSelectedCenter', center);
-            }
-            ,
+            },
             touchstart: function (event, center) {
                 if (this.flow !== 'centers' || !this.isOwner) {
                     return;
@@ -350,8 +311,7 @@
                 'center-' + center.uiId
                     ][0].getBoundingClientRect();
                 deleteIcon.style.top = (centerRect.y + centerRect.height / 2 - 20) + "px";
-            }
-            ,
+            },
             touchmove: function (event, center) {
                 if (this.flow !== 'centers' || !this.isOwner) {
                     return;
@@ -376,8 +336,7 @@
                 'center-' + center.uiId
                     ][0].style['margin-left'] = margin + "px";
                 this.isSwiping = true;
-            }
-            ,
+            },
             touchend: function (event, center) {
                 if (this.flow !== 'centers' || !this.isOwner) {
                     return;
@@ -387,8 +346,7 @@
                     ][0];
                 centerFlex.style['margin-left'] = "0";
                 this.isSwiping = false;
-            }
-            ,
+            },
             swipe: function (event, center) {
                 if (this.flow !== 'centers' || !this.isOwner) {
                     return;
@@ -401,8 +359,7 @@
                 if (allowSwipeMenu && event.touchendX + 100 < centerFlex.getBoundingClientRect().width / 2) {
                     this.removeCenter(center);
                 }
-            }
-            ,
+            },
             loadData: function () {
                 switch (this.flow) {
                     case "centers" : {
@@ -418,8 +375,7 @@
                         return this.setupPublicCenters();
                     }
                 }
-            }
-            ,
+            },
             setupCenters: function () {
                 if (this.isOwner) {
                     return CenterGraphElementService.getPublicAndPrivate();
@@ -429,12 +385,10 @@
                 ) : CenterGraphElementService.getPublicOnlyForUsername(
                     this.$route.params.username
                 );
-            }
-            ,
+            },
             setupPatterns: function () {
                 return CenterGraphElementService.getPatterns();
-            }
-            ,
+            },
             usePattern: function (pattern) {
                 LoadingFlow.enter();
                 PatternService.use(
@@ -445,16 +399,13 @@
                     );
                     LoadingFlow.leave();
                 })
-            }
-            ,
+            },
             setupPublicCenters: function () {
                 return CenterGraphElementService.getAllPublic();
-            }
-            ,
+            },
             setupFriendsCenters: function () {
                 return CenterGraphElementService.getFriendsFeed();
-            }
-            ,
+            },
             go: function ($event, center) {
                 let nbChild = center.getNbNeighborsFromFlow(this.flow, this.isOwner);
                 let graphElementType = center.uri().getGraphElementType();
@@ -476,14 +427,12 @@
                         colors: center.getColors()
                     }
                 });
-            }
-            ,
+            },
             copyUrl: function (center) {
                 this.$copyText(
                     center.uri().absoluteUrl()
                 );
-            }
-            ,
+            },
             removeCenter: function (centerToRemove, index) {
                 CenterGraphElementService.removeCenterWithUri(
                     centerToRemove.getUri()
@@ -499,8 +448,7 @@
                     }
                 }
                 this.$store.dispatch('userHomeSelectedCenter', null);
-            }
-            ,
+            },
             cancelRemove: function () {
                 this.removeSnackbar = false;
                 CenterGraphElementService.makeCenterWithUriAndLastCenterDate(
@@ -512,8 +460,7 @@
                     0,
                     this.removedCenter
                 );
-            }
-            ,
+            },
             isBottomVisible() {
                 const scrollY = document.scrollingElement.scrollTop;
                 const visible = this.$vuetify.breakpoint.mdAndDown && window.innerHeight ?
@@ -521,8 +468,7 @@
                 const pageHeight = document.scrollingElement.scrollHeight;
                 const bottomOfPage = visible + scrollY + 1 >= pageHeight;
                 return bottomOfPage;
-            }
-            ,
+            },
             addCenters() {
                 if (this.hasLoadedAll) {
                     return;
@@ -549,8 +495,7 @@
                         this.isBottom = false;
                     });
                 });
-            }
-            ,
+            },
             getNextCenters: function () {
                 switch (this.flow) {
                     case "centers" : {
@@ -577,8 +522,7 @@
                         );
                     }
                 }
-            }
-            ,
+            },
             handleScroll: function () {
                 // this.log = "scrolling " + Math.random();
                 if (!this.loaded || this.isBottom || this.hasLoadedAll || document.scrollingElement.scrollTop <= this.scrollTopWhenCentersAdded) {

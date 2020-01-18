@@ -129,6 +129,7 @@
         </v-menu>
         <RemoveDialog></RemoveDialog>
         <AddTagDialog></AddTagDialog>
+        <MergeDialog></MergeDialog>
         <ColorDialog></ColorDialog>
         <RemoveTagDialog></RemoveTagDialog>
         <DescriptionDialog></DescriptionDialog>
@@ -246,6 +247,7 @@
             AddExistingBubbleDialog: () => import('@/components/AddExistingBubbleDialog'),
             NewContextDialog: () => import('@/components/NewContextDialog'),
             AddTagDialog: () => import('@/components/AddTagDialog'),
+            MergeDialog: () => import('@/components/MergeDialog'),
             ColorDialog: () => import('@/components/ColorDialog')
         },
         data: function () {

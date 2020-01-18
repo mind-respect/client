@@ -531,7 +531,7 @@ VertexController.prototype.mergeCanDo = function () {
 };
 
 VertexController.prototype.merge = function () {
-    Store.dispatch("setSideMenuFlow", 1);
+    Store.dispatch("setIsMergeFlow", true);
     return Promise.resolve();
 };
 

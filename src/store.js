@@ -46,6 +46,7 @@ const Store = new Vuex.Store({
         userHomeSelectedCenter: null,
         isNewContextFlow: false,
         isAddTagFlow: false,
+        isMergeFlow: false,
         isColorFlow: false
     },
     mutations: {
@@ -146,6 +147,9 @@ const Store = new Vuex.Store({
         setIsAddTagFlow: function (state, isAddTagFlow) {
             state.isAddTagFlow = isAddTagFlow;
         },
+        setIsMergeFlow: function (state, isMergeFlow) {
+            state.isMergeFlow = isMergeFlow;
+        },
         setIsColorFlow: function (state, isColorFlow) {
             state.isColorFlow = isColorFlow;
         }
@@ -225,6 +229,9 @@ const Store = new Vuex.Store({
         },
         setIsAddTagFlow: function (action, isAddTagFlow) {
             action.commit('setIsAddTagFlow', isAddTagFlow);
+        },
+        setIsMergeFlow: function (action, isMergeFlow) {
+            action.commit('setIsMergeFlow', isMergeFlow);
         },
         setIsColorFlow: function (action, isColorFlow) {
             action.commit('setIsColorFlow', isColorFlow);

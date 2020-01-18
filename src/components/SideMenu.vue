@@ -65,18 +65,16 @@
                                 class="side-tabs"
                         >
                             <v-tab class="primary--text side-tab">
-                                <v-badge color="transparent" :key="$store.state.noteRefresh + 'noteHeader'">
-                                    <template v-slot:badge>
-                                        <v-icon color="third"
-                                                v-if="selected && selected.hasComment()">
-                                            brightness_1
-                                        </v-icon>
-                                    </template>
+                                <v-badge color="third" :key="$store.state.noteRefresh + 'noteHeader'"
+                                         :value="selected && selected.hasComment()" dot>
                                     <v-icon>note</v-icon>
                                 </v-badge>
                             </v-tab>
                             <v-tab class="primary--text side-tab">
-                                <v-icon>merge_type</v-icon>
+                                <v-badge color="third" dot
+                                         :value="selected && selected.hasRelevantTags()">
+                                    <v-icon>label</v-icon>
+                                </v-badge>
                             </v-tab>
                             <v-tab class="primary--text side-tab">
                                 <v-icon>share</v-icon>
@@ -95,14 +93,13 @@
                                 ></NoteMenu>
                             </v-tab-item>
                             <v-tab-item>
-                                <p v-show="!mergeCanDo"
+                                <p v-show="!tagCanDo"
                                    class="pt-4 grey--text text-center"
                                    v-if="$store.state.selected.length > 0"
                                 >
-                                    {{$t('side:mergeCantDo')}}</p>
-                                <MergeMenu @focus="focus" @blur="blur" :bubble="selected"
-                                           v-show="mergeCanDo || !selected"
-                                ></MergeMenu>
+                                    {{$t('side:tagCantDo')}}</p>
+                                <TagMenu :bubble="selected"
+                                         v-show="tagCanDo || !selected"></TagMenu>
                             </v-tab-item>
                             <v-tab-item>
                                 <p v-show="!shareCanDo"
@@ -149,7 +146,6 @@
         components: {
             NoteMenu: () => import('@/components/NoteMenu'),
             TagMenu: () => import('@/components/TagMenu'),
-            MergeMenu: () => import('@/components/MergeMenu'),
             ShareMenu: () => import('@/components/ShareMenu'),
             BubbleButtons: () => import('@/components/graph/BubbleButtons'),
         },
