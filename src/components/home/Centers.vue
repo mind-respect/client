@@ -185,13 +185,13 @@
                                 active-class="primary--text"
                                 v-if="center.tagIndex !== undefined"
                                 class="subtitle-1 font-weight-bold tag-chip-group"
-                                v-for="tag in center.getRelevantTags()"
                         >
                             <v-chip
                                     :color="tag.getChipBackgroundColor()"
                                     small
                                     :dark="shouldTextBeWhiteFromBackgroundColor(tag.getChipBackgroundColor())"
                                     :to="tag.uri().url()"
+                                    v-for="tag in center.getRelevantTags()"
                             >
                                 {{tag.getLabel()}}
                                 <v-avatar
