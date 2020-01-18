@@ -40,7 +40,7 @@ CenterGraphElement.prototype.init = function (serverFormat) {
     );
     if (!this.isMeta()) {
         this.color = this.resolveColor();
-        this.isColorDefined = this.color !== colors.grey.base;
+        this.isColorDefined = this.color !== colors.indigo.darken4;
     }
     return this;
 };
@@ -48,7 +48,7 @@ CenterGraphElement.prototype.init = function (serverFormat) {
 CenterGraphElement.prototype.resolveColor = function () {
     let backgroundColor = this.resolveBackgroundColor();
     if (backgroundColor === Color.DEFAULT_BACKGROUND_COLOR) {
-        return colors.grey.base;
+        return colors.indigo.darken4;
     }
     return backgroundColor;
 };

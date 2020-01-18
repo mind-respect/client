@@ -66,10 +66,11 @@
                                     }">
                                         <v-list-item-title class="subtitle-1 font-weight-bold">
                                             <v-badge :color="center.color"
+                                                     inline
                                                      :value="!center.isMeta() && (center.showIcon() || center.isColorDefined)"
                                                      class="center-label">
                                                 <template v-slot:badge>
-                                                    <v-icon :dark="center.color && shouldTextBeWhiteFromBackgroundColor(center.color)">
+                                                    <v-icon v-if="center.showIcon()" :dark="center.color && shouldTextBeWhiteFromBackgroundColor(center.color)">
                                                         {{center.getIcon()}}
                                                     </v-icon>
                                                 </template>
