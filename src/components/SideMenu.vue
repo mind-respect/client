@@ -50,6 +50,9 @@
                                 {{$t('side:creationDate')}}
                                 {{formatDate(creationDate)}}
                             </div>
+                            <div class="" v-if="isSingle">
+                                <Tags :tags="selected.getRelevantTags()"></Tags>
+                            </div>
                         </div>
                         <v-spacer></v-spacer>
                         <v-btn @click="collapse" icon>
@@ -71,12 +74,6 @@
                                 </v-badge>
                             </v-tab>
                             <v-tab class="primary--text side-tab">
-                                <v-badge color="third" dot
-                                         :value="selected && selected.hasRelevantTags()">
-                                    <v-icon>label</v-icon>
-                                </v-badge>
-                            </v-tab>
-                            <v-tab class="primary--text side-tab">
                                 <v-icon>share</v-icon>
                             </v-tab>
                         </v-tabs>
@@ -91,15 +88,6 @@
                                         :bubble="selected"
                                         v-show="noteCanDo || !selected"
                                 ></NoteMenu>
-                            </v-tab-item>
-                            <v-tab-item>
-                                <p v-show="!tagCanDo"
-                                   class="pt-4 grey--text text-center"
-                                   v-if="$store.state.selected.length > 0"
-                                >
-                                    {{$t('side:tagCantDo')}}</p>
-                                <TagMenu :bubble="selected"
-                                         v-show="tagCanDo || !selected"></TagMenu>
                             </v-tab-item>
                             <v-tab-item>
                                 <p v-show="!shareCanDo"
@@ -145,7 +133,7 @@
         name: "SideMenu",
         components: {
             NoteMenu: () => import('@/components/NoteMenu'),
-            TagMenu: () => import('@/components/TagMenu'),
+            Tags: () => import('@/components/Tags'),
             ShareMenu: () => import('@/components/ShareMenu'),
             BubbleButtons: () => import('@/components/graph/BubbleButtons'),
         },
