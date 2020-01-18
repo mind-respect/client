@@ -2,20 +2,26 @@
     <v-chip-group
             multiple
             active-class="primary--text"
-            class="subtitle-1 font-weight-bold tag-chip-group"
+            class="font-weight-bold tag-chip-group"
     >
         <v-chip
                 :color="tag.getChipBackgroundColor()"
-                small
-                :dark="shouldTextBeWhiteFromBackgroundColor(tag.getChipBackgroundColor())"
                 :to="tag.uri().url()"
+                small
                 v-for="tag in tags"
         >
-            {{tag.getLabel()}}
+            <span
+                    :class="{
+                        'white--text': shouldTextBeWhiteFromBackgroundColor(tag.getChipBackgroundColor())
+                    }">
+                {{tag.getLabel()}}
+            </span>
             <v-avatar
                     right
                     :color="ColorLuminance(tag.getChipBackgroundColor(), -0.25)"
-                    :dark="true"
+                    :class="{
+                        'white--text': shouldTextBeWhiteFromBackgroundColor(tag.getChipBackgroundColor())
+                    }"
             >
                 {{tag.getNbReferences()}}
             </v-avatar>
@@ -29,7 +35,7 @@
     export default {
         name: "Tags",
         props: ['tags'],
-        methods:{
+        methods: {
             shouldTextBeWhiteFromBackgroundColor: function (hexColor) {
                 return Color.getContrast(hexColor) === 'white'
             },
@@ -54,3 +60,9 @@
         }
     }
 </script>
+
+<style>
+    .tag-chip-group {
+        background-color: white;
+    }
+</style>

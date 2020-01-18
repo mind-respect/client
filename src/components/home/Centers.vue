@@ -570,8 +570,4 @@
     .center-label {
         font-family: 'Roboto';
     }
-
-    .tag-chip-group {
-        background-color: white;
-    }
 </style>
