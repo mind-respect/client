@@ -1,6 +1,8 @@
 import Mock from '../mock/Mock'
 import ThreeScenario from "../scenario/ThreeScenario";
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
+import ThreeLevelGroupRelationScenario from "../scenario/ThreeLevelGroupRelationScenario";
+import TestUtil from "../util/TestUtil";
 
 describe("SubGraphController", () => {
     it("keeps the id of the parent vertex when it exists", async () => {
@@ -27,5 +29,23 @@ describe("SubGraphController", () => {
                 b3.getUri()
             ).getId()
         ).toBe(b3.getId());
+    });
+    it("prevents duplicates when three level group relation", async () => {
+        let scenario = await new ThreeLevelGroupRelationScenario();
+        let center = scenario.getCenterInTree();
+        let group1 = TestUtil.getChildWithLabel(center, "group1");
+        expect(
+            group1.getNumberOfChild()
+        ).toBe(4);
+        let group2 = TestUtil.getChildWithLabel(group1, "group2");
+        group2.expand();
+        expect(
+            group2.getNumberOfChild()
+        ).toBe(4);
+        let group3 = TestUtil.getChildWithLabel(group2, "group3");
+        group3.expand();
+        expect(
+            group3.getNumberOfChild()
+        ).toBe(3);
     });
 });

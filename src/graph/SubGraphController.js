@@ -153,6 +153,16 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
                     return;
                 }
                 if (groupRelation.getParentBubble().getId() !== otherGroupRelation.getParentBubble().getId()) {
+                    groupRelation.children.forEach((child) => {
+                        let childHasOtherGroupRelation = child.isGroupRelation() && child.children.some((grandChild) => {
+                            return grandChild.getId() === otherGroupRelation.getId();
+                        });
+                        if (childHasOtherGroupRelation) {
+                            otherGroupRelation.children.forEach((child) => {
+                                groupRelation.removeChild(child, true, true);
+                            });
+                        }
+                    });
                     return;
                 }
                 if (groupRelation.shouldBeChildOfGroupRelation(otherGroupRelation)) {

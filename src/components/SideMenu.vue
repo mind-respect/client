@@ -50,7 +50,7 @@
                                 {{$t('side:creationDate')}}
                                 {{formatDate(creationDate)}}
                             </div>
-                            <div class="" v-if="isSingle">
+                            <div class="" v-if="isSingle && selected">
                                 <Tags :tags="selected.getRelevantTags()"></Tags>
                             </div>
                         </div>
