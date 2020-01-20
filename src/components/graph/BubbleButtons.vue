@@ -48,9 +48,18 @@
                         action: "addChild",
                         icon: function () {
                             let single = Selection.getSingle();
-                            return single && single.isToTheLeft() ?
-                                "arrow_back" :
-                                "arrow_forward"
+                            if (!single) {
+                                return "";
+                            }
+                            if (single.isCenter) {
+                                return single.leftBubbles.length < single.rightBubbles.length ?
+                                    "arrow_back" :
+                                    "arrow_forward";
+                            } else {
+                                return single.isToTheLeft() ?
+                                    "arrow_back" :
+                                    "arrow_forward"
+                            }
                         }
                     },
                     {
