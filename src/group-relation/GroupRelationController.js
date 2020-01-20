@@ -159,8 +159,8 @@ GroupRelationController.prototype.noteDo = function (note) {
 GroupRelationController.prototype.becomeExParent = function (movedEdge, newParent) {
     let promises = [];
     let previousParentGroupRelation = this.model().getGreatestGroupRelationAncestor();
-    let isMovingUnderSameGroupRelation = previousParentGroupRelation.getSerialGroupRelations().some((groupRelation) => {
-        return newParent.getParentBubble().getId() === groupRelation.getId();
+    let isMovingUnderSameGroupRelation = this.model().getDescendants().some((child)=>{
+        return child.getId() === newParent.getId();
     });
     if (isMovingUnderSameGroupRelation) {
         return Promise.resolve();

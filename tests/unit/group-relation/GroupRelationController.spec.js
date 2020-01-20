@@ -6,6 +6,7 @@ import GraphServiceMock from '../mock/GraphServiceMock'
 import TestUtil from '../util/TestUtil'
 import TwoLevelGroupRelationScenario from "../scenario/TwoLevelGroupRelationScenario";
 import TagService from "@/tag/TagService";
+import ThreeLevelGroupRelationScenario from "../scenario/ThreeLevelGroupRelationScenario";
 
 
 describe("GroupRelationController", () => {
@@ -209,6 +210,25 @@ describe("GroupRelationController", () => {
                 group2.getIdentification().getUri()
             ) > -1).toBeFalsy();
         });
+        it("removes tag when moving vertex one higher level under 3 level group relation", async () => {
+            let scenario = await new ThreeLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let group1 = TestUtil.getChildWithLabel(center, "group1");
+            let group2 = TestUtil.getChildWithLabel(group1, "group2");
+            group2.expand();
+            let g22 = TestUtil.getChildWithLabel(group2, "g22");
+            let group3 = TestUtil.getChildWithLabel(group2, "group3");
+            group3.expand();
+            let g32 = TestUtil.getChildWithLabel(group3, "g32");
+            let kkkk = g32.getNextBubble();
+            expect(
+                g32.getRelevantTags().length
+            ).toBe(3);
+            await kkkk.controller().moveBelow(g22);
+            expect(
+                g32.getRelevantTags().length
+            ).toBe(2);
+        });
         it("removes the tag related to the right group relation even if collapsed", async () => {
             let scenario = await new TwoLevelGroupRelationScenario();
             let center = scenario.getCenterInTree();
@@ -257,7 +277,9 @@ describe("GroupRelationController", () => {
             group2.expand();
             let g22 = TestUtil.getChildWithLabel(group2, "g22");
             let g23 = TestUtil.getChildWithLabel(group2, "g23");
-            TagService.remove.mockClear();
+            if (TagService.remove.mockClear) {
+                TagService.remove.mockClear();
+            }
             jest.spyOn(TagService, "remove");
             await g23.getNextBubble().controller().moveUnderParent(g22);
             expect(

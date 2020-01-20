@@ -154,8 +154,10 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
                 }
                 if (groupRelation.getParentBubble().getId() !== otherGroupRelation.getParentBubble().getId()) {
                     groupRelation.children.forEach((child) => {
-                        let childHasOtherGroupRelation = child.isGroupRelation() && child.children.some((grandChild) => {
-                            return grandChild.getId() === otherGroupRelation.getId();
+                        let childHasOtherGroupRelation = child.isGroupRelation() && child.getSerialGroupRelations().some((groupRelation) => {
+                            return groupRelation.children.some((grandChild) => {
+                                return grandChild.getId() === otherGroupRelation.getId();
+                            });
                         });
                         if (childHasOtherGroupRelation) {
                             otherGroupRelation.children.forEach((child) => {
