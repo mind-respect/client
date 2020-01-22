@@ -160,7 +160,7 @@ api.SubGraph.prototype.removeTag = function (tag) {
 api.SubGraph.prototype.removeGroupRelation = function (groupRelation) {
     let l = this.groupRelations.length;
     while (l--) {
-        if (groupRelation[l].getId() === groupRelation.getId()) {
+        if (this.groupRelations[l].getId() === groupRelation.getId()) {
             this.groupRelations.splice(l, 1);
             groupRelation.getNextChildren().forEach((child) => {
                 this.remove(child)

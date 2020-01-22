@@ -387,8 +387,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, avo
     this.model().beforeExpand();
     if (!this.model().isExpanded) {
         if (!this.model().isCollapsed) {
-            let controller = this.model().isMeta() ? this : this.subGraphController;
-            promise = controller.loadForParentIsAlreadyOnMap().then(() => {
+            promise = this.getSubGraphController().loadForParentIsAlreadyOnMap().then(() => {
                 if (avoidExpandChild) {
                     return true;
                 }
@@ -464,8 +463,7 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
         }
         this.model().setUri(distantVertexUri);
         CurrentSubGraph.get().add(this.model());
-        let controller = this.model().isMeta() ? this : this.subGraphController;
-        return controller.loadForParentIsAlreadyOnMap();
+        return this.getSubGraphController().loadForParentIsAlreadyOnMap();
     }).then((mergedWith) => {
         let promises = [];
         if (beforeMergeLabel.toLowerCase().trim() !== mergedWith.getLabel().toLowerCase().trim()) {
@@ -533,6 +531,10 @@ VertexController.prototype.mergeCanDo = function () {
 VertexController.prototype.merge = function () {
     Store.dispatch("setIsMergeFlow", true);
     return Promise.resolve();
+};
+
+VertexController.prototype.getSubGraphController = function () {
+    return this.subGraphController;
 };
 
 api.VertexController = VertexController;

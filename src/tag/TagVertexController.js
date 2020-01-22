@@ -292,6 +292,10 @@ TagVertexController.prototype.becomeParent = function (child, isLeft, index) {
 
 };
 
+TagVertexController.prototype.getSubGraphController = function () {
+    return this;
+};
+
 api.MetaController = TagVertexController;
 
 export default api;

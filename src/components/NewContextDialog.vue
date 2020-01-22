@@ -27,6 +27,7 @@
                                 {{$t('newContext:actualMap')}}
                             </v-card-title>
                             <v-card-subtitle class="body-2 pb-0 text-center">
+                                {{$t('newContext:where')}}
                                 "{{relation.getParentVertex().getLabelOrDefault()}}"
                                 {{$t('newContext:isTheParent')}}
                             </v-card-subtitle>
@@ -46,6 +47,7 @@
                                 {{$t('newContext:mirrorMap')}}
                             </v-card-title>
                             <v-card-subtitle class="body-2 pb-0 text-center">
+                                {{$t('newContext:where')}}
                                 "{{relation.getNextBubble().getLabelOrDefault()}}"
                                 {{$t('newContext:isTheParent')}}
                             </v-card-subtitle>
@@ -72,7 +74,9 @@
                                 {{$t('newContext:actualMap')}}
                             </v-card-title>
                             <v-card-subtitle class="body-2 pb-0 text-center">
-                                "{{relation.getParentVertex().getLabelOrDefault()}}" {{$t('newContext:isTheParent')}}
+                                {{$t('newContext:where')}}
+                                "{{relation.getParentVertex().getLabelOrDefault()}}"
+                                {{$t('newContext:isTheParent')}}
                             </v-card-subtitle>
                             <v-card-text>
                                 <v-card flat>
@@ -106,7 +110,9 @@
                                 {{$t('newContext:mirrorMap')}}
                             </v-card-title>
                             <v-card-subtitle class="body-2 pb-0 text-center">
-                                "{{relation.getNextBubble().getLabelOrDefault()}}" {{$t('newContext:isTheParent')}}
+                                {{$t('newContext:where')}}
+                                "{{relation.getNextBubble().getLabelOrDefault()}}"
+                                {{$t('newContext:isTheParent')}}
                             </v-card-subtitle>
                             <v-card-text>
                                 <v-card flat>
@@ -165,6 +171,7 @@
                 title: "Split into 2 cards that share a tag",
                 now: "Now",
                 actualMap: "Current map",
+                where: "where",
                 isTheParent: "is the parent",
                 mirrorMap: "Mirror map",
                 resultAfterConfirmation: "Result after confirmation"
@@ -182,6 +189,7 @@
                 ifChildren3: "De plus, les bulles peuvent toujours être retrouvés à partir de la recherche.",
                 now: "Maintenant",
                 actualMap: "Carte actuelle",
+                where: "où",
                 isTheParent: "est le parent",
                 mirrorMap: "Carte miroir",
                 resultAfterConfirmation: "Résultat après confirmation"

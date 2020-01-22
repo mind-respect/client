@@ -28,19 +28,19 @@ function SubGraphController(vertices) {
 
 api.SubGraphController = SubGraphController;
 
-SubGraphController.prototype.loadForParentIsAlreadyOnMap = function () {
-    return this.load(true, false);
+SubGraphController.prototype.loadForParentIsAlreadyOnMap = function (preventAddInCurrentGraph) {
+    return this.load(true, false, preventAddInCurrentGraph);
 };
 
 SubGraphController.prototype.loadNonCenter = function () {
-    return this.load(false, false);
+    return this.load(false, false, false);
 };
 
 SubGraphController.prototype.model = function () {
     return this.vertices;
 };
 
-SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMap) {
+SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMap, preventAddInCurrentGraph) {
     if (isCenterOnMap === undefined) {
         isCenterOnMap = true;
     }
@@ -83,7 +83,9 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             if (isCenterOnMap) {
                 centerVertex.makeCenter();
             }
-            CurrentSubGraph.get().add(centerVertex);
+            if (!preventAddInCurrentGraph) {
+                CurrentSubGraph.get().add(centerVertex);
+            }
         }
         if (isParentAlreadyOnMap) {
             let hasModifiedChildrenIndex = centerVertex.integrateChildrenIndex(centerFromServer.getChildrenIndex());
@@ -200,7 +202,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             let edge = groupRelation.getFirstEdge();
             let child = groupRelation.getNumberOfChild() > 1 ? groupRelation : edge;
             let endVertex = edge.getOtherVertex(centerVertex);
-            let childIndex = childrenIndex[endVertex.getUri()] || childrenIndex[endVertex.getPatternUri()]
+            let childIndex = childrenIndex[endVertex.getUri()] || childrenIndex[endVertex.getPatternUri()];
             let addLeft;
             if (childIndex !== undefined) {
                 addLeft = childIndex.toTheLeft;
@@ -210,7 +212,9 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
                 addLeft
             );
             child.parentVertex = child.parentBubble = centerVertex;
-            CurrentSubGraph.get().add(child);
+            if (!preventAddInCurrentGraph) {
+                CurrentSubGraph.get().add(child);
+            }
         });
 
         groupRelations.forEach((groupRelation) => {

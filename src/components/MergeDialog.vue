@@ -1,8 +1,8 @@
 <template>
-    <v-dialog v-model="dialog" v-if="dialog" width="900" top>
+    <v-bottom-sheet v-model="dialog" inset max-width="600" top v-if="bubble" scrollable>
         <v-card>
             <v-card-title>
-                {{bubble.getLabel()}}
+                {{$t('merge:title')}}
                 <v-spacer></v-spacer>
                 <v-icon
                         color="third"
@@ -11,46 +11,78 @@
                     close
                 </v-icon>
             </v-card-title>
-            <v-card-text class="pt-0 pb-0">
-                <v-autocomplete
-                        ref="mergeSearch"
-                        v-model="selectedSearchResult"
-                        :items="items"
-                        :search-input.sync="search"
-                        item-value="uri"
-                        item-text="label"
-                        return-object
-                        :menu-props="menuProps"
-                        :loading="loading"
-                        @change="selectSearchResult()"
-                        cache-items
-                        hide-no-data
-                        clearable
-                        :placeholder="$t('merge:placeholder')"
-                        :filter="filter"
-                        @focus="focus"
-                        @blur="$emit('blur')"
-                        :disabled="!bubble"
-                >
-                    <template v-slot:item="{ item }">
-                        <SearchResultContent :item="item"></SearchResultContent>
-                        <SearchResultAction :item="item"></SearchResultAction>
-                    </template>
-                    <SearchLoadMore slot="append-item" @loadMore="loadMore" :noCreateButton="true"
-                                    ref="mergeLoadMore"></SearchLoadMore>
-                </v-autocomplete>
-                <div style="height:150px;" class="vh-center">
-                    <!--                    <v-progress-circular-->
-                    <!--                            :size="70"-->
-                    <!--                            :width="3"-->
-                    <!--                            color="third"-->
-                    <!--                            indeterminate-->
-                    <!--                            v-show="tagLoading"-->
-                    <!--                    ></v-progress-circular>-->
-                </div>
+            <v-card-text>
+                <v-card-text>
+                    <v-card>
+                        <v-list-item three-line>
+                            <v-list-item-content>
+                                <v-list-item-title class="subtitle-1 mb-1">
+                                    {{bubble.getLabel()}}
+                                </v-list-item-title>
+                                <v-list-item-subtitle class="subtitle-1">
+                                    Sera effacée
+                                </v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-card>
+                </v-card-text>
+                <v-card-text>
+                    <v-card>
+                        <v-card-text>
+                            <v-autocomplete
+                                    ref="mergeSearch"
+                                    v-model="selectedSearchResult"
+                                    :items="items"
+                                    :search-input.sync="search"
+                                    item-value="uri"
+                                    item-text="label"
+                                    return-object
+                                    :menu-props="menuProps"
+                                    :loading="loading"
+                                    @change="selectSearchResult()"
+                                    cache-items
+                                    hide-no-data
+                                    clearable
+                                    :label="$t('merge:placeholder')"
+                                    :filter="filter"
+                                    @focus="focus"
+                                    @blur="$emit('blur')"
+                                    :disabled="!bubble"
+                            >
+                                <template v-slot:item="{ item }">
+                                    <SearchResultContent :item="item"></SearchResultContent>
+                                    <SearchResultAction :item="item"></SearchResultAction>
+                                </template>
+                                <SearchLoadMore slot="append-item" @loadMore="loadMore" :noCreateButton="true"
+                                                ref="mergeLoadMore"></SearchLoadMore>
+                            </v-autocomplete>
+                        </v-card-text>
+                    </v-card>
+                </v-card-text>
+                <v-card-text>
+                    <v-card>
+                        <v-card-title class="subtitle-1" :class="{
+                        'grey--text': mergeBubble === null
+                    }">
+                            {{$t('merge:result')}}
+                        </v-card-title>
+                        <v-card-text v-if="mergeBubble">
+                            <ListView :bubble="mergeBubble" :preventExpand="true" :collapse="true"></ListView>
+                        </v-card-text>
+                    </v-card>
+                </v-card-text>
             </v-card-text>
+            <v-card-actions>
+                <v-btn color="secondary" @click="confirm()" :loading="confirmLoading" :disabled="!mergeBubble">
+                    {{$t('confirm')}}
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn @click="dialog=false">
+                    {{$t('cancel')}}
+                </v-btn>
+            </v-card-actions>
         </v-card>
-    </v-dialog>
+    </v-bottom-sheet>
 </template>
 
 <script>
@@ -59,24 +91,29 @@
     import SearchLoadMore from '@/components/search/SearchLoadMore'
     import SearchResultContent from '@/components/search/SearchResultContent'
     import SearchResultAction from '@/components/search/SearchResultAction'
-    import Breakpoint from "@/Breakpoint";
     import Selection from "@/Selection"
+    import TagVertex from '@/tag/TagVertex'
+    import Vertex from "@/vertex/Vertex";
+    import Edge from '@/edge/Edge'
 
     export default {
         name: "MergeMenu",
         components: {
             SearchLoadMore,
             SearchResultContent,
-            SearchResultAction
+            SearchResultAction,
+            ListView: () => import('@/components/ListView')
         },
         data: function () {
             I18n.i18next.addResources("en", "merge", {
-                "instruction": "This bubble will be removed but all its relationships will move to be added to bubble you will have selected in the search bar below.",
-                'placeholder': "Merge with"
+                title: 'Merge',
+                placeholder: "Merge with",
+                result: "Result"
             });
             I18n.i18next.addResources("fr", "merge", {
-                "instruction": "Cette bulle s'effacera mais toutes ses relations vont se déplacer pour s'ajouter à la bulle que vous aurez sélectionnée dans la barre de recherche ci-bas.",
-                'placeholder': "Fusionner avec"
+                title: 'Fusion',
+                placeholder: "Fusionner avec",
+                result: "Résultat"
             });
             return {
                 loading: false,
@@ -86,7 +123,9 @@
                 menuProps: {
                     "contentClass": 'search-menu merge-dialog-menu'
                 },
-                dialog: false
+                dialog: false,
+                mergeBubble: null,
+                confirmLoading: false
             }
         },
         mounted: function () {
@@ -98,6 +137,9 @@
             },
             bubble: function () {
                 return Selection.getSingle();
+            },
+            label: function () {
+                return this.bubble.getLabel();
             }
         },
         watch: {
@@ -108,8 +150,11 @@
             isMergeFlow: function () {
                 if (this.$store.state.isMergeFlow) {
                     this.dialog = true;
+                    this.mergeBubble = null;
                     this.$nextTick(() => {
-                        setTimeout(() => {
+                        setTimeout(async () => {
+                            this.$refs.mergeSearch.reset();
+                            await this.$nextTick();
                             this.$refs.mergeSearch.$el.querySelector("input").focus();
                         }, 100)
                     });
@@ -120,6 +165,9 @@
             dialog: function () {
                 if (this.dialog === false) {
                     this.$store.dispatch("setIsMergeFlow", false)
+                }
+                if (this.$refs.mergeSearch) {
+                    this.$refs.mergeSearch.blur();
                 }
             }
         },
@@ -162,11 +210,61 @@
                 });
             },
             selectSearchResult: function () {
+                if (!this.selectedSearchResult) {
+                    this.mergeBubble = null;
+                    return;
+                }
+                let center = this.bubble.isMeta() ?
+                    TagVertex.withUri(this.selectedSearchResult.uri) :
+                    Vertex.withUri(this.selectedSearchResult.uri);
+                center.controller().getSubGraphController().loadForParentIsAlreadyOnMap(true).then((selected) => {
+                    this.mergeBubble = selected;
+                    if (this.mergeBubble.getLabel().toLowerCase().trim() !== this.bubble.getLabel().toLowerCase().trim()) {
+                        this.mergeBubble.setLabel(
+                            this.bubble.getLabel() + " " + this.mergeBubble.getLabel()
+                        );
+                    }
+                    let parentEdge = this.bubble.getParentBubble();
+                    let parentVertex = this.bubble.getParentVertex();
+                    let parentVertexCopy = Vertex.withUri(
+                        parentVertex.getUri()
+                    );
+                    parentVertexCopy.setLabel(parentVertex.getLabel());
+                    let edge = Edge.withUriAndSourceAndDestinationVertex(
+                        parentEdge.getUri(),
+                        this.mergeBubble,
+                        parentVertexCopy
+                    );
+                    edge.parentBubble = edge.parentVertex = this.mergeBubble;
+                    this.mergeBubble.addChild(edge);
+                    this.bubble.getNextChildren().forEach((child) => {
+                        if (child.isEdge()) {
+                            let vertex = child.getOtherVertex(this.bubble);
+                            let vertexCopy = Vertex.withUri(
+                                vertex.getUri()
+                            );
+                            vertexCopy.setLabel(vertex.getLabel());
+                            child = Edge.withUriAndSourceAndDestinationVertex(
+                                child.getUri(),
+                                this.mergeBubble,
+                                vertexCopy
+                            );
+                        }
+                        this.mergeBubble.addChild(
+                            child
+                        );
+                    });
+                });
+            },
+            confirm: function () {
+                this.confirmLoading = true;
                 this.bubble.controller().convertToDistantBubbleWithUri(
-                    this.selectedSearchResult.uri
-                );
-                this.$refs.mergeSearch.reset();
-                this.$refs.mergeSearch.blur();
+                    this.mergeBubble.getUri()
+                ).then(() => {
+                    this.dialog = false;
+                    this.$refs.mergeSearch.blur();
+                    this.confirmLoading = false;
+                });
             },
             filter: function (item, searchText, itemText) {
                 if (!this.bubble.controller().convertToDistantBubbleWithUriCanDo(item.uri)) {

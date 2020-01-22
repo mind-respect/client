@@ -26,7 +26,7 @@
 
     export default {
         name: "ListView",
-        props:['collapse'],
+        props: ['collapse', 'bubble', 'preventExpand'],
         data: function () {
             return {
                 items: null
@@ -38,7 +38,9 @@
         methods: {
             rebuild: function () {
                 this.items = [
-                    this.forkAsItem(CurrentSubGraph.get().center)
+                    this.forkAsItem(
+                        this.bubble ? this.bubble : CurrentSubGraph.get().center
+                    )
                 ];
             },
             expand: function (item) {
@@ -55,7 +57,7 @@
                     edgeLabel: this.getEdgeLabel(fork),
                     label: fork.getLabelOrDefault()
                 };
-                if (fork.canExpand()) {
+                if (!this.preventExpand && fork.canExpand()) {
                     item.children = [];
                 }
                 if (!fork.isLeaf()) {
