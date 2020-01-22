@@ -38,7 +38,15 @@ TagVertex.prototype.getGraphElementType = function () {
 TagVertex.prototype.setOriginalMeta = function (originalMeta) {
     this.originalMeta = originalMeta;
     this.addIdentification(originalMeta);
+    FriendlyResource.FriendlyResource.prototype.setLabel.call(
+        this,
+        originalMeta.getLabel()
+    );
     this.setLabel(originalMeta.getLabel());
+    FriendlyResource.FriendlyResource.prototype.setComment.call(
+        this,
+        originalMeta.getComment()
+    );
     this.setComment(originalMeta.getComment());
     this.setChildrenIndex(
         originalMeta.getChildrenIndex()

@@ -32,13 +32,14 @@ function TagVertexController(metas) {
 }
 
 TagVertexController.prototype = new VertexController.VertexController();
-TagVertexController.prototype.loadForParentIsAlreadyOnMap = function () {
+TagVertexController.prototype.loadForParentIsAlreadyOnMap = function (preventAddInCurrentGraph) {
     return this.loadGraph(
-        true
+        true,
+        preventAddInCurrentGraph
     );
 };
 
-TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap) {
+TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preventAddInCurrentGraph) {
     isParentAlreadyOnMap = isParentAlreadyOnMap || false;
     let uri = this.model().getUri();
     return GraphService.getForCentralBubbleUri(uri).then((response) => {
@@ -53,7 +54,9 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap) {
             centerBubble.setOriginalMeta(centerTag);
         } else {
             centerBubble.makeCenter();
-            CurrentSubGraph.get().add(centerBubble);
+            if (!preventAddInCurrentGraph) {
+                CurrentSubGraph.get().add(centerBubble);
+            }
             centerBubble.setOriginalMeta(centerTag);
         }
         let subGraph = metaSubGraph.getSubGraph();
@@ -78,7 +81,9 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap) {
                 vertex = new TagGroupVertex(
                     vertex
                 );
-                CurrentSubGraph.get().add(vertex);
+                if (!preventAddInCurrentGraph) {
+                    CurrentSubGraph.get().add(vertex);
+                }
                 child = new TagRelation(vertex, centerBubble);
                 edges.push(child);
                 sortEdges(sourceVertexAndEdges.edges, vertex).forEach((edgeBetweenGroupAndDestination) => {
@@ -90,7 +95,9 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap) {
                         edgeBetweenGroupAndDestination.getUri()
                     );
                     vertex.addChild(grandChild);
-                    CurrentSubGraph.get().add(grandChild);
+                    if (!preventAddInCurrentGraph) {
+                        CurrentSubGraph.get().add(grandChild);
+                    }
                 });
                 if (vertex.getNumberOfChild() > 1) {
                     vertex.expand(true);
@@ -110,7 +117,9 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap) {
                 edge,
                 addLeft
             );
-            CurrentSubGraph.get().add(edge);
+            if (!preventAddInCurrentGraph) {
+                CurrentSubGraph.get().add(edge);
+            }
         });
         if (!subGraph.serverFormat.childrenIndexesCenterTag) {
             GraphElementService.changeChildrenIndex(centerBubble)

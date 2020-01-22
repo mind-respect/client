@@ -217,8 +217,8 @@
                 let center = this.bubble.isMeta() ?
                     TagVertex.withUri(this.selectedSearchResult.uri) :
                     Vertex.withUri(this.selectedSearchResult.uri);
-                center.controller().getSubGraphController().loadForParentIsAlreadyOnMap(true).then((selected) => {
-                    this.mergeBubble = selected;
+                center.controller().getSubGraphController().loadForParentIsAlreadyOnMap(true).then((mergeWith) => {
+                    this.mergeBubble = mergeWith;
                     if (this.mergeBubble.getLabel().toLowerCase().trim() !== this.bubble.getLabel().toLowerCase().trim()) {
                         this.mergeBubble.setLabel(
                             this.bubble.getLabel() + " " + this.mergeBubble.getLabel()
