@@ -293,15 +293,16 @@
             if (app) {
                 app.classList.add("mind-map");
             }
-            Color.refreshBackgroundColor(
-                this.$route.params.colors && this.$route.params.colors.background ?
-                    this.$route.params.colors.background : Color.DEFAULT_BACKGROUND_COLOR
-            );
             Scroll.centerElement(
                 document.getElementById('temp-center')
             );
             if (this.$route.params.nbChild !== undefined) {
                 this.center = new VertexSkeleton();
+                if(this.$route.params.colors){
+                    this.center.setBackgroundColor(
+                        this.$route.params.colors.background
+                    );
+                }
                 this.center.makeCenter();
                 for (let i = 0; i < this.$route.params.nbChild; i++) {
                     this.center.addChild(
