@@ -44,7 +44,7 @@ TagGroupVertexController.prototype.addChild = function () {
     this.model().refreshChildren();
     CurrentSubGraph.get().add(metaRelation);
     Vue.nextTick(() => {
-        Selection.setToSingle(triple.destination);
+        Selection.setToSingle(triple.destination, true);
         // GraphElementService.changeChildrenIndex(
         //     this.model()
         // );

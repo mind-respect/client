@@ -63,7 +63,7 @@ EdgeController.prototype.addChild = async function () {
             GraphElementService.changeChildrenIndex(
                 this.model().getParentVertex()
             );
-            Selection.setToSingle(triple.destination, false);
+            Selection.setToSingle(triple.destination, true);
             triple.destination.focus();
             //would need to redraw but focus hides drawing
         });
@@ -76,7 +76,7 @@ EdgeController.prototype.addSibling = function () {
         Vue.nextTick(() => {
             Selection.setToSingle(
                 triple.edge,
-                false
+                true
             );
         })
     });
@@ -124,7 +124,7 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
         GraphElementService.changeChildrenIndex(
             this.model().getParentVertex()
         );
-        Selection.setToSingle(newGroupRelation, false);
+        Selection.setToSingle(newGroupRelation, true);
         return newGroupRelation;
     });
 

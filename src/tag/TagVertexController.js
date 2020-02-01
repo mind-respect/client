@@ -221,7 +221,7 @@ TagVertexController.prototype.addChild = function () {
         CurrentSubGraph.get().add(newEdge);
         this.model().refreshChildren();
         Vue.nextTick(() => {
-            Selection.setToSingle(newVertex);
+            Selection.setToSingle(newVertex, true);
             GraphElementService.changeChildrenIndex(
                 this.model()
             );
@@ -252,7 +252,7 @@ TagVertexController.prototype.relateToDistantVertexWithUri = function (distantVe
         );
         this.model().refreshChildren();
         Vue.nextTick(() => {
-            Selection.setToSingle(distantVertex);
+            Selection.setToSingle(distantVertex, true);
             // GraphElementService.changeChildrenIndex(
             //     this.model()
             // );
