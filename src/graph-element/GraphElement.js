@@ -252,6 +252,7 @@ GraphElement.GraphElement.prototype.getRelevantTags = function () {
 };
 
 GraphElement.GraphElement.prototype.refreshChildren = function (avoidRedraw) {
+    return;
     this.childrenKey = IdUri.uuid();
     if (this.component) {
         this.component.refreshChildren();
