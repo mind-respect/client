@@ -23,7 +23,8 @@
         <Button :button="zoomInButton" v-if="isGraphRoute" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
         <Button :button="createVertexButton" :hightlight="true"
                 v-if="$store.state.user" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
-        <SettingsMenu v-show="!isSearchFlow" @enterDocsFlow="$emit('enterDocsFlow')" @enterPatternFlow="$emit('enterPatternFlow')"></SettingsMenu>
+        <SettingsMenu v-show="!isSearchFlow" @enterDocsFlow="$emit('enterDocsFlow')"
+                      @enterPatternFlow="$emit('enterPatternFlow')"></SettingsMenu>
     </div>
 </template>
 

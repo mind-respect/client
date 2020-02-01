@@ -35,7 +35,7 @@
                                 :class="{
                                     'ml-2': $vuetify.breakpoint.smAndUp
                                 }"
-                                v-if="$vuetify.breakpoint.mdAndDown"
+                                v-if="$vuetify.breakpoint.mdAndDown && (!isGraphRoute || $vuetify.breakpoint.width > 320)"
                         ></v-img>
                     </router-link>
                 </v-toolbar-title>

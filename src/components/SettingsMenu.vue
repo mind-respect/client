@@ -15,113 +15,126 @@
                 </v-icon>
             </v-btn>
         </template>
-        <v-list>
-            <v-list-item @click="expandAll" :disabled="!canExpandAll"
-                         v-if="isGraphRoute">
-                <v-list-item-action>
-                    <v-icon class="">unfold_more</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{$t('button:expandAll')}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item @click="selectAllBubbles" v-if="isGraphRoute">
-                <v-list-item-action>
-                    <v-icon class="">select_all</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{$t('button:selectAllBubbles')}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item @click="fontPicker" v-if="isGraphRoute" :disabled="$store.state.isViewOnly">
-                <v-list-item-action>
-                    <v-icon class="">font_download</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{$t('button:fontPicker')}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item @click="listAll" v-if="isGraphRoute">
-                <v-list-item-action>
-                    <v-icon class="">list</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{$t('button:listAll')}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item @click="$emit('enterPatternFlow')"
-                         v-if="isGraphRoute && !$store.state.isPatternFlow && !$store.state.isViewOnly">
-                <v-list-item-action>
-                    <v-icon>stars</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{$t('settings:becomePattern')}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item @click="removePattern"
-                         v-if="isGraphRoute && $store.state.isPatternFlow && !$store.state.isViewOnly">
-                <v-list-item-action>
-                    <v-icon>stars</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{$t('settings:removePattern')}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item @click="$emit('enterDocsFlow')"
-                         v-if="isGraphRoute">
-                <v-list-item-action>
-                    <v-icon>book</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{$t('settings:documentation')}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item @click="switchLanguage()">
-                <v-list-item-action>
-                    <v-icon class="">public</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
+        <div style="background-color:white" class="pt-2">
+            <router-link to="/welcome">
+                <img
+                        :src="require('@/assets/MR.png')"
+                        height="35"
+                        width="51"
+                        alt="MR"
+                        class="float-right mr-4"
+                        v-if="isGraphRoute && $vuetify.breakpoint.width <= 320"
+                >
+            </router-link>
+            <v-list>
+                <v-list-item @click="expandAll" :disabled="!canExpandAll"
+                             v-if="isGraphRoute">
+                    <v-list-item-action>
+                        <v-icon class="">unfold_more</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{$t('button:expandAll')}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item @click="selectAllBubbles" v-if="isGraphRoute">
+                    <v-list-item-action>
+                        <v-icon class="">select_all</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{$t('button:selectAllBubbles')}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item @click="fontPicker" v-if="isGraphRoute" :disabled="$store.state.isViewOnly">
+                    <v-list-item-action>
+                        <v-icon class="">font_download</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{$t('button:fontPicker')}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item @click="listAll" v-if="isGraphRoute">
+                    <v-list-item-action>
+                        <v-icon class="">list</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{$t('button:listAll')}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item @click="$emit('enterPatternFlow')"
+                             v-if="isGraphRoute && !$store.state.isPatternFlow && !$store.state.isViewOnly">
+                    <v-list-item-action>
+                        <v-icon>stars</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{$t('settings:becomePattern')}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item @click="removePattern"
+                             v-if="isGraphRoute && $store.state.isPatternFlow && !$store.state.isViewOnly">
+                    <v-list-item-action>
+                        <v-icon>stars</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{$t('settings:removePattern')}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item @click="$emit('enterDocsFlow')"
+                             v-if="isGraphRoute">
+                    <v-list-item-action>
+                        <v-icon>book</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{$t('settings:documentation')}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item @click="switchLanguage()">
+                    <v-list-item-action>
+                        <v-icon class="">public</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
                                         <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.smAndDown">
                                             EN
                                         </span>
-                        <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.mdAndUp">
+                            <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.mdAndUp">
                                             English
                                         </span>
-                        <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.smAndDown">
+                            <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.smAndDown">
                                             FR
                                         </span>
-                        <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.mdAndUp">
+                            <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.mdAndUp">
                                             Français
                                         </span>
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item @click="logout()">
-                <v-list-item-action>
-                    <v-icon>exit_to_app</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{$t('logout')}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-        </v-list>
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item @click="logout()">
+                    <v-list-item-action>
+                        <v-icon>exit_to_app</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{$t('logout')}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
+
+        </div>
     </v-menu>
 </template>
 
@@ -136,8 +149,7 @@
 
     export default {
         name: "SettingsMenu",
-        components: {
-        },
+        components: {},
         data: function () {
             I18n.i18next.addResources("en", "settings", {
                 becomePattern: "Create pattern",
