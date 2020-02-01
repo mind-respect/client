@@ -58,7 +58,7 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
         this.model().refreshChildren();
         CurrentSubGraph.get().add(triple.edge);
         Vue.nextTick(() => {
-            Selection.setToSingle(triple.destination, true);
+            Selection.setToSingle(triple.destination);
             GraphElementService.changeChildrenIndex(
                 this.model()
             );

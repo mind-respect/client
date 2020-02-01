@@ -125,7 +125,8 @@
                         ancestor.expand();
                     });
                     Selection.setToSingle(
-                        graphElement
+                        graphElement,
+                        true
                     );
                 } else {
                     this.$router.push(

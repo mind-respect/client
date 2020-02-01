@@ -427,19 +427,19 @@ FriendlyResource.FriendlyResource.prototype.isInTypes = function (types) {
 };
 
 FriendlyResource.FriendlyResource.prototype.travelLeft = function () {
-    Selection.setToSingle(this.getLeftBubble())
+    Selection.setToSingle(this.getLeftBubble(), true)
 };
 
 FriendlyResource.FriendlyResource.prototype.travelRight = function () {
-    Selection.setToSingle(this.getRightBubble())
+    Selection.setToSingle(this.getRightBubble(), true)
 };
 
 FriendlyResource.FriendlyResource.prototype.travelDown = function () {
-    Selection.setToSingle(this.getDownBubble(true))
+    Selection.setToSingle(this.getDownBubble(true), true)
 };
 
 FriendlyResource.FriendlyResource.prototype.travelUp = function () {
-    Selection.setToSingle(this.getUpBubble(true))
+    Selection.setToSingle(this.getUpBubble(true), true)
 };
 
 FriendlyResource.FriendlyResource.prototype.getUpBubble = function (isForTravel) {

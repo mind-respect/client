@@ -43,8 +43,6 @@
 </template>
 
 <script>
-    import Scroll from '@/Scroll'
-    import Vue from 'vue'
     import Selection from '@/Selection'
     import Store from '@/store'
     import UiUtils from '@/UiUtils'
@@ -74,12 +72,11 @@
             click: async function () {
                 let expandedDuplicate = this.bubble.getExpandedDuplicates();
                 if (expandedDuplicate.length) {
-                    Selection.setToSingle(expandedDuplicate[0]);
-                    Scroll.goToGraphElement(expandedDuplicate[0]);
+                    Selection.setToSingle(expandedDuplicate[0], true);
                     return;
                 }
                 this.loading = this.bubble.loading = true;
-                Selection.setToSingle(this.bubble);
+                Selection.setToSingle(this.bubble, true);
                 await this.$nextTick();
                 /*
                 * waiting Selection.setToSingle(this.bubble); is complete with await this.$nextTick()

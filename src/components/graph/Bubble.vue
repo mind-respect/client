@@ -485,7 +485,7 @@
                 if (this.isEditFlow) {
                     return;
                 }
-                Selection.setToSingle(this.bubble, true).then(() => {
+                Selection.setToSingle(this.bubble).then(() => {
                     this.menuFlow = 'buttons';
                     this.showMenu = true;
                 });
@@ -513,8 +513,7 @@
                     *   showing the menu
                     */
                     Selection.setToSingle(
-                        this.bubble,
-                        true
+                        this.bubble
                     ).then(() => {
                         this.showMenu = true;
                     });
@@ -531,8 +530,7 @@
                         }
                     } else {
                         Selection.setToSingle(
-                            this.bubble,
-                            true
+                            this.bubble
                         );
                     }
                 });

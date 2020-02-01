@@ -347,7 +347,7 @@
                     this.handleResize();
                     await this.$nextTick();
                     Color.refreshBackgroundColor();
-                    Selection.setToSingle(this.center, true);
+                    Selection.setToSingle(this.center);
                     this.$store.dispatch("setIsPatternFlow", this.center.isPattern());
                     this.usePatternSheet = this.center.isPattern();
                     await AppController.refreshFont();

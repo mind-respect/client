@@ -15,7 +15,7 @@ api.reset = function () {
     Store.dispatch("setSelected", []);
 };
 
-api.setToSingle = function (graphElement, noScroll) {
+api.setToSingle = function (graphElement, scroll) {
     return new Promise((resolve) => {
         if (!graphElement) {
             resolve();
@@ -37,7 +37,7 @@ api.setToSingle = function (graphElement, noScroll) {
             api._storeFormat(graphElement)
         ]);
         Vue.nextTick(() => {
-            if (!graphElement.loading && !noScroll) {
+            if (!graphElement.loading && scroll) {
                 Vue.nextTick(() => {
                     centerBubbleIfApplicable(graphElement).then(resolve)
                 });
