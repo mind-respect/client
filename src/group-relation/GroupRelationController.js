@@ -114,7 +114,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
             this.model().getParentVertex()
         );
         if (saveIndex) {
-            Selection.setToSingle(triple.destination);
+            Selection.setToSingle(triple.destination, true);
             triple.destination.focus();
             //would need to redraw but focus hides drawing
         }

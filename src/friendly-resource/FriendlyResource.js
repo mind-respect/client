@@ -538,18 +538,18 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
     );
     Store.dispatch("redraw");
     setTimeout(() => {
-        let closestChildVertex = this.isExpanded ? this.getClosestChildrenOfType(GraphElementType.Vertex)[0] : this;
-        if (Scroll.isBubbleTreeFullyOnScreen(closestChildVertex)) {
-            const afterOffset = UiUtils.getCenterOffsetCoordinates(CurrentSubGraph.get().center);
-            const deltaX = afterOffset.x - centerCoordinates.x;
-            const deltaY = afterOffset.y - centerCoordinates.y;
-            document.scrollingElement.style['scroll-behavior'] = 'smooth';
-            document.scrollingElement.scrollLeft = document.scrollingElement.scrollLeft + deltaX;
-            document.scrollingElement.scrollTop = document.scrollingElement.scrollTop + deltaY;
-            document.scrollingElement.style['scroll-behavior'] = 'inherit';
-        } else {
-            Scroll.centerBubbleForTreeIfApplicable(closestChildVertex);
-        }
+        // let closestChildVertex = this.isExpanded ? this.getClosestChildrenOfType(GraphElementType.Vertex)[0] : this;
+        // if (Scroll.isBubbleTreeFullyOnScreen(closestChildVertex)) {
+        //     const afterOffset = UiUtils.getCenterOffsetCoordinates(CurrentSubGraph.get().center);
+        //     const deltaX = afterOffset.x - centerCoordinates.x;
+        //     const deltaY = afterOffset.y - centerCoordinates.y;
+        //     document.scrollingElement.style['scroll-behavior'] = 'smooth';
+        //     document.scrollingElement.scrollLeft = document.scrollingElement.scrollLeft + deltaX;
+        //     document.scrollingElement.scrollTop = document.scrollingElement.scrollTop + deltaY;
+        //     document.scrollingElement.style['scroll-behavior'] = 'inherit';
+        // } else {
+        //     Scroll.centerBubbleForTreeIfApplicable(closestChildVertex);
+        // }
         CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
             graphElement.draw = true;
         });
