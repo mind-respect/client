@@ -108,7 +108,6 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
     if (saveIndex) {
         this.model().refreshChildren();
     }
-    this.model().refreshChildren();
     Vue.nextTick(() => {
         saveIndex === false ? Promise.resolve() : GraphElementService.changeChildrenIndex(
             this.model().getParentVertex()

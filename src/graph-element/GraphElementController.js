@@ -61,6 +61,9 @@ GraphElementController.prototype.noteCanDo = function () {
 };
 
 GraphElementController.prototype.setLabel = function (newLabel) {
+    if (this.model().isLabelSameAsParentGroupRelation()) {
+        newLabel = "";
+    }
     this.model().setLabel(
         newLabel
     );

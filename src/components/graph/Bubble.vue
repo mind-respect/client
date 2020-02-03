@@ -319,6 +319,9 @@
             this.bubble.isEditFlow = false;
             this.bubble.direction = this.direction;
             this.bubble.component = this;
+            if (this.bubble.isLabelSameAsParentGroupRelation()) {
+                this.bubble.setLabel("");
+            }
             this.refreshImages();
             if (this.bubble.isSkeleton()) {
                 this.chipColor = Color.SkeletonColor;
@@ -620,11 +623,15 @@
                 * Not removingHtml from labelHtml.innerHTML because sometimes user,
                 * may want to write html or something in his/her bubble.
                 */
-                const text = labelHtml.innerHTML;
+                let text = labelHtml.innerHTML;
                 /*
                 * await this.$nextTick(); to prevent unwanted scrolling after leaving edit flow
                 */
                 await this.$nextTick();
+                this.bubble.setLabel(text);
+                if (this.bubble.isLabelSameAsParentGroupRelation()) {
+                    text = labelHtml.innerHTML = "";
+                }
                 this.bubble.controller().setLabel(
                     text
                 );

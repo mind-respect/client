@@ -327,34 +327,34 @@ describe("GroupRelation", function () {
             centerBubble,
             "r1"
         )).toBeTruthy();
-        let r2ChildOfCenterBubble = TestUtil.getChildWithLabel(
+        let r2 = TestUtil.getChildWithLabel(
             centerBubble,
             "r2"
         );
         expect(
-            r2ChildOfCenterBubble.isGroupRelation()
+            r2.isGroupRelation()
         ).toBeFalsy();
         let identificationToRelation2 = Tag.fromFriendlyResource(
-            r2ChildOfCenterBubble.model()
+            r2.model()
         );
         let relation1 = TestUtil.getChildWithLabel(centerBubble, "r1");
         await relation1.controller().addIdentification(identificationToRelation2);
-        r2ChildOfCenterBubble = TestUtil.getChildWithLabel(centerBubble, "r2");
+        r2 = TestUtil.getChildWithLabel(centerBubble, "r2");
         expect(
-            r2ChildOfCenterBubble.isGroupRelation()
+            r2.isGroupRelation()
         ).toBeTruthy();
         expect(TestUtil.hasChildWithLabel(
             centerBubble,
             "r1"
         )).toBeFalsy();
-        r2ChildOfCenterBubble.expand();
+        r2.expand();
         expect(TestUtil.hasChildWithLabel(
-            r2ChildOfCenterBubble,
+            r2,
             "r1"
         )).toBeTruthy();
         expect(TestUtil.hasChildWithLabel(
-            r2ChildOfCenterBubble,
-            "r2"
+            r2,
+            ""
         )).toBeTruthy();
     });
 

@@ -257,17 +257,14 @@ api.Edge.prototype.isLeaf = function () {
     return false;
 };
 
-api.Edge.prototype.isShrinked = function () {
-    if (Selection.isSelected(this)) {
+api.Edge.prototype.isShrinked = function (shouldBeWhenNotSelected) {
+    if (!shouldBeWhenNotSelected && Selection.isSelected(this)) {
         return false;
     }
     if (this.isLabelEmpty()) {
         return true;
     }
-    let parentBubble = this.getParentBubble();
-    return parentBubble.isGroupRelation() && [parentBubble.getLabel(), ""].includes(
-        this.getLabel().trim()
-    );
+    return this.isLabelSameAsParentGroupRelation();
 };
 
 api.Edge.prototype.remove = function () {

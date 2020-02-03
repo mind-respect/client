@@ -49,7 +49,7 @@ TagGroupVertexController.prototype.addChild = function () {
         //     this.model()
         // );
         triple.destination.focus();
-        //would need to redraw but focus hides drawing
+        Store.dispatch("redraw");
     });
 };
 

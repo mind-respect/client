@@ -163,7 +163,8 @@ const Scroll = {
         if (bubble.isEditFlow) {
             return Promise.resolve();
         }
-        if ((isForTree && !Scroll.isBubbleTreeFullyOnScreen(bubble)) || !Scroll.isElementFullyOnScreen(bubble.getLabelHtml())) {
+        let labelHtml = bubble.getLabelHtml();
+        if ((isForTree && !Scroll.isBubbleTreeFullyOnScreen(bubble)) || (labelHtml && labelHtml.style.display !== "none" && !Scroll.isElementFullyOnScreen(labelHtml))) {
             return Scroll.goToGraphElement(bubble)
         } else {
             return Promise.resolve();

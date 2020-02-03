@@ -14,14 +14,14 @@
         <v-icon small :color="color" v-if="hasComment">
             note
         </v-icon>
-        <v-icon small :color="color" v-if="!bubble.isMeta() && hasIdentifications">
+        <v-icon small :color="color" v-if="showTagIcon">
             label
         </v-icon>
         <v-icon small :color="color" v-if="bubble.isVertex()">
             {{shareIcon}}
         </v-icon>
         <small v-if="bubble.isVertex() && bubble.getNbDuplicates() > 0"
-               class="body-2 font-weight-bold" style="color:#1A237E;">
+               class="body-2 font-weight-bold nb-duplicates" style="color:#1A237E;">
             ×{{bubble.getNbDuplicates() + 1}}
         </small>
         <img :src="require('@/assets/wikipedia.svg')" width="20" v-if="this.wikipediaUrl" style="margin-bottom:-6px;">
@@ -39,7 +39,8 @@
         data: function () {
             return {
                 color: null,
-                wikipediaUrl: null
+                wikipediaUrl: null,
+
             }
         },
         mounted: function () {
@@ -58,7 +59,13 @@
             }
         },
         computed: {
-            hasIdentifications: function () {
+            showTagIcon: function () {
+                if (this.bubble.isMeta()) {
+                    return false;
+                }
+                if (this.bubble.getParentBubble().isGroupRelation()) {
+                    return this.bubble.getRelevantTags().length > 1;
+                }
                 return this.bubble.hasIdentifications();
             },
             hasComment: function () {
@@ -81,11 +88,11 @@
         right: 4px;
     }
 
-    .in-label-icons-left i, .in-label-icons-left small {
+    .in-label-icons-left i, .in-label-icons-left .nb-duplicates {
         margin-left: 5px;
     }
 
-    .in-label-icons-right i, .in-label-icons-right small {
+    .in-label-icons-right i, .in-label-icons-right .nb-duplicates {
         margin-right: 5px;
     }
 </style>

@@ -65,7 +65,7 @@ EdgeController.prototype.addChild = async function () {
             );
             Selection.setToSingle(triple.destination);
             triple.destination.focus();
-            //would need to redraw but focus hides drawing
+            Store.dispatch("redraw");
         });
         return triple;
     });

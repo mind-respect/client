@@ -525,6 +525,19 @@ GraphElement.GraphElement.prototype.getControllerWithElements = function (elemen
         ](elements);
 };
 
+GraphElement.GraphElement.prototype.isLabelSameAsParentGroupRelation = function () {
+    let parentBubble = this.getParentBubble();
+    if (!parentBubble.isGroupRelation()) {
+        return false;
+    }
+    if (this.isLabelEmpty()) {
+        return parentBubble.isLabelEmpty();
+    }
+    return [parentBubble.getLabel(), ""].includes(
+        this.getLabel().trim()
+    );
+};
+
 GraphElement.GraphElement.prototype.getIcon = function () {
     return Icon.getForUri(this.getUri());
 };
