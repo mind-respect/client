@@ -221,6 +221,7 @@ FriendlyResource.FriendlyResource.prototype.focus = function (event) {
                 labelHtml.contentEditable = "true";
                 this.preventLeaveEditFlow = true;
                 if (event) {
+                    this.lastEvent = event;
                     Focus.focusAtPosition(event, labelHtml);
                 } else {
                     Focus.focusEnd(labelHtml);
@@ -232,8 +233,23 @@ FriendlyResource.FriendlyResource.prototype.focus = function (event) {
     });
 };
 
+FriendlyResource.FriendlyResource.prototype.refocus = function () {
+    if (this.lastEvent) {
+        Focus.focusAtPosition(this.lastEvent, this.getLabelHtml());
+    }
+    this.lastEvent = false;
+};
+
+
 FriendlyResource.FriendlyResource.prototype.setLabel = function (label) {
-    this._friendlyResourceServerFormat.label = label;
+    if (this.isLabelSameAsParentGroupRelation()) {
+        label = "";
+    }
+    this._friendlyResourceServerFormat.label = label.trim().replace(
+        /&nbsp;\\*/g, ''
+    ).replace(
+        /<br>\\*/g, ''
+    );
 };
 
 FriendlyResource.FriendlyResource.prototype.getLabel = FriendlyResource.FriendlyResource.prototype.text = function () {

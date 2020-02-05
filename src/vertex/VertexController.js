@@ -410,6 +410,7 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, avo
         this.model().expand(avoidCenter, true);
         if (!avoidShowingLoad) {
             Vue.nextTick(() => {
+                //Store.dispatch("redraw") for when expanding a grand children
                 Store.dispatch("redraw");
                 LoadingFlow.leave();
             });

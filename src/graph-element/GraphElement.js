@@ -526,6 +526,9 @@ GraphElement.GraphElement.prototype.getControllerWithElements = function (elemen
 };
 
 GraphElement.GraphElement.prototype.isLabelSameAsParentGroupRelation = function () {
+    if (this.isGroupRelation()) {
+        return false;
+    }
     let parentBubble = this.getParentBubble();
     if (!parentBubble.isGroupRelation()) {
         return false;

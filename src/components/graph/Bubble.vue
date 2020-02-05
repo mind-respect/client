@@ -435,7 +435,7 @@
             label: function () {
                 let text = UiUtils.removeHtmlFromString(this.bubble.getFriendlyJson().label);
                 //setting draggable: "false" because otherwise you can't drag the bubble when pressing on link
-                return this.isEditFlow ? text : linkifyStr(text, {
+                return this.isEditFlow ? UiUtils.escapeHtml(text) : linkifyStr(text, {
                     attributes: {
                         draggable: "false"
                     }
@@ -586,6 +586,7 @@
                 this.isEditFlow = true;
                 this.bubble.isEditFlow = true;
                 this.$nextTick(() => {
+                    this.bubble.refocus();
                     GraphUi.disableDragScroll();
                 });
             },
@@ -629,8 +630,8 @@
                 */
                 await this.$nextTick();
                 this.bubble.setLabel(text);
-                if (this.bubble.isLabelSameAsParentGroupRelation()) {
-                    text = labelHtml.innerHTML = "";
+                if (labelHtml.innerHTML !== this.bubble.getLabel()) {
+                    labelHtml.innerHTML = this.bubble.getLabel();
                 }
                 this.bubble.controller().setLabel(
                     text

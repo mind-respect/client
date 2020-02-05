@@ -16,9 +16,18 @@ api.isChrome = function () {
     return _isChrome;
 };
 
-api.removeHtmlFromString = function(string){
+api.removeHtmlFromString = function (string) {
     let doc = new DOMParser().parseFromString(string, 'text/html');
     return doc.body.textContent || "";
+};
+
+api.escapeHtml = function (unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 };
 
 api.getCenterOffsetCoordinates = function (center) {
