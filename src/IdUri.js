@@ -40,6 +40,11 @@ const IdUri = {
             uri
         );
     },
+    isGroupRelationUri: function (uri) {
+        return "" === IdUri.getGraphElementTypeFromUri(
+            uri
+        );
+    },
     schemaUriOfProperty: function (propertyUri) {
         return propertyUri.substr(
             0,

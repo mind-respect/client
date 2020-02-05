@@ -12,7 +12,11 @@
         >
             <template v-slot:label="{ item }">
                 <span class="font-italic">{{item.edgeLabel}}</span>
-                <span v-html="linkify(item.label)"></span>
+                <span v-if="item.isGroupRelation" class="font-italic">(</span>
+                <span v-html="linkify(item.label)" :class="{
+                    'font-italic': item.isGroupRelation
+                }"></span>
+                <span v-if="item.isGroupRelation" class="font-italic">)</span>
             </template>
         </v-treeview>
         <div ref="copyList" v-html="htmlList()" style="position:absolute;top:-10000px; left:-10000px;"></div>
@@ -23,6 +27,7 @@
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import GraphElementType from '@/graph-element/GraphElementType'
     import linkifyHtml from 'linkifyjs/html'
+    import IdUri from "../IdUri";
 
     export default {
         name: "ListView",
@@ -55,7 +60,8 @@
                     id: fork.getId(),
                     uri: fork.getUri(),
                     edgeLabel: this.getEdgeLabel(fork),
-                    label: fork.getLabelOrDefault()
+                    label: fork.getLabelOrDefault(),
+                    isGroupRelation: fork.isGroupRelation()
                 };
                 if (!this.preventExpand && fork.canExpand()) {
                     item.children = [];
@@ -105,7 +111,12 @@
                     isRoot = true;
                     parent = this.items[0];
                 }
-                let content = parent.edgeLabel + " " + this.linkify(parent.label);
+                let edgeLabel = "<span class='font-italic'>" + parent.edgeLabel + "</span>";
+                let parentLabel = this.linkify(parent.label);
+                if (parent.isGroupRelation) {
+                    parentLabel = "<span class='font-italic'>(" + parentLabel + ")</span>"
+                }
+                let content = edgeLabel + " " + parentLabel;
                 content += "<ul>";
                 if (parent.children) {
                     parent.children.forEach((child) => {
