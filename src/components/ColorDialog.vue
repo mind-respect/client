@@ -41,8 +41,8 @@
 <script>
     import I18n from '@/I18n'
     import Selection from '@/Selection'
-    import GraphElementService from '@/graph-element/GraphElementService'
     import Color from '@/Color'
+    import KeyboardActions from '@/KeyboardActions'
 
     export default {
         name: "ColorDialog",
@@ -83,8 +83,11 @@
             },
             dialog: function () {
                 if (this.dialog === false) {
+                    KeyboardActions.enable();
                     this.$store.dispatch("setIsColorFlow", false);
                     this.refreshColor(this.originalColor);
+                }else{
+                    KeyboardActions.disable();
                 }
             },
             color: function () {

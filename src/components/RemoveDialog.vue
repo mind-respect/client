@@ -40,19 +40,16 @@
                 {{$t('remove:cannotRemove')}}
             </v-card-text>
             <v-card-actions>
-                <form @submit.prevent="remove">
-                    <input type="text" ref="enterRemoveInput" autofocus style="width:0">
-                    <v-btn color="secondary" class="ml-2" @click="remove" type="submit"
-                           :disabled="!isThereSomethingToRemove">
-                        {{$t('remove:confirm')}}
-                        <span class="ml-1" v-if="$store.state.selected.length > 1">
+                <v-btn color="secondary" class="ml-2" @click="remove"
+                       :disabled="!isThereSomethingToRemove">
+                    {{$t('remove:confirm')}}
+                    <span class="ml-1" v-if="$store.state.selected.length > 1">
                             {{$t('remove:multiple_confirm_suffix')}}
                         </span>
-                        <v-icon class="ml-2 mb-1" v-if="$store.state.selected.length > 1">
-                            delete
-                        </v-icon>
-                    </v-btn>
-                </form>
+                    <v-icon class="ml-2 mb-1" v-if="$store.state.selected.length > 1">
+                        delete
+                    </v-icon>
+                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
                         text
@@ -71,6 +68,7 @@
     import I18n from '@/I18n'
     import GraphElement from '@/graph-element/GraphElement'
     import KeyboardActions from '@/KeyboardActions'
+    import KeyCode from 'keycode-js';
 
     export default {
         name: "RemoveDialog",
@@ -136,14 +134,6 @@
                         return !selected.canRemove;
                     });
                     this.removeDialog = true;
-                    if (this.$vuetify.breakpoint.lgAndUp) {
-                        this.$nextTick(() => {
-                            const element = this.$refs.enterRemoveInput;
-                            this.$nextTick(() => {
-                                element.focus()
-                            });
-                        });
-                    }
                 } else {
                     if (this.selected) {
                         this.selected.forEach((selected) => {
@@ -155,15 +145,28 @@
             },
             removeDialog: function () {
                 if (this.removeDialog) {
+                    window.addEventListener('keydown', this.handleKeyDown);
                     KeyboardActions.disable();
                 } else {
+                    window.removeEventListener('keydown', this.handleKeyDown);
                     KeyboardActions.enable();
                     this.$store.dispatch("setIsRemoveFlow", false)
                 }
             }
         },
         methods: {
+            handleKeyDown: function (event) {
+                if(!this.removeDialog){
+                    return;
+                }
+                if (event.keyCode === KeyCode.KEY_RETURN) {
+                    this.remove();
+                }
+            },
             remove: async function () {
+                if (!this.isThereSomethingToRemove || !this.removeDialog) {
+                    return;
+                }
                 let controller = GraphElement.wrapElementsInController(this.selected.filter((selected) => {
                     return selected.canRemove;
                 }));
