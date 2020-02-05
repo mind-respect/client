@@ -298,7 +298,7 @@
             );
             if (this.$route.params.nbChild !== undefined) {
                 this.center = new VertexSkeleton();
-                if(this.$route.params.colors){
+                if (this.$route.params.colors) {
                     this.center.setBackgroundColor(
                         this.$route.params.colors.background
                     );
@@ -323,12 +323,20 @@
                     });
                 });
             }
-            let center = IdUri.isMetaUri(centerUri) ? TagVertex.withUri(centerUri) : GraphElement.withUri(centerUri);
-            let promise = center.isMeta() ?
-                TagVertexController.withMeta(center).loadGraph() :
-                SubGraphController.withVertex(
-                    center
-                ).load();
+            let promise;
+            if (this.$route.params.newVertex === undefined) {
+                let center = IdUri.isMetaUri(centerUri) ? TagVertex.withUri(centerUri) : GraphElement.withUri(centerUri);
+                promise = center.isMeta() ?
+                    TagVertexController.withMeta(center).loadGraph() :
+                    SubGraphController.withVertex(
+                        center
+                    ).load();
+            }else{
+                let center = this.$route.params.newVertex;
+                promise = Promise.resolve(center);
+                CurrentSubGraph.get().add(center);
+                center.makeCenter();
+            }
             promise.then(async (_center) => {
                     /*
                     *   this.center = null;this.drawnGraphKey = IdUri.uuid();await this.$nextTick();
