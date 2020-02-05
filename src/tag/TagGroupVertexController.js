@@ -10,6 +10,7 @@ import VertexService from '@/vertex/VertexService'
 import Selection from '@/Selection'
 import TagRelation from '@/tag/TagRelation'
 import GraphElementType from '@/graph-element/GraphElementType'
+import Store from '@/store'
 
 const api = {};
 

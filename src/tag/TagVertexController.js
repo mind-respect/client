@@ -16,6 +16,7 @@ import SubGraphController from '@/graph/SubGraphController'
 import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import GraphElement from '@/graph-element/GraphElement'
+import Store from '@/store'
 
 const api = {};
 
@@ -225,6 +226,7 @@ TagVertexController.prototype.addChild = function () {
             GraphElementService.changeChildrenIndex(
                 this.model()
             );
+            Store.dispatch("redraw");
         })
     });
 };
