@@ -70,6 +70,7 @@
     import Selection from '@/Selection'
     import I18n from '@/I18n'
     import GraphElement from '@/graph-element/GraphElement'
+    import KeyboardActions from '@/KeyboardActions'
 
     export default {
         name: "RemoveDialog",
@@ -153,7 +154,10 @@
                 }
             },
             removeDialog: function () {
-                if (this.removeDialog === false) {
+                if (this.removeDialog) {
+                    KeyboardActions.disable();
+                } else {
+                    KeyboardActions.enable();
                     this.$store.dispatch("setIsRemoveFlow", false)
                 }
             }

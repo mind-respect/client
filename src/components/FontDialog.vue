@@ -97,6 +97,7 @@
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import GraphElement from '@/graph-element/GraphElement'
     import AppController from '@/AppController'
+    import KeyboardActions from '@/KeyboardActions'
 
     export default {
         name: "FontDialog",
@@ -156,7 +157,10 @@
             },
             dialog: function () {
                 if (this.dialog === false) {
+                    KeyboardActions.enable();
                     this.$store.dispatch("setIsFontFlow", false)
+                }else{
+                    KeyboardActions.disable();
                 }
             },
             searchText: function () {

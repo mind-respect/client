@@ -95,6 +95,7 @@
     import TagVertex from '@/tag/TagVertex'
     import Vertex from "@/vertex/Vertex";
     import Edge from '@/edge/Edge'
+    import KeyboardActions from '@/KeyboardActions'
 
     export default {
         name: "MergeMenu",
@@ -164,7 +165,10 @@
             },
             dialog: function () {
                 if (this.dialog === false) {
+                    KeyboardActions.enable();
                     this.$store.dispatch("setIsMergeFlow", false)
+                } else {
+                    KeyboardActions.disable();
                 }
                 if (this.$refs.mergeSearch) {
                     this.$refs.mergeSearch.blur();

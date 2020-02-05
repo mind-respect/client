@@ -64,6 +64,7 @@
     import Selection from '@/Selection'
     import I18n from '@/I18n'
     import TagRelationController from '@/tag/TagRelationController'
+    import KeyboardActions from '@/KeyboardActions'
 
     export default {
         name: "RemoveTagDialog",
@@ -131,7 +132,10 @@
             },
             removeTagDialog: function () {
                 if (this.removeTagDialog === false) {
+                    KeyboardActions.enable();
                     this.$store.dispatch("setIsRemoveTagFlow", false)
+                } else {
+                    KeyboardActions.disable();
                 }
             }
         },

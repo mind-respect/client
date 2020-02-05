@@ -24,6 +24,7 @@
 <script>
 
     import GraphUi from '@/graph/GraphUi'
+    import KeyboardActions from '@/KeyboardActions'
 
     export default {
         name: "ListViewDialog",
@@ -53,8 +54,10 @@
                 if (this.dialog === false) {
                     this.$store.dispatch("setIsListViewFlow", false);
                     GraphUi.enableDragScroll();
+                    KeyboardActions.enable();
                 } else {
                     GraphUi.disableDragScroll();
+                    KeyboardActions.disable();
                 }
 
             }

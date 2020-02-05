@@ -78,6 +78,7 @@
     import SearchLoadMore from '@/components/search/SearchLoadMore'
     import SearchResultContent from '@/components/search/SearchResultContent'
     import SearchResultAction from '@/components/search/SearchResultAction'
+    import KeyboardActions from '@/KeyboardActions'
 
     export default {
         name: "AddTagDialog",
@@ -130,7 +131,10 @@
                 }
             },
             dialog: function () {
-                if (this.dialog === false) {
+                if (this.dialog) {
+                    KeyboardActions.disable();
+                } else {
+                    KeyboardActions.enable();
                     this.$store.dispatch("setIsAddTagFlow", false)
                 }
             },

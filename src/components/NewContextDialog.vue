@@ -160,6 +160,7 @@
     import Selection from '@/Selection'
     import NewContextDialogRelation from '@/components/NewContextDialogRelation'
     import I18n from '@/I18n'
+    import KeyboardActions from '@/KeyboardActions'
 
     export default {
         name: "NewContextDialog",
@@ -252,7 +253,10 @@
             dialog: function () {
                 if (this.dialog === false) {
                     this.actionLoading = false;
+                    KeyboardActions.enable();
                     this.$store.dispatch("isNewContextFlow", false)
+                }else{
+                    KeyboardActions.disable();
                 }
             }
         }

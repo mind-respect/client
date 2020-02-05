@@ -66,6 +66,7 @@
     import SearchResultAction from '@/components/search/SearchResultAction'
     import IdUri from '@/IdUri'
     import Dragged from '@/Dragged'
+    import KeyboardActions from '@/KeyboardActions'
 
     export default {
         name: "AddExistingBubbleDialog",
@@ -105,8 +106,10 @@
             },
             dialog: function () {
                 if (this.dialog) {
+                    KeyboardActions.disable();
                     GraphUi.disableDragScroll();
                 } else {
+                    KeyboardActions.enable();
                     GraphUi.enableDragScroll();
                 }
             }

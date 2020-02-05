@@ -525,6 +525,8 @@
 <script>
     import I18n from '@/I18n'
     import UiUtils from '@/UiUtils'
+    import GraphUi from '@/graph/GraphUi'
+    import KeyboardActions from '@/KeyboardActions'
 
     export default {
         name: "DocsDialog",
@@ -661,6 +663,17 @@
         methods: {
             enter: function () {
                 this.dialog = true;
+            }
+        },
+        watch:{
+            dialog: function () {
+                if (this.dialog === false) {
+                    GraphUi.enableDragScroll();
+                    KeyboardActions.enable();
+                } else {
+                    GraphUi.disableDragScroll();
+                    KeyboardActions.disable();
+                }
             }
         }
     }
