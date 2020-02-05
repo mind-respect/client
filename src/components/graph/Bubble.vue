@@ -184,7 +184,7 @@
                                     allow-overflow
                             >
                                 <template v-slot:activator="{ on }">
-                                    <div class="label-container">
+                                    <div class="label-container" :style="contentBoxShadow()">
                                         <v-chip :color="chipColor"
                                                 small
                                                 @dragover="labelDragEnter"
@@ -200,7 +200,6 @@
                                                      'is-shrinked' : isShrinked,
                                                      'empty-edge' : bubble.isEdge() && !isEditFlow && bubble.isLabelEmpty()
                                                 }"
-                                                :style="contentBoxShadow()"
                                         >
                                             <InLabelButtons :bubble="bubble" :isLeft="isLeft" :isCenter="isCenter"
                                                             class="vh-center"
