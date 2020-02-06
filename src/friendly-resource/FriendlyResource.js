@@ -15,6 +15,7 @@ import CurrentSubGraph from "@/graph/CurrentSubGraph";
 import UiUtils from '@/UiUtils'
 import Color from '@/Color'
 import colors from 'vuetify/es5/util/colors'
+import KeyboardActions from '@/KeyboardActions'
 
 const MoveRelation = {
     "Parent": "parent",
@@ -203,6 +204,10 @@ FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
 
 FriendlyResource.FriendlyResource.prototype.focus = function (event) {
     return new Promise((resolve) => {
+        /*
+            KeyboardActions.disable(); because problems happened when adding sibling and then pressing spacebar really quickly
+       */
+        KeyboardActions.disable();
         GraphUi.disableDragScroll();
         let interval;
         if (!focus.bind(this)()) {
@@ -226,6 +231,7 @@ FriendlyResource.FriendlyResource.prototype.focus = function (event) {
                 } else {
                     Focus.focusEnd(labelHtml);
                 }
+                KeyboardActions.enable();
                 resolve();
             });
             return true;

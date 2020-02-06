@@ -227,10 +227,10 @@
     import I18n from '@/I18n'
     import PatternService from "@/pattern/PatternService";
     import GraphController from '@/graph/GraphController'
-    import GraphElementService from '@/graph-element/GraphElementService'
     import GraphUi from '@/graph/GraphUi'
     import VertexSkeleton from '@/vertex/VertexSkeleton'
     import RelationSkeleton from '@/edge/RelationSkeleton'
+    import KeyCode from 'keycode-js';
 
     let insideSvgOpacityTransition = false;
 
@@ -331,7 +331,7 @@
                     SubGraphController.withVertex(
                         center
                     ).load();
-            }else{
+            } else {
                 let center = this.$route.params.newVertex;
                 promise = Promise.resolve(center);
                 CurrentSubGraph.get().add(center);
@@ -383,11 +383,13 @@
         },
         created: function () {
             window.addEventListener('resize', this.handleResize);
+            window.addEventListener('keydown', this.disableSpacebarScroll);
         },
         beforeDestroy: function () {
             CurrentSubGraph.set(SubGraph.empty());
             Selection.reset();
             window.removeEventListener('resize', this.handleResize);
+            window.removeEventListener('keydown', this.disableSpacebarScroll);
         },
         methods: {
             mousedown: function () {
@@ -464,6 +466,14 @@
                 // if (Selection.isSingle()) {
                 //     Scroll.goToGraphElement(Selection.getSingle(), true);
                 // }
+            },
+            disableSpacebarScroll: function (e) {
+                /*
+                 spacebar scroll happened when adding sibling and then pressing spacebar really quickly
+                */
+                if (e.keyCode == KeyCode.KEY_SPACE && e.target === document.body) {
+                    e.preventDefault();
+                }
             }
         },
         computed: {

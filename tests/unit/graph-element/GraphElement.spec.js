@@ -6,7 +6,6 @@ import Selection from '@/Selection'
 import Tag from '@/tag/Tag'
 
 describe("GraphElement", () => {
-
     describe("addTag", () => {
         it("adds self tag to the bubble with external uri if already on map", async () => {
             let scenario = await new ThreeScenario();
