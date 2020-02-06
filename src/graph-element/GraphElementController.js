@@ -567,7 +567,7 @@ GraphElementController.prototype.becomeExParent = function () {
     return Promise.resolve();
 };
 
-GraphElementController.prototype.addIdentifiers = function () {
+GraphElementController.prototype.addIdentifiersCanDo = function () {
     return this.addIdentificationCanDo();
 };
 

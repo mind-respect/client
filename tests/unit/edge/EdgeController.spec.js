@@ -9,6 +9,7 @@ import ConvertVertexToGroupRelationScenario from "../scenario/ConvertVertexToGro
 import LeaveContextChoiceAScenario from "../scenario/LeaveContextChoiceAScenario";
 import LeaveContextTechChoiceScenario from "../scenario/LeaveContextTechChoiceScenario";
 import TwoLevelGroupRelationScenario from "../scenario/TwoLevelGroupRelationScenario";
+import CurrentSubGraph from "../../../src/graph/CurrentSubGraph";
 
 describe("EdgeController", () => {
     describe("remove", function () {
@@ -87,7 +88,6 @@ describe("EdgeController", () => {
                 groupRelation.getIdentification().getExternalResourceUri()
             ).toBe(originalRelation.getUri());
         });
-
         it("adds self identifier to the original relation with appropriate uri", async () => {
             let threeBubblesScenario = await new ThreeScenario();
             let bubble1 = threeBubblesScenario.getBubble1InTree();
@@ -104,7 +104,7 @@ describe("EdgeController", () => {
             expect(
                 relation1.getUri()
             ).toBe(relation1Uri);
-            let tagUri = newGroupRelation.getIdentification().getExternalResourceUri();
+            let tagUri = newGroupRelation.getIdentification().getUri();
             expect(
                 relation1.getIdentifiersIncludingSelf()[0].getUri()
             ).toBe(tagUri);
@@ -741,6 +741,19 @@ describe("EdgeController", () => {
             expect(
                 center.getIdentifiersIncludingSelf()[0].getNbReferences()
             ).toBe(1);
+        });
+        it("adds new vertex in current sub graph", async () => {
+            let scenario = await new LeaveContextChoiceAScenario();
+            let center = scenario.getCenterInTree();
+            let techChoice = TestUtil.getChildDeepWithLabel(center, "tech choice");
+            let relation = techChoice.getParentBubble();
+            await relation.controller().leaveContextDo();
+            let newDestinationVertex = relation.getNextBubble();
+            expect(
+                CurrentSubGraph.get().hasUri(
+                    newDestinationVertex.getUri()
+                )
+            ).toBeTruthy();
         });
     });
 });

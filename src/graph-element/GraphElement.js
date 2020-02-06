@@ -8,6 +8,7 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import Vue from 'vue'
 import Store from '@/store'
 import Icon from '@/Icon'
+import CurrentSubGraph from "../graph/CurrentSubGraph";
 
 const controllerGetters = {};
 
@@ -376,16 +377,24 @@ GraphElement.GraphElement.prototype.addIdentifications = function (identificatio
         );
     });
 };
-GraphElement.GraphElement.prototype.addIdentification = function (identification) {
-    if (this.hasTagNotBuildingSelf(identification)) {
+GraphElement.GraphElement.prototype.addIdentification = function (tag) {
+    if (this.hasTagNotBuildingSelf(tag)) {
         return;
     }
-    if (!identification.hasRelationExternalUri()) {
+    if (!tag.hasRelationExternalUri()) {
         return this.addIdentification(
-            identification.makeGeneric()
+            tag.makeGeneric()
         );
     }
-    this.identifiers.push(identification);
+    if (tag.getExternalResourceUri() !== this.getUri()) {
+        let original = CurrentSubGraph.get().getHavingUri(
+            tag.getExternalResourceUri()
+        );
+        if (original) {
+            original.addIdentification(tag);
+        }
+    }
+    this.identifiers.push(tag);
 };
 
 GraphElement.GraphElement.prototype.getFirstIdentificationToAGraphElement = function () {

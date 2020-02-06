@@ -273,6 +273,8 @@ EdgeController.prototype.leaveContextDo = async function () {
     const original = this.model().getDestinationVertex();
     const isRemoveFlow = this.model().getParentVertex().getUri() === original.getUri();
     const newVertex = await VertexService.createVertex();
+    CurrentSubGraph.get().remove(original);
+    CurrentSubGraph.get().add(newVertex);
     const newVertexController = newVertex.controller();
     const addIdentifiersPromise = newVertexController.addIdentifiers(
         original.getIdentifiersIncludingSelf(),
@@ -291,7 +293,6 @@ EdgeController.prototype.leaveContextDo = async function () {
             this.model().getParentVertex().addIdentifications(
                 newVertex.getIdentifiers()
             );
-            this.model().getParentVertex().getSelfTag().incrementNbReferences();
             this.model().remove();
         } else {
             this.model().setDestinationVertex(newVertex);

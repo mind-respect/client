@@ -1,9 +1,38 @@
 import Mock from '../mock/Mock'
+import TestUtil from '../util/TestUtil'
 import ThreeScenario from "../scenario/ThreeScenario"
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import Selection from '@/Selection'
+import Tag from '@/tag/Tag'
 
 describe("GraphElement", () => {
+
+    describe("addTag", () => {
+        it("adds self tag to the bubble with external uri if already on map", async () => {
+            let scenario = await new ThreeScenario();
+            let center = scenario.getCenterInTree();
+            let b2 = TestUtil.getChildWithLabel(
+                center,
+                "r1"
+            ).getNextBubble();
+            let b2Tag = Tag.fromFriendlyResource(b2);
+            b2 = TestUtil.getChildWithLabel(
+                center,
+                "r1"
+            ).getNextBubble();
+            expect(
+                b2.getRelevantTags().length
+            ).toBe(0);
+            await center.controller().addIdentification(b2Tag, true);
+            b2 = TestUtil.getChildWithLabel(
+                center,
+                "r1"
+            ).getNextBubble();
+            expect(
+                b2.getRelevantTags().length
+            ).toBe(1);
+        });
+    });
 
     xit("can tell the difference between vertex and schema", async () => {
         let scenario = await new ThreeScenario();

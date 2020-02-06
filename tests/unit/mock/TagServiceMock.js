@@ -14,6 +14,7 @@ api.add = function () {
         identification.setUri(
             TestUtil.generateIdentificationUri()
         );
+        identification.incrementNbReferences();
         return Promise.resolve(
             [identification]
         );
