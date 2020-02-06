@@ -284,8 +284,13 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
     };
     let yAdjust = 0;
     let element = isParent ? bubble.getHtml() : this.getBubbleElement(bubble);
-    if (bubble.isEdge() && bubble.isShrinked()) {
-        yAdjust = -10;
+    if (bubble.isEdge()) {
+        if (bubble.isShrinked()) {
+            yAdjust = -10;
+        } else if (bubble.isShrinked(true) && Selection.isSelected(bubble)) {
+            yAdjust = 7;
+            bubble.redrawOnLeaveEdit = true;
+        }
     }
     yAdjust += this.zoomAdjust;
     if (bubble.isVertex() && bubble.getParentBubble().isEdge() && bubble.getParentBubble().getNumberOfChild() > 1) {

@@ -383,6 +383,12 @@ FriendlyResource.FriendlyResource.prototype.deselect = function () {
     this.blur();
     this.isSelected = false;
     this.refreshContent();
+    if (this.redrawOnLeaveEdit) {
+        Vue.nextTick().then(() => {
+            Store.dispatch("redraw")
+        });
+        this.redrawOnLeaveEdit = false;
+    }
 };
 
 FriendlyResource.FriendlyResource.prototype.blur = function () {
