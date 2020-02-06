@@ -63,7 +63,6 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
                 this.model()
             );
             triple.destination.focus();
-            Store.dispatch("redraw");
         });
         if (ShareLevel.PRIVATE === this.model().model().getShareLevel()) {
             triple.destination.setShareLevel(ShareLevel.PRIVATE);

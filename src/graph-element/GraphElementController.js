@@ -664,7 +664,6 @@ GraphElementController.prototype.relateToDistantVertexWithUri = function (distan
             GraphElementService.changeChildrenIndex(
                 parentVertex
             );
-            Store.dispatch("redraw");
         });
     });
 };

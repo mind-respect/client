@@ -253,6 +253,19 @@ GraphElement.GraphElement.prototype.getRelevantTags = function () {
 };
 
 GraphElement.GraphElement.prototype.refreshChildren = function (avoidRedraw) {
+    return new Promise((resolve) => {
+        if (avoidRedraw === true) {
+            resolve();
+            return;
+        }
+        Vue.nextTick(() => {
+            Store.dispatch("redraw");
+            setTimeout(() => {
+                Store.dispatch("redraw");
+                resolve();
+            }, 250);
+        });
+    });
     return;
     this.childrenKey = IdUri.uuid();
     if (this.component) {

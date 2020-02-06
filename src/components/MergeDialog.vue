@@ -12,16 +12,13 @@
                 </v-icon>
             </v-card-title>
             <v-card-text>
-                <v-card-text>
+                <v-card-text v-if="false">
                     <v-card>
                         <v-list-item three-line>
                             <v-list-item-content>
                                 <v-list-item-title class="subtitle-1 mb-1">
                                     {{bubble.getLabel()}}
                                 </v-list-item-title>
-                                <v-list-item-subtitle class="subtitle-1">
-                                    Sera effacée
-                                </v-list-item-subtitle>
                             </v-list-item-content>
                         </v-list-item>
                     </v-card>

@@ -50,7 +50,6 @@ TagGroupVertexController.prototype.addChild = function () {
         //     this.model()
         // );
         triple.destination.focus();
-        Store.dispatch("redraw");
     });
 };
 

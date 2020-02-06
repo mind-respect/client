@@ -65,7 +65,6 @@ EdgeController.prototype.addChild = async function () {
             );
             Selection.setToSingle(triple.destination);
             triple.destination.focus();
-            Store.dispatch("redraw");
         });
         return triple;
     });
@@ -119,7 +118,6 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
     return Promise.all(promises).then(() => {
         CurrentSubGraph.get().add(newGroupRelation);
         newGroupRelation.expand(true);
-        Store.dispatch("redraw");
         GraphElementService.changeChildrenIndex(
             this.model().getParentVertex()
         );

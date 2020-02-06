@@ -743,14 +743,9 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isFi
         Vue.nextTick(() => {
             setTimeout(() => {
                 Scroll.centerBubbleForTreeIfApplicable(this);
-                //no need to redraw here because this.refreshChildren() triggers a redraw
             }, 100);
         })
     }
-    // this.draw = true;
-    // Vue.nextTick(function(){
-    //     Store.dispatch("redraw")
-    // })
 };
 
 FriendlyResource.FriendlyResource.prototype.getIsExpanded = function () {
@@ -762,7 +757,6 @@ FriendlyResource.FriendlyResource.prototype.collapse = function (preventScroll) 
     this.isCollapsed = true;
     if (!preventScroll) {
         Scroll.centerBubbleForTreeIfApplicable(this);
-        Store.dispatch("redraw");
         this.refreshChildren();
     }
 };

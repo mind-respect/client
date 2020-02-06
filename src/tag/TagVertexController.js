@@ -226,7 +226,6 @@ TagVertexController.prototype.addChild = function () {
             GraphElementService.changeChildrenIndex(
                 this.model()
             );
-            Store.dispatch("redraw");
         })
     });
 };

@@ -134,13 +134,7 @@ api.refreshFont = function (justChanged) {
         link.setAttribute("href", "https://fonts.googleapis.com/css?family=" + font.family.replace(/ /g, '+'));
         link.onload = () => {
             if (justChanged) {
-                CurrentSubGraph.get().center.refreshChildren();
-                setTimeout(() => {
-                    Vue.nextTick(() => {
-                        Store.dispatch("redraw");
-                    });
-                    resolve();
-                }, 100)
+                return CurrentSubGraph.get().center.refreshChildren();
             } else {
                 resolve();
             }

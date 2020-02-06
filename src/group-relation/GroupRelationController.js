@@ -115,7 +115,6 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         if (saveIndex) {
             Selection.setToSingle(triple.destination);
             triple.destination.focus();
-            Store.dispatch("redraw");
         }
     });
     return Promise.resolve(triple);
