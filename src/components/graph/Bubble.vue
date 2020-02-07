@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <div v-if="loaded" class="unselectable mb-1">
+    <div v-if="loaded" class="unselectable room-to-drop-when-dragging">
         <v-layout
                 :class="{
         'vertex-tree-container': !isCenter,
@@ -1023,5 +1023,14 @@
 
     .meta-relation-icon {
         width: auto !important;
+    }
+
+    .room-to-drop-when-dragging {
+        /*
+        margin-top and bottom need to be balanced so that margins dont accumulate and
+        graph when a serie of single children it looks straight
+        */
+        margin-top: 2px;
+        margin-bottom: 2px;
     }
 </style>
