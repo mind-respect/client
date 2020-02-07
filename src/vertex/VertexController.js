@@ -361,7 +361,7 @@ VertexController.prototype.moveUpOneStepCanDo = VertexController.prototype.moveD
 };
 
 VertexController.prototype.copyCanDo = function () {
-    return !this.isSingle() || !this.getUi().isLabelEmpty();
+    return this.isSingle() && !this.model().isLabelEmpty();
 };
 
 VertexController.prototype.copy = function () {
