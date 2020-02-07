@@ -86,6 +86,10 @@
                         ctrlShortcut: "H"
                     },
                     {
+                        icon: "all_out",
+                        action: "collapseOthers"
+                    },
+                    {
                         action: "center",
                         icon: "filter_center_focus",
                         ctrlShortcut: "0"

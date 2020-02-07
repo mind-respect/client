@@ -371,7 +371,11 @@
                         await this.$nextTick();
                         this.strokeColor = Color.EdgeColor;
                         setTimeout(() => {
-                            this.$store.dispatch("redraw", {fadeIn: true})
+                            this.$store.dispatch("redraw", {fadeIn: true});
+                            const timeItTakesToFadeInPlus5 = 505;
+                            setTimeout(() => {
+                                this.$store.dispatch("redraw");
+                            }, timeItTakesToFadeInPlus5);
                         }, 10);
                     });
                     CurrentSubGraph.get().component = this;

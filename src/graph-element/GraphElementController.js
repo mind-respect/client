@@ -19,6 +19,7 @@ import SubGraphController from '@/graph/SubGraphController'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import TagRelation from "@/tag/TagRelation";
 import TagVertex from "@/tag/TagVertex";
+import Scroll from "../Scroll";
 
 const api = {};
 let bubbleCutClipboard;
@@ -277,6 +278,35 @@ GraphElementController.prototype.collapseCanDo = function () {
 GraphElementController.prototype.collapse = function () {
     this.model().defineScrollPosition();
     this.model().collapse();
+};
+
+
+GraphElementController.prototype.collapseOthersCanDo = function () {
+    return this.isSingle() && !this.model().isCenter && this.model().isForkType();
+};
+
+
+GraphElementController.prototype.collapseOthers = function () {
+    let ancestorsId = new Set();
+    let selfId = this.model().getId();
+    this.model().getAncestors().forEach((ancestor) => {
+        if (!ancestor.isForkType()) {
+            return;
+        }
+        ancestorsId.add(ancestor.getId());
+        ancestor.getNextChildren().forEach((ancestorChild) => {
+            if (!ancestorChild.isForkType()) {
+                ancestorChild = ancestorChild.getNextBubble();
+            }
+            if (!ancestorsId.has(ancestorChild.getId()) && ancestorChild.getId() !== selfId && !ancestorChild.isCenter) {
+                ancestorChild.collapse(true);
+            }
+        });
+    });
+    this.model().refreshChildren().then(() => {
+        Scroll.centerBubbleForTreeIfApplicable(this.model());
+    });
+    return Promise.resolve();
 };
 
 GraphElementController.prototype.cutCanDo = function () {
