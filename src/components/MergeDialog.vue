@@ -50,7 +50,7 @@
                                     <SearchResultContent :item="item"></SearchResultContent>
                                     <SearchResultAction :item="item"></SearchResultAction>
                                 </template>
-                                <SearchLoadMore slot="append-item" @loadMore="loadMore" :noCreateButton="true"
+                                <SearchLoadMore slot="append-item" @loadMore="loadMore"
                                                 ref="mergeLoadMore"></SearchLoadMore>
                             </v-autocomplete>
                         </v-card-text>
@@ -187,6 +187,9 @@
                 this.loading = true;
                 let searchFunction = this.bubble.isMeta() ? SearchService.ownTagsOnly : SearchService.ownVertices;
                 searchFunction(term).then((results) => {
+                    if (term !== this.search) {
+                        return;
+                    }
                     this.items = results.map((result) => {
                         result.disabled = this.bubble.getUri() === result.uri;
                         return result;

@@ -11,11 +11,7 @@
 </template>
 
 <script>
-    import SearchLoadMore from '@/components/search/SearchLoadMore'
-    import SearchResultContent from '@/components/search/SearchResultContent'
-    import SearchResultAction from '@/components/search/SearchResultAction'
     import I18n from '@/I18n'
-    import SearchService from '@/search/SearchService'
     import Tag from '@/tag/Tag'
 
     export default {

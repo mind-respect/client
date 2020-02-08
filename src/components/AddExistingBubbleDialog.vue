@@ -36,7 +36,7 @@
                         <SearchResultContent :item="item"></SearchResultContent>
                         <SearchResultAction :item="item"></SearchResultAction>
                     </template>
-                    <SearchLoadMore slot="append-item" @loadMore="loadMore" :noCreateButton="true"
+                    <SearchLoadMore slot="append-item" @loadMore="loadMore"
                                     ref="loadMore"></SearchLoadMore>
                 </v-autocomplete>
             </v-card-text>

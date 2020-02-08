@@ -29,7 +29,9 @@
             <SearchResultContent :item="item"></SearchResultContent>
             <SearchResultAction :item="item"></SearchResultAction>
         </template>
-        <SearchLoadMore slot="append-item" @loadMore="loadMore" @create="createCenterVertex"
+        <SearchCreate slot="append-item" @create="createCenterVertex"
+                      ref="searchCreate"></SearchCreate>
+        <SearchLoadMore slot="append-item" @loadMore="loadMore"
                         ref="loadMore"></SearchLoadMore>
         <v-list-item slot="no-data" @click="createCenterVertex" v-show="!loading">
             <v-list-item-content>
@@ -51,6 +53,7 @@
 </template>
 
 <script>
+    import SearchCreate from '@/components/search/SearchCreate'
     import SearchLoadMore from '@/components/search/SearchLoadMore'
     import SearchResultContent from '@/components/search/SearchResultContent'
     import SearchResultAction from '@/components/search/SearchResultAction'
@@ -67,6 +70,7 @@
     export default {
         name: "Search",
         components: {
+            SearchCreate,
             SearchLoadMore,
             SearchResultContent,
             SearchResultAction
@@ -141,9 +145,13 @@
             querySelections: function (searchText) {
                 this.loading = true;
                 SearchService.searchForAllOwnResources(searchText).then((results) => {
+                    if (searchText !== this.searchText) {
+                        return;
+                    }
                     this.items = results;
                     this.loading = false;
                     this.$refs.loadMore.reset(results.length, searchText);
+                    this.$refs.searchCreate.reset(results.length, searchText);
                 });
             },
             setMenuPosition: function () {

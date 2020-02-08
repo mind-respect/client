@@ -37,7 +37,9 @@
                         <SearchResultContent :item="item"></SearchResultContent>
                         <SearchResultAction :item="item"></SearchResultAction>
                     </template>
-                    <SearchLoadMore slot="append-item" @loadMore="loadMore" @create="createTagWithNoRef"
+                    <SearchCreate slot="append-item" @create="createTagWithNoRef"
+                                  ref="searchCreate"></SearchCreate>
+                    <SearchLoadMore slot="append-item" @loadMore="loadMore"
                                     ref="loadMore" v-show="!searchLoading"></SearchLoadMore>
                     <v-list-item slot="no-data" @click="createTagWithNoRef" v-if="search && search.trim() !== ''"
                                  v-show="!searchLoading">
@@ -46,7 +48,7 @@
                                 "{{search}}"
                             </v-list-item-title>
                             <v-list-item-subtitle class="">
-                                {{$t('tag:createNew')}}
+                                {{$t('create')}}
                             </v-list-item-subtitle>
                         </v-list-item-content>
                         <v-list-item-action>
@@ -75,6 +77,7 @@
     import Tag from "@/tag/Tag";
     import Selection from '@/Selection'
     import SearchService from '@/search/SearchService'
+    import SearchCreate from '@/components/search/SearchCreate'
     import SearchLoadMore from '@/components/search/SearchLoadMore'
     import SearchResultContent from '@/components/search/SearchResultContent'
     import SearchResultAction from '@/components/search/SearchResultAction'
@@ -83,6 +86,7 @@
     export default {
         name: "AddTagDialog",
         components: {
+            SearchCreate,
             SearchLoadMore,
             SearchResultContent,
             SearchResultAction
@@ -204,9 +208,13 @@
                 this.$refs.tagSearch.reset();
                 this.$refs.tagSearch.blur();
             },
-            querySelections(term) {
+            querySelections: function (term) {
                 this.searchLoading = true;
                 SearchService.tags(term).then((results) => {
+                    if (term !== this.search) {
+                        return;
+                    }
+                    let nbResults = 0;
                     this.items = results.map((result) => {
                         result.disabled = this.bubble.hasTagRelatedToUri(result.uri);
                         if (!result.disabled && result.original.graphElement && result.original.graphElement.hasTagRelatedToUri) {
@@ -214,12 +222,18 @@
                                 this.bubble.getUri()
                             );
                         }
+                        if (!result.disabled) {
+                            nbResults++
+                        }
                         return result;
                     });
-                    this.searchLoading = false;
                     if (this.$refs.loadMore) {
-                        this.$refs.loadMore.reset(results.length, this.search);
+                        this.$refs.loadMore.reset(nbResults, this.search);
                     }
+                    if (this.$refs.searchCreate) {
+                        this.$refs.searchCreate.reset(nbResults, this.search);
+                    }
+                    this.searchLoading = false;
                 });
             },
             loadMore: function (callback) {
