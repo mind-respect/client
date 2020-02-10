@@ -22,7 +22,7 @@ const api = {};
 api.fromDifferentGraphElements = function (graphElements) {
     return new VertexController(
         graphElements.filter((graphElement) => {
-            return graphElement.isVertex();
+            return graphElement.isVertex() || graphElement.isMeta()
         })
     );
 };

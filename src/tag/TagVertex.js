@@ -59,7 +59,18 @@ TagVertex.prototype.setOriginalMeta = function (originalMeta) {
     );
     this.setNbReferences(
         originalMeta.getNbReferences()
-    )
+    );
+    this.setShareLevel(
+        originalMeta.identificationServerFormat.shareLevel
+    );
+};
+
+TagVertex.prototype.setShareLevel = function (shareLevel) {
+    this.originalMeta.identificationServerFormat.shareLevel = shareLevel.toUpperCase();
+};
+
+TagVertex.prototype.getShareLevel = function () {
+    return this.originalMeta.identificationServerFormat.shareLevel.toUpperCase();
 };
 
 TagVertex.prototype.getOriginalMeta = function () {

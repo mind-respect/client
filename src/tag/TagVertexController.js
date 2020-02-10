@@ -279,10 +279,6 @@ TagVertexController.prototype.convertToDistantBubbleWithUriCanDo = function (dis
 // };
 
 
-TagVertexController.prototype.setShareLevelCanDo = function () {
-    return false;
-};
-
 TagVertexController.prototype.becomeParent = function (child, isLeft, index) {
     return Promise.resolve();
     // let promises = [];

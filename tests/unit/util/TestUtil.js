@@ -2,6 +2,7 @@ import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
 import Tag from '@/tag/Tag'
 import $ from 'jquery'
+import ShareLevel from '@/vertex/ShareLevel'
 
 const api = {};
 api.generateVertex = function () {
@@ -37,6 +38,7 @@ api.dummyIdentifier = function () {
     let tag = Tag.withUri(
         api.generateIdentificationUri()
     );
+    tag.identificationServerFormat.shareLevel = ShareLevel.PRIVATE;
     tag.setExternalResourceUri(
         api.generateVertexUri()
     );

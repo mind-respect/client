@@ -17,7 +17,7 @@
         <v-icon small :color="color" v-if="showTagIcon">
             label
         </v-icon>
-        <v-icon small :color="color" v-if="bubble.isVertex()">
+        <v-icon small :color="color" v-if="bubble.isVertex() || bubble.isMeta()">
             {{shareIcon}}
         </v-icon>
         <small v-if="bubble.isVertex() && bubble.getNbDuplicates() > 0"

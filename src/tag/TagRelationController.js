@@ -119,6 +119,10 @@ TagRelationController.prototype.selectTreeCanDo = function () {
     return false;
 };
 
+TagRelationController.prototype.setColorCanDo = function () {
+    return false;
+};
+
 api.MetaRelationController = TagRelationController;
 
 export default api;
