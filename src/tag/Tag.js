@@ -10,6 +10,7 @@ import Icon from '@/Icon'
 import GraphElementType from '@/graph-element/GraphElementType'
 import UserService from "@/service/UserService";
 import CurrentSubGraph from "../graph/CurrentSubGraph";
+import ShareLevel from '@/vertex/ShareLevel'
 
 const RELATION_URIS = {
     "sameAs": "same-as",
@@ -106,6 +107,9 @@ Tag.Tag.prototype = new GraphElement.GraphElement();
 
 Tag.Tag.prototype.init = function (serverFormat) {
     this.identificationServerFormat = serverFormat;
+    if(!this.identificationServerFormat.shareLevel){
+        this.identificationServerFormat.shareLevel = ShareLevel.PRIVATE;
+    }
     FriendlyResource.FriendlyResource.apply(
         this
     );
