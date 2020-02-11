@@ -103,13 +103,7 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
         this.model(),
         newGroupRelation
     );
-    if (adoptedChild.isGroupRelation()) {
-        adoptedChild.expand();
-        adoptedChild.visitClosestChildOfType(
-            GraphElementType.Relation,
-            moveEdge.bind(this)
-        );
-    } else if (adoptedChild.isVertex()) {
+    if (adoptedChild.isVertex()) {
         moveEdge.bind(this)(adoptedChild.getParentBubble());
     } else {
         moveEdge.bind(this)(adoptedChild);
@@ -125,21 +119,30 @@ EdgeController.prototype.becomeParent = function (adoptedChild) {
         return newGroupRelation;
     });
 
-    function moveEdge(movedEdge) {
-        let identifiers = this.model().hasIdentifications() && !previousParentFork.isGroupRelation() ?
+    async function moveEdge(movedEdge) {
+        let tags = this.model().hasIdentifications() && !previousParentFork.isGroupRelation() ?
             this.model().getIdentifiers() :
             this.model().getIdentifiersIncludingSelf();
+        let tagsWithDefinedUri;
+        let lastAddTagsPromise;
+        let relations = movedEdge.isGroupRelation() ? movedEdge.getClosestChildRelations(true) : [movedEdge];
         promises.push(
-            movedEdge.controller().addIdentifiers(
-                identifiers,
-                true
-            )
-        );
-        promises.push(
-            movedEdge.controller().replaceParentVertex(
-                this.model().getParentVertex(),
-                true
-            )
+            relations.map(async (relation) => {
+                if (lastAddTagsPromise && !tagsWithDefinedUri) {
+                    tagsWithDefinedUri = await lastAddTagsPromise;
+                }
+                lastAddTagsPromise = relation.controller().addIdentifiers(
+                    tagsWithDefinedUri === undefined ? tags : tagsWithDefinedUri,
+                    true
+                );
+                return Promise.all([
+                    lastAddTagsPromise,
+                    relation.controller().replaceParentVertex(
+                        this.model().getParentVertex(),
+                        true
+                    )
+                ]);
+            })
         );
     }
 };

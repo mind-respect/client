@@ -10,6 +10,7 @@ import MindMapInfo from '@/MindMapInfo'
 import Selection from '@/Selection'
 import VertexController from '@/vertex/VertexController'
 import VertexService from '@/vertex/VertexService'
+import TwoLevelGroupRelationScenario from "../scenario/TwoLevelGroupRelationScenario";
 
 describe('VertexController', () => {
     describe("remove", function () {
@@ -838,6 +839,39 @@ describe('VertexController', () => {
             expect(
                 groupRelation.getNumberOfChild()
             ).toBe(groupRelationNumberOfChild);
+        });
+        it("removes tags of relations under group relation when moving away from group relation", async () => {
+            let scenario = await new TwoLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let group1 = TestUtil.getChildWithLabel(
+                center,
+                "group1"
+            );
+            group1.expand();
+            let group2 = TestUtil.getChildWithLabel(
+                group1,
+                "group2"
+            );
+            group2.expand();
+            let g22 = TestUtil.getChildWithLabel(
+                group2,
+                "g22"
+            );
+            expect(
+                g22.getRelevantTags().length
+            ).toBe(2);
+            let aaaa = TestUtil.getChildWithLabel(
+                center,
+                "r1"
+            ).getNextBubble();
+            await group2.controller().moveUnderParent(aaaa);
+            g22 = TestUtil.getChildWithLabel(
+                group2,
+                "g22"
+            );
+            expect(
+                g22.getRelevantTags().length
+            ).toBe(1);
         });
     });
 });

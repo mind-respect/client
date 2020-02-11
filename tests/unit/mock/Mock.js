@@ -15,6 +15,7 @@ import Store from '@/store'
 import MindMapInfo from '@/MindMapInfo'
 import UiUtils from '@/UiUtils'
 import Scroll from '@/Scroll'
+import Breakpoint from '@/Breakpoint'
 
 const crypto = require('crypto');
 
@@ -48,6 +49,10 @@ api.setCenterBubbleUriInUrl = function (centerVertexUri) {
 };
 
 api.applyDefault = function () {
+    Breakpoint.set({
+        mdAndDown: true,
+        lgAndUp: false
+    });
     Store.dispatch("setIsViewOnly", true);
     jest.spyOn(MindMapInfo, "isViewOnly").mockImplementation(() => {
         return false;

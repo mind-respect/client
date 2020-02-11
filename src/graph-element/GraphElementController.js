@@ -606,7 +606,9 @@ GraphElementController.prototype.addIdentifiers = function (identifiers, prevent
     identifiers.forEach((identifier) => {
         promises.push(this.addIdentification(identifier, preventMoving));
     });
-    return Promise.all(promises);
+    return Promise.all(promises).then((arraysOfTags) => {
+        return [].concat.apply([], arraysOfTags)
+    });
 };
 
 GraphElementController.prototype.addIdentificationCanDo = function () {

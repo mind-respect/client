@@ -12,6 +12,7 @@ import SameLevelRelationsWithMoreThanOneCommonTagScenario
     from "../scenario/SameLevelRelationsWithMoreThanOneCommonTagScenario";
 import SingleAndTaggedToEventScenario from '../scenario/SingleAndTaggedToEventScenario'
 import GraphElementType from '@/graph-element/GraphElementType'
+import TwoLevelGroupRelationScenario from "../scenario/TwoLevelGroupRelationScenario";
 
 describe('GraphElementController', () => {
     describe("removeDo", () => {
@@ -585,7 +586,6 @@ describe('GraphElementController', () => {
     });
 
     describe("becomeParent", () => {
-
     });
 
     describe("showTags", () => {

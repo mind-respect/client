@@ -157,7 +157,7 @@ GroupRelationController.prototype.noteDo = function (note) {
 GroupRelationController.prototype.becomeExParent = function (movedEdge, newParent) {
     let promises = [];
     let previousParentGroupRelation = this.model().getGreatestGroupRelationAncestor();
-    let isMovingUnderSameGroupRelation = this.model().getDescendants().some((child)=>{
+    let isMovingUnderSameGroupRelation = this.model().getDescendants().some((child) => {
         return child.getId() === newParent.getId();
     });
     if (isMovingUnderSameGroupRelation) {
@@ -168,12 +168,23 @@ GroupRelationController.prototype.becomeExParent = function (movedEdge, newParen
         groupRelationToStop = movedEdge;
     }
     previousParentGroupRelation.getIdentifiersAtAnyDepth(groupRelationToStop).forEach((identifier) => {
-        promises.push(
-            movedEdge.controller().removeIdentifier(
-                identifier,
-                true
-            )
-        );
+        if (movedEdge.isGroupRelation()) {
+            movedEdge.getClosestChildRelations(true).forEach((relation) => {
+                promises.push(
+                    relation.controller().removeIdentifier(
+                        identifier,
+                        true
+                    )
+                );
+            });
+        } else {
+            promises.push(
+                movedEdge.controller().removeIdentifier(
+                    identifier,
+                    true
+                )
+            );
+        }
     });
     return Promise.all(promises);
 };

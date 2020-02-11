@@ -325,6 +325,9 @@ VertexController.prototype.becomeParent = function (child) {
             GraphElementType.Relation,
             moveEdge.bind(this)
         );
+        promises.push(
+            child.getParentBubble().controller().becomeExParent(child, this.model())
+        );
         uiChild = child;
     } else {
         uiChild = child.isRelation() ? child : child.getParentBubble();
