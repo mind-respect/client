@@ -67,6 +67,7 @@
                                         <v-list-item-title class="subtitle-1 font-weight-bold pb-4">
                                             <v-badge :color="center.color"
                                                      :inline="!center.isMeta()"
+                                                     left
                                                      :value="!center.isMeta() && (center.showIcon() || center.isColorDefined)"
                                                      class="center-label">
                                                 <template v-slot:badge>
