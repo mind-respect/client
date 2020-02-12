@@ -90,18 +90,6 @@ api.setCollectionShareLevel = function (shareLevel, vertices) {
         }
     );
 };
-api.makeCollectionPrivate = function (vertices) {
-    return Service.api().delete(
-        IdUri.vertexBaseUri() + '/collection/public_access',
-        {data: verticesUriFromVertices(vertices)}
-    );
-};
-api.makeCollectionPublic = function (vertices) {
-    return Service.api().post(
-        IdUri.vertexBaseUri() + '/collection/public_access',
-        verticesUriFromVertices(vertices)
-    );
-};
 
 api.mergeTo = function (vertex, distantVertexUri) {
     return Service.geApi().post(
