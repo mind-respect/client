@@ -274,7 +274,7 @@ Vertex.prototype.collapse = function (preventScroll) {
     if (!this.isExpanded) {
         return;
     }
-    this._vertexServerFormat.vertex.numberOfConnectedEdges = this.getNextChildren().length + 1;
+    this._vertexServerFormat.vertex.nbPublicNeighbors = this._vertexServerFormat.vertex.numberOfConnectedEdges = this.getNextChildren().length + 1;
     this.rightBubblesCollapsed = this.rightBubbles;
     this.leftBubblesCollapsed = this.leftBubbles;
     this.rightBubbles = [];

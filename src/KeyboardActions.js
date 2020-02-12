@@ -209,9 +209,6 @@ function defineCtrlPlusKeysAndTheirActions() {
         action: "undo",
         isForAppController: true
     };
-    actions[KeyCode.KEY_P] = {
-        action: "togglePublicPrivate"
-    };
     actions[KeyCode.KEY_O] = [{
         action: "convertToRelation"
     }, {

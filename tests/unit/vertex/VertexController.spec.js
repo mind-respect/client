@@ -11,6 +11,7 @@ import Selection from '@/Selection'
 import VertexController from '@/vertex/VertexController'
 import VertexService from '@/vertex/VertexService'
 import TwoLevelGroupRelationScenario from "../scenario/TwoLevelGroupRelationScenario";
+import ShareLevel from '@/vertex/ShareLevel'
 
 describe('VertexController', () => {
     describe("remove", function () {
@@ -373,7 +374,7 @@ describe('VertexController', () => {
             b1,
             scenario.getBubble2InTree(),
             b3
-        ]).makePrivate();
+        ]).setShareLevelDo(ShareLevel.PRIVATE);
         expect(
             hasCalledService
         ).toBeTruthy();
@@ -388,7 +389,7 @@ describe('VertexController', () => {
         expect(
             b1.model().isPublic()
         ).toBeTruthy();
-        await b1.controller().makePrivate();
+        await b1.controller().setShareLevelDo(ShareLevel.PRIVATE);
         expect(
             b1.model().isPublic()
         ).toBeFalsy();

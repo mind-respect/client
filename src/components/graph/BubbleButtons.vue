@@ -122,16 +122,6 @@
                         ctrlShortcut: "G"
                     },
                     {
-                        icon: "lock",
-                        action: "makePrivate",
-                        ctrlShortcut: "P"
-                    },
-                    {
-                        icon: "public",
-                        action: "makePublic",
-                        ctrlShortcut: "P"
-                    },
-                    {
                         icon: "share",
                         action: "setShareLevel"
                     },

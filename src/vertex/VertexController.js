@@ -191,8 +191,6 @@ VertexController.prototype.addSibling = function () {
     );
 };
 
-VertexController.prototype.removeManyIsPossible = true;
-
 VertexController.prototype.removeCanDo = function () {
     return this.isOwned();
 };
@@ -206,37 +204,6 @@ VertexController.prototype.images = function () {
 //
 };
 
-VertexController.prototype.togglePublicPrivate = function () {
-    if (this._areAllElementsPrivate()) {
-        this.makePublic();
-    } else if (this._areAllElementsPublic()) {
-        this.makePrivate();
-    }
-};
-
-
-VertexController.prototype.makePrivateManyIsPossible = true;
-
-VertexController.prototype.makePrivateCanDo = function () {
-    return !Store.state.isPatternFlow && this.isOwned() && (
-        (this.isMultiple() && !this._areAllElementsPrivate()) || (
-            this.isSingle() && this.getUi().model().isPublic()
-        )
-    );
-};
-
-VertexController.prototype.makePrivate = function () {
-    return this.setShareLevelDo(ShareLevel.PRIVATE);
-};
-
-
-VertexController.prototype.makePublicCanDo = function () {
-    return this.isOwned() && (
-        (this.isMultiple() && !this._areAllElementsPublic()) || (
-            this.isSingle() && !this.getUi().model().isPublic()
-        )
-    );
-};
 
 VertexController.prototype._areAllElementsPublicWithLink = function () {
     return this._areAllElementsInShareLevels([
