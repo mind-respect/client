@@ -9,6 +9,7 @@ import Vue from 'vue'
 import Store from '@/store'
 import Icon from '@/Icon'
 import CurrentSubGraph from "../graph/CurrentSubGraph";
+import ShareLevel from '@/vertex/ShareLevel'
 
 const controllerGetters = {};
 
@@ -306,6 +307,12 @@ GraphElement.GraphElement.prototype.refreshImages = function () {
         this.component.refreshImages();
         // console.log("component refreshed")
     }
+};
+
+GraphElement.GraphElement.prototype.getShareIcon = function () {
+    return ShareLevel.getIcon(
+        this.getShareLevel()
+    );
 };
 
 GraphElement.GraphElement.prototype.getSelfTag = function () {

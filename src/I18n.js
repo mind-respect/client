@@ -46,7 +46,9 @@ export default {
                         areYouSure: "Are you sure ?",
                         use: "Use",
                         bubbles: "Bubbles",
-                        moreResults: "More results"
+                        moreResults: "More results",
+                        selectAll: "Add all",
+                        deselectAll: "Remove all"
                     }
                 },
                 fr: {
@@ -73,7 +75,9 @@ export default {
                         areYouSure: "Êtes-vous certain?",
                         use: "Utiliser",
                         bubbles: "Bulles",
-                        moreResults: "Plus de résultats"
+                        moreResults: "Plus de résultats",
+                        selectAll: "Ajouter tout",
+                        deselectAll: "Enlever tout"
                     }
                 }
             }

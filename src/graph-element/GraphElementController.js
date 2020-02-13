@@ -16,10 +16,10 @@ import EdgeService from '@/edge/EdgeService'
 import Vertex from '@/vertex/Vertex'
 import Edge from '@/edge/Edge'
 import SubGraphController from '@/graph/SubGraphController'
-import GraphDisplayer from '@/graph/GraphDisplayer'
 import TagRelation from "@/tag/TagRelation";
 import TagVertex from "@/tag/TagVertex";
 import Scroll from "../Scroll";
+import ShareLevel from '@/vertex/ShareLevel'
 
 const api = {};
 let bubbleCutClipboard;
@@ -858,8 +858,40 @@ GraphElementController.prototype.setShareLevel = function () {
 
 GraphElementController.prototype.setShareLevelCanDo = function () {
     return this.getModelArray().some((model) => {
-        return model.isVertex() && model.controller().setShareLevelCanDo();
+        return (model.isVertex() || model.isMeta()) && model.controller().setShareLevelCanDo();
     });
+};
+
+GraphElementController.prototype.setShareLevelDo = function (shareLevel) {
+    let graphElementsToUpdate = this.getUiArray().filter((bubble) => {
+        return bubble.getShareLevel() !== shareLevel.toUpperCase()
+    }).map((bubble) => {
+        if (bubble.isVertex() && ShareLevel.isPublic(shareLevel)) {
+            bubble.getParentVertex().incrementNbPublicNeighbors();
+        }
+        if (bubble.isVertex() && shareLevel === ShareLevel.FRIENDS) {
+            bubble.getParentVertex().incrementNbFriendNeighbors();
+        }
+        bubble.setShareLevel(shareLevel);
+        bubble.refreshButtons();
+        if (bubble.isVertex() && bubble.isPublic()) {
+            bubble.getParentVertex().decrementNbPublicNeighbors();
+        }
+        if (bubble.isVertex() && bubble.isFriendsOnly()) {
+            bubble.getParentVertex().decrementNbFriendNeigbors();
+        }
+        return bubble;
+    });
+    if (graphElementsToUpdate.length === 0) {
+        return Promise.resolve();
+    }
+    Store.dispatch("shareRefresh");
+    return this.isMultiple() ?
+        GraphElementService.setCollectionShareLevel(
+            shareLevel, graphElementsToUpdate
+        ) : GraphElementService.setShareLevel(
+            shareLevel, this.model()
+        );
 };
 
 export default api;

@@ -3,7 +3,6 @@
  */
 
 import GraphElement from '@/graph-element/GraphElement'
-import ShareLevel from '@/vertex/ShareLevel'
 import DateUtil from '@/DateUtil'
 import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
@@ -105,15 +104,6 @@ CenterGraphElement.prototype.getLastCenterDateTime = function () {
 
 CenterGraphElement.prototype.getShareLevel = function () {
     return this.centerGraphElementServerFormat.shareLevel;
-};
-
-CenterGraphElement.prototype.getShareIcon = function () {
-    if (this.getGraphElementType() === GraphElementType.Meta) {
-        return "lock";
-    }
-    return ShareLevel.getIcon(
-        this.getShareLevel()
-    );
 };
 
 CenterGraphElement.prototype.getContext = function () {

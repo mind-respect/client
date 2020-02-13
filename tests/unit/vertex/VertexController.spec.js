@@ -334,54 +334,6 @@ describe('VertexController', () => {
             ).toBe(2);
         });
     });
-    it("does not make public already public vertices when making a collection public", async () => {
-        let scenario = await new ThreeScenario();
-        let b2 = scenario.getBubble2InTree();
-        b2.model().makePublic();
-        let hasCalledService = false;
-        let nbVerticesToMakePublic = 0;
-        jest.spyOn(VertexService, "setCollectionShareLevel").mockImplementation((shareLevel, vertices) => {
-            hasCalledService = true;
-            nbVerticesToMakePublic = vertices.length;
-            return Promise.resolve();
-        });
-        await new VertexController.VertexController([
-            scenario.getBubble1InTree(),
-            b2,
-            scenario.getBubble3InTree()
-        ]).makePublic();
-        expect(
-            hasCalledService
-        ).toBeTruthy();
-        expect(
-            nbVerticesToMakePublic
-        ).toBe(2);
-    });
-    it("does not make private already private vertices when making a collection private", async () => {
-        let scenario = await new ThreeScenario();
-        let b1 = scenario.getBubble1InTree();
-        b1.model().makePublic();
-        let b3 = scenario.getBubble3InTree();
-        b3.model().makePublic();
-        let hasCalledService = false;
-        let nbVerticesToMakePrivate = 0;
-        jest.spyOn(VertexService, "setCollectionShareLevel").mockImplementation((shareLevel, vertices) => {
-            hasCalledService = true;
-            nbVerticesToMakePrivate = vertices.length;
-            return Promise.resolve();
-        });
-        await new VertexController.VertexController([
-            b1,
-            scenario.getBubble2InTree(),
-            b3
-        ]).setShareLevelDo(ShareLevel.PRIVATE);
-        expect(
-            hasCalledService
-        ).toBeTruthy();
-        expect(
-            nbVerticesToMakePrivate
-        ).toBe(2);
-    });
     it("makes model be private when making private", async () => {
         let scenario = await new ThreeScenario();
         let b1 = scenario.getBubble1InTree();

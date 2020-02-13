@@ -251,38 +251,6 @@ VertexController.prototype.setShareLevelCanDo = function () {
     return !Store.state.isPatternFlow && this.isOwned();
 };
 
-VertexController.prototype.setShareLevelDo = function (shareLevel) {
-    let verticesToUpdate = this.getUiArray().filter((vertex) => {
-        return vertex.getShareLevel() !== shareLevel.toUpperCase()
-    }).map((vertex) => {
-        if (ShareLevel.isPublic(shareLevel)) {
-            vertex.getParentVertex().incrementNbPublicNeighbors();
-        }
-        if (shareLevel === ShareLevel.FRIENDS) {
-            vertex.getParentVertex().incrementNbFriendNeighbors();
-        }
-        vertex.setShareLevel(shareLevel);
-        vertex.refreshButtons();
-        if (vertex.model().isPublic()) {
-            vertex.getParentVertex().decrementNbPublicNeighbors();
-        }
-        if (vertex.model().isFriendsOnly()) {
-            vertex.getParentVertex().decrementNbFriendNeigbors();
-        }
-        return vertex;
-    });
-    if (verticesToUpdate.length === 0) {
-        return Promise.resolve();
-    }
-    Store.dispatch("shareRefresh");
-    return this.isMultiple() ?
-        VertexService.setCollectionShareLevel(
-            shareLevel, verticesToUpdate
-        ) : VertexService.setShareLevel(
-            shareLevel, this.model()
-        );
-};
-
 VertexController.prototype.becomeParent = function (child) {
     let promises = [];
     let uiChild;

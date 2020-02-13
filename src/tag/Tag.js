@@ -107,7 +107,7 @@ Tag.Tag.prototype = new GraphElement.GraphElement();
 
 Tag.Tag.prototype.init = function (serverFormat) {
     this.identificationServerFormat = serverFormat;
-    if(!this.identificationServerFormat.shareLevel){
+    if (!this.identificationServerFormat.shareLevel) {
         this.identificationServerFormat.shareLevel = ShareLevel.PRIVATE;
     }
     FriendlyResource.FriendlyResource.apply(
@@ -205,6 +205,18 @@ Tag.Tag.prototype.setNbReferences = function (nbReferences) {
             tag.identificationServerFormat.nbReferences = nbReferences;
         }
     });
+};
+
+Tag.Tag.prototype.setShareLevel = function (shareLevel) {
+    this._applyToAllTags(function (tag) {
+        if (tag.identificationServerFormat) {
+            tag.identificationServerFormat.shareLevel = shareLevel;
+        }
+    });
+};
+
+Tag.Tag.prototype.getShareLevel = function () {
+    return this.identificationServerFormat.shareLevel.toUpperCase();
 };
 
 Tag.Tag.prototype.isPublic = function () {

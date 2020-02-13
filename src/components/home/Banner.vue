@@ -39,7 +39,7 @@
         name: 'banner',
         data: function () {
             I18n.i18next.addResources("en", "banner", {
-                slogan: 'Structure your notes, make your thinking evolve',
+                slogan: 'Structure your notes, evolve your thinking',
                 slogan2: 'Map your truth',
                 desc: 'Mindrespect.com is a',
                 desc2: 'unique way',

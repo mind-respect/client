@@ -45,6 +45,7 @@
                     <v-spacer v-if="isLeft && isLeaf"></v-spacer>
                     <div class="image_container">
                         <v-img :src="imageUrl" max-height="90" v-if="imageUrl" @load="imageLoaded"
+                               @error="errorImageLoaded"
                                min-width="60"></v-img>
                     </div>
                     <v-skeleton-loader type="chip" v-if="bubble.isVertexType() && bubble.isSkeleton()"
@@ -751,13 +752,15 @@
             rightDrop: function (event) {
                 this.isLabelDragOver = false;
                 this.labelDrop(event, false);
-            }
-            ,
+            },
             imageLoaded: async function () {
                 await this.$nextTick();
                 setTimeout(() => {
                     return this.$store.dispatch('redraw');
                 }, 250);
+            },
+            errorImageLoaded: function () {
+                this.imageUrl = false;
             }
         },
         watch: {

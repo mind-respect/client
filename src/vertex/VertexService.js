@@ -73,23 +73,6 @@ api.makePublic = function (vertex) {
         vertex.getUri() + '/public_access'
     );
 };
-api.setShareLevel = function (shareLevel, vertex) {
-    return Service.geApi().post(
-        vertex.getUri() + "/shareLevel",
-        {
-            shareLevel: shareLevel
-        }
-    );
-};
-api.setCollectionShareLevel = function (shareLevel, vertices) {
-    return Service.api().post(
-        IdUri.vertexBaseUri() + '/collection/share-level',
-        {
-            shareLevel: shareLevel,
-            verticesUri: verticesUriFromVertices(vertices)
-        }
-    );
-};
 
 api.mergeTo = function (vertex, distantVertexUri) {
     return Service.geApi().post(
@@ -126,9 +109,3 @@ api.undoPattern = function (vertex) {
 
 export default api;
 
-
-function verticesUriFromVertices(vertices) {
-    return vertices.map(function (vertex) {
-        return vertex.getUri();
-    });
-}
