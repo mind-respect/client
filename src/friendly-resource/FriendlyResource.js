@@ -370,6 +370,10 @@ FriendlyResource.FriendlyResource.prototype.isVertexType = function () {
     return this.type.isVertexType();
 };
 
+FriendlyResource.FriendlyResource.prototype.isEdgeType = function () {
+    return this.type.isEdgeType();
+};
+
 FriendlyResource.FriendlyResource.prototype.isForkType = function () {
     return this.isInTypes(GraphElementType.Fork)
 };
@@ -649,27 +653,27 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
         distance--;
         bubbleAround = isDown ? bubbleAround.getNextBubble() : bubbleAround.getNextBottomBubble();
     }
-    if (this.isVertex()) {
-        if (bubbleAround.isEdge()) {
+    if (this.isVertexType()) {
+        if (bubbleAround.isEdgeType()) {
             bubbleAround = bubbleAround.getNextBubble();
         }
         if (bubbleAround.isGroupRelation()) {
             if (bubbleAround.canExpand() || !isForTravel) {
                 return bubbleAround;
             }
-            let closestVertices = bubbleAround.getClosestChildrenOfType(GraphElementType.Vertex);
+            let closestVertices = bubbleAround.getClosestChildrenInTypes(GraphElementType.getVertexTypes());
             bubbleAround = isDown ? closestVertices[0] : closestVertices[closestVertices.length - 1];
         }
     }
-    if (this.isEdge()) {
-        if (bubbleAround.isVertex()) {
+    if (this.isEdgeType()) {
+        if (bubbleAround.isVertexType()) {
             bubbleAround = isDown ? bubbleAround.getNextBubble() : bubbleAround.getNextBottomBubble();
         }
         if (bubbleAround.isGroupRelation()) {
             if (bubbleAround.canExpand() || !isForTravel) {
                 return bubbleAround;
             }
-            let closestEdges = bubbleAround.getClosestChildrenOfType(GraphElementType.Relation);
+            let closestEdges = bubbleAround.getClosestChildrenInTypes(GraphElementType.getEdgeTypes());
             bubbleAround = isDown ? closestEdges[0] : closestEdges[closestEdges.length - 1];
         }
     }
