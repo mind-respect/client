@@ -1,9 +1,7 @@
 <template>
     <v-list-item-content>
         <v-list-item-title>
-            <v-badge
-                    color="transparent"
-            >
+            <v-badge color="transparent">
                 <template v-slot:badge>
                     <v-icon v-if="item.source ==='wikidata'" color="secondary">
                         label
@@ -21,8 +19,7 @@
             </span>
             <span v-else>
             <span v-if="item.original.getGraphElementType() === 'vertex'" class="around-list">
-                <span v-for="context in Object.values(item.original.context)"
-                      class="around-list-item">
+                <span v-for="context in Object.values(item.original.context)" class="around-list-item">
                     {{context}}
                 </span>
             </span>
