@@ -1,7 +1,9 @@
 <template>
     <v-list-item-content>
         <v-list-item-title>
-            <v-badge color="transparent">
+            <v-badge
+                    color="transparent"
+            >
                 <template v-slot:badge>
                     <v-icon v-if="item.source ==='wikidata'" color="secondary">
                         label

@@ -51,11 +51,12 @@
                                         v-model="active"
                                         color="primary"
                                         @click="toggle"
+                                        class="mt-2"
                                 ></v-checkbox>
                             </v-list-item-action>
                             <v-list-item-content class="pt-0 mt-0">
                                 <v-list-item-title class="text-left mb-0">
-                                    <v-badge :color="tag.isBackgroundColorDefined() ? tag.getBackgroundColor() : 'grey'"
+                                    <v-badge class="pt-0 mt-0" :color="tag.isBackgroundColorDefined() ? tag.getBackgroundColor() : 'grey'"
                                              inline
                                              left
                                     >
