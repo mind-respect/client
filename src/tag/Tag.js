@@ -301,7 +301,11 @@ Tag.Tag.prototype.setComment = function (comment) {
 
 Tag.Tag.prototype._applyToAllTags = function (visitor) {
     visitor(this);
-    CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
+    let subGraph = CurrentSubGraph.get();
+    if (!subGraph) {
+        return;
+    }
+    subGraph.getGraphElements().forEach((graphElement) => {
         let tag;
         if (graphElement.isMeta() && graphElement.getOriginalMeta().getUri() === this.getUri()) {
             tag = graphElement.getOriginalMeta();

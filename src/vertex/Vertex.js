@@ -17,6 +17,17 @@ api.fromServerFormat = function (serverFormat) {
         serverFormat
     );
 };
+
+api.fromGraphElementServerFormat = function (graphElementServerFormat) {
+    return new Vertex().init({
+        vertex: {
+            graphElement: graphElementServerFormat,
+            shareLevel: ShareLevel.PRIVATE,
+            suggestions: {}
+        }
+    });
+};
+
 api.withUri = function (uri) {
     return new Vertex().init(
         api.buildServerFormatFromUri(
@@ -28,8 +39,6 @@ api.buildServerFormatFromUri = function (uri) {
     return {
         vertex: {
             graphElement: GraphElement.buildObjectWithUri(uri),
-            includedEdges: {},
-            includedVertices: {},
             shareLevel: ShareLevel.PRIVATE,
             suggestions: {}
         }
@@ -41,9 +50,6 @@ api.buildServerFormatFromUi = function (vertexUi) {
             graphElement: GraphElement.buildServerFormatFromUi(
                 vertexUi
             ),
-            includedEdges: {},
-            includedVertices: {},
-            isPublic: vertexUi.isPublic(),
             numberOfConnectedEdges: vertexUi.connectedEdges().length,
             suggestions: {}
         }

@@ -47,27 +47,6 @@ const GraphElement = {
             )
         }
     },
-    fromSuggestionAndElementUri: function (suggestion, elementUri) {
-        var serverFormat = GraphElement.buildObjectWithUri(
-            elementUri
-        );
-        serverFormat.identifications = [];
-        var sameAs = suggestion.getSameAs();
-        sameAs.makeSameAs();
-        serverFormat.identifications.push(
-            sameAs.getServerFormat()
-        );
-        if (suggestion.hasType()) {
-            var type = suggestion.getType();
-            type.makeType();
-            serverFormat.identifications.push(
-                type.getServerFormat()
-            );
-        }
-        return GraphElement.fromServerFormat(
-            serverFormat
-        );
-    },
     withUri: function (uri) {
         return GraphElement.fromServerFormat(
             GraphElement.buildObjectWithUri(

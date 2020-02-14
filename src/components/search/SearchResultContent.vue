@@ -10,6 +10,9 @@
                         {{item.original.getIcon(item)}}
                     </v-icon>
                 </template>
+                <v-icon v-if="item.isMindRespect && (item.original.getGraphElement().isVertex() || item.original.getGraphElement().isMeta()) " class="mr-1 grey--text" small>
+                    {{item.original.getGraphElement().getShareIcon()}}
+                </v-icon>
                 {{item.label}}
                 <v-badge v-if="item.isMindRespect && item.original.getGraphElement().isMeta()"
                          :color="item.original.getGraphElement().getChipBackgroundColor()"

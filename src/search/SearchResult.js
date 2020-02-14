@@ -4,6 +4,8 @@
 import GraphElement from '@/graph-element/GraphElement'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Icon from '@/Icon'
+import ShareLevel from '@/vertex/ShareLevel'
+import Vertex from '@/vertex/Vertex'
 
 const api = {};
 api.fromServerFormatArray = function (searchResultsServerFormat) {
@@ -32,7 +34,8 @@ api.fromServerFormat = function (searchResult) {
                 searchResult
             );
         case GraphElementType.Vertex :
-            let vertex = GraphElement.fromServerFormat(searchResult.graphElement);
+            let vertex = Vertex.fromGraphElementServerFormat(searchResult.graphElement);
+            vertex.setShareLevel(searchResult.shareLevel);
             return new SearchResult(
                 vertex,
                 GraphElementType.Vertex,
@@ -40,11 +43,12 @@ api.fromServerFormat = function (searchResult) {
                 searchResult
             );
         case GraphElementType.Meta :
-            let identifierAsGraphElement = GraphElement.fromServerFormat(
+            let tagAsGraphElement = GraphElement.fromServerFormat(
                 searchResult.graphElement
             );
-            let identifier = identifierAsGraphElement.getIdentifiers()[0];
-            let graphElement = identifier === undefined ? identifierAsGraphElement : identifier;
+            let tag = tagAsGraphElement.getIdentifiers()[0];
+            tag.setShareLevel(searchResult.shareLevel);
+            let graphElement = tag === undefined ? tagAsGraphElement : tag;
             return new SearchResult(
                 graphElement,
                 GraphElementType.Meta,
@@ -105,7 +109,9 @@ api.fromGraphElement = function (graphElement) {
         somethingToDistinguish, {
             type: graphElement.getGraphElementType(),
             graphElementType: graphElement.getGraphElementType(),
-            context: context
+            context: context,
+            shareLevel: graphElement.getShareLevel(),
+            colors: graphElement.getColors()
         }
     );
 };
@@ -154,5 +160,8 @@ SearchResult.prototype.getIcon = function () {
 };
 SearchResult.prototype.isTagFromWikipedia = function () {
     return GraphElementType.Meta === this.getGraphElementType() && this.getGraphElement().isFromWikidata();
+};
+SearchResult.prototype.getShareLevel = function () {
+    return this.serverFormat.shareLevel || ShareLevel.PRIVATE;
 };
 export default api;
