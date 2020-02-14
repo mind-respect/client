@@ -72,7 +72,8 @@ api._searchForResourcesOnThisMap = function (searchText) {
                 original: SearchResult.fromGraphElement(
                     graphElement
                 ),
-                source: "mindrespect.com"
+                source: "mindrespect.com",
+                isMindRespect: true
             };
         })
     );
@@ -122,7 +123,8 @@ function formattedOwnResults(results) {
                 )
             },
             original: facade,
-            source: "mindrespect.com"
+            source: "mindrespect.com",
+            isMindRespect: true
         }
     });
 }

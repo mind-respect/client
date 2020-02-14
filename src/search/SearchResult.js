@@ -137,25 +137,18 @@ SearchResult.prototype.getGraphElementType = function () {
     return this.graphElementType;
 };
 
-SearchResult.prototype.getDeepGraphElementType = function () {
-    return this.getGraphElementType();
-};
-
-SearchResult.prototype.getNumberOfReferences = function () {
-    return GraphElementType.Meta === this.getGraphElementType() ?
-        this.graphElement.getNbReferences() : 0;
-};
-
 SearchResult.prototype.getNbVisits = function () {
     return this.serverFormat.nbVisits || 0;
+};
+
+SearchResult.prototype.getNbRerences = function () {
+    return this.serverFormat.nbReferences || 0;
 };
 
 SearchResult.prototype.is = function (graphElementType) {
     return graphElementType === this.getGraphElementType();
 };
-SearchResult.prototype.getSomethingToDistinguish = function () {
-    return this.somethingToDistinguish;
-};
+
 SearchResult.prototype.getIcon = function () {
     return Icon.getForSearchResult(this);
 };

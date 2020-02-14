@@ -51,7 +51,7 @@
                                         v-model="active"
                                         color="primary"
                                         @click="toggle"
-                                        class="mt-2"
+                                        class="mt-3"
                                 ></v-checkbox>
                             </v-list-item-action>
                             <v-list-item-content class="pt-0 mt-0">

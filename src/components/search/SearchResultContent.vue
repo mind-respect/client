@@ -1,7 +1,7 @@
 <template>
-    <v-list-item-content>
+    <v-list-item-content class="search-result-content">
         <v-list-item-title>
-            <v-badge color="transparent">
+            <v-badge color="transparent" :value="!item.isMindRespect || !item.original.getGraphElement().isMeta()">
                 <template v-slot:badge>
                     <v-icon v-if="item.source ==='wikidata'" color="secondary">
                         label
@@ -11,6 +11,24 @@
                     </v-icon>
                 </template>
                 {{item.label}}
+                <v-badge v-if="item.isMindRespect && item.original.getGraphElement().isMeta()"
+                         :color="item.original.getGraphElement().getChipBackgroundColor()"
+                         overlap bottom class="caption"
+                >
+                    <template v-slot:badge>
+                                                        <span class="font-weight-bold" :class="{
+                                                            'black--text':!shouldTextBeWhiteFromBackgroundColor(item.original.getGraphElement().getChipBackgroundColor())
+                                                        }">
+                                                           {{item.original.getNbRerences()}}
+                                                        </span>
+                    </template>
+                    <v-avatar :color="item.original.getGraphElement().getChipBackgroundColor()" size="28">
+                        <v-icon :dark="shouldTextBeWhiteFromBackgroundColor(item.original.getGraphElement().getChipBackgroundColor())"
+                                small>
+                            label
+                        </v-icon>
+                    </v-avatar>
+                </v-badge>
             </v-badge>
         </v-list-item-title>
         <v-list-item-subtitle>
@@ -32,12 +50,21 @@
 </template>
 
 <script>
+    import Color from "../../Color";
+
     export default {
         name: "SearchResult",
-        props: ['item']
+        props: ['item'],
+        methods: {
+            shouldTextBeWhiteFromBackgroundColor: function (hexColor) {
+                return Color.getContrast(hexColor) === 'white'
+            }
+        }
     }
 </script>
 
 <style scoped>
-
+    .search-result-content .v-list-item__title {
+        padding-bottom: 10px;
+    }
 </style>
