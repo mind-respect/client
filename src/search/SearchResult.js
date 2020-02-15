@@ -47,7 +47,7 @@ api.fromServerFormat = function (searchResult) {
                 searchResult
             );
         case GraphElementType.Meta :
-            let tag = Tag.fromGraphElement(
+            let tag = Tag.fromGraphElementServerFormat(
                 searchResult.graphElement
             );
             tag.setShareLevel(
