@@ -84,6 +84,7 @@ api._searchForResourcesOnThisMap = function (searchText) {
                 original: SearchResult.fromGraphElement(
                     graphElement
                 ),
+                isOnMap: true,
                 source: "mindrespect.com",
                 isMindRespect: true
             };

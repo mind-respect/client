@@ -8,11 +8,11 @@
             <img v-if="item.original.isTagFromWikipedia()" :src="require('@/assets/wikipedia.svg')" width="25"
                  class="mt-0 mr-2">
         </span>
-        <div class="caption" v-if="isOnMap()">
+        <div class="caption" v-if="item.isOnMap">
             <v-icon small class="mr-1">map</v-icon>
             {{$t('app:on')}}
         </div>
-        <div class="caption" v-if="isOnMap()">
+        <div class="caption" v-if="item.isOnMap">
             {{$t('app:thisMap')}}
         </div>
     </v-list-item-action>
@@ -25,10 +25,6 @@
         name: "SearchResultAction",
         props: ['item'],
         methods: {
-            isOnMap: function () {
-                const subGraph = CurrentSubGraph.get();
-                return subGraph && subGraph.hasUri(this.item.uri)
-            }
         }
     }
 </script>

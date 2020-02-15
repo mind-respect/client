@@ -106,5 +106,9 @@ TagVertex.prototype.setNbReferences = function (nbReferences) {
     this.getOriginalMeta().setNbReferences(nbReferences);
 };
 
+TagVertex.prototype.getNbReferences = function () {
+    return this.getOriginalMeta().getNbReferences();
+};
+
 
 export default api;
