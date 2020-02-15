@@ -42,6 +42,11 @@ const Tag = {
     fromServerFormat: function (serverFormat) {
         return new Tag.Tag().init(serverFormat);
     },
+    fromGraphElementServerFormat: function (graphElementServerFormat) {
+        return new Tag.Tag().init({
+            graphElement: graphElementServerFormat
+        });
+    },
     fromFriendlyResource: function (friendlyResource) {
         let tag = new Tag.Tag().init({
             externalResourceUri: friendlyResource.getUri(),
@@ -91,12 +96,18 @@ const Tag = {
         });
     },
     fromSearchResult: function (searchResult) {
-        let identification = Tag.withUriLabelAndDescription(
+        let tag = Tag.withUriLabelAndDescription(
             searchResult.uri,
             searchResult.label,
             searchResult.description
         );
-        return identification;
+        tag.setShareLevel(
+            searchResult.shareLevel || ShareLevel.PRIVATE
+        );
+        tag.setNbReferences(
+            searchResult.nbReferences || 0
+        );
+        return tag;
     }
 };
 

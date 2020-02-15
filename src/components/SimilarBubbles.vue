@@ -197,22 +197,22 @@
             tag: function () {
                 this.loading = true;
                 const selectedResult = this.getSelectedResult();
-                const identifier = Tag.fromSearchResult(
+                const tag = Tag.fromSearchResult(
                     selectedResult
                 );
                 let bubble = Selection.getSingle();
-                if (bubble.hasIdentification(identifier)) {
+                if (bubble.hasIdentification(tag)) {
                     this.loading = false;
                     this.leaveFlow();
                     return false;
                 }
-                identifier.makeGeneric();
+                tag.makeGeneric();
                 selectedResult.getImageUrl(selectedResult).then((imageUrl) => {
                     if (imageUrl) {
-                        identifier.addImage(imageUrl);
+                        tag.addImage(imageUrl);
                     }
                     return bubble.controller().addIdentification(
-                        identifier
+                        tag
                     );
                 }).then(() => {
                     this.$store.dispatch("tagRefresh");

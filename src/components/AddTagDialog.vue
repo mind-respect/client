@@ -160,18 +160,18 @@
             },
             selectSearchResult: function () {
                 this.tagLoading = true;
-                let identifier = Tag.fromSearchResult(
+                let tag = Tag.fromSearchResult(
                     this.selectedSearchResult
                 );
-                if (this.bubble.hasIdentification(identifier)) {
+                if (this.bubble.hasIdentification(tag)) {
                     return false;
                 }
-                identifier.makeGeneric();
+                tag.makeGeneric();
                 this.selectedSearchResult.getImageUrl(this.selectedSearchResult).then((imageUrl) => {
                     if (imageUrl) {
-                        identifier.addImage(imageUrl);
+                        tag.addImage(imageUrl);
                     }
-                    return this.identify(identifier);
+                    return this.identify(tag);
                 }).then(() => {
                     this.tagLoading = false;
                     this.dialog = false;
@@ -192,7 +192,7 @@
                 // }
                 this.$refs.tagSearch.reset();
                 this.$refs.tagSearch.blur();
-                return identifier;
+                return tag;
             },
             createTagWithNoRef: function () {
                 this.tagLoading = true;

@@ -6,6 +6,7 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import Icon from '@/Icon'
 import ShareLevel from '@/vertex/ShareLevel'
 import Vertex from '@/vertex/Vertex'
+import Tag from "@/tag/Tag";
 
 const api = {};
 api.fromServerFormatArray = function (searchResultsServerFormat) {
@@ -46,16 +47,17 @@ api.fromServerFormat = function (searchResult) {
                 searchResult
             );
         case GraphElementType.Meta :
-            let tagAsGraphElement = GraphElement.fromServerFormat(
+            let tag = Tag.fromGraphElementServerFormat(
                 searchResult.graphElement
             );
-            let tag = tagAsGraphElement.getIdentifiers()[0];
-            if (tag) {
-                tag.setShareLevel(searchResult.shareLevel);
-            }
-            let graphElement = tag === undefined ? tagAsGraphElement : tag;
+            tag.setShareLevel(
+                searchResult.shareLevel
+            );
+            tag.setNbReferences(
+                searchResult.nbReferences
+            );
             return new SearchResult(
-                graphElement,
+                tag,
                 GraphElementType.Meta,
                 api._buildMetaSomethingToDistinguish(searchResult),
                 searchResult
