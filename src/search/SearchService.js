@@ -122,13 +122,13 @@ api._sortIsMindRespect = function (x, y) {
 api._sortByNbReferences = function (x, y) {
     let xNbReferences = x.original.getNbRerences === undefined ? 0 : x.original.getNbRerences();
     let yNbReferences = y.original.getNbRerences === undefined ? 0 : y.original.getNbRerences();
-    return xNbReferences - yNbReferences;
+    return yNbReferences - xNbReferences;
 };
 
 api._sortByNbVisits = function (x, y) {
     let xNbVisits = x.original.getNbVisits === undefined ? 0 : x.original.getNbVisits();
     let yNbVisits = y.original.getNbVisits === undefined ? 0 : y.original.getNbVisits();
-    return xNbVisits - yNbVisits;
+    return yNbVisits- xNbVisits;
 };
 
 function formattedOwnResults(results) {
@@ -175,8 +175,8 @@ function resultsFromProviders(providers, sortCriterias) {
     return Promise.all(providers).then(() => {
         return allResults.sort((x, y) => {
             let sortResult = 0;
-            for (let i = 0; i < sortCriterias.length && sortResult !== 0; i++) {
-                sortResult = sortCriterias(x, y);
+            for (let i = 0; i < sortCriterias.length && sortResult === 0; i++) {
+                sortResult = sortCriterias[i](x, y);
             }
             return sortResult;
         });
