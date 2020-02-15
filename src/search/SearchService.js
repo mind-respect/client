@@ -18,11 +18,19 @@ api.tags = function (term, nbSkip) {
             WikidataService.search(term)
         );
     }
-    return resultsFromProviders(providers);
+    return resultsFromProviders(providers, [
+        api._sortIsMindRespect,
+        api._sortByNbReferences,
+        api._sortByNbVisits
+    ]);
 };
 api.ownTagsOnly = function (term, nbSkip) {
     return resultsFromProviders([
         api._ownTagsOnly(term, nbSkip)
+    ], [
+        api._sortIsMindRespect,
+        api._sortByNbReferences,
+        api._sortByNbVisits
     ]);
 };
 api.searchForAllOwnResources = function (searchText, nbSkip) {
@@ -34,7 +42,11 @@ api.searchForAllOwnResources = function (searchText, nbSkip) {
             api._searchForResourcesOnThisMap(searchText)
         );
     }
-    return resultsFromProviders(providers);
+    return resultsFromProviders(providers, [
+        api._sortIsMindRespect,
+        api._sortByNbVisits,
+        api._sortByNbReferences
+    ]);
 };
 
 api._searchForAllOwnResources = function (searchText, nbSkip) {
@@ -103,6 +115,22 @@ api._ownTagsOnly = function (searchText, nbSkip) {
     });
 };
 
+api._sortIsMindRespect = function (x, y) {
+    return (x.isMindRespect === y.isMindRespect) ? 0 : x.isMindRespect ? -1 : 1;
+};
+
+api._sortByNbReferences = function (x, y) {
+    let xNbReferences = x.original.getNbRerences === undefined ? 0 : x.original.getNbRerences();
+    let yNbReferences = y.original.getNbRerences === undefined ? 0 : y.original.getNbRerences();
+    return xNbReferences - yNbReferences;
+};
+
+api._sortByNbVisits = function (x, y) {
+    let xNbVisits = x.original.getNbVisits === undefined ? 0 : x.original.getNbVisits();
+    let yNbVisits = y.original.getNbVisits === undefined ? 0 : y.original.getNbVisits();
+    return xNbVisits - yNbVisits;
+};
+
 function formattedOwnResults(results) {
     return results.map((searchResult) => {
         let facade = SearchResult.fromServerFormat(searchResult);
@@ -129,7 +157,7 @@ function formattedOwnResults(results) {
     });
 }
 
-function resultsFromProviders(providers) {
+function resultsFromProviders(providers, sortCriterias) {
     let allResults = [];
     let seen = new Set();
     providers.forEach((provider) => {
@@ -145,7 +173,13 @@ function resultsFromProviders(providers) {
         })
     });
     return Promise.all(providers).then(() => {
-        return allResults;
+        return allResults.sort((x, y) => {
+            let sortResult = 0;
+            for (let i = 0; i < sortCriterias.length && sortResult !== 0; i++) {
+                sortResult = sortCriterias(x, y);
+            }
+            return sortResult;
+        });
     });
 }
 

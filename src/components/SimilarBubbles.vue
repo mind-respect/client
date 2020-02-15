@@ -274,10 +274,6 @@
                             )
                         }
                         return filter;
-                    }).sort((result) => {
-                        return result.label.toLowerCase().trim() === bubble.getLabel().toLowerCase().trim() ? -1 : 0;
-                    }).sort((result) => {
-                        return result.original.graphElementType === "meta" ? -1 : 0;
                     });
                     if (results.length === 0) {
                         return;
