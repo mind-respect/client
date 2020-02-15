@@ -122,11 +122,11 @@ api._sortIsMindRespect = function (x, y) {
 api._sortByNbReferences = function (x, y) {
     let xNbReferences = 0;
     if (x.isMindRespect) {
-        xNbReferences = x.original.getGraphElement().isMeta() ? x.original.getNbRerences() || x.original.getGraphElement().getNbRerences() : x.original.getNbRerences();
+        xNbReferences = x.original.getGraphElement().isMeta() ? x.original.getNbRerences() : x.original.getNbRerences();
     }
     let yNbReferences = 0;
     if (y.isMindRespect) {
-        yNbReferences = y.original.getGraphElement().isMeta() ? y.original.getNbRerences() || y.original.getGraphElement().getNbRerences() : y.original.getNbRerences();
+        yNbReferences = y.original.getGraphElement().isMeta() ? y.original.getNbRerences() : y.original.getNbRerences();
     }
     return yNbReferences - xNbReferences;
 };
