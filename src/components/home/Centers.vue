@@ -68,12 +68,12 @@
                                             <v-badge :color="center.getChipBackgroundColor(true)"
                                                      :inline="!center.isMeta()"
                                                      left
-                                                     :value="!center.isMeta() && (center.shouldShowChipIcon() || center.isChipBackgroundColorDefined(true))"
+                                                     :value="!center.isMeta() && (center.shouldShowChipIcon(flow === 'patterns') || center.isChipBackgroundColorDefined(true))"
                                                      class="center-label">
                                                 <template v-slot:badge>
-                                                    <v-icon v-if="center.shouldShowChipIcon()"
+                                                    <v-icon v-if="center.shouldShowChipIcon(flow === 'patterns')"
                                                             :dark="center.isChipBackgroundColorDefined(true) && shouldTextBeWhiteFromBackgroundColor(center.getChipBackgroundColor(true))">
-                                                        {{center.getChipIcon()}}
+                                                        {{center.getChipIcon(flow === 'patterns')}}
                                                     </v-icon>
                                                 </template>
                                                 {{center.getLabel()}}

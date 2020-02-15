@@ -136,8 +136,8 @@ FriendlyResource.FriendlyResource.prototype.getChipBackgroundColor = function (r
         backgroundColor;
 };
 
-FriendlyResource.FriendlyResource.prototype.shouldShowChipIcon = function () {
-    return !this.isMeta() && (this.isPattern() || !this.isVertex());
+FriendlyResource.FriendlyResource.prototype.shouldShowChipIcon = function (isPatternFlow) {
+    return !this.isMeta() && ((this.isPattern() && !isPatternFlow) || !this.isVertex());
 };
 
 FriendlyResource.FriendlyResource.prototype.resolveBackgroundColor = function () {
@@ -1040,8 +1040,8 @@ FriendlyResource.FriendlyResource.prototype.getIcon = function () {
     return Icon.getForGraphElement(this);
 };
 
-FriendlyResource.FriendlyResource.prototype.getChipIcon = function () {
-    return this.isPattern() ? "stars" : this.getIcon();
+FriendlyResource.FriendlyResource.prototype.getChipIcon = function (isPatternFlow) {
+    return this.isPattern() && !isPatternFlow ? "stars" : this.getIcon();
 };
 
 FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceServerFormat) {
