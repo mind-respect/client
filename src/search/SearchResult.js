@@ -36,6 +36,9 @@ api.fromServerFormat = function (searchResult) {
         case GraphElementType.Vertex :
             let vertex = Vertex.fromGraphElementServerFormat(searchResult.graphElement);
             vertex.setShareLevel(searchResult.shareLevel);
+            if (searchResult.isPattern) {
+                vertex.makePattern();
+            }
             return new SearchResult(
                 vertex,
                 GraphElementType.Vertex,

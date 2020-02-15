@@ -1,13 +1,19 @@
 <template>
     <v-list-item-content class="search-result-content">
         <v-list-item-title>
-            <v-badge color="transparent" :value="!item.isMindRespect || !item.original.getGraphElement().isMeta()">
+            <v-badge
+                    :value="!item.isMindRespect || (!item.original.getGraphElement().isMeta() && (item.original.getGraphElement().shouldShowChipIcon() || item.original.getGraphElement().isChipBackgroundColorDefined(true)))"
+                    :color="(item.isMindRespect ? item.original.getGraphElement().getChipBackgroundColor(true) : 'transparent')"
+                    :inline="item.isMindRespect && !item.original.getGraphElement().isMeta()"
+                    :left="item.isMindRespect"
+            >
                 <template v-slot:badge>
                     <v-icon v-if="item.source ==='wikidata'" color="secondary">
                         label
                     </v-icon>
-                    <v-icon v-else color="primary">
-                        {{item.original.getIcon(item)}}
+                    <v-icon v-if="item.isMindRespect && item.original.getGraphElement().shouldShowChipIcon()"
+                            :dark="item.original.getGraphElement().isChipBackgroundColorDefined(true) && shouldTextBeWhiteFromBackgroundColor(item.original.getGraphElement().getChipBackgroundColor(true))">
+                        {{item.original.getGraphElement().getChipIcon()}}
                     </v-icon>
                 </template>
                 <v-icon v-if="item.isMindRespect && (item.original.getGraphElement().isVertex() || item.original.getGraphElement().isMeta()) " class="mr-1 grey--text" small>

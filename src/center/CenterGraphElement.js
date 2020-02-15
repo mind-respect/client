@@ -37,19 +37,7 @@ CenterGraphElement.prototype.init = function (serverFormat) {
         this,
         this.centerGraphElementServerFormat.graphElement
     );
-    if (!this.isMeta()) {
-        this.color = this.resolveColor();
-        this.isColorDefined = this.color !== colors.indigo.darken4;
-    }
     return this;
-};
-
-CenterGraphElement.prototype.resolveColor = function () {
-    let backgroundColor = this.resolveBackgroundColor();
-    if (backgroundColor === Color.DEFAULT_BACKGROUND_COLOR) {
-        return colors.indigo.darken4;
-    }
-    return backgroundColor;
 };
 
 CenterGraphElement.prototype.getNbNeighborsFromFlow = function (flow, isOwner) {
@@ -126,18 +114,9 @@ CenterGraphElement.prototype.getGraphElementType = function () {
     return IdUri.getGraphElementTypeFromUri(this.getUri())
 };
 
-CenterGraphElement.prototype.getIcon = function () {
-    return this.isPattern() ? "stars" : Icon.getForUri(this.getUri());
-};
-
 CenterGraphElement.prototype.isPattern = function () {
     return this.centerGraphElementServerFormat.isPattern;
 };
-
-CenterGraphElement.prototype.showIcon = function () {
-    return !this.isMeta() && (this.isPattern() || !IdUri.isVertexUri(this.getUri()));
-};
-
 
 
 

@@ -113,15 +113,31 @@ FriendlyResource.FriendlyResource.prototype.setBackgroundColor = function (backg
     return this.getColors().background = backgroundColor;
 };
 
-FriendlyResource.FriendlyResource.prototype.getBackgroundColor = function () {
-    return this.getColors().background || Color.DEFAULT_BACKGROUND_COLOR;
+FriendlyResource.FriendlyResource.prototype.getBackgroundColor = function (resolve) {
+    let backgroundColor;
+    if (resolve && this.resolvedBackgroundColor) {
+        backgroundColor = this.resolvedBackgroundColor;
+    } else if (resolve) {
+        backgroundColor = this.resolvedBackgroundColor = this.resolveBackgroundColor();
+    } else {
+        backgroundColor = this.getColors().background;
+    }
+    return backgroundColor || Color.DEFAULT_BACKGROUND_COLOR;
 };
 
-FriendlyResource.FriendlyResource.prototype.getChipBackgroundColor = function () {
-    let backgroundColor = this.getBackgroundColor();
+FriendlyResource.FriendlyResource.prototype.isChipBackgroundColorDefined = function (resolve) {
+    return this.getChipBackgroundColor(resolve) !== colors.indigo.darken4;
+};
+
+FriendlyResource.FriendlyResource.prototype.getChipBackgroundColor = function (resolve) {
+    let backgroundColor = this.getBackgroundColor(resolve);
     return backgroundColor === Color.DEFAULT_BACKGROUND_COLOR ?
         colors.indigo.darken4 :
         backgroundColor;
+};
+
+FriendlyResource.FriendlyResource.prototype.shouldShowChipIcon = function () {
+    return !this.isMeta() && (this.isPattern() || !this.isVertex());
 };
 
 FriendlyResource.FriendlyResource.prototype.resolveBackgroundColor = function () {
@@ -1022,6 +1038,10 @@ FriendlyResource.FriendlyResource.prototype.getParentVertex = function () {
 
 FriendlyResource.FriendlyResource.prototype.getIcon = function () {
     return Icon.getForGraphElement(this);
+};
+
+FriendlyResource.FriendlyResource.prototype.getChipIcon = function () {
+    return this.isPattern() ? "stars" : this.getChipIcon();
 };
 
 FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceServerFormat) {

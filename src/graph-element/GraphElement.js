@@ -172,6 +172,14 @@ GraphElement.GraphElement.prototype.removeIdentifier = function (identifierToRem
     return this.identifiers;
 };
 
+GraphElement.GraphElement.prototype.isPattern = function () {
+    return false;
+};
+
+GraphElement.GraphElement.prototype.getShareLevel = function () {
+    return ShareLevel.PRIVATE;
+};
+
 GraphElement.GraphElement.prototype.hasIdentifications = function () {
     return this.getTagsAndSelfIfRelevant().length > 0;
 };
@@ -554,7 +562,7 @@ GraphElement.GraphElement.prototype.getIcon = function () {
 };
 
 GraphElement.GraphElement.prototype.showIcon = function () {
-        return !this.isMeta() && !IdUri.isVertexUri(this.getUri())
+    return !this.isMeta() && !IdUri.isVertexUri(this.getUri())
 };
 
 GraphElement.GraphElement.prototype.isSkeleton = function () {

@@ -65,15 +65,15 @@
                                         'pb-0' :center.tagIndex !== undefined
                                     }">
                                         <v-list-item-title class="subtitle-1 font-weight-bold pb-4">
-                                            <v-badge :color="center.color"
+                                            <v-badge :color="center.getChipBackgroundColor(true)"
                                                      :inline="!center.isMeta()"
                                                      left
-                                                     :value="!center.isMeta() && (center.showIcon() || center.isColorDefined)"
+                                                     :value="!center.isMeta() && (center.shouldShowChipIcon() || center.isChipBackgroundColorDefined(true))"
                                                      class="center-label">
                                                 <template v-slot:badge>
-                                                    <v-icon v-if="center.showIcon()"
-                                                            :dark="center.color && shouldTextBeWhiteFromBackgroundColor(center.color)">
-                                                        {{center.getIcon()}}
+                                                    <v-icon v-if="center.shouldShowChipIcon()"
+                                                            :dark="center.isChipBackgroundColorDefined(true) && shouldTextBeWhiteFromBackgroundColor(center.getChipBackgroundColor(true))">
+                                                        {{center.getChipIcon()}}
                                                     </v-icon>
                                                 </template>
                                                 {{center.getLabel()}}
