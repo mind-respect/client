@@ -1041,7 +1041,7 @@ FriendlyResource.FriendlyResource.prototype.getIcon = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.getChipIcon = function () {
-    return this.isPattern() ? "stars" : this.getChipIcon();
+    return this.isPattern() ? "stars" : this.getIcon();
 };
 
 FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceServerFormat) {
