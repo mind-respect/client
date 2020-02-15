@@ -421,7 +421,9 @@
                         } else {
                             return tag.hasImages() && tag.getImage().urlForSmall && tag.getUri() !== CurrentSubGraph.get().center.getUri();
                         }
-                    });
+                    }).sort((x, y) => {
+                        return y.getCreationDate() - x.getCreationDate();
+                    })
                 }
                 this.imageUrl = tagsWithImages.length ? tagsWithImages[0].getImage().urlForSmall : false;
                 // this.imageRefresh = IdUri.uuid();
