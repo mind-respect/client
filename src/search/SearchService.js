@@ -120,15 +120,21 @@ api._sortIsMindRespect = function (x, y) {
 };
 
 api._sortByNbReferences = function (x, y) {
-    let xNbReferences = x.original.getNbRerences === undefined ? 0 : x.original.getNbRerences();
-    let yNbReferences = y.original.getNbRerences === undefined ? 0 : y.original.getNbRerences();
+    let xNbReferences = 0;
+    if (x.isMindRespect) {
+        xNbReferences = x.original.getGraphElement().isMeta() ? x.original.getNbRerences() || x.original.getGraphElement().getNbRerences() : x.original.getNbRerences();
+    }
+    let yNbReferences = 0;
+    if (y.isMindRespect) {
+        yNbReferences = y.original.getGraphElement().isMeta() ? y.original.getNbRerences() || y.original.getGraphElement().getNbRerences() : y.original.getNbRerences();
+    }
     return yNbReferences - xNbReferences;
 };
 
 api._sortByNbVisits = function (x, y) {
     let xNbVisits = x.original.getNbVisits === undefined ? 0 : x.original.getNbVisits();
     let yNbVisits = y.original.getNbVisits === undefined ? 0 : y.original.getNbVisits();
-    return yNbVisits- xNbVisits;
+    return yNbVisits - xNbVisits;
 };
 
 function formattedOwnResults(results) {
