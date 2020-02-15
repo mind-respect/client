@@ -47,17 +47,16 @@ api.fromServerFormat = function (searchResult) {
                 searchResult
             );
         case GraphElementType.Meta :
-            let tag = Tag.fromGraphElementServerFormat(
+            let tagAsGraphElement = GraphElement.fromServerFormat(
                 searchResult.graphElement
             );
-            tag.setShareLevel(
-                searchResult.shareLevel
-            );
-            tag.setNbReferences(
-                searchResult.nbReferences
-            );
+            let tag = tagAsGraphElement.getIdentifiers()[0];
+            if (tag) {
+                tag.setShareLevel(searchResult.shareLevel);
+            }
+            let graphElement = tag === undefined ? tagAsGraphElement : tag;
             return new SearchResult(
-                tag,
+                graphElement,
                 GraphElementType.Meta,
                 api._buildMetaSomethingToDistinguish(searchResult),
                 searchResult
