@@ -120,14 +120,8 @@ api._sortIsMindRespect = function (x, y) {
 };
 
 api._sortByNbReferences = function (x, y) {
-    let xNbReferences = 0;
-    if (x.isMindRespect) {
-        xNbReferences = x.original.getGraphElement().isMeta() ? x.original.getNbRerences() : x.original.getNbRerences();
-    }
-    let yNbReferences = 0;
-    if (y.isMindRespect) {
-        yNbReferences = y.original.getGraphElement().isMeta() ? y.original.getNbRerences() : y.original.getNbRerences();
-    }
+    let xNbReferences =  x.isMindRespect ? x.original.getNbRerences() : 0;
+    let yNbReferences =  y.isMindRespect ? y.original.getNbRerences() : 0;
     return yNbReferences - xNbReferences;
 };
 
