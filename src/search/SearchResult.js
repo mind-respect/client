@@ -50,7 +50,9 @@ api.fromServerFormat = function (searchResult) {
                 searchResult.graphElement
             );
             let tag = tagAsGraphElement.getIdentifiers()[0];
-            tag.setShareLevel(searchResult.shareLevel);
+            if (tag) {
+                tag.setShareLevel(searchResult.shareLevel);
+            }
             let graphElement = tag === undefined ? tagAsGraphElement : tag;
             return new SearchResult(
                 graphElement,
