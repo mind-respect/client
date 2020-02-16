@@ -18,62 +18,38 @@
         <Level :title="$t('about:level1Title')" :level="1" image="swamp-2248571_1280_optimized_small.jpg">
             <!--https://pixabay.com/fr/marais-floride-terres-humides-2248571/-->
             <div slot="description">
-                <v-list dark color="primary">
-                    <v-list-item>
-                        <v-list-item-content>
-                            <v-list-item-title class="title">
-                                {{$t('about:level1Desc1')}}
-                                <v-list-item-subtitle class="subtitle-1">
-                                    {{$t('about:level1Desc2')}}
-                                </v-list-item-subtitle>
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
+                <p class="title mb-0 white--text">
+                    {{$t('about:level1Desc1')}}
+                </p>
+                <p class="subtitle-1">
+                    {{$t('about:level1Desc2')}}
+                </p>
             </div>
         </Level>
         <Level :title="$t('about:level2Title')" :level="2" image="plants-2564038_1280_optimized_small.jpg">
             <!--https://pixabay.com/fr/plantes-nature-vert-feuilles-2564038/-->
             <div slot="description">
-                <v-list dark color="primary">
-                    <v-list-item>
-                        <v-list-item-content>
-                            <v-list-item-title class="title">
-                                {{$t('about:level2Desc1')}}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
+                <p class="title white--text">
+                    {{$t('about:level2Desc1')}}
+                </p>
             </div>
         </Level>
         <Level image="organized_chaos_optimized_small.jpg" :title="$t('about:level3Title')" :level="3">
             <!--https://pixabay.com/fr/intelligence-artificielle-cerveau-3382507/-->
             <div slot="description" class="vh-center">
-                <v-list color="primary" three-line dark>
-                    <v-list-item>
-                        <v-list-item-content>
-                            <v-list-item-title class="title">
-                                {{$t('about:level3Desc1')}}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
+                <p class="title white--text">
+                    {{$t('about:level3Desc1')}}
+                </p>
             </div>
         </Level>
         <Level image="mindmap_optimized_small.jpg" :title="$t('about:level4Title')" :level="4">
             <div slot="description">
-                <v-list color="primary" three-line dark>
-                    <v-list-item>
-                        <v-list-item-content>
-                            <v-list-item-title class="title">
-                                {{$t('about:level4Desc1')}}
-                                <v-list-item-subtitle class="subtitle-1">
-                                    {{$t('about:level4Desc11')}}
-                                </v-list-item-subtitle>
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
+                <p class="title white--text mb-0">
+                    {{$t('about:level4Desc1')}}
+                </p>
+                <p class="subtitle-1 mt-0">
+                    {{$t('about:level4Desc11')}}
+                </p>
             </div>
         </Level>
         <Level image="neurons_optimized_small.jpg" :title="$t('about:level5Title')" :level="5">
