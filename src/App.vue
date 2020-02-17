@@ -39,6 +39,42 @@
                         ></v-img>
                     </router-link>
                 </v-toolbar-title>
+                <v-menu
+                        :nudge-width="200"
+                        offset-x
+                        v-if="!isGraphRoute && ($vuetify.breakpoint.mdAndUp || !showSearch)"
+                        :fixed="$vuetify.breakpoint.mdAndDown"
+                        :max-width="$vuetify.breakpoint.mdAndDown ? $vuetify.breakpoint.getClientWidth() : 'auto'"
+                        :position-x="0"
+                        :position-y="0"
+                >
+                    <template v-slot:activator="{ on }">
+                        <div v-on="on">
+                            <v-icon v-if="showOnlyMovieIconInRecruit"
+                                    class="ml-3"
+                                    v-on="on"
+                                    color="secondary">
+                                movie
+                            </v-icon>
+                            <v-btn text color="secondary" v-else>
+                                <v-icon class="mr-2" v-if="$vuetify.breakpoint.lgAndUp">person</v-icon>
+                                {{$t('app:recruits')}} !
+                            </v-btn>
+                        </div>
+                    </template>
+                    <v-card :class="{
+                        'pa-0' : $vuetify.breakpoint.mdAndDown
+                    }">
+                        <v-card-text :class="{
+                        'pa-0' : $vuetify.breakpoint.mdAndDown
+                    }">
+                            <iframe :width="$vuetify.breakpoint.mdAndDown ? $vuetify.breakpoint.getClientWidth() : 560"
+                                    height="315" :src="$t('app:recruitVideo')" frameborder="0"
+                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen></iframe>
+                        </v-card-text>
+                    </v-card>
+                </v-menu>
                 <v-spacer></v-spacer>
                 <v-btn icon v-show="showSearch && $vuetify.breakpoint.smAndDown" @click="leaveSearchFlow">
                     <v-icon color="primary">keyboard_backspace</v-icon>
@@ -290,11 +326,11 @@
                 "convertToGroupRelation": "Convert to group relation",
                 "wikipediaLinks": "Learn more on Wikipedia",
                 "merge": "Merge",
-                "list": "See the selection as a list",
-                "listAll": "See as list",
-                "fontPicker": "Font picker",
-                "setShareLevel": "Share",
-                "createVertex": "Create a new bubble",
+                list: "See the selection as a list",
+                listAll: "See as list",
+                fontPicker: "Font picker",
+                setShareLevel: "Share",
+                createVertex: "Create a new bubble",
                 close: "Close",
                 leaveContext: "Split into 2 cards that share a tag",
                 setColor: "Set color",
@@ -359,7 +395,9 @@
                 patternInfo2: "All bubbles on this map, even those under bubbles to expand, will be public.",
                 patternInfo3: "Check that this map only contains bubbles that you want to share.",
                 on: "On",
-                thisMap: "this map"
+                thisMap: "this map",
+                recruits: "Recruits",
+                recruitVideo: "https://www.youtube.com/embed/XTHBs3qsuxo?cc_load_policy=1&hl=en"
             });
 
             I18n.i18next.addResources("fr", "app", {
@@ -368,7 +406,9 @@
                 patternInfo2: "Toutes les bulles de cette carte, même celles qui sont sous des bulles à expandre, seront publiques.",
                 patternInfo3: "Vérifiez que cette carte ne contient que des bulles que vous voulez partager.",
                 on: "Sur",
-                thisMap: "cette carte"
+                thisMap: "cette carte",
+                recruits: "Recrute",
+                recruitVideo: "https://www.youtube.com/embed/XTHBs3qsuxo?cc_load_policy=0&hl=fr"
             });
             return {
                 clipped: false,
@@ -435,6 +475,11 @@
         computed: {
             isGraphRoute: function () {
                 return this.$route.name === "Center"
+            },
+            showOnlyMovieIconInRecruit: function () {
+                return this.$vuetify.breakpoint.mdAndDown && [
+                    'home', 'welcome', 'register', 'login'
+                ].indexOf(this.$route.name) > -1;
             }
         },
         mounted: function () {
