@@ -10,7 +10,7 @@
                     close
                 </v-icon>
             </v-card-title>
-            <v-card-text>
+            <v-card-text v-if="!isChangeShareLevelFlow">
                 <v-autocomplete
                         ref="tagSearch"
                         v-model="selectedSearchResult"
@@ -68,6 +68,41 @@
                     ></v-progress-circular>
                 </div>
             </v-card-text>
+            <v-card-text v-if="isChangeShareLevelFlow">
+                <v-alert type="success">
+                    {{$t('addTag:tagAdded')}}
+                </v-alert>
+                <v-card>
+                    <v-card-title class="subtitle-1 pb-0">
+                        {{$t('addTag:changeTagShareLevel1')}}
+                    </v-card-title>
+                    <v-card-text class="pt-0">
+                        <SearchResultContent :item="selectedSearchResult"></SearchResultContent>
+                    </v-card-text>
+                </v-card>
+                <v-card class="mt-4">
+                    <v-card-title class="subtitle-1 pb-0">
+                        {{$t('addTag:changeTagShareLevel')}}
+                    </v-card-title>
+                    <v-card-text>
+                        <ShareLevelSelection class="mt-4" :shareLevel="selectedTagShareLevel"
+                                             @update="updateShareLevel"></ShareLevelSelection>
+                    </v-card-text>
+                </v-card>
+            </v-card-text>
+            <v-card-actions v-if="isChangeShareLevelFlow">
+                <v-btn color="secondary"
+                       @click="confirmChangeTagShareLevel()"
+                       :loading="confirmChangeTagShareLevelLoading"
+                       :disabled="confirmChangeTagShareLevelLoading"
+                >
+                    {{$t('confirm')}}
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn @click="dialog=false">
+                    {{$t('cancel')}}
+                </v-btn>
+            </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
@@ -82,6 +117,7 @@
     import SearchResultContent from '@/components/search/SearchResultContent'
     import SearchResultAction from '@/components/search/SearchResultAction'
     import KeyboardActions from '@/KeyboardActions'
+    import ShareLevelSelection from '@/components/ShareLevelSelection'
 
     export default {
         name: "AddTagDialog",
@@ -89,17 +125,26 @@
             SearchCreate,
             SearchLoadMore,
             SearchResultContent,
-            SearchResultAction
+            SearchResultAction,
+            ShareLevelSelection
         },
         mounted: function () {
             this.$store.dispatch("setIsAddTagFlow", false);
         },
         data: function () {
             I18n.i18next.addResources("en", "addTag", {
-                "title": "Add tag"
+                "title": "Add tag",
+                "shareLevel": "Share level",
+                tagAdded: "Tag added",
+                changeTagShareLevel: "Change the tag sharing level?",
+                changeTagShareLevel1: "The added tag has a stricter sharing level than the selected bubble"
             });
             I18n.i18next.addResources("fr", "addTag", {
-                "title": "Ajouter un étiquette"
+                "title": "Ajouter un étiquette",
+                "shareLevel": "Niveau de partage",
+                tagAdded: "Étiquette ajouté",
+                changeTagShareLevel: "Modifier le niveau de partage de l'étiquette ?",
+                changeTagShareLevel1: "L'étiquette ajouté a un niveau de partage plus strict que la bulle sélectionné"
             });
             return {
                 search: null,
@@ -110,7 +155,11 @@
                 menuProps: {
                     "contentClass": 'search-menu add-tag-dialog-menu'
                 },
-                tagLoading: false
+                tagLoading: false,
+                isChangeShareLevelFlow: false,
+                addedTag: null,
+                selectedTagShareLevel: null,
+                confirmChangeTagShareLevelLoading: false
             }
         },
         computed: {
@@ -124,9 +173,12 @@
         watch: {
             isAddTagFlow: function () {
                 if (this.$store.state.isAddTagFlow) {
+                    this.isChangeShareLevelFlow = false;
+                    this.confirmChangeTagShareLevelLoading = false;
                     this.dialog = true;
                     this.$nextTick(() => {
                         setTimeout(() => {
+                            this.$refs.tagSearch.reset();
                             this.$refs.tagSearch.$el.querySelector("input").focus();
                         }, 100)
                     });
@@ -148,6 +200,18 @@
             }
         },
         methods: {
+            updateShareLevel: function (newShareLevel) {
+                this.selectedTagShareLevel = newShareLevel;
+            },
+            confirmChangeTagShareLevel: function () {
+                this.confirmChangeTagShareLevelLoading = true;
+                this.addedTag.controller().setShareLevelDo(
+                    this.selectedTagShareLevel
+                ).then(() => {
+                    this.confirmChangeTagShareLevelLoading = false;
+                    this.dialog = false;
+                });
+            },
             focus: function () {
                 this.$nextTick(async () => {
                     await this.$nextTick();
@@ -172,25 +236,16 @@
                         tag.addImage(imageUrl);
                     }
                     return this.identify(tag);
-                }).then(() => {
+                }).then((tags) => {
                     this.tagLoading = false;
-                    this.dialog = false;
                     this.$store.dispatch("redraw");
+                    this.addedTag = tags[0];
+                    this.isChangeShareLevelFlow = this.bubble.isVertexType() && this.bubble.hasLooserShareLevelThan(this.addedTag);
+                    this.selectedTagShareLevel = this.bubble.getShareLevel();
+                    if (!this.isChangeShareLevelFlow) {
+                        this.dialog = false;
+                    }
                 });
-                // var self = this;
-                // SchemaSuggestion.addSchemaSuggestionsIfApplicable(
-                //     graphElement,
-                //     searchResult.uri
-                // );
-                // if (graphElement.isSuggestion()) {
-                //     var vertexSuggestion = graphElement.isRelationSuggestion() ?
-                //         graphElement.childVertexInDisplay() : graphElement;
-                //     vertexSuggestion.getController().accept(vertexSuggestion).then(
-                //         identify
-                //     );
-                // } else {
-                // }
-                this.$refs.tagSearch.reset();
                 this.$refs.tagSearch.blur();
                 return tag;
             },

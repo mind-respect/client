@@ -2,27 +2,39 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-const api = {
+const ShareLevel = {
     "PRIVATE": "PRIVATE",
     "FRIENDS": "FRIENDS",
     "PUBLIC_WITH_LINK": "PUBLIC_WITH_LINK",
     "PUBLIC": "PUBLIC"
 };
-api.isPublic = function (shareLevel) {
-    return shareLevel === api.PUBLIC || shareLevel === api.PUBLIC_WITH_LINK;
+ShareLevel.isPublic = function (shareLevel) {
+    return shareLevel === ShareLevel.PUBLIC || shareLevel === ShareLevel.PUBLIC_WITH_LINK;
 };
 
-api.getIcon = function(shareLevel){
+ShareLevel.getIcon = function (shareLevel) {
     switch (shareLevel) {
-        case api.PRIVATE :
+        case ShareLevel.PRIVATE :
             return "lock";
-        case api.PUBLIC:
+        case ShareLevel.PUBLIC:
             return "public";
-        case api.PUBLIC_WITH_LINK:
+        case ShareLevel.PUBLIC_WITH_LINK:
             return "link";
-        case api.FRIENDS :
+        case ShareLevel.FRIENDS :
             return "people";
     }
 };
+ShareLevel.getIndex = function (shareLevel) {
+    switch (shareLevel) {
+        case "PRIVATE":
+            return 1;
+        case "FRIENDS" :
+            return 2;
+        case "PUBLIC_WITH_LINK" :
+            return 3;
+        case "PUBLIC" :
+            return 4;
+    }
+};
 
-export default api;
+export default ShareLevel;

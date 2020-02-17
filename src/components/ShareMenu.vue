@@ -11,17 +11,7 @@
         </v-card-title>
         <v-card flat class="pt-0 pb-0">
             <v-card-text class="pt-0 pb-0 mt-0 vh-center" id="shareMenu">
-                <v-radio-group v-model="shareLevel" class="pa-0 mt-0" @change="update"
-                               :disabled="$store.state.selected.length === 0">
-                    <v-radio :label="$t('share:private')" on-icon="lock" off-icon="lock" value="PRIVATE"
-                             color="third"></v-radio>
-                    <v-radio :label="$t('share:friendsOnly')" value="FRIENDS" on-icon="people"
-                             off-icon="people" color="third"></v-radio>
-                    <v-radio :label="$t('share:publicWithLink')" value="PUBLIC_WITH_LINK" on-icon="link"
-                             off-icon="link" color="third"></v-radio>
-                    <v-radio :label="$t('share:public')" value="PUBLIC" on-icon="public" off-icon="public"
-                             color="third"></v-radio>
-                </v-radio-group>
+                <ShareLevelSelection :shareLevel="shareLevel" @update="update"></ShareLevelSelection>
             </v-card-text>
         </v-card>
         <v-card-title class="pt-1 pb-0 subtitle-1 text-center grey--text" v-show="tagsByLatest.length">
@@ -56,7 +46,8 @@
                             </v-list-item-action>
                             <v-list-item-content class="pt-0 mt-0">
                                 <v-list-item-title class="text-left mb-0">
-                                    <v-badge class="pt-0 mt-0" :color="tag.isBackgroundColorDefined() ? tag.getBackgroundColor() : 'grey'"
+                                    <v-badge class="pt-0 mt-0"
+                                             :color="tag.isBackgroundColorDefined() ? tag.getBackgroundColor() : 'grey'"
                                              inline
                                              left
                                     >
@@ -94,16 +85,14 @@
     import GraphDisplayer from '@/graph/GraphDisplayer'
     import GraphElementController from '@/graph-element/GraphElementController'
     import Color from "../Color";
+    import ShareLevelSelection from "./ShareLevelSelection";
 
     export default {
         name: "ShareMenu",
+        components: {ShareLevelSelection},
         data: function () {
             I18n.i18next.addResources("en", "share", {
                 title: "Share level",
-                private: "Private",
-                public: "Public and indexed by search engines",
-                publicWithLink: "Public with link",
-                friendsOnly: "Friends only",
                 copy: "Copy bubble's link",
                 tags: "Also apply to these labels"
             });
@@ -153,6 +142,9 @@
             selected: function () {
                 this.shareLevel = this.getShareLevel();
                 this.selectAllTags();
+            },
+            tagsByLatest: function () {
+                this.selectAllTags();
             }
         },
         methods: {
@@ -164,7 +156,8 @@
                     return index;
                 });
             },
-            update: function () {
+            update: function (newShareLevel) {
+                this.shareLevel = newShareLevel;
                 new GraphElementController.GraphElementController(
                     Selection.getSelectedBubbles().concat(
                         this.selectedTags.map((index) => {

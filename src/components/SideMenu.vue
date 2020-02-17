@@ -55,7 +55,7 @@
                             </div>
                         </div>
                         <v-spacer></v-spacer>
-                        <v-btn @click="collapse" icon>
+                        <v-btn icon right @click="collapse">
                             <v-icon>chevron_left</v-icon>
                         </v-btn>
                     </v-card-title>

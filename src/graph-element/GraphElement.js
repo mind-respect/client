@@ -180,6 +180,14 @@ GraphElement.GraphElement.prototype.getShareLevel = function () {
     return ShareLevel.PRIVATE;
 };
 
+GraphElement.GraphElement.prototype.hasLooserShareLevelThan = function (other) {
+    return ShareLevel.getIndex(
+        this.getShareLevel()
+    ) > ShareLevel.getIndex(
+        other.getShareLevel()
+    );
+};
+
 GraphElement.GraphElement.prototype.hasIdentifications = function () {
     return this.getTagsAndSelfIfRelevant().length > 0;
 };
