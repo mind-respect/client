@@ -471,7 +471,7 @@ GraphElementController.prototype._canMoveUnderParent = function (parent, forceLe
 };
 
 GraphElementController.prototype.becomeParent = function (child) {
-    return this.expand(true).then(() => {
+    return this.expand(true, true).then(() => {
         let children = this.model().getNextChildren();
         /*
             children length can only be zero for a vertex and one for an edge
