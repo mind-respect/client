@@ -857,14 +857,14 @@ GraphElementController.prototype.setShareLevel = function () {
 };
 
 GraphElementController.prototype.setShareLevelCanDo = function () {
-    return this.getModelArray().some((model) => {
-        return (model.isVertex() || model.isMeta()) && model.controller().setShareLevelCanDo();
+    return !Store.state.isPatternFlow && this.isOwned() && this.getModelArray().some((model) => {
+        return model.canChangeShareLevel();
     });
 };
 
 GraphElementController.prototype.setShareLevelDo = function (shareLevel) {
     let graphElementsToUpdate = this.getUiArray().filter((bubble) => {
-        return bubble.getShareLevel() !== shareLevel.toUpperCase()
+        return bubble.canChangeShareLevel() && !bubble.isGroupRelation() && bubble.getShareLevel() !== shareLevel.toUpperCase()
     }).map((bubble) => {
         if (bubble.isVertex() && ShareLevel.isPublic(shareLevel)) {
             bubble.getParentVertex().incrementNbPublicNeighbors();
@@ -892,6 +892,44 @@ GraphElementController.prototype.setShareLevelDo = function (shareLevel) {
         ) : GraphElementService.setShareLevel(
             shareLevel, this.model()
         );
+};
+
+GraphElementController.prototype._areAllElementsPublicWithLink = function () {
+    return this._areAllElementsInShareLevels([
+        ShareLevel.PUBLIC_WITH_LINK
+    ]);
+};
+
+GraphElementController.prototype._areAllElementsPublic = function () {
+    return this._areAllElementsInShareLevels([
+        ShareLevel.PUBLIC_WITH_LINK,
+        ShareLevel.PUBLIC
+    ]);
+};
+
+GraphElementController.prototype._areAllElementsPrivate = function () {
+    return this._areAllElementsInShareLevels([
+        ShareLevel.PRIVATE
+    ]);
+};
+
+GraphElementController.prototype._areAllElementsFriendsOnly = function () {
+    return this._areAllElementsInShareLevels([
+        ShareLevel.FRIENDS
+    ]);
+};
+
+GraphElementController.prototype._areAllElementsInShareLevels = function (shareLevels) {
+    if (this.isSingle()) {
+        return shareLevels.indexOf(
+            this.model().getShareLevel()
+        ) !== -1;
+    }
+    return this.getUi().every(function (ui) {
+        return shareLevels.indexOf(
+            ui.model().getShareLevel()
+        ) !== -1;
+    });
 };
 
 export default api;

@@ -42,13 +42,13 @@
                 <v-menu
                         :nudge-width="200"
                         offset-x
+                        :offset-y="$vuetify.breakpoint.mdAndDown"
                         v-if="!isGraphRoute && ($vuetify.breakpoint.mdAndUp || !showSearch)"
                         :fixed="$vuetify.breakpoint.mdAndDown"
                         :max-width="$vuetify.breakpoint.mdAndDown ? $vuetify.breakpoint.getClientWidth() : 'auto'"
                         :position-x="0"
                         :position-y="0"
                         :close-on-content-click="false"
-                        offset-y="60"
                 >
                     <template v-slot:activator="{ on }">
                         <div v-on="on">

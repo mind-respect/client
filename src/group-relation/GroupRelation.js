@@ -326,6 +326,14 @@ GroupRelation.prototype.setNbReferences = function (nbReferences) {
     this.getIdentification().setNbReferences(nbReferences);
 };
 
+GroupRelation.prototype.setShareLevel = function (shareLevel) {
+    return this.getIdentification().setShareLevel(shareLevel);
+};
+
+GroupRelation.prototype.getShareLevel = function () {
+    return this.getIdentification().getShareLevel();
+};
+
 
 api.GroupRelation = GroupRelation;
 

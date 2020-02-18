@@ -654,7 +654,7 @@ describe('GraphElementController', () => {
                 scenario.getBubble1InTree(),
                 b2,
                 scenario.getBubble3InTree()
-            ]).makePublic();
+            ]).setShareLevelDo(ShareLevel.PUBLIC);
             expect(
                 hasCalledService
             ).toBeTruthy();

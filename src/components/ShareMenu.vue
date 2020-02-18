@@ -82,7 +82,6 @@
     import I18n from '@/I18n'
     import Selection from '@/Selection'
     import ShareLevel from '@/vertex/ShareLevel'
-    import GraphDisplayer from '@/graph/GraphDisplayer'
     import GraphElementController from '@/graph-element/GraphElementController'
     import Color from "../Color";
     import ShareLevelSelection from "./ShareLevelSelection";
@@ -130,8 +129,10 @@
                 return this.$store.state.selected;
             },
             controller: function () {
-                return GraphDisplayer.getVertexMenuHandler().fromDifferentGraphElements(
-                    Selection.getSelectedElements()
+                return new GraphElementController.GraphElementController(
+                    Selection.getSelectedBubbles().filter((bubble) => {
+                        return bubble.canChangeShareLevel();
+                    })
                 );
             },
             bubbleUrl: function () {

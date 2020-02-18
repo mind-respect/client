@@ -180,6 +180,15 @@ GraphElement.GraphElement.prototype.getShareLevel = function () {
     return ShareLevel.PRIVATE;
 };
 
+GraphElement.GraphElement.prototype.canChangeShareLevel = function () {
+    return this.isInTypes([
+        GraphElementType.Vertex,
+        GraphElementType.Meta,
+        GraphElementType.GroupRelation
+    ]);
+};
+
+
 GraphElement.GraphElement.prototype.hasLooserShareLevelThan = function (other) {
     return ShareLevel.getIndex(
         this.getShareLevel()

@@ -16,6 +16,7 @@ import UiUtils from '@/UiUtils'
 import Color from '@/Color'
 import colors from 'vuetify/es5/util/colors'
 import KeyboardActions from '@/KeyboardActions'
+import GraphElement from "../graph-element/GraphElement";
 
 const MoveRelation = {
     "Parent": "parent",
@@ -420,16 +421,16 @@ FriendlyResource.FriendlyResource.prototype.blur = function () {
 
 FriendlyResource.FriendlyResource.prototype.selectTree = function () {
     Selection.removeAll();
-    let selected = [];
-    selected.push(this);
-    this.getDescendants().forEach((descendant) => {
-        if (descendant.isVertex()) {
-            selected.push(
-                descendant
-            );
-        }
-    });
-    Selection.setSelected(selected);
+    Selection.setSelected(
+        [this].concat(
+            this.getDescendants().filter((bubble) => {
+                return bubble.isInTypes([
+                    GraphElementType.Vertex,
+                    GraphElementType.GroupRelation
+                ]);
+            })
+        )
+    );
 };
 
 FriendlyResource.FriendlyResource.prototype.isToTheLeft = function () {

@@ -204,53 +204,6 @@ VertexController.prototype.images = function () {
 //
 };
 
-
-VertexController.prototype._areAllElementsPublicWithLink = function () {
-    return this._areAllElementsInShareLevels([
-        ShareLevel.PUBLIC_WITH_LINK
-    ]);
-};
-
-VertexController.prototype._areAllElementsPublic = function () {
-    return this._areAllElementsInShareLevels([
-        ShareLevel.PUBLIC_WITH_LINK,
-        ShareLevel.PUBLIC
-    ]);
-};
-
-VertexController.prototype._areAllElementsPrivate = function () {
-    return this._areAllElementsInShareLevels([
-        ShareLevel.PRIVATE
-    ]);
-};
-
-VertexController.prototype._areAllElementsFriendsOnly = function () {
-    return this._areAllElementsInShareLevels([
-        ShareLevel.FRIENDS
-    ]);
-};
-
-VertexController.prototype._areAllElementsInShareLevels = function (shareLevels) {
-    if (this.isSingle()) {
-        return shareLevels.indexOf(
-            this.model().getShareLevel()
-        ) !== -1;
-    }
-    return this.getUi().every(function (ui) {
-        return shareLevels.indexOf(
-            ui.model().getShareLevel()
-        ) !== -1;
-    });
-};
-
-VertexController.prototype.makePublic = function () {
-    return this.setShareLevelDo(ShareLevel.PUBLIC);
-};
-
-VertexController.prototype.setShareLevelCanDo = function () {
-    return !Store.state.isPatternFlow && this.isOwned();
-};
-
 VertexController.prototype.becomeParent = function (child) {
     let promises = [];
     let uiChild;
