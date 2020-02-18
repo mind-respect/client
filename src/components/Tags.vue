@@ -6,7 +6,7 @@
     >
         <v-chip
                 :color="tag.getChipBackgroundColor()"
-                :to="tag.uri().url()"
+                :to="preventLink ? undefined : tag.uri().url()"
                 small
                 v-for="tag in tags"
         >
@@ -34,7 +34,7 @@
 
     export default {
         name: "Tags",
-        props: ['tags'],
+        props: ['tags', 'preventLink'],
         methods: {
             shouldTextBeWhiteFromBackgroundColor: function (hexColor) {
                 return Color.getContrast(hexColor) === 'white'

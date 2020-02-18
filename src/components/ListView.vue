@@ -11,12 +11,15 @@
                 rounded
         >
             <template v-slot:label="{ item }">
-                <span class="font-italic">{{item.edgeLabel}}</span>
-                <span v-if="item.isGroupRelation" class="font-italic">(</span>
-                <span v-html="linkify(item.label)" :class="{
+                <p class="d-inline-flex vh-center">
+                    <span class="font-italic">{{item.edgeLabel}}</span>
+                    <span v-if="item.isGroupRelation" class="font-italic">(</span>
+                    <span v-html="linkify(item.label)" :class="{
                     'font-italic': item.isGroupRelation
                 }"></span>
-                <span v-if="item.isGroupRelation" class="font-italic">)</span>
+                    <span v-if="item.isGroupRelation" class="font-italic">)</span>
+                    <Tags :tags="item.tags" class="ml-4" v-if="showTags" :preventLink="true"></Tags>
+                </p>
             </template>
         </v-treeview>
         <div ref="copyList" v-html="htmlList()" style="position:absolute;top:-10000px; left:-10000px;"></div>
@@ -27,11 +30,13 @@
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
     import GraphElementType from '@/graph-element/GraphElementType'
     import linkifyHtml from 'linkifyjs/html'
-    import IdUri from "../IdUri";
 
     export default {
         name: "ListView",
-        props: ['collapse', 'bubble', 'preventExpand'],
+        props: ['collapse', 'bubble', 'preventExpand', 'showTags'],
+        components: {
+            Tags: () => import('@/components/Tags')
+        },
         data: function () {
             return {
                 items: null
@@ -61,7 +66,8 @@
                     uri: fork.getUri(),
                     edgeLabel: this.getEdgeLabel(fork),
                     label: fork.getLabelOrDefault(),
-                    isGroupRelation: fork.isGroupRelation()
+                    isGroupRelation: fork.isGroupRelation(),
+                    tags: fork.getIdentifiers()
                 };
                 if (!this.preventExpand && fork.canExpand()) {
                     item.children = [];

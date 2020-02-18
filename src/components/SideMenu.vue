@@ -126,7 +126,6 @@
     import Selection from '@/Selection'
     import SideMenu from '@/SideMenu'
     import KeyboardActions from '@/KeyboardActions'
-    import IdUri from "@/IdUri";
 
     export default {
         name: "SideMenu",

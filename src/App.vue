@@ -243,7 +243,7 @@
                     >
                         {{$t('app:patternInfo3')}}
                     </v-alert>
-                    <ListView :collapse="true"></ListView>
+                    <ListView :collapse="true" :showTags="true"></ListView>
                 </v-card-text>
                 <v-card-actions fixed>
                     <v-btn @click="becomeAPattern" :loading="makePatternLoading" :disabled="makePatternLoading"
@@ -402,7 +402,7 @@
                 makeAPattern: "Make this map a pattern",
                 patternInfo: "Other users will be able to copy this map and use it as a starting point to add their own ideas.",
                 patternInfo2: "All bubbles on this map, even those under bubbles to expand, will be public.",
-                patternInfo3: "Check that this map only contains bubbles that you want to share.",
+                patternInfo3: "Check that this map only contains bubbles and tags that you want to share.",
                 on: "On",
                 thisMap: "this map",
                 recruits: "Recruits",
@@ -414,7 +414,7 @@
                 makeAPattern: "Faire de cette carte un pattern",
                 patternInfo: "D'autres usagers pourront copier cette carte et l'utiliser comme point de départ pour y ajouter leurs propres idées.",
                 patternInfo2: "Toutes les bulles de cette carte, même celles qui sont sous des bulles à expandre, seront publiques.",
-                patternInfo3: "Vérifiez que cette carte ne contient que des bulles que vous voulez partager.",
+                patternInfo3: "Vérifiez que cette carte ne contient que des bulles et étiquettes que vous voulez partager.",
                 on: "Sur",
                 thisMap: "cette carte",
                 recruits: "Recrute",
