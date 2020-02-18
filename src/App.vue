@@ -47,6 +47,8 @@
                         :max-width="$vuetify.breakpoint.mdAndDown ? $vuetify.breakpoint.getClientWidth() : 'auto'"
                         :position-x="0"
                         :position-y="0"
+                        :close-on-content-click="false"
+                        offset-y="60"
                 >
                     <template v-slot:activator="{ on }">
                         <div v-on="on">
@@ -65,6 +67,13 @@
                     <v-card :class="{
                         'pa-0' : $vuetify.breakpoint.mdAndDown
                     }">
+                        <v-card-title class="vh-center subtitle-1">
+                            <v-icon class="mr-2">email</v-icon>
+                            {{$t('app:recruitContact')}} :
+                            <a href="mailto:vincent.blouin@gmail.com" class="ml-2">
+                                vincent.blouin@gmail.com
+                            </a>
+                        </v-card-title>
                         <v-card-text :class="{
                         'pa-0' : $vuetify.breakpoint.mdAndDown
                     }">
@@ -397,7 +406,8 @@
                 on: "On",
                 thisMap: "this map",
                 recruits: "Recruits",
-                recruitVideo: "https://www.youtube.com/embed/XTHBs3qsuxo?cc_load_policy=1&hl=en"
+                recruitVideo: "https://www.youtube.com/embed/XTHBs3qsuxo?cc_load_policy=1&hl=en",
+                recruitContact: "Contact me"
             });
 
             I18n.i18next.addResources("fr", "app", {
@@ -408,7 +418,8 @@
                 on: "Sur",
                 thisMap: "cette carte",
                 recruits: "Recrute",
-                recruitVideo: "https://www.youtube.com/embed/XTHBs3qsuxo?cc_load_policy=0&hl=fr"
+                recruitVideo: "https://www.youtube.com/embed/XTHBs3qsuxo?cc_load_policy=0&hl=fr",
+                recruitContact: "Contactez-moi"
             });
             return {
                 clipped: false,
@@ -422,7 +433,8 @@
                 changePasswordDialog: false,
                 showSearch: this.$vuetify.breakpoint.mdAndUp,
                 patternDialog: false,
-                makePatternLoading: false
+                makePatternLoading: false,
+                showRecruitMenu: false
             };
         },
         methods: {
