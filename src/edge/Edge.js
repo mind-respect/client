@@ -10,6 +10,7 @@ import Store from '@/store'
 import I18n from '@/I18n'
 import Selection from '@/Selection'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
+import ShareLevel from "../vertex/ShareLevel";
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -184,6 +185,12 @@ api.Edge.prototype.isPrivate = function () {
 api.Edge.prototype.isFriendsOnly = function () {
     return this.getSourceVertex().isFriendsOnly() &&
         this.getDestinationVertex().isFriendsOnly();
+};
+
+api.Edge.prototype.getShareLevel = function () {
+    let sourceShareLevel = this.getSourceVertex().getShareLevel();
+    return sourceShareLevel === this.getDestinationVertex().getShareLevel() ?
+        sourceShareLevel : ShareLevel.PRIVATE;
 };
 
 api.Edge.prototype.getOtherVertex = function (vertex) {

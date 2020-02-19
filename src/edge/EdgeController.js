@@ -156,10 +156,16 @@ EdgeController.prototype._convertToGroupRelation = function () {
         } else {
             groupRelationIdentifiers = [this.model().buildSelfIdentifier()];
         }
+        groupRelationIdentifiers[0].setShareLevel(
+            this.model().getShareLevel()
+        );
+    } else if (this.model().hasIdentifications()) {
+        groupRelationIdentifiers = this.model().getIdentifiers();
     } else {
-        groupRelationIdentifiers = this.model().hasIdentifications() ?
-            this.model().getIdentifiers() :
-            this.model().getIdentifiersIncludingSelf();
+        groupRelationIdentifiers = this.model().getIdentifiersIncludingSelf();
+        groupRelationIdentifiers[0].setShareLevel(
+            this.model().getShareLevel()
+        );
     }
     let newGroupRelation = GroupRelation.usingIdentifiers(
         groupRelationIdentifiers
