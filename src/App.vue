@@ -276,6 +276,7 @@
     import I18n from '@/I18n'
     import AppController from '@/AppController'
     import CurrentSubGraph from '@/graph/CurrentSubGraph'
+    import ShareLevel from '@/vertex/ShareLevel'
 
     const LoginPages = ['login', 'LoginFriendshipConfirm'];
 
@@ -446,9 +447,13 @@
             becomeAPattern: function () {
                 this.makePatternLoading = true;
                 AppController.becomeAPattern().then(() => {
-                    CurrentSubGraph.get().getVertices().forEach((vertex) => {
-                        vertex.makePublic();
-                        vertex.refreshButtons();
+                    CurrentSubGraph.get().getGraphElements().forEach((bubble) => {
+                        if (bubble.canChangeShareLevel()) {
+                            bubble.setShareLevel(
+                                ShareLevel.PUBLIC
+                            );
+                            bubble.refreshButtons();
+                        }
                     });
                     this.patternDialog = false;
                     this.makePatternLoading = false;
