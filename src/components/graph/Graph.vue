@@ -138,72 +138,7 @@
         <SimilarBubbles v-if="isOwner"></SimilarBubbles>
         <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
         <NewContextDialog></NewContextDialog>
-        <v-bottom-navigation
-                v-if="$store.state.isPatternFlow && !usePatternConfirmFlow"
-                class="text-center"
-                fixed
-                :value="0"
-        >
-            <v-btn
-                    color="secondary"
-                    text
-                    large
-                    @click="usePatternConfirmFlow = true"
-                    v-show="!usePatternConfirmFlow"
-                    :disabled="usePatternLoading"
-            >
-                {{$t('graph:usePattern')}}
-                <v-icon class="">
-                    stars
-                </v-icon>
-            </v-btn>
-        </v-bottom-navigation>
-        <v-bottom-sheet no-click-animation
-                        v-model="usePatternConfirmFlow"
-                        :internal-activator="true"
-                        :inset="$vuetify.breakpoint.mdAndUp"
-                        :content-class="usePatternContentClass">
-            <v-sheet class="text-center">
-                <v-layout wrap>
-                    <v-flex xs12 class="text-center">
-                        <v-card flat>
-                            <v-card-text class="subtitle-1 pl-4 pr-4 text-center pb-0 pt-4">
-                                <p>
-                                    {{$t('graph:usePatternInfo1')}}
-                                </p>
-                                <p>
-                                    {{$t('graph:usePatternInfo2')}}
-                                </p>
-                            </v-card-text>
-                            <v-card-actions class="text-center pt-0">
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                        class="mt-5 mb-5"
-                                        color="secondary"
-                                        @click="usePattern"
-                                        :disabled="usePatternLoading"
-                                        :loading="usePatternLoading"
-                                >
-                                    <v-icon class="mr-2">
-                                        stars
-                                    </v-icon>
-                                    {{$t('confirm')}}
-                                </v-btn>
-                                <v-btn
-                                        class="mt-5 mb-5 ml-12"
-                                        text
-                                        @click="usePatternConfirmFlow = false"
-                                        :disabled="usePatternLoading"
-                                >
-                                    {{$t('cancel')}}
-                                </v-btn>
-                                <v-spacer></v-spacer>
-                            </v-card-actions>
-                        </v-card>
-                    </v-flex>
-                </v-layout>
-            </v-sheet>
-        </v-bottom-sheet>
+        <BottomMenu></BottomMenu>
     </v-layout>
 </template>
 
@@ -225,7 +160,6 @@
     import GraphDraw from '@/draw/GraphDraw'
     import Dragged from '@/Dragged'
     import I18n from '@/I18n'
-    import PatternService from "@/pattern/PatternService";
     import GraphController from '@/graph/GraphController'
     import GraphUi from '@/graph/GraphUi'
     import VertexSkeleton from '@/vertex/VertexSkeleton'
@@ -248,19 +182,14 @@
             NewContextDialog: () => import('@/components/NewContextDialog'),
             AddTagDialog: () => import('@/components/AddTagDialog'),
             MergeDialog: () => import('@/components/MergeDialog'),
-            ColorDialog: () => import('@/components/ColorDialog')
+            ColorDialog: () => import('@/components/ColorDialog'),
+            BottomMenu: () => import('@/components/BottomMenu')
         },
         data: function () {
             I18n.i18next.addResources("en", "graph", {
-                usePattern: "Use pattern",
-                usePatternInfo1: "This entire map will be copied to your centers and its bubbles will be made private.",
-                usePatternInfo2: "You can use a pattern many times.",
                 addExistingBubble: "Add an existing bubble"
             });
             I18n.i18next.addResources("fr", "graph", {
-                usePattern: "Utiliser le pattern",
-                usePatternInfo1: "Toute cette carte sera copiée dans vos centres et ses bulles seront rendues privées.",
-                usePatternInfo2: "Vous pouvez utiliser un pattern à plusieurs reprises.",
                 addExistingBubble: "Ajouter une bulle existante"
             });
             return {
@@ -270,21 +199,17 @@
                 showLoading: true,
                 strokeColor: Color.EdgeColor,
                 svg: null,
-                usePatternLoading: false,
                 contextMenu: false,
                 xContextMenu: 0,
                 yContextMenu: 0,
                 isContextMenuLeft: false,
                 backgroundColor: null,
                 childrenKey: IdUri.uuid(),
-                usePatternSheet: null,
-                usePatternConfirmFlow: null,
                 drawnGraphKey: IdUri.uuid()
             }
         },
         mounted: async function () {
             this.showLoading = true;
-            this.usePatternConfirmFlow = false;
             CurrentSubGraph.set(SubGraph.empty());
             Selection.reset();
             let centerUri = MindMapInfo.getCenterBubbleUri();
@@ -357,7 +282,6 @@
                     Color.refreshBackgroundColor();
                     Selection.setToSingle(this.center);
                     this.$store.dispatch("setIsPatternFlow", this.center.isPattern());
-                    this.usePatternSheet = this.center.isPattern();
                     await AppController.refreshFont();
                     await this.$nextTick();
                     if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
@@ -428,17 +352,6 @@
                     this.contextMenu = true;
                 })
             },
-            usePattern: function () {
-                this.usePatternLoading = true;
-                PatternService.use(
-                    this.center.getUri()
-                ).then((response) => {
-                    this.$router.push(
-                        IdUri.htmlUrlForBubbleUri(response.data.uri)
-                    );
-                    this.usePatternLoading = false;
-                })
-            },
             dragLeave: function () {
                 // console.log("over center leave")
             },
@@ -503,17 +416,6 @@
                 return "transform: scale(" +
                     this.$store.state.zoom + "," +
                     this.$store.state.zoom + ")";
-            },
-            isPatternFlow: function () {
-                return this.$store.state.isPatternFlow;
-            },
-            usePatternContentClass: function () {
-                if (this.$vuetify.breakpoint.smAndDown) {
-                    return "";
-                }
-                return this.$store.state.sideMenuFlow === false ?
-                    "use-pattern-bottom-sheet-collapsed" :
-                    "use-pattern-bottom-sheet-expanded";
             }
         },
         watch: {
@@ -554,9 +456,6 @@
                         });
                     }
                 });
-            },
-            isPatternFlow: function () {
-                this.usePatternSheet = this.$store.state.isPatternFlow;
             }
         }
     }
@@ -723,14 +622,6 @@
 
     .after-loaded {
         opacity: 1;
-    }
-
-    .use-pattern-bottom-sheet-collapsed {
-        margin-left: 95px;
-    }
-
-    .use-pattern-bottom-sheet-expanded {
-        margin-left: 385px !important;
     }
 
 </style>
