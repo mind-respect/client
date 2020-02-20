@@ -88,7 +88,7 @@
                     this.$emit('flow-is-done');
                     Vue.nextTick(() => {
                         this.$router.push({
-                            name: 'Patterns'
+                            name: 'PatternsUserHome'
                         });
                         LoadingFlow.leave();
                         this.loading = false;
