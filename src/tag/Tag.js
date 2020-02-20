@@ -141,12 +141,12 @@ Tag.Tag.prototype.setExternalResourceUri = function (externalResourceUri) {
     this.identificationServerFormat.externalResourceUri = externalResourceUri;
 };
 
-Tag.Tag.prototype.makeExternalUriATwiceReference = function () {
-    this.identificationServerFormat.externalResourceUri = this.identificationServerFormat.externalResourceUri + "/twice";
-};
-
 Tag.Tag.prototype.getServerFormat = function () {
     return this.identificationServerFormat;
+};
+
+Tag.Tag.prototype.isRefTag = function () {
+    return this.getExternalResourceUri().indexOf("/ref/") > -1;
 };
 
 Tag.Tag.prototype.makeGeneric = function () {

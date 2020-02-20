@@ -292,6 +292,7 @@ describe("GroupRelationController", () => {
             let scenario = await new TwoLevelGroupRelationScenario();
             let center = scenario.getCenterInTree();
             let group1 = TestUtil.getChildWithLabel(center, "group1");
+            group1.expand();
             let group2 = TestUtil.getChildWithLabel(group1, "group2");
             expect(
                 TestUtil.hasChildWithLabel(
@@ -315,16 +316,16 @@ describe("GroupRelationController", () => {
             );
             expect(
                 TestUtil.hasChildWithLabel(
-                    center,
-                    "g21"
-                )
-            ).toBeTruthy();
-            expect(
-                TestUtil.hasChildWithLabel(
                     group2,
                     "g21"
                 )
             ).toBeFalsy();
+            expect(
+                TestUtil.hasChildWithLabel(
+                    center,
+                    "g21"
+                )
+            ).toBeTruthy();
         });
         it("can move a second level group relation into the first level", async () => {
             let scenario = await new TwoLevelGroupRelationScenario();

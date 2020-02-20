@@ -201,14 +201,17 @@ GraphElement.GraphElement.prototype.hasIdentifications = function () {
     return this.getTagsAndSelfIfRelevant().length > 0;
 };
 
+GraphElement.GraphElement.prototype.getNonRefTags = function () {
+    return this.getIdentifiers().filter((tag)=>{
+        return !tag.isRefTag();
+    });
+};
+
+
 GraphElement.GraphElement.prototype.hasAllIdentifiers = function (identifiers) {
-    let has = true;
-    identifiers.forEach(function (identifier) {
-        if (!this.hasIdentification(identifier)) {
-            has = false;
-        }
-    }.bind(this));
-    return has;
+    return identifiers.every((tag) => {
+        return this.hasIdentification(tag);
+    });
 };
 GraphElement.GraphElement.prototype.getIdentifierHavingExternalUri = function (externalUri) {
     let matching = this.getIdentifiersIncludingSelf().filter((identifier) => {
@@ -352,16 +355,16 @@ GraphElement.GraphElement.prototype.hasIdentification = function (tag) {
 };
 
 GraphElement.GraphElement.prototype._hasTagBuildingSelfOrNot = function (tag, preventBuildingSelf) {
-    return this.getIdentifiersIncludingSelf(preventBuildingSelf).some((identifier) => {
-        return identifier.getExternalResourceUri() === tag.getExternalResourceUri();
-    })
+    return this.getIdentifiersIncludingSelf(preventBuildingSelf).some((ownTag) => {
+        return ownTag.getExternalResourceUri() === tag.getExternalResourceUri();
+    });
 };
 
 GraphElement.GraphElement.prototype.hasTagRelatedToUri = function (uri) {
     return this.getIdentifiersIncludingSelf().some((identifier) => {
         return identifier.getExternalResourceUri() === uri ||
             identifier.getUri() === uri;
-    })
+    });
 };
 
 
@@ -380,18 +383,21 @@ GraphElement.GraphElement.prototype.buildSelfIdentifier = function () {
     return tag;
 };
 
-GraphElement.GraphElement.prototype.buildTwiceSelfIdentifier = function () {
-    let identification = GraphDisplayer.getTagApi().fromFriendlyResource(
+GraphElement.GraphElement.prototype.buildAdditionalSelfTag = function () {
+    let tag = GraphDisplayer.getTagApi().fromFriendlyResource(
         this
     );
-    identification.makeExternalUriATwiceReference();
-    identification.setLabel(
+    tag.identificationServerFormat.externalResourceUri = tag.identificationServerFormat.externalResourceUri + "/ref/" + IdUri.uuid();
+    tag.setLabel(
         this.getLabel()
     );
-    identification.setComment(
+    tag.setComment(
         this.getComment()
     );
-    return identification;
+    tag.setShareLevel(
+        this.getShareLevel()
+    );
+    return tag;
 };
 
 GraphElement.GraphElement.prototype.addIdentifications = function (identifications) {

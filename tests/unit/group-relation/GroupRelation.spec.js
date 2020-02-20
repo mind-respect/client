@@ -230,7 +230,7 @@ describe("GroupRelation", function () {
             possessionGroupRelation,
             "Possession of book 1"
         );
-        possessionRelation.controller().removeIdentifier(
+        await possessionRelation.controller().removeIdentifier(
             possessionGroupRelation.getIdentification()
         );
         expect(
@@ -273,7 +273,6 @@ describe("GroupRelation", function () {
             possessionGroupRelation.getNumberOfChild()
         ).toBe(3);
     });
-
 
     it("creates a group-relation when adding an identification to a relation shared with another relation at the same level", async () => {
         let scenario = await new ThreeScenario();

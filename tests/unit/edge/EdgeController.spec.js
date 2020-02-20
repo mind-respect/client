@@ -85,8 +85,8 @@ describe("EdgeController", () => {
                 )
             ).toBeFalsy();
             expect(
-                groupRelation.getIdentification().getExternalResourceUri()
-            ).toBe(originalRelation.getUri());
+                groupRelation.getIdentification().getExternalResourceUri().indexOf(originalRelation.getUri()) > -1
+            ).toBeTruthy();
         });
         it("adds self identifier to the original relation with appropriate uri", async () => {
             let threeBubblesScenario = await new ThreeScenario();
@@ -99,14 +99,14 @@ describe("EdgeController", () => {
             let newGroupRelation = TestUtil.getChildWithLabel(bubble1, "r1");
             relation1 = newGroupRelation.getNextBubble();
             expect(
-                relation1.getIdentifiersIncludingSelf().length
+                relation1.getIdentifiers().length
             ).toBe(1);
             expect(
                 relation1.getUri()
             ).toBe(relation1Uri);
             let tagUri = newGroupRelation.getIdentification().getUri();
             expect(
-                relation1.getIdentifiersIncludingSelf()[0].getUri()
+                relation1.getIdentifiers()[0].getUri()
             ).toBe(tagUri);
         });
 
@@ -121,8 +121,8 @@ describe("EdgeController", () => {
             let newGroupRelation = TestUtil.getChildWithLabel(bubble1, "r1");
             let identifierExternalResourceUri = newGroupRelation.getIdentification().getExternalResourceUri();
             expect(
-                identifierExternalResourceUri
-            ).toBe(relation1Uri);
+                identifierExternalResourceUri.indexOf(relation1Uri) > -1
+            ).toBeTruthy();
         });
 
         it("when a relation has an identifier adding a child changes to a group relation where the identifier is not the relation but the identifier", async () => {

@@ -535,9 +535,8 @@ GraphElementController.prototype._moveToExecute = async function (otherEdge, isA
     let promises = [];
     let parentOfOtherBubble = otherEdge.getParentBubble();
     if (!parentOfOtherBubble.isSameUri(movedEdge.getParentBubble())) {
-        promises.push(
-            movedEdge.getParentBubble().controller().becomeExParent(movedEdge, otherEdge)
-        );
+        //await and not promises.push so that tags can be removed before they are added;
+        await movedEdge.getParentBubble().controller().becomeExParent(movedEdge, otherEdge);
     }
     // if (parentOfOtherBubble.isMeta()) {
     //     return parentOfOtherBubble.controller().becomeParent(
@@ -615,13 +614,13 @@ GraphElementController.prototype.addIdentificationCanDo = function () {
     return true;
 };
 
-GraphElementController.prototype.addIdentification = function (identifier, preventMoving, force) {
-    if (this.model().hasIdentification(identifier) && !force) {
-        return Promise.resolve([identifier])
+GraphElementController.prototype.addIdentification = function (tag, preventMoving, force) {
+    if (this.model().hasIdentification(tag) && !force) {
+        return Promise.resolve([tag])
     }
     if (!preventMoving) {
         let siblingWithSameIdentifier = this.model().getParentFork().getNextChildren().filter((sibling) => {
-            return sibling.hasIdentification(identifier) && sibling.getId() !== this.model().getId()
+            return sibling.hasIdentification(tag) && sibling.getId() !== this.model().getId()
         });
         if (siblingWithSameIdentifier.length) {
             return this.moveUnderParent(siblingWithSameIdentifier[0]).then((groupRelation) => {
@@ -632,7 +631,7 @@ GraphElementController.prototype.addIdentification = function (identifier, preve
     }
     return TagService.add(
         this.model(),
-        identifier
+        tag
     ).then((identifications) => {
         return Promise.all(
             identifications.map((identifier) => {
@@ -781,7 +780,7 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
 
 };
 
-GraphElementController.prototype.removeIdentifier = function (identifier, preventMoving) {
+GraphElementController.prototype.removeIdentifier = async function (identifier, preventMoving) {
     if (!this.model().hasIdentification(identifier)) {
         return Promise.resolve();
     }
@@ -792,7 +791,7 @@ GraphElementController.prototype.removeIdentifier = function (identifier, preven
     if (!preventMoving && parentBubble.isGroupRelation()) {
         const groupRelation = parentBubble.getGroupRelationInSequenceWithTag(identifier);
         if (groupRelation) {
-            this.moveBelow(groupRelation);
+            await this.moveBelow(groupRelation);
         }
     }
     return new Promise((resolve) => {

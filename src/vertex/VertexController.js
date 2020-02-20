@@ -128,7 +128,7 @@ VertexController.prototype.convertToRelation = function () {
         );
         toSelect = this.getUi();
     }
-    return Promise.all(promises).then(() => {
+    return Promise.all(promises).then(async () => {
         Selection.setToSingle(toSelect);
         Store.dispatch("redraw");
     });
@@ -154,26 +154,25 @@ VertexController.prototype.convertToGroupRelationCanDo = function () {
 };
 
 VertexController.prototype.convertToGroupRelation = async function () {
+    LoadingFlow.enter();
     let parentRelation = this.model().getParentBubble();
     let children = this.model().getClosestChildrenOfType(GraphElementType.Relation);
     parentRelation.setLabel(this.model().getLabel());
     parentRelation = await children[0].controller().moveUnderParent(parentRelation);
-    let promises = [];
+
     let l = 1;
     while (l < children.length) {
         let childRelation = children[l];
-        promises.push(
-            childRelation.controller().moveUnderParent(
-                parentRelation
-            )
+        //using await and not Promise.all to make sure children order is kept
+        await childRelation.controller().moveUnderParent(
+            parentRelation
         );
         l++;
     }
-    return Promise.all(promises).then(() => {
-        return this.removeDo(true);
-    }).then(() => {
+    return this.removeDo(true).then(() => {
         Selection.setToSingle(parentRelation);
         GraphElementService.changeChildrenIndex(parentRelation.getParentVertex());
+        LoadingFlow.leave();
     });
 };
 

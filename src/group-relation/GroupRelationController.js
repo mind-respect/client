@@ -79,14 +79,15 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         triple.destination.controller().setShareLevelDo(
             parentVertex.getShareLevel()
         );
-        return Promise.all(this.model().getIdentifiers().map((identifier) => {
+        let tags = this.model().getGreatestGroupRelationAncestor().getIdentifiersAtAnyDepth(this.model());
+        return Promise.all(tags.map((identifier) => {
             identifier.makeSameAs();
             return triple.edge.controller().addIdentification(
                 identifier,
                 true,
                 true
-            ).then((identifiers) => {
-                identifiers.forEach((tag) => {
+            ).then((tags) => {
+                tags.forEach((tag) => {
                     if (this.model().hasIdentification(tag)) {
                         this.model().getIdentifierHavingExternalUri(tag.getExternalResourceUri()).setUri(
                             tag.getUri()
@@ -156,7 +157,7 @@ GroupRelationController.prototype.noteDo = function (note) {
 
 GroupRelationController.prototype.becomeExParent = function (movedEdge, newParent) {
     let promises = [];
-    let previousParentGroupRelation = this.model().getGreatestGroupRelationAncestor();
+    let greatestGroupRelationAncestor = this.model().getGreatestGroupRelationAncestor();
     let isMovingUnderSameGroupRelation = this.model().getDescendants().some((child) => {
         return child.getId() === newParent.getId();
     });
@@ -167,7 +168,7 @@ GroupRelationController.prototype.becomeExParent = function (movedEdge, newParen
     if (movedEdge.isGroupRelation()) {
         groupRelationToStop = movedEdge;
     }
-    previousParentGroupRelation.getIdentifiersAtAnyDepth(groupRelationToStop).forEach((identifier) => {
+    greatestGroupRelationAncestor.getIdentifiersAtAnyDepth(groupRelationToStop, true).forEach((identifier) => {
         if (movedEdge.isGroupRelation()) {
             movedEdge.getClosestChildRelations(true).forEach((relation) => {
                 promises.push(

@@ -263,20 +263,25 @@ GroupRelation.prototype.getGroupRelationInSequenceWithTag = function (tag) {
     return groupRelationWithTag.length > 0 ? groupRelationWithTag[0] : false;
 };
 
-GroupRelation.prototype.getIdentifiersAtAnyDepth = function (groupRelationToStop) {
+GroupRelation.prototype.getIdentifiersAtAnyDepth = function (groupRelationToStop, exclusive) {
     return Array.prototype.concat.apply([], this.getSerialGroupRelations(
-        groupRelationToStop
+        groupRelationToStop,
+        exclusive
     ).map((groupRelation) => {
         return groupRelation.getIdentifiers()
     }));
 };
 
-GroupRelation.prototype.getSerialGroupRelations = function (groupRelationToStop) {
+GroupRelation.prototype.getSerialGroupRelations = function (groupRelationToStop, exclusive) {
     let groupRelationsAtAnyDepth = [].concat(this);
-    this.getChildGroupRelations().forEach(function (childGroupRelation) {
-        if (!groupRelationToStop || childGroupRelation.getUri() !== groupRelationToStop.getUri()) {
-            groupRelationsAtAnyDepth = groupRelationsAtAnyDepth.concat(childGroupRelation.getSerialGroupRelations(groupRelationToStop));
+    if (groupRelationToStop && groupRelationToStop.getUri() === this.getUri()) {
+        if (exclusive) {
+            return [];
         }
+        return groupRelationsAtAnyDepth;
+    }
+    this.getChildGroupRelations().forEach(function (childGroupRelation) {
+        groupRelationsAtAnyDepth = groupRelationsAtAnyDepth.concat(childGroupRelation.getSerialGroupRelations(groupRelationToStop, exclusive));
     });
     return groupRelationsAtAnyDepth;
 };
