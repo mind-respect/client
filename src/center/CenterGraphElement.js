@@ -82,7 +82,9 @@ CenterGraphElement.prototype.getNumberOfVisits = function () {
     return this.centerGraphElementServerFormat.numberOfVisits;
 };
 CenterGraphElement.prototype.getLastCenterDate = function () {
-    return new Date(this.centerGraphElementServerFormat.lastCenterDate);
+    return this.centerGraphElementServerFormat.lastCenterDate ?
+        new Date(this.centerGraphElementServerFormat.lastCenterDate) :
+        this.getCreationDate();
 };
 
 CenterGraphElement.prototype.getLastCenterDateTime = function () {
