@@ -168,7 +168,9 @@
                                                     </v-list-item-title>
                                                 </v-list-item>
                                                 <v-list-item
-                                                        @click.prevent="removeCenter(center, index)">
+                                                        @click.prevent="removeCenter(center, index)"
+                                                        v-if="flow !== 'patterns' && isOwnerOfCenter(center)"
+                                                >
                                                     <v-list-item-action>
                                                         <v-icon>visibility_off</v-icon>
                                                     </v-list-item-action>
@@ -290,6 +292,14 @@
             });
         },
         methods: {
+            isOwnerOfCenter: function (center) {
+                if (!this.$store.state.user) {
+                    return false;
+                }
+                return IdUri.getOwnerFromUri(
+                    center.getUri()
+                ) === this.$store.state.user.username;
+            },
             shouldTextBeWhiteFromBackgroundColor: function (hexColor) {
                 return Color.getContrast(hexColor) === 'white'
             },

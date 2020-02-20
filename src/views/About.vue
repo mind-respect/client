@@ -55,7 +55,7 @@
         <Level image="neurons_optimized_small.jpg" :title="$t('about:level5Title')" :level="5">
             <!--https://www.flickr.com/photos/jjorquera/15433132769-->
             <div slot="description">
-                <v-list color="primary" three-line dark>
+                <v-list color="primary" three-line dark class="pt-0 mt-0">
                     <v-list-item>
                         <v-list-item-content>
                             <v-list-item-title class="title">
