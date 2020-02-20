@@ -69,12 +69,12 @@ const router = new Router({
             },
             {
                 path: '/patterns',
-                name: 'Patterns',
+                name: 'PatternsUserHome',
                 component: () => import('./views/UserHome.vue')
             },
             {
                 path: '/public',
-                name: 'PublicCenters',
+                name: 'PublicCenterUserHome',
                 component: () => import('./views/UserHome.vue')
             },
             {

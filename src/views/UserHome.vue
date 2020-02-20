@@ -447,9 +447,9 @@
                     this.tabMenu = 0;
                 } else if (this.$route.name === 'FriendsUserHome') {
                     this.tabMenu = 1;
-                } else if (this.$route.name === 'Patterns') {
+                } else if (this.$route.name === 'PatternsUserHome') {
                     this.tabMenu = 2;
-                } else if (this.$route.name === 'PublicCenters') {
+                } else if (this.$route.name === 'PublicCenterUserHome') {
                     this.tabMenu = 3;
                 }
             }
@@ -504,9 +504,9 @@
                 } else if (this.tabMenu === 1) {
                     pathName = "FriendsUserHome";
                 } else if (this.tabMenu === 2) {
-                    pathName = "Patterns";
+                    pathName = "PatternsUserHome";
                 } else {
-                    pathName = "PublicCenters";
+                    pathName = "PublicCenterUserHome";
                 }
                 if (this.$route.name !== 'home' && this.$route.name !== pathName) {
                     this.$router.push({
