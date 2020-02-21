@@ -88,7 +88,7 @@
             <v-list>
                 <v-list-item
                         @click="$refs.addExistingBubbleDialog.enter(xContextMenu, yContextMenu, isContextMenuLeft)"
-                        :disabled="!isOwner"
+                        :disabled="!isOwner || this.$store.state.isPatternFlow"
                 >
                     <v-list-item-action>
                         <v-icon>scatter_plot</v-icon>

@@ -191,7 +191,7 @@
                         return;
                     }
                     this.items = results.map((result) => {
-                        result.disabled = this.bubble.getUri() === result.uri;
+                        result.disabled = this.bubble.getUri() === result.uri || (result.isMindRespect && result.original.getGraphElement().isPattern());
                         return result;
                     });
                     this.loading = false;

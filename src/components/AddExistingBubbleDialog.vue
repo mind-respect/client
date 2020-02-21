@@ -147,7 +147,7 @@
                 let currentSubGraph = CurrentSubGraph.get();
                 SearchService.ownVertices(searchText).then((results) => {
                     this.items = results.map((result) => {
-                        result.disabled = currentSubGraph.hasUri(result.uri);
+                        result.disabled = currentSubGraph.hasUri(result.uri) || (result.isMindRespect && result.original.getGraphElement().isPattern())
                         return result;
                     });
                     this.loading = false;

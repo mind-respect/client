@@ -416,7 +416,7 @@ VertexController.prototype.convertToDistantBubbleWithUri = function (distantVert
 };
 
 VertexController.prototype.mergeCanDo = function () {
-    return this.isSingle() && this.isOwned();
+    return this.isSingle() && this.isOwned() && !Store.state.isPatternFlow
 };
 
 VertexController.prototype.merge = function () {
