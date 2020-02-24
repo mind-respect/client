@@ -80,7 +80,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
             parentVertex.getShareLevel()
         );
         let tags = [];
-        let parentBubble = this;
+        let parentBubble = this.model();
         do {
             tags.push(
                 parentBubble.getIdentification()
