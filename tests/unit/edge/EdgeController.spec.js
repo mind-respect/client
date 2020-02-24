@@ -199,7 +199,6 @@ describe("EdgeController", () => {
         it("adds self as identifier when under a group relation", async () => {
             let scenario = await new TwoLevelGroupRelationScenario();
             let center = scenario.getCenterInTree();
-
             let group1 = TestUtil.getChildWithLabel(center, "group1");
             let group2 = TestUtil.getChildWithLabel(group1, "group2");
             group2.expand();
@@ -224,6 +223,28 @@ describe("EdgeController", () => {
             expect(
                 g23.getIdentifierHavingExternalUri(g22.getUri())
             ).not.toBeFalsy();
+        });
+
+        it("prevents adding tags related to sibling group relations", async () => {
+            let scenario = await new TwoLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let group1 = TestUtil.getChildWithLabel(center, "group1");
+            let g2 = TestUtil.getChildWithLabel(
+                group1,
+                "g2"
+            );
+            let triple = await g2.controller().addChild();
+            triple.edge.getIdentifiers().forEach((tag) => {
+                console.log(tag.getLabel());
+            });
+            await scenario.nextTickPromise();
+            console.log("after");
+            triple.edge.getIdentifiers().forEach((tag) => {
+                console.log(tag.getLabel());
+            });
+            expect(
+                triple.edge.getIdentifiers().length
+            ).toBe(2);
         });
     });
 
