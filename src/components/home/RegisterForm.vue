@@ -84,7 +84,8 @@
                 }
                 LoadingFlow.enter();
                 this.loading = true;
-                await AuthenticateService.logout();
+                await this.$store.dispatch('setUser', undefined);
+                await this.$store.dispatch('setXsrfToken', IdUri.uuid());
                 AuthenticateService.register(this.newUser).then((response) => {
                     this.$store.dispatch('setUser', response.data);
                     this.$emit('flow-is-done');
