@@ -6,6 +6,7 @@ import axios from 'axios'
 import Store from '@/store'
 import RequestErrors from '@/requestError'
 
+
 const Service = {
     baseUrl: function (isForGraphElement) {
         let url = location.protocol + '//' + location.hostname + ':' + location.port;
@@ -29,10 +30,10 @@ const Service = {
                 'X-XSRF-TOKEN': Store.state.xsrfToken,
             }
         });
-        axiosInstance.interceptors.response.use(null, function (error) {
+        axiosInstance.interceptors.response.use(null, async function (error) {
             if (error.response && error.response.status === 401) {
-                Store.dispatch('setUser', undefined);
-                Store.dispatch('setXsrfToken', undefined);
+                await Store.dispatch('setUser', undefined);
+                await Store.dispatch('setXsrfToken', undefined);
                 if (loginPages.indexOf(window.location.pathname) === -1) {
                     window.location.href = '/'
                 }

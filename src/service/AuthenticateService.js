@@ -2,6 +2,7 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import Service from '@/Service'
+import Store from '@/store'
 
 export default {
     register: function (user) {
@@ -14,6 +15,10 @@ export default {
         return Service.api().post("/users/session", user);
     },
     logout: function () {
-        return Service.api().delete("/users/session");
+        return Promise.all(
+            Store.dispatch('setUser', undefined),
+            Store.dispatch('setXsrfToken', undefined),
+            Service.api().delete("/users/session")
+        );
     }
 };
