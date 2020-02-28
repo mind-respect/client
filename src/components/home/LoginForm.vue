@@ -52,6 +52,7 @@
     import Rules from '@/Rules'
     import LoadingFlow from '@/LoadingFlow'
     import Vue from 'vue'
+    import IdUri from "../../IdUri";
 
     export default {
         name: "LoginForm",
@@ -64,12 +65,13 @@
                     );
                 }.bind(this))
             },
-            login: function () {
+            login: async function () {
                 this.wrongLogin = false;
                 if (!this.$refs.loginForm.validate()) {
                     return;
                 }
                 LoadingFlow.enter();
+                await this.$store.dispatch('setXsrfToken', IdUri.uuid());
                 AuthenticateService.login(this.user).then(function (response) {
                     this.$store.dispatch('setUser', response.data);
                     this.$emit('flow-is-done');

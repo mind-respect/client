@@ -68,11 +68,12 @@
     import Rules from '@/Rules'
     import LoadingFlow from '@/LoadingFlow'
     import Vue from 'vue'
+    import IdUri from "../../IdUri";
 
     export default {
         name: "RegisterForm",
         methods: {
-            register: function () {
+            register: async function () {
                 this.createConflict = false;
                 this.emailAlreadyRegistered = false;
                 this.usernameAlreadyRegistered = false;
@@ -83,8 +84,9 @@
                 }
                 LoadingFlow.enter();
                 this.loading = true;
+                await this.$store.dispatch('setXsrfToken', IdUri.uuid());
                 AuthenticateService.register(this.newUser).then((response) => {
-                    this.$store.dispatch('setUser', response.data)
+                    this.$store.dispatch('setUser', response.data);
                     this.$emit('flow-is-done');
                     Vue.nextTick(() => {
                         this.$router.push({
@@ -173,7 +175,7 @@
                 usernameTooLong: false
             };
         },
-        mounted: function(){
+        mounted: function () {
             // this.$refs.registerForm.enter();
         }
     }

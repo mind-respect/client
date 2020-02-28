@@ -24,11 +24,15 @@ const Service = {
         const axiosInstance = axios.create({
             baseURL: Service.baseUrl(isForGraphElement),
             credentials: true,
-            withCredentials: true
+            withCredentials: true,
+            headers: {
+                'X-XSRF-TOKEN': Store.state.xsrfToken,
+            }
         });
         axiosInstance.interceptors.response.use(null, function (error) {
             if (error.response && error.response.status === 401) {
-                Store.dispatch('setUser', undefined)
+                Store.dispatch('setUser', undefined);
+                Store.dispatch('setXsrfToken', undefined);
                 if (loginPages.indexOf(window.location.pathname) === -1) {
                     window.location.href = '/'
                 }

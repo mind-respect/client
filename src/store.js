@@ -19,7 +19,8 @@ const Store = new Vuex.Store({
                 "locale",
                 "zoom",
                 "sideMenuFlow",
-                "areCentersInGridView"
+                "areCentersInGridView",
+                "xsrfToken"
             ]
         })
     ],
@@ -47,7 +48,8 @@ const Store = new Vuex.Store({
         isNewContextFlow: false,
         isAddTagFlow: false,
         isMergeFlow: false,
-        isColorFlow: false
+        isColorFlow: false,
+        xsrfToken: undefined
     },
     mutations: {
         setUser: function (state, user) {
@@ -152,6 +154,9 @@ const Store = new Vuex.Store({
         },
         setIsColorFlow: function (state, isColorFlow) {
             state.isColorFlow = isColorFlow;
+        },
+        setXsrfToken: function(state, xsrfToken){
+            state.xsrfToken = xsrfToken;
         }
     },
     actions: {
@@ -235,6 +240,9 @@ const Store = new Vuex.Store({
         },
         setIsColorFlow: function (action, isColorFlow) {
             action.commit('setIsColorFlow', isColorFlow);
+        },
+        setXsrfToken: function (action, xsrfToken) {
+            action.commit('setXsrfToken', xsrfToken);
         }
     }
 });

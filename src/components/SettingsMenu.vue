@@ -190,7 +190,8 @@
             logout: function () {
                 Promise.all([
                     AuthenticateService.logout(),
-                    this.$store.dispatch('setUser', undefined)
+                    this.$store.dispatch('setUser', undefined),
+                    this.$store.dispatch('setXsrfToken', undefined)
                 ]).then(function () {
                     this.$router.push("/")
                 }.bind(this));
