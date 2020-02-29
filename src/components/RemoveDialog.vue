@@ -115,7 +115,7 @@
                 if (this.$store.state.isRemoveFlow) {
                     this.someCannotBeRemoved = false;
                     this.selected = Selection.getSelectedElements().filter((selected) => {
-                        return !selected.isMetaGroupVertex();
+                        return selected.controller().removeCanDo();
                     }).map((selected) => {
                         selected.selectedToRemove = true;
                         return selected;
@@ -156,7 +156,7 @@
         },
         methods: {
             handleKeyDown: function (event) {
-                if(!this.removeDialog){
+                if (!this.removeDialog) {
                     return;
                 }
                 if (event.keyCode === KeyCode.KEY_RETURN) {
