@@ -44,7 +44,12 @@
                     <v-flex xs12 class="text-center">
                         <v-card flat>
                             <v-card-title class="text-center vh-center">
-                                {{$t('bottom:usePattern')}}
+                                <v-badge icon color="third" class="mt-4">
+                                    <template v-slot:badge>
+                                        <v-icon>stars</v-icon>
+                                    </template>
+                                    {{$t('bottom:usePattern')}}
+                                </v-badge>
                             </v-card-title>
                             <v-card-text class="subtitle-1 pl-4 pr-4 text-center pb-0 pt-0">
                                 <p>
