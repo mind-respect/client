@@ -94,9 +94,11 @@ function keyDownHandler(event) {
     let feature = actionSet[event.which];
     if (feature === undefined) {
         let isPasting = isCombineKeyPressed && KeyCode.KEY_V && event.which;
-        if (!isPasting && event.which !== api._ctrlKeyNumber && !MindMapInfo.isViewOnly() && Selection.isSingle()) {
+        if (!isPasting && event.which !== api._ctrlKeyNumber && Selection.isSingle()) {
             let selectedElement = Selection.getSingle();
-            if (!MindMapInfo.isViewOnly() && !selectedElement.isMetaRelation()) {
+            if (MindMapInfo.isViewOnly()) {
+                Store.dispatch("failedToEdit");
+            } else if (selectedElement.controller().focusCanDo()) {
                 let labelHtml = selectedElement.getLabelHtml();
                 labelHtml.contentEditable = "true";
                 Focus.focusEnd(labelHtml);
@@ -130,6 +132,9 @@ function executeFeature(feature, event) {
     }
     let canDoValidator = controller[feature.action + "CanDo"];
     if (canDoValidator !== undefined && !canDoValidator.call(controller)) {
+        if (feature.action === "focus" && MindMapInfo.isViewOnly()) {
+            Store.dispatch("failedToEdit");
+        }
         return;
     }
     controller[feature.action](event);
@@ -174,7 +179,7 @@ function defineCtrlPlusKeysAndTheirActions() {
     let actions = {};
     actions[KeyCode.KEY_G] = [{
         action: "showTags"
-    },{
+    }, {
         action: "hideTags"
     }];
     actions[KeyCode.KEY_A] = {

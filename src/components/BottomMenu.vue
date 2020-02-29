@@ -43,6 +43,9 @@
                 <v-layout wrap>
                     <v-flex xs12 class="text-center">
                         <v-card flat>
+                            <v-card-title class="text-center vh-center">
+                                {{$t('bottom:usePattern')}}
+                            </v-card-title>
                             <v-card-text class="subtitle-1 pl-4 pr-4 text-center pb-0 pt-4">
                                 <p>
                                     {{$t('bottom:usePatternInfo1')}}
@@ -150,11 +153,17 @@
                     return false;
                 }
                 return this.$route.params.username === undefined || this.$route.params.username === this.$store.state.user.username;
+            },
+            failedToEdit: function () {
+                return this.$store.state.failedToEdit;
             }
         },
         watch: {
             isPatternFlow: function () {
                 this.usePatternSheet = this.$store.state.isPatternFlow;
+            },
+            failedToEdit: function () {
+                this.usePatternConfirmFlow = this.$store.state.isPatternFlow;
             }
         }
     }

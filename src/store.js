@@ -44,6 +44,7 @@ const Store = new Vuex.Store({
         tagRefresh: Math.random(),
         shareRefresh: Math.random(),
         similarBubblesRefresh: Math.random(),
+        failedToEdit: Math.random(),
         userHomeSelectedCenter: null,
         isNewContextFlow: false,
         isAddTagFlow: false,
@@ -140,6 +141,9 @@ const Store = new Vuex.Store({
         similarBubblesRefresh: function (state, key) {
             state.similarBubblesRefresh = key;
         },
+        failedToEdit: function (state, key) {
+            state.failedToEdit = key;
+        },
         userHomeSelectedCenter: function (state, center) {
             state.userHomeSelectedCenter = center;
         },
@@ -155,7 +159,7 @@ const Store = new Vuex.Store({
         setIsColorFlow: function (state, isColorFlow) {
             state.isColorFlow = isColorFlow;
         },
-        setXsrfToken: function(state, xsrfToken){
+        setXsrfToken: function (state, xsrfToken) {
             state.xsrfToken = xsrfToken;
         }
     },
@@ -225,6 +229,9 @@ const Store = new Vuex.Store({
         },
         similarBubblesRefresh: function (action) {
             action.commit('similarBubblesRefresh', IdUri.uuid());
+        },
+        failedToEdit: function (action) {
+            action.commit('failedToEdit', IdUri.uuid());
         },
         userHomeSelectedCenter: function (action, center) {
             action.commit('userHomeSelectedCenter', center);

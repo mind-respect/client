@@ -544,6 +544,7 @@
                 event.stopPropagation();
                 this.showMenu = false;
                 if (MindMapInfo.isViewOnly() || this.bubble.isEditFlow || this.bubble.isMetaRelation()) {
+                    this.$store.dispatch("failedToEdit");
                     return;
                 }
                 this.bubble.isEditFlow = true;
