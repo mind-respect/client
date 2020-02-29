@@ -65,6 +65,7 @@
                 </v-btn>
             </v-form>
         </v-card-text>
+        <RecaptchaInfo></RecaptchaInfo>
     </v-card>
 </template>
 
@@ -81,6 +82,9 @@
 
     export default {
         name: "RegisterForm",
+        components: {
+            RecaptchaInfo: () => import('@/components/home/RecaptchaInfo')
+        },
         methods: {
             register: async function () {
                 this.createConflict = false;

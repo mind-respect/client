@@ -42,6 +42,7 @@
                     {{$t('login:forgotPassword')}}
                 </a>
             </v-card-actions>
+            <RecaptchaInfo></RecaptchaInfo>
         </v-card>
     </div>
 </template>
@@ -59,6 +60,9 @@
 
     export default {
         name: "LoginForm",
+        components: {
+            RecaptchaInfo: () => import('@/components/home/RecaptchaInfo')
+        },
         methods: {
             goToForgotPassword: function () {
                 this.$emit('flow-is-done');
@@ -105,9 +109,9 @@
                         LoadingFlow.leave();
                     });
                 }).catch((response) => {
-                    if(response.response.data.reason === "recaptcha score"){
+                    if (response.response.data.reason === "recaptcha score") {
                         this.robotDoubt = true;
-                    }else{
+                    } else {
                         this.wrongLogin = true;
                     }
                     LoadingFlow.leave();
