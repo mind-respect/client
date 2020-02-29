@@ -7,6 +7,12 @@
         <v-card-text>
             <v-form ref="registerForm">
                 <v-alert
+                        :value="robotDoubt"
+                        type="error"
+                >
+                    {{$t('robotDoubt')}}
+                </v-alert>
+                <v-alert
                         :value="createConflict"
                         type="error"
                 >
@@ -78,6 +84,7 @@
         methods: {
             register: async function () {
                 this.createConflict = false;
+                this.robotDoubt = false;
                 this.emailAlreadyRegistered = false;
                 this.usernameAlreadyRegistered = false;
                 this.invalidUsername = false;
@@ -97,28 +104,33 @@
                         this.$router.push({
                             name: 'PatternsUserHome'
                         });
+                        this.$recaptchaInstance.hideBadge();
                         LoadingFlow.leave();
                         this.loading = false;
                     })
-                }).catch(function (response) {
-                    response.response.data.forEach((error) => {
-                        if ("already_registered_email" === error.reason) {
-                            this.emailAlreadyRegistered = true;
-                        }
-                        if ("user_name_already_registered" === error.reason) {
-                            this.usernameAlreadyRegistered = true;
-                        }
-                        if ("invalid_user_name" === error.reason) {
-                            this.invalidUsername = true;
-                        }
-                        if ("too_long" === error.reason) {
-                            this.usernameTooLong = true;
-                        }
-                    });
+                }).catch((response) => {
+                    if (response.response.data.reason === "recaptcha score") {
+                        this.robotDoubt = true;
+                    } else {
+                        response.response.data.forEach((error) => {
+                            if ("already_registered_email" === error.reason) {
+                                this.emailAlreadyRegistered = true;
+                            }
+                            if ("user_name_already_registered" === error.reason) {
+                                this.usernameAlreadyRegistered = true;
+                            }
+                            if ("invalid_user_name" === error.reason) {
+                                this.invalidUsername = true;
+                            }
+                            if ("too_long" === error.reason) {
+                                this.usernameTooLong = true;
+                            }
+                        });
+                    }
                     this.createConflict = true;
                     this.loading = false;
                     LoadingFlow.leave();
-                }.bind(this));
+                });
             },
             enter: function () {
                 this.newUser = {
@@ -177,12 +189,12 @@
                 usernameAlreadyRegistered: false,
                 emailAlreadyRegistered: false,
                 invalidUsername: false,
-                usernameTooLong: false
+                usernameTooLong: false,
+                robotDoubt: false
             };
         },
         mounted: function () {
             // this.$refs.registerForm.enter();
-            this.$recaptchaInstance.hideBadge();
         }
     }
 </script>

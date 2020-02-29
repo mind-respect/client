@@ -70,6 +70,7 @@
             },
             login: async function () {
                 this.wrongLogin = false;
+                this.robotDoubt = false;
                 if (!this.$refs.loginForm.validate()) {
                     return;
                 }
@@ -103,8 +104,12 @@
                         this.$recaptchaInstance.hideBadge();
                         LoadingFlow.leave();
                     });
-                }).catch(() => {
-                    this.wrongLogin = true;
+                }).catch((response) => {
+                    if(response.response.data.reason === "recaptcha score"){
+                        this.robotDoubt = true;
+                    }else{
+                        this.wrongLogin = true;
+                    }
                     LoadingFlow.leave();
                 });
             },
@@ -142,7 +147,8 @@
                 },
                 wrongLogin: false,
                 Rules: Rules,
-                forgotPasswordDialog: false
+                forgotPasswordDialog: false,
+                robotDoubt: false
             };
         },
         mounted: function () {
