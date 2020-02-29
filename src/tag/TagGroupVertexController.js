@@ -11,6 +11,7 @@ import Selection from '@/Selection'
 import TagRelation from '@/tag/TagRelation'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Store from '@/store'
+import UiUtils from "../UiUtils";
 
 const api = {};
 
@@ -25,7 +26,9 @@ function TagGroupVertexController(vertices) {
 TagGroupVertexController.prototype = new VertexController.VertexController();
 
 
-TagGroupVertexController.prototype.addChild = function () {
+TagGroupVertexController.prototype.addChild = async function () {
+    this.model().expand();
+    await Vue.nextTick();
     let addTuple = VertexService.addTuple(
         this.model()
     );
@@ -42,15 +45,14 @@ TagGroupVertexController.prototype.addChild = function () {
     this.model().addChild(
         metaRelation
     );
-    this.model().refreshChildren();
+    this.model().refreshChildren(true);
     CurrentSubGraph.get().add(metaRelation);
-    Vue.nextTick(() => {
-        Selection.setToSingle(triple.destination);
-        // GraphElementService.changeChildrenIndex(
-        //     this.model()
-        // );
-        triple.destination.focus();
-    });
+    await Vue.nextTick();
+    await UiUtils.animateNewTriple(
+        this.model(),
+        triple
+    );
+    Selection.setToSingle(triple.destination);
 };
 
 TagGroupVertexController.prototype.addSiblingCanDo = function () {

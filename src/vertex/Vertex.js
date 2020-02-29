@@ -10,6 +10,7 @@ import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Vue from 'vue'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import Store from '@/store'
+import UiUtils from "../UiUtils";
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -206,7 +207,7 @@ Vertex.prototype.getNbDuplicates = function () {
     ).length - 1;
 };
 
-Vertex.prototype.addChild = function (child, isToTheLeft, index) {
+Vertex.prototype.addChild = async function (child, isToTheLeft, index) {
     this.isExpanded = true;
     let children;
     child.parentBubble = child.parentVertex = this;

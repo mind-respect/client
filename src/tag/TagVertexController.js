@@ -16,7 +16,8 @@ import SubGraphController from '@/graph/SubGraphController'
 import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import GraphElement from '@/graph-element/GraphElement'
-import Store from '@/store'
+import UiUtils from "../UiUtils";
+import Triple from '@/triple/Triple'
 
 const api = {};
 
@@ -205,29 +206,36 @@ TagVertexController.prototype.showTagsCanDo = function () {
     return false;
 };
 
-TagVertexController.prototype.addChild = function () {
-    return VertexService.createVertex().then((newVertex) => {
-        FriendlyResourceService.updateLabel(
-            newVertex,
-            ""
-        );
-        newVertex.controller().addIdentification(
-            this.model().getOriginalMeta(),
-            true
-        );
-        let newEdge = new TagRelation(newVertex, this.model());
-        this.model().addChild(
-            newEdge
-        );
-        CurrentSubGraph.get().add(newEdge);
-        this.model().refreshChildren();
-        Vue.nextTick(() => {
-            Selection.setToSingle(newVertex);
-            GraphElementService.changeChildrenIndex(
-                this.model()
-            );
-        })
-    });
+TagVertexController.prototype.addChild = async function () {
+    let newVertex = await VertexService.createVertex();
+    FriendlyResourceService.updateLabel(
+        newVertex,
+        ""
+    );
+    newVertex.controller().addIdentification(
+        this.model().getOriginalMeta(),
+        true
+    );
+    let newEdge = new TagRelation(newVertex, this.model());
+    this.model().addChild(
+        newEdge
+    );
+    CurrentSubGraph.get().add(newEdge);
+    this.model().refreshChildren(true);
+    await Vue.nextTick();
+    GraphElementService.changeChildrenIndex(
+        this.model()
+    );
+    let triple = Triple.fromEdgeAndSourceAndDestinationVertex(
+        newEdge,
+        this.model(),
+        newVertex
+    );
+    await UiUtils.animateNewTriple(
+        this.model(),
+        triple
+    );
+    Selection.setToSingle(triple.destination);
 };
 
 TagVertexController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft) {

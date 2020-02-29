@@ -16,6 +16,7 @@ import Vue from 'vue'
 import Store from '@/store'
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
 import router from '@/router'
+import UiUtils from "../UiUtils";
 
 const api = {};
 
@@ -55,14 +56,17 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
             isToTheLeft,
             index
         );
-        this.model().refreshChildren();
+        this.model().refreshChildren(true);
         CurrentSubGraph.get().add(triple.edge);
-        Vue.nextTick(() => {
-            Selection.setToSingle(triple.destination);
+        Vue.nextTick(async () => {
             GraphElementService.changeChildrenIndex(
                 this.model()
             );
-            triple.destination.focus();
+            await UiUtils.animateNewTriple(
+                this.model(),
+                triple
+            );
+            Selection.setToSingle(triple.destination);
         });
         if (ShareLevel.PRIVATE === this.model().model().getShareLevel()) {
             triple.destination.setShareLevel(ShareLevel.PRIVATE);

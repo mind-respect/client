@@ -585,7 +585,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         CurrentSubGraph.get().getGraphElements(),
         firstBoxes
     );
-    Store.dispatch("redraw");
+    await Store.dispatch("redraw");
     setTimeout(() => {
         // let closestChildVertex = this.isExpanded ? this.getClosestChildrenOfType(GraphElementType.Vertex)[0] : this;
         // if (Scroll.isBubbleTreeFullyOnScreen(closestChildVertex)) {

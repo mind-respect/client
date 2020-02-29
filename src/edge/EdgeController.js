@@ -12,6 +12,7 @@ import GraphElementService from '@/graph-element/GraphElementService'
 import Store from '@/store'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import VertexService from '@/vertex/VertexService'
+import UiUtils from "../UiUtils";
 
 const api = {};
 api.RelationController = EdgeController;
@@ -42,36 +43,35 @@ EdgeController.prototype.addChild = async function () {
     let previousParentFork = this.model().getParentFork();
     let newGroupRelation = await this._convertToGroupRelation();
     Selection.removeAll();
-    let triple;
-    return newGroupRelation.controller().addChildWhenInTransition().then((_triple) => {
-        triple = _triple;
-        this.model().getIdentifiers().forEach((tag) => {
-            if (triple.edge.hasIdentification(tag)) {
-                return;
-            }
-            triple.edge.controller().addIdentification(
-                tag,
-                true,
-                true
-            );
-            triple.edge.addIdentification(tag);
-        });
-        this.setLabel("");
-        previousParentFork.replaceChild(
-            this.model(),
-            newGroupRelation
+    let triple = await newGroupRelation.controller().addChildWhenInTransition();
+    this.model().getIdentifiers().forEach((tag) => {
+        if (triple.edge.hasIdentification(tag)) {
+            return;
+        }
+        triple.edge.controller().addIdentification(
+            tag,
+            true,
+            true
         );
-        CurrentSubGraph.get().add(newGroupRelation);
-        previousParentFork.refreshChildren();
-        Vue.nextTick(() => {
-            GraphElementService.changeChildrenIndex(
-                this.model().getParentVertex()
-            );
-            Selection.setToSingle(triple.destination);
-            triple.destination.focus();
-        });
-        return triple;
+        triple.edge.addIdentification(tag);
     });
+    this.setLabel("");
+    previousParentFork.replaceChild(
+        this.model(),
+        newGroupRelation
+    );
+    CurrentSubGraph.get().add(newGroupRelation);
+    previousParentFork.refreshChildren(true);
+    GraphElementService.changeChildrenIndex(
+        this.model().getParentVertex()
+    );
+    Selection.setToSingle(triple.destination);
+    await Vue.nextTick()
+    await UiUtils.animateNewTriple(
+        newGroupRelation,
+        triple
+    );
+    return triple;
 };
 
 EdgeController.prototype.addSibling = function () {

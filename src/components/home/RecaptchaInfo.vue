@@ -15,14 +15,14 @@
         name: "RecaptchaInfo",
         data: function () {
             I18n.i18next.addResources("en", "recaptchaInfo", {
-                text1: "This site is protected by reCAPTCHA and the Google",
+                text1: "This form is protected by reCAPTCHA and the Google",
                 text2: "Privacy Policy",
                 text3: "and",
                 text4: "Terms of Service",
                 text5: "apply"
             });
             I18n.i18next.addResources("fr", "recaptchaInfo", {
-                text1: "Ce site est protégé par reCAPTCHA et Google",
+                text1: "Ce formulaire est protégé par reCAPTCHA et Google",
                 text2: "Politique de confidentialité",
                 text3: "et",
                 text4: "Conditions d'utilisation",

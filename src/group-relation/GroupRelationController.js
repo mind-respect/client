@@ -12,6 +12,7 @@ import Vue from 'vue'
 import Store from '@/store'
 import CurrentSubGraph from "../graph/CurrentSubGraph";
 import Vertex from '@/vertex/Vertex'
+import UiUtils from "../UiUtils";
 
 const api = {};
 api.GroupRelationController = GroupRelationController;
@@ -116,13 +117,16 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
     if (saveIndex) {
         this.model().refreshChildren();
     }
-    Vue.nextTick(() => {
+    Vue.nextTick(async () => {
         saveIndex === false ? Promise.resolve() : GraphElementService.changeChildrenIndex(
             this.model().getParentVertex()
         );
         if (saveIndex) {
+            await UiUtils.animateNewTriple(
+                this.model(),
+                triple
+            );
             Selection.setToSingle(triple.destination);
-            triple.destination.focus();
         }
     });
     return Promise.resolve(triple);
