@@ -46,7 +46,7 @@
                             <v-card-title class="text-center vh-center">
                                 {{$t('bottom:usePattern')}}
                             </v-card-title>
-                            <v-card-text class="subtitle-1 pl-4 pr-4 text-center pb-0 pt-4">
+                            <v-card-text class="subtitle-1 pl-4 pr-4 text-center pb-0 pt-0">
                                 <p>
                                     {{$t('bottom:usePatternInfo1')}}
                                 </p>
