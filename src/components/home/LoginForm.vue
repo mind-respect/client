@@ -100,6 +100,7 @@
                                 }
                             });
                         }
+                        this.$recaptchaInstance.hideBadge();
                         LoadingFlow.leave();
                     });
                 }).catch(() => {
@@ -145,7 +146,7 @@
             };
         },
         mounted: function () {
-            // this.$refs.loginForm.enter();
+            this.$recaptchaInstance.hideBadge();
         }
     }
 </script>

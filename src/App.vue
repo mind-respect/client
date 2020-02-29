@@ -750,5 +750,7 @@
         text-decoration: line-through;
     }
 
+    .grecaptcha-badge { visibility: hidden; }
+
 </style>
 

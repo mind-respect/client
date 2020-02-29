@@ -69,6 +69,9 @@
     import LoadingFlow from '@/LoadingFlow'
     import Vue from 'vue'
     import IdUri from "../../IdUri";
+    import {VueReCaptcha} from "vue-recaptcha-v3";
+
+    Vue.use(VueReCaptcha, {siteKey: process.env.VUE_APP_RECAPTCHA_KEY});
 
     export default {
         name: "RegisterForm",
@@ -86,7 +89,8 @@
                 this.loading = true;
                 await this.$store.dispatch('setUser', undefined);
                 await this.$store.dispatch('setXsrfToken', IdUri.uuid());
-                AuthenticateService.register(this.newUser).then((response) => {
+                let recaptchaToken = await this.$recaptcha("register");
+                AuthenticateService.register(this.newUser, recaptchaToken).then((response) => {
                     this.$store.dispatch('setUser', response.data);
                     this.$emit('flow-is-done');
                     Vue.nextTick(() => {
@@ -178,6 +182,7 @@
         },
         mounted: function () {
             // this.$refs.registerForm.enter();
+            this.$recaptchaInstance.hideBadge();
         }
     }
 </script>
