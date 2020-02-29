@@ -10,8 +10,9 @@ export default {
         user.staySignedIn = true;
         return Service.api().post("/users/", user);
     },
-    login: function (user) {
+    login: function (user, recaptchaToken) {
         user.staySignedIn = true;
+        user.recaptchaToken = recaptchaToken;
         return Service.api().post("/users/session", user);
     },
     logout: function () {

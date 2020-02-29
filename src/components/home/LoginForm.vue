@@ -53,6 +53,9 @@
     import LoadingFlow from '@/LoadingFlow'
     import Vue from 'vue'
     import IdUri from "../../IdUri";
+    import {VueReCaptcha} from "vue-recaptcha-v3";
+
+    Vue.use(VueReCaptcha, {siteKey: process.env.VUE_APP_RECAPTCHA_KEY});
 
     export default {
         name: "LoginForm",
@@ -73,7 +76,8 @@
                 LoadingFlow.enter();
                 await this.$store.dispatch('setUser', undefined);
                 await this.$store.dispatch('setXsrfToken', IdUri.uuid());
-                AuthenticateService.login(this.user).then(function (response) {
+                let recaptchaToken = await this.$recaptcha("login");
+                AuthenticateService.login(this.user, recaptchaToken).then((response) => {
                     this.$store.dispatch('setUser', response.data);
                     this.$emit('flow-is-done');
                     Vue.nextTick(() => {
@@ -98,10 +102,10 @@
                         }
                         LoadingFlow.leave();
                     });
-                }.bind(this)).catch(function () {
+                }).catch(() => {
                     this.wrongLogin = true;
                     LoadingFlow.leave();
-                }.bind(this));
+                });
             },
             enter: function () {
                 this.wrongLogin = false;
