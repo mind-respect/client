@@ -45,7 +45,16 @@ UiUtils.animateNewTriple = function (sourceBubble, newTriple) {
     return new Promise(async (resolve) => {
         await Vue.nextTick();
         let firstBoxes = {};
-        let originRect = sourceBubble.getHtml().getBoundingClientRect();
+        let sourceHtml = sourceBubble.getHtml();
+        if (!sourceHtml) {
+            /*
+            sourceHtml is undefined in unit tests
+            so animation is abandoned in unit tests
+             */
+            resolve();
+            return;
+        }
+        let originRect = sourceHtml.getBoundingClientRect();
         let vertexOriginalRect = newTriple.destination.getHtml().getBoundingClientRect();
         let vertexRect;
         let edgeRect;

@@ -234,11 +234,7 @@ describe("EdgeController", () => {
                 "g2"
             );
             let triple = await g2.controller().addChild();
-            triple.edge.getIdentifiers().forEach((tag) => {
-                console.log(tag.getLabel());
-            });
             await scenario.nextTickPromise();
-            console.log("after");
             triple.edge.getIdentifiers().forEach((tag) => {
                 console.log(tag.getLabel());
             });
