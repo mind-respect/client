@@ -65,12 +65,12 @@ EdgeController.prototype.addChild = async function () {
     GraphElementService.changeChildrenIndex(
         this.model().getParentVertex()
     );
-    Selection.setToSingle(triple.destination);
-    await Vue.nextTick()
     await UiUtils.animateNewTriple(
         newGroupRelation,
         triple
     );
+    Selection.setToSingle(triple.destination);
+    triple.destination.focus();
     return triple;
 };
 

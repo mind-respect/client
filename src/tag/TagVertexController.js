@@ -236,6 +236,7 @@ TagVertexController.prototype.addChild = async function () {
         triple
     );
     Selection.setToSingle(triple.destination);
+    triple.destination.focus();
 };
 
 TagVertexController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft) {

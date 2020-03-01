@@ -127,6 +127,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
                 triple
             );
             Selection.setToSingle(triple.destination);
+            triple.destination.focus();
         }
     });
     return Promise.resolve(triple);

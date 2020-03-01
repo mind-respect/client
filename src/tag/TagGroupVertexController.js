@@ -53,6 +53,7 @@ TagGroupVertexController.prototype.addChild = async function () {
         triple
     );
     Selection.setToSingle(triple.destination);
+    triple.destination.focus();
 };
 
 TagGroupVertexController.prototype.addSiblingCanDo = function () {
