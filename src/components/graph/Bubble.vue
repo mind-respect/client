@@ -13,14 +13,16 @@
                 <v-spacer v-if="isLeft"></v-spacer>
                 <div :key="childrenKey" v-if="isLeft && !isCenter">
                     <div :key="bubble.childrenKey">
-                        <Children
-                                :bubble="bubble"
-                                direction="left"
-                                v-if="!bubble.isCollapsed && canShowChildren()"
-                        >
-                        </Children>
+                        <transition name="expand-child"
+                                    @before-enter="beforeExpandAnimation">
+                            <Children
+                                    :bubble="bubble"
+                                    direction="left"
+                                    v-if="!bubble.isCollapsed && canShowChildren()"
+                            >
+                            </Children>
+                        </transition>
                         <ChildNotice :bubble="bubble"
-                                     @expanded="refreshChildren()"
                                      v-if="canExpand() && !canShowChildren()"></ChildNotice>
                     </div>
                 </div>
@@ -243,12 +245,15 @@
                 </div>
                 <div :key="childrenKey" v-if="!isLeft && !isCenter">
                     <div :key="bubble.childrenKey">
-                        <Children :bubble="bubble"
-                                  v-if="!bubble.isCollapsed && canShowChildren()"
-                                  direction="right">
-                        </Children>
+                        <transition name="expand-child"
+                                    @before-enter="beforeExpandAnimation">
+                            <Children :bubble="bubble"
+                                      v-if="!bubble.isCollapsed && canShowChildren()"
+                                      direction="right">
+                            </Children>
+                        </transition>
+
                         <ChildNotice :bubble="bubble"
-                                     @expanded="refreshChildren()"
                                      v-if="canExpand() && !canShowChildren()"></ChildNotice>
                     </div>
                 </div>
@@ -381,6 +386,24 @@
             },
         },
         methods: {
+            beforeExpandAnimation: async function () {
+                this.bubble.getNextChildren().forEach((child) => {
+                    child.draw = false;
+                    if (child.isEdge()) {
+                        child.getNextBubble().draw = false;
+                    }
+                });
+                await this.$store.dispatch("redraw");
+                setTimeout(() => {
+                    this.bubble.getNextChildren().forEach((child) => {
+                        child.draw = true;
+                        if (child.isEdge()) {
+                            child.getNextBubble().draw = true;
+                        }
+                    });
+                    this.bubble.refreshChildren();
+                }, 200);
+            },
             contentBoxShadow: function () {
                 if (this.bubble.getNextChildren().length === 0) {
                     return this.boxShadow(false);
@@ -1034,5 +1057,22 @@
         */
         margin-top: 2px;
         margin-bottom: 2px;
+    }
+
+    .expand-child-enter,
+    .expand-child-leave-to {
+        opacity: 0;
+        transform: rotateY(50deg);
+    }
+
+    .expand-child-enter-to,
+    .expand-child-leave {
+        opacity: 1;
+        transform: rotateY(0deg);
+    }
+
+    .expand-child-enter-active,
+    .expand-child-leave-active {
+        transition: opacity, transform 200ms ease-out;
     }
 </style>

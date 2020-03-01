@@ -78,6 +78,7 @@
         mounted: function () {
             this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
             this.loaded = true;
+
         },
         methods: {
             childrenDrop: function (event) {
@@ -103,5 +104,4 @@
 </script>
 
 <style scoped>
-
 </style>
