@@ -109,9 +109,10 @@
                             name: 'PatternsUserHome'
                         });
                         this.$recaptchaInstance.hideBadge();
+                        this.$store.dispatch("setIsFirstTime", true);
                         LoadingFlow.leave();
                         this.loading = false;
-                    })
+                    });
                 }).catch((response) => {
                     if (response.response.data.reason === "recaptcha score") {
                         this.robotDoubt = true;

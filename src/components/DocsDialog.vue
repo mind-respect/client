@@ -6,6 +6,9 @@
                     {{$t('close')}}
                 </v-btn>
                 <v-spacer></v-spacer>
+                <v-icon class="mr-2">book</v-icon>
+                {{$t('guide:title')}}
+                <v-spacer></v-spacer>
                 <v-btn icon @click="dialog=false">
                     <v-icon>
                         close
@@ -533,7 +536,7 @@
         data: function () {
             I18n.i18next.addResources('fr', 'guide', {
                 icon: "Icône",
-                title: "Guide mindrespect.com",
+                title: "Documentation",
                 titreA: "Manipulations de base pour la construction de votre carte",
                 titreB: "Fonctionnalités de base pour naviguer à travers vos idées",
                 titreC: "Fonctionnalités et manipulation pour organiser vos pensées et structurer vos notes",
@@ -594,7 +597,7 @@
             });
             I18n.i18next.addResources('en', 'guide', {
                 icon: "Icon",
-                title: "Guide for mindrespect.com",
+                title: "Documentation",
                 titreA: "Basic operations to build your map",
                 titreB: "Basic functionalities to surf through your thoughts",
                 titreC: "Functionalities and operations to organise your thoughts and structure your notes",
@@ -665,11 +668,14 @@
                 this.dialog = true;
             }
         },
-        watch:{
+        watch: {
             dialog: function () {
                 if (this.dialog === false) {
                     GraphUi.enableDragScroll();
                     KeyboardActions.enable();
+                    if (this.$store.state.isFirstTime) {
+                        this.$store.dispatch("setIsFirstTime", false);
+                    }
                 } else {
                     GraphUi.disableDragScroll();
                     KeyboardActions.disable();

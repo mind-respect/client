@@ -50,7 +50,8 @@ const Store = new Vuex.Store({
         isAddTagFlow: false,
         isMergeFlow: false,
         isColorFlow: false,
-        xsrfToken: undefined
+        xsrfToken: undefined,
+        isFirstTime: false
     },
     mutations: {
         setUser: function (state, user) {
@@ -161,6 +162,9 @@ const Store = new Vuex.Store({
         },
         setXsrfToken: function (state, xsrfToken) {
             state.xsrfToken = xsrfToken;
+        },
+        setIsFirstTime: function (state, isFirstTime) {
+            state.isFirstTime = isFirstTime;
         }
     },
     actions: {
@@ -250,6 +254,9 @@ const Store = new Vuex.Store({
         },
         setXsrfToken: function (action, xsrfToken) {
             action.commit('setXsrfToken', xsrfToken);
+        },
+        setIsFirstTime: function (action, isFirstTime) {
+            action.commit('setIsFirstTime', isFirstTime);
         }
     }
 });

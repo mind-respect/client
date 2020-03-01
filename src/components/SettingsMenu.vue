@@ -7,6 +7,7 @@
             offset-y
             v-if="$store.state.user !== undefined"
             :close-on-content-click="$vuetify.breakpoint.mdAndDown"
+            :value="showSettingsMenu"
     >
         <template v-slot:activator="{ on }">
             <v-btn icon light class="mr-2" v-on="on">
@@ -27,113 +28,114 @@
                 >
             </router-link>
             <v-list>
-                <v-list-item @click="expandAll" :disabled="!canExpandAll"
-                             v-if="isGraphRoute">
-                    <v-list-item-action>
-                        <v-icon class="">unfold_more</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{$t('button:expandAll')}}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item @click="selectAllBubbles" v-if="isGraphRoute">
-                    <v-list-item-action>
-                        <v-icon class="">select_all</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{$t('button:selectAllBubbles')}}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item @click="fontPicker" v-if="isGraphRoute" :disabled="$store.state.isViewOnly">
-                    <v-list-item-action>
-                        <v-icon class="">font_download</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{$t('button:fontPicker')}}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item @click="listAll" v-if="isGraphRoute">
-                    <v-list-item-action>
-                        <v-icon class="">list</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{$t('button:listAll')}}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item @click="$emit('enterPatternFlow')"
-                             v-if="isGraphRoute && !$store.state.isPatternFlow && !$store.state.isViewOnly">
-                    <v-list-item-action>
-                        <v-icon>stars</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{$t('settings:becomePattern')}}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item @click="removePattern"
-                             v-if="isGraphRoute && $store.state.isPatternFlow && !$store.state.isViewOnly">
-                    <v-list-item-action>
-                        <v-icon>stars</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{$t('settings:removePattern')}}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item @click="$emit('enterDocsFlow')"
-                             v-if="isGraphRoute">
-                    <v-list-item-action>
-                        <v-icon>book</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{$t('settings:documentation')}}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item @click="switchLanguage()">
-                    <v-list-item-action>
-                        <v-icon class="">public</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                                        <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.smAndDown">
-                                            EN
-                                        </span>
-                            <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.mdAndUp">
-                                            English
-                                        </span>
-                            <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.smAndDown">
-                                            FR
-                                        </span>
-                            <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.mdAndUp">
-                                            Français
-                                        </span>
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item @click="logout()">
-                    <v-list-item-action>
-                        <v-icon>exit_to_app</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{$t('logout')}}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+                <v-list-item-group v-model="selectedItem">
+                    <v-list-item @click="expandAll" :disabled="!canExpandAll"
+                                 v-if="isGraphRoute">
+                        <v-list-item-action>
+                            <v-icon class="">unfold_more</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                {{$t('button:expandAll')}}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item @click="selectAllBubbles" v-if="isGraphRoute">
+                        <v-list-item-action>
+                            <v-icon class="">select_all</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                {{$t('button:selectAllBubbles')}}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item @click="fontPicker" v-if="isGraphRoute" :disabled="$store.state.isViewOnly">
+                        <v-list-item-action>
+                            <v-icon class="">font_download</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                {{$t('button:fontPicker')}}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item @click="listAll" v-if="isGraphRoute">
+                        <v-list-item-action>
+                            <v-icon class="">list</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                {{$t('button:listAll')}}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item @click="$emit('enterPatternFlow')"
+                                 v-if="isGraphRoute && !$store.state.isPatternFlow && !$store.state.isViewOnly">
+                        <v-list-item-action>
+                            <v-icon>stars</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                {{$t('settings:becomePattern')}}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item @click="removePattern"
+                                 v-if="isGraphRoute && $store.state.isPatternFlow && !$store.state.isViewOnly">
+                        <v-list-item-action>
+                            <v-icon>stars</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                {{$t('settings:removePattern')}}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item @click="$emit('enterDocsFlow')"
+                                 v-if="isGraphRoute">
+                        <v-list-item-action>
+                            <v-icon>book</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                {{$t('settings:documentation')}}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item @click="switchLanguage()">
+                        <v-list-item-action>
+                            <v-icon class="">public</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                            <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.smAndDown">
+                                                EN
+                                            </span>
+                                <span v-if="$store.state.locale.toLowerCase() === 'fr' && $vuetify.breakpoint.mdAndUp">
+                                                English
+                                            </span>
+                                <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.smAndDown">
+                                                FR
+                                            </span>
+                                <span v-if="$store.state.locale.toLowerCase() === 'en' && $vuetify.breakpoint.mdAndUp">
+                                                Français
+                                            </span>
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item @click="logout()">
+                        <v-list-item-action>
+                            <v-icon>exit_to_app</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                {{$t('logout')}}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list-item-group>
             </v-list>
-
         </div>
     </v-menu>
 </template>
@@ -162,7 +164,9 @@
                 documentation: "Documentation"
             });
             return {
-                backgroundColor: null
+                backgroundColor: null,
+                showSettingsMenu: false,
+                selectedItem: null
             }
         },
         mounted: function () {
@@ -192,9 +196,9 @@
                     AuthenticateService.logout(),
                     this.$store.dispatch('setUser', undefined),
                     this.$store.dispatch('setXsrfToken', undefined)
-                ]).then(function () {
+                ]).then(() => {
                     this.$router.push("/")
-                }.bind(this));
+                });
             }
         },
         computed: {
@@ -203,6 +207,14 @@
             },
             canExpandAll: function () {
                 return GraphController.expandAllCanDo();
+            }
+        },
+        watch: {
+            '$route.name': function () {
+                if (this.$route.name === "Center" && this.$store.state.isFirstTime && this.$vuetify.breakpoint.mdAndUp) {
+                    this.selectedItem = 5;
+                    this.showSettingsMenu = true;
+                }
             }
         }
     }

@@ -529,6 +529,9 @@
                 this.showDialogFromRoute();
                 if (this.$route.name === "Center") {
                     KeyboardActions.enable();
+                    if (this.$store.state.isFirstTime) {
+                        this.$refs.docsFlow.enter();
+                    }
                 } else {
                     KeyboardActions.disable();
                 }
@@ -611,6 +614,10 @@
 
     .secondary-color {
         color: #1A237E !important;
+    }
+
+    .third-color {
+        color: #00897B !important;
     }
 
     .v-chip {
@@ -750,7 +757,9 @@
         text-decoration: line-through;
     }
 
-    .grecaptcha-badge { visibility: hidden; }
+    .grecaptcha-badge {
+        visibility: hidden;
+    }
 
 </style>
 

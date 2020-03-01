@@ -55,7 +55,15 @@ UiUtils.animateNewTriple = function (sourceBubble, newTriple) {
             return;
         }
         let originRect = sourceHtml.getBoundingClientRect();
-        let vertexOriginalRect = newTriple.destination.getHtml().getBoundingClientRect();
+        let destinationHtml = newTriple.destination.getHtml();
+        if (!destinationHtml) {
+            /*
+            destinationHtml is undefined should not happen but it happened
+             */
+            resolve();
+            return;
+        }
+        let vertexOriginalRect = destinationHtml.getBoundingClientRect();
         let vertexRect;
         let edgeRect;
         if (newTriple.destination.isToTheLeft()) {
