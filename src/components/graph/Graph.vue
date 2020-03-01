@@ -20,10 +20,14 @@
                         'mt-3' : center.leftBubbles.length === 2 && center.leftBubbles[0].isEdge(),
                         'mb-3' : center.leftBubbles.length === 2 && center.leftBubbles[1].isEdge()
                         }">
-                            <Bubble
-                                    :bubble="leftBubble"
-                                    direction="left"
-                            ></Bubble>
+                            <transition :name="transitionNameLeft"
+                                        @before-enter="beforeExpandAnimation(leftBubble)"
+                            >
+                                <Bubble
+                                        :bubble="leftBubble"
+                                        direction="left"
+                                ></Bubble>
+                            </transition>
                         </v-flex>
                     </v-layout>
                 </v-flex>
@@ -49,10 +53,14 @@
                             'mt-3' : center.rightBubbles.length === 2 && center.rightBubbles[0].isEdge(),
                             'mb-3' : center.rightBubbles.length === 2 && center.rightBubbles[1].isEdge()
                         }">
-                            <Bubble
-                                    :bubble="rightBubble"
-                                    direction="right"
-                            ></Bubble>
+                            <transition :name="transitionName"
+                                        @before-enter="beforeExpandAnimation(rightBubble)"
+                            >
+                                <Bubble
+                                        :bubble="rightBubble"
+                                        direction="right"
+                                ></Bubble>
+                            </transition>
                         </v-flex>
                     </v-layout>
                 </v-flex>
@@ -165,6 +173,7 @@
     import VertexSkeleton from '@/vertex/VertexSkeleton'
     import RelationSkeleton from '@/edge/RelationSkeleton'
     import KeyCode from 'keycode-js';
+    import UiUtils from '@/UiUtils'
 
     let insideSvgOpacityTransition = false;
 
@@ -320,6 +329,18 @@
             window.removeEventListener('keydown', this.disableSpacebarScroll);
         },
         methods: {
+            beforeExpandAnimation: async function (child) {
+                if (UiUtils.isInAnimation || this.transitionName !== "expand-child") {
+                    return;
+                }
+                console.log("center draw")
+                child.draw = false;
+                await this.$store.dispatch("redraw");
+                setTimeout(() => {
+                    child.draw = true;
+                    child.refreshChildren();
+                }, 275);
+            },
             mousedown: function () {
                 GraphUi.enableDragScroll();
             },
@@ -394,6 +415,12 @@
             }
         },
         computed: {
+            transitionName: function () {
+                return this.showLoading ? "" : "expand-child";
+            },
+            transitionNameLeft: function () {
+                return this.showLoading ? "" : "expand-child-left";
+            },
             strokeWidth: function () {
                 return (this.$vuetify.breakpoint.mdAndDown ? 1 : 2) * this.$store.state.zoom;
             },
@@ -622,6 +649,42 @@
 
     .after-loaded {
         opacity: 1;
+    }
+
+    .expand-child-enter,
+    .expand-child-leave-to {
+        opacity: 0;
+        transform: rotateY(50deg);
+        transform-origin: top left;
+    }
+
+    .expand-child-enter-to,
+    .expand-child-leave {
+        opacity: 1;
+        transform: rotateY(0);
+        transform-origin: top left;
+    }
+
+    .expand-child-enter-active,
+    .expand-child-leave-active,
+    .expand-child-left-enter-active,
+    .expand-child-left-leave-active {
+        transition: opacity, transform 200ms ease-out;
+    }
+
+
+    .expand-child-left-enter,
+    .expand-child-left-leave-to {
+        opacity: 0;
+        transform: rotateY(50deg);
+        transform-origin: top right;
+    }
+
+    .expand-child-left-enter-to,
+    .expand-child-left-leave {
+        opacity: 1;
+        transform: rotateY(0);
+        transform-origin: top right;
     }
 
 </style>

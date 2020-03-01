@@ -48,10 +48,6 @@ TagGroupVertexController.prototype.addChild = async function () {
     this.model().refreshChildren(true);
     CurrentSubGraph.get().add(metaRelation);
     await Vue.nextTick();
-    await UiUtils.animateNewTriple(
-        this.model(),
-        triple
-    );
     Selection.setToSingle(triple.destination);
     triple.destination.focus();
 };

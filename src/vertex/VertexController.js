@@ -62,10 +62,6 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
             GraphElementService.changeChildrenIndex(
                 this.model()
             );
-            await UiUtils.animateNewTriple(
-                this.model(),
-                triple
-            );
             Selection.setToSingle(triple.destination);
             triple.destination.focus();
         });

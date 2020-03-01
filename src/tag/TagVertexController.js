@@ -231,10 +231,6 @@ TagVertexController.prototype.addChild = async function () {
         this.model(),
         newVertex
     );
-    await UiUtils.animateNewTriple(
-        this.model(),
-        triple
-    );
     Selection.setToSingle(triple.destination);
     triple.destination.focus();
 };

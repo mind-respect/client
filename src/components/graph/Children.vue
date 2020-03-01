@@ -11,9 +11,13 @@
                         }"
                  :key="child.uiId"
             >
-                <Bubble :bubble="child"
-                        :direction="direction"
-                ></Bubble>
+                <transition :name="transitionName"
+                            @before-enter="beforeExpandAnimation(child)" @after-leave="afterExpandAnimation"
+                >
+                    <Bubble :bubble="child"
+                            :direction="direction"
+                    ></Bubble>
+                </transition>
             </div>
         </div>
         <div class="vertices-children-container" v-if="bubble.isEdge()">
@@ -21,15 +25,29 @@
                     'mt-6 mb-6' : bubble.children.length === 2,
                     'mt-2 mb-2' : bubble.children.length > 2
                  }">
-                <Bubble
+                <transition
                         v-if="isInverse"
-                        :bubble="bubble._sourceVertex"
-                        :direction="direction"
-                ></Bubble>
-                <Bubble v-else
-                        :bubble="bubble._destinationVertex"
-                        :direction="direction"
-                ></Bubble>
+                        :name="transitionName"
+                        @before-enter="beforeExpandAnimation(bubble._sourceVertex)"
+                        @after-leave="afterExpandAnimation"
+                >
+                    <Bubble
+                            :bubble="bubble._sourceVertex"
+                            :direction="direction"
+                    ></Bubble>
+                </transition>
+                <transition
+                        v-else
+                        :name="transitionName"
+                        @before-enter="beforeExpandAnimation(bubble._destinationVertex)"
+                        @after-leave="afterExpandAnimation"
+                >
+                    <Bubble
+                            :bubble="bubble._destinationVertex"
+                            :direction="direction"
+                    ></Bubble>
+
+                </transition>
             </div>
             <div v-for="child in bubble.children" :key="child.uiId" v-if="bubble.isRelation()"
                  :class="{
@@ -37,9 +55,14 @@
                     'mt-2 mb-2' : bubble.children.length > 2
                  }"
             >
-                <Bubble :bubble="child"
-                        :direction="direction"
-                ></Bubble>
+                <transition :name="transitionName"
+                            @before-enter="beforeExpandAnimation(child)"
+                            @after-leave="afterExpandAnimation"
+                >
+                    <Bubble :bubble="child"
+                            :direction="direction"
+                    ></Bubble>
+                </transition>
             </div>
         </div>
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()">
@@ -49,9 +72,14 @@
                     'mt-2 mb-2' : bubble.children.length > 2
                  }"
             >
-                <Bubble :bubble="child"
-                        :direction="direction"
-                ></Bubble>
+                <transition :name="transitionName"
+                            @before-enter="beforeExpandAnimation(child)"
+                            @after-leave="afterExpandAnimation"
+                >
+                    <Bubble :bubble="child"
+                            :direction="direction"
+                    ></Bubble>
+                </transition>
             </div>
         </div>
     </div>
@@ -60,6 +88,7 @@
 <script>
 
     import Dragged from '@/Dragged'
+    import UiUtils from '@/UiUtils'
 
     export default {
         name: "Children",
@@ -72,15 +101,38 @@
         },
         data: function () {
             return {
-                loaded: false
+                loaded: false,
+                justLoaded: true
             }
         },
-        mounted: function () {
+        mounted: async function () {
             this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
             this.loaded = true;
-
+            await this.$nextTick();
+            await this.$nextTick();
+            this.justLoaded = false;
         },
         methods: {
+            beforeExpandAnimation: async function (child) {
+                if (UiUtils.isInAnimation || this.transitionName !== "expand-child") {
+                    return;
+                }
+                console.log("draw in children")
+                child.draw = false;
+                await this.$store.dispatch("redraw");
+                setTimeout(() => {
+                    child.draw = true;
+                    child.refreshChildren();
+                }, 275);
+            },
+            afterExpandAnimation: function () {
+                /*
+                I dont know why but this is only called on collapse
+                */
+                console.log("after")
+                this.bubble.refreshChildren();
+                return;
+            },
             childrenDrop: function (event) {
                 Dragged.handleDrop(event, this.bubble.getParentFork(), this.bubble.isToTheLeft());
             },
@@ -95,6 +147,12 @@
         computed: {
             isInverse: function () {
                 return this.bubble.isEdge() && this.bubble.isInverse();
+            },
+            transitionName: function () {
+                if (this.justLoaded) {
+                    return "";
+                }
+                return this.bubble.isToTheLeft() ? "expand-child-left" : "expand-child";
             }
         },
         // updated: function () {

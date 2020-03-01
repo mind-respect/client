@@ -122,10 +122,6 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
             this.model().getParentVertex()
         );
         if (saveIndex) {
-            await UiUtils.animateNewTriple(
-                this.model(),
-                triple
-            );
             Selection.setToSingle(triple.destination);
             triple.destination.focus();
         }

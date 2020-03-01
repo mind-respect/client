@@ -349,8 +349,10 @@
         },
         computed: {
             expandTransitionName: function () {
-                return (this.bubble.isVertexType() || this.bubble.isGroupRelation()) && this.bubble.hasChildren() ?
-                    "expand-child" : "";
+                if ((this.bubble.isVertexType() || this.bubble.isGroupRelation()) && this.bubble.hasChildren()) {
+                    return this.bubble.isToTheLeft() ? "expand-child-left" : "expand-child"
+                }
+                return "";
             },
             isNextBubbleExpanded: function () {
                 return this.bubble.getNextBubble().isExpanded;
@@ -398,7 +400,7 @@
                 if (UiUtils.isInAnimation || this.expandTransitionName !== "expand-child") {
                     return;
                 }
-                console.log("animate");
+                console.log("bubble children");
                 this.bubble.getNextChildren().forEach((child) => {
                     child.draw = false;
                     if (child.isEdge()) {
@@ -418,7 +420,7 @@
                         }
                     });
                     this.bubble.refreshChildren();
-                }, 250);
+                }, 275);
             },
             afterExpandAnimation: function () {
                 /*
@@ -1080,22 +1082,5 @@
         */
         margin-top: 2px;
         margin-bottom: 2px;
-    }
-
-    .expand-child-enter,
-    .expand-child-leave-to {
-        opacity: 0;
-        transform: rotateY(50deg);
-    }
-
-    .expand-child-enter-to,
-    .expand-child-leave {
-        opacity: 1;
-        transform: rotateY(0deg);
-    }
-
-    .expand-child-enter-active,
-    .expand-child-leave-active {
-        transition: opacity, transform 200ms ease-out;
     }
 </style>
