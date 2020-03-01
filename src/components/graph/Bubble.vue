@@ -402,7 +402,7 @@
                         }
                     });
                     this.bubble.refreshChildren();
-                }, 200);
+                }, 250);
             },
             contentBoxShadow: function () {
                 if (this.bubble.getNextChildren().length === 0) {
