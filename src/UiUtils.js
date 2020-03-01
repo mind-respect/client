@@ -8,6 +8,8 @@ import Store from '@/store'
 const UiUtils = {};
 let _isChrome;
 
+UiUtils.isInAnimation = false;
+
 UiUtils.isMacintosh = function () {
     return navigator.platform.indexOf('Mac') > -1;
 };
@@ -43,6 +45,13 @@ UiUtils.getCenterOffsetCoordinates = function (center) {
 
 UiUtils.animateNewTriple = function (sourceBubble, newTriple) {
     return new Promise(async (resolve) => {
+        if (!sourceBubble.isCenter && sourceBubble.getNumberOfChild() === 1) {
+            /*
+                when there is only one child it uses the 'expand-child' transition in Bubble.vue which is just fine
+             */
+            resolve();
+            return;
+        }
         await Vue.nextTick();
         let firstBoxes = {};
         let sourceHtml = sourceBubble.getHtml();
@@ -89,7 +98,7 @@ UiUtils.animateNewTriple = function (sourceBubble, newTriple) {
             [newTriple.edge, newTriple.destination],
             firstBoxes,
             {
-                duration: 300
+                duration: 200
             }
         );
         await Store.dispatch("redraw");
@@ -98,7 +107,7 @@ UiUtils.animateNewTriple = function (sourceBubble, newTriple) {
             newTriple.destination.draw = true;
             await Store.dispatch("redraw");
             resolve();
-        }, 300);
+        }, 200);
     });
 };
 
@@ -113,10 +122,11 @@ UiUtils.buildElementsAnimationData = function (graphElements) {
 
 };
 
-UiUtils.animateGraphElementsWithAnimationData = function (graphElements, firstBoxes, options) {
+UiUtils.animateGraphElementsWithAnimationData = async function (graphElements, firstBoxes, options) {
+    UiUtils.isInAnimation = true;
     options = options || {};
     const duration = options.duration || 500;
-    return Promise.all(graphElements.map((graphElement) => {
+    await Promise.all(graphElements.map((graphElement) => {
         return new Promise((resolve) => {
             requestAnimationFrame(() => {
                 const html = graphElement.getHtml();
@@ -143,6 +153,7 @@ UiUtils.animateGraphElementsWithAnimationData = function (graphElements, firstBo
             });
         });
     }));
+    UiUtils.isInAnimation = false;
 };
 
 export default UiUtils;

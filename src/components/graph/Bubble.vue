@@ -13,12 +13,14 @@
                 <v-spacer v-if="isLeft"></v-spacer>
                 <div :key="childrenKey" v-if="isLeft && !isCenter">
                     <div :key="bubble.childrenKey">
-                        <transition name="expand-child"
-                                    @before-enter="beforeExpandAnimation">
+                        <transition :name="expandTransitionName"
+                                    @before-enter="beforeExpandAnimation" @after-leave="afterExpandAnimation"
+                        >
                             <Children
                                     :bubble="bubble"
                                     direction="left"
                                     v-if="!bubble.isCollapsed && canShowChildren()"
+                                    ref="leftChildren"
                             >
                             </Children>
                         </transition>
@@ -245,8 +247,10 @@
                 </div>
                 <div :key="childrenKey" v-if="!isLeft && !isCenter">
                     <div :key="bubble.childrenKey">
-                        <transition name="expand-child"
-                                    @before-enter="beforeExpandAnimation">
+                        <transition :name="expandTransitionName"
+                                    @before-enter="beforeExpandAnimation"
+                                    @after-leave="afterExpandAnimation"
+                        >
                             <Children :bubble="bubble"
                                       v-if="!bubble.isCollapsed && canShowChildren()"
                                       direction="right">
@@ -344,6 +348,10 @@
             this.loaded = true;
         },
         computed: {
+            expandTransitionName: function () {
+                return (this.bubble.isVertexType() || this.bubble.isGroupRelation()) && this.bubble.hasChildren() ?
+                    "expand-child" : "";
+            },
             isNextBubbleExpanded: function () {
                 return this.bubble.getNextBubble().isExpanded;
             },
@@ -387,6 +395,10 @@
         },
         methods: {
             beforeExpandAnimation: async function () {
+                if (UiUtils.isInAnimation || this.expandTransitionName !== "expand-child") {
+                    return;
+                }
+                console.log("animate");
                 this.bubble.getNextChildren().forEach((child) => {
                     child.draw = false;
                     if (child.isEdge()) {
@@ -394,6 +406,10 @@
                     }
                 });
                 await this.$store.dispatch("redraw");
+                /*
+                this timeout should be in a @after-leave handler but these handlers
+                are never triggered
+                */
                 setTimeout(() => {
                     this.bubble.getNextChildren().forEach((child) => {
                         child.draw = true;
@@ -403,6 +419,13 @@
                     });
                     this.bubble.refreshChildren();
                 }, 250);
+            },
+            afterExpandAnimation: function () {
+                /*
+                I dont know why but this is only called on collapse
+                */
+                this.bubble.refreshChildren();
+                return;
             },
             contentBoxShadow: function () {
                 if (this.bubble.getNextChildren().length === 0) {

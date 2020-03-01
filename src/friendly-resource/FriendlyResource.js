@@ -580,6 +580,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             descendant.direction = this.direction;
         });
     }
+    UiUtils.isInAnimation = true;
     await Vue.nextTick();
     await UiUtils.animateGraphElementsWithAnimationData(
         CurrentSubGraph.get().getGraphElements(),

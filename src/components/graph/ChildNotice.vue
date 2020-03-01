@@ -84,9 +84,6 @@
                 */
                 this.bubble.controller().expand().then(async () => {
                     this.$emit("expanded");
-                    await this.$nextTick();
-                    Store.dispatch("redraw");
-                    await this.$nextTick();
                     this.loading = this.bubble.loading = false;
                 });
             }
