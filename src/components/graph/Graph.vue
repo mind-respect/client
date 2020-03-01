@@ -330,7 +330,7 @@
         },
         methods: {
             beforeExpandAnimation: async function (child) {
-                if (UiUtils.isInAnimation || this.transitionName !== "expand-child") {
+                if (UiUtils.isInAnimation || this.showLoading) {
                     return;
                 }
                 // console.log("center draw")
@@ -339,17 +339,13 @@
                     child.getNextBubble().draw = false
                 }
                 await this.$store.dispatch("redraw");
-                this.$nextTick(() => {
-                    setTimeout(async () => {
-                        child.draw = true;
-                        if (child.isEdge()) {
-                            child.getNextBubble().draw = true;
-                        }
-                        requestAnimationFrame(() => {
-                            child.refreshChildren();
-                        });
-                    }, 275);
-                });
+                setTimeout(async () => {
+                    child.draw = true;
+                    if (child.isEdge()) {
+                        child.getNextBubble().draw = true;
+                    }
+                    child.refreshChildren();
+                }, 275);
             },
             mousedown: function () {
                 GraphUi.enableDragScroll();
