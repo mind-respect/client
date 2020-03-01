@@ -333,13 +333,23 @@
                 if (UiUtils.isInAnimation || this.transitionName !== "expand-child") {
                     return;
                 }
-                console.log("center draw")
+                // console.log("center draw")
                 child.draw = false;
+                if (child.isEdge()) {
+                    child.getNextBubble().draw = false
+                }
                 await this.$store.dispatch("redraw");
-                setTimeout(() => {
-                    child.draw = true;
-                    child.refreshChildren();
-                }, 275);
+                this.$nextTick(() => {
+                    setTimeout(async () => {
+                        child.draw = true;
+                        if (child.isEdge()) {
+                            child.getNextBubble().draw = true;
+                        }
+                        requestAnimationFrame(() => {
+                            child.refreshChildren();
+                        });
+                    }, 275);
+                });
             },
             mousedown: function () {
                 GraphUi.enableDragScroll();

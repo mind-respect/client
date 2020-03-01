@@ -117,13 +117,23 @@
                 if (UiUtils.isInAnimation || this.transitionName !== "expand-child") {
                     return;
                 }
-                console.log("draw in children")
+                // console.log("draw in children")
                 child.draw = false;
+                if (child.isEdge()) {
+                    child.getNextBubble().draw = false
+                }
                 await this.$store.dispatch("redraw");
-                setTimeout(() => {
-                    child.draw = true;
-                    child.refreshChildren();
-                }, 275);
+                this.$nextTick(() => {
+                    setTimeout(async () => {
+                        requestAnimationFrame(() => {
+                            child.draw = true;
+                            if (child.isEdge()) {
+                                child.getNextBubble().draw = true;
+                            }
+                            child.refreshChildren();
+                        });
+                    }, 275);
+                });
             },
             afterExpandAnimation: function () {
                 /*

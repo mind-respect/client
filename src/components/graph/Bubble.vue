@@ -400,7 +400,7 @@
                 if (UiUtils.isInAnimation || this.expandTransitionName !== "expand-child") {
                     return;
                 }
-                console.log("bubble children");
+                // console.log("bubble children");
                 this.bubble.getNextChildren().forEach((child) => {
                     child.draw = false;
                     if (child.isEdge()) {
@@ -412,15 +412,19 @@
                 this timeout should be in a @after-leave handler but these handlers
                 are never triggered
                 */
-                setTimeout(() => {
-                    this.bubble.getNextChildren().forEach((child) => {
-                        child.draw = true;
-                        if (child.isEdge()) {
-                            child.getNextBubble().draw = true;
-                        }
-                    });
-                    this.bubble.refreshChildren();
-                }, 275);
+                this.$nextTick(() => {
+                    setTimeout(() => {
+                        this.bubble.getNextChildren().forEach((child) => {
+                            child.draw = true;
+                            if (child.isEdge()) {
+                                child.getNextBubble().draw = true;
+                            }
+                        });
+                        requestAnimationFrame(() => {
+                            this.bubble.refreshChildren();
+                        });
+                    }, 275);
+                });
             },
             afterExpandAnimation: function () {
                 /*

@@ -266,10 +266,10 @@ GraphElement.GraphElement.prototype.refreshChildren = function (avoidRedraw) {
             resolve();
             return;
         }
-        Vue.nextTick(() => {
-            Store.dispatch("redraw");
-            setTimeout(() => {
-                Store.dispatch("redraw");
+        Vue.nextTick(async () => {
+            await Store.dispatch("redraw");
+            setTimeout(async () => {
+                await Store.dispatch("redraw");
                 resolve();
             }, 250);
         });
