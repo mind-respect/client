@@ -46,7 +46,7 @@
                             <v-card-title class="text-center vh-center">
                                 <v-badge icon color="third" class="mt-4">
                                     <template v-slot:badge>
-                                        <v-icon>stars</v-icon>
+                                        <v-icon dark>stars</v-icon>
                                     </template>
                                     {{$t('bottom:usePattern')}}
                                 </v-badge>

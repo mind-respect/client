@@ -976,10 +976,6 @@
 
         &.edit-flow {
             z-index: 6;
-
-            .vertex .in-bubble-content {
-                background-color: white;
-            }
         }
     }
 
