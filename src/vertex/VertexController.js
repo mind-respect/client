@@ -48,9 +48,10 @@ VertexController.prototype.addChildCanDo = function () {
 VertexController.prototype.addChild = function (index, isToTheLeft) {
     let promise = this.model().isCenter ? Promise.resolve() : this.expand(true, true);
     return promise.then(() => {
-        let triple = VertexService.addTuple(
+        let addTuple = VertexService.addTuple(
             this.model()
-        ).optimistic;
+        );
+        let triple = addTuple.optimistic;
         this.model().addChild(
             triple.edge,
             isToTheLeft,
@@ -69,9 +70,11 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
             triple.destination.setShareLevel(ShareLevel.PRIVATE);
         } else {
             //not returning promise to allow faster process
-            triple.destination.controller().setShareLevelDo(
-                this.model().getShareLevel()
-            );
+            addTuple.promise.then(() => {
+                triple.destination.controller().setShareLevelDo(
+                    this.model().getShareLevel()
+                );
+            });
         }
         return triple;
     });
