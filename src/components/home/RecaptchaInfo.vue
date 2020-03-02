@@ -22,7 +22,7 @@
                 text5: "apply"
             });
             I18n.i18next.addResources("fr", "recaptchaInfo", {
-                text1: "Ce formulaire est protégé par reCAPTCHA et Google",
+                text1: "Ce formulaire est protégé par reCAPTCHA de Google et leurs",
                 text2: "Politique de confidentialité",
                 text3: "et",
                 text4: "Conditions d'utilisation",

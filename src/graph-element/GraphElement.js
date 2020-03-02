@@ -202,7 +202,7 @@ GraphElement.GraphElement.prototype.hasIdentifications = function () {
 };
 
 GraphElement.GraphElement.prototype.getNonRefTags = function () {
-    return this.getIdentifiers().filter((tag)=>{
+    return this.getIdentifiers().filter((tag) => {
         return !tag.isRefTag();
     });
 };
@@ -388,6 +388,9 @@ GraphElement.GraphElement.prototype.buildAdditionalSelfTag = function () {
         this
     );
     tag.identificationServerFormat.externalResourceUri = tag.identificationServerFormat.externalResourceUri + "/ref/" + IdUri.uuid();
+    tag.setUri(
+        IdUri.tagBaseUri() + "/" + IdUri.uuid()
+    );
     tag.setLabel(
         this.getLabel()
     );

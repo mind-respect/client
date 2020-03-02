@@ -41,7 +41,7 @@ EdgeController.prototype.addChildCanDo = function () {
 
 EdgeController.prototype.addChild = async function () {
     let previousParentFork = this.model().getParentFork();
-    let newGroupRelation = await this._convertToGroupRelation();
+    let newGroupRelation = this._convertToGroupRelation();
     Selection.removeAll();
     let triple = await newGroupRelation.controller().addChildWhenInTransition();
     this.model().getIdentifiers().forEach((tag) => {
@@ -96,7 +96,7 @@ EdgeController.prototype.becomeParent = async function (adoptedChild) {
         childParentFork.controller().becomeExParent(adoptedChild, this.model())
     );
     childParentFork.removeChild(adoptedChild, false, true);
-    let newGroupRelation = await this._convertToGroupRelation();
+    let newGroupRelation = this._convertToGroupRelation();
     adoptedChild.setParentVertex(this.model().getParentVertex());
     newGroupRelation.addChild(adoptedChild);
     previousParentFork.replaceChild(
@@ -147,13 +147,16 @@ EdgeController.prototype.becomeParent = async function (adoptedChild) {
     }
 };
 
-EdgeController.prototype._convertToGroupRelation = async function () {
+EdgeController.prototype._convertToGroupRelation = function () {
     let parentBubble = this.model().getParentBubble();
     let groupRelationIdentifiers;
     let nonRefTags = this.model().getNonRefTags();
     if (parentBubble.isGroupRelation() || nonRefTags.length === 0) {
-        groupRelationIdentifiers = await this.addIdentification(
-            this.model().buildAdditionalSelfTag(),
+        groupRelationIdentifiers = [
+            this.model().buildAdditionalSelfTag()
+        ];
+        this.addIdentification(
+            groupRelationIdentifiers[0],
             true
         );
         groupRelationIdentifiers[0].setShareLevel(

@@ -61,6 +61,9 @@ const IdUri = {
     edgeBaseUri: function () {
         return UserService.currentUserUri() + "/graph/edge";
     },
+    tagBaseUri: function () {
+        return UserService.currentUserUri() + "/graph/identification";
+    },
     removeDomainNameFromGraphElementUri: function (uri) {
         return uri.substr(
             uri.indexOf("/service")
