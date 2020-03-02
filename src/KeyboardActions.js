@@ -11,14 +11,16 @@ import Focus from '@/Focus'
 import KeyCode from 'keycode-js';
 
 
-const api = {};
+const KeyboardActions = {
+    isExecutingFeature: false
+};
 
 let nonCtrlPlusActions = defineNonCtrlPlusKeysAndTheirActions();
 let ctrlPlusActions = defineCtrlPlusKeysAndTheirActions();
 
-api._ctrlKeyNumber = UiUtils.isMacintosh() ? 91 : 17;
+KeyboardActions._ctrlKeyNumber = UiUtils.isMacintosh() ? 91 : 17;
 
-api.disable = function () {
+KeyboardActions.disable = function () {
     window.removeEventListener(
         "keydown", keyDownHandler
     );
@@ -27,8 +29,8 @@ api.disable = function () {
     );
 };
 
-api.enable = function () {
-    api.disable();
+KeyboardActions.enable = function () {
+    KeyboardActions.disable();
     window.addEventListener(
         "keydown", keyDownHandler
     );
@@ -36,7 +38,7 @@ api.enable = function () {
         "paste", pasteHandler
     );
 };
-api.init = function () {
+KeyboardActions.init = function () {
     document.addEventListener('mousewheel', wheelZoomHandle, false);
     document.addEventListener('DOMMouseScroll', wheelZoomHandle, false);
     let redrawTimeout;
@@ -55,7 +57,7 @@ api.init = function () {
     }
 };
 
-export default api;
+export default KeyboardActions;
 
 function pasteHandler(event) {
     if (!Selection.isSingle()) {
@@ -71,8 +73,10 @@ function pasteHandler(event) {
     }, event);
 }
 
-function keyDownHandler(event) {
-    // console.log(event.which);
+async function keyDownHandler(event) {
+    if (KeyboardActions.isExecutingFeature) {
+        return;
+    }
     let target = event.target;
     let isWorkingOnSomething = [
         "input",
@@ -94,7 +98,7 @@ function keyDownHandler(event) {
     let feature = actionSet[event.which];
     if (feature === undefined) {
         let isPasting = isCombineKeyPressed && KeyCode.KEY_V && event.which;
-        if (!isPasting && event.which !== api._ctrlKeyNumber && Selection.isSingle()) {
+        if (!isPasting && event.which !== KeyboardActions._ctrlKeyNumber && Selection.isSingle()) {
             let selectedElement = Selection.getSingle();
             if (MindMapInfo.isViewOnly()) {
                 Store.dispatch("failedToEdit");
@@ -111,9 +115,13 @@ function keyDownHandler(event) {
     if (!Array.isArray(feature)) {
         feature = [feature];
     }
-    feature.forEach(function (feature) {
-        executeFeature(feature);
-    });
+    KeyboardActions.isExecutingFeature = true;
+    await Promise.all(
+        feature.map(function (feature) {
+            return executeFeature(feature);
+        })
+    );
+    KeyboardActions.isExecutingFeature = false;
 
     function isThereASpecialKeyPressed() {
         return event.altKey || (event.metaKey && !UiUtils.isMacintosh()) || (event.ctrlKey && UiUtils.isMacintosh());
@@ -128,16 +136,16 @@ function executeFeature(feature, event) {
         controller = Selection.controller();
     }
     if (controller[feature.action] === undefined) {
-        return;
+        return Promise.resolve();
     }
     let canDoValidator = controller[feature.action + "CanDo"];
     if (canDoValidator !== undefined && !canDoValidator.call(controller)) {
         if (feature.action === "focus" && MindMapInfo.isViewOnly()) {
             Store.dispatch("failedToEdit");
         }
-        return;
+        return Promise.resolve();
     }
-    controller[feature.action](event);
+    return controller[feature.action](event);
 }
 
 function defineNonCtrlPlusKeysAndTheirActions() {

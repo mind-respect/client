@@ -56,6 +56,7 @@
 <script>
     import UiUtils from '@/UiUtils'
 
+    let isExecutingFeature = false;
     export default {
         name: "Button",
         props: ['button', 'hightlight', 'isInTopMenu', 'isInSideMenu', 'buttonIndex', 'controller'],
@@ -96,15 +97,20 @@
                     ) : this.button.badge;
             },
             performAction: function (button) {
+                if (isExecutingFeature) {
+                    return Promise.resolve();
+                }
+                isExecutingFeature = true;
                 let controller = this.getController(button);
                 let promise = controller[
                     button.action
                     ]();
                 if (!promise || !promise.then) {
-                    promise = Promise.resolve();
+                    promise = Promise.resolve()
                 }
                 promise.then(() => {
-                    this.$emit("performed")
+                    this.$emit("performed");
+                    isExecutingFeature = false;
                 });
             },
             canDo: function (button) {
