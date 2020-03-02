@@ -80,14 +80,9 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         triple.destination.controller().setShareLevelDo(
             parentVertex.getShareLevel()
         );
-        let tags = [];
-        let parentBubble = this.model();
-        do {
-            tags.push(
-                parentBubble.getIdentification()
-            );
-            parentBubble = parentBubble.getParentBubble();
-        } while (parentBubble.isGroupRelation());
+        let tags = this.model().getParentSerialGroupRelations().map((groupRelation) => {
+            return groupRelation.getIdentification();
+        });
         return Promise.all(tags.map((identifier) => {
             identifier.makeSameAs();
             return triple.edge.controller().addIdentification(

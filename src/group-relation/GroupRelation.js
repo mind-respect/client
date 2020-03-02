@@ -272,6 +272,18 @@ GroupRelation.prototype.getIdentifiersAtAnyDepth = function (groupRelationToStop
     }));
 };
 
+GroupRelation.prototype.getParentSerialGroupRelations = function () {
+    let serialGroupRelations = [];
+    let parentBubble = this.model();
+    do {
+        serialGroupRelations.push(
+            parentBubble
+        );
+        parentBubble = parentBubble.getParentBubble();
+    } while (parentBubble.isGroupRelation());
+    return serialGroupRelations;
+};
+
 GroupRelation.prototype.getSerialGroupRelations = function (groupRelationToStop, exclusive) {
     let groupRelationsAtAnyDepth = [].concat(this);
     if (groupRelationToStop && groupRelationToStop.getUri() === this.getUri()) {
