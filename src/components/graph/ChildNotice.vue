@@ -82,7 +82,7 @@
                 * waiting Selection.setToSingle(this.bubble); is complete with await this.$nextTick()
                 * because setToSingle scrolls to bubble and expand to and sometimes 2 scrolls to bubble would be called
                 */
-                this.bubble.controller().expand().then(async () => {
+                this.bubble.controller().expand(false, true).then(async () => {
                     this.$emit("expanded");
                     this.loading = this.bubble.loading = false;
                 });

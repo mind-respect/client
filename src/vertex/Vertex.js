@@ -266,7 +266,7 @@ Vertex.prototype.undoPattern = function () {
     this._vertexServerFormat.vertex.isPattern = false;
 };
 
-Vertex.prototype.collapse = function (preventScroll) {
+Vertex.prototype.collapse = function (preventScroll, preventApplyToDescendants) {
     if (this.isCenter) {
         this.getNextChildren().forEach((child) => {
             if (child.isEdge()) {
@@ -288,7 +288,8 @@ Vertex.prototype.collapse = function (preventScroll) {
     this.leftBubbles = [];
     FriendlyResource.FriendlyResource.prototype.collapse.call(
         this,
-        preventScroll
+        preventScroll,
+        preventApplyToDescendants
     );
 };
 
@@ -317,7 +318,7 @@ Vertex.prototype.getNextChildrenEvenIfCollapsed = function (isToTheLeft) {
 };
 
 
-Vertex.prototype.getNextChildrenEvenIfCollapsed = Vertex.prototype.getNextChildren = function (toTheLeft) {
+Vertex.prototype.getNextChildren = function (toTheLeft) {
     if (this.isCollapsed) {
         return [];
     }

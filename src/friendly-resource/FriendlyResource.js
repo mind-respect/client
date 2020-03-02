@@ -780,9 +780,16 @@ FriendlyResource.FriendlyResource.prototype.getIsExpanded = function () {
     return this.isExpanded;
 };
 
-FriendlyResource.FriendlyResource.prototype.collapse = function (preventScroll) {
+FriendlyResource.FriendlyResource.prototype.collapse = function (preventScroll, preventApplyToDescendants) {
     this.isExpanded = false;
     this.isCollapsed = true;
+    if (!preventApplyToDescendants) {
+        this.getDescendantsEvenIfCollapsed().forEach((descendant) => {
+            if (descendant.isForkType()) {
+                descendant.collapse(true, true);
+            }
+        });
+    }
     if (!preventScroll) {
         Scroll.centerBubbleForTreeIfApplicable(this);
         this.refreshChildren();

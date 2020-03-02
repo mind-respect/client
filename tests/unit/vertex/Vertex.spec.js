@@ -310,7 +310,7 @@ describe('Vertex', () => {
                 "Possession of book 3"
             );
             possession.collapse();
-            let deepVertex = secondLevelGroupRelation.getNextChildren()[0].getDestinationVertex();
+            let deepVertex = secondLevelGroupRelation.getNextChildrenEvenIfCollapsed()[0].getDestinationVertex();
             secondLevelGroupRelation.collapse();
             expect(
                 secondLevelGroupRelation.isGroupRelation()
