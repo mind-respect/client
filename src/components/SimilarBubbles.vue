@@ -33,7 +33,8 @@
                 <v-card v-show="!loading">
                     <v-card-title>
                         <v-spacer></v-spacer>
-                        <v-btn text class="font-weight-bold" @click="hasConfirmToEnterFlow = false" small color="secondary">
+                        <v-btn text class="font-weight-bold" @click="hasConfirmToEnterFlow = false" small
+                               color="secondary">
                             {{$t('cohesion:similarBubble')}}
                             <v-icon class="ml-2">expand_more</v-icon>
                         </v-btn>
@@ -256,7 +257,7 @@
             },
             loadMore: function () {
                 let bubble = Selection.getSingle();
-                if (bubble.loading || bubble.getLabel() === "") {
+                if (!bubble || bubble.loading || bubble.getLabel() === "") {
                     return;
                 }
                 SearchService.searchForAllOwnResources(
@@ -298,7 +299,7 @@
                         });
                     }
                     this.nbLoadResults++;
-                    this.saveInCache();
+                    this.saveInCache(bubble);
                 });
             },
             getSelectedResult: function () {
@@ -306,8 +307,9 @@
                     return result.uri === this.selectedUri;
                 })[0];
             },
-            saveInCache: function () {
-                cacheByUri[Selection.getSingle().getUri()] = {
+            saveInCache: function (bubble) {
+                cacheByUri[bubble.getUri()] = {
+                    label: bubble.getLabel(),
                     nbLoadResults: this.nbLoadResults,
                     results: this.results,
                     showLoadMore: this.showLoadMore,
@@ -315,8 +317,12 @@
                 };
             },
             restoreCache: function () {
-                const cache = cacheByUri[Selection.getSingle().getUri()];
-                if (!cache) {
+                let selected = Selection.getSingle();
+                if (!selected) {
+                    return;
+                }
+                const cache = cacheByUri[selected.getUri()];
+                if (!cache || cache.label !== selected.getLabel()) {
                     return;
                 }
                 this.nbLoadResults = cache.nbLoadResults;

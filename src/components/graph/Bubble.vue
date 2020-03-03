@@ -637,8 +637,10 @@
                 this.isEditFlow = true;
                 this.bubble.isEditFlow = true;
                 this.$nextTick(() => {
-                    this.bubble.refocus();
-                    GraphUi.disableDragScroll();
+                    setTimeout(() => {
+                        this.bubble.refocus();
+                        GraphUi.disableDragScroll();
+                    });
                 });
             },
             keydown: function (event) {
