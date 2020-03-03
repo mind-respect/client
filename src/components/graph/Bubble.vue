@@ -640,7 +640,7 @@
                     setTimeout(() => {
                         this.bubble.refocus();
                         GraphUi.disableDragScroll();
-                    });
+                    }, 50);
                 });
             },
             keydown: function (event) {
