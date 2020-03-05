@@ -389,7 +389,7 @@ GraphElement.GraphElement.prototype.buildAdditionalSelfTag = function () {
     );
     tag.identificationServerFormat.externalResourceUri = tag.identificationServerFormat.externalResourceUri + "/ref/" + IdUri.uuid();
     tag.setUri(
-        IdUri.tagBaseUri() + "/" + IdUri.uuid()
+        "/service" + IdUri.tagBaseUri() + "/" + IdUri.uuid()
     );
     tag.setLabel(
         this.getLabel()
