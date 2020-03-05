@@ -8,10 +8,10 @@ import Service from '@/Service'
 import SearchResult from '@/search/SearchResult'
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
 
-const api = {};
-api.tags = function (term, nbSkip) {
+const SearchService = {};
+SearchService.tags = function (term, nbSkip) {
     let providers = [
-        api.searchForAllOwnResources(term, nbSkip)
+        SearchService.searchForAllOwnResources(term, nbSkip)
     ];
     if (!nbSkip) {
         providers.push(
@@ -19,37 +19,37 @@ api.tags = function (term, nbSkip) {
         );
     }
     return resultsFromProviders(providers, [
-        api._sortIsMindRespect,
-        api._sortByNbReferences,
-        api._sortByNbVisits
+        SearchService._sortIsMindRespect,
+        SearchService._sortByNbReferences,
+        SearchService._sortByNbVisits
     ]);
 };
-api.ownTagsOnly = function (term, nbSkip) {
+SearchService.ownTagsOnly = function (term, nbSkip) {
     return resultsFromProviders([
-        api._ownTagsOnly(term, nbSkip)
+        SearchService._ownTagsOnly(term, nbSkip)
     ], [
-        api._sortIsMindRespect,
-        api._sortByNbReferences,
-        api._sortByNbVisits
+        SearchService._sortIsMindRespect,
+        SearchService._sortByNbReferences,
+        SearchService._sortByNbVisits
     ]);
 };
-api.searchForAllOwnResources = function (searchText, nbSkip) {
+SearchService.searchForAllOwnResources = function (searchText, nbSkip) {
     let providers = [
-        api._searchForAllOwnResources(searchText, nbSkip)
+        SearchService._searchForAllOwnResources(searchText, nbSkip)
     ];
     if (!nbSkip && CurrentSubGraph.get()) {
         providers.push(
-            api._searchForResourcesOnThisMap(searchText)
+            SearchService._searchForResourcesOnThisMap(searchText)
         );
     }
     return resultsFromProviders(providers, [
-        api._sortIsMindRespect,
-        api._sortByNbVisits,
-        api._sortByNbReferences
+        SearchService._sortIsMindRespect,
+        SearchService._sortByNbVisits,
+        SearchService._sortByNbReferences
     ]);
 };
 
-api._searchForAllOwnResources = function (searchText, nbSkip) {
+SearchService._searchForAllOwnResources = function (searchText, nbSkip) {
     return Service.api().post(
         UserService.currentUserUri() + "/search/own_all_resource/auto_complete",
         {
@@ -61,38 +61,42 @@ api._searchForAllOwnResources = function (searchText, nbSkip) {
     });
 };
 
-api._searchForResourcesOnThisMap = function (searchText) {
+SearchService._searchForResourcesOnThisMap = function (searchText) {
     return Promise.resolve(
         CurrentSubGraph.get().getGraphElements().filter((graphElement) => {
             return !graphElement.isGroupRelation() && graphElement.getLabel().indexOf(searchText) > -1;
         }).map((graphElement) => {
-            return {
-                uri: graphElement.getUri(),
-                url: graphElement.uri().absoluteUrl(),
-                label: graphElement.getLabel(),
-                description: graphElement.getComment(),
-                isCenter: false,
-                getImageUrl: (searchResult) => {
-                    let graphElement = searchResult.original.getGraphElement();
-                    if (!graphElement.hasImages()) {
-                        return Promise.resolve(undefined);
-                    }
-                    return Promise.resolve(
-                        graphElement.getImages()[0].getBase64ForSmall()
-                    )
-                },
-                original: SearchResult.fromGraphElement(
-                    graphElement
-                ),
-                isOnMap: true,
-                source: "mindrespect.com",
-                isMindRespect: true
-            };
+            return SearchService.searchResultFromOnMapGraphElement(graphElement);
         })
     );
 };
 
-api.ownVertices = function (searchText, nbSkip) {
+SearchService.searchResultFromOnMapGraphElement = function (graphElement) {
+    return {
+        uri: graphElement.getUri(),
+        url: graphElement.uri().absoluteUrl(),
+        label: graphElement.getLabel(),
+        description: graphElement.getComment(),
+        isCenter: false,
+        getImageUrl: (searchResult) => {
+            let graphElement = searchResult.original.getGraphElement();
+            if (!graphElement.hasImages()) {
+                return Promise.resolve(undefined);
+            }
+            return Promise.resolve(
+                graphElement.getImages()[0].getBase64ForSmall()
+            )
+        },
+        original: SearchResult.fromGraphElement(
+            graphElement
+        ),
+        isOnMap: true,
+        source: "mindrespect.com",
+        isMindRespect: true
+    };
+};
+
+SearchService.ownVertices = function (searchText, nbSkip) {
     return Service.api().post(
         UserService.currentUserUri() + "/search/own_vertices/auto_complete",
         {
@@ -104,7 +108,7 @@ api.ownVertices = function (searchText, nbSkip) {
     });
 };
 
-api._ownTagsOnly = function (searchText, nbSkip) {
+SearchService._ownTagsOnly = function (searchText, nbSkip) {
     return Service.api().post(
         UserService.currentUserUri() + "/search/own_tags/auto_complete",
         {
@@ -116,17 +120,17 @@ api._ownTagsOnly = function (searchText, nbSkip) {
     });
 };
 
-api._sortIsMindRespect = function (x, y) {
+SearchService._sortIsMindRespect = function (x, y) {
     return (x.isMindRespect === y.isMindRespect) ? 0 : x.isMindRespect ? -1 : 1;
 };
 
-api._sortByNbReferences = function (x, y) {
-    let xNbReferences =  x.isMindRespect ? x.original.getNbRerences() : 0;
-    let yNbReferences =  y.isMindRespect ? y.original.getNbRerences() : 0;
+SearchService._sortByNbReferences = function (x, y) {
+    let xNbReferences = x.isMindRespect ? x.original.getNbRerences() : 0;
+    let yNbReferences = y.isMindRespect ? y.original.getNbRerences() : 0;
     return yNbReferences - xNbReferences;
 };
 
-api._sortByNbVisits = function (x, y) {
+SearchService._sortByNbVisits = function (x, y) {
     let xNbVisits = x.original.getNbVisits === undefined ? 0 : x.original.getNbVisits();
     let yNbVisits = y.original.getNbVisits === undefined ? 0 : y.original.getNbVisits();
     return yNbVisits - xNbVisits;
@@ -184,4 +188,4 @@ function resultsFromProviders(providers, sortCriterias) {
     });
 }
 
-export default api;
+export default SearchService;

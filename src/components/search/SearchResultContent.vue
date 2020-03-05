@@ -16,7 +16,8 @@
                         {{item.original.getGraphElement().getChipIcon()}}
                     </v-icon>
                 </template>
-                <v-icon v-if="item.isMindRespect && (item.original.getGraphElement().isVertex() || item.original.getGraphElement().isMeta()) " class="mr-1 grey--text" small>
+                <v-icon v-if="item.isMindRespect && (item.original.getGraphElement().isVertex() || item.original.getGraphElement().isMeta()) "
+                        class="mr-1 grey--text" small>
                     {{item.original.getGraphElement().getShareIcon()}}
                 </v-icon>
                 {{item.label}}

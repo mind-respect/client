@@ -5,6 +5,7 @@
 import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
 import GraphElement from '@/graph-element/GraphElement'
+import GraphElementType from "../graph-element/GraphElementType";
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -67,6 +68,9 @@ api.SubGraph.prototype.add = function (graphElement) {
     if (graphElement.isMeta()) {
         this.tagVertices.push(graphElement);
     } else if (graphElement.isEdge()) {
+        if (this._isEdgeAlreadyAdded(graphElement)) {
+            return;
+        }
         this.addEdge(graphElement);
         let endVertex = graphElement.isInverse() ? graphElement.getSourceVertex() : graphElement.getDestinationVertex();
         endVertex.parentBubble = graphElement;
@@ -91,6 +95,15 @@ api.SubGraph.prototype.add = function (graphElement) {
     } else {
         this.otherGraphElements[graphElement.getId()] = graphElement;
     }
+};
+api.SubGraph.prototype._isEdgeAlreadyAdded = function (edge) {
+    let edgesWithUri = this.edges[edge.getUri()];
+    if (!edgesWithUri) {
+        return false;
+    }
+    return edgesWithUri.some((edgeWithUri) => {
+        return edgeWithUri.parentBubble.getUri() === edge.parentBubble.getUri();
+    });
 };
 
 api.SubGraph.prototype._buildEdges = function () {
@@ -231,7 +244,9 @@ api.SubGraph.prototype.getVertexWithUri = function (uri) {
 };
 
 api.SubGraph.prototype.hasUri = function (uri) {
-    return this.edges[uri] !== undefined || this.vertices[uri] !== undefined;
+    return this.edges[uri] !== undefined || this.vertices[uri] !== undefined || this.tagVertices.some((tagVertex) => {
+        return tagVertex.getUri() === uri;
+    });
 };
 
 api.SubGraph.prototype.getHavingUri = function (uri) {
@@ -247,6 +262,41 @@ api.SubGraph.prototype.getHavingUri = function (uri) {
     if (groupRelation.length) {
         return groupRelation[0];
     }
+    let tagVertex = this.tagVertices.filter((tagVertex) => {
+        return tagVertex.getUri() === uri;
+    });
+    if (tagVertex.length) {
+        return tagVertex[0];
+    }
+};
+
+api.SubGraph.prototype.replaceGraphElement = function (existingGraphElement, newGraphElement) {
+    let container = this.getContainerForGraphElementType(existingGraphElement.getGraphElementType());
+    if (!Array.isArray(container)) {
+        container = container[existingGraphElement.getUri()];
+    }
+    container.forEach((element, index) => {
+        if (element.getId() === existingGraphElement.getId()) {
+            container[index] = newGraphElement;
+        }
+    });
+};
+
+api.SubGraph.prototype.getContainerForGraphElementType = function (graphElementType) {
+    switch (graphElementType) {
+        case GraphElementType.Vertex:
+            return this.vertices;
+        case GraphElementType.Edge:
+            this.edges;
+        case GraphElementType.GroupRelation:
+            return this.groupRelations;
+        case GraphElementType.Meta:
+            return this.tagVertices;
+    }
+};
+
+api.SubGraph.prototype.getHavingId = function (id) {
+
 };
 
 api.SubGraph.prototype.getVertexWithUriAndId = function (uri, id) {

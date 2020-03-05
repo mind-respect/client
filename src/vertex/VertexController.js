@@ -329,94 +329,114 @@ VertexController.prototype.convertToDistantBubbleWithUriCanDo = function (distan
     return !alreadyChildOfParent;
 };
 
-VertexController.prototype.convertToDistantBubbleWithUri = function (distantVertexUri) {
+VertexController.prototype.convertToDistantBubbleWithUri = async function (distantVertexUri, bubbleToReplace, keptColor) {
     if (!this.convertToDistantBubbleWithUriCanDo(distantVertexUri)) {
         return Promise.reject();
     }
+    bubbleToReplace = bubbleToReplace || this.model();
+    let isCenter = this.model().isCenter || bubbleToReplace.isCenter;
     let beforeMergeLabel = this.model().getLabel();
     let beforeMergeComment = this.model().getComment();
-    let isBackgroundColorDefined = this.model().isBackgroundColorDefined();
     let isFontDefined = this.model().isFontDefined();
     let mergeService = this.model().isMeta() ? TagVertexService.mergeTo : VertexService.mergeTo;
-    return mergeService(this.model(), distantVertexUri).then(() => {
-        this.model().loading = true;
-        this.model().resetChildren();
-        this.model().expand();
-        let modelUri = this.model().getUri();
-        if (this.model().isMeta()) {
-            CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
-                graphElement.getIdentifiers().forEach((tag) => {
-                    if (tag.getUri() === modelUri) {
-                        tag.setUri(distantVertexUri)
-                    }
-                });
-            })
-        } else {
-            this.model().getDuplicates().forEach((duplicate) => {
-                duplicate.setUri(distantVertexUri);
+    await mergeService(this.model(), distantVertexUri);
+    this.model().loading = true;
+    this.model().resetChildren(true);
+    this.model().expand();
+    let modelUri = this.model().getUri();
+    if (this.model().isMeta()) {
+        CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
+            graphElement.getIdentifiers().forEach((tag) => {
+                if (tag.getUri() === modelUri) {
+                    tag.setUri(distantVertexUri)
+                }
             });
-        }
-        this.model().setUri(distantVertexUri);
+        })
+    } else {
+        this.model().getDuplicates().forEach((duplicate) => {
+            duplicate.setUri(distantVertexUri);
+        });
+    }
+    this.model().setUri(distantVertexUri);
+    if (bubbleToReplace.getId() === this.model().getId()) {
         CurrentSubGraph.get().add(this.model());
-        return this.getSubGraphController().loadForParentIsAlreadyOnMap();
-    }).then((mergedWith) => {
-        let promises = [];
-        if (beforeMergeLabel.toLowerCase().trim() !== mergedWith.getLabel().toLowerCase().trim()) {
-            let concatenatedLabel = beforeMergeLabel + " " + mergedWith.getLabel();
-            if (concatenatedLabel !== mergedWith.getLabel()) {
-                promises.push(
-                    this.setLabel(
-                        concatenatedLabel
-                    )
-                );
-            }
+    } else {
+        if (isCenter) {
+            this.model().parentBubble = this.model();
+            this.model().parentVertex = this.model();
+        } else {
+            this.model().parentBubble = bubbleToReplace.getParentBubble();
+            this.model().parentVertex = bubbleToReplace.getParentBubble().parentVertex;
+            bubbleToReplace.getParentBubble().replaceChild(
+                bubbleToReplace,
+                this.model()
+            );
         }
-        if (beforeMergeComment.toLowerCase().trim() !== mergedWith.getComment().toLowerCase().trim()) {
-            let concatenatedComment = beforeMergeComment + " " + mergedWith.getComment();
-            if (concatenatedComment !== mergedWith.getComment()) {
-                promises.push(
-                    this.noteDo(
-                        concatenatedComment
-                    )
-                );
-            }
-        }
-        if (isBackgroundColorDefined && !mergedWith.isBackgroundColorDefined()) {
+        CurrentSubGraph.get().replaceGraphElement(
+            bubbleToReplace,
+            this.model()
+        );
+    }
+    let mergedWith = await this.getSubGraphController().loadForParentIsAlreadyOnMap();
+    let promises = [];
+    if (beforeMergeLabel.toLowerCase().trim() !== mergedWith.getLabel().toLowerCase().trim()) {
+        let concatenatedLabel = beforeMergeLabel + " " + mergedWith.getLabel();
+        if (concatenatedLabel !== mergedWith.getLabel()) {
             promises.push(
-                mergedWith.controller().setBackgroundColor(
-                    this.model().getBackgroundColor()
+                this.setLabel(
+                    concatenatedLabel
                 )
             );
         }
-        if (mergedWith.isBackgroundColorDefined() && !isBackgroundColorDefined) {
-            this.model().setBackgroundColor(
-                mergedWith.getBackgroundColor()
-            );
-        }
-        if (isFontDefined && !mergedWith.isFontDefined()) {
+    }
+    if (beforeMergeComment.toLowerCase().trim() !== mergedWith.getComment().toLowerCase().trim()) {
+        let concatenatedComment = beforeMergeComment + " " + mergedWith.getComment();
+        if (concatenatedComment !== mergedWith.getComment()) {
             promises.push(
-                VertexService.saveFont(
-                    mergedWith.getUri(),
-                    this.model().getFont()
+                this.noteDo(
+                    concatenatedComment
                 )
             );
         }
+    }
+    if (keptColor && mergedWith.getBackgroundColor() !== keptColor) {
         promises.push(
-            GraphElementService.changeChildrenIndex(
-                this.model().getParentVertex()
+            mergedWith.controller().setBackgroundColor(
+                keptColor
             )
         );
-        if (this.model().isCenter) {
-            Promise.all(promises).then(() => {
-                router.push(
-                    mergedWith.uri().url()
-                );
+    }
+    if (isFontDefined && !mergedWith.isFontDefined()) {
+        promises.push(
+            VertexService.saveFont(
+                mergedWith.getUri(),
+                this.model().getFont()
+            )
+        );
+    }
+    promises.push(
+        GraphElementService.changeChildrenIndex(
+            this.model().getParentVertex()
+        )
+    );
+    this.model().loading = false;
+    this.model().refreshChildren();
+    if (isCenter) {
+        await Promise.all(promises);
+        if (IdUri.getGraphElementUriInUrl() === mergedWith.getUri()) {
+            Store.dispatch("centerRefresh");
+            return 'isRefreshing';
+        } else {
+            router.push({
+                name: "Center",
+                params: {
+                    username: mergedWith.uri().getOwner(),
+                    graphElementType: mergedWith.getGraphElementType(),
+                    centerUri: mergedWith.uri().getGraphElementShortId()
+                }
             });
-            return;
         }
-        this.model().loading = false;
-        this.model().refreshChildren();
-    });
+    }
 };
 
 VertexController.prototype.mergeCanDo = function () {

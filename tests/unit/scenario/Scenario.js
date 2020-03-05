@@ -16,6 +16,7 @@ import MindMapInfo from '@/MindMapInfo'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import IdUri from '@/IdUri'
 import CenterView from '@/views/Center.vue'
+import SubGraph from '@/graph/SubGraph'
 
 import Bubble from '@/components/graph/Bubble.vue'
 
@@ -43,7 +44,7 @@ api.Scenario = function () {
 };
 
 api.Scenario.prototype.init = async function () {
-    MindMapInfo._setIsViewOnly(false)
+    MindMapInfo._setIsViewOnly(false);
     this.graph = this.getGraph();
     let center = this.getCenter();
     // console.log(this.graph.vertices[center.getUri()]);

@@ -137,7 +137,7 @@ api.Edge.prototype.getWhenEmptyLabel = function () {
     return I18n.i18next.t("edge:default");
 };
 
-api.Edge.prototype.replaceRelatedVertex = function (relatedVertex, newVertex) {
+api.Edge.prototype.replaceChild = api.Edge.prototype.replaceRelatedVertex = function (relatedVertex, newVertex) {
     if (this.getSourceVertex().isSameUri(relatedVertex)) {
         this.setSourceVertex(newVertex);
     } else if (this.getDestinationVertex().isSameUri(relatedVertex)) {

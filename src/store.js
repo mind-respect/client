@@ -39,6 +39,7 @@ const Store = new Vuex.Store({
         sideMenuFlow: false,
         isViewOnly: null,
         selected: [],
+        centerRefresh: Math.random(),
         labelRefresh: Math.random(),
         noteRefresh: Math.random(),
         tagRefresh: Math.random(),
@@ -126,6 +127,9 @@ const Store = new Vuex.Store({
                     state.selected.splice(l, 1)
                 }
             }
+        },
+        centerRefresh: function (state, key) {
+            state.centerRefresh = key;
         },
         labelRefresh: function (state, key) {
             state.labelRefresh = key;
@@ -218,6 +222,9 @@ const Store = new Vuex.Store({
         },
         removeSelected: function (action, selected) {
             action.commit('removeSelected', selected);
+        },
+        centerRefresh: function (action) {
+            action.commit('centerRefresh', IdUri.uuid());
         },
         labelRefresh: function (action) {
             action.commit('labelRefresh', IdUri.uuid());

@@ -4,7 +4,7 @@
 
 <template>
     <div id="mind_map" v-if="graphCenterUri">
-        <Graph :key="graphCenterUri"></Graph>
+        <Graph :key="graphCenterUri + $store.state.centerRefresh"></Graph>
     </div>
 </template>
 
@@ -22,6 +22,7 @@
             Graph
         },
         data: function () {
+            //forceUpdate is used in tests
             return {
                 forceUpdate: ""
             }

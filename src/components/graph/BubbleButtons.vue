@@ -122,6 +122,11 @@
                         ctrlShortcut: "G"
                     },
                     {
+                        icon: "merge_type",
+                        action: "merge",
+                        ctrlShortcut: "M"
+                    },
+                    {
                         icon: "share",
                         action: "setShareLevel"
                     },
@@ -157,11 +162,6 @@
                     {
                         icon: "fa-expand",
                         action: "subElements"
-                    },
-                    {
-                        icon: "merge_type",
-                        action: "merge",
-                        ctrlShortcut: "M"
                     },
                     {
                         icon: "select_all",

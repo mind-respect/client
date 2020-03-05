@@ -32,7 +32,8 @@ const FriendlyResource = {
         return FriendlyResource.fromServerFormat({
             uri: friendlyResource.getUri(),
             label: friendlyResource.getLabel(),
-            comment: friendlyResource.getComment()
+            comment: friendlyResource.getComment(),
+            colors: friendlyResource.getColors()
         });
     },
     buildObjectWithUri: function (uri) {
@@ -114,9 +115,9 @@ FriendlyResource.FriendlyResource.prototype.setBackgroundColor = function (backg
     return this.getColors().background = backgroundColor;
 };
 
-FriendlyResource.FriendlyResource.prototype.getBackgroundColor = function (resolve) {
+FriendlyResource.FriendlyResource.prototype.getBackgroundColor = function (resolve, forceRefresh) {
     let backgroundColor;
-    if (resolve && this.resolvedBackgroundColor) {
+    if (resolve && this.resolvedBackgroundColor && !forceRefresh) {
         backgroundColor = this.resolvedBackgroundColor;
     } else if (resolve) {
         backgroundColor = this.resolvedBackgroundColor = this.resolveBackgroundColor();
@@ -130,8 +131,8 @@ FriendlyResource.FriendlyResource.prototype.isChipBackgroundColorDefined = funct
     return this.getChipBackgroundColor(resolve) !== colors.indigo.darken4;
 };
 
-FriendlyResource.FriendlyResource.prototype.getChipBackgroundColor = function (resolve) {
-    let backgroundColor = this.getBackgroundColor(resolve);
+FriendlyResource.FriendlyResource.prototype.getChipBackgroundColor = function (resolve, forceRefresh) {
+    let backgroundColor = this.getBackgroundColor(resolve, forceRefresh);
     return backgroundColor === Color.DEFAULT_BACKGROUND_COLOR ?
         colors.indigo.darken4 :
         backgroundColor;
@@ -603,7 +604,9 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
             graphElement.draw = true;
         });
-        Store.dispatch("redraw");
+        // Store.dispatch("redraw");
+        //this.refreshChildren() so that it also redraws after 250ms
+        this.refreshChildren();
     }, 500);
 };
 
@@ -1008,6 +1011,12 @@ FriendlyResource.FriendlyResource.prototype.getImagesServerFormat = function () 
     return Image.arrayToServerJson(
         this._images
     );
+};
+
+FriendlyResource.FriendlyResource.prototype.cloneOwnServerFormat = function () {
+    this._friendlyResourceServerFormat = FriendlyResource.clone(
+        this
+    )._friendlyResourceServerFormat;
 };
 
 /*

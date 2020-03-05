@@ -119,7 +119,9 @@ api.fromGraphElement = function (graphElement) {
             context: context,
             shareLevel: graphElement.getShareLevel(),
             colors: graphElement.getColors(),
-            nbReferences: graphElement.getNbReferences ? graphElement.getNbReferences() : 0
+            nbReferences: graphElement.getNbReferences ? graphElement.getNbReferences() : 0,
+            isMindRespect: true,
+            original: graphElement
         }
     );
 };

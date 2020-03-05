@@ -17,10 +17,10 @@ export default {
         return Service.api().post("/users/session", user);
     },
     logout: function () {
-        return Promise.all(
+        return Promise.all([
             Store.dispatch('setUser', undefined),
             Store.dispatch('setXsrfToken', undefined),
             Service.api().delete("/users/session")
-        );
+        ]);
     }
 };
