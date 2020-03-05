@@ -289,4 +289,17 @@ api.Edge.prototype.canExpand = function () {
     return false;
 };
 
+api.Edge.prototype.getTagsNotIncludedInSerialParentGroupRelations = function () {
+    let parentBubble = this.getParentBubble();
+    if (!parentBubble.isGroupRelation()) {
+        return this.getIdentifiers();
+    }
+    let groupRelationTags = parentBubble.getParentSerialTags();
+    return this.getIdentifiers().filter((edgeTag) => {
+        return groupRelationTags.every((groupRelationTag) => {
+            return groupRelationTag.getExternalResourceUri() !== edgeTag.getExternalResourceUri();
+        });
+    });
+};
+
 export default api;

@@ -150,8 +150,8 @@ EdgeController.prototype.becomeParent = async function (adoptedChild) {
 EdgeController.prototype._convertToGroupRelation = function () {
     let parentBubble = this.model().getParentBubble();
     let groupRelationIdentifiers;
-    let nonRefTags = this.model().getNonRefTags();
-    if (parentBubble.isGroupRelation() || nonRefTags.length === 0) {
+    let uniqueTags = this.model().getTagsNotIncludedInSerialParentGroupRelations();
+    if (parentBubble.isGroupRelation() || uniqueTags.length === 0) {
         groupRelationIdentifiers = [
             this.model().buildAdditionalSelfTag()
         ];
@@ -164,7 +164,7 @@ EdgeController.prototype._convertToGroupRelation = function () {
         );
         this.model().addIdentification(groupRelationIdentifiers[0]);
     } else {
-        groupRelationIdentifiers = [nonRefTags[0]];
+        groupRelationIdentifiers = [uniqueTags[0]];
     }
     let newGroupRelation = GroupRelation.usingIdentifiers(
         groupRelationIdentifiers

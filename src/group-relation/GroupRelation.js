@@ -285,6 +285,12 @@ GroupRelation.prototype.getParentSerialGroupRelations = function () {
     return serialGroupRelations;
 };
 
+GroupRelation.prototype.getParentSerialTags = function () {
+    return this.getParentSerialGroupRelations().map((groupRelation) => {
+        return groupRelation.getIdentification();
+    });
+};
+
 GroupRelation.prototype.getSerialGroupRelations = function (groupRelationToStop, exclusive) {
     let groupRelationsAtAnyDepth = [].concat(this);
     if (groupRelationToStop && groupRelationToStop.getUri() === this.getUri()) {
