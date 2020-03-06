@@ -390,6 +390,7 @@
                                 vertex.getUri()
                             );
                             vertexCopy.setLabel(vertex.getLabel());
+                            vertexCopy.addIdentifications(vertex.getIdentifiers());
                             child = Edge.withUriAndSourceAndDestinationVertex(
                                 child.getUri(),
                                 this.mergeBubble,
