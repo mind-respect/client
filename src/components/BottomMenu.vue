@@ -102,13 +102,13 @@
         data: function () {
             I18n.i18next.addResources("en", "bottom", {
                 usePattern: "Use pattern",
-                usePatternAsNonOwner: "Use to edit",
+                usePatternAsNonOwner: "Use and edit",
                 usePatternInfo1: "This entire map will be copied to your centers and its bubbles will be made private.",
                 usePatternInfo2: "You can use a pattern many times."
             });
             I18n.i18next.addResources("fr", "bottom", {
                 usePattern: "Utiliser le pattern",
-                usePatternAsNonOwner: "Utiliser pour éditer",
+                usePatternAsNonOwner: "Utiliser et éditer",
                 usePatternInfo1: "Toute cette carte sera copiée dans vos centres et ses bulles seront rendues privées.",
                 usePatternInfo2: "Vous pouvez utiliser un pattern à plusieurs reprises."
             });

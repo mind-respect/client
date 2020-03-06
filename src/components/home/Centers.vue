@@ -101,8 +101,12 @@
                                                 {{center.getShareIcon()}}
                                             </v-icon>
                                             <small class="grey--text font-weight-normal font-italic mr-1 float-right"
-                                                   v-if="$vuetify.breakpoint.mdAndUp && center.lastVisit">
+                                                   v-if="$vuetify.breakpoint.mdAndUp && isOwner && flow === 'centers'">
                                                 {{center.lastVisit()}}
+                                            </small>
+                                            <small class="grey--text font-weight-normal font-italic mr-1 float-right"
+                                                   v-if="$vuetify.breakpoint.mdAndUp && flow !== 'centers'">
+                                                {{center.getCreationDateFormatted()}}
                                             </small>
                                         </v-list-item-title>
                                         <v-list-item-subtitle class="mt-1">

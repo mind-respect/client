@@ -81,16 +81,6 @@ CenterGraphElement.prototype.getNumberOfVisits = function () {
     }
     return this.centerGraphElementServerFormat.numberOfVisits;
 };
-CenterGraphElement.prototype.getLastCenterDate = function () {
-    return this.centerGraphElementServerFormat.lastCenterDate ?
-        new Date(this.centerGraphElementServerFormat.lastCenterDate) :
-        this.getCreationDate();
-};
-
-CenterGraphElement.prototype.getLastCenterDateTime = function () {
-    const lastCenterDate = this.getLastCenterDate();
-    return lastCenterDate.getTime() + (lastCenterDate.getTimezoneOffset() * 60000);
-};
 
 CenterGraphElement.prototype.getShareLevel = function () {
     return this.centerGraphElementServerFormat.shareLevel;
@@ -108,8 +98,24 @@ CenterGraphElement.prototype.getNumberOfVisitsRank = function () {
 CenterGraphElement.prototype.getNbReferences = function () {
     return this.centerGraphElementServerFormat.nbReferences;
 };
+
+CenterGraphElement.prototype.getLastCenterDate = function () {
+    return this.centerGraphElementServerFormat.lastCenterDate ?
+        new Date(this.centerGraphElementServerFormat.lastCenterDate) :
+        this.getCreationDate();
+};
+
+CenterGraphElement.prototype.getLastCenterDateTime = function () {
+    const lastCenterDate = this.getLastCenterDate();
+    return lastCenterDate.getTime() + (lastCenterDate.getTimezoneOffset() * 60000);
+};
+
 CenterGraphElement.prototype.lastVisit = function () {
     return DateUtil.fromNow(this.getLastCenterDate());
+};
+
+CenterGraphElement.prototype.getCreationDateFormatted = function () {
+    return DateUtil.fromNow(this.getCreationDate());
 };
 
 CenterGraphElement.prototype.getGraphElementType = function () {
