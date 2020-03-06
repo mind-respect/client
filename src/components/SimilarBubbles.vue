@@ -185,15 +185,8 @@
                 this.isSimilarBubblesNotice = false;
             },
             merge: function () {
-                this.loading = true;
-                Selection.getSingle().controller().convertToDistantBubbleWithUri(
-                    this.selectedUri
-                ).then(() => {
-                    return this.$nextTick();
-                }).then(() => {
-                    this.loading = false;
-                    this.leaveFlow();
-                });
+                this.leaveFlow();
+                this.$store.dispatch("setIsMergeFlow", this.getSelectedResult());
             },
             tag: function () {
                 this.loading = true;

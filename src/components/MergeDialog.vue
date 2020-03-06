@@ -239,9 +239,7 @@
                 originalMergeBubbleLabel: null,
                 mergeBubble: null,
                 confirmLoading: false,
-                urls: null,
                 keptUri: null,
-                colors: null,
                 keptColor: null,
                 bubbleAsSearchResult: null,
                 mergeBubbleAsSearchResult: null,
@@ -272,27 +270,21 @@
                     this.dialog = true;
                     this.mergeBubble = null;
                     this.confirmLoading = false;
-                    let urlBubble = {
-                        shortUri: this.bubble.uri().getGraphElementShortId(),
-                        origin: this.$t('merge:thisMap'),
-                        uri: this.bubble.getUri()
-                    };
-                    this.urls = [urlBubble];
-                    this.keptUri = urlBubble.uri;
-                    this.colors = [{
-                        origin: this.$t('merge:thisMap'),
-                        color: this.bubble.getBackgroundColor(),
-                        uri: this.bubble.getUri()
-                    }];
+                    this.keptUri = this.bubble.getUri();
                     this.keptColor = this.bubble.getBackgroundColor();
-                    this.$nextTick(() => {
-                        setTimeout(async () => {
-                            this.search = "";
-                            this.$refs.mergeSearch.reset();
-                            await this.$nextTick();
-                            this.$refs.mergeSearch.$el.querySelector("input").focus();
-                        }, 100)
-                    });
+                    if (this.$store.state.isMergeFlow === true) {
+                        this.$nextTick(() => {
+                            setTimeout(async () => {
+                                this.search = "";
+                                this.$refs.mergeSearch.reset();
+                                await this.$nextTick();
+                                this.$refs.mergeSearch.$el.querySelector("input").focus();
+                            }, 100)
+                        });
+                    } else {
+                        this.selectedSearchResult = this.$store.state.isMergeFlow;
+                        this.selectSearchResult();
+                    }
                 } else {
                     this.dialog = false;
                 }
