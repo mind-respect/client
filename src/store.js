@@ -20,7 +20,8 @@ const Store = new Vuex.Store({
                 "zoom",
                 "sideMenuFlow",
                 "areCentersInGridView",
-                "xsrfToken"
+                "xsrfToken",
+                "addRelationIncludeAllPatterns"
             ]
         })
     ],
@@ -52,6 +53,7 @@ const Store = new Vuex.Store({
         isMergeFlow: false,
         isColorFlow: false,
         xsrfToken: undefined,
+        addRelationIncludeAllPatterns: true,
         isFirstTime: false
     },
     mutations: {
@@ -167,6 +169,9 @@ const Store = new Vuex.Store({
         setXsrfToken: function (state, xsrfToken) {
             state.xsrfToken = xsrfToken;
         },
+        setAddRelationIncludeAllPatterns: function (state, addRelationIncludeAllPatterns) {
+            state.addRelationIncludeAllPatterns = addRelationIncludeAllPatterns;
+        },
         setIsFirstTime: function (state, isFirstTime) {
             state.isFirstTime = isFirstTime;
         }
@@ -261,6 +266,9 @@ const Store = new Vuex.Store({
         },
         setXsrfToken: function (action, xsrfToken) {
             action.commit('setXsrfToken', xsrfToken);
+        },
+        setAddRelationIncludeAllPatterns: function (action, addRelationIncludeAllPatterns) {
+            action.commit('setAddRelationIncludeAllPatterns', addRelationIncludeAllPatterns);
         },
         setIsFirstTime: function (action, isFirstTime) {
             action.commit('setIsFirstTime', isFirstTime);

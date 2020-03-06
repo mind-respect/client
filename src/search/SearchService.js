@@ -108,6 +108,28 @@ SearchService.ownVertices = function (searchText, nbSkip) {
     });
 };
 
+SearchService.ownVerticesAndAllPatterns = function (searchText, nbSkip) {
+    let providers = [
+        SearchService.ownVertices(searchText, nbSkip),
+        SearchService._allPatternsOnly(searchText, nbSkip)
+    ];
+    return resultsFromProviders(providers, [
+        SearchService._sortByNbVisits
+    ]);
+};
+
+SearchService._allPatternsOnly = function (searchText, nbSkip) {
+    return Service.api().post(
+        UserService.currentUserUri() + "/search/all_patterns/auto_complete",
+        {
+            "searchText": searchText,
+            nbSkip: nbSkip
+        }
+    ).then((response) => {
+        return formattedOwnResults(response.data)
+    });
+};
+
 SearchService._ownTagsOnly = function (searchText, nbSkip) {
     return Service.api().post(
         UserService.currentUserUri() + "/search/own_tags/auto_complete",

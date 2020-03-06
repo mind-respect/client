@@ -18,11 +18,12 @@
                         v-model="selectedSearchResult"
                         :search-input.sync="searchText"
                         prepend-icon="search"
+                        :no-data-text="$t('noSearchResults')"
                         :items="items"
                         item-value="uri"
                         item-text="label"
                         :menu-props="menuProps"
-                        :placeholder="$t('existing:title')"
+                        :placeholder="includeAllPatterns ? $t('existing:titleWithPatterns'): $t('existing:title')"
                         @change="chooseItem"
                         cache-items
                         return-object
@@ -39,9 +40,8 @@
                     <SearchLoadMore slot="append-item" @loadMore="loadMore"
                                     ref="loadMore"></SearchLoadMore>
                 </v-autocomplete>
+                <v-checkbox v-model="includeAllPatterns" :label="$t('existing:includeAllPatterns')"></v-checkbox>
             </v-card-text>
-            <v-card flat class="pt-0">
-            </v-card>
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -77,10 +77,14 @@
         },
         data: function () {
             I18n.i18next.addResources("en", "existing", {
-                "title": "Your bubbles"
+                "title": "Your bubbles",
+                "titleWithPatterns": "Your bubbles and the patterns",
+                "includeAllPatterns": "Include patterns of all users"
             });
             I18n.i18next.addResources("fr", "existing", {
-                "title": "Vos bulles"
+                "title": "Vos bulles",
+                "titleWithPatterns": "Vos bulles et les patterns",
+                "includeAllPatterns": "Inclure les patterns de tous les usagers"
             });
             return {
                 dialog: false,
@@ -118,8 +122,13 @@
             center: function () {
                 return CurrentSubGraph.get().center;
             },
-            isFontFlow: function () {
-                return this.$store.state.isFontFlow;
+            includeAllPatterns: {
+                get: function () {
+                    return this.$store.state.addRelationIncludeAllPatterns;
+                },
+                set: function (value) {
+                    this.$store.dispatch("setAddRelationIncludeAllPatterns", value);
+                }
             }
         },
         methods: {
@@ -137,7 +146,8 @@
             querySelections: function (searchText) {
                 this.loading = true;
                 let currentSubGraph = CurrentSubGraph.get();
-                SearchService.ownVertices(searchText).then((results) => {
+                let searchFctn = this.getSearchFctn();
+                searchFctn(searchText).then((results) => {
                     this.items = results.map((result) => {
                         result.disabled = currentSubGraph.hasUri(result.uri);
                         return result;
@@ -149,7 +159,8 @@
                 });
             },
             loadMore: function (callback) {
-                SearchService.ownVertices(this.searchText, this.items.length).then((results) => {
+                let searchFctn = this.getSearchFctn();
+                searchFctn(this.searchText, this.items.length).then((results) => {
                     this.items = this.items.concat(results);
                     callback(results.length, this.$refs.existingBubbleAutocomplete);
                 });
@@ -195,6 +206,11 @@
                         this.setMenuPosition();
                     }, 100)
                 });
+            },
+            getSearchFctn: function () {
+                return this.$store.state.addRelationIncludeAllPatterns ?
+                    SearchService.ownVerticesAndAllPatterns :
+                    SearchService.ownVertices;
             }
         }
     }
