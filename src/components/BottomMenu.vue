@@ -132,7 +132,7 @@
                         IdUri.htmlUrlForBubbleUri(response.data.uri)
                     );
                     this.usePatternLoading = false;
-                })
+                });
             }
         },
         computed: {

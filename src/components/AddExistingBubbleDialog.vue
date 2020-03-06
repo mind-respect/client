@@ -64,7 +64,7 @@
     import SearchLoadMore from '@/components/search/SearchLoadMore'
     import SearchResultContent from '@/components/search/SearchResultContent'
     import SearchResultAction from '@/components/search/SearchResultAction'
-    import IdUri from '@/IdUri'
+    import PatternService from "@/pattern/PatternService";
     import Dragged from '@/Dragged'
     import KeyboardActions from '@/KeyboardActions'
 
@@ -128,26 +128,18 @@
                 this.y = y;
                 this.isLeft = isLeft;
                 this.dialog = true;
-                this.$nextTick(() => {
+                this.$nextTick(async () => {
                     this.$refs.existingBubbleAutocomplete.reset();
+                    await this.$nextTick();
                     this.$refs.existingBubbleAutocomplete.focus();
                 });
-            },
-            selectSearchResult: function () {
-                this.$router.push(
-                    IdUri.htmlUrlForBubbleUri(
-                        this.selectedSearchResult.uri
-                    )
-                );
-                this.$refs.search.reset();
-                this.$refs.search.blur();
             },
             querySelections: function (searchText) {
                 this.loading = true;
                 let currentSubGraph = CurrentSubGraph.get();
                 SearchService.ownVertices(searchText).then((results) => {
                     this.items = results.map((result) => {
-                        result.disabled = currentSubGraph.hasUri(result.uri) || (result.isMindRespect && result.original.getGraphElement().isPattern())
+                        result.disabled = currentSubGraph.hasUri(result.uri);
                         return result;
                     });
                     this.loading = false;
@@ -162,7 +154,7 @@
                     callback(results.length, this.$refs.existingBubbleAutocomplete);
                 });
             },
-            chooseItem: function () {
+            chooseItem: async function () {
                 let closest = Dragged.getClosestChildEdge(
                     this.x + document.scrollingElement.scrollLeft,
                     this.y + document.scrollingElement.scrollTop,
@@ -170,8 +162,16 @@
                     this.isLeft
                 );
                 let forkToRelate = closest.edge === undefined ? CurrentSubGraph.get().center : closest.edge.getParentFork();
+                let distantUri = this.selectedSearchResult.uri;
+                if (this.selectedSearchResult.original.getGraphElement().isPattern()) {
+                    distantUri = await PatternService.use(
+                        distantUri
+                    ).then((response) => {
+                        return response.data.uri;
+                    });
+                }
                 forkToRelate.controller().relateToDistantVertexWithUri(
-                    this.selectedSearchResult.uri,
+                    distantUri,
                     closest.edge === undefined ? 0 : closest.edge.getIndexInTree(closest.isAbove),
                     this.isLeft
                 );
