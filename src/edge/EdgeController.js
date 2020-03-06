@@ -151,7 +151,9 @@ EdgeController.prototype._convertToGroupRelation = function () {
     let parentBubble = this.model().getParentBubble();
     let groupRelationIdentifiers;
     let uniqueTags = this.model().getTagsNotIncludedInSerialParentGroupRelations();
-    if (parentBubble.isGroupRelation() || uniqueTags.length === 0) {
+    if (uniqueTags.length > 0) {
+        groupRelationIdentifiers = [uniqueTags[0]];
+    } else {
         groupRelationIdentifiers = [
             this.model().buildAdditionalSelfTag()
         ];
@@ -163,8 +165,6 @@ EdgeController.prototype._convertToGroupRelation = function () {
             this.model().getShareLevel()
         );
         this.model().addIdentification(groupRelationIdentifiers[0]);
-    } else {
-        groupRelationIdentifiers = [uniqueTags[0]];
     }
     let newGroupRelation = GroupRelation.usingIdentifiers(
         groupRelationIdentifiers
