@@ -3,9 +3,10 @@
   -->
 
 <template>
-    <v-dialog v-model="dialog" width="900">
+    <v-dialog v-model="dialog" width="900" v-if="dialog">
         <v-card>
             <v-card-title class="title">
+                {{$t('existing:addRelationTo')}}
                 <v-spacer></v-spacer>
                 <v-icon
                         color="third"
@@ -15,6 +16,7 @@
             </v-card-title>
             <v-card-text class="pt-0">
                 <v-autocomplete
+                        v-if="!canConfirm"
                         v-model="selectedSearchResult"
                         :search-input.sync="searchText"
                         prepend-icon="search"
@@ -40,12 +42,32 @@
                     <SearchLoadMore slot="append-item" @loadMore="loadMore"
                                     ref="loadMore"></SearchLoadMore>
                 </v-autocomplete>
-                <v-checkbox v-model="includeAllPatterns" :label="$t('existing:includeAllPatterns')"></v-checkbox>
+                <v-list v-else>
+                    <v-list-item>
+                        <SearchResultContent :item="selectedSearchResult"></SearchResultContent>
+                        <v-list-item-action>
+                            <v-btn icon @click="selectedSearchResult = null">
+                                <v-icon>close</v-icon>
+                            </v-btn>
+                        </v-list-item-action>
+                    </v-list-item>
+                </v-list>
+                <!--                <ListView v-else :bubble="selectedGraphElement" :collapse="true" :show-tags="true"></ListView>-->
+                <v-checkbox v-model="includeAllPatterns" :label="$t('existing:includeAllPatterns')"
+                            v-show="!canConfirm && !confirmLoading"></v-checkbox>
             </v-card-text>
             <v-card-actions>
+                <v-btn
+                        class="mr-2"
+                        @click="confirm"
+                        color="secondary"
+                        :loading="confirmLoading"
+                        :disabled="!canConfirm"
+                >
+                    {{$t('confirm')}}
+                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                        text
                         class="mr-2"
                         @click="dialog = false"
                 >
@@ -67,10 +89,12 @@
     import PatternService from "@/pattern/PatternService";
     import Dragged from '@/Dragged'
     import KeyboardActions from '@/KeyboardActions'
+    import ListView from "./ListView";
 
     export default {
         name: "AddExistingBubbleDialog",
         components: {
+            ListView,
             SearchLoadMore,
             SearchResultContent,
             SearchResultAction
@@ -79,16 +103,19 @@
             I18n.i18next.addResources("en", "existing", {
                 "title": "Your bubbles",
                 "titleWithPatterns": "Your bubbles and the patterns",
-                "includeAllPatterns": "Include patterns of all users"
+                "includeAllPatterns": "Include patterns of all users",
+                addRelationTo: "Add relation to"
             });
             I18n.i18next.addResources("fr", "existing", {
                 "title": "Vos bulles",
                 "titleWithPatterns": "Vos bulles et les patterns",
-                "includeAllPatterns": "Inclure les patterns de tous les usagers"
+                "includeAllPatterns": "Inclure les patterns de tous les usagers",
+                addRelationTo: "Ajouter une relation à"
             });
             return {
                 dialog: false,
                 selectedSearchResult: null,
+                selectedGraphElement: null,
                 searchText: null,
                 items: [],
                 menuProps: {
@@ -96,6 +123,7 @@
                     "max-width": 800
                 },
                 loading: false,
+                confirmLoading: false,
                 x: null,
                 y: null
             }
@@ -129,12 +157,47 @@
                 set: function (value) {
                     this.$store.dispatch("setAddRelationIncludeAllPatterns", value);
                 }
+            },
+            canConfirm: function () {
+                return this.selectedSearchResult !== null && this.selectedSearchResult !== undefined && !this.confirmLoading;
             }
         },
         methods: {
+            confirm: async function () {
+                this.confirmLoading = true;
+                let closest = Dragged.getClosestChildEdge(
+                    this.x + document.scrollingElement.scrollLeft,
+                    this.y + document.scrollingElement.scrollTop,
+                    CurrentSubGraph.get().center,
+                    this.isLeft
+                );
+                let forkToRelate = closest.edge === undefined ? CurrentSubGraph.get().center : closest.edge.getParentFork();
+                let distantUri = this.selectedSearchResult.uri;
+                if (this.selectedSearchResult.original.getGraphElement().isPattern()) {
+                    distantUri = await PatternService.use(
+                        distantUri
+                    ).then((response) => {
+                        return response.data.uri;
+                    });
+                }
+                await forkToRelate.controller().relateToDistantVertexWithUri(
+                    distantUri,
+                    closest.edge === undefined ? 0 : closest.edge.getIndexInTree(closest.isAbove),
+                    this.isLeft
+                );
+                this.confirmLoading = false;
+                this.dialog = false;
+            },
+            chooseItem: function () {
+                this.searchText = "";
+                this.selectedGraphElement = this.selectedSearchResult.original.getGraphElement();
+            },
             enter: function (x, y, isLeft) {
+                this.selectedSearchResult = null;
                 this.x = x;
                 this.y = y;
+                this.searchText = "";
+                this.confirmLoading = false;
                 this.isLeft = isLeft;
                 this.dialog = true;
                 this.$nextTick(async () => {
@@ -154,7 +217,9 @@
                     });
                     this.loading = false;
                     this.$nextTick(() => {
-                        this.$refs.loadMore.reset(results.length, searchText);
+                        if (this.$refs.loadMore) {
+                            this.$refs.loadMore.reset(results.length, searchText);
+                        }
                     });
                 });
             },
@@ -164,29 +229,6 @@
                     this.items = this.items.concat(results);
                     callback(results.length, this.$refs.existingBubbleAutocomplete);
                 });
-            },
-            chooseItem: async function () {
-                let closest = Dragged.getClosestChildEdge(
-                    this.x + document.scrollingElement.scrollLeft,
-                    this.y + document.scrollingElement.scrollTop,
-                    CurrentSubGraph.get().center,
-                    this.isLeft
-                );
-                let forkToRelate = closest.edge === undefined ? CurrentSubGraph.get().center : closest.edge.getParentFork();
-                let distantUri = this.selectedSearchResult.uri;
-                if (this.selectedSearchResult.original.getGraphElement().isPattern()) {
-                    distantUri = await PatternService.use(
-                        distantUri
-                    ).then((response) => {
-                        return response.data.uri;
-                    });
-                }
-                forkToRelate.controller().relateToDistantVertexWithUri(
-                    distantUri,
-                    closest.edge === undefined ? 0 : closest.edge.getIndexInTree(closest.isAbove),
-                    this.isLeft
-                );
-                this.dialog = false;
             },
             setMenuPosition: function () {
                 const menu = document.getElementsByClassName('add-existing-dialog-menu')[0];

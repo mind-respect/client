@@ -660,43 +660,38 @@ GraphElementController.prototype.addIdentification = function (tag, preventMovin
     });
 };
 
-GraphElementController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft, identifiers) {
-    let distantVertex;
+GraphElementController.prototype.relateToDistantVertexWithUri = async function (distantVertexUri, index, isLeft, identifiers) {
     let parentVertex = this.model().isVertexType() ? this.model() : this.model().getParentVertex();
-    SubGraphController.withVertex(
+    let distantVertex = await SubGraphController.withVertex(
         Vertex.withUri(
             distantVertexUri
         )
-    ).loadNonCenter().then((_distantVertex) => {
-        distantVertex = _distantVertex;
-        return EdgeService.createFromSourceAndDestinationUri(parentVertex.getUri(), distantVertexUri);
-    }).then((newEdgeUri) => {
-        let newEdge = Edge.withUriAndSourceAndDestinationVertex(
-            newEdgeUri,
-            parentVertex,
-            distantVertex
-        );
-        if (identifiers) {
-            newEdge.controller().addIdentifiers(identifiers, true)
-        }
-        distantVertex.parentBubble = newEdge;
-        distantVertex.parentVertex = parentVertex;
-        this.model().addChild(
-            newEdge,
-            isLeft,
-            index
-        );
-        CurrentSubGraph.get().add(
-            newEdge
-        );
-        this.model().refreshChildren();
-        Vue.nextTick(() => {
-            Selection.setToSingle(distantVertex);
-            GraphElementService.changeChildrenIndex(
-                parentVertex
-            );
-        });
-    });
+    ).loadNonCenter();
+    let newEdgeUri = await EdgeService.createFromSourceAndDestinationUri(parentVertex.getUri(), distantVertexUri);
+    let newEdge = Edge.withUriAndSourceAndDestinationVertex(
+        newEdgeUri,
+        parentVertex,
+        distantVertex
+    );
+    if (identifiers) {
+        newEdge.controller().addIdentifiers(identifiers, true);
+    }
+    distantVertex.parentBubble = newEdge;
+    distantVertex.parentVertex = parentVertex;
+    this.model().addChild(
+        newEdge,
+        isLeft,
+        index
+    );
+    CurrentSubGraph.get().add(
+        newEdge
+    );
+    await Vue.nextTick();
+    Selection.setToSingle(distantVertex);
+    this.model().refreshChildren();
+    GraphElementService.changeChildrenIndex(
+        parentVertex
+    );
 };
 
 GraphElementController.prototype.remove = function (skipConfirmation) {
