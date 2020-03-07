@@ -208,7 +208,9 @@ Vertex.prototype.getNbDuplicates = function () {
 };
 
 Vertex.prototype.addChild = async function (child, isToTheLeft, index) {
-    this.isExpanded = true;
+    if (this.isCollapsed) {
+        this.expand(true, true);
+    }
     let children;
     child.parentBubble = child.parentVertex = this;
     if (this.isCenter) {

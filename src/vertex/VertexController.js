@@ -264,11 +264,9 @@ VertexController.prototype.copy = function () {
 
 VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, avoidShowingLoad) {
     if (!this.expandCanDo()) {
-        this.model().isExpanded = true;
         return Promise.resolve();
     }
     if (avoidExpandChild && !this.model().canExpand()) {
-        this.model().isExpanded = true;
         return Promise.resolve();
     }
     let promise = Promise.resolve();
