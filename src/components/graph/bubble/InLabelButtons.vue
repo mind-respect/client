@@ -64,7 +64,7 @@
                     return false;
                 }
                 if (this.bubble.getParentBubble().isGroupRelation()) {
-                    return this.bubble.getRelevantTags().length > 1;
+                    return this.bubble.getTagsNotIncludedInSerialParentGroupRelations().length > 0;
                 }
                 return this.bubble.hasIdentifications();
             },
