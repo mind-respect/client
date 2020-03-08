@@ -285,9 +285,10 @@
                     let center = _center;
                     document.title = center.getTextOrDefault() + " | MindRespect";
                     this.center = center;
-                    this.$store.dispatch("redraw", {fadeOut: true});
+                    await this.$store.dispatch("redraw", {fadeOut: true});
                     this.handleResize();
                     await this.$nextTick();
+                    await Scroll.goToGraphElement(this.center, true);
                     Color.refreshBackgroundColor();
                     Selection.setToSingle(this.center);
                     this.$store.dispatch("setIsPatternFlow", this.center.isPattern());
@@ -303,8 +304,8 @@
                         await this.$nextTick();
                         await this.$nextTick();
                         this.strokeColor = Color.EdgeColor;
-                        setTimeout(() => {
-                            this.$store.dispatch("redraw", {fadeIn: true});
+                        setTimeout(async() => {
+                            await this.$store.dispatch("redraw", {fadeIn: true});
                             const timeItTakesToFadeInPlus5 = 505;
                             setTimeout(() => {
                                 this.$store.dispatch("redraw");
