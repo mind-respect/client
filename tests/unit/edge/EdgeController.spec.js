@@ -129,7 +129,7 @@ describe("EdgeController", () => {
             let threeBubblesScenario = await new ThreeScenario();
             let bubble1 = threeBubblesScenario.getBubble1InTree();
             let relation1 = TestUtil.getChildWithLabel(bubble1, "r1");
-            let tag = TestUtil.dummyIdentifier();
+            let tag = TestUtil.dummyTag();
             tag.setLabel("moustache");
             relation1.model().addIdentification(tag);
             await new EdgeController.RelationController(
@@ -196,34 +196,6 @@ describe("EdgeController", () => {
                 newGroupRelation.getNumberOfChild()
             ).toBe(2);
         });
-        it("adds self as identifier when under a group relation", async () => {
-            let scenario = await new TwoLevelGroupRelationScenario();
-            let center = scenario.getCenterInTree();
-            let group1 = TestUtil.getChildWithLabel(center, "group1");
-            let group2 = TestUtil.getChildWithLabel(group1, "group2");
-            group2.expand();
-            let g22 = TestUtil.getChildWithLabel(group2, "g22");
-            let g23 = TestUtil.getChildWithLabel(group2, "g23");
-            expect(
-                g23.hasIdentification(group2.getIdentification())
-            ).toBeTruthy();
-            expect(
-                g23.hasIdentification(group1.getIdentification())
-            ).toBeTruthy();
-            expect(
-                g23.getIdentifierHavingExternalUri(g22.getUri())
-            ).toBeFalsy();
-            await g23.getNextBubble().controller().moveUnderParent(g22);
-            expect(
-                g23.hasIdentification(group2.getIdentification())
-            ).toBeTruthy();
-            expect(
-                g23.hasIdentification(group1.getIdentification())
-            ).toBeTruthy();
-            expect(
-                g23.getIdentifierHavingExternalUri(g22.getUri())
-            ).not.toBeFalsy();
-        });
 
         it("prevents adding tags related to sibling group relations", async () => {
             let scenario = await new TwoLevelGroupRelationScenario();
@@ -235,9 +207,6 @@ describe("EdgeController", () => {
             );
             let triple = await g2.controller().addChild();
             await scenario.nextTickPromise();
-            triple.edge.getIdentifiers().forEach((tag) => {
-                console.log(tag.getLabel());
-            });
             expect(
                 triple.edge.getIdentifiers().length
             ).toBe(2);
@@ -436,7 +405,7 @@ describe("EdgeController", () => {
                 centerBubble,
                 "r1"
             );
-            let identifier = TestUtil.dummyIdentifier();
+            let identifier = TestUtil.dummyTag();
             identifier.setLabel("some identifier");
             r1.model().addIdentification(
                 identifier
@@ -523,7 +492,7 @@ describe("EdgeController", () => {
                 "r1"
             );
             r1.model().addIdentification(
-                TestUtil.dummyIdentifier()
+                TestUtil.dummyTag()
             );
             expect(
                 r2.model().getIdentifiers().length
@@ -532,6 +501,34 @@ describe("EdgeController", () => {
             expect(
                 r2.model().getIdentifiers().length
             ).toBe(1);
+        });
+        it("only adds it's tag and it's group relation tag when under a group relation", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let center = scenario.getCenterInTree();
+            let groupRelation = TestUtil.getChildWithLabel(
+                center,
+                "Possession"
+            );
+            groupRelation.expand();
+            let relation = TestUtil.getChildWithLabel(
+                groupRelation,
+                "Possession of book 1"
+            );
+            await relation.controller().addIdentification(TestUtil.dummyTag());
+            let otherBubble = TestUtil.getChildWithLabel(
+                center,
+                "other relation"
+            ).getNextBubble();
+            await relation.controller().becomeParent(otherBubble);
+            relation = groupRelation.getNextBubble();
+            await scenario.nextTickPromise();
+            let otherRelation = TestUtil.getChildWithLabel(
+                relation,
+                "other relation"
+            );
+            expect(
+                otherRelation.getIdentifiers().length
+            ).toBe(2);
         });
         it("adds the relation's identifier to the child relation", async () => {
             let scenario = await new ThreeScenario();
@@ -698,6 +695,39 @@ describe("EdgeController", () => {
             expect(
                 book1Rel.getIdentifiers().length
             ).toBe(1)
+        });
+
+        it("adds self ref as tag when under a group relation", async () => {
+            let scenario = await new TwoLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let group1 = TestUtil.getChildWithLabel(center, "group1");
+            let group2 = TestUtil.getChildWithLabel(group1, "group2");
+            group2.expand();
+            let g22 = TestUtil.getChildWithLabel(group2, "g22");
+            let g23 = TestUtil.getChildWithLabel(group2, "g23");
+            expect(
+                g23.hasIdentification(group2.getIdentification())
+            ).toBeTruthy();
+            expect(
+                g23.hasIdentification(group1.getIdentification())
+            ).toBeTruthy();
+            expect(
+                g23.getIdentifiers().some((tag) => {
+                    return tag.getExternalResourceUri().indexOf(g22.getUri() + "/ref/") > -1;
+                })
+            ).toBeFalsy();
+            await g23.getNextBubble().controller().moveUnderParent(g22);
+            expect(
+                g23.hasIdentification(group2.getIdentification())
+            ).toBeTruthy();
+            expect(
+                g23.hasIdentification(group1.getIdentification())
+            ).toBeTruthy();
+            expect(
+                g23.getIdentifiers().some((tag) => {
+                    return tag.getExternalResourceUri().indexOf(g22.getUri() + "/ref/") > -1;
+                })
+            ).not.toBeFalsy();
         });
     });
     describe("leaveContextDo", function () {

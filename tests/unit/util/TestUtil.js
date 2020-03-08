@@ -34,7 +34,7 @@ api.generateEdgeUri = function () {
 api.generateIdentificationUri = function () {
     return "\/service\/users\/églantier\/graph\/identification\/" + generateUuid();
 };
-api.dummyIdentifier = function () {
+api.dummyTag = function () {
     let tag = Tag.withUri(
         api.generateIdentificationUri()
     );

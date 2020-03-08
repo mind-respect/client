@@ -596,7 +596,7 @@ describe('GraphElementController', () => {
         it("shows tags as children", async () => {
             let scenario = await new ThreeScenario();
             let center = scenario.getCenterInTree();
-            let tag = TestUtil.dummyIdentifier();
+            let tag = TestUtil.dummyTag();
             tag.setLabel("new tag");
             center.addIdentification(
                 tag

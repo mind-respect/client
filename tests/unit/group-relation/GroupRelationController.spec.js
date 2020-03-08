@@ -22,7 +22,7 @@ describe("GroupRelationController", () => {
             let scenario = await new GroupRelationsScenario();
             let possessionInTree = scenario.getPossessionGroupRelation();
             possessionInTree.model().addIdentification(
-                TestUtil.dummyIdentifier()
+                TestUtil.dummyTag()
             );
             let triple = await possessionInTree.controller().addChild();
             expect(
@@ -34,7 +34,7 @@ describe("GroupRelationController", () => {
             let possessionInTree = scenario.getPossessionGroupRelation();
             possessionInTree.getParentVertex().makePublic();
             possessionInTree.addIdentification(
-                TestUtil.dummyIdentifier()
+                TestUtil.dummyTag()
             );
             let triple = await possessionInTree.controller().addChild();
             expect(

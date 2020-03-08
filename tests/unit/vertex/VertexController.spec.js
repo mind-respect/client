@@ -559,7 +559,7 @@ describe('VertexController', () => {
             let parent = singleChildScenario.getParentInTree();
             let relation = parent.getNextBubble();
             relation.model().addIdentification(
-                TestUtil.dummyIdentifier()
+                TestUtil.dummyTag()
             );
             let child = relation.getNextBubble();
             GraphServiceMock.getForCentralBubbleUri(

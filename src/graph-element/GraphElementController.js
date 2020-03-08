@@ -120,7 +120,7 @@ GraphElementController.prototype.travelDown = function () {
 
 
 GraphElementController.prototype.centerCanDo = function () {
-    return !Store.state.isPatternFlow && this.isSingle() && !this.model().isCenterBubble();
+    return this.isSingle() && !this.model().isCenterBubble() && (!Store.state.isPatternFlow || this.model().isMeta());
 };
 
 GraphElementController.prototype.center = function () {

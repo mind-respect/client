@@ -120,12 +120,12 @@ EdgeController.prototype.becomeParent = async function (adoptedChild) {
     });
 
     async function moveEdge(movedEdge) {
-        let tags = this.model().hasIdentifications() && !previousParentFork.isGroupRelation() ?
-            this.model().getIdentifiers() :
-            this.model().getIdentifiersIncludingSelf();
+        let tags = this.model().getIdentifiers();
         let tagsWithDefinedUri;
         let lastAddTagsPromise;
-        let relations = movedEdge.isGroupRelation() ? movedEdge.getClosestChildRelations(true) : [movedEdge];
+        let relations = movedEdge.isGroupRelation() ?
+            movedEdge.getClosestChildRelations(true) :
+            [movedEdge];
         promises.push(
             relations.map(async (relation) => {
                 if (lastAddTagsPromise && !tagsWithDefinedUri) {
