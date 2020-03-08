@@ -126,6 +126,8 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
         if (!subGraph.serverFormat.childrenIndexesCenterTag) {
             GraphElementService.changeChildrenIndex(centerBubble)
         }
+        centerBubble.isExpanded = true;
+        centerBubble.isCollapsed = false;
         return centerBubble;
     });
 };

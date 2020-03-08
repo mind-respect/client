@@ -228,6 +228,8 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             }
         });
         let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
+        centerVertex.isExpanded = true;
+        centerVertex.isCollapsed = false;
         return isChildrenIndexBuilt || MindMapInfo.isViewOnly() ? Promise.resolve(centerVertex) :
             GraphElementService.changeChildrenIndex(
                 centerVertex

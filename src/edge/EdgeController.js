@@ -236,7 +236,7 @@ EdgeController.prototype.sourceVertex = function (sourceVertex) {
 };
 EdgeController.prototype.replaceParentVertex = function (newParentVertex, preventChangingInModel) {
     if (newParentVertex.canExpand()) {
-        return newParentVertex.controller().expand().then(doIt.bind(this));
+        return newParentVertex.controller().expand(true, true, true).then(doIt.bind(this));
     } else {
         return doIt.bind(this)();
     }
