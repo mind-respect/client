@@ -12,7 +12,8 @@
                         label
                     </v-icon>
                     <v-icon v-if="item.isMindRespect && item.original.getGraphElement().shouldShowChipIcon()"
-                            :dark="item.original.getGraphElement().isChipBackgroundColorDefined(true) && shouldTextBeWhiteFromBackgroundColor(item.original.getGraphElement().getChipBackgroundColor(true))">
+                            :color="getIconContrastColorFromBackground(item.original.getGraphElement().getChipBackgroundColor(true))"
+                    >
                         {{item.original.getGraphElement().getChipIcon()}}
                     </v-icon>
                 </template>
@@ -68,6 +69,9 @@
         methods: {
             shouldTextBeWhiteFromBackgroundColor: function (hexColor) {
                 return Color.getContrast(hexColor) === 'white'
+            },
+            getIconContrastColorFromBackground: function (hexColor) {
+                return Color.getContrast(hexColor);
             }
         }
     }

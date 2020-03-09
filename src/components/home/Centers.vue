@@ -72,7 +72,8 @@
                                                      class="center-label">
                                                 <template v-slot:badge>
                                                     <v-icon v-if="center.shouldShowChipIcon(flow === 'patterns')"
-                                                            :dark="center.isChipBackgroundColorDefined(true) && shouldTextBeWhiteFromBackgroundColor(center.getChipBackgroundColor(true))">
+                                                            :color="getIconContrastColorFromBackground(center.getChipBackgroundColor(true))"
+                                                    >
                                                         {{center.getChipIcon(flow === 'patterns')}}
                                                     </v-icon>
                                                 </template>
@@ -305,7 +306,10 @@
                 ) === this.$store.state.user.username;
             },
             shouldTextBeWhiteFromBackgroundColor: function (hexColor) {
-                return Color.getContrast(hexColor) === 'white'
+                return Color.getContrast(hexColor) === 'white';
+            },
+            getIconContrastColorFromBackground: function (hexColor) {
+                return Color.getContrast(hexColor);
             },
             contextMenu: function (event, center) {
                 if (this.$vuetify.breakpoint.mdAndUp) {
