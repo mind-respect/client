@@ -270,11 +270,9 @@ Vertex.prototype.undoPattern = function () {
 
 Vertex.prototype.collapse = function (preventScroll, preventApplyToDescendants) {
     if (this.isCenter) {
-        this.getNextChildren().forEach((child) => {
-            if (child.isEdge()) {
-                child.getOtherVertex(this).collapse(true)
-            } else {
-                child.collapse(true);
+        this.getDescendantsEvenIfCollapsed().forEach((descendant) => {
+            if (descendant.isForkType()) {
+                descendant.collapse(true, true);
             }
         });
         this.refreshChildren();
