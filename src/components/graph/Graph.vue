@@ -658,37 +658,31 @@
         opacity: 1;
     }
 
-    .expand-child-enter,
-    .expand-child-leave-to {
+    .expand-child-enter{
         opacity: 0;
         transform: rotateY(50deg);
         transform-origin: top left;
     }
 
-    .expand-child-enter-to,
-    .expand-child-leave {
+    .expand-child-enter-to {
         opacity: 1;
         transform: rotateY(0);
         transform-origin: top left;
     }
 
     .expand-child-enter-active,
-    .expand-child-leave-active,
-    .expand-child-left-enter-active,
-    .expand-child-left-leave-active {
+    .expand-child-left-enter-active{
         transition: opacity, transform 200ms ease-out;
     }
 
 
-    .expand-child-left-enter,
-    .expand-child-left-leave-to {
+    .expand-child-left-enter{
         opacity: 0;
         transform: rotateY(50deg);
         transform-origin: top right;
     }
 
-    .expand-child-left-enter-to,
-    .expand-child-left-leave {
+    .expand-child-left-enter-to {
         opacity: 1;
         transform: rotateY(0);
         transform-origin: top right;

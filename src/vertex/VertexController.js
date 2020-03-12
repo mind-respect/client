@@ -297,14 +297,13 @@ VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, avo
         this.model().loading = false;
         promise = avoidExpandChild ? Promise.resolve() : this.expandDescendantsIfApplicable();
     }
-    return promise.then(() => {
+    return promise.then(async () => {
         this.model().expand(avoidCenter, true);
         if (!avoidShowingLoad) {
-            Vue.nextTick(() => {
-                //Store.dispatch("redraw") for when expanding a grand children
-                Store.dispatch("redraw");
-                LoadingFlow.leave();
-            });
+            await Vue.nextTick();
+            //this.model().refreshChildren() for Store.dispatch("redraw") for when expanding a grand children
+            this.model().refreshChildren();
+            LoadingFlow.leave();
         }
     });
 };
