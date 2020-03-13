@@ -63,7 +63,7 @@
                 if (this.bubble.isMeta()) {
                     return false;
                 }
-                if (this.bubble.getParentBubble().isGroupRelation()) {
+                if (this.bubble.isEdge() && this.bubble.getParentBubble().isGroupRelation()) {
                     return this.bubble.getTagsNotIncludedInSerialParentGroupRelations().length > 0;
                 }
                 return this.bubble.hasIdentifications();
