@@ -21,10 +21,9 @@
                         class="mr-1 grey--text" small>
                     {{item.original.getGraphElement().getShareIcon()}}
                 </v-icon>
-                {{item.label}}
                 <v-badge v-if="item.isMindRespect && item.original.getGraphElement().isMeta()"
                          :color="item.original.getGraphElement().getChipBackgroundColor()"
-                         overlap bottom class="caption"
+                         overlap bottom class="caption mr-2"
                 >
                     <template v-slot:badge>
                                                         <span class="font-weight-bold" :class="{
@@ -40,6 +39,7 @@
                         </v-icon>
                     </v-avatar>
                 </v-badge>
+                {{item.label}}
             </v-badge>
         </v-list-item-title>
         <v-list-item-subtitle>

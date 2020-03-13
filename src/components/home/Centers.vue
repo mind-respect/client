@@ -77,9 +77,8 @@
                                                         {{center.getChipIcon(flow === 'patterns')}}
                                                     </v-icon>
                                                 </template>
-                                                {{center.getLabel()}}
                                                 <v-badge v-if="center.isMeta()" :color="center.getChipBackgroundColor()"
-                                                         overlap bottom class="caption"
+                                                         overlap bottom class="caption mr-2"
                                                 >
                                                     <template v-slot:badge>
                                                         <span class="font-weight-bold" :class="{
@@ -95,6 +94,7 @@
                                                         </v-icon>
                                                     </v-avatar>
                                                 </v-badge>
+                                                {{center.getLabel()}}
                                             </v-badge>
                                             <v-icon class="ml-4 mb-1 float-right" color="grey"
                                                     v-if="!center.isPattern()"

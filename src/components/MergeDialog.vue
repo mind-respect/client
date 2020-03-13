@@ -53,7 +53,7 @@
                                     :loading="loading"
                                     @change="selectSearchResult()"
                                     cache-items
-                                    hide-no-data
+                                    :no-data-text="$t('noSearchResults')"
                                     clearable
                                     :label="$t('merge:placeholder')"
                                     :filter="filter"

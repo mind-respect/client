@@ -24,6 +24,7 @@
                         @change="selectSearchResult()"
                         cache-items
                         clearable
+                        :no-data-text="$t('noSearchResults')"
                         :hide-no-data='!search || search.trim() === ""'
                         @focus="focus"
                         :placeholder="$t('addTag:title')"
