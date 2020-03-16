@@ -7,6 +7,7 @@ import Selection from '@/Selection'
 import TestUtil from '../util/TestUtil'
 import CreationDateScenario from "../scenario/CreationDateScenario";
 import CircularityScenario from "../scenario/CircularityScenario";
+import SingleChildScenario from "../scenario/SingleChildScenario";
 
 describe('Vertex', () => {
     beforeEach(() => {
@@ -191,17 +192,18 @@ describe('Vertex', () => {
         ).toBe(numberOfChild - 1);
     });
 
-    it("selects the parent vertex after it's removed if right under a relation and vertex", async () => {
-        let scenario = await new GroupRelationsScenario();
-        let otherBubble = scenario.getOtherRelationInTree().getNextBubble();
-        await otherBubble.controller().remove();
+    it("selects the parent vertex after it's removed if no siblings", async () => {
+        let scenario = await new SingleChildScenario();
+        let parent = scenario.getParentInTree();
+        let child = parent.getNextBubble().getNextBubble();
+        await child.controller().removeDo();
         await scenario.nextTickPromise();
         expect(
             Selection.isSingle()
         ).toBeTruthy();
         expect(
-            Selection.getSingle().isVertex()
-        ).toBeTruthy();
+            Selection.getSingle().getUri()
+        ).toBe(parent.getUri());
     });
 
 

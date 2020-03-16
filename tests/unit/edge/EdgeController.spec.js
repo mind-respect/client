@@ -794,6 +794,7 @@ describe("EdgeController", () => {
             let center = scenario.getCenterInTree();
             let techChoice = TestUtil.getChildDeepWithLabel(center, "tech choice");
             let relation = techChoice.getParentBubble();
+            relation.inverse();
             await relation.controller().leaveContextDo();
             let newDestinationVertex = relation.getNextBubble();
             expect(

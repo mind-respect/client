@@ -5,6 +5,7 @@
                 <v-progress-circular indeterminate color="white" v-if="hasLoadingSpinner"></v-progress-circular>
             </div>
         </v-overlay>
+        <OfflineOverLay></OfflineOverLay>
         <div id="nav" class="pa-0">
             <v-app-bar
                     color="white"
@@ -92,7 +93,7 @@
                         @leaveSearchFlow="leaveSearchFlow"></Search>
                 <v-spacer></v-spacer>
                 <v-btn icon color="third"
-                       v-if="$store.state.userHomeSelectedCenter && $route.name.indexOf('UserHome') > -1"
+                       v-if="$store.state.userHomeSelectedCenter && isUserHomeRoute"
                        v-show="!showSearch"
                        :href="$store.state.userHomeSelectedCenter.uri().url()"
                        target="_blank">
@@ -101,7 +102,7 @@
                     </v-icon>
                 </v-btn>
                 <v-btn icon color="third"
-                       v-if="$store.state.userHomeSelectedCenter && $route.name.indexOf('UserHome') > -1"
+                       v-if="$store.state.userHomeSelectedCenter && isUserHomeRoute"
                        v-show="!showSearch"
                        @click="copyUserHomeSelectedCenterUrl()">
                     <v-icon>
@@ -291,7 +292,8 @@
             ChangePasswordForm: () => import('@/components/home/ChangePasswordForm'),
             Search: () => import('@/components/Search'),
             DocsDialog: () => import('@/components/DocsDialog'),
-            ListView: () => import('@/components/ListView')
+            ListView: () => import('@/components/ListView'),
+            OfflineOverLay: () => import('@/components/OfflineOverlay')
         },
         data: function () {
             I18n.i18next.addResources("en", "button", {
@@ -491,7 +493,10 @@
         },
         computed: {
             isGraphRoute: function () {
-                return this.$route.name === "Center"
+                return this.$route.name === "Center";
+            },
+            isUserHomeRoute: function () {
+                return this.$route.name.indexOf('UserHome') > -1;
             },
             showOnlyMovieIconInRecruit: function () {
                 return this.$vuetify.breakpoint.mdAndDown && [

@@ -54,7 +54,8 @@ const Store = new Vuex.Store({
         isColorFlow: false,
         xsrfToken: undefined,
         addRelationIncludeAllPatterns: true,
-        isFirstTime: false
+        isFirstTime: false,
+        isServerNotResponding: false
     },
     mutations: {
         setUser: function (state, user) {
@@ -174,6 +175,9 @@ const Store = new Vuex.Store({
         },
         setIsFirstTime: function (state, isFirstTime) {
             state.isFirstTime = isFirstTime;
+        },
+        setIsServerNotResponding: function (state, isServerNotResponding) {
+            state.isServerNotResponding = isServerNotResponding;
         }
     },
     actions: {
@@ -272,6 +276,9 @@ const Store = new Vuex.Store({
         },
         setIsFirstTime: function (action, isFirstTime) {
             action.commit('setIsFirstTime', isFirstTime);
+        },
+        setIsServerNotResponding: function (action, isServerNotResponding) {
+            action.commit('setIsServerNotResponding', isServerNotResponding);
         }
     }
 });

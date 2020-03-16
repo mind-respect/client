@@ -41,6 +41,9 @@ const Service = {
             if (!error.response || [403, 401].indexOf(error.response.status) === -1) {
                 RequestErrors.addRequestError(error)
             }
+            if (error.response && error.response.status === 502) {
+                Store.dispatch("setIsServerNotResponding", true);
+            }
             return Promise.reject(error)
         });
         return axiosInstance

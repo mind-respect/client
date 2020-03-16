@@ -76,6 +76,9 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
                 );
             });
         }
+        addTuple.promise.catch(() => {
+            triple.destination.remove();
+        });
         return triple;
     });
 };

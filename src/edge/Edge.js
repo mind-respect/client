@@ -275,6 +275,7 @@ api.Edge.prototype.isShrinked = function (shouldBeWhenNotSelected) {
 };
 
 api.Edge.prototype.remove = function () {
+    CurrentSubGraph.get().remove(this);
     this.getParentBubble().removeChild(this);
 };
 

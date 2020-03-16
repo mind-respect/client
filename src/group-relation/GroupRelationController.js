@@ -98,6 +98,9 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
             });
         }));
     });
+    addTuple.promise.catch(() => {
+        triple.destination.remove();
+    });
     triple.edge.addIdentifications(
         this.model().getIdentifiers()
     );

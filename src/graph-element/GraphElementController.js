@@ -657,6 +657,8 @@ GraphElementController.prototype.addIdentification = function (tag, preventMovin
             }
             return identifications;
         })
+    }).catch(() => {
+        this.model().removeIdentifier(tag);
     });
 };
 
@@ -739,27 +741,7 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
         }
     }
     graphElements.forEach(function (bubble) {
-        bubble.getDescendants().forEach((bubble) => {
-            if (bubble.isVertex()) {
-                CurrentSubGraph.get().removeVertex(bubble);
-            } else if (bubble.isEdge()) {
-                CurrentSubGraph.get().removeEdge(bubble);
-            }
-        });
         bubble.remove();
-        if (bubble.isVertex()) {
-            CurrentSubGraph.get().removeVertex(bubble);
-        } else if (bubble.isEdge()) {
-            CurrentSubGraph.get().removeEdge(bubble);
-        }
-        bubble.getDuplicates().forEach((duplicate) => {
-            duplicate.remove();
-            if (bubble.isVertex()) {
-                CurrentSubGraph.get().removeVertex(bubble);
-            } else if (bubble.isEdge()) {
-                CurrentSubGraph.get().removeEdge(bubble);
-            }
-        });
     });
     if (bubbleToSelect) {
         Selection.setToSingle(bubbleToSelect);

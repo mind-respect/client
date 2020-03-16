@@ -352,8 +352,17 @@ Vertex.prototype.getNextChildren = function (toTheLeft) {
     }
 };
 
-Vertex.prototype.remove = function () {
-    this.getParentBubble().remove();
+Vertex.prototype.remove = function (preventRemoveDescendants) {
+    if (!preventRemoveDescendants) {
+        this.getDescendantsEvenIfCollapsed().forEach((bubble) => {
+            CurrentSubGraph.get().remove(bubble);
+        });
+        this.getDuplicates().forEach((duplicate) => {
+            duplicate.remove(true);
+        });
+    }
+    CurrentSubGraph.get().remove(this);
+    this.getParentBubble().remove(true);
 };
 
 Vertex.prototype.removeChild = function (child, isTemporary, avoidRedraw) {
