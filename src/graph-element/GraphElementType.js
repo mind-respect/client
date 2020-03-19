@@ -6,10 +6,6 @@ const api = {
     "Edge": "edge",
     "Relation": "relation",
     "GroupRelation": "group_relation",
-    "Schema": "schema",
-    "Property": "property",
-    "VertexSuggestion": "vertex_suggestion",
-    "RelationSuggestion": "relation_suggestion",
     "Meta": "meta",
     "MetaRelation": "meta_relation",
     "MetaGroupVertex": "meta_group_vertex",
@@ -117,8 +113,6 @@ api.fromString = function (type) {
 api.getVertexTypes = function () {
     return [
         api.Vertex,
-        api.VertexSuggestion,
-        api.Schema,
         api.Meta,
         api.MetaGroupVertex,
         api.VertexSkeleton
@@ -127,8 +121,6 @@ api.getVertexTypes = function () {
 api.getEdgeTypes = function () {
     return [
         api.Relation,
-        api.Property,
-        api.RelationSuggestion,
         api.MetaRelation,
         api.RelationSkeleton
     ];

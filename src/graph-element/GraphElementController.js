@@ -740,8 +740,19 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
             bubbleToSelect = this.model().getParentFork();
         }
     }
+    let relatedVerticesUri = {};
     graphElements.forEach(function (bubble) {
+        let parentVertexUri = bubble.getParentVertex().getUri();
+        let nextBubble = bubble.getParentVertex().getUri();
+        relatedVerticesUri.add();
+        if (bubble.getNextBubble().isVertexType()) {
+            relatedVerticesUri.add(bubble.getNextBubble().getUri());
+        }
         bubble.remove();
+    });
+
+    relatedVerticesUri.keys().forEach(()=>{
+
     });
     if (bubbleToSelect) {
         Selection.setToSingle(bubbleToSelect);

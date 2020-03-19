@@ -226,49 +226,6 @@ describe("GraphElement", () => {
         );
     });
 
-    //todo
-    xit("does not compare label when changing text when a comparison suggestion to remove", function () {
-        var scenario = new Scenarios.threeBubblesGraphFork();
-        var b1Fork = scenario.getBubble1InTree();
-        var destinationVertex = TestUtils.generateVertex();
-        destinationVertex.setLabel("new vertex");
-        var edge = TestUtils.generateEdge(
-            b1Fork.getUri(),
-            destinationVertex.getUri()
-        );
-        edge.setLabel("new relation");
-        GraphDisplayerAsRelativeTree.addEdgeAndVertex(
-            b1Fork,
-            edge,
-            destinationVertex
-        );
-        var newRelation = TestUtils.getChildWithLabel(
-            b1Fork,
-            "new relation"
-        );
-        expect(
-            newRelation.isAComparisonSuggestionToRemove()
-        ).toBeFalsy();
-        TestUtils.enterCompareFlowWithGraph(
-            SubGraph.fromServerFormat(
-                new Scenarios.threeBubblesGraph().getGraph()
-            )
-        );
-        newRelation = TestUtils.getChildWithLabel(
-            b1Fork,
-            "new relation"
-        );
-        expect(
-            newRelation.isAComparisonSuggestionToRemove()
-        ).toBeTruthy();
-        newRelation.setText("banana");
-        newRelation.getLabel().blur();
-        expect(
-            newRelation.getLabel()
-        ).not.toContainElement(
-            "del"
-        );
-    });
 
     //todo
     xit("updates input label if model text is different than input text in label update", function () {
@@ -281,22 +238,6 @@ describe("GraphElement", () => {
         expect(
             b1.getLabel().text()
         ).toBe("pine apple");
-    });
-
-    //todo
-    xit("can update model suggestion label in comparison mode", function () {
-        var suggestionUi = new Scenarios.oneBubbleHavingSuggestionsGraph().getAnySuggestionInTree();
-        TestUtils.enterCompareFlowWithGraph(
-            SubGraph.fromServerFormat(
-                new Scenarios.threeBubblesGraph().getGraph()
-            )
-        );
-        SuggestionServiceMock.accept();
-        suggestionUi.setText("something");
-        suggestionUi.getLabel().blur();
-        expect(
-            suggestionUi.text()
-        ).toBe("something");
     });
 
 

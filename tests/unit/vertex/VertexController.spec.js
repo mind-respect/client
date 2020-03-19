@@ -161,18 +161,7 @@ describe('VertexController', () => {
             hasVisited
         ).toBeTruthy();
     });
-    /*no suggestions for now*/
-    xit("hides suggestions when calling the suggestions action when they are already visible", async () => {
-        var eventBubble = new Scenarios.oneBubbleHavingSuggestionsGraph().getVertexUi();
-        MindMapInfo._setIsViewOnly(false);
-        expect(
-            eventBubble.getTopMostChildBubble().isVisible()
-        ).toBeTruthy();
-        eventBubble.controller().suggestions();
-        expect(
-            eventBubble.getTopMostChildBubble().isVisible()
-        ).toBeFalsy();
-    });
+
     it("expands the bubble when adding child", async () => {
         let scenario = await new ThreeScenario();
         let b3 = scenario.getBubble3InTree();

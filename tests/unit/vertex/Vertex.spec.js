@@ -145,41 +145,6 @@ describe('Vertex', () => {
             event1.canExpand()
         ).toBeTruthy();
     });
-    xit("removes suggestions related to an identification when identification removed", function () {
-        var vertexWithEventRelatedSuggestions = new Scenarios.oneBubbleHavingSuggestionsGraph().getVertexUi();
-        expect(
-            vertexWithEventRelatedSuggestions.getSuggestions().length
-        ).toBe(2);
-        vertexWithEventRelatedSuggestions.addSuggestions([
-                new Scenarios.getKaraokeSchemaGraph().getInviteesPropertyAsSuggestion()
-            ]
-        );
-        expect(
-            vertexWithEventRelatedSuggestions.getSuggestions().length
-        ).toBe(3);
-        vertexWithEventRelatedSuggestions.removeIdentifier(
-            vertexWithEventRelatedSuggestions.getModel().getIdentifiers()[0]
-        );
-        expect(
-            vertexWithEventRelatedSuggestions.getSuggestions().length
-        ).toBe(1);
-    });
-
-    xit("shows suggestions when new suggestions are added", function () {
-        var bubble2 = new Scenarios.threeBubblesGraph().getBubble2InTree();
-        expect(
-            bubble2.hasChildren()
-        ).toBeFalsy();
-        var suggestions = [
-            new Scenarios.getKaraokeSchemaGraph().getLocationPropertyAsSuggestion()
-        ];
-        bubble2.addSuggestions(
-            suggestions
-        );
-        expect(
-            bubble2.hasChildren()
-        ).toBeTruthy();
-    });
 
     it("can remove a vertex under a meta bubble", async () => {
         let scenario = await new AroundEventTagScenario();
