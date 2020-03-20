@@ -5,6 +5,7 @@
 import axios from 'axios'
 import Store from '@/store'
 import RequestErrors from '@/requestError'
+import IdUri from "./IdUri";
 
 
 const Service = {
@@ -32,8 +33,10 @@ const Service = {
         });
         axiosInstance.interceptors.response.use(null, async function (error) {
             if (error.response && error.response.status === 401) {
-                // await Store.dispatch('setUser', undefined);
-                // await Store.dispatch('setXsrfToken', undefined);
+                if (Store.state.user && Store.state.user.username === IdUri.currentUsernameInUrl()) {
+                    await Store.dispatch('setUser', undefined);
+                    await Store.dispatch('setXsrfToken', undefined);
+                }
                 if (loginPages.indexOf(window.location.pathname) === -1) {
                     window.location.href = '/'
                 }

@@ -740,20 +740,20 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
             bubbleToSelect = this.model().getParentFork();
         }
     }
-    let relatedVerticesUri = {};
+    // let relatedVerticesUri = {};
     graphElements.forEach(function (bubble) {
-        let parentVertexUri = bubble.getParentVertex().getUri();
-        let nextBubble = bubble.getParentVertex().getUri();
-        relatedVerticesUri.add();
-        if (bubble.getNextBubble().isVertexType()) {
-            relatedVerticesUri.add(bubble.getNextBubble().getUri());
-        }
+        // let parentVertexUri = bubble.getParentVertex().getUri();
+        // let nextBubble = bubble.getParentVertex().getUri();
+        // relatedVerticesUri.add();
+        // if (bubble.getNextBubble().isVertexType()) {
+        //     relatedVerticesUri.add(bubble.getNextBubble().getUri());
+        // }
         bubble.remove();
     });
 
-    relatedVerticesUri.keys().forEach(()=>{
-
-    });
+    // relatedVerticesUri.keys().forEach(() => {
+    //
+    // });
     if (bubbleToSelect) {
         Selection.setToSingle(bubbleToSelect);
     } else {
@@ -853,20 +853,10 @@ GraphElementController.prototype.setShareLevelDo = function (shareLevel) {
     let graphElementsToUpdate = this.getUiArray().filter((bubble) => {
         return bubble.canChangeShareLevel() && !bubble.isGroupRelation() && bubble.getShareLevel() !== shareLevel.toUpperCase()
     }).map((bubble) => {
-        if (bubble.isVertex() && ShareLevel.isPublic(shareLevel)) {
-            bubble.getParentVertex().incrementNbPublicNeighbors();
-        }
-        if (bubble.isVertex() && shareLevel === ShareLevel.FRIENDS) {
-            bubble.getParentVertex().incrementNbFriendNeighbors();
-        }
+        bubble.getParentVertex().getNbNeighbors().incrementForShareLevel(shareLevel);
         bubble.setShareLevel(shareLevel);
         bubble.refreshButtons();
-        if (bubble.isVertex() && bubble.isPublic()) {
-            bubble.getParentVertex().decrementNbPublicNeighbors();
-        }
-        if (bubble.isVertex() && bubble.isFriendsOnly()) {
-            bubble.getParentVertex().decrementNbFriendNeigbors();
-        }
+        bubble.getParentVertex().getNbNeighbors().decrementForShareLevel(shareLevel);
         return bubble;
     });
     if (graphElementsToUpdate.length === 0) {
