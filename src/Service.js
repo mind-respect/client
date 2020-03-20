@@ -32,8 +32,8 @@ const Service = {
         });
         axiosInstance.interceptors.response.use(null, async function (error) {
             if (error.response && error.response.status === 401) {
-                await Store.dispatch('setUser', undefined);
-                await Store.dispatch('setXsrfToken', undefined);
+                // await Store.dispatch('setUser', undefined);
+                // await Store.dispatch('setXsrfToken', undefined);
                 if (loginPages.indexOf(window.location.pathname) === -1) {
                     window.location.href = '/'
                 }
