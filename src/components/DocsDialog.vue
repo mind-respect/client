@@ -412,7 +412,7 @@
                         </v-layout>
                         <v-layout class="mt-6 body-1">
                             <v-flex xs2 class="text-left">
-                                <v-icon>format_paint</v-icon>
+                                <v-icon>color_lens</v-icon>
                             </v-flex>
                             <v-flex xs10>
                                 {{$t('guide:E2')}}
@@ -428,12 +428,12 @@
                             <v-flex xs2 class="font-weight-bold text-left body-1">
                                 {{$t('guide:icon')}}
                             </v-flex>
-                            <v-flex xs0 lg2 class="text-left body-1">
-                                <v-icon v-if="$vuetify.breakpoint.lgAndUp">
-                                    keyboard
-                                </v-icon>
-                            </v-flex>
-                            <v-flex xs10 lg8 class="text-left font-weight-bold body-1">
+<!--                            <v-flex xs0 lg2 class="text-left body-1">-->
+<!--                                <v-icon v-if="$vuetify.breakpoint.lgAndUp">-->
+<!--                                    keyboard-->
+<!--                                </v-icon>-->
+<!--                            </v-flex>-->
+                            <v-flex xs10 lg10 class="text-left font-weight-bold body-1">
                                 Description
                             </v-flex>
                         </v-layout>
@@ -458,31 +458,31 @@
                                 </p>
                             </v-flex>
                         </v-layout>
-                        <v-layout class="mt-6">
-                            <v-flex xs2 class="text-left">
-                                <v-icon>public</v-icon>
-                            </v-flex>
-                            <v-flex lg2 v-if="$vuetify.breakpoint.lgAndUp">
-                                {{ctrlKey}} + P
-                            </v-flex>
-                            <v-flex xs10 lg8>
-                                {{$t('button:makePublic')}}
-                            </v-flex>
-                        </v-layout>
-                        <v-layout class="mt-6">
-                            <v-flex xs2 class="text-left">
-                                <v-icon>lock</v-icon>
-                            </v-flex>
-                            <v-flex lg2 v-if="$vuetify.breakpoint.lgAndUp">
-                                {{ctrlKey}} + P
-                            </v-flex>
-                            <v-flex xs10 lg8>
-                                {{$t('button:makePrivate')}}
-                            </v-flex>
-                        </v-layout>
-                        <v-layout class="mt-6">
-                            <v-flex xs2 class="text-left">
-                                <v-icon>share</v-icon>
+<!--                        <v-layout class="mt-6">-->
+<!--                            <v-flex xs2 class="text-left">-->
+<!--                                <v-icon>public</v-icon>-->
+<!--                            </v-flex>-->
+<!--                            <v-flex lg2 v-if="$vuetify.breakpoint.lgAndUp">-->
+<!--                                {{ctrlKey}} + P-->
+<!--                            </v-flex>-->
+<!--                            <v-flex xs10 lg8>-->
+<!--                                {{$t('button:makePublic')}}-->
+<!--                            </v-flex>-->
+<!--                        </v-layout>-->
+<!--                        <v-layout class="mt-6">-->
+<!--                            <v-flex xs2 class="text-left">-->
+<!--                                <v-icon>lock</v-icon>-->
+<!--                            </v-flex>-->
+<!--                            <v-flex lg2 v-if="$vuetify.breakpoint.lgAndUp">-->
+<!--                                {{ctrlKey}} + P-->
+<!--                            </v-flex>-->
+<!--                            <v-flex xs10 lg8>-->
+<!--                                {{$t('button:makePrivate')}}-->
+<!--                            </v-flex>-->
+<!--                        </v-layout>-->
+<!--                        <v-layout class="mt-6">-->
+<!--                            <v-flex xs2 class="text-left">-->
+<!--                                <v-icon>share</v-icon>-->
                                 <!--                                <v-btn small disabled>-->
                                 <!--                                    <v-icon>public</v-icon>-->
                                 <!--                                </v-btn>-->
@@ -495,19 +495,17 @@
                                 <!--                                <v-btn small disabled>-->
                                 <!--                                    <v-icon>lock</v-icon>-->
                                 <!--                                </v-btn>-->
-                            </v-flex>
-                            <v-flex xs0 lg2></v-flex>
-                            <v-flex xs10 lg8>
-                                {{$t('guide:F1')}}
-                            </v-flex>
-                        </v-layout>
+<!--                            </v-flex>-->
+<!--                            <v-flex xs0 lg2></v-flex>-->
+<!--                            <v-flex xs10 lg8>-->
+<!--                                {{$t('guide:F1')}}-->
+<!--                            </v-flex>-->
+<!--                        </v-layout>-->
                         <v-layout class="mt-6">
                             <v-flex xs2 class="text-left">
                                 <v-icon>format_list_bulleted</v-icon>
                             </v-flex>
-                            <v-flex xs0 lg2>
-                            </v-flex>
-                            <v-flex xs10 lg8>
+                            <v-flex xs12>
                                 {{$t('guide:F3')}}
                                 <v-btn text small @click="">
                                     <v-icon class="mr-2">
@@ -571,7 +569,7 @@
                 D5: "",
                 D6: "",
                 E1: "Modifier la police de la bulle centrale",
-                E2: "Modifier la couleur de fond de la bulle centrale",
+                E2: "Modifier la couleur de fond de la bulle sélectionnée",
                 F1: "Options de partage",
                 F3: "Voir en liste, puis appuyer sur le bouton",
                 copy: "copier",
@@ -632,7 +630,7 @@
                 D5: "",
                 D6: "",
                 E1: "Change the font of the central bubble",
-                E2: "Change the background color of the central bubble",
+                E2: "Change the background color of the selected bubble",
                 F1: "Sharing options",
                 F3: "View in list, then press the button",
                 copy: "copy",
