@@ -204,7 +204,7 @@ Tag.Tag.prototype.getNbNeighbors = function () {
 Tag.Tag.prototype.setNbNeighbors = function (nbNeighbors) {
     this._applyToAllTags(function (tag) {
         if (tag.identificationServerFormat) {
-            this.nbNeighbors = nbNeighbors;
+            tag.nbNeighbors = nbNeighbors;
         }
     });
 };

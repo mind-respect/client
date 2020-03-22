@@ -86,7 +86,7 @@ TagVertex.prototype.getNumberOfChild = function () {
         let nbChild = parentFork.getClosestChildrenOfType(GraphElementType.Relation).length;
         return this.getOriginalMeta().getNbNeighbors().getTotal() - nbChild;
     } else {
-        return this.getOriginalMeta().getNbNeighbors().getTotal() - 1;
+        return this.getOriginalMeta().getNbNeighbors().getTotalChildren();
     }
 };
 

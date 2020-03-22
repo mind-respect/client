@@ -105,14 +105,7 @@ Vertex.prototype.buildNbNeighbors = function () {
 
 Vertex.prototype.getNumberOfChild = function (isLeft) {
     let children = this.getNextChildren(isLeft);
-    return children.length ? children.length : Math.max(
-        (
-            Store.state.isViewOnly ?
-                this.nbNeighbors.getPublic() - 1 :
-                this.nbNeighbors.getTotal() - 1
-        ),
-        0
-    );
+    return children.length ? children.length : this.nbNeighbors.getTotalChildren();
 };
 
 Vertex.prototype.resetChildren = function () {

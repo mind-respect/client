@@ -246,7 +246,7 @@ GraphElement.GraphElement.prototype.getIdentifiersIncludingSelf = function (prev
 GraphElement.GraphElement.prototype.getTagsAndSelfIfRelevant = function () {
     return this.identifiers.filter((tag) => {
         return tag.getExternalResourceUri() !== this.getUri()
-            || tag.getNbNeighbors().getTotal() > 1;
+            || tag.getNbNeighbors().getTotalChildren() > 0;
     });
 };
 
@@ -256,7 +256,7 @@ GraphElement.GraphElement.prototype.hasRelevantTags = function () {
 
 GraphElement.GraphElement.prototype.getRelevantTags = function () {
     return this.getIdentifiersIncludingSelf().filter(function (tag) {
-        return tag.getNbNeighbors().getTotal() > 0;
+        return tag.getNbNeighbors().getTotalChildren() > 0;
     });
 };
 

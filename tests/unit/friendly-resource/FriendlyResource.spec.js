@@ -760,9 +760,16 @@ describe("FriendlyResource", () => {
     describe("selectTree", () => {
         it("prevents select twice if already selected", async () => {
             let scenario = await new ThreeScenario();
-            let b2 = scenario.getBubble2InTree();
-            await scenario.expandBubble2(b2);
+            let center = scenario.getCenterInTree();
+            let b2 = TestUtil.getChildWithLabel(
+                center,
+                "r1"
+            ).getNextBubble();
             Selection.setToSingle(b2);
+            await scenario.expandBubble2(b2);
+            expect(
+                Selection.getNbSelected()
+            ).toBe(1);
             b2.selectTree();
             expect(
                 Selection.getNbSelected()

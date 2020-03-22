@@ -829,7 +829,7 @@ FriendlyResource.FriendlyResource.prototype.getDescendants = function (toTheLeft
         if (child.isLeaf()) {
             return children;
         } else {
-            return children.concat(child.getDescendants(toTheLeft, filter));
+            return children.concat(child.getDescendants(toTheLeft, filter, evenIfCollapsed));
         }
     }, []);
 };

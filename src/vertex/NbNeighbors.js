@@ -57,6 +57,13 @@ NbNeighbors.prototype.getTotal = function () {
     return this.nbPrivate + this.nbFriend + this.nbPublic;
 };
 
+NbNeighbors.prototype.getTotalChildren = function () {
+    return Math.max(
+        this.getTotal() - 1,
+        0
+    );
+};
+
 NbNeighbors.prototype.toJsonObject = function () {
     return {
         private_: this.getPrivate(),
