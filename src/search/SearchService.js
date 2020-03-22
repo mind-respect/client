@@ -20,7 +20,7 @@ SearchService.tags = function (term, nbSkip) {
     }
     return resultsFromProviders(providers, [
         SearchService._sortIsMindRespect,
-        SearchService._sortByNbReferences,
+        SearchService._sortByNbNbNeighbors,
         SearchService._sortByNbVisits
     ]);
 };
@@ -29,7 +29,7 @@ SearchService.ownTagsOnly = function (term, nbSkip) {
         SearchService._ownTagsOnly(term, nbSkip)
     ], [
         SearchService._sortIsMindRespect,
-        SearchService._sortByNbReferences,
+        SearchService._sortByNbNbNeighbors,
         SearchService._sortByNbVisits
     ]);
 };
@@ -45,7 +45,7 @@ SearchService.searchForAllOwnResources = function (searchText, nbSkip) {
     return resultsFromProviders(providers, [
         SearchService._sortIsMindRespect,
         SearchService._sortByNbVisits,
-        SearchService._sortByNbReferences
+        SearchService._sortByNbNbNeighbors
     ]);
 };
 
@@ -146,10 +146,10 @@ SearchService._sortIsMindRespect = function (x, y) {
     return (x.isMindRespect === y.isMindRespect) ? 0 : x.isMindRespect ? -1 : 1;
 };
 
-SearchService._sortByNbReferences = function (x, y) {
-    let xNbReferences = x.isMindRespect ? x.original.getNbRerences() : 0;
-    let yNbReferences = y.isMindRespect ? y.original.getNbRerences() : 0;
-    return yNbReferences - xNbReferences;
+SearchService._sortByNbNbNeighbors = function (x, y) {
+    let xNbNeighbors = x.isMindRespect ? x.original.getNbNeighbors().getTotal() : 0;
+    let yNbNbNeighbors = y.isMindRespect ? y.original.getNbNeighbors().getTotal() : 0;
+    return yNbNbNeighbors - xNbNeighbors;
 };
 
 SearchService._sortByNbVisits = function (x, y) {

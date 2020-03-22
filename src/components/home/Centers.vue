@@ -84,7 +84,7 @@
                                                         <span class="font-weight-bold" :class="{
                                                             'black--text':!shouldTextBeWhiteFromBackgroundColor(center.getChipBackgroundColor())
                                                         }">
-                                                           {{center.getNbReferences()}}
+                                                           {{center.getNbNeighbors().getTotal()}}
                                                         </span>
                                                     </template>
                                                     <v-avatar :color="center.getChipBackgroundColor()" size="28">

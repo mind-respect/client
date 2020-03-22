@@ -58,7 +58,7 @@
                                                         'black--text' : !shouldTextBeWhiteFromBackgroundColor(tag.isBackgroundColorDefined() ? tag.getBackgroundColor() : 'grey')
                                                     }"
                                             >
-                                                {{tag.getNbReferences()}}
+                                                {{tag.getNbNeighbors().getTotal()}}
                                             </span>
                                         </template>
                                         <v-icon class="mr-1 grey--text" small>

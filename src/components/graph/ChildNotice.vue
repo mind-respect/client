@@ -62,7 +62,7 @@
         mounted: function () {
             this.isLeft = this.bubble.isToTheLeft();
             this.tooltipContentClass = this.isLeft ? "mr-4" : "ml-2";
-            this.nbChild = this.$store.state.isViewOnly && this.bubble.isVertex() ? this.bubble.getNbPublicNeighbors() - 1 : this.bubble.getNumberOfChild();
+            this.nbChild = this.bubble.getNumberOfChild();
             if (this.nbChild > 9) {
                 this.nbChild = "9+";
             }

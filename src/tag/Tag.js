@@ -11,6 +11,7 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import UserService from "@/service/UserService";
 import CurrentSubGraph from "../graph/CurrentSubGraph";
 import ShareLevel from '@/vertex/ShareLevel'
+import NbNeighbors from '@/vertex/NbNeighbors'
 
 const RELATION_URIS = {
     "sameAs": "same-as",
@@ -104,8 +105,8 @@ const Tag = {
         tag.setShareLevel(
             searchResult.shareLevel || ShareLevel.PRIVATE
         );
-        tag.setNbReferences(
-            searchResult.nbReferences || 0
+        tag.setNbNeighbors(
+            searchResult.getNbNeighbors()
         );
         return tag;
     }
@@ -118,6 +119,7 @@ Tag.Tag.prototype = new GraphElement.GraphElement();
 
 Tag.Tag.prototype.init = function (serverFormat) {
     this.identificationServerFormat = serverFormat;
+    this.nbNeighbors = NbNeighbors.fromServerFormat(serverFormat);
     if (!this.identificationServerFormat.shareLevel) {
         this.identificationServerFormat.shareLevel = ShareLevel.PRIVATE;
     }
@@ -195,25 +197,14 @@ Tag.Tag.prototype.getJsonFormat = function () {
     return serverFormat;
 };
 
-Tag.Tag.prototype.incrementNbReferences = function () {
-    if (this.identificationServerFormat.nbReferences === undefined) {
-        this.identificationServerFormat.nbReferences = 1;
-        return;
-    }
-    return this.identificationServerFormat.nbReferences++;
+Tag.Tag.prototype.getNbNeighbors = function () {
+    return this.nbNeighbors;
 };
 
-Tag.Tag.prototype.getNbReferences = function () {
-    if (this.identificationServerFormat.nbReferences === undefined) {
-        return 0;
-    }
-    return this.identificationServerFormat.nbReferences;
-};
-
-Tag.Tag.prototype.setNbReferences = function (nbReferences) {
+Tag.Tag.prototype.setNbNeighbors = function (nbNeighbors) {
     this._applyToAllTags(function (tag) {
         if (tag.identificationServerFormat) {
-            tag.identificationServerFormat.nbReferences = nbReferences;
+            this.nbNeighbors = nbNeighbors;
         }
     });
 };

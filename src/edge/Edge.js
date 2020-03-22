@@ -189,8 +189,11 @@ api.Edge.prototype.isFriendsOnly = function () {
 
 api.Edge.prototype.getShareLevel = function () {
     let sourceShareLevel = this.getSourceVertex().getShareLevel();
-    return sourceShareLevel === this.getDestinationVertex().getShareLevel() ?
-        sourceShareLevel : ShareLevel.PRIVATE;
+    let destinationShareLevel = this.getDestinationVertex().getShareLevel();
+    if (sourceShareLevel === destinationShareLevel) {
+        return sourceShareLevel;
+    }
+    return ShareLevel.getIndex(sourceShareLevel) < ShareLevel.getIndex(destinationShareLevel) ? sourceShareLevel : destinationShareLevel;
 };
 
 api.Edge.prototype.getOtherVertex = function (vertex) {

@@ -7,10 +7,9 @@ import ShareLevel from '@/vertex/ShareLevel'
 import GraphElementType from '@/graph-element/GraphElementType'
 import I18n from '@/I18n'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
-import Vue from 'vue'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import Store from '@/store'
-import UiUtils from "../UiUtils";
+import NbNeighbors from './NbNeighbors'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -23,7 +22,8 @@ api.fromGraphElementServerFormat = function (graphElementServerFormat) {
     return new Vertex().init({
         vertex: {
             graphElement: graphElementServerFormat,
-            shareLevel: ShareLevel.PRIVATE
+            shareLevel: ShareLevel.PRIVATE,
+            nbNeighbors: NbNeighbors.withZeros().toJsonObject()
         }
     });
 };
@@ -39,7 +39,8 @@ api.buildServerFormatFromUri = function (uri) {
     return {
         vertex: {
             graphElement: GraphElement.buildObjectWithUri(uri),
-            shareLevel: ShareLevel.PRIVATE
+            shareLevel: ShareLevel.PRIVATE,
+            nbNeighbors: NbNeighbors.withZeros().toJsonObject()
         }
     };
 };
@@ -49,7 +50,7 @@ api.buildServerFormatFromUi = function (vertexUi) {
             graphElement: GraphElement.buildServerFormatFromUi(
                 vertexUi
             ),
-            numberOfConnectedEdges: vertexUi.connectedEdges().length
+            nbNeighbors: vertexUi.buildNbNeighbors().toJsonObject()
         }
     };
 };
@@ -64,11 +65,13 @@ Vertex.prototype.init = function (vertexServerFormat) {
     if (!this._vertexServerFormat.vertex.shareLevel) {
         this.makePrivate();
     }
-    this._vertexServerFormat.vertex.numberOfConnectedEdges = this._vertexServerFormat.vertex.numberOfConnectedEdges || 0;
     this.leftBubbles = [];
     this.leftBubblesCollapsed = null;
     this.rightBubbles = [];
     this.rightBubblesCollapsed = null;
+    this.nbNeighbors = NbNeighbors.fromServerFormat(
+        this._vertexServerFormat.vertex.nbNeighbors
+    );
     GraphElement.GraphElement.apply(
         this
     );
@@ -88,8 +91,16 @@ Vertex.prototype.clone = function () {
     return vertex;
 };
 
-Vertex.prototype.getNumberOfConnectedEdges = function () {
-    return this._vertexServerFormat.vertex.numberOfConnectedEdges;
+Vertex.prototype.getNbNeighbors = function () {
+    return this.nbNeighbors;
+};
+
+Vertex.prototype.buildNbNeighbors = function () {
+    let nbNeighbors = NbNeighbors.withZeros();
+    this.getClosestChildrenInTypes(GraphElementType.getEdgeTypes(), true).forEach((child) => {
+        nbNeighbors.incrementForShareLevel(child.getShareLevel());
+    });
+    return nbNeighbors;
 };
 
 Vertex.prototype.getNumberOfChild = function (isLeft) {
@@ -97,8 +108,8 @@ Vertex.prototype.getNumberOfChild = function (isLeft) {
     return children.length ? children.length : Math.max(
         (
             Store.state.isViewOnly ?
-                this.getNbPublicNeighbors() - 1 :
-                this.getNumberOfConnectedEdges() - 1
+                this.nbNeighbors.getPublic() - 1 :
+                this.nbNeighbors.getTotal() - 1
         ),
         0
     );
@@ -113,40 +124,6 @@ Vertex.prototype.resetChildren = function () {
     this.rightBubbles = [];
     this.leftBubblesCollapsed = [];
     this.rightBubblesCollapsed = [];
-};
-
-
-Vertex.prototype.decrementNumberOfConnectedEdges = function () {
-    this._vertexServerFormat.vertex.numberOfConnectedEdges--;
-};
-
-Vertex.prototype.incrementNbConnectedEdges = function () {
-    this._vertexServerFormat.vertex.numberOfConnectedEdges++;
-};
-
-Vertex.prototype.incrementNbPublicNeighbors = function () {
-    this._vertexServerFormat.vertex.nbPublicNeighbors++;
-};
-
-
-Vertex.prototype.decrementNbPublicNeighbors = function () {
-    this._vertexServerFormat.vertex.nbPublicNeighbors--;
-};
-
-Vertex.prototype.getNbPublicNeighbors = function () {
-    return this._vertexServerFormat.vertex.nbPublicNeighbors;
-};
-
-Vertex.prototype.getNbFriendNeighbors = function () {
-    return this._vertexServerFormat.vertex.nbFriendNeighbors;
-};
-
-Vertex.prototype.incrementNbFriendNeighbors = function () {
-    this._vertexServerFormat.vertex.nbFriendNeighbors++;
-};
-
-Vertex.prototype.decrementNbFriendNeigbors = function () {
-    this._vertexServerFormat.vertex.nbFriendNeighbors--;
 };
 
 Vertex.prototype.isPublic = function () {
@@ -278,7 +255,7 @@ Vertex.prototype.collapse = function (preventScroll, preventApplyToDescendants) 
     if (!this.isExpanded) {
         return;
     }
-    this._vertexServerFormat.vertex.nbPublicNeighbors = this._vertexServerFormat.vertex.numberOfConnectedEdges = this.getNextChildren().length + 1;
+    this.nbNeighbors = this.buildNbNeighbors();
     this.rightBubblesCollapsed = this.rightBubbles;
     this.leftBubblesCollapsed = this.leftBubbles;
     this.rightBubbles = [];
@@ -372,7 +349,7 @@ Vertex.prototype.removeChild = function (child, isTemporary, avoidRedraw) {
         }
     }
     if (removedChild && child.isEdge()) {
-        this.decrementNumberOfConnectedEdges();
+        this.nbNeighbors.decrementForShareLevel(child.getShareLevel());
     }
     if (!isTemporary) {
         this.refreshChildren(avoidRedraw);

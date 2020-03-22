@@ -23,7 +23,7 @@
                         'white--text': shouldTextBeWhiteFromBackgroundColor(tag.getChipBackgroundColor())
                     }"
             >
-                {{tag.getNbReferences()}}
+                {{tag.getNbNeighbors().getTotal()}}
             </v-avatar>
         </v-chip>
     </v-chip-group>

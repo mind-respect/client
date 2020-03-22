@@ -306,7 +306,7 @@ describe('VertexController', () => {
                 b2Child.getNextChildren().length
             ).toBe(0);
             expect(
-                b2Child.getNumberOfConnectedEdges()
+                b2Child.getNbNeighbors().getTotal()
             ).toBe(3);
             expect(
                 b2Child.getNumberOfChild()
@@ -862,7 +862,7 @@ describe('VertexController', () => {
                 groupRelation.getNumberOfChild()
             ).toBe(groupRelationNumberOfChild);
         });
-        it("removes tags of relations under group relation when moving away from group relation", async () => {
+        fit("removes tags of relations under group relation when moving away from group relation", async () => {
             let scenario = await new TwoLevelGroupRelationScenario();
             let center = scenario.getCenterInTree();
             let group1 = TestUtil.getChildWithLabel(

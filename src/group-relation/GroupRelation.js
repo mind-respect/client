@@ -346,8 +346,8 @@ GroupRelation.prototype.getBackgroundColor = function () {
     return this.getIdentification().getBackgroundColor()
 };
 
-GroupRelation.prototype.setNbReferences = function (nbReferences) {
-    this.getIdentification().setNbReferences(nbReferences);
+GroupRelation.prototype.setNbNeighbors = function (nbNeighbors) {
+    this.getIdentification().nbNeighbors(nbNeighbors);
 };
 
 GroupRelation.prototype.setShareLevel = function (shareLevel) {

@@ -31,14 +31,14 @@ describe("EdgeController", () => {
             let threeBubblesScenario = await new ThreeScenario();
             let bubble1 = threeBubblesScenario.getBubble1InTree();
             expect(
-                bubble1.model().getNumberOfConnectedEdges()
+                bubble1.getNbNeighbors().getTotal()
             ).toBe(
                 2
             );
             let relation1 = bubble1.getNextBubble();
             await relation1.controller().remove(true);
             expect(
-                bubble1.model().getNumberOfConnectedEdges()
+                bubble1.getNbNeighbors().getTotal()
             ).toBe(
                 1
             );
@@ -782,11 +782,11 @@ describe("EdgeController", () => {
             relation.setLabel("rel label");
             expect(relation.isEdge()).toBeTruthy();
             expect(
-                center.getIdentifiersIncludingSelf()[0].getNbReferences()
+                center.getIdentifiersIncludingSelf()[0].getNbNeighbors().getTotal()
             ).toBe(0);
             await relation.controller().leaveContextDo();
             expect(
-                center.getIdentifiersIncludingSelf()[0].getNbReferences()
+                center.getIdentifiersIncludingSelf()[0].getNbNeighbors().getTotal()
             ).toBe(1);
         });
         it("adds new vertex in current sub graph", async () => {

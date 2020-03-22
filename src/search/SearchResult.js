@@ -7,6 +7,7 @@ import Icon from '@/Icon'
 import ShareLevel from '@/vertex/ShareLevel'
 import Vertex from '@/vertex/Vertex'
 import Tag from "@/tag/Tag";
+import NbNeighbors from '@/vertex/NbNeighbors'
 
 const api = {};
 api.fromServerFormatArray = function (searchResultsServerFormat) {
@@ -53,8 +54,8 @@ api.fromServerFormat = function (searchResult) {
             tag.setShareLevel(
                 searchResult.shareLevel
             );
-            tag.setNbReferences(
-                searchResult.nbReferences
+            tag.setNbNeighbors(
+                NbNeighbors.fromServerFormat(searchResult.nbNeighbors)
             );
             return new SearchResult(
                 tag,
@@ -119,7 +120,7 @@ api.fromGraphElement = function (graphElement) {
             context: context,
             shareLevel: graphElement.getShareLevel(),
             colors: graphElement.getColors(),
-            nbReferences: graphElement.getNbReferences ? graphElement.getNbReferences() : 0,
+            nbNeighbors: graphElement.getNbNeighbors ? graphElement.getNbNeighbors().toJsonObject() : NbNeighbors.withZeros().toJsonObject(),
             isMindRespect: true,
             original: graphElement
         }
@@ -143,6 +144,9 @@ function SearchResult(graphElement, graphElementType, somethingToDistinguish, se
     this.somethingToDistinguish = somethingToDistinguish;
     this.serverFormat = serverFormat;
     this.context = this.serverFormat.context;
+    this.nbNeighbors = NbNeighbors.fromServerFormat(
+        serverFormat.nbNeighbors
+    );
 }
 
 SearchResult.prototype.getGraphElement = function () {
@@ -157,8 +161,8 @@ SearchResult.prototype.getNbVisits = function () {
     return this.serverFormat.nbVisits || 0;
 };
 
-SearchResult.prototype.getNbRerences = function () {
-    return this.serverFormat.nbReferences || 0;
+SearchResult.prototype.getNbNeighbors = function () {
+    return this.nbNeighbors;
 };
 
 SearchResult.prototype.is = function (graphElementType) {

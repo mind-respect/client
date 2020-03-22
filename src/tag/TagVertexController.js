@@ -76,7 +76,7 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                 return;
             }
             if (sourceVertexAndEdges.edges.length === 0) {
-                vertex.incrementNbConnectedEdges();
+                vertex.getNbNeighbors().incrementForShareLevel(centerBubble.getShareLevel());
                 child = new TagRelation(vertex, centerBubble);
                 edges.push(child);
             } else {

@@ -57,8 +57,8 @@ TagVertex.prototype.setOriginalMeta = function (originalMeta) {
     this.setFont(
         originalMeta.getFont()
     );
-    this.setNbReferences(
-        originalMeta.getNbReferences()
+    this.setNbNeighbors(
+        originalMeta.getNbNeighbors()
     );
     this.setShareLevel(
         originalMeta.identificationServerFormat.shareLevel
@@ -84,9 +84,9 @@ TagVertex.prototype.getNumberOfChild = function () {
     let parentFork = this.getParentFork();
     if (parentFork.isGroupRelation()) {
         let nbChild = parentFork.getClosestChildrenOfType(GraphElementType.Relation).length;
-        return this.getOriginalMeta().getNbReferences() - nbChild;
+        return this.getOriginalMeta().getNbNeighbors().getTotal() - nbChild;
     } else {
-        return this.getOriginalMeta().getNbReferences() - 1;
+        return this.getOriginalMeta().getNbNeighbors().getTotal() - 1;
     }
 };
 
@@ -102,12 +102,12 @@ TagVertex.prototype.setComment = function (label) {
     this.getOriginalMeta().setComment(label);
 };
 
-TagVertex.prototype.setNbReferences = function (nbReferences) {
-    this.getOriginalMeta().setNbReferences(nbReferences);
+TagVertex.prototype.setNbNeighbors = function (nbNeighbors) {
+    this.getOriginalMeta().setNbNeighbors(nbNeighbors);
 };
 
-TagVertex.prototype.getNbReferences = function () {
-    return this.getOriginalMeta().getNbReferences();
+TagVertex.prototype.getNbNeighbors = function () {
+    return this.getOriginalMeta().getNbNeighbors();
 };
 
 
