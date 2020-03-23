@@ -16,17 +16,8 @@ const IdUri = {
     currentUsernameInUrl: function () {
         return Router.history.current.params.username;
     },
-    isSchemaUri: function (uri) {
-        return uri.indexOf("/schema/") !== -1 &&
-            uri.indexOf("/property") === -1;
-    },
     isEdgeUri: function (uri) {
         return GraphElementType.Relation === IdUri.getGraphElementTypeFromUri(
-            uri
-        );
-    },
-    isPropertyUri: function (uri) {
-        return GraphElementType.Property === IdUri.getGraphElementTypeFromUri(
             uri
         );
     },
@@ -44,16 +35,6 @@ const IdUri = {
         return "" === IdUri.getGraphElementTypeFromUri(
             uri
         );
-    },
-    schemaUriOfProperty: function (propertyUri) {
-        return propertyUri.substr(
-            0,
-            propertyUri.indexOf("/property")
-        );
-    },
-    uriFromGraphElementId: function (id) {
-        let username = UserService.authenticatedUserInCache().user_name;
-        return "/users" + username + "/" + id;
     },
     vertexBaseUri: function () {
         return UserService.currentUserUri() + "/graph/vertex";
@@ -85,14 +66,12 @@ const IdUri = {
         );
     },
     convertGraphElementUriToNonOwnedUri: function (uri) {
-        var end = "schema" === IdUri.getGraphElementTypeFromUri(uri) ?
-            "" : "/surround_graph";
         return "/service/users/" +
             IdUri.getOwnerFromUri(uri) +
             "/non_owned/" +
             IdUri.getGraphElementTypeFromUri(uri) + "/" +
             IdUri.getGraphElementShortIdFromUri(uri) +
-            end;
+            "/surround_graph";
     },
     getGraphElementTypeFromUri: function (uri) {
         uri = uri.substr(
@@ -130,9 +109,6 @@ const IdUri = {
         return window.location.protocol + "//" + window.location.host + IdUri.htmlUrlForBubbleUri(graphElementUri);
     },
     htmlUrlForBubbleUri: function (graphElementUri) {
-        if (IdUri.isPropertyUri(graphElementUri)) {
-            graphElementUri = IdUri.schemaUriOfProperty(graphElementUri);
-        }
         return graphElementUri.replace(
             "/service/users",
             "/user"

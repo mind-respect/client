@@ -424,6 +424,7 @@ GraphElement.GraphElement.prototype.addIdentification = function (tag) {
             tag.getExternalResourceUri()
         );
         if (original) {
+            tag.getNbNeighbors().incrementForShareLevel(original.getShareLevel());
             original.addIdentification(tag);
         }
     }

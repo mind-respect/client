@@ -72,11 +72,7 @@ api._setIsViewOnly = function (isViewOnly) {
     _isViewOnly = isViewOnly;
     Store.dispatch("setIsViewOnly", _isViewOnly);
 };
-api.isSchemaMode = function () {
-    return IdUri.isSchemaUri(
-        IdUri.getGraphElementUriInUrl()
-    );
-};
+
 // api.isInCompareMode = function () {
 //     var $compareFlowWarning = $(
 //         "#compare-flow-warning"

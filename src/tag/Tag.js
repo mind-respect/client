@@ -59,7 +59,7 @@ const Tag = {
             tag,
             friendlyResource.getLabel()
         );
-        FriendlyResource.FriendlyResource.prototype.setLabel.call(
+        FriendlyResource.FriendlyResource.prototype.setComment.call(
             tag,
             friendlyResource.getComment()
         );
@@ -119,7 +119,7 @@ Tag.Tag.prototype = new GraphElement.GraphElement();
 
 Tag.Tag.prototype.init = function (serverFormat) {
     this.identificationServerFormat = serverFormat;
-    this.nbNeighbors = NbNeighbors.fromServerFormat(serverFormat);
+    this.nbNeighbors = serverFormat.nbNeighbors ? NbNeighbors.fromServerFormat(serverFormat.nbNeighbors) : NbNeighbors.withZeros();
     if (!this.identificationServerFormat.shareLevel) {
         this.identificationServerFormat.shareLevel = ShareLevel.PRIVATE;
     }

@@ -91,7 +91,7 @@ describe('Vertex', () => {
         expect(
             b3.canExpand()
         ).toBeTruthy();
-        MindMapInfo._setIsViewOnly(true);
+        b2.getNbNeighbors().nbPrivate = 0;
         expect(
             b2.canExpand()
         ).toBeFalsy();

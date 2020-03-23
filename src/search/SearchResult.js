@@ -65,12 +65,6 @@ api.fromServerFormat = function (searchResult) {
             );
     }
 };
-api._buildPropertySomethingToDistinguish = function (searchResult) {
-    if (!searchResult.context) {
-        return "";
-    }
-    return "<- " + searchResult.context[Object.keys(searchResult.context)];
-};
 api._buildMetaSomethingToDistinguish = function (searchResult) {
     if (!searchResult.context) {
         return "";
@@ -92,13 +86,6 @@ api._buildSomethingToDistinguish = function (searchResult) {
 api._buildEdgeSomethingToDistinguish = function (searchResult) {
     let contextValues = Object.values(searchResult.context);
     return contextValues[0] + "  " + contextValues[1];
-};
-api._buildSchemaSomethingToDistinguish = function (schema) {
-    return api.formatRelationsName(
-        api.removedEmptyAndDuplicateRelationsName(
-            schema.getPropertiesName()
-        )
-    );
 };
 api.fromGraphElement = function (graphElement) {
     let somethingToDistinguish = graphElement.isEdge() ? [
