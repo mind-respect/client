@@ -853,20 +853,10 @@ GraphElementController.prototype.setShareLevelDo = function (shareLevel) {
     let graphElementsToUpdate = this.getUiArray().filter((bubble) => {
         return bubble.canChangeShareLevel() && !bubble.isGroupRelation() && bubble.getShareLevel() !== shareLevel.toUpperCase()
     }).map((bubble) => {
-        if (bubble.isVertex() && ShareLevel.isPublic(shareLevel)) {
-            bubble.getParentVertex().incrementNbPublicNeighbors();
-        }
-        if (bubble.isVertex() && shareLevel === ShareLevel.FRIENDS) {
-            bubble.getParentVertex().incrementNbFriendNeighbors();
-        }
+        bubble.getParentVertex().getNbNeighbors().incrementForShareLevel(shareLevel);
         bubble.setShareLevel(shareLevel);
         bubble.refreshButtons();
-        if (bubble.isVertex() && bubble.isPublic()) {
-            bubble.getParentVertex().decrementNbPublicNeighbors();
-        }
-        if (bubble.isVertex() && bubble.isFriendsOnly()) {
-            bubble.getParentVertex().decrementNbFriendNeigbors();
-        }
+        bubble.getParentVertex().getNbNeighbors().decrementForShareLevel(shareLevel);
         return bubble;
     });
     if (graphElementsToUpdate.length === 0) {
