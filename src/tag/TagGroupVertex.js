@@ -19,9 +19,4 @@ TagGroupVertex.prototype.getGraphElementType = function () {
     return GraphElementType.MetaGroupVertex;
 };
 
-TagGroupVertex.prototype.getNumberOfChild = function (isLeft) {
-    let children = this.getNextChildren(isLeft);
-    return children.length ? children.length : this.nbNeighbors.getTotal();
-};
-
 export default TagGroupVertex;

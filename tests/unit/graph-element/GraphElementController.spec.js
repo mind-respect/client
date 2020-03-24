@@ -189,7 +189,7 @@ describe('GraphElementController', () => {
                 graphElementsNbNeighborsIsSet[1].getNbNeighbors().getTotal()
             ).toBe(2);
         });
-        fit("sets nb neighbors considering removed children and relation", async () => {
+        it("sets nb neighbors considering removed children and relation", async () => {
             let scenario = await new ThreeScenario();
             let b1 = scenario.getBubble1InTree();
             jest.clearAllMocks();
@@ -217,6 +217,56 @@ describe('GraphElementController', () => {
             expect(
                 graphElementsNbNeighborsIsSet[1].getUri()
             ).toBe(b2.getUri());
+            expect(
+                graphElementsNbNeighborsIsSet[1].getNbNeighbors().getTotal()
+            ).toBe(1);
+        });
+        it("changes nb neighbors of tags", async () => {
+            let scenario = await new ThreeScenario();
+            let b1 = scenario.getBubble1InTree();
+            let b2 = TestUtil.getChildWithLabel(
+                b1,
+                "r1"
+            ).getNextBubble();
+            let tag = TestUtil.dummyTag();
+            tag.getNbNeighbors().incrementForShareLevel(ShareLevel.PRIVATE);
+            tag.getNbNeighbors().incrementForShareLevel(ShareLevel.PRIVATE);
+            b2.addIdentification(tag);
+            let graphElementsNbNeighborsIsSet = [];
+            jest.spyOn(GraphElementService, "setNbNeighbors").mockImplementation(async (graphElement) => {
+                graphElementsNbNeighborsIsSet.push(graphElement);
+            });
+            await b2.controller().removeDo();
+            expect(
+                graphElementsNbNeighborsIsSet[1].getUri()
+            ).toBe(tag.getUri());
+            expect(
+                graphElementsNbNeighborsIsSet[1].getNbNeighbors().getTotal()
+            ).toBe(1);
+        });
+        it("changes nb neighbors of tags of related edges", async () => {
+            let scenario = await new ThreeScenario();
+            let b1 = scenario.getBubble1InTree();
+            let r1 = TestUtil.getChildWithLabel(
+                b1,
+                "r1"
+            );
+            let b2 = r1.getNextBubble();
+            let tag = TestUtil.dummyTag();
+            tag.getNbNeighbors().incrementForShareLevel(ShareLevel.PRIVATE);
+            tag.getNbNeighbors().incrementForShareLevel(ShareLevel.PRIVATE);
+            r1.addIdentification(tag);
+            let graphElementsNbNeighborsIsSet = [];
+            jest.spyOn(GraphElementService, "setNbNeighbors").mockImplementation(async (graphElement) => {
+                graphElementsNbNeighborsIsSet.push(graphElement);
+            });
+            await b2.controller().removeDo();
+            expect(
+                graphElementsNbNeighborsIsSet.length
+            ).toBe(2);
+            expect(
+                graphElementsNbNeighborsIsSet[1].getUri()
+            ).toBe(tag.getUri());
             expect(
                 graphElementsNbNeighborsIsSet[1].getNbNeighbors().getTotal()
             ).toBe(1);

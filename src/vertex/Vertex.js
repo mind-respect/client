@@ -101,6 +101,9 @@ Vertex.prototype.setNbNeighbors = function (nbNeighbors) {
 
 Vertex.prototype.buildNbNeighbors = function () {
     let nbNeighbors = NbNeighbors.withZeros();
+    if (!this.isCenter) {
+        nbNeighbors.incrementForShareLevel(this.getParentVertex().getShareLevel());
+    }
     this.getClosestChildrenInTypes(GraphElementType.getEdgeTypes(), true).forEach((child) => {
         nbNeighbors.incrementForShareLevel(child.getShareLevel());
     });

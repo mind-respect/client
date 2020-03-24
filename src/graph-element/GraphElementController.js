@@ -20,7 +20,7 @@ import TagRelation from "@/tag/TagRelation";
 import TagVertex from "@/tag/TagVertex";
 import Scroll from "../Scroll";
 import ShareLevel from '@/vertex/ShareLevel'
-import NbNeighbors from '@/vertex/NbNeighbors'
+import NbNeighborsRefresherOnRemove from "./NbNeighborsRefresherOnRemove";
 
 const api = {};
 let bubbleCutClipboard;
@@ -741,55 +741,12 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
             bubbleToSelect = this.model().getParentFork();
         }
     }
-    let verticesToChangeNbNeighbors = [];
-    graphElements.forEach((graphElement) => {
-        let parentVertex = graphElement.getParentVertex();
-        if (!verticesToChangeNbNeighbors[parentVertex.getUri()]) {
-            verticesToChangeNbNeighbors[parentVertex.getUri()] = parentVertex;
-        }
-        if (graphElement.isEdgeType() && (!verticesToChangeNbNeighbors[parentVertex.getUri()] || !verticesToChangeNbNeighbors[parentVertex.getUri()]._preventRebuildNbNeighbors)) {
-            let otherVertex = graphElement.getOtherVertex(parentVertex);
-            otherVertex._preventRebuildNbNeighbors = true;
-            if (otherVertex.isExpanded) {
-                let nbNeighbors = NbNeighbors.withZeros();
-                otherVertex.getClosestChildrenInTypes(GraphElementType.getEdgeTypes()).filter((childRelation) => {
-                    let childVertex = childRelation.getOtherVertex(otherVertex);
-                    return !graphElements.some((removedGraphElement) => {
-                        return removedGraphElement.getUri() === childRelation.getUri() ||
-                            removedGraphElement.getUri() === childVertex.getUri()
-                    });
-                }).forEach((notRemovedChildRelation) => {
-                    nbNeighbors.incrementForShareLevel(
-                        notRemovedChildRelation.getOtherVertex(otherVertex).getShareLevel()
-                    );
-                });
-                otherVertex.setNbNeighbors(nbNeighbors);
-            } else {
-                otherVertex.getNbNeighbors().decrementForShareLevel(parentVertex.getShareLevel());
-            }
-            verticesToChangeNbNeighbors[otherVertex.getUri()] = otherVertex;
-        }
-    });
+    let nbNeighborsRefresherOnRemove = NbNeighborsRefresherOnRemove.withGraphElements(graphElements);
+    nbNeighborsRefresherOnRemove.prepare();
     graphElements.forEach((graphElement) => {
         graphElement.remove();
     });
-    Object.values(verticesToChangeNbNeighbors).filter((vertexToChangeNbNeighbors) => {
-        return !graphElements.some((removedGraphElement) => {
-            return removedGraphElement.getUri() === vertexToChangeNbNeighbors.getUri();
-        });
-    }).forEach((vertexToChangeNbNeighbors) => {
-        if (!vertexToChangeNbNeighbors._preventRebuildNbNeighbors) {
-            vertexToChangeNbNeighbors.setNbNeighbors(
-                vertexToChangeNbNeighbors.buildNbNeighbors()
-            );
-        }
-        GraphElementService.setNbNeighbors(
-            vertexToChangeNbNeighbors
-        );
-    });
-    // relatedVerticesUri.keys().forEach(() => {
-    //
-    // });
+    nbNeighborsRefresherOnRemove.execute();
     if (bubbleToSelect) {
         Selection.setToSingle(bubbleToSelect);
     } else {

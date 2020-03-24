@@ -862,7 +862,7 @@ describe('VertexController', () => {
                 groupRelation.getNumberOfChild()
             ).toBe(groupRelationNumberOfChild);
         });
-        fit("removes tags of relations under group relation when moving away from group relation", async () => {
+        it("removes tags of relations under group relation when moving away from group relation", async () => {
             let scenario = await new TwoLevelGroupRelationScenario();
             let center = scenario.getCenterInTree();
             let group1 = TestUtil.getChildWithLabel(
