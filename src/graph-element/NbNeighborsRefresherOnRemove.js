@@ -44,9 +44,8 @@ NbNeighborsRefresherOnRemove.prototype.prepare = function () {
         }
         this._setupTagsForGraphElement(graphElement);
         if (graphElement.isVertex()) {
-            this._setupTagsForGraphElement(graphElement.getParentBubble());
-            graphElement.getClosestChildrenInTypes([GraphElementType.Relation]).forEach((childEdge) => {
-                this._setupTagsForGraphElement(childEdge);
+            graphElement.getConnectedEdges(true).forEach((edge) => {
+                this._setupTagsForGraphElement(edge);
             });
         }
     });

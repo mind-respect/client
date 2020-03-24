@@ -21,6 +21,8 @@ import TagVertex from "@/tag/TagVertex";
 import Scroll from "../Scroll";
 import ShareLevel from '@/vertex/ShareLevel'
 import NbNeighborsRefresherOnRemove from "./NbNeighborsRefresherOnRemove";
+import NbNeighborsRefresherOnSetShareLevel from './NbNeighborsRefresherOnSetShareLevel'
+import LoadingFlow from "../LoadingFlow";
 
 const api = {};
 let bubbleCutClipboard;
@@ -842,26 +844,43 @@ GraphElementController.prototype.setShareLevelCanDo = function () {
     });
 };
 
-GraphElementController.prototype.setShareLevelDo = function (shareLevel) {
+GraphElementController.prototype.setShareLevelDo = async function (shareLevel) {
     let graphElementsToUpdate = this.getUiArray().filter((bubble) => {
         return bubble.canChangeShareLevel() && !bubble.isGroupRelation() && bubble.getShareLevel() !== shareLevel.toUpperCase()
-    }).map((bubble) => {
-        bubble.getParentVertex().getNbNeighbors().incrementForShareLevel(shareLevel);
-        bubble.setShareLevel(shareLevel);
-        bubble.refreshButtons();
-        bubble.getParentVertex().getNbNeighbors().decrementForShareLevel(shareLevel);
-        return bubble;
     });
     if (graphElementsToUpdate.length === 0) {
         return Promise.resolve();
     }
+    let isInLoadingFlow = false;
+    let nbNeighborsRefresherOnSetShareLevel = NbNeighborsRefresherOnSetShareLevel.withGraphElements(
+        graphElementsToUpdate
+    );
+    nbNeighborsRefresherOnSetShareLevel.prepare();
+    graphElementsToUpdate.forEach((bubble) => {
+        if (bubble.isVertex()) {
+            bubble.getConnectedEdges(true).forEach((edge) => {
+                edge.getOtherVertex(bubble).getNbNeighbors().decrementForShareLevel(bubble.getShareLevel());
+                edge.getOtherVertex(bubble).getNbNeighbors().incrementForShareLevel(shareLevel);
+            });
+        }
+        bubble.getIdentifiers().forEach((tag) => {
+            tag.getNbNeighbors().decrementForShareLevel(bubble.getShareLevel());
+            tag.getNbNeighbors().incrementForShareLevel(shareLevel);
+        });
+        bubble.setShareLevel(shareLevel);
+        bubble.refreshButtons();
+    });
     Store.dispatch("shareRefresh");
-    return this.isMultiple() ?
+    if (isInLoadingFlow) {
+        LoadingFlow.leave();
+    }
+    await this.isMultiple() ?
         GraphElementService.setCollectionShareLevel(
             shareLevel, graphElementsToUpdate
         ) : GraphElementService.setShareLevel(
-            shareLevel, this.model()
+        shareLevel, this.model()
         );
+    nbNeighborsRefresherOnSetShareLevel.execute();
 };
 
 GraphElementController.prototype._areAllElementsPublicWithLink = function () {

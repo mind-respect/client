@@ -8,7 +8,6 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import I18n from '@/I18n'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
-import Store from '@/store'
 import NbNeighbors from './NbNeighbors'
 
 const api = {};
@@ -91,6 +90,13 @@ Vertex.prototype.clone = function () {
     return vertex;
 };
 
+Vertex.prototype.getConnectedEdges = function (evenIfCollapsed) {
+    let connected = this.isCenter ? [] : [
+        this.getParentBubble()
+    ];
+    return connected.concat(this.getClosestChildrenInTypes(GraphElementType.getEdgeTypes(), evenIfCollapsed));
+};
+
 Vertex.prototype.getNbNeighbors = function () {
     return this.nbNeighbors;
 };
@@ -101,11 +107,8 @@ Vertex.prototype.setNbNeighbors = function (nbNeighbors) {
 
 Vertex.prototype.buildNbNeighbors = function () {
     let nbNeighbors = NbNeighbors.withZeros();
-    if (!this.isCenter) {
-        nbNeighbors.incrementForShareLevel(this.getParentVertex().getShareLevel());
-    }
-    this.getClosestChildrenInTypes(GraphElementType.getEdgeTypes(), true).forEach((child) => {
-        nbNeighbors.incrementForShareLevel(child.getShareLevel());
+    this.getConnectedEdges(true).forEach((edge) => {
+        nbNeighbors.incrementForShareLevel(edge.getShareLevel());
     });
     return nbNeighbors;
 };

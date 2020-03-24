@@ -852,5 +852,46 @@ describe('GraphElementController', () => {
                 nbVerticesToMakePrivate
             ).toBe(2);
         });
+        it("can change the nb neighbors of the tags of a related edge", async () => {
+            let scenario = await new ThreeScenario();
+            let b1 = scenario.getBubble1InTree();
+            let r1 = TestUtil.getChildWithLabel(
+                b1,
+                "r1"
+            );
+            let b2 = r1.getNextBubble();
+            b1.setShareLevel(ShareLevel.PUBLIC);
+            b2.setShareLevel(ShareLevel.PUBLIC);
+            expect(
+                r1.getShareLevel()
+            ).toBe(ShareLevel.PUBLIC);
+            let tag = TestUtil.dummyTag();
+            tag.getNbNeighbors().incrementForShareLevel(ShareLevel.PUBLIC);
+            r1.addIdentification(tag);
+            let tagNbNeighbors = tag.getNbNeighbors();
+            expect(
+                tagNbNeighbors.getTotal()
+            ).toBe(1);
+            expect(
+                tagNbNeighbors.getPublic()
+            ).toBe(1);
+            expect(
+                tagNbNeighbors.getFriend()
+            ).toBe(0);
+            await b2.controller().setShareLevelDo(ShareLevel.FRIENDS);
+            expect(
+                r1.getShareLevel()
+            ).toBe(ShareLevel.FRIENDS);
+            tagNbNeighbors = tag.getNbNeighbors();
+            expect(
+                tagNbNeighbors.getTotal()
+            ).toBe(1);
+            expect(
+                tagNbNeighbors.getPublic()
+            ).toBe(0);
+            expect(
+                tagNbNeighbors.getFriend()
+            ).toBe(1);
+        });
     });
 });
