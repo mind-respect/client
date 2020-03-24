@@ -105,9 +105,11 @@ const Tag = {
         tag.setShareLevel(
             searchResult.shareLevel || ShareLevel.PRIVATE
         );
-        tag.setNbNeighbors(
-            searchResult.getNbNeighbors()
-        );
+        if (searchResult.getNbNeighbors) {
+            tag.setNbNeighbors(
+                searchResult.getNbNeighbors()
+            );
+        }
         return tag;
     }
 };
@@ -119,6 +121,18 @@ Tag.Tag.prototype = new GraphElement.GraphElement();
 
 Tag.Tag.prototype.init = function (serverFormat) {
     this.identificationServerFormat = serverFormat;
+    // this.nbNeighborsHooks = {
+    //     incrementForShareLevel: (shareLevel) => {
+    //         this._applyToAllTags((tag) => {
+    //             tag.getNbNeighbors().incrementForShareLevel(shareLevel, true);
+    //         });
+    //     },
+    //     decrementForShareLevel: (shareLevel) => {
+    //         this._applyToAllTags((tag) => {
+    //             tag.getNbNeighbors().decrementForShareLevel(shareLevel, true);
+    //         });
+    //     }
+    // };
     this.nbNeighbors = serverFormat.nbNeighbors ? NbNeighbors.fromServerFormat(serverFormat.nbNeighbors) : NbNeighbors.withZeros();
     if (!this.identificationServerFormat.shareLevel) {
         this.identificationServerFormat.shareLevel = ShareLevel.PRIVATE;
@@ -154,12 +168,6 @@ Tag.Tag.prototype.isRefTag = function () {
 Tag.Tag.prototype.makeGeneric = function () {
     this.setRelationExternalResourceUri(
         RELATION_URIS.generic
-    );
-    return this;
-};
-Tag.Tag.prototype.makeType = function () {
-    this.setRelationExternalResourceUri(
-        RELATION_URIS.type
     );
     return this;
 };
@@ -202,6 +210,9 @@ Tag.Tag.prototype.getNbNeighbors = function () {
 };
 
 Tag.Tag.prototype.setNbNeighbors = function (nbNeighbors) {
+    // if (!nbNeighbors.hooks) {
+    //     nbNeighbors.hooks = this.nbNeighborsHooks;
+    // }
     this._applyToAllTags(function (tag) {
         if (tag.identificationServerFormat) {
             tag.nbNeighbors = nbNeighbors;

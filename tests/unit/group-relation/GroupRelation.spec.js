@@ -219,7 +219,7 @@ describe("GroupRelation", function () {
             "dummy identification"
         );
         await otherRelation.controller().addIdentification(dummyIdentifier);
-        await otherRelation.controller().removeIdentifier(dummyIdentifier);
+        await otherRelation.controller().removeTag(dummyIdentifier);
         expect(
             centerBubble.getNumberOfChild()
         ).toBe(4);
@@ -230,7 +230,7 @@ describe("GroupRelation", function () {
             possessionGroupRelation,
             "Possession of book 1"
         );
-        await possessionRelation.controller().removeIdentifier(
+        await possessionRelation.controller().removeTag(
             possessionGroupRelation.getIdentification()
         );
         expect(
@@ -265,7 +265,7 @@ describe("GroupRelation", function () {
             "dummy identification"
         );
         possessionRelation.addIdentification(dummyIdentifier);
-        possessionRelation.removeIdentifier(dummyIdentifier);
+        possessionRelation.removeTag(dummyIdentifier);
         expect(
             centerBubble.getNumberOfChild()
         ).toBe(4);
@@ -470,7 +470,7 @@ describe("GroupRelation", function () {
         let eventBubble = scenario.getEventBubbleInTree();
         let metaRelation = eventBubble.getNextBubble();
         metaRelation.remove();
-        metaRelation.controller().removeIdentifier(metaRelation.model())
+        metaRelation.controller().removeTag(metaRelation.model())
         expect(
             true
         ).toBeTruthy();

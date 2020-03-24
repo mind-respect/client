@@ -160,12 +160,13 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
 };
 
 
-GraphElement.GraphElement.prototype.removeIdentifier = function (identifierToRemove) {
+GraphElement.GraphElement.prototype.removeTag = function (identifierToRemove) {
     let l = this.identifiers.length;
     while (l--) {
         let identifier = this.identifiers[l];
         if (identifier.getUri() === identifierToRemove.getUri()) {
             this.identifiers.splice(l, 1);
+            identifier.getNbNeighbors().decrementForShareLevel(this.getShareLevel());
             return false;
         }
     }

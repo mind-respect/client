@@ -85,7 +85,7 @@ TagRelationController.prototype.removeDo = function () {
             } else {
                 taggedBubble = metaRelation.getOtherVertex(parentBubble);
             }
-            taggedBubble.removeIdentifier(tag);
+            taggedBubble.removeTag(tag);
             taggedBubble.refreshImages();
             taggedUri = taggedBubble.getUri();
             metaRelation.remove();

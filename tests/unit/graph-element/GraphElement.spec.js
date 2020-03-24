@@ -4,6 +4,7 @@ import ThreeScenario from "../scenario/ThreeScenario"
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import Selection from '@/Selection'
 import Tag from '@/tag/Tag'
+import ShareLevel from "@/vertex/ShareLevel";
 
 describe("GraphElement", () => {
     describe("addTag", () => {
@@ -258,5 +259,27 @@ describe("GraphElement", () => {
         expect(
             Selection.getNbSelectedVertices()
         ).toBe(9);
+    });
+    describe("removeTag", () => {
+        it("decrements nb neighbors", async () => {
+            let scenario = await new ThreeScenario();
+            let b1 = scenario.getBubble1InTree();
+            let b2 = TestUtil.getChildWithLabel(
+                b1,
+                "r1"
+            ).getNextBubble();
+            let tag = TestUtil.dummyTag();
+            tag.getNbNeighbors().incrementForShareLevel(ShareLevel.PRIVATE);
+            tag.getNbNeighbors().incrementForShareLevel(ShareLevel.PRIVATE);
+            b1.addIdentification(tag);
+            b2.addIdentification(tag);
+            expect(
+                b1.getIdentifiers()[0].getNbNeighbors().getTotal()
+            ).toBe(2);
+            b2.removeTag(tag);
+            expect(
+                b1.getIdentifiers()[0].getNbNeighbors().getTotal()
+            ).toBe(1);
+        });
     });
 });

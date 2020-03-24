@@ -29,7 +29,7 @@
                                                         <span class="font-weight-bold" :class="{
                                                             'black--text':!shouldTextBeWhiteFromBackgroundColor(item.original.getGraphElement().getChipBackgroundColor())
                                                         }">
-                                                           {{item.original.getNbRerences()}}
+                                                           {{item.original.getNbNeighbors().getTotal()}}
                                                         </span>
                     </template>
                     <v-avatar :color="item.original.getGraphElement().getChipBackgroundColor()" size="28">

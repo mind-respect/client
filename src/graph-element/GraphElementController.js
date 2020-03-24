@@ -20,6 +20,7 @@ import TagRelation from "@/tag/TagRelation";
 import TagVertex from "@/tag/TagVertex";
 import Scroll from "../Scroll";
 import ShareLevel from '@/vertex/ShareLevel'
+import NbNeighbors from '@/vertex/NbNeighbors'
 
 const api = {};
 let bubbleCutClipboard;
@@ -658,7 +659,7 @@ GraphElementController.prototype.addIdentification = function (tag, preventMovin
             return identifications;
         })
     }).catch(() => {
-        this.model().removeIdentifier(tag);
+        this.model().removeTag(tag);
     });
 };
 
@@ -740,17 +741,52 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
             bubbleToSelect = this.model().getParentFork();
         }
     }
-    // let relatedVerticesUri = {};
-    graphElements.forEach(function (bubble) {
-        // let parentVertexUri = bubble.getParentVertex().getUri();
-        // let nextBubble = bubble.getParentVertex().getUri();
-        // relatedVerticesUri.add();
-        // if (bubble.getNextBubble().isVertexType()) {
-        //     relatedVerticesUri.add(bubble.getNextBubble().getUri());
-        // }
-        bubble.remove();
+    let verticesToChangeNbNeighbors = [];
+    graphElements.forEach((graphElement) => {
+        let parentVertex = graphElement.getParentVertex();
+        if (!verticesToChangeNbNeighbors[parentVertex.getUri()]) {
+            verticesToChangeNbNeighbors[parentVertex.getUri()] = parentVertex;
+        }
+        if (graphElement.isEdgeType() && (!verticesToChangeNbNeighbors[parentVertex.getUri()] || !verticesToChangeNbNeighbors[parentVertex.getUri()]._preventRebuildNbNeighbors)) {
+            let otherVertex = graphElement.getOtherVertex(parentVertex);
+            otherVertex._preventRebuildNbNeighbors = true;
+            if (otherVertex.isExpanded) {
+                let nbNeighbors = NbNeighbors.withZeros();
+                otherVertex.getClosestChildrenInTypes(GraphElementType.getEdgeTypes()).filter((childRelation) => {
+                    let childVertex = childRelation.getOtherVertex(otherVertex);
+                    return !graphElements.some((removedGraphElement) => {
+                        return removedGraphElement.getUri() === childRelation.getUri() ||
+                            removedGraphElement.getUri() === childVertex.getUri()
+                    });
+                }).forEach((notRemovedChildRelation) => {
+                    nbNeighbors.incrementForShareLevel(
+                        notRemovedChildRelation.getOtherVertex(otherVertex).getShareLevel()
+                    );
+                });
+                otherVertex.setNbNeighbors(nbNeighbors);
+            } else {
+                otherVertex.getNbNeighbors().decrementForShareLevel(parentVertex.getShareLevel());
+            }
+            verticesToChangeNbNeighbors[otherVertex.getUri()] = otherVertex;
+        }
     });
-
+    graphElements.forEach((graphElement) => {
+        graphElement.remove();
+    });
+    Object.values(verticesToChangeNbNeighbors).filter((vertexToChangeNbNeighbors) => {
+        return !graphElements.some((removedGraphElement) => {
+            return removedGraphElement.getUri() === vertexToChangeNbNeighbors.getUri();
+        });
+    }).forEach((vertexToChangeNbNeighbors) => {
+        if (!vertexToChangeNbNeighbors._preventRebuildNbNeighbors) {
+            vertexToChangeNbNeighbors.setNbNeighbors(
+                vertexToChangeNbNeighbors.buildNbNeighbors()
+            );
+        }
+        GraphElementService.setNbNeighbors(
+            vertexToChangeNbNeighbors
+        );
+    });
     // relatedVerticesUri.keys().forEach(() => {
     //
     // });
@@ -768,16 +804,16 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
 
 };
 
-GraphElementController.prototype.removeIdentifier = async function (identifier, preventMoving) {
-    if (!this.model().hasIdentification(identifier)) {
+GraphElementController.prototype.removeTag = async function (tag, preventMoving) {
+    if (!this.model().hasIdentification(tag)) {
         return Promise.resolve();
     }
-    this.model().removeIdentifier(
-        identifier
+    this.model().removeTag(
+        tag
     );
     let parentBubble = this.model().getParentBubble();
     if (!preventMoving && parentBubble.isGroupRelation()) {
-        const groupRelation = parentBubble.getGroupRelationInSequenceWithTag(identifier);
+        const groupRelation = parentBubble.getGroupRelationInSequenceWithTag(tag);
         if (groupRelation) {
             await this.moveBelow(groupRelation);
         }
@@ -785,11 +821,11 @@ GraphElementController.prototype.removeIdentifier = async function (identifier, 
     return new Promise((resolve) => {
         TagService.remove(
             this.model().getUri(),
-            identifier
+            tag
         ).then(() => {
             resolve();
             this.model().getDuplicates().forEach((duplicate) => {
-                duplicate.removeIdentifier(identifier);
+                duplicate.removeTag(tag);
             });
             this.model().refreshImages();
             this.model().refreshButtons();
@@ -797,7 +833,7 @@ GraphElementController.prototype.removeIdentifier = async function (identifier, 
                 this.model().getNextChildren().forEach((child) => {
                     if (child.isMetaRelation()) {
                         let meta = child.getNextBubble();
-                        if (meta.getOriginalMeta().getExternalResourceUri() === identifier.getExternalResourceUri()) {
+                        if (meta.getOriginalMeta().getExternalResourceUri() === tag.getExternalResourceUri()) {
                             child.remove();
                         }
                     }

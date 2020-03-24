@@ -110,6 +110,117 @@ describe('GraphElementController', () => {
                 event.getNumberOfChild()
             ).toBe(4);
         });
+        it("sets nb neighbors", async () => {
+            let scenario = await new ThreeScenario();
+            let b1 = scenario.getBubble1InTree();
+            expect(
+                b1.getNbNeighbors().getTotal()
+            ).toBe(
+                2
+            );
+            let nbNeighborsAfterRemoved;
+            jest.spyOn(GraphElementService, "setNbNeighbors").mockImplementation(async (graphElement) => {
+                nbNeighborsAfterRemoved = graphElement.getNbNeighbors();
+            });
+            await TestUtil.getChildWithLabel(
+                b1,
+                "r1"
+            ).getNextBubble().controller().removeDo();
+            expect(
+                nbNeighborsAfterRemoved.getTotal()
+            ).toBe(
+                1
+            );
+        });
+        it("sets nb neighbors only once", async () => {
+            let scenario = await new ThreeScenario();
+            let b1 = scenario.getBubble1InTree();
+            let nbNeighborsAfterRemoved;
+            jest.clearAllMocks();
+            jest.spyOn(GraphElementService, "setNbNeighbors").mockImplementation(async (graphElement) => {
+                nbNeighborsAfterRemoved = graphElement.getNbNeighbors();
+            });
+            await new GraphElementController.GraphElementController([
+                TestUtil.getChildWithLabel(
+                    b1,
+                    "r1"
+                ).getNextBubble(),
+                TestUtil.getChildWithLabel(
+                    b1,
+                    "r2"
+                ).getNextBubble()
+            ]).removeDo();
+            expect(
+                GraphElementService.setNbNeighbors.mock.calls.length
+            ).toBe(1);
+            expect(
+                nbNeighborsAfterRemoved.getTotal()
+            ).toBe(
+                0
+            );
+        });
+        it("sets nb neighbors to source and destination vertex when removing edge", async () => {
+            let scenario = await new ThreeScenario();
+            let b1 = scenario.getBubble1InTree();
+            jest.clearAllMocks();
+            let r1 = TestUtil.getChildWithLabel(
+                b1,
+                "r1"
+            );
+            let b2 = r1.getNextBubble();
+            expect(
+                b2.getNbNeighbors().getTotal()
+            ).toBe(3);
+            let graphElementsNbNeighborsIsSet = [];
+            jest.spyOn(GraphElementService, "setNbNeighbors").mockImplementation(async (graphElement) => {
+                graphElementsNbNeighborsIsSet.push(graphElement);
+            });
+            await r1.controller().removeDo();
+            expect(
+                GraphElementService.setNbNeighbors.mock.calls.length
+            ).toBe(2);
+            expect(
+                graphElementsNbNeighborsIsSet[0].getUri()
+            ).toBe(b1.getUri());
+            expect(
+                graphElementsNbNeighborsIsSet[1].getUri()
+            ).toBe(b2.getUri());
+            expect(
+                graphElementsNbNeighborsIsSet[1].getNbNeighbors().getTotal()
+            ).toBe(2);
+        });
+        fit("sets nb neighbors considering removed children and relation", async () => {
+            let scenario = await new ThreeScenario();
+            let b1 = scenario.getBubble1InTree();
+            jest.clearAllMocks();
+            let r1 = TestUtil.getChildWithLabel(
+                b1,
+                "r1"
+            );
+            let b2 = r1.getNextBubble();
+            expect(
+                b2.getNbNeighbors().getTotal()
+            ).toBe(3);
+            await scenario.expandBubble2(b2);
+            let childOfB2 = b2.getNextBubble().getNextBubble();
+            let graphElementsNbNeighborsIsSet = [];
+            jest.spyOn(GraphElementService, "setNbNeighbors").mockImplementation(async (graphElement) => {
+                graphElementsNbNeighborsIsSet.push(graphElement);
+            });
+            await new GraphElementController.GraphElementController([
+                r1,
+                childOfB2
+            ]).removeDo();
+            expect(
+                GraphElementService.setNbNeighbors.mock.calls.length
+            ).toBe(2);
+            expect(
+                graphElementsNbNeighborsIsSet[1].getUri()
+            ).toBe(b2.getUri());
+            expect(
+                graphElementsNbNeighborsIsSet[1].getNbNeighbors().getTotal()
+            ).toBe(1);
+        });
     });
     xit("updates model label when accepting comparison", function () {
         var scenario = new Scenarios.threeBubblesGraphFork();

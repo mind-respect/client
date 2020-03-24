@@ -311,7 +311,7 @@ describe("GroupRelationController", () => {
                 group2,
                 "g21"
             );
-            await g21.controller().removeIdentifier(
+            await g21.controller().removeTag(
                 group1.getIdentification()
             );
             expect(
@@ -349,7 +349,7 @@ describe("GroupRelationController", () => {
                 group2,
                 "g21"
             );
-            await g21.controller().removeIdentifier(
+            await g21.controller().removeTag(
                 group2.getIdentification()
             );
             expect(

@@ -95,6 +95,10 @@ Vertex.prototype.getNbNeighbors = function () {
     return this.nbNeighbors;
 };
 
+Vertex.prototype.setNbNeighbors = function (nbNeighbors) {
+    return this.nbNeighbors = nbNeighbors;
+};
+
 Vertex.prototype.buildNbNeighbors = function () {
     let nbNeighbors = NbNeighbors.withZeros();
     this.getClosestChildrenInTypes(GraphElementType.getEdgeTypes(), true).forEach((child) => {
@@ -340,9 +344,6 @@ Vertex.prototype.removeChild = function (child, isTemporary, avoidRedraw) {
         if (childrenArray[l].getId() === child.getId()) {
             removedChild = childrenArray.splice(l, 1);
         }
-    }
-    if (removedChild && child.isEdge()) {
-        this.nbNeighbors.decrementForShareLevel(child.getShareLevel());
     }
     if (!isTemporary) {
         this.refreshChildren(avoidRedraw);

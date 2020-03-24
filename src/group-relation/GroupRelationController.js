@@ -176,7 +176,7 @@ GroupRelationController.prototype.becomeExParent = function (movedEdge, newParen
         if (movedEdge.isGroupRelation()) {
             movedEdge.getClosestChildRelations(true).forEach((relation) => {
                 promises.push(
-                    relation.controller().removeIdentifier(
+                    relation.controller().removeTag(
                         identifier,
                         true
                     )
@@ -184,7 +184,7 @@ GroupRelationController.prototype.becomeExParent = function (movedEdge, newParen
             });
         } else {
             promises.push(
-                movedEdge.controller().removeIdentifier(
+                movedEdge.controller().removeTag(
                     identifier,
                     true
                 )
@@ -230,7 +230,7 @@ GroupRelationController.prototype.addIdentificationCanDo = function () {
 GroupRelationController.prototype.removeIdentifier = function (tag, preventMoving) {
     return Promise.all(
         this.model().getClosestChildRelations(true).map((edge) => {
-            return edge.controller().removeIdentifier(tag, true)
+            return edge.controller().removeTag(tag, true)
         })
     ).then(async () => {
         if (!preventMoving) {

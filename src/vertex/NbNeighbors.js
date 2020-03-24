@@ -2,23 +2,24 @@ import ShareLevel from "./ShareLevel";
 
 const api = {};
 
-api.fromServerFormat = function (serverFormat) {
-    return new NbNeighbors(serverFormat);
+api.fromServerFormat = function (serverFormat, hooks) {
+    return new NbNeighbors(serverFormat, hooks);
 };
 
-api.withZeros = function () {
+api.withZeros = function (hooks) {
     return new NbNeighbors({
         private_: 0,
         friend: 0,
         public_: 0
-    });
+    }, hooks);
 };
 
 
-function NbNeighbors(serverFormat) {
+function NbNeighbors(serverFormat, hooks) {
     this.nbPrivate = serverFormat.private_ || 0;
     this.nbFriend = serverFormat.friend || 0;
     this.nbPublic = serverFormat.public_ || 0;
+    this.hooks = hooks;
 }
 
 NbNeighbors.prototype.getPrivate = function () {
@@ -33,12 +34,20 @@ NbNeighbors.prototype.getPublic = function () {
     return this.nbPublic;
 };
 
-NbNeighbors.prototype.decrementForShareLevel = function (shareLevel) {
-    this[this._getVariableNameForShareLevel(shareLevel)]--;
+NbNeighbors.prototype.decrementForShareLevel = function (shareLevel, preventHook) {
+    if (!preventHook && this.hooks && this.hooks.decrementForShareLevel) {
+        this.hooks.decrementForShareLevel(shareLevel);
+    } else {
+        this[this._getVariableNameForShareLevel(shareLevel)]--;
+    }
 };
 
-NbNeighbors.prototype.incrementForShareLevel = function (shareLevel) {
-    this[this._getVariableNameForShareLevel(shareLevel)]++;
+NbNeighbors.prototype.incrementForShareLevel = function (shareLevel, preventHook) {
+    if (!preventHook && this.hooks && this.hooks.incrementForShareLevel) {
+        this.hooks.incrementForShareLevel(shareLevel);
+    } else {
+        this[this._getVariableNameForShareLevel(shareLevel)]++;
+    }
 };
 
 NbNeighbors.prototype._getVariableNameForShareLevel = function (shareLevel) {
@@ -70,5 +79,10 @@ NbNeighbors.prototype.toJsonObject = function () {
         friend: this.getFriend(),
         public_: this.getPublic()
     }
+};
+NbNeighbors.prototype.clone = function () {
+    return api.fromServerFormat(
+        this.toJsonObject()
+    );
 };
 export default api;

@@ -69,6 +69,15 @@ api.saveColors = function (uri, colors) {
     );
 };
 
+api.setNbNeighbors = function (graphElement) {
+    return Service.geApi().post(
+        graphElement.getUri() + '/nbNeighbors',
+        JSON.stringify(
+            graphElement.getNbNeighbors().toJsonObject()
+        )
+    );
+};
+
 api._getGraphElementsUrl = function (graphElements) {
     return graphElements.map(function (graphElement) {
         return graphElement.getUri();
