@@ -14,6 +14,14 @@ api.withZeros = function (hooks) {
     }, hooks);
 };
 
+api.difference = function (a, b) {
+    return new NbNeighbors({
+        private_: Math.max(a.getPrivate() - b.getPrivate(), 0),
+        friend: Math.max(a.getFriend() - b.getFriend(), 0),
+        public_: Math.max(a.getPublic() - b.getPublic(), 0)
+    });
+};
+
 
 function NbNeighbors(serverFormat, hooks) {
     this.nbPrivate = serverFormat.private_ || 0;
@@ -48,6 +56,12 @@ NbNeighbors.prototype.incrementForShareLevel = function (shareLevel, preventHook
     } else {
         this[this._getVariableNameForShareLevel(shareLevel)]++;
     }
+};
+
+NbNeighbors.prototype.substract = function (nbNeighbors) {
+    this.nbPrivate = Math.max(this.nbPrivate - nbNeighbors.getPrivate(), 0);
+    this.nbFriend = Math.max(this.nbFriend - nbNeighbors.getFriend(), 0);
+    this.nbPublic = Math.max(this.nbPublic - nbNeighbors.getPublic(), 0);
 };
 
 NbNeighbors.prototype._getVariableNameForShareLevel = function (shareLevel) {

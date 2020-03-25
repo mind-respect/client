@@ -140,7 +140,7 @@ describe('Vertex', () => {
         ).getNextBubble();
         expect(
             event1.getNumberOfChild()
-        ).toBe(3);
+        ).toBe(4);
         expect(
             event1.canExpand()
         ).toBeTruthy();

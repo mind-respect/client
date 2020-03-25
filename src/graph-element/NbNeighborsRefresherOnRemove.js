@@ -72,9 +72,14 @@ NbNeighborsRefresherOnRemove.prototype.execute = function () {
         });
     }).forEach((vertexToChangeNbNeighbors) => {
         if (!vertexToChangeNbNeighbors._preventRebuildNbNeighbors) {
+            let nbNeighborsBefore = vertexToChangeNbNeighbors.getNbNeighbors();
             vertexToChangeNbNeighbors.setNbNeighbors(
                 vertexToChangeNbNeighbors.buildNbNeighbors()
             );
+            if (vertexToChangeNbNeighbors.isMetaGroupVertex()) {
+                let difference = NbNeighbors.difference(nbNeighborsBefore, vertexToChangeNbNeighbors.getNbNeighbors());
+                vertexToChangeNbNeighbors.getOriginalNbNeighbors().substract(difference)
+            }
         }
         GraphElementService.setNbNeighbors(
             vertexToChangeNbNeighbors

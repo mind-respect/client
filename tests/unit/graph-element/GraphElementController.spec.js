@@ -17,6 +17,7 @@ import GraphElementService from "../../../src/graph-element/GraphElementService"
 import GraphElementController from '@/graph-element/GraphElementController'
 import VertexController from '@/vertex/VertexController'
 import ShareLevel from '@/vertex/ShareLevel'
+import AroundTodoTagScenario from "../scenario/AroundTodoTagScenario";
 
 describe('GraphElementController', () => {
     describe("removeDo", () => {
@@ -100,7 +101,7 @@ describe('GraphElementController', () => {
             await scenario.expandEventTag(event);
             expect(
                 event.getNumberOfChild()
-            ).toBe(5);
+            ).toBe(6);
             let vertexUnderMeta = event.getNextBubble().getNextBubble();
             expect(
                 vertexUnderMeta.getGraphElementType()
@@ -108,7 +109,7 @@ describe('GraphElementController', () => {
             await vertexUnderMeta.controller().removeDo();
             expect(
                 event.getNumberOfChild()
-            ).toBe(4);
+            ).toBe(5);
         });
         it("sets nb neighbors", async () => {
             let scenario = await new ThreeScenario();
@@ -270,6 +271,43 @@ describe('GraphElementController', () => {
             expect(
                 graphElementsNbNeighborsIsSet[1].getNbNeighbors().getTotal()
             ).toBe(1);
+        });
+        it("changes nb neighbors of group tag vertex based on the original number of neighbors", async () => {
+            let scenario = await new AroundTodoTagScenario();
+            let toDoMetaBubble = scenario.getCenterInTree();
+            let sourceVertexAsGroupRelation = TestUtil.getChildDeepWithLabel(
+                toDoMetaBubble,
+                "e1"
+            );
+            expect(
+                sourceVertexAsGroupRelation.getOriginalNbNeighbors().getTotal()
+            ).toBe(4);
+            expect(
+                sourceVertexAsGroupRelation.getNbNeighbors().getTotal()
+            ).toBe(3);
+            sourceVertexAsGroupRelation.expand();
+            let e3 = TestUtil.getChildDeepWithLabel(
+                sourceVertexAsGroupRelation,
+                "e3"
+            );
+            await scenario.expandE3(e3);
+            e3.selectTree();
+            let graphElementsNbNeighborsIsSet = [];
+            jest.spyOn(GraphElementService, "setNbNeighbors").mockImplementation(async (graphElement) => {
+                graphElementsNbNeighborsIsSet.push(graphElement);
+            });
+            await new GraphElementController.GraphElementController(
+                Selection.getSelectedBubbles()
+            ).removeDo();
+            expect(
+                graphElementsNbNeighborsIsSet[0].getUri()
+            ).toBe(sourceVertexAsGroupRelation.getUri());
+            expect(
+                graphElementsNbNeighborsIsSet[0].getNbNeighbors().getTotal()
+            ).toBe(2);
+            expect(
+                graphElementsNbNeighborsIsSet[0].getOriginalNbNeighbors().getTotal()
+            ).toBe(3);
         });
     });
     xit("updates model label when accepting comparison", function () {

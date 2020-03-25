@@ -68,6 +68,9 @@ Vertex.prototype.init = function (vertexServerFormat) {
     this.leftBubblesCollapsed = null;
     this.rightBubbles = [];
     this.rightBubblesCollapsed = null;
+    this.originalNbNeighbors = NbNeighbors.fromServerFormat(
+        this._vertexServerFormat.vertex.nbNeighbors
+    );
     this.nbNeighbors = NbNeighbors.fromServerFormat(
         this._vertexServerFormat.vertex.nbNeighbors
     );
@@ -97,6 +100,11 @@ Vertex.prototype.getConnectedEdges = function (evenIfCollapsed) {
     return connected.concat(this.getClosestChildrenInTypes(GraphElementType.getEdgeTypes(), evenIfCollapsed));
 };
 
+
+Vertex.prototype.getOriginalNbNeighbors = function () {
+    return this.originalNbNeighbors;
+};
+
 Vertex.prototype.getNbNeighbors = function () {
     return this.nbNeighbors;
 };
@@ -108,7 +116,10 @@ Vertex.prototype.setNbNeighbors = function (nbNeighbors) {
 Vertex.prototype.buildNbNeighbors = function () {
     let nbNeighbors = NbNeighbors.withZeros();
     this.getConnectedEdges(true).forEach((edge) => {
-        nbNeighbors.incrementForShareLevel(edge.getOtherVertex(this).getShareLevel());
+        let otherVertex = edge.getOtherVertex(this);
+        if (otherVertex.isVertex() || this.isMetaGroupVertex()) {
+            nbNeighbors.incrementForShareLevel(otherVertex.getShareLevel());
+        }
     });
     return nbNeighbors;
 };

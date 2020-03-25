@@ -70,9 +70,10 @@ api.saveColors = function (uri, colors) {
 };
 
 api.setNbNeighbors = function (graphElement) {
+    let nbNeighbors = graphElement.isMetaGroupVertex() ? graphElement.getOriginalNbNeighbors() : graphElement.getNbNeighbors();
     return Service.geApi().post(
         graphElement.getUri() + '/nbNeighbors',
-        graphElement.getNbNeighbors().toJsonObject()
+        nbNeighbors.toJsonObject()
     );
 };
 

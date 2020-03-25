@@ -8,6 +8,8 @@ function TagGroupVertex(vertex) {
             vertex.getUri()
         )
     );
+    this.originalNbNeighbors = vertex.originalNbNeighbors.clone();
+    this.nbNeighbors = vertex.getNbNeighbors();
     this.setLabel(vertex.getLabel());
     this.setComment(vertex.getComment());
     this.setChildrenIndex(vertex.getChildrenIndex());
