@@ -87,6 +87,8 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                     CurrentSubGraph.get().add(vertex);
                 }
                 child = new TagRelation(vertex, centerBubble);
+                vertex.parentBubble = child;
+                vertex.parentVertex = centerBubble;
                 edges.push(child);
                 sortEdges(sourceVertexAndEdges.edges, vertex).forEach((edgeBetweenGroupAndDestination) => {
                     let destinationVertex = subGraph.getVertexWithUri(

@@ -38,8 +38,8 @@ CenterGraphElement.prototype.init = function (serverFormat) {
     return this;
 };
 
-CenterGraphElement.prototype.getNbNeighborsFromFlow = function (flow, isOwner) {
-    return this.nbNeighbors.getTotal();
+CenterGraphElement.prototype.getNbNeighbors = function () {
+    return this.nbNeighbors;
 };
 
 CenterGraphElement.prototype.getShareLevel = function () {

@@ -108,7 +108,7 @@ Vertex.prototype.setNbNeighbors = function (nbNeighbors) {
 Vertex.prototype.buildNbNeighbors = function () {
     let nbNeighbors = NbNeighbors.withZeros();
     this.getConnectedEdges(true).forEach((edge) => {
-        nbNeighbors.incrementForShareLevel(edge.getShareLevel());
+        nbNeighbors.incrementForShareLevel(edge.getOtherVertex(this).getShareLevel());
     });
     return nbNeighbors;
 };

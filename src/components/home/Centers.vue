@@ -426,11 +426,10 @@
                 return CenterGraphElementService.getFriendsFeed();
             },
             go: function ($event, center) {
-                let nbChild = center.getNbNeighborsFromFlow(this.flow, this.isOwner);
+                let nbChild = center.getNbNeighbors().getTotal();
                 let graphElementType = center.uri().getGraphElementType();
                 if (graphElementType === "meta") {
                     graphElementType = "identification";
-                    nbChild = undefined;
                 }
                 if (graphElementType === "relation") {
                     graphElementType = "edge";

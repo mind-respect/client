@@ -131,9 +131,9 @@ function SearchResult(graphElement, graphElementType, somethingToDistinguish, se
     this.somethingToDistinguish = somethingToDistinguish;
     this.serverFormat = serverFormat;
     this.context = this.serverFormat.context;
-    this.nbNeighbors = NbNeighbors.fromServerFormat(
+    this.nbNeighbors = serverFormat.nbNeighbors ? NbNeighbors.fromServerFormat(
         serverFormat.nbNeighbors
-    );
+    ) : NbNeighbors.withZeros();
 }
 
 SearchResult.prototype.getGraphElement = function () {
