@@ -77,26 +77,24 @@ api._buildSomethingToDistinguish = function (searchResult) {
     if (!searchResult.context) {
         return "";
     }
-    let contextLabels = [];
-    Object.keys(searchResult.context).forEach(function (uri) {
-        contextLabels.push(searchResult.context[uri]);
-    });
-    return contextLabels.join(", ");
+    return searchResult.context.split("{{").join(", ");
 };
 api._buildEdgeSomethingToDistinguish = function (searchResult) {
-    let contextValues = Object.values(searchResult.context);
-    return contextValues[0] + "  " + contextValues[1];
+    if (!searchResult.context) {
+        return "";
+    }
+    return searchResult.context.split("{{").join(", ");
 };
 api.fromGraphElement = function (graphElement) {
     let somethingToDistinguish = graphElement.isEdge() ? [
         graphElement.getSourceVertex().getLabel(),
         graphElement.getDestinationVertex().getLabel()
     ].join(", ") : "";
-    let context = {};
+    let context = "";
     if (graphElement.isVertex()) {
-        [].concat(graphElement.getParentVertex()).concat(graphElement.getClosestChildVertices()).forEach((surroundVertex) => {
-            context[surroundVertex.getUri()] = surroundVertex.getLabel();
-        });
+        context = graphElement.getConnectedEdges(true).map((surroundEdge) => {
+            return surroundEdge.getOtherVertex(graphElement).getLabel();
+        }).join("{{");
     }
     return new SearchResult(
         graphElement,
@@ -130,7 +128,7 @@ function SearchResult(graphElement, graphElementType, somethingToDistinguish, se
     this.graphElementType = graphElementType;
     this.somethingToDistinguish = somethingToDistinguish;
     this.serverFormat = serverFormat;
-    this.context = this.serverFormat.context;
+    this.context = this.serverFormat.context || "";
     this.nbNeighbors = serverFormat.nbNeighbors ? NbNeighbors.fromServerFormat(
         serverFormat.nbNeighbors
     ) : NbNeighbors.withZeros();

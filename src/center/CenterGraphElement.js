@@ -47,7 +47,7 @@ CenterGraphElement.prototype.getShareLevel = function () {
 };
 
 CenterGraphElement.prototype.getContext = function () {
-    return this.centerGraphElementServerFormat.context || {};
+    return this.centerGraphElementServerFormat.context || "";
 };
 
 CenterGraphElement.prototype.getLastCenterDate = function () {

@@ -111,7 +111,7 @@
                                             </small>
                                         </v-list-item-title>
                                         <v-list-item-subtitle class="mt-1">
-                                            <div v-for="(value, key) in center.getContext()"
+                                            <div v-for="(value, key) in center.getContext().split('{{')"
                                                  v-if="center.contextSearch !== ''"
                                                  class="around-list-item">
                                                 {{value}}
@@ -282,8 +282,6 @@
             this.loadData().then((response) => {
                 this.centers = CenterGraphElement.fromServerFormat(response.data).map((center) => {
                     this.isSwiping = false;
-                    center.labelSearch = center.getLabel();
-                    center.contextSearch = Object.values(center.getContext()).join(' ');
                     if (center.hasIdentifications()) {
                         center.tagIndex = 0;
                         center.nbTags = center.getRelevantTags().length;
@@ -498,8 +496,6 @@
                         this.hasLoadedAll = true
                     }
                     CenterGraphElement.fromServerFormat(response.data).map((center) => {
-                        center.labelSearch = center.getLabel();
-                        center.contextSearch = Object.values(center.getContext()).join(' ');
                         return center;
                     }).forEach((center) => {
                         this.centers.push(center);

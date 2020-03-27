@@ -26,11 +26,11 @@
                          overlap bottom class="caption mr-2"
                 >
                     <template v-slot:badge>
-                                                        <span class="font-weight-bold" :class="{
-                                                            'black--text':!shouldTextBeWhiteFromBackgroundColor(item.original.getGraphElement().getChipBackgroundColor())
-                                                        }">
-                                                           {{item.original.getNbNeighbors().getTotal()}}
-                                                        </span>
+                        <span class="font-weight-bold" :class="{
+                            'black--text':!shouldTextBeWhiteFromBackgroundColor(item.original.getGraphElement().getChipBackgroundColor())
+                        }">
+                           {{item.original.getGraphElement().getNbNeighbors().getTotal()}}
+                        </span>
                     </template>
                     <v-avatar :color="item.original.getGraphElement().getChipBackgroundColor()" size="28">
                         <v-icon :dark="shouldTextBeWhiteFromBackgroundColor(item.original.getGraphElement().getChipBackgroundColor())"
@@ -48,7 +48,7 @@
             </span>
             <span v-else>
             <span v-if="item.original.getGraphElementType() === 'vertex'" class="around-list">
-                <span v-for="context in Object.values(item.original.context)" class="around-list-item">
+                <span v-for="context in Object.values(item.original.context.split('{{'))" class="around-list-item">
                     {{context}}
                 </span>
             </span>
