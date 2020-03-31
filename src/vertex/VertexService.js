@@ -8,7 +8,6 @@ import Service from '@/Service'
 import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
 import axios from 'axios'
-import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 
