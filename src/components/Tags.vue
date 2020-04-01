@@ -22,8 +22,9 @@
                     :class="{
                         'white--text': shouldTextBeWhiteFromBackgroundColor(tag.getChipBackgroundColor())
                     }"
+                    v-if="!hideNbNeighbors"
             >
-                <span v-if="!hideNbNeighbors">{{tag.getNbNeighbors().getTotal()}}</span>
+                {{tag.getNbNeighbors().getTotal()}}
             </v-avatar>
         </v-chip>
     </v-chip-group>
