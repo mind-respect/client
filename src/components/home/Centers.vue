@@ -233,6 +233,7 @@
     import IdUri from '@/IdUri'
     import Touch from 'vuetify/es5/directives/touch'
     import Color from "../../Color";
+    import Tag from "../../tag/Tag";
 
     const ADDRESS_BAR_HEIGHT = 60;
 
@@ -272,13 +273,7 @@
         mounted: function () {
             this.loadData().then((response) => {
                 this.isSwiping = false;
-                this.centers = CenterGraphElement.fromServerFormat(response.data).map((center) => {
-                    if (center.hasIdentifications()) {
-                        center.tagIndex = 0;
-                        center.nbTags = center.getRelevantTags().length;
-                    }
-                    return center;
-                });
+                this.centers = this.buildCentersFromResponse(response.data);
                 this.loaded = true;
                 if (this.centers.length < 28) {
                     this.hasLoadedAll = true;
@@ -286,6 +281,23 @@
             });
         },
         methods: {
+            buildCentersFromResponse: function (serverResponse) {
+                return CenterGraphElement.fromServerFormat(serverResponse).map((center) => {
+                    if (center.isMeta()) {
+                        let centerAsTag = Tag.fromFriendlyResource(
+                            center
+                        );
+                        centerAsTag.setNbNeighbors(center.getNbNeighbors());
+                        center.addIdentification(centerAsTag);
+                    }
+                    if (center.hasIdentifications()) {
+                        center.tagIndex = 0;
+                        center.nbTags = center.getRelevantTags().length;
+
+                    }
+                    return center;
+                });
+            },
             isOwnerOfCenter: function (center) {
                 if (!this.$store.state.user) {
                     return false;
@@ -486,13 +498,7 @@
                     if (response.data.length < 16) {
                         this.hasLoadedAll = true
                     }
-                    CenterGraphElement.fromServerFormat(response.data).map((center) => {
-                        if (center.hasIdentifications()) {
-                            center.tagIndex = 0;
-                            center.nbTags = center.getRelevantTags().length;
-                        }
-                        return center;
-                    }).forEach((center) => {
+                    this.buildCentersFromResponse(response.data).forEach((center) => {
                         this.centers.push(center);
                     });
                     this.$nextTick(() => {
