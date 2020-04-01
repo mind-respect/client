@@ -77,23 +77,13 @@
                                                         {{center.getChipIcon(flow === 'patterns')}}
                                                     </v-icon>
                                                 </template>
-                                                <v-badge v-if="center.isMeta()" :color="center.getChipBackgroundColor()"
-                                                         overlap bottom class="caption mr-2"
-                                                >
-                                                    <template v-slot:badge>
-                                                        <span class="font-weight-bold" :class="{
-                                                            'black--text':!shouldTextBeWhiteFromBackgroundColor(center.getChipBackgroundColor())
-                                                        }">
-                                                           {{center.getNbNeighbors().getTotal()}}
-                                                        </span>
-                                                    </template>
-                                                    <v-avatar :color="center.getChipBackgroundColor()" size="28">
-                                                        <v-icon :dark="shouldTextBeWhiteFromBackgroundColor(center.getChipBackgroundColor())"
-                                                                small>
-                                                            label
-                                                        </v-icon>
-                                                    </v-avatar>
-                                                </v-badge>
+                                                <v-avatar :color="center.getChipBackgroundColor()" size="28"
+                                                          v-if="center.isMeta()">
+                                                    <v-icon :dark="shouldTextBeWhiteFromBackgroundColor(center.getChipBackgroundColor())"
+                                                            small>
+                                                        label
+                                                    </v-icon>
+                                                </v-avatar>
                                                 {{center.getLabel()}}
                                             </v-badge>
                                             <v-icon class="ml-4 mb-1 float-right" color="grey"
@@ -280,8 +270,8 @@
         },
         mounted: function () {
             this.loadData().then((response) => {
+                this.isSwiping = false;
                 this.centers = CenterGraphElement.fromServerFormat(response.data).map((center) => {
-                    this.isSwiping = false;
                     if (center.hasIdentifications()) {
                         center.tagIndex = 0;
                         center.nbTags = center.getRelevantTags().length;
@@ -496,6 +486,10 @@
                         this.hasLoadedAll = true
                     }
                     CenterGraphElement.fromServerFormat(response.data).map((center) => {
+                        if (center.hasIdentifications()) {
+                            center.tagIndex = 0;
+                            center.nbTags = center.getRelevantTags().length;
+                        }
                         return center;
                     }).forEach((center) => {
                         this.centers.push(center);
