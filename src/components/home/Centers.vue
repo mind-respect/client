@@ -179,7 +179,8 @@
                                 </v-list-item>
                             </v-list>
                         </v-hover>
-                        <Tags :tags="center.getRelevantTags()" v-if="center.tagIndex !== undefined"></Tags>
+                        <Tags :tags="center.getRelevantTags()" v-if="center.tagIndex !== undefined"
+                              :hideNbNeighbors="flow !== 'centers' || !isOwner"></Tags>
                     </v-flex>
                     <v-flex xs12 :md3="$store.state.areCentersInGridView"
                             v-for="i in 16" v-if="isBottom">

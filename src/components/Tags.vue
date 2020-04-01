@@ -23,7 +23,7 @@
                         'white--text': shouldTextBeWhiteFromBackgroundColor(tag.getChipBackgroundColor())
                     }"
             >
-                {{tag.getNbNeighbors().getTotal()}}
+                <span v-if="!hideNbNeighbors">{{tag.getNbNeighbors().getTotal()}}</span>
             </v-avatar>
         </v-chip>
     </v-chip-group>
@@ -34,7 +34,7 @@
 
     export default {
         name: "Tags",
-        props: ['tags', 'preventLink'],
+        props: ['tags', 'preventLink', 'hideNbNeighbors'],
         methods: {
             shouldTextBeWhiteFromBackgroundColor: function (hexColor) {
                 return Color.getContrast(hexColor) === 'white'
