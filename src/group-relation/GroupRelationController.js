@@ -102,7 +102,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         triple.destination.remove();
     });
     triple.edge.addIdentifications(
-        this.model().getIdentifiers()
+        this.model().getParentSerialTags()
     );
     this.model().addChild(
         triple.edge,

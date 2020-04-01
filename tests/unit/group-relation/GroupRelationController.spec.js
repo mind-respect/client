@@ -19,12 +19,11 @@ describe("GroupRelationController", () => {
     });
     describe("addChild", function () {
         it("gives all it's identifiers to the new relation when adding a child", async () => {
-            let scenario = await new GroupRelationsScenario();
-            let possessionInTree = scenario.getPossessionGroupRelation();
-            possessionInTree.model().addIdentification(
-                TestUtil.dummyTag()
-            );
-            let triple = await possessionInTree.controller().addChild();
+            let scenario = await new TwoLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let group1 = TestUtil.getChildWithLabel(center, "group1");
+            let group2 = TestUtil.getChildWithLabel(group1, "group2");
+            let triple = await group2.controller().addChild();
             expect(
                 triple.edge.getIdentifiers().length
             ).toBe(2);
