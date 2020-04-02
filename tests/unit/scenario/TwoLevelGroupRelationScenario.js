@@ -1,7 +1,7 @@
 import Scenario from './Scenario'
 
 let TwoLevelGroupRelationScenario = function () {
-    this.dataKey = "twoLevelGroupRelation";
+    this.dataKey = "twoLevelGroupRelation.getGraph";
     return this.init();
 };
 

@@ -18,6 +18,7 @@ import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService
 import GraphElement from '@/graph-element/GraphElement'
 import UiUtils from "../UiUtils";
 import Triple from '@/triple/Triple'
+import EdgeGrouper from "../group-relation/EdgeGrouper";
 
 const api = {};
 
@@ -90,7 +91,11 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                 vertex.parentBubble = child;
                 vertex.parentVertex = centerBubble;
                 edges.push(child);
-                sortEdges(sourceVertexAndEdges.edges, vertex).forEach((edgeBetweenGroupAndDestination) => {
+                let groupRelations = EdgeGrouper.forEdgesAndCenterVertex(
+                    sourceVertexAndEdges.edges, vertex, centerTag
+                ).group(isParentAlreadyOnMap);
+                groupRelations.forEach((groupRelation) => {
+                    let edgeBetweenGroupAndDestination = groupRelation.getFirstEdge();
                     let destinationVertex = subGraph.getVertexWithUri(
                         edgeBetweenGroupAndDestination.getDestinationVertex().getUri()
                     );
@@ -98,13 +103,15 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                     grandChild.setEdgeUri(
                         edgeBetweenGroupAndDestination.getUri()
                     );
-                    vertex.addChild(grandChild);
+                    let child = groupRelation.getNumberOfChild() > 1 ? groupRelation : grandChild;
+                    vertex.addChild(child);
                     if (!preventAddInCurrentGraph) {
-                        CurrentSubGraph.get().add(grandChild);
+                        CurrentSubGraph.get().add(child);
                     }
                 });
                 if (vertex.getNumberOfChild() > 1) {
                     vertex.expand(true);
+                    EdgeGrouper.expandGroupRelations(groupRelations);
                     vertex.collapse(true);
                 }
             }

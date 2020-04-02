@@ -6,6 +6,7 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import TestUtil from '../util/TestUtil'
 import Selection from '@/Selection'
 import KeyCode from 'keycode-js';
+import AroundGroup1TagScenario from "../scenario/AroundGroup1TagScenario";
 
 describe("TagGraph", () => {
     it("can get the meta center identifier", async () => {
@@ -234,5 +235,37 @@ describe("TagGraph", () => {
                 "e1"
             )
         ).toBeFalsy();
+    });
+    it("groups relations under a group vertex", async () => {
+        let scenario = await new AroundGroup1TagScenario();
+        let center = scenario.getCenterInTree();
+        let groupVertex = TestUtil.getChildDeepWithLabel(
+            center,
+            "center"
+        );
+        expect(
+            groupVertex.getGraphElementType()
+        ).toBe(GraphElementType.MetaGroupVertex);
+        groupVertex.expand();
+        expect(
+            groupVertex.getNumberOfChild()
+        ).toBe(4);
+        expect(
+            TestUtil.hasChildWithLabel(
+                groupVertex,
+                "group2"
+            )
+        ).toBeTruthy();
+        let group2 = TestUtil.getChildWithLabel(
+            groupVertex,
+            "group2"
+        );
+        expect(
+            group2.getGraphElementType()
+        ).toBe(GraphElementType.GroupRelation);
+        group2.expand();
+        expect(
+            group2.getNumberOfChild()
+        ).toBe(3);
     });
 });
