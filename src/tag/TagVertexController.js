@@ -92,7 +92,7 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                 vertex.parentVertex = centerBubble;
                 edges.push(child);
                 let groupRelations = EdgeGrouper.forEdgesAndCenterVertex(
-                    sourceVertexAndEdges.edges, vertex
+                    sortEdges(sourceVertexAndEdges.edges, vertex), vertex
                 ).group(isParentAlreadyOnMap);
                 let groupRelationToDiscard = groupRelations.filter((groupRelation) => {
                     return groupRelation.getIdentification().getUri() === centerTag.getUri();
