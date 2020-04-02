@@ -3,8 +3,8 @@ import GraphElement from '@/graph-element/GraphElement'
 import GraphElementType from '@/graph-element/GraphElementType'
 
 export default {
-    forEdgesAndCenterVertex: function (edges, centerVertex, tagToExclude) {
-        return new EdgeGrouper(edges, centerVertex, tagToExclude);
+    forEdgesAndCenterVertex: function (edges, centerVertex) {
+        return new EdgeGrouper(edges, centerVertex);
     },
     expandGroupRelations: function (groupRelations) {
         groupRelations.forEach((groupRelation) => {
@@ -20,11 +20,10 @@ export default {
     }
 };
 
-function EdgeGrouper(edges, centerVertex, tagToExclude) {
+function EdgeGrouper(edges, centerVertex) {
     this.edges = edges;
     this.centerVertex = centerVertex;
     this.childrenIndex = centerVertex.getChildrenIndex();
-    this.tagToExclude = tagToExclude;
 }
 
 EdgeGrouper.prototype.group = function (isParentAlreadyOnMap) {
@@ -34,7 +33,7 @@ EdgeGrouper.prototype.group = function (isParentAlreadyOnMap) {
         if (isParentAlreadyOnMap && parentVertex.getUri() === endVertex.getUri()) {
             return groupRelations;
         }
-        this._getTagsForEdge(edge).forEach((tag) => {
+        edge.getIdentifiersIncludingSelf().forEach((tag) => {
             if (groupRelations[tag.getUri()] === undefined) {
                 let groupRelation = GroupRelation.withTagAndChildren(
                     tag,
@@ -127,17 +126,6 @@ EdgeGrouper.prototype.group = function (isParentAlreadyOnMap) {
         return !groupRelation.deleted
     });
     return this.sortedGroupRelations(groupRelations)
-};
-
-EdgeGrouper.prototype._getTagsForEdge = function (edge) {
-    let tags = edge.getIdentifiersIncludingSelf();
-    return tags;
-    if (!this.tagToExclude) {
-        return tags;
-    }
-    return tags.filter((tag) => {
-        return this.tagToExclude.getUri() !== tag.getUri() || tag.getExternalResourceUri() === edge.getUri();
-    });
 };
 
 EdgeGrouper.prototype.sortedGroupRelations = function (groupRelations) {

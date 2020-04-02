@@ -92,13 +92,14 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                 vertex.parentVertex = centerBubble;
                 edges.push(child);
                 let groupRelations = EdgeGrouper.forEdgesAndCenterVertex(
-                    sourceVertexAndEdges.edges, vertex, centerTag
+                    sourceVertexAndEdges.edges, vertex
                 ).group(isParentAlreadyOnMap);
-                groupRelations.forEach((groupRelation) => {
-                    if (groupRelation.getParentBubble().getId() !== vertex.getId()) {
+                let firstGroupRelation = groupRelations[0];
+                firstGroupRelation.getNextChildren().forEach((edge) => {
+                    if (edge.getParentBubble().getId() !== firstGroupRelation.getId()) {
                         return;
                     }
-                    let edgeBetweenGroupAndDestination = groupRelation.getFirstEdge();
+                    let edgeBetweenGroupAndDestination = edge.isRelation() ? edge : edge.getFirstEdge();
                     let destinationVertex = subGraph.getVertexWithUri(
                         edgeBetweenGroupAndDestination.getDestinationVertex().getUri()
                     );
@@ -106,7 +107,7 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                     grandChild.setEdgeUri(
                         edgeBetweenGroupAndDestination.getUri()
                     );
-                    let child = groupRelation.getNumberOfChild() > 1 ? groupRelation : grandChild;
+                    let child = edge.isRelation() || edge.getNumberOfChild() > 1 ? edge : grandChild;
                     vertex.addChild(child);
                     if (!preventAddInCurrentGraph) {
                         CurrentSubGraph.get().add(child);

@@ -269,7 +269,7 @@ describe("TagGraph", () => {
             group2.getNumberOfChild()
         ).toBe(3);
     });
-    fit("groups 3 level group relations under a group vertex", async () => {
+    it("groups 3 level group relations under a group vertex", async () => {
         let scenario = await new AroundGroup1ThreeLevelGroupRelationScenario();
         let center = scenario.getCenterInTree();
         let groupVertex = TestUtil.getChildDeepWithLabel(
@@ -280,7 +280,6 @@ describe("TagGraph", () => {
             groupVertex.getGraphElementType()
         ).toBe(GraphElementType.MetaGroupVertex);
         groupVertex.expand();
-        TestUtil.logChildren(groupVertex);
         expect(
             TestUtil.hasChildWithLabel(
                 groupVertex,
