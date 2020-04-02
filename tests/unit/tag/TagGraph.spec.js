@@ -6,7 +6,8 @@ import GraphElementType from '@/graph-element/GraphElementType'
 import TestUtil from '../util/TestUtil'
 import Selection from '@/Selection'
 import KeyCode from 'keycode-js';
-import AroundGroup1TagScenario from "../scenario/AroundGroup1TagScenario";
+import AroundGroup1TwoLevelGroupRelationScenario from "../scenario/AroundGroup1TwoLevelGroupRelationScenario";
+import AroundGroup1ThreeLevelGroupRelationScenario from "../scenario/AroundGroup1ThreeLevelGroupRelationScenario";
 
 describe("TagGraph", () => {
     it("can get the meta center identifier", async () => {
@@ -237,7 +238,7 @@ describe("TagGraph", () => {
         ).toBeFalsy();
     });
     it("groups relations under a group vertex", async () => {
-        let scenario = await new AroundGroup1TagScenario();
+        let scenario = await new AroundGroup1TwoLevelGroupRelationScenario();
         let center = scenario.getCenterInTree();
         let groupVertex = TestUtil.getChildDeepWithLabel(
             center,
@@ -267,5 +268,43 @@ describe("TagGraph", () => {
         expect(
             group2.getNumberOfChild()
         ).toBe(3);
+    });
+    it("groups 3 level group relations under a group vertex", async () => {
+        let scenario = await new AroundGroup1ThreeLevelGroupRelationScenario();
+        let center = scenario.getCenterInTree();
+        let groupVertex = TestUtil.getChildDeepWithLabel(
+            center,
+            "center"
+        );
+        expect(
+            groupVertex.getGraphElementType()
+        ).toBe(GraphElementType.MetaGroupVertex);
+        groupVertex.expand();
+        expect(
+            TestUtil.hasChildWithLabel(
+                groupVertex,
+                "group3"
+            )
+        ).toBeFalsy();
+        expect(
+            TestUtil.hasChildWithLabel(
+                groupVertex,
+                "group2"
+            )
+        ).toBeTruthy();
+        let group2 = TestUtil.getChildWithLabel(
+            groupVertex,
+            "group2"
+        );
+        expect(
+            group2.getGraphElementType()
+        ).toBe(GraphElementType.GroupRelation);
+        group2.expand();
+        expect(
+            TestUtil.hasChildWithLabel(
+                group2,
+                "group3"
+            )
+        ).toBeTruthy();
     });
 });

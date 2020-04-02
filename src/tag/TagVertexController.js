@@ -95,6 +95,9 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                     sourceVertexAndEdges.edges, vertex, centerTag
                 ).group(isParentAlreadyOnMap);
                 groupRelations.forEach((groupRelation) => {
+                    if (groupRelation.getParentBubble().getId() !== vertex.getId()) {
+                        return;
+                    }
                     let edgeBetweenGroupAndDestination = groupRelation.getFirstEdge();
                     let destinationVertex = subGraph.getVertexWithUri(
                         edgeBetweenGroupAndDestination.getDestinationVertex().getUri()
