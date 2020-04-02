@@ -94,11 +94,15 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                 let groupRelations = EdgeGrouper.forEdgesAndCenterVertex(
                     sourceVertexAndEdges.edges, vertex
                 ).group(isParentAlreadyOnMap);
-                let firstGroupRelation = groupRelations[0];
-                firstGroupRelation.getNextChildren().forEach((edge) => {
-                    if (edge.getParentBubble().getId() !== firstGroupRelation.getId()) {
-                        return;
-                    }
+                let groupRelationToDiscard = groupRelations.filter((groupRelation) => {
+                    return groupRelation.getIdentification().getUri() === centerTag.getUri();
+                })[0];
+                groupRelations = groupRelationToDiscard.getNextChildren().filter((child) => {
+                    return child.isRelation();
+                }).concat(groupRelations.filter((groupRelation) => {
+                    return groupRelation.getId() !== groupRelationToDiscard.getUri() && (groupRelation.getNumberOfChild() <= 1 || groupRelation.getParentBubble().getId() === groupRelationToDiscard.getId())
+                }));
+                groupRelations.forEach((edge) => {
                     let edgeBetweenGroupAndDestination = edge.isRelation() ? edge : edge.getFirstEdge();
                     let destinationVertex = subGraph.getVertexWithUri(
                         edgeBetweenGroupAndDestination.getDestinationVertex().getUri()
@@ -107,7 +111,7 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                     grandChild.setEdgeUri(
                         edgeBetweenGroupAndDestination.getUri()
                     );
-                    let child = edge.isRelation() || edge.getNumberOfChild() > 1 ? edge : grandChild;
+                    let child = edge.isGroupRelation() && edge.getNumberOfChild() > 1 ? edge : grandChild;
                     vertex.addChild(child);
                     if (!preventAddInCurrentGraph) {
                         CurrentSubGraph.get().add(child);
