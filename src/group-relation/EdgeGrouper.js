@@ -131,6 +131,7 @@ EdgeGrouper.prototype.group = function (isParentAlreadyOnMap) {
 
 EdgeGrouper.prototype._getTagsForEdge = function (edge) {
     let tags = edge.getIdentifiersIncludingSelf();
+    return tags;
     if (!this.tagToExclude) {
         return tags;
     }
