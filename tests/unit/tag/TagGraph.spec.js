@@ -307,4 +307,22 @@ describe("TagGraph", () => {
             )
         ).toBeTruthy();
     });
+    it("adds group vertex tag when adding child under a group relation", async () => {
+        let scenario = await new AroundGroup1ThreeLevelGroupRelationScenario();
+        let center = scenario.getCenterInTree();
+        let groupVertex = TestUtil.getChildDeepWithLabel(
+            center,
+            "center"
+        );
+        groupVertex.expand();
+        let group2 = TestUtil.getChildWithLabel(
+            groupVertex,
+            "group2"
+        );
+        group2.expand();
+        let triple = await group2.controller().addChild();
+        expect(
+            triple.edge.getIdentifiers().length
+        ).toBe(2);
+    });
 });

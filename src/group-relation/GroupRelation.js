@@ -286,9 +286,11 @@ GroupRelation.prototype.getParentSerialGroupRelations = function () {
 };
 
 GroupRelation.prototype.getParentSerialTags = function () {
-    return this.getParentSerialGroupRelations().map((groupRelation) => {
+    let groupVertex = this.getClosestAncestorInTypes([GraphElementType.MetaGroupVertex]);
+    let groupVertexTags = groupVertex.isMetaGroupVertex() ? [groupVertex.getParentVertex().getOriginalMeta()] : [];
+    return groupVertexTags.concat(this.getParentSerialGroupRelations().map((groupRelation) => {
         return groupRelation.getIdentification();
-    });
+    }));
 };
 
 GroupRelation.prototype.getSerialGroupRelations = function (groupRelationToStop, exclusive) {
