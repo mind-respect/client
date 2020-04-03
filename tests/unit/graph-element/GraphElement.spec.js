@@ -6,6 +6,7 @@ import Selection from '@/Selection'
 import Tag from '@/tag/Tag'
 import ShareLevel from "@/vertex/ShareLevel";
 import CreationDateScenario from "../scenario/CreationDateScenario";
+import ThreeLevelGroupRelationScenario from "../scenario/ThreeLevelGroupRelationScenario";
 
 describe("GraphElement", () => {
     describe("addTag", () => {
@@ -453,41 +454,105 @@ describe("GraphElement", () => {
             expect(
                 otherBubble.isToTheLeft()
             ).toBeFalsy();
-            let books = [
-                TestUtil.getChildDeepWithLabel(
-                    groupRelation,
-                    "book 1"
-                ),
-                TestUtil.getChildDeepWithLabel(
-                    groupRelation,
-                    "book 2"
-                ),
-                TestUtil.getChildDeepWithLabel(
-                    groupRelation,
-                    "book 3"
-                ),
-                TestUtil.getChildDeepWithLabel(
-                    groupRelation,
-                    "book 3 copy"
-                )
-            ];
+            let book1 = TestUtil.getChildDeepWithLabel(
+                groupRelation,
+                "book 1"
+            );
             let otherDirectionChildrenIndex = {};
-            for (let i = 0; i < books.length; i++) {
-                otherDirectionChildrenIndex[books[i].getUri()] = {
-                    index: i,
-                    toTheLeft: true
-                }
-            }
+            otherDirectionChildrenIndex[book1.getUri()] = {
+                index: 0,
+                toTheLeft: true
+            };
             otherBubble.setChildrenIndex(
                 otherDirectionChildrenIndex
             );
             expect(
-                otherBubble.getChildrenIndex()[books[0].getUri()].toTheLeft
+                otherBubble.getChildrenIndex()[book1.getUri()].toTheLeft
             ).toBeTruthy();
             let builtIndex = otherBubble.buildChildrenIndex();
             expect(
-                builtIndex[books[0].getUri()].toTheLeft
+                builtIndex[book1.getUri()].toTheLeft
             ).toBeTruthy();
+        });
+        it("changes direction under group relation when vertex is center", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let center = scenario.getCenterInTree();
+            let groupRelation = scenario.getPossessionGroupRelation();
+            groupRelation.expand();
+            let book1 = TestUtil.getChildDeepWithLabel(
+                groupRelation,
+                "book 1"
+            );
+            let otherDirectionChildrenIndex = {};
+            otherDirectionChildrenIndex[book1.getUri()] = {
+                index: 0,
+                toTheLeft: true
+            };
+            center.setChildrenIndex(
+                otherDirectionChildrenIndex
+            );
+            expect(
+                groupRelation.isToTheLeft()
+            ).toBeTruthy();
+            groupRelation.direction = "right";
+            groupRelation.getDescendants().forEach((descendant) => {
+                descendant.direction = "right";
+            });
+            expect(
+                center.getChildrenIndex()[book1.getUri()].toTheLeft
+            ).toBeTruthy();
+            let builtIndex = center.buildChildrenIndex();
+            expect(
+                builtIndex[book1.getUri()].toTheLeft
+            ).toBeFalsy();
+        });
+        it("changes direction under deep group relation when vertex is center", async () => {
+            let scenario = await new ThreeLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let group1 = TestUtil.getChildWithLabel(
+                center,
+                "group1"
+            );
+            group1.expand();
+            let group2 = TestUtil.getChildWithLabel(
+                group1,
+                "group2"
+            );
+            group2.expand();
+            let group3 = TestUtil.getChildWithLabel(
+                group2,
+                "group3"
+            );
+            group3.expand();
+            let jjjj = TestUtil.getChildDeepWithLabel(
+                group3,
+                "jjjj"
+            );
+            group1.direction = "right";
+            group1.getDescendants().forEach((descendant) => {
+                descendant.direction = "right";
+            });
+            expect(
+                group1.isToTheLeft()
+            ).toBeFalsy();
+            let centerChildrenIndex = {};
+            centerChildrenIndex[jjjj.getUri()] = {
+                index: 0,
+                toTheLeft: true
+            };
+            center.setChildrenIndex(
+                centerChildrenIndex
+            );
+            expect(
+                center.getChildrenIndex()[jjjj.getUri()].toTheLeft
+            ).toBeTruthy();
+            expect(
+                jjjj.isToTheLeft()
+            ).toBeFalsy();
+            let builtIndex = center.buildChildrenIndex();
+            expect(
+                builtIndex[jjjj.getUri()].toTheLeft
+            ).toBeFalsy();
         });
     });
 });

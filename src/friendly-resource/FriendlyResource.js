@@ -576,11 +576,9 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
             index
         );
     }
-    if (this.isCollapsed) {
-        this.getDescendantsEvenIfCollapsed().forEach((descendant) => {
-            descendant.direction = this.direction;
-        });
-    }
+    this.getDescendantsEvenIfCollapsed().forEach((descendant) => {
+        descendant.direction = this.direction;
+    });
     UiUtils.isInAnimation = true;
     await Vue.nextTick();
     await UiUtils.animateGraphElementsWithAnimationData(

@@ -18,6 +18,7 @@ import GraphElementController from '@/graph-element/GraphElementController'
 import VertexController from '@/vertex/VertexController'
 import ShareLevel from '@/vertex/ShareLevel'
 import AroundTodoTagScenario from "../scenario/AroundTodoTagScenario";
+import ThreeLevelGroupRelationScenario from "../scenario/ThreeLevelGroupRelationScenario";
 
 describe('GraphElementController', () => {
     describe("removeDo", () => {
@@ -789,7 +790,44 @@ describe('GraphElementController', () => {
         })
     });
     describe("_moveToExecute", () => {
-
+        it("changes the direction of collapsed elements", async () => {
+            let scenario = await new ThreeLevelGroupRelationScenario();
+            let center = scenario.getCenterInTree();
+            let group1 = TestUtil.getChildWithLabel(
+                center,
+                "group1"
+            );
+            group1.expand();
+            let group2 = TestUtil.getChildWithLabel(
+                group1,
+                "group2"
+            );
+            group2.expand();
+            let group3 = TestUtil.getChildWithLabel(
+                group2,
+                "group3"
+            );
+            let aaaa = TestUtil.getChildDeepWithLabel(
+                center,
+                "aaaa"
+            );
+            expect(
+                aaaa.isToTheLeft()
+            ).toBeFalsy();
+            expect(
+                group3.isToTheLeft()
+            ).toBeTruthy();
+            expect(
+                group3.getNextChildrenEvenIfCollapsed()[0].isToTheLeft()
+            ).toBeTruthy();
+            await group1.controller().moveAbove(aaaa);
+            expect(
+                group3.isToTheLeft()
+            ).toBeFalsy();
+            expect(
+                group3.getNextChildrenEvenIfCollapsed()[0].isToTheLeft()
+            ).toBeFalsy();
+        });
     });
 
     describe("becomeParent", () => {
