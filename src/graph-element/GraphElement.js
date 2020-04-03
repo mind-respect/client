@@ -497,19 +497,19 @@ GraphElement.GraphElement.prototype.isTagFromWikipedia = function () {
     return false;
 };
 
-GraphElement.GraphElement.prototype.buildChildrenIndex = function (index, withCenterContextLeftRightIndex) {
-    withCenterContextLeftRightIndex = this.isCenter ? {} : withCenterContextLeftRightIndex || this.getChildrenIndex();
+GraphElement.GraphElement.prototype.buildChildrenIndex = function (index, whenCenterContextLeftRightIndex) {
+    whenCenterContextLeftRightIndex = this.isCenter ? {} : whenCenterContextLeftRightIndex || this.getChildrenIndex();
     index = index || 0;
     return this.getClosestChildrenInTypes(
         [GraphElementType.Vertex, GraphElementType.MetaGroupVertex, GraphElementType.GroupRelation],
         true
     ).reduce((childrenIndex, child) => {
         if (child.isGroupRelation()) {
-            let groupRelationIndex = child.buildChildrenIndex(index, withCenterContextLeftRightIndex);
+            let groupRelationIndex = child.buildChildrenIndex(index, whenCenterContextLeftRightIndex);
             index += Object.keys(groupRelationIndex).length;
             childrenIndex = Object.assign(childrenIndex, groupRelationIndex);
         } else {
-            let leftRightIndexWhileCenter = withCenterContextLeftRightIndex[child.getUri()];
+            let leftRightIndexWhileCenter = whenCenterContextLeftRightIndex[child.getUri()];
             let isLeft = leftRightIndexWhileCenter ? leftRightIndexWhileCenter.toTheLeft : child.isToTheLeft();
             childrenIndex[child.getUri()] = {
                 index: index,
