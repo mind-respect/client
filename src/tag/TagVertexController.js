@@ -16,7 +16,7 @@ import SubGraphController from '@/graph/SubGraphController'
 import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import GraphElement from '@/graph-element/GraphElement'
-import UiUtils from "../UiUtils";
+import GroupRelation from '@/group-relation/GroupRelation'
 import Triple from '@/triple/Triple'
 import EdgeGrouper from "../group-relation/EdgeGrouper";
 
@@ -91,19 +91,28 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                 vertex.parentBubble = child;
                 vertex.parentVertex = centerBubble;
                 edges.push(child);
-                let groupRelations = EdgeGrouper.forEdgesAndCenterVertex(
+                let edgeGrouper = EdgeGrouper.forEdgesAndCenterVertex(
                     sortEdges(sourceVertexAndEdges.edges, vertex), vertex
-                ).group(isParentAlreadyOnMap);
+                );
+                let groupRelations = edgeGrouper.group(isParentAlreadyOnMap);
                 let groupRelationToDiscard = groupRelations.filter((groupRelation) => {
                     return groupRelation.getIdentification().getUri() === centerTag.getUri();
                 })[0];
-                groupRelations = groupRelationToDiscard.getNextChildren().filter((child) => {
+                let immediateRelationsAsGroupRelations = groupRelationToDiscard.getNextChildren().filter((child) => {
                     return child.isRelation();
-                }).concat(groupRelations.filter((groupRelation) => {
-                    return groupRelation.getId() !== groupRelationToDiscard.getUri() && (groupRelation.getNumberOfChild() <= 1 || groupRelation.getParentBubble().getId() === groupRelationToDiscard.getId())
-                }));
-                groupRelations.forEach((edge) => {
-                    let edgeBetweenGroupAndDestination = edge.isRelation() ? edge : edge.getFirstEdge();
+                }).map((relation) => {
+                    let groupRelation = GroupRelation.withTagAndChildren(
+                        centerTag,
+                        [relation]
+                    );
+                    groupRelation.parentVertex = groupRelation.parentBubble = vertex;
+                    return groupRelation;
+                });
+                groupRelations = immediateRelationsAsGroupRelations.concat(groupRelations).filter((groupRelation) => {
+                    return groupRelation.getId() !== groupRelationToDiscard.getId() && (groupRelation.getNumberOfChild() <= 1 || groupRelation.getParentBubble().getId() === groupRelationToDiscard.getId())
+                });
+                edgeGrouper.sortedGroupRelations(groupRelations).forEach((groupRelation) => {
+                    let edgeBetweenGroupAndDestination = groupRelation.getFirstEdge();
                     let destinationVertex = subGraph.getVertexWithUri(
                         edgeBetweenGroupAndDestination.getDestinationVertex().getUri()
                     );
@@ -111,7 +120,7 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                     grandChild.setEdgeUri(
                         edgeBetweenGroupAndDestination.getUri()
                     );
-                    let child = edge.isGroupRelation() && edge.getNumberOfChild() > 1 ? edge : grandChild;
+                    let child = groupRelation.getNumberOfChild() > 1 ? groupRelation : grandChild;
                     vertex.addChild(child);
                     if (!preventAddInCurrentGraph) {
                         CurrentSubGraph.get().add(child);

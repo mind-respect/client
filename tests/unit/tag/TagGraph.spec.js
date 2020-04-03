@@ -325,4 +325,19 @@ describe("TagGraph", () => {
             triple.edge.getIdentifiers().length
         ).toBe(2);
     });
+    it("prevents from duplicating when group vertex has a single child", async () => {
+        let scenario = await new AroundGroup1TwoLevelGroupRelationScenario();
+        let center = scenario.getCenterInTree();
+        let groupVertex = TestUtil.getChildDeepWithLabel(
+            center,
+            "other center"
+        );
+        expect(
+            groupVertex.getGraphElementType()
+        ).toBe(GraphElementType.MetaGroupVertex);
+        groupVertex.expand();
+        expect(
+            groupVertex.getNumberOfChild()
+        ).toBe(1);
+    });
 });
