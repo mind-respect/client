@@ -98,6 +98,9 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                 let groupRelationToDiscard = groupRelations.filter((groupRelation) => {
                     return groupRelation.getIdentification().getUri() === centerTag.getUri();
                 })[0];
+                if (!groupRelationToDiscard) {
+                    groupRelationToDiscard = GroupRelation.usingIdentification(centerTag);
+                }
                 let immediateRelationsAsGroupRelations = groupRelationToDiscard.getNextChildren().filter((child) => {
                     return child.isRelation();
                 }).map((relation) => {

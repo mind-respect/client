@@ -297,8 +297,7 @@
                                     <v-icon class="ml-2 mr-2" x-small>brightness_1</v-icon>
                                     <span>
                                         pg up
-                                    </span>
-                                    |
+                                    </span>|
                                     <span>
                                         pg down
                                     </span>
