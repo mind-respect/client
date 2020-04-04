@@ -283,8 +283,7 @@
                             </v-flex>
                         </v-layout>
                         <v-layout class="mt-6">
-                            <v-flex xs0 lg1 class="text-left body-1"></v-flex>
-                            <v-flex xs2 lg3 class="text-left body-1">
+                            <v-flex xs2 lg4 class="text-left body-1">
                                 <v-icon v-if="$vuetify.breakpoint.mdAndDown" class="mr-4">touch_app</v-icon>
                                 <span v-if="$vuetify.breakpoint.lgAndUp">
                                     <v-icon>mouse</v-icon>
@@ -294,6 +293,14 @@
                                         <v-icon small class="mb-1">arrow_upward</v-icon>
                                         |
                                         <v-icon small class="mb-1">arrow_downward</v-icon>
+                                    </span>
+                                    <v-icon class="ml-2 mr-2" x-small>brightness_1</v-icon>
+                                    <span>
+                                        pg up
+                                    </span>
+                                    |
+                                    <span>
+                                        pg down
                                     </span>
                                 </span>
                             </v-flex>
