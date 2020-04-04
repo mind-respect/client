@@ -91,10 +91,10 @@ api.fromGraphElement = function (graphElement) {
         graphElement.getDestinationVertex().getLabel()
     ].join(", ") : "";
     let context = "";
-    if (graphElement.isVertex()) {
+    if (graphElement.isVertexType()) {
         context = graphElement.getConnectedEdges(true).map((surroundEdge) => {
             return surroundEdge.getOtherVertex(graphElement).getLabel();
-        }).join("{{");
+        }).join("{{").substring(0, 110);
     }
     return new SearchResult(
         graphElement,
