@@ -13,6 +13,7 @@ function TagGroupVertex(vertex) {
     this.setLabel(vertex.getLabel());
     this.setComment(vertex.getComment());
     this.setChildrenIndex(vertex.getChildrenIndex());
+    this.setColors(vertex.getColors());
 }
 
 TagGroupVertex.prototype = new Vertex.Vertex();
