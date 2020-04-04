@@ -151,8 +151,8 @@ SearchService._sortIsMindRespect = function (x, y) {
 };
 
 SearchService._sortIsTag = function (x, y) {
-    let xIsMeta = x.isMindRespect && x.original.isMeta();
-    let yIsMeta = y.isMindRespect && y.original.isMeta();
+    let xIsMeta = x.isMindRespect && x.original.getGraphElement().isMeta();
+    let yIsMeta = y.isMindRespect && y.original.getGraphElement().isMeta();
     return (xIsMeta === yIsMeta) ? 0 : xIsMeta ? -1 : 1;
 };
 

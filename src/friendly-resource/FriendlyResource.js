@@ -744,16 +744,19 @@ FriendlyResource.FriendlyResource.prototype.getChildAtIndex = function (index, i
 };
 
 
-FriendlyResource.FriendlyResource.prototype.getNextBottomBubble = function () {
-    return this._getNextBubble(true);
+FriendlyResource.FriendlyResource.prototype.getNextBottomBubble = function (isLeft) {
+    return this._getNextBubble(true, isLeft);
 };
 
-FriendlyResource.FriendlyResource.prototype.getNextBubble = function () {
-    return this._getNextBubble(false);
+FriendlyResource.FriendlyResource.prototype.getNextBubble = function (isLeft) {
+    return this._getNextBubble(false, isLeft);
 };
 
-FriendlyResource.FriendlyResource.prototype._getNextBubble = function (bottom) {
-    let nextBubble = this.isToTheLeft() ? this.getLeftBubble(bottom) : this.getRightBubble(bottom);
+FriendlyResource.FriendlyResource.prototype._getNextBubble = function (bottom, isLeft) {
+    if (isLeft === undefined) {
+        isLeft = this.isToTheLeft();
+    }
+    let nextBubble = isLeft ? this.getLeftBubble(bottom) : this.getRightBubble(bottom);
     if (!nextBubble) {
         return this;
     }

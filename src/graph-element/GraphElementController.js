@@ -364,6 +364,37 @@ GraphElementController.prototype._pasteBubble = function () {
     bubbleCutClipboard = undefined;
 };
 
+GraphElementController.prototype.moveCompletelyUpCanDo = GraphElementController.prototype.moveCompletelyDownCanDo = GraphElementController.prototype.moveUpOneStepCanDo = GraphElementController.prototype.moveDownOneStepCanDo = function () {
+    return this.isSingle() && this.isOwned() && !this.model().getParentVertex().isMetaGroupVertex();
+};
+
+GraphElementController.prototype.moveCompletelyUp = function () {
+    let topMostBubble = this.model().getParentFork().getNextBubble(this.model().isToTheLeft());
+    if (topMostBubble.isSameBubble(this.model()) || topMostBubble.isSameBubble(this.model().getParentBubble())) {
+        return Promise.resolve();
+    }
+    if (topMostBubble.isVertex()) {
+        topMostBubble = topMostBubble.getParentBubble();
+    }
+    return this.moveAbove(
+        topMostBubble
+    );
+};
+
+GraphElementController.prototype.moveCompletelyDown = function () {
+    let parentFork = this.model().getParentFork();
+    let bottomMostBubble = parentFork.getNextBottomBubble(this.model().isToTheLeft());
+    if (bottomMostBubble.isSameBubble(this.model()) || bottomMostBubble.isSameBubble(this.model().getParentBubble())) {
+        return Promise.resolve();
+    }
+    if (bottomMostBubble.isVertex()) {
+        bottomMostBubble = bottomMostBubble.getParentBubble();
+    }
+    return this.moveBelow(
+        bottomMostBubble
+    );
+};
+
 GraphElementController.prototype.moveUpOneStep = function () {
     let bubbleAbove = this.model().getUpBubble();
     if (bubbleAbove.isSameBubble(this.model())) {
@@ -386,7 +417,6 @@ GraphElementController.prototype.moveUpOneStep = function () {
         bubbleAbove
     );
 };
-
 
 GraphElementController.prototype.moveDownOneStep = function () {
     let bubbleUnder = this.model().getDownBubble();

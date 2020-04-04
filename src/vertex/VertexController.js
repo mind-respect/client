@@ -253,10 +253,6 @@ VertexController.prototype.becomeParent = function (child) {
     }
 };
 
-VertexController.prototype.moveUpOneStepCanDo = VertexController.prototype.moveDownOneStepCanDo = function () {
-    return !this.model().getParentVertex().isMetaGroupVertex();
-};
-
 VertexController.prototype.copyCanDo = function () {
     return this.isSingle() && !this.model().isLabelEmpty();
 };

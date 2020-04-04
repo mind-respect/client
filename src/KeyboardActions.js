@@ -180,6 +180,12 @@ function defineNonCtrlPlusKeysAndTheirActions() {
     actions[KeyCode.KEY_SPACE] = {
         action: "focus"
     };
+    actions[KeyCode.KEY_PAGE_UP] = {
+        action: "moveCompletelyUp"
+    };
+    actions[KeyCode.KEY_PAGE_DOWN] = {
+        action: "moveCompletelyDown"
+    };
     return actions;
 }
 
