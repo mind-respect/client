@@ -33,7 +33,7 @@ SearchService.ownTagsOnly = function (term, nbSkip) {
         SearchService._sortByNbVisits
     ]);
 };
-SearchService.searchForAllOwnResources = function (searchText, nbSkip) {
+SearchService.searchForAllOwnResources = function (searchText, nbSkip, prioritizeTags) {
     let providers = [
         SearchService._searchForAllOwnResources(searchText, nbSkip)
     ];
@@ -42,11 +42,15 @@ SearchService.searchForAllOwnResources = function (searchText, nbSkip) {
             SearchService._searchForResourcesOnThisMap(searchText)
         );
     }
-    return resultsFromProviders(providers, [
+    let sortCriterias = [
         SearchService._sortIsMindRespect,
         SearchService._sortByNbVisits,
         SearchService._sortByNbNbNeighbors
-    ]);
+    ];
+    if (prioritizeTags) {
+        sortCriterias.splice(1, 0, SearchService._sortIsTag);
+    }
+    return resultsFromProviders(providers, sortCriterias);
 };
 
 SearchService._searchForAllOwnResources = function (searchText, nbSkip) {
@@ -144,6 +148,12 @@ SearchService._ownTagsOnly = function (searchText, nbSkip) {
 
 SearchService._sortIsMindRespect = function (x, y) {
     return (x.isMindRespect === y.isMindRespect) ? 0 : x.isMindRespect ? -1 : 1;
+};
+
+SearchService._sortIsTag = function (x, y) {
+    let xIsMeta = x.isMindRespect && x.original.isMeta();
+    let yIsMeta = y.isMindRespect && y.original.isMeta();
+    return (xIsMeta === yIsMeta) ? 0 : xIsMeta ? -1 : 1;
 };
 
 SearchService._sortByNbNbNeighbors = function (x, y) {

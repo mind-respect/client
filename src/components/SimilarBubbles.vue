@@ -255,7 +255,8 @@
                 }
                 SearchService.searchForAllOwnResources(
                     bubble.getLabel(),
-                    this.nbLoadResults * 10
+                    this.nbLoadResults * 10,
+                    true
                 ).then((results) => {
                     if (results.length < 10) {
                         this.showLoadMore = false;
