@@ -219,28 +219,6 @@ EdgeController.prototype.reverse = function () {
         this.model().inverse();
     })
 };
-EdgeController.prototype.sourceVertex = function (sourceVertex) {
-    if (!sourceVertex.isExpanded) {
-        return sourceVertex.controller().expand().then(doIt.bind(this));
-    } else {
-        return doIt.bind(this)();
-    }
-
-    function doIt() {
-        if (this.model().isInverse()) {
-            this.setSourceVertex(sourceVertex);
-            return EdgeService.changeSourceVertex(
-                sourceVertex,
-                this.model()
-            );
-        }
-        this.setDestinationVertex(sourceVertex);
-        return EdgeService.changeDestinationVertex(
-            sourceVertex,
-            this.model()
-        );
-    }
-};
 EdgeController.prototype.replaceParentVertex = function (newParentVertex, preventChangingInModel) {
     if (newParentVertex.canExpand()) {
         return newParentVertex.controller().expand(true, true, true).then(doIt.bind(this));
@@ -254,13 +232,19 @@ EdgeController.prototype.replaceParentVertex = function (newParentVertex, preven
         if (this.model().isInverse()) {
             await EdgeService.changeDestinationVertex(
                 newParentVertex,
-                this.model()
+                this.model(),
+                parentVertex.getShareLevel(),
+                this.model().getOtherVertex(parentVertex),
+                newParentVertex.getShareLevel()
             );
             return;
         } else {
             await EdgeService.changeSourceVertex(
                 newParentVertex,
-                this.model()
+                this.model(),
+                parentVertex.getShareLevel(),
+                this.model().getOtherVertex(parentVertex).getShareLevel(),
+                newParentVertex.getShareLevel()
             );
         }
         if (!preventChangingInModel) {
@@ -269,8 +253,6 @@ EdgeController.prototype.replaceParentVertex = function (newParentVertex, preven
         // this.getModel().parentBubble = newParentVertex;
         // this.getModel().parentVertex = newParentVertex;
         // newParentVertex.addChild(this.getModel());
-
-
     }
 };
 
@@ -299,7 +281,10 @@ EdgeController.prototype.leaveContextDo = async function () {
         addIdentifiersPromise,
         EdgeService.changeDestinationVertex(
             newVertex,
-            this.model()
+            this.model(),
+            original.getShareLevel(),
+            edge.getOtherVertex(original).getShareLevel(),
+            newVertex.getShareLevel()
         )
     ]).then(() => {
         if (isRemoveFlow) {

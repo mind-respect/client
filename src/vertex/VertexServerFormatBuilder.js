@@ -12,7 +12,7 @@ api.buildWithUri = function (uri) {
     };
 };
 api.getFriendlyResourceServerObject = function (serverFormat) {
-    return serverFormat.vertex.graphElement.friendlyResource;
+    return serverFormat.graphElement.friendlyResource;
 };
 
 export default api;

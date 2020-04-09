@@ -20,14 +20,24 @@ api.inverse = function (edge) {
         edge.getUri() + "/inverse"
     );
 };
-api.changeSourceVertex = function (sourceVertex, edge) {
+api.changeSourceVertex = function (sourceVertex, edge, oldEndShareLevel, keptEndShareLevel, newEndShareLevel) {
     return Service.geApi().put(
-        edge.getUri() + "/source-vertex/" + IdUri.elementIdFromUri(sourceVertex.getUri())
+        edge.getUri() + "/source-vertex/" + IdUri.elementIdFromUri(sourceVertex.getUri()),
+        {
+            oldEndShareLevel: oldEndShareLevel,
+            keptEndShareLevel: keptEndShareLevel,
+            newEndShareLevel: newEndShareLevel
+        }
     )
 };
-api.changeDestinationVertex = function (destinationVertex, edge) {
+api.changeDestinationVertex = function (destinationVertex, edge, oldEndShareLevel, keptEndShareLevel, newEndShareLevel) {
     return Service.geApi().put(
-        edge.getUri() + "/destination-vertex/" + IdUri.elementIdFromUri(destinationVertex.getUri())
+        edge.getUri() + "/destination-vertex/" + IdUri.elementIdFromUri(destinationVertex.getUri()),
+        {
+            oldEndShareLevel: oldEndShareLevel,
+            keptEndShareLevel: keptEndShareLevel,
+            newEndShareLevel: newEndShareLevel
+        }
     );
 };
 
