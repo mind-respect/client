@@ -95,17 +95,18 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             }
         }
         let childrenIndex = centerVertex.getChildrenIndex();
-        let groupRelations = EdgeGrouper.forEdgesAndCenterVertex(
-            subGraph.sortedEdges(), centerVertex
-        ).group(isParentAlreadyOnMap);
-        groupRelations.forEach((groupRelation) => {
-            if (groupRelation.getParentBubble().getId() !== centerVertex.getId()) {
-                return;
-            }
-            let edge = groupRelation.getFirstEdge();
-            let child = groupRelation.getNumberOfChild() > 1 ? groupRelation : edge;
-            let endVertex = edge.getOtherVertex(centerVertex);
-            let childIndex = childrenIndex[endVertex.getUri()] || childrenIndex[endVertex.getPatternUri()];
+
+        // let groupRelations = EdgeGrouper.forEdgesAndCenterVertex(
+        //     subGraph.sortedEdges(), centerVertex
+        // ).group(isParentAlreadyOnMap);
+        subGraph.sortedEdgesAndGroupRelations().forEach((child) => {
+            // if (child.getParentBubble().getId() !== centerVertex.getId()) {
+            //     return;
+            // }
+            // let edge = child.getFirstEdge();
+            // let child = child.getNumberOfChild() > 1 ? child : edge;
+            let endFork = child.isEdge() ? child.getOtherVertex(centerVertex) : child;
+            let childIndex = childrenIndex[endFork.getUri()] || childrenIndex[endFork.getPatternUri()];
             let addLeft;
             if (childIndex !== undefined) {
                 addLeft = childIndex.toTheLeft;
@@ -119,7 +120,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
                 CurrentSubGraph.get().add(child);
             }
         });
-        EdgeGrouper.expandGroupRelations(groupRelations);
+        // EdgeGrouper.expandGroupRelations(groupRelations);
         let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
         centerVertex.isExpanded = true;
         centerVertex.isCollapsed = false;

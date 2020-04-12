@@ -59,22 +59,22 @@ api.createFromSourceAndDestinationUri = function (sourceUri, destinationUri) {
     });
 };
 
-api.convertToGroupRelation = function (edgeUri, tag, isNewTag, initialShareLevel) {
+api.convertToGroupRelation = function (edgeUri, initialShareLevel, label) {
     let newGroupRelationShortId = IdUri.uuid();
     let newGroupRelationUri = "/service" + IdUri.groupRelationBaseUri() + "/" + newGroupRelationShortId;
-    let newGroupRelation = GroupRelation.withTagAndUri(
-        tag,
+    let newGroupRelation = GroupRelation.withUri(
         newGroupRelationUri
     );
+    newGroupRelation.setLabel(label);
+    newGroupRelation.setShareLevel(initialShareLevel);
     return {
         optimistic: newGroupRelation,
         promise: Service.geApi().post(
             edgeUri + "/convertToGroupRelation",
             {
                 newGroupRelationShortId: newGroupRelationShortId,
-                tag: tag.getJsonFormat(),
-                isNewTag: isNewTag,
-                initialShareLevel: initialShareLevel
+                initialShareLevel: initialShareLevel,
+                label
             }
         ).then(() => {
             return newGroupRelation;

@@ -5,6 +5,7 @@
 import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
 import GraphElement from '@/graph-element/GraphElement'
+import GroupRelation from '@/group-relation/GroupRelation'
 import GraphElementType from "../graph-element/GraphElementType";
 
 const api = {};
@@ -48,7 +49,7 @@ api.SubGraph = function (graph, centerUri, buildFacade) {
         this.serverFormat = graph;
         this._buildVertices();
         this._buildEdges();
-        this.groupRelations = {};
+        this._buildGroupRelations();
         this.tagVertices = [];
     } else {
         this.edges = graph.edges;
@@ -205,15 +206,15 @@ api.SubGraph.prototype.getEdges = function () {
     return [].concat.apply([], edges)
 };
 
-api.SubGraph.prototype.sortedEdges = function () {
+api.SubGraph.prototype.sortedEdgesAndGroupRelations = function () {
     let centerVertex = this.getCenter();
     let childrenIndex = centerVertex.getChildrenIndex();
-    return this.getEdges().sort((a, b) => {
-        let vertexA = a.getOtherVertex(centerVertex);
-        let vertexB = b.getOtherVertex(centerVertex);
+    return this.getEdges().concat(this.getGroupRelations()).sort((a, b) => {
+        let forkA = a.isEdge() ? a.getOtherVertex(centerVertex) : a;
+        let forkB = b.isEdge() ? b.getOtherVertex(centerVertex) : b;
         return GraphElement.sortCompare(
-            vertexA,
-            vertexB,
+            forkA,
+            forkB,
             childrenIndex
         );
     });
@@ -334,18 +335,6 @@ api.SubGraph.prototype.getCenter = function () {
     return this.getVertexWithUri(this.centerUri);
 };
 
-api.SubGraph.prototype.getCenterTagIndex = function () {
-    return this.serverFormat.childrenIndexesCenterTag;
-};
-
-api.SubGraph.prototype.getCenterTagColors = function () {
-    return this.serverFormat.colorsCenterTag;
-};
-
-api.SubGraph.prototype.getFontCenterTag = function () {
-    return this.serverFormat.fontCenterTag;
-};
-
 api.SubGraph.prototype._buildVertices = function () {
     this.vertices = {};
     Object.values(this.serverFormat.vertices).forEach((vertex) => {
@@ -354,4 +343,11 @@ api.SubGraph.prototype._buildVertices = function () {
     });
 };
 
+api.SubGraph.prototype._buildGroupRelations = function () {
+    this.groupRelations = {};
+    Object.values(this.serverFormat.groupRelations).forEach((groupRelation) => {
+        let facade = GroupRelation.fromServerFormat(groupRelation);
+        this.groupRelations[facade.getUri()] = facade;
+    });
+};
 export default api;

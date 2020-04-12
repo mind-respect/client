@@ -147,34 +147,37 @@ EdgeController.prototype.becomeParent = async function (adoptedChild) {
 };
 
 EdgeController.prototype._convertToGroupRelation = function () {
-    let parentBubble = this.model().getParentBubble();
-    let newGroupRelationTag;
-    let uniqueTags = this.model().getTagsNotIncludedInSerialParentGroupRelations();
-    let isNewTag = false;
-    let initialShareLevel;
-    if (uniqueTags.length > 0) {
-        newGroupRelationTag = uniqueTags[0];
-        initialShareLevel = newGroupRelationTag.getShareLevel();
-        this.model().removeTag(newGroupRelationTag);
-    } else {
-        isNewTag = true;
-        newGroupRelationTag = this.model().buildAdditionalSelfTag();
-        // promise = this.addIdentification(
-        //     groupRelationIdentifiers[0],
-        //     true
-        // );
-        initialShareLevel = this.model().getShareLevel();
-        // this.model().addIdentification(groupRelationIdentifiers[0]);
-    }
+    // let parentBubble = this.model().getParentBubble();
+    // let newGroupRelationTag;
+    // let uniqueTags = this.model().getTagsNotIncludedInSerialParentGroupRelations();
+    // let isNewTag = false;
+    // let initialShareLevel;
+    let edge = this.model();
+    edge.getIdentifiers().forEach((tag) => {
+        this.model().removeTag(tag);
+    });
+    // if (uniqueTags.length > 0) {
+    //     newGroupRelationTag = uniqueTags[0];
+    //     initialShareLevel = newGroupRelationTag.getShareLevel();
+    //     this.model().removeTag(newGroupRelationTag);
+    // } else {
+    //     isNewTag = true;
+    //     newGroupRelationTag = this.model().buildAdditionalSelfTag();
+    //     // promise = this.addIdentification(
+    //     //     groupRelationIdentifiers[0],
+    //     //     true
+    //     // );
+    //     initialShareLevel = this.model().getShareLevel();
+    //     // this.model().addIdentification(groupRelationIdentifiers[0]);
+    // }
 
     let response = EdgeService.convertToGroupRelation(
-        this.model().getUri(),
-        newGroupRelationTag,
-        isNewTag,
-        initialShareLevel
+        edge.getUri(),
+        edge.getParentVertex().getShareLevel(),
+        edge.isLabelEmpty() && edge.hasIdentifications() ? edge.getIdentifiers()[0].getLabel() : edge.getLabel()
     );
     let newGroupRelation = response.optimistic;
-    newGroupRelation.parentBubble = parentBubble;
+    newGroupRelation.parentBubble = this.model().getParentBubble();
     newGroupRelation.parentVertex = this.model().getParentVertex();
     this.model().parentBubble = newGroupRelation;
     newGroupRelation.addChild(this.model());
