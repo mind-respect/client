@@ -6,6 +6,7 @@ import IdUri from '@/IdUri'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import Service from '@/Service'
 import UserService from "@/service/UserService";
+import GroupRelation from '@/group-relation/GroupRelation'
 
 const api = {};
 
@@ -56,6 +57,29 @@ api.createFromSourceAndDestinationUri = function (sourceUri, destinationUri) {
             response.headers.location
         );
     });
+};
+
+api.convertToGroupRelation = function (edgeUri, tag, isNewTag, initialShareLevel) {
+    let newGroupRelationShortId = IdUri.uuid();
+    let newGroupRelationUri = "/service" + IdUri.groupRelationBaseUri() + "/" + newGroupRelationShortId;
+    let newGroupRelation = GroupRelation.withTagAndUri(
+        tag,
+        newGroupRelationUri
+    );
+    return {
+        optimistic: newGroupRelation,
+        promise: Service.geApi().post(
+            edgeUri + "/convertToGroupRelation",
+            {
+                newGroupRelationShortId: newGroupRelationShortId,
+                tag: tag.getJsonFormat(),
+                isNewTag: isNewTag,
+                initialShareLevel: initialShareLevel
+            }
+        ).then(() => {
+            return newGroupRelation;
+        })
+    }
 };
 
 export default api;

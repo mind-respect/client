@@ -42,6 +42,9 @@ const IdUri = {
     edgeBaseUri: function () {
         return UserService.currentUserUri() + "/graph/edge";
     },
+    groupRelationBaseUri: function () {
+        return UserService.currentUserUri() + "/graph/gr";
+    },
     tagBaseUri: function () {
         return UserService.currentUserUri() + "/graph/identification";
     },

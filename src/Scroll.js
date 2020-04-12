@@ -16,17 +16,6 @@ const IS_ON_SCREEN_RIGHT_THRESHOLD_MOBILE = 0;
 let cancelGraphElementScroll;
 
 const Scroll = {
-    goToSection: function (elementId, route) {
-        VueScrollTo.scrollTo(
-            document.getElementById(elementId), 500, {
-                easing: 'linear',
-                offset: -100
-            }
-        );
-        if (route) {
-            router.push(route);
-        }
-    },
     goToGraphElement: function (bubble, noAnimation) {
         return new Promise((resolve) => {
             if (cancelGraphElementScroll) {

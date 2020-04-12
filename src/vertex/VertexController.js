@@ -16,7 +16,7 @@ import Vue from 'vue'
 import Store from '@/store'
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
 import router from '@/router'
-import UiUtils from "../UiUtils";
+import ForkService from "../fork/ForkService";
 
 const api = {};
 
@@ -48,7 +48,7 @@ VertexController.prototype.addChildCanDo = function () {
 VertexController.prototype.addChild = function (index, isToTheLeft) {
     let promise = this.model().isCenter ? Promise.resolve() : this.expand(true, true);
     return promise.then(() => {
-        let addTuple = VertexService.addTuple(
+        let addTuple = ForkService.addTuple(
             this.model()
         );
         let triple = addTuple.optimistic;

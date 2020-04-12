@@ -5,14 +5,11 @@
 import Vue from 'vue'
 import GraphElementController from '@/graph-element/GraphElementController'
 import EdgeService from '@/edge/EdgeService'
-import GraphElementType from '@/graph-element/GraphElementType'
 import Selection from '@/Selection'
-import GroupRelation from '@/group-relation/GroupRelation'
 import GraphElementService from '@/graph-element/GraphElementService'
 import Store from '@/store'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import VertexService from '@/vertex/VertexService'
-import UiUtils from "../UiUtils";
 
 const api = {};
 api.RelationController = EdgeController;
@@ -41,20 +38,21 @@ EdgeController.prototype.addChildCanDo = function () {
 
 EdgeController.prototype.addChild = async function () {
     let previousParentFork = this.model().getParentFork();
-    let newGroupRelation = this._convertToGroupRelation().optimistic;
+    let convertResponse = this._convertToGroupRelation();
+    let newGroupRelation = convertResponse.optimistic;
     Selection.removeAll();
-    let triple = await newGroupRelation.controller().addChildWhenInTransition();
-    this.model().getIdentifiers().forEach((tag) => {
-        if (triple.edge.hasIdentification(tag)) {
-            return;
-        }
-        triple.edge.controller().addIdentification(
-            tag,
-            true,
-            true
-        );
-        triple.edge.addIdentification(tag);
-    });
+    let triple = await newGroupRelation.controller().addChildWhenInTransition(convertResponse.promise);
+    // this.model().getIdentifiers().forEach((tag) => {
+    //     if (triple.edge.hasIdentification(tag)) {
+    //         return;
+    //     }
+    //     triple.edge.controller().addIdentification(
+    //         tag,
+    //         true,
+    //         true
+    //     );
+    //     triple.edge.addIdentification(tag);
+    // });
     this.setLabel("");
     previousParentFork.replaceChild(
         this.model(),
@@ -150,37 +148,38 @@ EdgeController.prototype.becomeParent = async function (adoptedChild) {
 
 EdgeController.prototype._convertToGroupRelation = function () {
     let parentBubble = this.model().getParentBubble();
-    let groupRelationIdentifiers;
+    let newGroupRelationTag;
     let uniqueTags = this.model().getTagsNotIncludedInSerialParentGroupRelations();
-    let promise = Promise.resolve();
+    let isNewTag = false;
+    let initialShareLevel;
     if (uniqueTags.length > 0) {
-        groupRelationIdentifiers = [uniqueTags[0]];
+        newGroupRelationTag = uniqueTags[0];
+        initialShareLevel = newGroupRelationTag.getShareLevel();
+        this.model().removeTag(newGroupRelationTag);
     } else {
-        groupRelationIdentifiers = [
-            this.model().buildAdditionalSelfTag()
-        ];
-        promise = this.addIdentification(
-            groupRelationIdentifiers[0],
-            true
-        );
-        groupRelationIdentifiers[0].setShareLevel(
-            this.model().getShareLevel()
-        );
-        this.model().addIdentification(groupRelationIdentifiers[0]);
+        isNewTag = true;
+        newGroupRelationTag = this.model().buildAdditionalSelfTag();
+        // promise = this.addIdentification(
+        //     groupRelationIdentifiers[0],
+        //     true
+        // );
+        initialShareLevel = this.model().getShareLevel();
+        // this.model().addIdentification(groupRelationIdentifiers[0]);
     }
-    let newGroupRelation = GroupRelation.usingIdentifiers(
-        groupRelationIdentifiers
+
+    let response = EdgeService.convertToGroupRelation(
+        this.model().getUri(),
+        newGroupRelationTag,
+        isNewTag,
+        initialShareLevel
     );
+    let newGroupRelation = response.optimistic;
     newGroupRelation.parentBubble = parentBubble;
     newGroupRelation.parentVertex = this.model().getParentVertex();
+    this.model().parentBubble = newGroupRelation;
     newGroupRelation.addChild(this.model());
     newGroupRelation.isExpanded = true;
-    return {
-        optimistic: newGroupRelation,
-        promise: promise.then(() => {
-            return newGroupRelation;
-        })
-    };
+    return response;
 };
 
 EdgeController.prototype.removeCanDo = function () {

@@ -160,13 +160,13 @@ GraphElement.GraphElement.prototype.init = function (graphElementServerFormat) {
 };
 
 
-GraphElement.GraphElement.prototype.removeTag = function (identifierToRemove) {
+GraphElement.GraphElement.prototype.removeTag = function (tagToRemove) {
     let l = this.identifiers.length;
     while (l--) {
-        let identifier = this.identifiers[l];
-        if (identifier.getUri() === identifierToRemove.getUri()) {
+        let tag = this.identifiers[l];
+        if (tag.getUri() === tagToRemove.getUri()) {
             this.identifiers.splice(l, 1);
-            identifier.getNbNeighbors().decrementForShareLevel(this.getShareLevel());
+            tag.getNbNeighbors().decrementForShareLevel(this.getShareLevel());
             return false;
         }
     }

@@ -6,12 +6,10 @@ import VertexController from '@/vertex/VertexController'
 import Vue from "vue";
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
 import GraphElementController from '@/graph-element/GraphElementController'
-import VertexService from '@/vertex/VertexService'
 import Selection from '@/Selection'
 import TagRelation from '@/tag/TagRelation'
 import GraphElementType from '@/graph-element/GraphElementType'
-import Store from '@/store'
-import UiUtils from "../UiUtils";
+import ForkService from "../fork/ForkService";
 
 const api = {};
 
@@ -29,7 +27,7 @@ TagGroupVertexController.prototype = new VertexController.VertexController();
 TagGroupVertexController.prototype.addChild = async function () {
     this.model().expand();
     await Vue.nextTick();
-    let addTuple = VertexService.addTuple(
+    let addTuple = ForkService.addTuple(
         this.model()
     );
     let triple = addTuple.optimistic;

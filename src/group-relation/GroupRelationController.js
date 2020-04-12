@@ -2,17 +2,14 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import VertexService from '@/vertex/VertexService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import GraphElementController from '@/graph-element/GraphElementController'
-import GraphElementType from '@/graph-element/GraphElementType'
 import GraphElementService from '@/graph-element/GraphElementService'
 import Selection from '@/Selection'
 import Vue from 'vue'
 import Store from '@/store'
 import CurrentSubGraph from "../graph/CurrentSubGraph";
-import Vertex from '@/vertex/Vertex'
-import UiUtils from "../UiUtils";
+import ForkService from "../fork/ForkService";
 
 const api = {};
 api.GroupRelationController = GroupRelationController;
@@ -43,26 +40,16 @@ GroupRelationController.prototype.centerCanDo = function () {
     return false;
 };
 
-GroupRelationController.prototype.addChildWhenInTransition = function () {
+GroupRelationController.prototype.addChildWhenInTransition = function (convertPromise) {
     return this.addChild(
         undefined,
         undefined,
-        false
+        false,
+        convertPromise
     )
 };
 
-GroupRelationController.prototype.addSiblingCanDo = function () {
-    return this.isSingleAndOwned() && this.model().getParentFork().controller().addChildCanDo();
-};
-
-GroupRelationController.prototype.addSibling = function () {
-    return this.model().getParentFork().controller().addChild(
-        this.model().getIndexInTree() + 1,
-        this.model().isToTheLeft()
-    );
-};
-
-GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveIndex) {
+GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveIndex, convertPromise) {
     if (saveIndex === undefined) {
         saveIndex = true;
     }
@@ -70,8 +57,9 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
     if (this.model().canExpand()) {
         this.model().expand(true);
     }
-    let addTuple = VertexService.addTuple(
-        parentVertex
+    let addTuple = ForkService.addTuple(
+        this.model(),
+        convertPromise
     );
 
     let triple = addTuple.optimistic;
@@ -80,30 +68,31 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         triple.destination.controller().setShareLevelDo(
             parentVertex.getShareLevel()
         );
-        let tags = this.model().getParentSerialTags();
-        return Promise.all(tags.map((identifier) => {
-            identifier.makeSameAs();
-            return triple.edge.controller().addIdentification(
-                identifier,
-                true,
-                true
-            ).then((tags) => {
-                tags.forEach((tag) => {
-                    if (this.model().hasIdentification(tag)) {
-                        this.model().getIdentifierHavingExternalUri(tag.getExternalResourceUri()).setUri(
-                            tag.getUri()
-                        )
-                    }
-                })
-            });
-        }));
+
+        // let tags = this.model().getParentSerialTags();
+        // return Promise.all(tags.map((identifier) => {
+        //     identifier.makeSameAs();
+        //     return triple.edge.controller().addIdentification(
+        //         identifier,
+        //         true,
+        //         true
+        //     ).then((tags) => {
+        //         tags.forEach((tag) => {
+        //             if (this.model().hasIdentification(tag)) {
+        //                 this.model().getIdentifierHavingExternalUri(tag.getExternalResourceUri()).setUri(
+        //                     tag.getUri()
+        //                 )
+        //             }
+        //         })
+        //     });
+        // }));
     });
     addTuple.promise.catch(() => {
         triple.destination.remove();
     });
-    triple.edge.addIdentifications(
-        this.model().getParentSerialTags()
-    );
+    // triple.edge.addIdentifications(
+    //     this.model().getParentSerialTags()
+    // );
     this.model().addChild(
         triple.edge,
         isToTheLeft,
@@ -123,6 +112,17 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         }
     });
     return Promise.resolve(triple);
+};
+
+GroupRelationController.prototype.addSiblingCanDo = function () {
+    return this.isSingleAndOwned() && this.model().getParentFork().controller().addChildCanDo();
+};
+
+GroupRelationController.prototype.addSibling = function () {
+    return this.model().getParentFork().controller().addChild(
+        this.model().getIndexInTree() + 1,
+        this.model().isToTheLeft()
+    );
 };
 
 GroupRelationController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft) {

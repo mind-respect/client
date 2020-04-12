@@ -30,7 +30,12 @@ api.withTagAndChildren = function (tag, children) {
     return new GroupRelation([tag], children);
 };
 
-function GroupRelation(tags, children) {
+api.withTagAndUri = function (tag, uri) {
+    return new GroupRelation([tag], [], uri);
+};
+
+
+function GroupRelation(tags, children, uri) {
     this.children = children.map((child) => {
         child.parentBubble = this;
         return child;
@@ -42,7 +47,7 @@ function GroupRelation(tags, children) {
     );
     this.init(
         GraphElement.buildObjectWithUri(
-            IdUri.uuid()
+            uri || IdUri.uuid()
         )
     );
     this.setLabel(tag.getLabel());

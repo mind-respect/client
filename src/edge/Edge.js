@@ -69,13 +69,21 @@ api.Edge = function () {
 
 api.Edge.prototype = new GraphElement.GraphElement();
 
-api.Edge.prototype.init = function (edgeServerFormat, sourceVertex, destinationVertex) {
-    this._sourceVertex = sourceVertex ? sourceVertex : FriendlyResource.fromServerFormat(
-        VertexServerFormatBuilder.getFriendlyResourceServerObject(
-            edgeServerFormat.sourceVertex
-        )
-    );
-    this._destinationVertex = destinationVertex ? destinationVertex : FriendlyResource.fromServerFormat(
+api.Edge.prototype.init = function (edgeServerFormat, source, destination) {
+    if (source) {
+        this._sourceVertex = source.isGroupRelation() ? source.getParentVertex() : source;
+    } else if (edgeServerFormat.sourceVertex !== undefined) {
+        this._sourceVertex = FriendlyResource.fromServerFormat(
+            VertexServerFormatBuilder.getFriendlyResourceServerObject(
+                edgeServerFormat.sourceVertex
+            )
+        );
+    } else {
+        this._sourceVertex = CurrentSubGraph.get().getGroupRelationWithUri(
+            GraphElement.fromServerFormat(edgeServerFormat.sourceGroupRelation.graphElement).getUri()
+        ).getParentVertex();
+    }
+    this._destinationVertex = destination ? destination : FriendlyResource.fromServerFormat(
         VertexServerFormatBuilder.getFriendlyResourceServerObject(
             edgeServerFormat.destinationVertex
         )
