@@ -7,6 +7,7 @@ import Vertex from '@/vertex/Vertex'
 import GraphElement from '@/graph-element/GraphElement'
 import GroupRelation from '@/group-relation/GroupRelation'
 import GraphElementType from "../graph-element/GraphElementType";
+import IdUri from "../IdUri";
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -207,8 +208,9 @@ api.SubGraph.prototype.getEdges = function () {
 };
 
 api.SubGraph.prototype.sortedEdgesAndGroupRelations = function () {
-    let centerVertex = this.getCenter();
-    let childrenIndex = centerVertex.getChildrenIndex();
+    let centerFork = this.getHavingUri(this.centerUri);
+    let childrenIndex = centerFork.getChildrenIndex();
+    let centerVertex = centerFork.isGroupRelation() ? centerFork.getParentVertex() : centerFork;
     return this.getEdges().concat(this.getGroupRelations()).sort((a, b) => {
         let forkA = a.isEdge() ? a.getOtherVertex(centerVertex) : a;
         let forkB = b.isEdge() ? b.getOtherVertex(centerVertex) : b;
@@ -329,10 +331,6 @@ api.SubGraph.prototype.getTagBubbleWithUiId = function (uiId) {
     return this.tagVertices.filter((tag) => {
         return tag.uiId === uiId;
     })[0];
-};
-
-api.SubGraph.prototype.getCenter = function () {
-    return this.getVertexWithUri(this.centerUri);
 };
 
 api.SubGraph.prototype._buildVertices = function () {

@@ -10,19 +10,28 @@ import Vue from 'vue'
 import Store from '@/store'
 import CurrentSubGraph from "../graph/CurrentSubGraph";
 import ForkService from "../fork/ForkService";
+import ForkController from "../fork/ForkController";
+import SubGraphController from '@/graph/SubGraphController'
 
 const api = {};
 api.GroupRelationController = GroupRelationController;
 
 function GroupRelationController(groupRelationUi) {
     this.groupRelationsUi = groupRelationUi;
-    GraphElementController.GraphElementController.prototype.init.call(
+    ForkController.ForkController.prototype.init.call(
         this,
+        this.groupRelationsUi
+    );
+    this.subGraphController = SubGraphController.withVertices(
         this.groupRelationsUi
     );
 }
 
-GroupRelationController.prototype = new GraphElementController.GraphElementController();
+GroupRelationController.prototype = new ForkController.ForkController();
+
+GroupRelationController.prototype.getSubGraphController = function () {
+    return this.subGraphController;
+};
 
 GroupRelationController.prototype.cutCanDo = function () {
     return false;
@@ -104,7 +113,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
     }
     Vue.nextTick(async () => {
         saveIndex === false ? Promise.resolve() : GraphElementService.changeChildrenIndex(
-            this.model().getParentVertex()
+            this.model()
         );
         if (saveIndex) {
             Selection.setToSingle(triple.destination);

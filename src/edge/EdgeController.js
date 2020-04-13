@@ -63,6 +63,9 @@ EdgeController.prototype.addChild = async function () {
     GraphElementService.changeChildrenIndex(
         this.model().getParentVertex()
     );
+    GraphElementService.changeChildrenIndex(
+        newGroupRelation
+    );
     Selection.setToSingle(triple.destination);
     triple.destination.focus();
     return triple;

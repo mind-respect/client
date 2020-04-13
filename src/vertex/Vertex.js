@@ -9,6 +9,7 @@ import I18n from '@/I18n'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import NbNeighbors from './NbNeighbors'
+import Fork from '@/fork/Fork'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -51,29 +52,20 @@ api.buildServerFormatFromUi = function (vertexUi) {
 function Vertex() {
 }
 
-Vertex.prototype = new GraphElement.GraphElement();
+Vertex.prototype = new Fork.Fork();
 
 Vertex.prototype.init = function (vertexServerFormat) {
     this._vertexServerFormat = vertexServerFormat;
-    if (!this._vertexServerFormat.shareLevel) {
-        this.makePrivate();
-    }
     this.leftBubbles = [];
     this.leftBubblesCollapsed = null;
     this.rightBubbles = [];
     this.rightBubblesCollapsed = null;
-    this.originalNbNeighbors = NbNeighbors.fromServerFormat(
-        this._vertexServerFormat.nbNeighbors
-    );
-    this.nbNeighbors = NbNeighbors.fromServerFormat(
-        this._vertexServerFormat.nbNeighbors
-    );
-    GraphElement.GraphElement.apply(
+    Fork.Fork.apply(
         this
     );
-    GraphElement.GraphElement.prototype.init.call(
+    Fork.Fork.prototype.init.call(
         this,
-        vertexServerFormat.graphElement
+        vertexServerFormat
     );
     return this;
 };
@@ -94,25 +86,12 @@ Vertex.prototype.getConnectedEdges = function (evenIfCollapsed) {
     return connected.concat(this.getClosestChildrenInTypes(GraphElementType.getEdgeTypes(), evenIfCollapsed));
 };
 
-
-Vertex.prototype.getOriginalNbNeighbors = function () {
-    return this.originalNbNeighbors;
-};
-
-Vertex.prototype.getNbNeighbors = function () {
-    return this.nbNeighbors;
-};
-
-Vertex.prototype.setNbNeighbors = function (nbNeighbors) {
-    return this.nbNeighbors = nbNeighbors;
-};
-
 Vertex.prototype.buildNbNeighbors = function () {
     let nbNeighbors = NbNeighbors.withZeros();
     this.getConnectedEdges(true).forEach((edge) => {
         let otherVertex = edge.getOtherVertex(this);
-        if (otherVertex.isVertex() || this.isMetaGroupVertex()) {
-            nbNeighbors.incrementForShareLevel(otherVertex.getShareLevel());
+        if (otherFork.isVertex() || this.isMetaGroupVertex()) {
+            nbNeighbors.incrementForShareLevel(otherFork.getShareLevel());
         }
     });
     return nbNeighbors;
@@ -132,35 +111,6 @@ Vertex.prototype.resetChildren = function () {
     this.rightBubbles = [];
     this.leftBubblesCollapsed = [];
     this.rightBubblesCollapsed = [];
-};
-
-Vertex.prototype.isPublic = function () {
-    return this.getShareLevel() === ShareLevel.PUBLIC ||
-        this.getShareLevel() === ShareLevel.PUBLIC_WITH_LINK;
-};
-
-Vertex.prototype.isPrivate = function () {
-    return this.getShareLevel() === ShareLevel.PRIVATE;
-};
-
-Vertex.prototype.isFriendsOnly = function () {
-    return this.getShareLevel() === ShareLevel.FRIENDS;
-};
-
-Vertex.prototype.getShareLevel = function () {
-    return this._vertexServerFormat.shareLevel.toUpperCase();
-};
-
-Vertex.prototype.makePrivate = function () {
-    this.setShareLevel(ShareLevel.PRIVATE);
-};
-
-Vertex.prototype.makePublic = function () {
-    this.setShareLevel(ShareLevel.PUBLIC);
-};
-
-Vertex.prototype.setShareLevel = function (shareLevel) {
-    this._vertexServerFormat.shareLevel = shareLevel.toUpperCase();
 };
 
 Vertex.prototype.getGraphElementType = function () {

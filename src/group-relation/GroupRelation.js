@@ -9,6 +9,7 @@ import FriendlyResource from "../friendly-resource/FriendlyResource";
 import I18n from '@/I18n'
 import NbNeighbors from "../vertex/NbNeighbors";
 import IdUri from "../IdUri";
+import Fork from '@/fork/Fork'
 
 const api = {};
 api.EXPAND_UNDER_NB_SIBLINGS = 4;
@@ -49,7 +50,8 @@ api.withUri = function (uri) {
             friendlyResource: {
                 uri: uri
             }
-        }
+        },
+        nbNeighbors: NbNeighbors.withZeros().toJsonObject()
     });
 };
 
@@ -80,19 +82,16 @@ function GroupRelation(jsonObject) {
     //     this.addIdentifications(tags);
     // }
     this.isExpanded = false;
-    this.nbNeighbors = jsonObject.nbNeighbors === undefined ? NbNeighbors.withZeros() : NbNeighbors.fromServerFormat(
-        jsonObject.nbNeighbors
-    );
-    GraphElement.GraphElement.apply(
+    Fork.Fork.apply(
         this
     );
-    GraphElement.GraphElement.prototype.init.call(
+    Fork.Fork.prototype.init.call(
         this,
-        jsonObject.graphElement
+        jsonObject
     );
 }
 
-GroupRelation.prototype = new GraphElement.GraphElement();
+GroupRelation.prototype = new Fork.Fork();
 
 GroupRelation.prototype.getNbNeighbors = function () {
     return this.nbNeighbors;
@@ -172,9 +171,6 @@ GroupRelation.prototype.getRightBubble = function (bottom) {
     return bottom ? this.children[this.children.length - 1] : this.children[0];
 };
 
-GroupRelation.prototype.isLeaf = function () {
-    return false;
-};
 
 GroupRelation.prototype.getNextChildrenEvenIfCollapsed = function () {
     return this._getNextChildrenCollapsedOrNot(true);

@@ -4,7 +4,6 @@
 
 import VertexService from '@/vertex/VertexService'
 import Selection from '@/Selection'
-import GraphElementController from '@/graph-element/GraphElementController'
 import GraphElementService from '@/graph-element/GraphElementService'
 import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
@@ -17,6 +16,7 @@ import Store from '@/store'
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
 import router from '@/router'
 import ForkService from "../fork/ForkService";
+import ForkController from "../fork/ForkController";
 
 const api = {};
 
@@ -30,7 +30,7 @@ api.fromDifferentGraphElements = function (graphElements) {
 
 function VertexController(vertices) {
     this.vertices = vertices;
-    GraphElementController.GraphElementController.prototype.init.call(
+    ForkController.ForkController.prototype.init.call(
         this,
         this.vertices
     );
@@ -39,7 +39,7 @@ function VertexController(vertices) {
     );
 }
 
-VertexController.prototype = new GraphElementController.GraphElementController();
+VertexController.prototype = new ForkController.ForkController();
 
 VertexController.prototype.addChildCanDo = function () {
     return this.isSingleAndOwned() && !this.model().isPristine();
@@ -261,51 +261,6 @@ VertexController.prototype.copy = function () {
 
 };
 
-VertexController.prototype.expand = function (avoidCenter, avoidExpandChild, avoidShowingLoad) {
-    if (!this.expandCanDo()) {
-        return Promise.resolve();
-    }
-    if (avoidExpandChild && !this.model().canExpand()) {
-        return Promise.resolve();
-    }
-    let promise = Promise.resolve();
-    if (!avoidShowingLoad) {
-        LoadingFlow.enterNoSpinner();
-    }
-    this.model().loading = false;
-    avoidExpandChild = avoidExpandChild || false;
-    this.model().beforeExpand();
-    if (!this.model().isExpanded) {
-        if (!this.model().isCollapsed) {
-            promise = this.getSubGraphController().loadForParentIsAlreadyOnMap().then(() => {
-                if (avoidExpandChild) {
-                    return true;
-                }
-                let expandChildCalls = [];
-                this.model().getClosestChildVertices().forEach((childVertex) => {
-                    if (childVertex.getNumberOfChild() === 1) {
-                        expandChildCalls.push(
-                            childVertex.controller().expand(true, true, true)
-                        );
-                    }
-                });
-                return Promise.all(expandChildCalls);
-            });
-        }
-    } else {
-        this.model().loading = false;
-        promise = avoidExpandChild ? Promise.resolve() : this.expandDescendantsIfApplicable();
-    }
-    return promise.then(async () => {
-        this.model().expand(avoidCenter, true);
-        if (!avoidShowingLoad) {
-            await Vue.nextTick();
-            //this.model().refreshChildren() for Store.dispatch("redraw") for when expanding a grand children
-            this.model().refreshChildren();
-            LoadingFlow.leave();
-        }
-    });
-};
 
 VertexController.prototype.convertToDistantBubbleWithUriCanDo = function (distantVertexUri) {
     if (!IdUri.isGraphElementUriOwnedByCurrentUser(distantVertexUri)) {
