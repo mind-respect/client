@@ -85,7 +85,7 @@ api.Edge.prototype.init = function (edgeServerFormat, source, destination) {
     }
     this._destinationVertex = destination ? destination : FriendlyResource.fromServerFormat(
         VertexServerFormatBuilder.getFriendlyResourceServerObject(
-            edgeServerFormat.destinationVertex
+            edgeServerFormat.destinationVertex || edgeServerFormat.destinationGroupRelation
         )
     );
     GraphElement.GraphElement.apply(
@@ -232,7 +232,7 @@ api.Edge.prototype.inverse = function () {
 };
 
 api.Edge.prototype.isInverse = function () {
-    return this.getSourceVertex().getUri() !== this.getParentVertex().getUri();
+    return this.getDestinationVertex().isGroupRelation() || this.getSourceVertex().getUri() !== this.getParentVertex().getUri();
 };
 
 api.Edge.prototype.getLeftBubble = function () {

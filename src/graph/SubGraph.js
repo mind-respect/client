@@ -48,10 +48,10 @@ api.SubGraph = function (graph, centerUri, buildFacade) {
     this.otherGraphElements = {};
     if (buildFacade) {
         this.serverFormat = graph;
+        this.tagVertices = [];
+        this._buildGroupRelations();
         this._buildVertices();
         this._buildEdges();
-        this._buildGroupRelations();
-        this.tagVertices = [];
     } else {
         this.edges = graph.edges;
         this.vertices = graph.vertices;
@@ -114,7 +114,7 @@ api.SubGraph.prototype._buildEdges = function () {
             this.getVertexWithUri(facade.getSourceVertex().getUri())
         );
         facade.setDestinationVertex(
-            this.getVertexWithUri(facade.getDestinationVertex().getUri())
+            this.getHavingUri(facade.getDestinationVertex().getUri())
         );
         this.addEdge(facade);
     })

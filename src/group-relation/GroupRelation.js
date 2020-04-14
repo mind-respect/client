@@ -1,7 +1,6 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import GraphElement from '@/graph-element/GraphElement'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Vue from 'vue'
 import Store from '@/store'
