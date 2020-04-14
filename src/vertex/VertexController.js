@@ -240,7 +240,7 @@ VertexController.prototype.becomeParent = function (child) {
 
     function moveEdge(movedEdge) {
         promises.push(
-            movedEdge.controller().replaceParentVertex(
+            movedEdge.controller().replaceParentFork(
                 this.model(),
                 true
             )

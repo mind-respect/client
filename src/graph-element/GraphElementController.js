@@ -458,11 +458,10 @@ GraphElementController.prototype.moveBelow = function (otherEdge) {
     if (!this._canMoveAboveOrUnder(otherEdge)) {
         return Promise.resolve();
     }
-    let previousParentVertex = this.model().getParentVertex();
     return this._moveTo(
         otherEdge,
         false,
-        previousParentVertex
+        this.model().getParentFork()
     );
 };
 
@@ -473,11 +472,10 @@ GraphElementController.prototype.moveAbove = function (otherEdge) {
     if (!this._canMoveAboveOrUnder(otherEdge)) {
         return Promise.resolve();
     }
-    let previousParentVertex = this.model().getParentVertex();
     return this._moveTo(
         otherEdge,
         true,
-        previousParentVertex
+        this.model().getParentFork()
     );
 };
 
@@ -537,14 +535,14 @@ GraphElementController.prototype.moveUnderParent = function (parent, forceLeft) 
     );
 };
 
-GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previousParentVertex) {
+GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previousParentFork) {
     let previousIndex = this.model().getIndexInTree();
     let moveToCommand = new Command.forExecuteUndoAndRedo(
         () => {
-            return this._moveToExecute(otherEdge, isAbove, previousParentVertex);
+            return this._moveToExecute(otherEdge, isAbove, previousParentFork);
         },
         () => {
-            let childAtIndex = previousParentVertex.getChildAtIndex(previousIndex);
+            let childAtIndex = previousParentFork.getChildAtIndex(previousIndex);
             if (!childAtIndex.isEdge()) {
                 childAtIndex.getClosestChildrenOfType(GraphElementType.Relation)
             }
@@ -560,7 +558,7 @@ GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previou
     );
 };
 
-GraphElementController.prototype._moveToExecute = async function (otherEdge, isAbove, previousParentVertex) {
+GraphElementController.prototype._moveToExecute = async function (otherEdge, isAbove, previousParentFork) {
     let model = this.model();
     let movedEdge = model.isVertexType() ?
         model.getParentBubble() :
@@ -584,34 +582,34 @@ GraphElementController.prototype._moveToExecute = async function (otherEdge, isA
         model.moveBelow(otherEdge);
     }
     otherEdge.getParentFork().refreshChildren(true);
-    if (parentOfOtherBubble.isGroupRelation()) {
-        let parentGroupRelation = parentOfOtherBubble;
-        do {
-            promises.push(
-                movedEdge.controller().addIdentifiers(
-                    parentGroupRelation.getIdentifiers(),
-                    true
-                )
-            );
-            parentGroupRelation = parentGroupRelation.getParentBubble();
-        } while (parentGroupRelation.isGroupRelation());
-    }
-    let parentVertex = otherEdge.getParentVertex();
-    if (!parentVertex.isMeta() && previousParentVertex.getUri() !== parentVertex.getUri()) {
+    // if (parentOfOtherBubble.isGroupRelation()) {
+    //     let parentGroupRelation = parentOfOtherBubble;
+    //     do {
+    //         promises.push(
+    //             movedEdge.controller().addIdentifiers(
+    //                 parentGroupRelation.getIdentifiers(),
+    //                 true
+    //             )
+    //         );
+    //         parentGroupRelation = parentGroupRelation.getParentBubble();
+    //     } while (parentGroupRelation.isGroupRelation());
+    // }
+    let parentFork = otherEdge.getParentFork();
+    if (!parentFork.isMeta() && previousParentFork.getUri() !== parentFork.getUri()) {
         promises.push(
-            movedEdge.controller().replaceParentVertex(
-                otherEdge.getParentVertex(),
+            movedEdge.controller().replaceParentFork(
+                parentFork,
                 true
             )
         );
     }
     return Promise.all(promises).then(() => {
         GraphElementService.changeChildrenIndex(
-            parentVertex
+            parentFork
         );
-        if (previousParentVertex.getUri() !== parentVertex.getUri()) {
+        if (previousParentFork.getUri() !== parentFork.getUri()) {
             GraphElementService.changeChildrenIndex(
-                previousParentVertex
+                previousParentFork
             );
         }
         //I don't know why I have to Selection.reset() to select the same bubble.

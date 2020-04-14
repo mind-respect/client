@@ -304,16 +304,16 @@ describe("EdgeController", () => {
     });
 
     it("changes destination vertex if relation is inverse when changing end vertex", async () => {
-        let changeSourceVertexSpy = Mock.getSpy(
+        let changeSourceSpy = Mock.getSpy(
             "EdgeService",
-            "changeSourceVertex"
+            "changeSource"
         );
-        changeSourceVertexSpy.mockClear();
-        let changeDestinationVertexSpy = Mock.getSpy(
+        changeSourceSpy.mockClear();
+        let changeDestinationSpy = Mock.getSpy(
             "EdgeService",
-            "changeDestinationVertex"
+            "changeDestination"
         );
-        changeDestinationVertexSpy.mockClear();
+        changeDestinationSpy.mockClear();
         let scenario = await new ThreeScenario();
         let b1 = scenario.getBubble1InTree();
         let r1 = TestUtil.getChildWithLabel(
@@ -326,24 +326,24 @@ describe("EdgeController", () => {
             "r2"
         );
         await scenario.expandBubble2(b2);
-        await r2.controller().replaceParentVertex(
+        await r2.controller().replaceParentFork(
             b2
         );
         expect(
-            changeSourceVertexSpy.mock.calls.length
+            changeSourceSpy.mock.calls.length
         ).toBe(1);
         expect(
-            changeDestinationVertexSpy.mock.calls.length
+            changeDestinationSpy.mock.calls.length
         ).toBe(0);
         await r2.controller().reverse();
-        await r2.controller().replaceParentVertex(
+        await r2.controller().replaceParentFork(
             b1
         );
         expect(
-            changeSourceVertexSpy.mock.calls.length
+            changeSourceSpy.mock.calls.length
         ).toBe(1);
         expect(
-            changeDestinationVertexSpy.mock.calls.length
+            changeDestinationSpy.mock.calls.length
         ).toBe(1);
     });
     it("can add a child to a relation under a group relation", async () => {

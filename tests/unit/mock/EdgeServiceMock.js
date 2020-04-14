@@ -12,8 +12,8 @@ api.applyDefault = function () {
     // spies["remove"] = api.remove();
     // spies["addToFarVertex"] = api.addToFarVertex();
     // spies["inverse"] = api.inverse();
-    spies["changeSourceVertex"] = api.changeSourceVertex();
-    spies["changeDestinationVertex"] = api.changeDestinationVertex();
+    spies["changeSource"] = api.changeSource();
+    spies["changeDestination"] = api.changeDestination();
     return spies;
 };
 api.remove = function () {
@@ -43,18 +43,18 @@ api.inverse = function () {
         return $.Deferred().resolve();
     });
 };
-api.changeSourceVertex = function () {
+api.changeSource = function () {
     return jest.spyOn(
         EdgeService,
-        "changeSourceVertex"
+        "changeSource"
     ).mockImplementation(() => {
         return Promise.resolve();
     });
 };
-api.changeDestinationVertex = function () {
+api.changeDestination = function () {
     return jest.spyOn(
         EdgeService,
-        "changeDestinationVertex"
+        "changeDestination"
     ).mockImplementation(() => {
         return Promise.resolve();
     });

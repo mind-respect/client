@@ -139,8 +139,8 @@ EdgeController.prototype.becomeParent = async function (adoptedChild) {
                 );
                 return Promise.all([
                     lastAddTagsPromise,
-                    relation.controller().replaceParentVertex(
-                        this.model().getParentVertex(),
+                    relation.controller().replaceParentFork(
+                        newGroupRelation,
                         true
                     )
                 ]);
@@ -224,36 +224,37 @@ EdgeController.prototype.reverse = function () {
         this.model().inverse();
     })
 };
-EdgeController.prototype.replaceParentVertex = function (newParentVertex, preventChangingInModel) {
-    if (newParentVertex.canExpand()) {
-        return newParentVertex.controller().expand(true, true, true).then(doIt.bind(this));
+EdgeController.prototype.replaceParentFork = function (newParentFork, preventChangingInModel) {
+    let newParentVertex = newParentFork.isGroupRelation() ? newParentFork.getParentVertex() : newParentFork;
+    if (newParentFork.canExpand()) {
+        return newParentFork.controller().expand(true, true, true).then(doIt.bind(this));
     } else {
         return doIt.bind(this)();
     }
 
     async function doIt() {
-        let parentVertex = this.model().getParentVertex();
+        let parentFork = this.model().getParentFork();
         // parentVertex.removeChild(this.getModel());
         if (this.model().isInverse()) {
-            await EdgeService.changeDestinationVertex(
-                newParentVertex,
+            await EdgeService.changeDestination(
+                newParentFork,
                 this.model(),
-                parentVertex.getShareLevel(),
-                this.model().getOtherVertex(parentVertex),
-                newParentVertex.getShareLevel()
+                parentFork.getShareLevel(),
+                this.model().getOtherVertex(this.model().getParentVertex()).getShareLevel(),
+                newParentFork.getShareLevel()
             );
             return;
         } else {
-            await EdgeService.changeSourceVertex(
-                newParentVertex,
+            await EdgeService.changeSource(
+                newParentFork,
                 this.model(),
-                parentVertex.getShareLevel(),
-                this.model().getOtherVertex(parentVertex).getShareLevel(),
-                newParentVertex.getShareLevel()
+                parentFork.getShareLevel(),
+                this.model().getOtherVertex(this.model().getParentVertex()).getShareLevel(),
+                newParentFork.getShareLevel()
             );
         }
         if (!preventChangingInModel) {
-            this.model().replaceRelatedVertex(parentVertex, newParentVertex);
+            this.model().replaceRelatedVertex(parentFork, newParentVertex);
         }
         // this.getModel().parentBubble = newParentVertex;
         // this.getModel().parentVertex = newParentVertex;
@@ -284,7 +285,7 @@ EdgeController.prototype.leaveContextDo = async function () {
         newVertexController.setLabel(original.getLabel()),
         newVertexController.setShareLevelDo(original.getShareLevel()),
         addIdentifiersPromise,
-        EdgeService.changeDestinationVertex(
+        EdgeService.changeDestination(
             newVertex,
             this.model(),
             original.getShareLevel(),

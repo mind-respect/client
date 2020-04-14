@@ -168,40 +168,40 @@ GroupRelationController.prototype.noteDo = function (note) {
     });
 };
 
-GroupRelationController.prototype.becomeExParent = function (movedEdge, newParent) {
-    let promises = [];
-    let greatestGroupRelationAncestor = this.model().getGreatestGroupRelationAncestor();
-    let isMovingUnderSameGroupRelation = this.model().getDescendants().some((child) => {
-        return child.getId() === newParent.getId();
-    });
-    if (isMovingUnderSameGroupRelation) {
-        return Promise.resolve();
-    }
-    let groupRelationToStop;
-    if (movedEdge.isGroupRelation()) {
-        groupRelationToStop = movedEdge;
-    }
-    greatestGroupRelationAncestor.getIdentifiersAtAnyDepth(groupRelationToStop, true).forEach((identifier) => {
-        if (movedEdge.isGroupRelation()) {
-            movedEdge.getClosestChildRelations(true).forEach((relation) => {
-                promises.push(
-                    relation.controller().removeTag(
-                        identifier,
-                        true
-                    )
-                );
-            });
-        } else {
-            promises.push(
-                movedEdge.controller().removeTag(
-                    identifier,
-                    true
-                )
-            );
-        }
-    });
-    return Promise.all(promises);
-};
+// GroupRelationController.prototype.becomeExParent = function (movedEdge, newParent) {
+    // let promises = [];
+    // let greatestGroupRelationAncestor = this.model().getGreatestGroupRelationAncestor();
+    // let isMovingUnderSameGroupRelation = this.model().getDescendants().some((child) => {
+    //     return child.getId() === newParent.getId();
+    // });
+    // if (isMovingUnderSameGroupRelation) {
+    //     return Promise.resolve();
+    // }
+    // let groupRelationToStop;
+    // if (movedEdge.isGroupRelation()) {
+    //     groupRelationToStop = movedEdge;
+    // }
+    // greatestGroupRelationAncestor.getIdentifiersAtAnyDepth(groupRelationToStop, true).forEach((identifier) => {
+    //     if (movedEdge.isGroupRelation()) {
+    //         movedEdge.getClosestChildRelations(true).forEach((relation) => {
+    //             promises.push(
+    //                 relation.controller().removeTag(
+    //                     identifier,
+    //                     true
+    //                 )
+    //             );
+    //         });
+    //     } else {
+    //         promises.push(
+    //             movedEdge.controller().removeTag(
+    //                 identifier,
+    //                 true
+    //             )
+    //         );
+    //     }
+    // });
+    // return Promise.all(promises);
+// };
 
 GroupRelationController.prototype.removeCanDo = function () {
     return false;
@@ -223,13 +223,13 @@ GroupRelationController.prototype.addIdentification = function (tag) {
     );
 };
 
-GroupRelationController.prototype.replaceParentVertex = function (newParentVertex) {
-    return Promise.all(
-        this.model().getClosestChildRelations().map((child) => {
-            return child.controller().replaceParentVertex(newParentVertex);
-        })
-    );
-};
+// GroupRelationController.prototype.replaceParentVertex = function (newParentVertex) {
+//     return Promise.all(
+//         this.model().getClosestChildRelations().map((child) => {
+//             return child.controller().replaceParentVertex(newParentVertex);
+//         })
+//     );
+// };
 
 
 GroupRelationController.prototype.addIdentificationCanDo = function () {

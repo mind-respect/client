@@ -21,20 +21,22 @@ api.inverse = function (edge) {
         edge.getUri() + "/inverse"
     );
 };
-api.changeSourceVertex = function (sourceVertex, edge, oldEndShareLevel, keptEndShareLevel, newEndShareLevel) {
+api.changeSource = function (newSource, edge, oldEndShareLevel, keptEndShareLevel, newEndShareLevel) {
     return Service.geApi().put(
-        edge.getUri() + "/source-vertex/" + IdUri.elementIdFromUri(sourceVertex.getUri()),
+        edge.getUri() + "/source/" + IdUri.elementIdFromUri(newSource.getUri()),
         {
+            forkType: newSource.isGroupRelation() ? "GroupRelation" : "Vertex",
             oldEndShareLevel: oldEndShareLevel,
             keptEndShareLevel: keptEndShareLevel,
             newEndShareLevel: newEndShareLevel
         }
     )
 };
-api.changeDestinationVertex = function (destinationVertex, edge, oldEndShareLevel, keptEndShareLevel, newEndShareLevel) {
+api.changeDestination = function (newDestination, edge, oldEndShareLevel, keptEndShareLevel, newEndShareLevel) {
     return Service.geApi().put(
-        edge.getUri() + "/destination-vertex/" + IdUri.elementIdFromUri(destinationVertex.getUri()),
+        edge.getUri() + "/destination/" + IdUri.elementIdFromUri(newDestination.getUri()),
         {
+            forkType: newDestination.isGroupRelation() ? "GroupRelation" : "Vertex",
             oldEndShareLevel: oldEndShareLevel,
             keptEndShareLevel: keptEndShareLevel,
             newEndShareLevel: newEndShareLevel
