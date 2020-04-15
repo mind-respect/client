@@ -293,9 +293,9 @@ GroupRelation.prototype.setSourceVertex = function (sourceVertex) {
     });
 };
 
-GroupRelation.prototype.setParentVertex = function (vertex) {
+GroupRelation.prototype.setParentFork = function (vertex) {
     this.getClosestChildrenOfType(GraphElementType.Relation).forEach((child) => {
-        child.setParentVertex(
+        child.setParentFork(
             vertex
         )
     });

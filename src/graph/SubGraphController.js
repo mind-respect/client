@@ -76,7 +76,12 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             centerFromServer.getIdentifiers().forEach((tag) => {
                 centerFork.addIdentification(tag);
             });
-            subGraph.vertices[centerFork.getUri()] = [centerFork];
+            if (centerFork.isGroupRelation()) {
+                subGraph.groupRelations[centerFork.getUri()] = centerFork;
+            } else {
+                subGraph.vertices[centerFork.getUri()] = [centerFork];
+            }
+
         } else {
             if (isCenterOnMap) {
                 centerFork.makeCenter();
@@ -111,7 +116,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             // }
             // let edge = child.getFirstEdge();
             // let child = child.getNumberOfChild() > 1 ? child : edge;
-            let endFork = child.isEdge() ? child.getOtherVertex(centerVertex) : child;
+            let endFork = child.isEdge() ? child.getOtherVertex(centerFork) : child;
             let childIndex = childrenIndex[endFork.getUri()] || childrenIndex[endFork.getPatternUri()];
             let addLeft;
             if (childIndex !== undefined) {

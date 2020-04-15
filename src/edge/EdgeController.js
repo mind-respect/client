@@ -99,7 +99,7 @@ EdgeController.prototype.becomeParent = async function (adoptedChild) {
     childParentFork.removeChild(adoptedChild, false, true);
     let convertResponse = this._convertToGroupRelation();
     let newGroupRelation = await convertResponse.promise;
-    adoptedChild.setParentVertex(this.model().getParentVertex());
+    adoptedChild.setParentFork(newGroupRelation);
     newGroupRelation.addChild(adoptedChild);
     previousParentFork.replaceChild(
         this.model(),
@@ -183,6 +183,7 @@ EdgeController.prototype._convertToGroupRelation = function () {
     newGroupRelation.parentBubble = this.model().getParentBubble();
     newGroupRelation.parentVertex = this.model().getParentVertex();
     this.model().parentBubble = newGroupRelation;
+    this.model().setSourceVertex(newGroupRelation);
     newGroupRelation.addChild(this.model());
     newGroupRelation.isExpanded = true;
     return response;
@@ -225,7 +226,6 @@ EdgeController.prototype.reverse = function () {
     })
 };
 EdgeController.prototype.replaceParentFork = function (newParentFork, preventChangingInModel) {
-    let newParentVertex = newParentFork.isGroupRelation() ? newParentFork.getParentVertex() : newParentFork;
     if (newParentFork.canExpand()) {
         return newParentFork.controller().expand(true, true, true).then(doIt.bind(this));
     } else {
@@ -254,7 +254,7 @@ EdgeController.prototype.replaceParentFork = function (newParentFork, preventCha
             );
         }
         if (!preventChangingInModel) {
-            this.model().replaceRelatedVertex(parentFork, newParentVertex);
+            this.model().replaceRelatedVertex(parentFork, newParentFork);
         }
         // this.getModel().parentBubble = newParentVertex;
         // this.getModel().parentVertex = newParentVertex;

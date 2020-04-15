@@ -70,19 +70,11 @@ api.Edge = function () {
 api.Edge.prototype = new GraphElement.GraphElement();
 
 api.Edge.prototype.init = function (edgeServerFormat, source, destination) {
-    if (source) {
-        this._sourceVertex = source.isGroupRelation() ? source.getParentVertex() : source;
-    } else if (edgeServerFormat.sourceVertex !== undefined) {
-        this._sourceVertex = FriendlyResource.fromServerFormat(
-            VertexServerFormatBuilder.getFriendlyResourceServerObject(
-                edgeServerFormat.sourceVertex
-            )
-        );
-    } else {
-        this._sourceVertex = CurrentSubGraph.get().getGroupRelationWithUri(
-            GraphElement.fromServerFormat(edgeServerFormat.sourceGroupRelation.graphElement).getUri()
-        ).getParentVertex();
-    }
+    this._sourceVertex = source ? source : FriendlyResource.fromServerFormat(
+        VertexServerFormatBuilder.getFriendlyResourceServerObject(
+            edgeServerFormat.sourceVertex || edgeServerFormat.sourceGroupRelation
+        )
+    );
     this._destinationVertex = destination ? destination : FriendlyResource.fromServerFormat(
         VertexServerFormatBuilder.getFriendlyResourceServerObject(
             edgeServerFormat.destinationVertex || edgeServerFormat.destinationGroupRelation
@@ -159,15 +151,16 @@ api.Edge.prototype.setSourceVertex = function (sourceVertex) {
     this._sourceVertex = sourceVertex;
 };
 
-api.Edge.prototype.setParentVertex = function (vertex) {
+api.Edge.prototype.setParentFork = function (newEndFork) {
+    let parentVertex = newEndFork.isGroupRelation() ? newEndFork.getParentVertex() : newEndFork;
     if (this.isInverse()) {
-        this.setDestinationVertex(vertex);
-        this.getSourceVertex().parentVertex = vertex;
+        this.setDestinationVertex(newEndFork);
+        this.getSourceVertex().parentVertex = parentVertex;
     } else {
-        this.setSourceVertex(vertex);
-        this.getDestinationVertex().parentVertex = vertex;
+        this.setSourceVertex(newEndFork);
+        this.getDestinationVertex().parentVertex = parentVertex;
     }
-    this.parentVertex = vertex;
+    this.parentVertex = parentVertex;
 };
 
 api.Edge.prototype.setDestinationVertex = function (destinationVertex) {
@@ -232,7 +225,7 @@ api.Edge.prototype.inverse = function () {
 };
 
 api.Edge.prototype.isInverse = function () {
-    return this.getDestinationVertex().isGroupRelation() || this.getSourceVertex().getUri() !== this.getParentVertex().getUri();
+    return this.getDestinationVertex().isGroupRelation() || this.getSourceVertex().getUri() !== this.getParentFork().getUri();
 };
 
 api.Edge.prototype.getLeftBubble = function () {
@@ -245,7 +238,7 @@ api.Edge.prototype.getLeftBubble = function () {
 
 api.Edge.prototype.getNextChildrenEvenIfCollapsed = api.Edge.prototype.getNextChildren = function () {
     return [
-        this.getOtherVertex(this.getParentVertex())
+        this.getOtherVertex(this.getParentFork())
     ].concat(this.children);
 };
 

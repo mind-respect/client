@@ -534,7 +534,7 @@ FriendlyResource.FriendlyResource.prototype.getDuplicates = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble, relation) {
-    if (this.isVertexType()) {
+    if (this.isForkType()) {
         return this.getParentBubble().moveTo(
             otherBubble,
             relation
@@ -547,30 +547,22 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         CurrentSubGraph.get().getGraphElements()
     );
     if (MoveRelation.Parent === relation) {
-        if (otherBubble.isGroupRelation()) {
-            otherBubble.expand();
-            // let identification = otherBubble.getIdentification();
-            // if (this.hasIdentification(identification)) {
-            //     this.revertIdentificationIntegration(identification);
-            // }
-        }
         this.getParentBubble().removeChild(this, false, true);
-        let parentVertex = otherBubble.isVertex() ? otherBubble : otherBubble.getParentVertex();
-        this.setParentVertex(
-            parentVertex
+        this.setParentFork(
+            otherBubble.isForkType() ? otherBubble : otherBubble.getParentFork()
         );
         otherBubble.addChild(this);
     } else {
         let parentBubble = this.getParentFork();
-        let otherParentBubble = otherBubble.getParentFork();
-        let isTemporaryRemove = parentBubble.isSameBubble(otherParentBubble);
+        let otherParentFork = otherBubble.getParentFork();
+        let isTemporaryRemove = parentBubble.isSameBubble(otherParentFork);
         parentBubble.removeChild(this, isTemporaryRemove, true);
         this.direction = otherBubble.direction;
-        let index = otherParentBubble.getChildIndex(otherBubble, MoveRelation.Before === relation);
-        this.setParentVertex(
-            otherBubble.getParentVertex()
+        let index = otherParentFork.getChildIndex(otherBubble, MoveRelation.Before === relation);
+        this.setParentFork(
+            otherParentFork
         );
-        otherParentBubble.addChild(
+        otherParentFork.addChild(
             this,
             otherBubble.isToTheLeft(),
             index

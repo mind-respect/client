@@ -111,7 +111,7 @@ api.SubGraph.prototype._buildEdges = function () {
     Object.values(this.serverFormat.edges).forEach((edge) => {
         let facade = Edge.fromServerFormat(edge);
         facade.setSourceVertex(
-            this.getVertexWithUri(facade.getSourceVertex().getUri())
+            this.getHavingUri(facade.getSourceVertex().getUri())
         );
         facade.setDestinationVertex(
             this.getHavingUri(facade.getDestinationVertex().getUri())
@@ -210,10 +210,9 @@ api.SubGraph.prototype.getEdges = function () {
 api.SubGraph.prototype.sortedEdgesAndGroupRelations = function () {
     let centerFork = this.getHavingUri(this.centerUri);
     let childrenIndex = centerFork.getChildrenIndex();
-    let centerVertex = centerFork.isGroupRelation() ? centerFork.getParentVertex() : centerFork;
     return this.getEdges().concat(this.getGroupRelations()).sort((a, b) => {
-        let forkA = a.isEdge() ? a.getOtherVertex(centerVertex) : a;
-        let forkB = b.isEdge() ? b.getOtherVertex(centerVertex) : b;
+        let forkA = a.isEdge() ? a.getOtherVertex(centerFork) : a;
+        let forkB = b.isEdge() ? b.getOtherVertex(centerFork) : b;
         return GraphElement.sortCompare(
             forkA,
             forkB,
