@@ -293,11 +293,12 @@ GroupRelation.prototype.setSourceVertex = function (sourceVertex) {
     });
 };
 
-GroupRelation.prototype.setParentFork = function (vertex) {
+GroupRelation.prototype.setParentFork = function (fork) {
+    if (!fork.isVertex()) {
+        return
+    }
     this.getClosestChildrenOfType(GraphElementType.Relation).forEach((child) => {
-        child.setParentFork(
-            vertex
-        )
+        child.parentVertex = fork;
     });
 };
 

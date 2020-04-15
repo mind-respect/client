@@ -534,15 +534,15 @@ FriendlyResource.FriendlyResource.prototype.getDuplicates = function () {
 };
 
 FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble, relation) {
-    if (this.isForkType()) {
+    if (this.isForkType() && !this.isGroupRelation()) {
         return this.getParentBubble().moveTo(
             otherBubble,
             relation
         );
     }
-    const centerCoordinates = UiUtils.getCenterOffsetCoordinates(
-        CurrentSubGraph.get().center
-    );
+    // const centerCoordinates = UiUtils.getCenterOffsetCoordinates(
+    //     CurrentSubGraph.get().center
+    // );
     const firstBoxes = UiUtils.buildElementsAnimationData(
         CurrentSubGraph.get().getGraphElements()
     );
@@ -553,10 +553,10 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         );
         otherBubble.addChild(this);
     } else {
-        let parentBubble = this.getParentFork();
-        let otherParentFork = otherBubble.getParentFork();
-        let isTemporaryRemove = parentBubble.isSameBubble(otherParentFork);
-        parentBubble.removeChild(this, isTemporaryRemove, true);
+        let parentFork = this.getParentFork();
+        let otherParentFork = otherBubble.isForkType() ? otherBubble : otherBubble.getParentFork();
+        let isTemporaryRemove = parentFork.isSameBubble(otherParentFork);
+        parentFork.removeChild(this, isTemporaryRemove, true);
         this.direction = otherBubble.direction;
         let index = otherParentFork.getChildIndex(otherBubble, MoveRelation.Before === relation);
         this.setParentFork(

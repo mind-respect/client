@@ -212,24 +212,20 @@ VertexController.prototype.images = function () {
 
 VertexController.prototype.becomeParent = function (child) {
     let promises = [];
-    let uiChild;
-    if (child.isGroupRelation()) {
-        child.expand();
-        child.visitClosestChildOfType(
-            GraphElementType.Relation,
-            moveEdge.bind(this)
+    let movedEdge = child.isVertexType() ? child.getParentBubble : child;
+    if (movedEdge.getParentFork().getUri() !== this.model().getUri()) {
+        promises.push(
+            movedEdge.controller().replaceParentFork(
+                this.model(),
+                true
+            )
         );
         promises.push(
-            child.getParentBubble().controller().becomeExParent(child, this.model())
+            movedEdge.getParentBubble().controller().becomeExParent(movedEdge, this.model())
         );
-        uiChild = child;
-    } else {
-        uiChild = child.isRelation() ? child : child.getParentBubble();
-        moveEdge.bind(this)(uiChild);
     }
-
     return Promise.all(promises).then(() => {
-        uiChild.moveToParent(
+        movedEdge.moveToParent(
             this.model()
         );
         this.model().refreshChildren(true);
@@ -237,20 +233,6 @@ VertexController.prototype.becomeParent = function (child) {
             GraphElementService.changeChildrenIndex(this.model());
         });
     });
-
-    function moveEdge(movedEdge) {
-        promises.push(
-            movedEdge.controller().replaceParentFork(
-                this.model(),
-                true
-            )
-        );
-        if (!child.isGroupRelation()) {
-            promises.push(
-                movedEdge.getParentBubble().controller().becomeExParent(movedEdge, this.model())
-            );
-        }
-    }
 };
 
 VertexController.prototype.copyCanDo = function () {
