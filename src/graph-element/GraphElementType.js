@@ -5,7 +5,7 @@ const api = {
     "Vertex": "vertex",
     "Edge": "edge",
     "Relation": "relation",
-    "GroupRelation": "group_relation",
+    "GroupRelation": "groupRelation",
     "Meta": "meta",
     "MetaRelation": "meta_relation",
     "MetaGroupVertex": "meta_group_vertex",

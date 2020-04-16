@@ -59,6 +59,13 @@ api.fromServerFormat = function (serverFormat) {
         serverFormat
     );
 };
+api.fromGraphElementJsonObject = function (jsonObject, shareLevel, nbNeighbors) {
+    return new GroupRelation({
+        graphElement: jsonObject,
+        shareLevel: shareLevel || ShareLevel.PRIVATE,
+        nbNeighbors: nbNeighbors || NbNeighbors.withZeros().toJsonObject()
+    });
+}
 
 function GroupRelation(jsonObject) {
     this.groupRelationJsonObject = jsonObject;
