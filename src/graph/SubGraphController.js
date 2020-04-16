@@ -104,10 +104,11 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
         //     subGraph.sortedEdges(), centerVertex
         // ).group(isParentAlreadyOnMap);
 
-        let parentBubble = centerFork.getParentBubble();
+        let centerParentBubble = centerFork.getParentBubble();
+        let centerParentFork = centerFork.getParentFork();
         let centerVertex = centerFork.isGroupRelation() ? centerFork.getParentVertex() : centerFork;
         subGraph.sortedEdgesAndGroupRelations().forEach((child) => {
-            if (isParentAlreadyOnMap && (child.getUri() === parentBubble.getUri()) || child.getUri() === centerFork.getUri()) {
+            if (isParentAlreadyOnMap && (child.getUri() === centerFork.getUri() || child.getUri() === centerParentBubble.getUri()) || child.getUri() === centerParentFork.getUri()) {
                 return;
             }
             // if (child.getParentBubble().getId() !== centerVertex.getId()) {
