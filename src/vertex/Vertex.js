@@ -94,9 +94,7 @@ Vertex.prototype.clone = function () {
 };
 
 Vertex.prototype.getConnectedEdges = function (evenIfCollapsed) {
-    let connected = this.isCenter ? [] : [
-        this.getParentBubble()
-    ];
+    let connected = this.getParentBubble().isEdgeType() ? [this.getParentBubble()] : [];
     return connected.concat(this.getClosestChildrenInTypes(GraphElementType.getEdgeTypes(), evenIfCollapsed));
 };
 
