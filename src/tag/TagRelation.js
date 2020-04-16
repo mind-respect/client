@@ -1,11 +1,11 @@
-import Edge from '@/edge/Edge'
+import Relation from '@/relation/Relation'
 import GraphElementType from '@/graph-element/GraphElementType'
 import IdUri from '@/IdUri'
 
 function TagRelation(sourceVertex, destinationVertex) {
-    Edge.Edge.apply(this);
+    Relation.Relation.apply(this);
     this.init(
-        Edge.buildObjectWithUriOfSelfSourceAndDestinationVertex(
+        Relation.buildObjectWithUriOfSelfSourceAndDestinationVertex(
             IdUri.uuid(),
             sourceVertex.getUri(),
             destinationVertex.getUri()
@@ -15,7 +15,7 @@ function TagRelation(sourceVertex, destinationVertex) {
     );
 }
 
-TagRelation.prototype = new Edge.Edge();
+TagRelation.prototype = new Relation.Relation();
 
 TagRelation.prototype.getGraphElementType = function () {
     return GraphElementType.MetaRelation;

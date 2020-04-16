@@ -3,7 +3,7 @@
  */
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import Vertex from '@/vertex/Vertex'
-import Edge from '@/edge/Edge'
+import Relation from '@/relation/Relation'
 
 const api = {};
 api.createUsingServerTriple = function (sourceVertex, tripleJson) {
@@ -15,7 +15,7 @@ api.createUsingServerTriple = function (sourceVertex, tripleJson) {
 api.createIntoSourceBubble = function (sourceBubble, tripleJson, relationOver) {
     var triple = GraphDisplayer.addEdgeAndVertex(
         sourceBubble,
-        Edge.fromServerFormat(tripleJson.edge),
+        Relation.fromServerFormat(tripleJson.edge),
         Vertex.fromServerFormat(tripleJson.end_vertex),
         relationOver
     );

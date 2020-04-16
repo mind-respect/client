@@ -3,7 +3,7 @@
  */
 
 import TestUtils from '../util/TestUtil'
-import EdgeService from '@/edge/EdgeService'
+import RelationService from '@/relation/RelationService'
 
 
 const api = {};
@@ -17,17 +17,17 @@ api.applyDefault = function () {
     return spies;
 };
 api.remove = function () {
-    return spyOn(EdgeService, "remove").and.callFake(function (edge, callback) {
-        EdgeService._removeCallback(
+    return spyOn(RelationService, "remove").and.callFake(function (edge, callback) {
+        RelationService._removeCallback(
             edge,
             callback
         );
     });
 };
 api.addToFarVertex = function () {
-    return spyOn(EdgeService, "_add").and.callFake(function (sourceVertexUri, destinationVertexUri) {
+    return spyOn(RelationService, "_add").and.callFake(function (sourceVertexUri, destinationVertexUri) {
         return $.Deferred().resolve(
-            EdgeService._buildAfterAddReturnObject(
+            RelationService._buildAfterAddReturnObject(
                 TestUtils.generateEdgeUri(),
                 sourceVertexUri,
                 destinationVertexUri
@@ -37,7 +37,7 @@ api.addToFarVertex = function () {
 };
 api.inverse = function () {
     return spyOn(
-        EdgeService,
+        RelationService,
         "inverse"
     ).and.callFake(function () {
         return $.Deferred().resolve();
@@ -45,7 +45,7 @@ api.inverse = function () {
 };
 api.changeSource = function () {
     return jest.spyOn(
-        EdgeService,
+        RelationService,
         "changeSource"
     ).mockImplementation(() => {
         return Promise.resolve();
@@ -53,7 +53,7 @@ api.changeSource = function () {
 };
 api.changeDestination = function () {
     return jest.spyOn(
-        EdgeService,
+        RelationService,
         "changeDestination"
     ).mockImplementation(() => {
         return Promise.resolve();

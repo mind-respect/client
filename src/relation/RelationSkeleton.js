@@ -1,11 +1,11 @@
-import Edge from '@/edge/Edge'
+import Relation from '@/relation/Relation'
 import GraphElementType from '@/graph-element/GraphElementType'
 import IdUri from '@/IdUri'
 
 function RelationSkeleton(source, destination) {
-    Edge.Edge.apply(this);
+    Relation.Relation.apply(this);
     this.init(
-        Edge.buildObjectWithUriOfSelfSourceAndDestinationVertex(
+        Relation.buildObjectWithUriOfSelfSourceAndDestinationVertex(
             IdUri.uuid(),
             source.getUri(),
             destination.getUri()
@@ -18,7 +18,7 @@ function RelationSkeleton(source, destination) {
     destination.parentBubble = this;
 }
 
-RelationSkeleton.prototype = new Edge.Edge();
+RelationSkeleton.prototype = new Relation.Relation();
 
 RelationSkeleton.prototype.getGraphElementType = function () {
     return GraphElementType.RelationSkeleton;

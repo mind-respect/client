@@ -4,7 +4,7 @@
 
 import VertexController from '@/vertex/VertexController'
 import GroupRelationController from '@/group-relation/GroupRelationController'
-import EdgeController from '@/edge/EdgeController'
+import RelationController from '@/relation/RelationController'
 import GraphController from '@/graph/GraphController'
 import AppController from '@/AppController'
 import MetaController from '@/tag/TagVertexController'
@@ -23,7 +23,7 @@ api.getVertexMenuHandler = function () {
     return VertexController;
 };
 api.getRelationMenuHandler = function () {
-    return EdgeController;
+    return RelationController;
 };
 api.getGroupRelationMenuHandler = function () {
     return GroupRelationController;

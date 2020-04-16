@@ -5,10 +5,9 @@ import GraphService from '@/graph/GraphService'
 import GraphElementService from '@/graph-element/GraphElementService'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import IdUri from '@/IdUri'
-import Edge from '@/edge/Edge'
+import Relation from '@/relation/Relation'
 import SubGraph from '@/graph/SubGraph'
 import MindMapInfo from '@/MindMapInfo'
-import EdgeGrouper from "../group-relation/EdgeGrouper";
 
 const api = {};
 
@@ -49,7 +48,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
         let centerUri = this.model().getUri();
         let isCenterEdge = IdUri.isEdgeUri(this.model().getUri());
         if (isCenterEdge) {
-            let centerEdge = Edge.fromServerFormat(
+            let centerEdge = Relation.fromServerFormat(
                 serverGraph.edges[this.model().getUri()]
             );
             centerUri = centerEdge.getSourceVertex().getUri();

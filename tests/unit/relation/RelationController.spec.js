@@ -1,7 +1,7 @@
 import Mock from '../mock/Mock'
 import ThreeScenario from "../scenario/ThreeScenario";
 import MindMapInfo from '@/MindMapInfo'
-import EdgeController from '@/edge/EdgeController'
+import RelationController from '@/relation/RelationController'
 import TestUtil from '../util/TestUtil'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import IdUri from '@/IdUri'
@@ -11,7 +11,7 @@ import LeaveContextTechChoiceScenario from "../scenario/LeaveContextTechChoiceSc
 import TwoLevelGroupRelationScenario from "../scenario/TwoLevelGroupRelationScenario";
 import CurrentSubGraph from "../../../src/graph/CurrentSubGraph";
 
-describe("EdgeController", () => {
+describe("RelationController", () => {
     describe("remove", function () {
         it("can", async () => {
             let threeBubblesScenario = await new ThreeScenario();
@@ -20,7 +20,7 @@ describe("EdgeController", () => {
             let relation1 = bubble1.getNextBubble();
             MindMapInfo.setIsAnonymous(false);
             MindMapInfo._setIsViewOnly(false);
-            await new EdgeController.RelationController(
+            await new RelationController.RelationController(
                 relation1
             ).removeDo();
             expect(
@@ -51,7 +51,7 @@ describe("EdgeController", () => {
             expect(
                 TestUtil.getChildWithLabel(bubble1, "r1").isGroupRelation()
             ).toBeFalsy();
-            await new EdgeController.RelationController(
+            await new RelationController.RelationController(
                 TestUtil.getChildWithLabel(bubble1, "r1")
             ).addChild();
             expect(
@@ -93,7 +93,7 @@ describe("EdgeController", () => {
             let bubble1 = threeBubblesScenario.getBubble1InTree();
             let relation1 = TestUtil.getChildWithLabel(bubble1, "r1");
             let relation1Uri = relation1.getUri();
-            await new EdgeController.RelationController(
+            await new RelationController.RelationController(
                 relation1
             ).addChild();
             let newGroupRelation = TestUtil.getChildWithLabel(bubble1, "r1");
@@ -115,7 +115,7 @@ describe("EdgeController", () => {
             let bubble1 = threeBubblesScenario.getBubble1InTree();
             let relation1 = TestUtil.getChildWithLabel(bubble1, "r1");
             let relation1Uri = relation1.getUri();
-            await new EdgeController.RelationController(
+            await new RelationController.RelationController(
                 relation1
             ).addChild();
             let newGroupRelation = TestUtil.getChildWithLabel(bubble1, "r1");
@@ -132,7 +132,7 @@ describe("EdgeController", () => {
             let tag = TestUtil.dummyTag();
             tag.setLabel("moustache");
             relation1.model().addIdentification(tag);
-            await new EdgeController.RelationController(
+            await new RelationController.RelationController(
                 relation1
             ).addChild();
             let newGroupRelation = TestUtil.getChildWithLabel(bubble1, "moustache");
@@ -241,7 +241,7 @@ describe("EdgeController", () => {
             )
         ).toBeFalsy();
         MindMapInfo._setIsViewOnly(false);
-        new EdgeController.RelationController(
+        new RelationController.RelationController(
             aRelationToSameBubble
         ).remove(true);
         expect(
@@ -288,7 +288,7 @@ describe("EdgeController", () => {
             )
         ).toBeFalsy();
         MindMapInfo._setIsViewOnly(false);
-        new EdgeController.RelationController(
+        new RelationController.RelationController(
             aRelation
         ).remove(true);
         expect(

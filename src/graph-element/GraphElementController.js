@@ -12,9 +12,9 @@ import router from '@/router'
 import Vue from 'vue'
 import TagService from '@/tag/TagService'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
-import EdgeService from '@/edge/EdgeService'
+import RelationService from '@/relation/RelationService'
 import Vertex from '@/vertex/Vertex'
-import Edge from '@/edge/Edge'
+import Relation from '@/relation/Relation'
 import SubGraphController from '@/graph/SubGraphController'
 import TagRelation from "@/tag/TagRelation";
 import TagVertex from "@/tag/TagVertex";
@@ -700,8 +700,8 @@ GraphElementController.prototype.relateToDistantVertexWithUri = async function (
             distantVertexUri
         )
     ).loadNonCenter();
-    let newEdgeUri = await EdgeService.createFromSourceAndDestinationUri(parentVertex.getUri(), distantVertexUri);
-    let newEdge = Edge.withUriAndSourceAndDestinationVertex(
+    let newEdgeUri = await RelationService.createFromSourceAndDestinationUri(parentVertex.getUri(), distantVertexUri);
+    let newEdge = Relation.withUriAndSourceAndDestinationVertex(
         newEdgeUri,
         parentVertex,
         distantVertex

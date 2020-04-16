@@ -1,4 +1,4 @@
-import Edge from '@/edge/Edge'
+import Relation from '@/relation/Relation'
 import Vertex from '@/vertex/Vertex'
 import Tag from '@/tag/Tag'
 import $ from 'jquery'
@@ -13,8 +13,8 @@ api.generateVertex = function () {
 api.generateEdge = function (sourceVertexUri, destinationVertexUri) {
     sourceVertexUri = sourceVertexUri || api.generateVertexUri();
     destinationVertexUri = destinationVertexUri || api.generateVertexUri();
-    return Edge.fromServerFormat(
-        Edge.buildObjectWithUriOfSelfSourceAndDestinationVertex(
+    return Relation.fromServerFormat(
+        Relation.buildObjectWithUriOfSelfSourceAndDestinationVertex(
             api.generateEdgeUri(),
             sourceVertexUri,
             destinationVertexUri

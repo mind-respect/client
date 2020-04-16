@@ -212,7 +212,7 @@ VertexController.prototype.images = function () {
 
 VertexController.prototype.becomeParent = function (child) {
     let promises = [];
-    let movedEdge = child.isVertexType() ? child.getParentBubble : child;
+    let movedEdge = child.isVertexType() ? child.getParentBubble() : child;
     if (movedEdge.getParentFork().getUri() !== this.model().getUri()) {
         promises.push(
             movedEdge.controller().replaceParentFork(

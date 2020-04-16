@@ -2,12 +2,11 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import Edge from '@/edge/Edge'
+import Relation from '@/relation/Relation'
 import Vertex from '@/vertex/Vertex'
 import GraphElement from '@/graph-element/GraphElement'
 import GroupRelation from '@/group-relation/GroupRelation'
 import GraphElementType from "../graph-element/GraphElementType";
-import IdUri from "../IdUri";
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -109,7 +108,7 @@ api.SubGraph.prototype._isEdgeAlreadyAdded = function (edge) {
 api.SubGraph.prototype._buildEdges = function () {
     this.edges = {};
     Object.values(this.serverFormat.edges).forEach((edge) => {
-        let facade = Edge.fromServerFormat(edge);
+        let facade = Relation.fromServerFormat(edge);
         facade.setSourceVertex(
             this.getHavingUri(facade.getSourceVertex().getUri())
         );

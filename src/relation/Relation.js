@@ -14,10 +14,10 @@ import ShareLevel from "../vertex/ShareLevel";
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
-    return new api.Edge().init(serverFormat);
+    return new api.Relation().init(serverFormat);
 };
 api.withLabelSelfSourceAndDestinationUri = function (label, uri, sourceUri, destinationUri) {
-    let edge = new api.Edge().init(
+    let edge = new api.Relation().init(
         api.buildObjectWithUriOfSelfSourceAndDestinationVertex(
             uri,
             sourceUri,
@@ -28,7 +28,7 @@ api.withLabelSelfSourceAndDestinationUri = function (label, uri, sourceUri, dest
     return edge;
 };
 api.withUriAndSourceAndDestinationVertex = function (uri, sourceVertex, destinationVertex) {
-    return new api.Edge().init(
+    return new api.Relation().init(
         {
             graphElement: GraphElement.buildObjectWithUri(
                 uri
@@ -64,12 +64,12 @@ api.buildServerFormatFromUi = function (edgeUi) {
         )
     };
 };
-api.Edge = function () {
+api.Relation = function () {
 };
 
-api.Edge.prototype = new GraphElement.GraphElement();
+api.Relation.prototype = new GraphElement.GraphElement();
 
-api.Edge.prototype.init = function (edgeServerFormat, source, destination) {
+api.Relation.prototype.init = function (edgeServerFormat, source, destination) {
     this._sourceVertex = source ? source : FriendlyResource.fromServerFormat(
         VertexServerFormatBuilder.getFriendlyResourceServerObject(
             edgeServerFormat.sourceVertex || edgeServerFormat.sourceGroupRelation
@@ -94,8 +94,8 @@ api.Edge.prototype.init = function (edgeServerFormat, source, destination) {
 };
 
 
-api.Edge.prototype.clone = function () {
-    let edge = new api.Edge();
+api.Relation.prototype.clone = function () {
+    let edge = new api.Relation();
     edge.init(
         JSON.parse(JSON.stringify(this._edgeServerFormat)),
         this.getSourceVertex(),
@@ -104,7 +104,7 @@ api.Edge.prototype.clone = function () {
     return edge;
 };
 
-api.Edge.prototype.getDuplicates = function () {
+api.Relation.prototype.getDuplicates = function () {
     return CurrentSubGraph.get().getEdgesWithUri(
         this.getUri()
     ).filter((edge) => {
@@ -113,17 +113,17 @@ api.Edge.prototype.getDuplicates = function () {
 };
 
 
-api.Edge.prototype.getNbDuplicates = function () {
+api.Relation.prototype.getNbDuplicates = function () {
     return CurrentSubGraph.get().getEdgesWithUri(
         this.getUri()
     ).length - 1;
 };
 
-api.Edge.prototype.getGraphElementType = function () {
+api.Relation.prototype.getGraphElementType = function () {
     return GraphElementType.Relation;
 };
 
-api.Edge.prototype.updateSourceOrDestination = function (vertex) {
+api.Relation.prototype.updateSourceOrDestination = function (vertex) {
     if (this.getSourceVertex().isSameUri(vertex)) {
         this.setSourceVertex(vertex);
     } else if (this.getDestinationVertex().isSameUri(vertex)) {
@@ -133,11 +133,11 @@ api.Edge.prototype.updateSourceOrDestination = function (vertex) {
     }
 };
 
-api.Edge.prototype.getWhenEmptyLabel = function () {
+api.Relation.prototype.getWhenEmptyLabel = function () {
     return I18n.i18next.t("edge:default");
 };
 
-api.Edge.prototype.replaceChild = api.Edge.prototype.replaceRelatedVertex = function (relatedVertex, newVertex) {
+api.Relation.prototype.replaceChild = api.Relation.prototype.replaceRelatedVertex = function (relatedVertex, newVertex) {
     if (this.getSourceVertex().isSameUri(relatedVertex)) {
         this.setSourceVertex(newVertex);
     } else if (this.getDestinationVertex().isSameUri(relatedVertex)) {
@@ -147,11 +147,11 @@ api.Edge.prototype.replaceChild = api.Edge.prototype.replaceRelatedVertex = func
     }
 };
 
-api.Edge.prototype.setSourceVertex = function (sourceVertex) {
+api.Relation.prototype.setSourceVertex = function (sourceVertex) {
     this._sourceVertex = sourceVertex;
 };
 
-api.Edge.prototype.setParentFork = function (newEndFork) {
+api.Relation.prototype.setParentFork = function (newEndFork) {
     let parentVertex = newEndFork.isGroupRelation() ? newEndFork.getParentVertex() : newEndFork;
     if (this.isInverse()) {
         this.setDestinationVertex(newEndFork);
@@ -163,32 +163,32 @@ api.Edge.prototype.setParentFork = function (newEndFork) {
     this.parentVertex = parentVertex;
 };
 
-api.Edge.prototype.setDestinationVertex = function (destinationVertex) {
+api.Relation.prototype.setDestinationVertex = function (destinationVertex) {
     this._destinationVertex = destinationVertex;
 };
 
-api.Edge.prototype.getSourceVertex = function () {
+api.Relation.prototype.getSourceVertex = function () {
     return this._sourceVertex;
 };
-api.Edge.prototype.getDestinationVertex = function () {
+api.Relation.prototype.getDestinationVertex = function () {
     return this._destinationVertex;
 };
 
-api.Edge.prototype.isPublic = function () {
+api.Relation.prototype.isPublic = function () {
     return this.getSourceVertex().isPublic() &&
         this.getDestinationVertex().isPublic();
 };
-api.Edge.prototype.isPrivate = function () {
+api.Relation.prototype.isPrivate = function () {
     return this.getSourceVertex().isPrivate() ||
         this.getDestinationVertex().isPrivate();
 };
 
-api.Edge.prototype.isFriendsOnly = function () {
+api.Relation.prototype.isFriendsOnly = function () {
     return this.getSourceVertex().isFriendsOnly() &&
         this.getDestinationVertex().isFriendsOnly();
 };
 
-api.Edge.prototype.getShareLevel = function () {
+api.Relation.prototype.getShareLevel = function () {
     let sourceShareLevel = this.getSourceVertex().getShareLevel();
     let destinationShareLevel = this.getDestinationVertex().getShareLevel();
     if (sourceShareLevel === destinationShareLevel) {
@@ -197,18 +197,18 @@ api.Edge.prototype.getShareLevel = function () {
     return ShareLevel.getIndex(sourceShareLevel) < ShareLevel.getIndex(destinationShareLevel) ? sourceShareLevel : destinationShareLevel;
 };
 
-api.Edge.prototype.getOtherVertex = function (vertex) {
+api.Relation.prototype.getOtherVertex = function (vertex) {
     return this.getSourceVertex().getUri() === vertex.getUri() ?
         this.getDestinationVertex() : this.getSourceVertex();
 };
 
-api.Edge.prototype.getNextBubble = function () {
+api.Relation.prototype.getNextBubble = function () {
     return this.isInverse() ?
         this.getSourceVertex() :
         this.getDestinationVertex();
 };
 
-api.Edge.prototype.getRightBubble = function () {
+api.Relation.prototype.getRightBubble = function () {
     if (this.isToTheLeft()) {
         return this.getParentBubble()
     } else {
@@ -216,7 +216,7 @@ api.Edge.prototype.getRightBubble = function () {
     }
 };
 
-api.Edge.prototype.inverse = function () {
+api.Relation.prototype.inverse = function () {
     let sourceVertex = this.getSourceVertex();
     let destinationVertex = this.getDestinationVertex();
     this.setSourceVertex(destinationVertex);
@@ -224,11 +224,11 @@ api.Edge.prototype.inverse = function () {
     Store.dispatch("redraw");
 };
 
-api.Edge.prototype.isInverse = function () {
+api.Relation.prototype.isInverse = function () {
     return this.getDestinationVertex().isGroupRelation() || this.getSourceVertex().getUri() !== this.getParentFork().getUri();
 };
 
-api.Edge.prototype.getLeftBubble = function () {
+api.Relation.prototype.getLeftBubble = function () {
     if (this.isToTheLeft()) {
         return this.getNextBubble();
     } else {
@@ -236,19 +236,19 @@ api.Edge.prototype.getLeftBubble = function () {
     }
 };
 
-api.Edge.prototype.getNextChildrenEvenIfCollapsed = api.Edge.prototype.getNextChildren = function () {
+api.Relation.prototype.getNextChildrenEvenIfCollapsed = api.Relation.prototype.getNextChildren = function () {
     return [
         this.getOtherVertex(this.getParentFork())
     ].concat(this.children);
 };
 
-api.Edge.prototype.addChild = function (child) {
+api.Relation.prototype.addChild = function (child) {
     child.parentBubble = this;
     child.parentVertex = this.parentVertex;
     this.children.push(child);
 };
 
-api.Edge.prototype.removeChild = function (child, isTemporary, avoidRedraw) {
+api.Relation.prototype.removeChild = function (child, isTemporary, avoidRedraw) {
     let l = this.children.length;
     while (l--) {
         if (this.children[l].getId() === child.getId()) {
@@ -260,15 +260,15 @@ api.Edge.prototype.removeChild = function (child, isTemporary, avoidRedraw) {
     }
 };
 
-api.Edge.prototype.getNumberOfChild = function () {
+api.Relation.prototype.getNumberOfChild = function () {
     return 1 + this.children.length;
 };
 
-api.Edge.prototype.isLeaf = function () {
+api.Relation.prototype.isLeaf = function () {
     return false;
 };
 
-api.Edge.prototype.isShrinked = function (shouldBeWhenNotSelected) {
+api.Relation.prototype.isShrinked = function (shouldBeWhenNotSelected) {
     if (!shouldBeWhenNotSelected && Selection.isSelected(this)) {
         return false;
     }
@@ -278,23 +278,23 @@ api.Edge.prototype.isShrinked = function (shouldBeWhenNotSelected) {
     return this.isLabelSameAsParentGroupRelation();
 };
 
-api.Edge.prototype.remove = function () {
+api.Relation.prototype.remove = function () {
     CurrentSubGraph.get().remove(this);
     this.getParentBubble().removeChild(this);
 };
 
-api.Edge.prototype.getChip = function () {
+api.Relation.prototype.getChip = function () {
     let html = this.getHtml();
     if (html) {
         return html.querySelectorAll('.v-chip')[0];
     }
 };
 
-api.Edge.prototype.canExpand = function () {
+api.Relation.prototype.canExpand = function () {
     return false;
 };
 
-api.Edge.prototype.getTagsNotIncludedInSerialParentGroupRelations = function () {
+api.Relation.prototype.getTagsNotIncludedInSerialParentGroupRelations = function () {
     let parentBubble = this.getParentBubble();
     if (!parentBubble.isGroupRelation()) {
         return this.getIdentifiers();

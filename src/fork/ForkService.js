@@ -1,6 +1,6 @@
 import Service from '@/Service'
 import Triple from '@/triple/Triple'
-import Edge from '@/edge/Edge'
+import Relation from '@/relation/Relation'
 import Vertex from '@/vertex/Vertex'
 import IdUri from '@/IdUri'
 
@@ -12,7 +12,7 @@ ForkService.addTuple = function (fork, afterPromise) {
     let newVertex = Vertex.withUri(
         "/service" + IdUri.vertexBaseUri() + "/" + newVertexId
     );
-    let newEdge = Edge.withUriAndSourceAndDestinationVertex(
+    let newEdge = Relation.withUriAndSourceAndDestinationVertex(
         "/service" + IdUri.edgeBaseUri() + "/" + newEdgeId,
         fork,
         newVertex
@@ -27,7 +27,7 @@ ForkService.addTuple = function (fork, afterPromise) {
             }
         );
         return Triple.fromEdgeAndSourceAndDestinationVertex(
-            Edge.fromServerFormat(response.data.edge),
+            Relation.fromServerFormat(response.data.edge),
             fork,
             Vertex.fromServerFormat(response.data.end_vertex)
         );

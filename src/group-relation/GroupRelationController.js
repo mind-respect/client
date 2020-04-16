@@ -12,6 +12,7 @@ import CurrentSubGraph from "../graph/CurrentSubGraph";
 import ForkService from "../fork/ForkService";
 import ForkController from "../fork/ForkController";
 import SubGraphController from '@/graph/SubGraphController'
+import EdgeController from '@/edge/EdgeController'
 
 const api = {};
 api.GroupRelationController = GroupRelationController;
@@ -169,38 +170,38 @@ GroupRelationController.prototype.noteDo = function (note) {
 };
 
 // GroupRelationController.prototype.becomeExParent = function (movedEdge, newParent) {
-    // let promises = [];
-    // let greatestGroupRelationAncestor = this.model().getGreatestGroupRelationAncestor();
-    // let isMovingUnderSameGroupRelation = this.model().getDescendants().some((child) => {
-    //     return child.getId() === newParent.getId();
-    // });
-    // if (isMovingUnderSameGroupRelation) {
-    //     return Promise.resolve();
-    // }
-    // let groupRelationToStop;
-    // if (movedEdge.isGroupRelation()) {
-    //     groupRelationToStop = movedEdge;
-    // }
-    // greatestGroupRelationAncestor.getIdentifiersAtAnyDepth(groupRelationToStop, true).forEach((identifier) => {
-    //     if (movedEdge.isGroupRelation()) {
-    //         movedEdge.getClosestChildRelations(true).forEach((relation) => {
-    //             promises.push(
-    //                 relation.controller().removeTag(
-    //                     identifier,
-    //                     true
-    //                 )
-    //             );
-    //         });
-    //     } else {
-    //         promises.push(
-    //             movedEdge.controller().removeTag(
-    //                 identifier,
-    //                 true
-    //             )
-    //         );
-    //     }
-    // });
-    // return Promise.all(promises);
+// let promises = [];
+// let greatestGroupRelationAncestor = this.model().getGreatestGroupRelationAncestor();
+// let isMovingUnderSameGroupRelation = this.model().getDescendants().some((child) => {
+//     return child.getId() === newParent.getId();
+// });
+// if (isMovingUnderSameGroupRelation) {
+//     return Promise.resolve();
+// }
+// let groupRelationToStop;
+// if (movedEdge.isGroupRelation()) {
+//     groupRelationToStop = movedEdge;
+// }
+// greatestGroupRelationAncestor.getIdentifiersAtAnyDepth(groupRelationToStop, true).forEach((identifier) => {
+//     if (movedEdge.isGroupRelation()) {
+//         movedEdge.getClosestChildRelations(true).forEach((relation) => {
+//             promises.push(
+//                 relation.controller().removeTag(
+//                     identifier,
+//                     true
+//                 )
+//             );
+//         });
+//     } else {
+//         promises.push(
+//             movedEdge.controller().removeTag(
+//                 identifier,
+//                 true
+//             )
+//         );
+//     }
+// });
+// return Promise.all(promises);
 // };
 
 GroupRelationController.prototype.removeCanDo = function () {
@@ -254,4 +255,14 @@ GroupRelationController.prototype.removeIdentifier = function (tag, preventMovin
     });
 };
 
+GroupRelationController.prototype.replaceParentFork = function (newParentFork, preventChangingInModel) {
+    return this.getEdgeController().replaceParentFork(newParentFork, preventChangingInModel);
+};
+
+GroupRelationController.prototype.getEdgeController = function () {
+    if (this._edgeController === undefined) {
+        this._edgeController = new EdgeController().init(this.groupRelationsUi);
+    }
+    return this._edgeController;
+};
 export default api;

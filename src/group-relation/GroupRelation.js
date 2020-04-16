@@ -391,6 +391,9 @@ GroupRelation.prototype.getShareLevel = function () {
     return this.groupRelationJsonObject.shareLevel.toUpperCase();
 };
 
+GroupRelation.prototype.isInverse = function () {
+    return false;
+}
 
 api.GroupRelation = GroupRelation;
 

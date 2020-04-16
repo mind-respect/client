@@ -8,7 +8,7 @@ import VueRouter from 'vue-router'
 import router from '@/router'
 import store from '@/store'
 import Vertex from '@/vertex/Vertex'
-import Edge from '@/edge/Edge'
+import Relation from '@/relation/Relation'
 import Vuetify from 'vuetify'
 import I18n from '@/I18n'
 import Vue from 'vue'
@@ -137,7 +137,7 @@ api.Scenario.prototype.tagWithLabelInTree = function (label) {
 api.Scenario.prototype.relationTagWithLabel = function (label) {
     let foundTag;
     Object.values(this.getGraph().edges).map((edgeServer) => {
-        return Edge.fromServerFormat(edgeServer);
+        return Relation.fromServerFormat(edgeServer);
     }).forEach((edge) => {
         edge.getIdentifiers().forEach((tag) => {
             if (tag.getLabel() === label) {
@@ -220,7 +220,7 @@ api._convertGraphElementsToArray = function (graphElements) {
     return Object.values(graphElements).reduce((graphElementsArray, graphElement) => {
         let isFacadeBuilt = graphElement.getLabel !== undefined;
         if (!isFacadeBuilt) {
-            graphElement = graphElement.vertex ? Vertex.fromServerFormat(graphElement) : Edge.fromServerFormat(graphElement);
+            graphElement = graphElement.vertex ? Vertex.fromServerFormat(graphElement) : Relation.fromServerFormat(graphElement);
         }
         if (graphElementsArray[graphElement.getUri()] === undefined) {
             graphElementsArray[graphElement.getUri()] = [];
@@ -252,7 +252,7 @@ api.getEdges = function (graph) {
     //use array flat() when node ^11 LTS gets out
     return [].concat.apply([], edges).map((edge) => {
         let isFacadeBuilt = edge.getLabel !== undefined;
-        return isFacadeBuilt ? edge : Edge.fromServerFormat(
+        return isFacadeBuilt ? edge : Relation.fromServerFormat(
             edge
         );
     });

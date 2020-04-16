@@ -1,15 +1,12 @@
 import Mock from '../mock/Mock'
 import ThreeScenario from "../scenario/ThreeScenario";
 import PublicPrivateScenario from "../scenario/PublicPrivateScenario";
-import MindMapInfo from '@/MindMapInfo'
-import EdgeController from '@/edge/EdgeController'
 import TestUtil from '../util/TestUtil'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
-import Selection from '@/Selection'
 import GraphElementType from '@/graph-element/GraphElementType'
 import RelationsAsTagScenario from "../scenario/RelationsAsTagScenario";
 
-describe("Edge", () => {
+describe("Relation", () => {
     it("can inverse", async () => {
         let scenario = await new ThreeScenario();
         let edge1 = scenario.getRelation1InTree();

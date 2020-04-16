@@ -171,7 +171,7 @@
     import GraphController from '@/graph/GraphController'
     import GraphUi from '@/graph/GraphUi'
     import VertexSkeleton from '@/vertex/VertexSkeleton'
-    import RelationSkeleton from '@/edge/RelationSkeleton'
+    import RelationSkeleton from '@/relation/RelationSkeleton'
     import KeyCode from 'keycode-js';
     import UiUtils from '@/UiUtils'
 
