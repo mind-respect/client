@@ -89,8 +89,8 @@ Vertex.prototype.getConnectedEdges = function (evenIfCollapsed) {
 Vertex.prototype.buildNbNeighbors = function () {
     let nbNeighbors = NbNeighbors.withZeros();
     this.getConnectedEdges(true).forEach((edge) => {
-        let otherVertex = edge.getOtherVertex(this);
-        if (otherFork.isVertex() || this.isMetaGroupVertex()) {
+        let otherFork = edge.getOtherVertex(this);
+        if ((otherFork.isVertex() || otherFork.isGroupRelation()) || this.isMetaGroupVertex()) {
             nbNeighbors.incrementForShareLevel(otherFork.getShareLevel());
         }
     });
