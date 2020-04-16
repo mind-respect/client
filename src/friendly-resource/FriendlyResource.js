@@ -554,7 +554,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         otherBubble.addChild(this);
     } else {
         let parentFork = this.getParentFork();
-        let otherParentFork = otherBubble.isForkType() ? otherBubble : otherBubble.getParentFork();
+        let otherParentFork = otherBubble.getParentFork();
         let isTemporaryRemove = parentFork.isSameBubble(otherParentFork);
         parentFork.removeChild(this, isTemporaryRemove, true);
         this.direction = otherBubble.direction;
