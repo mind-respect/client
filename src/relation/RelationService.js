@@ -17,7 +17,7 @@ RelationService.updateLabel = function (edge, label) {
     );
 };
 RelationService.inverse = function (edge) {
-    return Service.geRelationService().put(
+    return Service.geApi().put(
         edge.getUri() + "/inverse"
     );
 };
@@ -29,7 +29,7 @@ RelationService.createFromSourceAndDestinationUri = function (sourceUri, destina
     let destinationVertexUriFormatted = encodeURIComponent(
         destinationUri
     );
-    return Service.RelationService().post(
+    return Service.api().post(
         edgesUrl() + '?sourceVertexId=' + sourceVertexUriFormatted +
         '&destinationVertexId=' + destinationVertexUriFormatted
     ).then((response) => {
@@ -49,7 +49,7 @@ RelationService.convertToGroupRelation = function (edgeUri, initialShareLevel, l
     newGroupRelation.setShareLevel(initialShareLevel);
     return {
         optimistic: newGroupRelation,
-        promise: Service.geRelationService().post(
+        promise: Service.geApi().post(
             edgeUri + "/convertToGroupRelation",
             {
                 newGroupRelationShortId: newGroupRelationShortId,

@@ -2,12 +2,9 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
-import GraphElementController from '@/graph-element/GraphElementController'
 import GraphElementService from '@/graph-element/GraphElementService'
 import Selection from '@/Selection'
 import Vue from 'vue'
-import Store from '@/store'
 import CurrentSubGraph from "../graph/CurrentSubGraph";
 import ForkService from "../fork/ForkService";
 import ForkController from "../fork/ForkController";
@@ -135,39 +132,28 @@ GroupRelationController.prototype.addSibling = function () {
     );
 };
 
-GroupRelationController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft) {
-    return GraphElementController.GraphElementController.prototype.relateToDistantVertexWithUri.call(
-        this,
-        distantVertexUri,
-        index,
-        isLeft,
-        this.model().getIdentifiers()
-    );
-};
+// GroupRelationController.prototype.setLabel = function (newLabel) {
+//     let tag = this.model().getIdentification();
+//     tag.setLabel(
+//         newLabel
+//     );
+//     return FriendlyResourceService.updateLabel(
+//         tag,
+//         newLabel
+//     );
+// };
 
-
-GroupRelationController.prototype.setLabel = function (newLabel) {
-    let tag = this.model().getIdentification();
-    tag.setLabel(
-        newLabel
-    );
-    return FriendlyResourceService.updateLabel(
-        tag,
-        newLabel
-    );
-};
-
-GroupRelationController.prototype.noteDo = function (note) {
-    let tag = this.model().getIdentification();
-    tag.setComment(
-        note
-    );
-    return GraphElementService.updateNote(
-        tag
-    ).then(() => {
-        Store.dispatch("redraw");
-    });
-};
+// GroupRelationController.prototype.noteDo = function (note) {
+//     let tag = this.model().getIdentification();
+//     tag.setComment(
+//         note
+//     );
+//     return GraphElementService.updateNote(
+//         tag
+//     ).then(() => {
+//         Store.dispatch("redraw");
+//     });
+// };
 
 // GroupRelationController.prototype.becomeExParent = function (movedEdge, newParent) {
 // let promises = [];

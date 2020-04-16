@@ -694,7 +694,7 @@ GraphElementController.prototype.addIdentification = function (tag, preventMovin
 };
 
 GraphElementController.prototype.relateToDistantVertexWithUri = async function (distantVertexUri, index, isLeft, identifiers) {
-    let parentVertex = this.model().isVertexType() ? this.model() : this.model().getParentVertex();
+    let parentVertex = this.model().isForkType() ? this.model() : this.model().getParentVertex();
     let distantVertex = await SubGraphController.withVertex(
         Vertex.withUri(
             distantVertexUri
