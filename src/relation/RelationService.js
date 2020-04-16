@@ -23,15 +23,15 @@ RelationService.inverse = function (edge) {
 };
 
 RelationService.createFromSourceAndDestinationUri = function (sourceUri, destinationUri) {
-    let sourceVertexUriFormatted = encodeURIComponent(
+    let sourceUriFormatted = encodeURIComponent(
         sourceUri
     );
-    let destinationVertexUriFormatted = encodeURIComponent(
+    let destinationUriFormatted = encodeURIComponent(
         destinationUri
     );
     return Service.api().post(
-        edgesUrl() + '?sourceVertexId=' + sourceVertexUriFormatted +
-        '&destinationVertexId=' + destinationVertexUriFormatted
+        edgesUrl() + '?sourceUri=' + sourceUriFormatted +
+        '&destinationUri=' + destinationUriFormatted
     ).then((response) => {
         return IdUri.removeDomainNameFromGraphElementUri(
             response.headers.location
