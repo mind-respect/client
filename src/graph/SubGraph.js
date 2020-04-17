@@ -48,8 +48,8 @@ api.SubGraph = function (graph, centerUri, buildFacade) {
     if (buildFacade) {
         this.serverFormat = graph;
         this.tagVertices = [];
-        this._buildGroupRelations();
         this._buildVertices();
+        this._buildGroupRelations(centerUri);
         this._buildEdges();
     } else {
         this.edges = graph.edges;
@@ -108,15 +108,23 @@ api.SubGraph.prototype._isEdgeAlreadyAdded = function (edge) {
 api.SubGraph.prototype._buildEdges = function () {
     this.edges = {};
     Object.values(this.serverFormat.edges).forEach((edge) => {
+        let source = edge.sourceVertex || edge.sourceGroupRelation;
+        let destination = edge.destinationVertex || edge.destinationGroupRelation;
+        if (!source || !destination) {
+            return;
+        }
         let facade = Relation.fromServerFormat(edge);
         facade.setSourceVertex(
             this.getHavingUri(facade.getSourceVertex().getUri())
         );
+
         facade.setDestinationVertex(
             this.getHavingUri(facade.getDestinationVertex().getUri())
         );
-        this.addEdge(facade);
-    })
+        if (source && destination) {
+            this.addEdge(facade);
+        }
+    });
 };
 
 api.SubGraph.prototype.addVertex = function (vertex) {
@@ -339,9 +347,12 @@ api.SubGraph.prototype._buildVertices = function () {
     });
 };
 
-api.SubGraph.prototype._buildGroupRelations = function () {
+api.SubGraph.prototype._buildGroupRelations = function (centerUri) {
     this.groupRelations = {};
     Object.values(this.serverFormat.groupRelations).forEach((groupRelation) => {
+        if (groupRelation.sourceForkUri !== centerUri && groupRelation.graphElement.friendlyResource.uri !== centerUri) {
+            return;
+        }
         let facade = GroupRelation.fromServerFormat(groupRelation);
         this.groupRelations[facade.getUri()] = facade;
     });

@@ -401,7 +401,6 @@ GroupRelation.prototype.getShareLevel = function () {
 GroupRelation.prototype.isInverse = function () {
     return false;
 }
-
 api.GroupRelation = GroupRelation;
 
 export default api;

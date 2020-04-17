@@ -61,7 +61,7 @@ RelationController.prototype.addChild = async function () {
     CurrentSubGraph.get().add(newGroupRelation);
     previousParentFork.refreshChildren(true);
     GraphElementService.changeChildrenIndex(
-        this.model().getParentVertex()
+        newGroupRelation.getParentFork()
     );
     GraphElementService.changeChildrenIndex(
         newGroupRelation
