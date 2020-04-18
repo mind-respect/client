@@ -193,7 +193,7 @@
             },
             logout: async function () {
                 await AuthenticateService.logout();
-                this.$router.push("/")
+                this.$router.push("/");
             }
         },
         computed: {
