@@ -28,7 +28,7 @@
                         :hide-no-data='!search || search.trim() === ""'
                         @focus="focus"
                         :placeholder="$t('addTag:title')"
-                        v-show="!bubble || (!bubble.isGroupRelation() && !bubble.isMeta())"
+                        v-show="!bubble || (!bubble.isMeta())"
                         :disabled="!bubble"
                 >
                     <template v-slot:prepend-inner>

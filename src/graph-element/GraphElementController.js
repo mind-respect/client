@@ -582,18 +582,6 @@ GraphElementController.prototype._moveToExecute = async function (otherEdge, isA
         model.moveBelow(otherEdge);
     }
     otherEdge.getParentFork().refreshChildren(true);
-    // if (parentOfOtherBubble.isGroupRelation()) {
-    //     let parentGroupRelation = parentOfOtherBubble;
-    //     do {
-    //         promises.push(
-    //             movedEdge.controller().addIdentifiers(
-    //                 parentGroupRelation.getIdentifiers(),
-    //                 true
-    //             )
-    //         );
-    //         parentGroupRelation = parentGroupRelation.getParentBubble();
-    //     } while (parentGroupRelation.isGroupRelation());
-    // }
     let parentFork = otherEdge.getParentFork();
     if (!parentFork.isMeta() && previousParentFork.getUri() !== parentFork.getUri()) {
         promises.push(

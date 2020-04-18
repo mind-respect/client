@@ -39,9 +39,6 @@ GroupRelationController.prototype.addChildCanDo = function () {
     return this.isSingleAndOwned();
 };
 
-GroupRelationController.prototype.addTagCanDo = function () {
-    return false;
-};
 
 GroupRelationController.prototype.centerCanDo = function () {
     return false;
@@ -75,31 +72,10 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
         triple.destination.controller().setShareLevelDo(
             parentVertex.getShareLevel()
         );
-
-        // let tags = this.model().getParentSerialTags();
-        // return Promise.all(tags.map((identifier) => {
-        //     identifier.makeSameAs();
-        //     return triple.edge.controller().addIdentification(
-        //         identifier,
-        //         true,
-        //         true
-        //     ).then((tags) => {
-        //         tags.forEach((tag) => {
-        //             if (this.model().hasIdentification(tag)) {
-        //                 this.model().getIdentifierHavingExternalUri(tag.getExternalResourceUri()).setUri(
-        //                     tag.getUri()
-        //                 )
-        //             }
-        //         })
-        //     });
-        // }));
     });
     addTuple.promise.catch(() => {
         triple.destination.remove();
     });
-    // triple.edge.addIdentifications(
-    //     this.model().getParentSerialTags()
-    // );
     this.model().addChild(
         triple.edge,
         isToTheLeft,
@@ -132,64 +108,6 @@ GroupRelationController.prototype.addSibling = function () {
     );
 };
 
-// GroupRelationController.prototype.setLabel = function (newLabel) {
-//     let tag = this.model().getIdentification();
-//     tag.setLabel(
-//         newLabel
-//     );
-//     return FriendlyResourceService.updateLabel(
-//         tag,
-//         newLabel
-//     );
-// };
-
-// GroupRelationController.prototype.noteDo = function (note) {
-//     let tag = this.model().getIdentification();
-//     tag.setComment(
-//         note
-//     );
-//     return GraphElementService.updateNote(
-//         tag
-//     ).then(() => {
-//         Store.dispatch("redraw");
-//     });
-// };
-
-// GroupRelationController.prototype.becomeExParent = function (movedEdge, newParent) {
-// let promises = [];
-// let greatestGroupRelationAncestor = this.model().getGreatestGroupRelationAncestor();
-// let isMovingUnderSameGroupRelation = this.model().getDescendants().some((child) => {
-//     return child.getId() === newParent.getId();
-// });
-// if (isMovingUnderSameGroupRelation) {
-//     return Promise.resolve();
-// }
-// let groupRelationToStop;
-// if (movedEdge.isGroupRelation()) {
-//     groupRelationToStop = movedEdge;
-// }
-// greatestGroupRelationAncestor.getIdentifiersAtAnyDepth(groupRelationToStop, true).forEach((identifier) => {
-//     if (movedEdge.isGroupRelation()) {
-//         movedEdge.getClosestChildRelations(true).forEach((relation) => {
-//             promises.push(
-//                 relation.controller().removeTag(
-//                     identifier,
-//                     true
-//                 )
-//             );
-//         });
-//     } else {
-//         promises.push(
-//             movedEdge.controller().removeTag(
-//                 identifier,
-//                 true
-//             )
-//         );
-//     }
-// });
-// return Promise.all(promises);
-// };
-
 GroupRelationController.prototype.removeCanDo = function () {
     return false;
 };
@@ -200,45 +118,6 @@ GroupRelationController.prototype.remove = function () {
             return child.controller().remove();
         })
     );
-};
-
-GroupRelationController.prototype.addIdentification = function (tag) {
-    return Promise.all(
-        this.model().getClosestChildRelations().map((child) => {
-            return child.controller().addIdentification(tag, true);
-        })
-    );
-};
-
-// GroupRelationController.prototype.replaceParentVertex = function (newParentVertex) {
-//     return Promise.all(
-//         this.model().getClosestChildRelations().map((child) => {
-//             return child.controller().replaceParentVertex(newParentVertex);
-//         })
-//     );
-// };
-
-
-GroupRelationController.prototype.addIdentificationCanDo = function () {
-    return false;
-};
-
-GroupRelationController.prototype.removeIdentifier = function (tag, preventMoving) {
-    return Promise.all(
-        this.model().getClosestChildRelations(true).map((edge) => {
-            return edge.controller().removeTag(tag, true)
-        })
-    ).then(async () => {
-        if (!preventMoving) {
-            this.model().moveBelow(
-                this.model().getParentBubble()
-            );
-            await Vue.nextTick();
-            GraphElementService.changeChildrenIndex(
-                this.model().getParentVertex()
-            );
-        }
-    });
 };
 
 GroupRelationController.prototype.replaceParentFork = function (newParentFork, preventChangingInModel) {

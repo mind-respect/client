@@ -42,17 +42,6 @@ RelationController.prototype.addChild = async function () {
     let newGroupRelation = convertResponse.optimistic;
     Selection.removeAll();
     let triple = await newGroupRelation.controller().addChildWhenInTransition(convertResponse.promise);
-    // this.model().getIdentifiers().forEach((tag) => {
-    //     if (triple.edge.hasIdentification(tag)) {
-    //         return;
-    //     }
-    //     triple.edge.controller().addIdentification(
-    //         tag,
-    //         true,
-    //         true
-    //     );
-    //     triple.edge.addIdentification(tag);
-    // });
     this.setLabel("");
     previousParentFork.replaceChild(
         this.model(),
@@ -150,30 +139,10 @@ RelationController.prototype.becomeParent = async function (adoptedChild) {
 };
 
 RelationController.prototype._convertToGroupRelation = function () {
-    // let parentBubble = this.model().getParentBubble();
-    // let newGroupRelationTag;
-    // let uniqueTags = this.model().getTagsNotIncludedInSerialParentGroupRelations();
-    // let isNewTag = false;
-    // let initialShareLevel;
     let edge = this.model();
     edge.getIdentifiers().forEach((tag) => {
         this.model().removeTag(tag);
     });
-    // if (uniqueTags.length > 0) {
-    //     newGroupRelationTag = uniqueTags[0];
-    //     initialShareLevel = newGroupRelationTag.getShareLevel();
-    //     this.model().removeTag(newGroupRelationTag);
-    // } else {
-    //     isNewTag = true;
-    //     newGroupRelationTag = this.model().buildAdditionalSelfTag();
-    //     // promise = this.addIdentification(
-    //     //     groupRelationIdentifiers[0],
-    //     //     true
-    //     // );
-    //     initialShareLevel = this.model().getShareLevel();
-    //     // this.model().addIdentification(groupRelationIdentifiers[0]);
-    // }
-
     let response = RelationService.convertToGroupRelation(
         edge.getUri(),
         edge.getParentVertex().getShareLevel(),

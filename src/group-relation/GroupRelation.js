@@ -70,23 +70,7 @@ api.fromGraphElementJsonObject = function (jsonObject, shareLevel, nbNeighbors) 
 function GroupRelation(jsonObject) {
     this.groupRelationJsonObject = jsonObject;
     this.children = [];
-    // tags, children, uri
-    // this.children = children.map((child) => {
-    //     child.parentBubble = this;
-    //     return child;
-    // });
     this.childrenCollapsed = null;
-    // this.init(
-    //     GraphElement.buildObjectWithUri(
-    //         uri || IdUri.uuid()
-    //     )
-    // );
-    // if (tags.length) {
-    //     let tag = tags[0];
-    //     this.setLabel(tag.getLabel());
-    //     this.setComment(tag.getComment());
-    //     this.addIdentifications(tags);
-    // }
     this.isExpanded = false;
     Fork.Fork.apply(
         this
