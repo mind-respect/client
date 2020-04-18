@@ -191,14 +191,9 @@
                 let newLocale = this.$store.state.locale === "en" ? "fr" : "en";
                 this.$store.dispatch('setLocale', newLocale);
             },
-            logout: function () {
-                Promise.all([
-                    AuthenticateService.logout(),
-                    this.$store.dispatch('setUser', undefined),
-                    this.$store.dispatch('setXsrfToken', undefined)
-                ]).then(() => {
-                    this.$router.push("/")
-                });
+            logout: async function () {
+                await AuthenticateService.logout();
+                this.$router.push("/");
             }
         },
         computed: {

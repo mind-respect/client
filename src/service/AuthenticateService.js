@@ -16,11 +16,11 @@ export default {
         user.recaptchaToken = recaptchaToken;
         return Service.api().post("/users/session", user);
     },
-    logout: function () {
-        return Promise.all([
+    logout: async function () {
+        await Service.api().delete("/users/session");
+        await Promise.all([
             Store.dispatch('setUser', undefined),
-            Store.dispatch('setXsrfToken', undefined),
-            Service.api().delete("/users/session")
+            Store.dispatch('setXsrfToken', undefined)
         ]);
     }
 };
