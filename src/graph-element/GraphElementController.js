@@ -760,12 +760,30 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
             bubbleToSelect = this.model().getParentFork();
         }
     }
+    let parentGroupRelationsUri = new Set();
     let nbNeighborsRefresherOnRemove = NbNeighborsRefresherOnRemove.withGraphElements(graphElements);
     nbNeighborsRefresherOnRemove.prepare();
     graphElements.forEach((graphElement) => {
+        let parentFork = graphElement.getParentFork();
+        if (parentFork.isGroupRelation()) {
+            parentGroupRelationsUri.add(parentFork.getUri());
+        }
         graphElement.remove();
     });
     nbNeighborsRefresherOnRemove.execute();
+    let currentSubGraph = CurrentSubGraph.get();
+    await Promise.all(Array.from(parentGroupRelationsUri).map(async (groupRelationUri) => {
+        let groupRelation = currentSubGraph.getGroupRelationWithUri(groupRelationUri);
+        if (groupRelation) {
+            let children = groupRelation.getNextChildren();
+            if (children.length === 1) {
+                await groupRelation.controller().convertToRelation();
+            }
+            if (children.length === 0) {
+                await groupRelation.controller().removeDo();
+            }
+        }
+    }));
     if (bubbleToSelect) {
         Selection.setToSingle(bubbleToSelect);
     } else {

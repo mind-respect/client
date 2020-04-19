@@ -122,4 +122,13 @@ GroupRelationController.prototype.getEdgeController = function () {
     }
     return this._edgeController;
 };
+
+GroupRelationController.prototype.convertToRelation = async function () {
+    let edge = this.model().getNextBubble();
+    await edge.controller().moveAbove(this.model());
+    if (edge.isLabelEmpty()) {
+        edge.controller().setLabel(this.model().getLabel());
+    }
+    await this.removeDo();
+}
 export default api;

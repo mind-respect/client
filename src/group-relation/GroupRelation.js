@@ -112,20 +112,6 @@ GroupRelation.prototype.removeChild = function (child, isTemporary, avoidRedraw)
         }
     }
     if (!isTemporary) {
-        if (this.children.length === 1) {
-            let parentBubble = this.getParentBubble();
-            let child = this.getNextChildren()[0];
-            parentBubble.replaceChild(
-                this,
-                child
-            );
-            if (child.isLabelEmpty()) {
-                child.controller().setLabel(this.getLabel())
-            }
-        }
-        if (this.children.length === 0) {
-            this.getParentBubble().removeChild(this);
-        }
         this.refreshChildren(avoidRedraw);
     }
 };
@@ -399,6 +385,9 @@ GroupRelation.prototype.remove = function (preventRemoveDescendants) {
     CurrentSubGraph.get().remove(this);
     this.getParentBubble().removeChild(this);
 };
+
+GroupRelation.prototype.replaceRelatedVertex = function () {
+}
 
 api.GroupRelation = GroupRelation;
 
