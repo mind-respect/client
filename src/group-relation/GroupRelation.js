@@ -9,6 +9,7 @@ import I18n from '@/I18n'
 import NbNeighbors from "../vertex/NbNeighbors";
 import IdUri from "../IdUri";
 import Fork from '@/fork/Fork'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 api.EXPAND_UNDER_NB_SIBLINGS = 4;
@@ -385,6 +386,20 @@ GroupRelation.prototype.getShareLevel = function () {
 GroupRelation.prototype.isInverse = function () {
     return false;
 }
+
+GroupRelation.prototype.remove = function (preventRemoveDescendants) {
+    if (!preventRemoveDescendants) {
+        this.getDescendantsEvenIfCollapsed().forEach((bubble) => {
+            CurrentSubGraph.get().remove(bubble);
+        });
+        this.getDuplicates().forEach((duplicate) => {
+            duplicate.remove(true);
+        });
+    }
+    CurrentSubGraph.get().remove(this);
+    this.getParentBubble().removeChild(this);
+};
+
 api.GroupRelation = GroupRelation;
 
 export default api;

@@ -12,13 +12,13 @@ import SameLevelRelationsWithMoreThanOneCommonTagScenario
     from "../scenario/SameLevelRelationsWithMoreThanOneCommonTagScenario";
 import SingleAndTaggedToEventScenario from '../scenario/SingleAndTaggedToEventScenario'
 import GraphElementType from '@/graph-element/GraphElementType'
-import TwoLevelGroupRelationScenario from "../scenario/TwoLevelGroupRelationScenario";
 import GraphElementService from "../../../src/graph-element/GraphElementService";
 import GraphElementController from '@/graph-element/GraphElementController'
 import VertexController from '@/vertex/VertexController'
 import ShareLevel from '@/vertex/ShareLevel'
 import AroundTodoTagScenario from "../scenario/AroundTodoTagScenario";
 import ThreeLevelGroupRelationScenario from "../scenario/ThreeLevelGroupRelationScenario";
+import ForkService from "../../../src/fork/ForkService";
 
 describe('GraphElementController', () => {
     describe("removeDo", () => {
@@ -886,7 +886,7 @@ describe('GraphElementController', () => {
             b2.model().makePublic();
             let hasCalledService = false;
             let nbVerticesToMakePublic = 0;
-            jest.spyOn(GraphElementService, "setCollectionShareLevel").mockImplementation((shareLevel, vertices) => {
+            jest.spyOn(ForkService, "setCollectionShareLevel").mockImplementation((shareLevel, vertices) => {
                 hasCalledService = true;
                 nbVerticesToMakePublic = vertices.length;
                 return Promise.resolve();
@@ -911,7 +911,7 @@ describe('GraphElementController', () => {
             b3.model().makePublic();
             let hasCalledService = false;
             let nbVerticesToMakePrivate = 0;
-            jest.spyOn(GraphElementService, "setCollectionShareLevel").mockImplementation((shareLevel, vertices) => {
+            jest.spyOn(ForkService, "setCollectionShareLevel").mockImplementation((shareLevel, vertices) => {
                 hasCalledService = true;
                 nbVerticesToMakePrivate = vertices.length;
                 return Promise.resolve();

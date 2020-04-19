@@ -8,9 +8,6 @@ const usersResourceUrl = "/users/";
 const sessionResourceUrl = usersResourceUrl + "session/";
 let authenticatedUserInCache;
 const UserService = {
-    getUsersResourceUrl: function () {
-        return usersResourceUrl;
-    },
     authenticatedUserInCache: function () {
         return authenticatedUserInCache || {};
     },
@@ -19,9 +16,6 @@ const UserService = {
     },
     currentUserUri: function () {
         return usersResourceUrl + UserService.authenticatedUserInCache().user_name;
-    },
-    hasCurrentUser: function () {
-        return authenticatedUserInCache !== undefined;
     },
     authenticatedUser: function () {
         return UserService._getCurrentUser().then(function (response) {

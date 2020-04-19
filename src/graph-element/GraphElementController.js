@@ -23,6 +23,7 @@ import ShareLevel from '@/vertex/ShareLevel'
 import NbNeighborsRefresherOnRemove from "./NbNeighborsRefresherOnRemove";
 import NbNeighborsRefresherOnSetShareLevel from './NbNeighborsRefresherOnSetShareLevel'
 import LoadingFlow from "../LoadingFlow";
+import ForkService from "../fork/ForkService";
 
 const api = {};
 let bubbleCutClipboard;
@@ -739,7 +740,7 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
         GraphElementService.remove(
             this.model()
         ) :
-        GraphElementService.removeCollection(
+        ForkService.removeCollection(
             graphElements
         );
 
@@ -891,7 +892,7 @@ GraphElementController.prototype.setShareLevelDo = async function (shareLevel) {
         LoadingFlow.leave();
     }
     await this.isMultiple() ?
-        GraphElementService.setCollectionShareLevel(
+        ForkService.setCollectionShareLevel(
             shareLevel, graphElementsToUpdate
         ) : GraphElementService.setShareLevel(
         shareLevel, this.model()

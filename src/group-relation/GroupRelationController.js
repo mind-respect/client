@@ -109,15 +109,7 @@ GroupRelationController.prototype.addSibling = function () {
 };
 
 GroupRelationController.prototype.removeCanDo = function () {
-    return false;
-};
-
-GroupRelationController.prototype.remove = function () {
-    return Promise.all(
-        this.model().getClosestChildRelations().map((child) => {
-            return child.controller().remove();
-        })
-    );
+    return this.isOwned();
 };
 
 GroupRelationController.prototype.replaceParentFork = function (newParentFork, preventChangingInModel) {

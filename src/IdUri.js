@@ -31,11 +31,6 @@ const IdUri = {
             uri
         );
     },
-    isGroupRelationUri: function (uri) {
-        return "" === IdUri.getGraphElementTypeFromUri(
-            uri
-        );
-    },
     vertexBaseUri: function () {
         return UserService.currentUserUri() + "/graph/vertex";
     },
