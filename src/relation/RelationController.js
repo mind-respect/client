@@ -10,6 +10,7 @@ import GraphElementService from '@/graph-element/GraphElementService'
 import Store from '@/store'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import VertexService from '@/vertex/VertexService'
+import EdgeService from "../edge/EdgeService";
 
 const api = {};
 api.RelationController = RelationController;
@@ -104,7 +105,7 @@ RelationController.prototype.becomeParent = async function (adoptedChild) {
         CurrentSubGraph.get().add(newGroupRelation);
         newGroupRelation.expand(true);
         GraphElementService.changeChildrenIndex(
-            this.model().getParentVertex()
+            this.model().getParentFork()
         );
         Selection.setToSingle(newGroupRelation);
         return newGroupRelation;
@@ -123,8 +124,7 @@ RelationController.prototype.becomeParent = async function (adoptedChild) {
                     tagsWithDefinedUri = await lastAddTagsPromise;
                 }
                 lastAddTagsPromise = relation.controller().addIdentifiers(
-                    tagsWithDefinedUri === undefined ? tags : tagsWithDefinedUri,
-                    true
+                    tagsWithDefinedUri === undefined ? tags : tagsWithDefinedUri
                 );
                 return Promise.all([
                     lastAddTagsPromise,
@@ -146,7 +146,8 @@ RelationController.prototype._convertToGroupRelation = function () {
     let response = RelationService.convertToGroupRelation(
         edge.getUri(),
         edge.getParentVertex().getShareLevel(),
-        edge.isLabelEmpty() && edge.hasIdentifications() ? edge.getIdentifiers()[0].getLabel() : edge.getLabel()
+        edge.isLabelEmpty() && edge.hasIdentifications() ? edge.getIdentifiers()[0].getLabel() : edge.getLabel(),
+        !edge.hasComment() && edge.hasIdentifications() ? edge.getIdentifiers()[0].getComment() : edge.getComment()
     );
     let newGroupRelation = response.optimistic;
     newGroupRelation.parentBubble = this.model().getParentBubble();
@@ -211,18 +212,17 @@ RelationController.prototype.leaveContextDo = async function () {
     CurrentSubGraph.get().add(newVertex);
     const newVertexController = newVertex.controller();
     const addIdentifiersPromise = newVertexController.addIdentifiers(
-        original.getIdentifiersIncludingSelf(),
-        true
+        original.getIdentifiersIncludingSelf()
     );
     return Promise.all([
         newVertexController.setLabel(original.getLabel()),
         newVertexController.setShareLevelDo(original.getShareLevel()),
         addIdentifiersPromise,
-        RelationService.changeDestination(
+        EdgeService.changeDestination(
             newVertex,
             this.model(),
             original.getShareLevel(),
-            edge.getOtherVertex(original).getShareLevel(),
+            this.model().getOtherVertex(original).getShareLevel(),
             newVertex.getShareLevel()
         )
     ]).then(() => {
@@ -234,7 +234,7 @@ RelationController.prototype.leaveContextDo = async function () {
         } else {
             this.model().setDestinationVertex(newVertex);
             this.model().refreshChildren();
-            GraphElementService.changeChildrenIndex(this.model().getParentVertex());
+            GraphElementService.changeChildrenIndex(this.model().getParentFork());
         }
         return newVertex;
     });

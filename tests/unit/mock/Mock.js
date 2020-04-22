@@ -6,10 +6,11 @@ import IdUri from '@/IdUri'
 
 import GraphElementService from '@/graph-element/GraphElementService'
 import VertexServiceMock from './VertexServiceMock'
+import ForkServiceMock from './ForkServiceMock'
 import GraphElementServiceMock from './GraphElementServiceMock'
 import TagServiceMock from './TagServiceMock'
 import UserServiceMock from './UserServiceMock'
-import RelationServiceMock from './RelationServiceMock'
+import EdgeServiceMock from './EdgeServiceMock'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Store from '@/store'
 import MindMapInfo from '@/MindMapInfo'
@@ -102,7 +103,8 @@ api.applyDefault = function () {
     });
     api.spies["UserService"] = UserServiceMock.applyDefault();
     api.spies["VertexService"] = VertexServiceMock.applyDefault();
-    api.spies["EdgeService"] = RelationServiceMock.applyDefault();
+    api.spies["ForkService"] = ForkServiceMock.applyDefault();
+    api.spies["EdgeService"] = EdgeServiceMock.applyDefault();
     api.spies["TagService"] = TagServiceMock.applyDefault();
     api.spies["GraphElementService"] = GraphElementServiceMock.applyDefault();
 };

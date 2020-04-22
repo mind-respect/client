@@ -59,89 +59,6 @@ describe("RelationController", () => {
             ).toBeTruthy();
         });
 
-        it("sets self as external uri", async () => {
-            let threeBubblesScenario = await new ThreeScenario();
-            let b1 = threeBubblesScenario.getBubble1InTree();
-            await b1.controller().addChild();
-            let newRelation = TestUtil.getChildWithLabel(
-                b1,
-                ""
-            );
-            await newRelation.controller().setLabel("new group");
-            await newRelation.controller().addChild();
-            let groupRelation = TestUtil.getChildWithLabel(
-                b1,
-                "new group"
-            );
-            let originalRelation = groupRelation.getNextChildren()[0];
-            expect(
-                originalRelation.isEdge()
-            ).toBeTruthy();
-            groupRelation = originalRelation.getParentBubble();
-            expect(groupRelation.isGroupRelation()).toBeTruthy();
-            expect(
-                IdUri.isEdgeUri(
-                    groupRelation.getUri()
-                )
-            ).toBeFalsy();
-            expect(
-                groupRelation.getIdentification().getExternalResourceUri().indexOf(originalRelation.getUri()) > -1
-            ).toBeTruthy();
-        });
-        it("adds self identifier to the original relation with appropriate uri", async () => {
-            let threeBubblesScenario = await new ThreeScenario();
-            let bubble1 = threeBubblesScenario.getBubble1InTree();
-            let relation1 = TestUtil.getChildWithLabel(bubble1, "r1");
-            let relation1Uri = relation1.getUri();
-            await new RelationController.RelationController(
-                relation1
-            ).addChild();
-            let newGroupRelation = TestUtil.getChildWithLabel(bubble1, "r1");
-            relation1 = newGroupRelation.getNextBubble();
-            expect(
-                relation1.getIdentifiers().length
-            ).toBe(1);
-            expect(
-                relation1.getUri()
-            ).toBe(relation1Uri);
-            let tagUri = newGroupRelation.getIdentification().getUri();
-            expect(
-                relation1.getIdentifiers()[0].getUri()
-            ).toBe(tagUri);
-        });
-
-        it("after adding a child, the new group relation has the original relation as an identifier", async () => {
-            let threeBubblesScenario = await new ThreeScenario();
-            let bubble1 = threeBubblesScenario.getBubble1InTree();
-            let relation1 = TestUtil.getChildWithLabel(bubble1, "r1");
-            let relation1Uri = relation1.getUri();
-            await new RelationController.RelationController(
-                relation1
-            ).addChild();
-            let newGroupRelation = TestUtil.getChildWithLabel(bubble1, "r1");
-            let identifierExternalResourceUri = newGroupRelation.getIdentification().getExternalResourceUri();
-            expect(
-                identifierExternalResourceUri.indexOf(relation1Uri) > -1
-            ).toBeTruthy();
-        });
-
-        it("when a relation has an identifier adding a child changes to a group relation where the identifier is not the relation but the identifier", async () => {
-            let threeBubblesScenario = await new ThreeScenario();
-            let bubble1 = threeBubblesScenario.getBubble1InTree();
-            let relation1 = TestUtil.getChildWithLabel(bubble1, "r1");
-            let tag = TestUtil.dummyTag();
-            tag.setLabel("moustache");
-            relation1.model().addIdentification(tag);
-            await new RelationController.RelationController(
-                relation1
-            ).addChild();
-            let newGroupRelation = TestUtil.getChildWithLabel(bubble1, "moustache");
-            let identifierExternalResourceUri = newGroupRelation.getIdentification().getExternalResourceUri();
-            expect(
-                identifierExternalResourceUri
-            ).toBe(tag.getExternalResourceUri());
-        });
-
         it("adds new relation under the group relation when adding a child to a relation under a group relation", async () => {
             let scenario = await new GroupRelationsScenario();
             let centerVertex = scenario.getCenterInTree();
@@ -152,7 +69,7 @@ describe("RelationController", () => {
                 centerVertex,
                 "Possession"
             );
-            groupRelation.expand();
+            await scenario.expandPossession(groupRelation);
             expect(
                 groupRelation.getNumberOfChild()
             ).toBe(3);
@@ -161,20 +78,6 @@ describe("RelationController", () => {
             expect(
                 centerVertex.getNumberOfChild()
             ).toBe(4);
-        });
-
-        it("adds all the identifiers of the relation to the the new child relation when adding a child", async () => {
-            let scenario = await new GroupRelationsScenario();
-            let groupRelation = scenario.getPossessionGroupRelation();
-            groupRelation.expand();
-            let relationUnderGroupRelation = TestUtil.getChildWithLabel(
-                groupRelation,
-                "Possessed by book 2"
-            );
-            let triple = await relationUnderGroupRelation.controller().addChild();
-            expect(
-                triple.edge.getIdentifiers().length
-            ).toBe(2);
         });
 
         it("does not duplicate relations under the new group relation", async () => {
@@ -194,21 +97,6 @@ describe("RelationController", () => {
             ).toBeTruthy();
             expect(
                 newGroupRelation.getNumberOfChild()
-            ).toBe(2);
-        });
-
-        it("prevents adding tags related to sibling group relations", async () => {
-            let scenario = await new TwoLevelGroupRelationScenario();
-            let center = scenario.getCenterInTree();
-            let group1 = TestUtil.getChildWithLabel(center, "group1");
-            let g2 = TestUtil.getChildWithLabel(
-                group1,
-                "g2"
-            );
-            let triple = await g2.controller().addChild();
-            await scenario.nextTickPromise();
-            expect(
-                triple.edge.getIdentifiers().length
             ).toBe(2);
         });
     });
@@ -349,7 +237,7 @@ describe("RelationController", () => {
     it("can add a child to a relation under a group relation", async () => {
         let scenario = await new GroupRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
-        groupRelation.expand();
+        await scenario.expandPossession(groupRelation);
         let centerBubble = scenario.getCenterInTree();
         let centerBubbleNumberOfChild = centerBubble.getNumberOfChild();
         let relationUnderGroupRelation = TestUtil.getChildWithLabel(
@@ -377,7 +265,7 @@ describe("RelationController", () => {
     it("does not hide the new group relation when adding a child to a relation under a group relation", async () => {
         let scenario = await new GroupRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
-        groupRelation.expand();
+        await scenario.expandPossession(groupRelation);
         let relationUnderGroupRelation = TestUtil.getChildWithLabel(
             groupRelation,
             "Possession of book 1"
@@ -398,34 +286,6 @@ describe("RelationController", () => {
         ).toBeFalsy();
     });
     describe("addChild", function () {
-        it("excludes self identifier when adding a child and already having identifiers", async () => {
-            let scenario = await new ThreeScenario();
-            let centerBubble = scenario.getBubble1InTree();
-            let r1 = TestUtil.getChildWithLabel(
-                centerBubble,
-                "r1"
-            );
-            let identifier = TestUtil.dummyTag();
-            identifier.setLabel("some identifier");
-            r1.model().addIdentification(
-                identifier
-            );
-            await r1.controller().addChild();
-            let newGroupRelation = TestUtil.getChildWithLabel(
-                centerBubble,
-                "some identifier"
-            );
-            expect(
-                newGroupRelation.isGroupRelation()
-            ).toBeTruthy();
-            let newRelation = TestUtil.getChildWithLabel(
-                centerBubble,
-                "some identifier"
-            );
-            expect(
-                newGroupRelation.model().getIdentifiers().length
-            ).toBe(1);
-        });
         it("includes previous vertex in group relation model vertices", async () => {
             let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
@@ -478,79 +338,6 @@ describe("RelationController", () => {
         });
     });
     describe("becomeParent", function () {
-        it("adds it's identifiers to the moved edge when becoming a parent", async () => {
-            let scenario = await new ThreeScenario();
-            let centerBubble = scenario.getBubble1InTree();
-            let r2 = TestUtil.getChildWithLabel(
-                centerBubble,
-                "r2"
-            );
-
-            let b3 = r2.getNextBubble();
-            let r1 = TestUtil.getChildWithLabel(
-                centerBubble,
-                "r1"
-            );
-            r1.model().addIdentification(
-                TestUtil.dummyTag()
-            );
-            expect(
-                r2.model().getIdentifiers().length
-            ).toBe(0);
-            await b3.controller().moveUnderParent(r1);
-            expect(
-                r2.model().getIdentifiers().length
-            ).toBe(1);
-        });
-        it("only adds it's tag and it's group relation tag when under a group relation", async () => {
-            let scenario = await new GroupRelationsScenario();
-            let center = scenario.getCenterInTree();
-            let groupRelation = TestUtil.getChildWithLabel(
-                center,
-                "Possession"
-            );
-            groupRelation.expand();
-            let relation = TestUtil.getChildWithLabel(
-                groupRelation,
-                "Possession of book 1"
-            );
-            await relation.controller().addIdentification(TestUtil.dummyTag());
-            let otherBubble = TestUtil.getChildWithLabel(
-                center,
-                "other relation"
-            ).getNextBubble();
-            await relation.controller().becomeParent(otherBubble);
-            relation = groupRelation.getNextBubble();
-            await scenario.nextTickPromise();
-            let otherRelation = TestUtil.getChildWithLabel(
-                relation,
-                "other relation"
-            );
-            expect(
-                otherRelation.getIdentifiers().length
-            ).toBe(2);
-        });
-        it("adds the relation's identifier to the child relation", async () => {
-            let scenario = await new ThreeScenario();
-            let centerBubble = scenario.getBubble1InTree();
-            let r2 = TestUtil.getChildWithLabel(
-                centerBubble,
-                "r2"
-            );
-            let b3 = r2.getNextBubble();
-            let r1 = TestUtil.getChildWithLabel(
-                centerBubble,
-                "r1"
-            );
-            expect(
-                r2.model().getIdentifiersIncludingSelf().length
-            ).toBe(1);
-            await b3.controller().moveUnderParent(r1);
-            expect(
-                r2.model().getIdentifiersIncludingSelf().length
-            ).toBe(2);
-        });
-
         it("can become parent of a relation", async () => {
             let scenario = await new ThreeScenario();
             let centerBubble = scenario.getBubble1InTree();
@@ -593,7 +380,7 @@ describe("RelationController", () => {
                 center,
                 "other relation"
             );
-            groupRelation.expand();
+            await scenario.expandPossession(groupRelation);
             expect(
                 TestUtil.hasChildWithLabel(
                     otherRelation,
@@ -646,88 +433,6 @@ describe("RelationController", () => {
             expect(
                 b3.getLabel()
             ).toBe("b3");
-        });
-        it("removes tag of moved relation that was under a group relation", async () => {
-            let scenario = await new GroupRelationsScenario();
-            let center = scenario.getCenterInTree();
-            let groupRelation = scenario.getPossessionGroupRelation();
-            groupRelation.expand();
-            let otherEdge = TestUtil.getChildWithLabel(
-                center,
-                "other relation"
-            );
-            expect(
-                otherEdge.isEdge()
-            ).toBeTruthy();
-            let book1 = groupRelation.getNextBubble().getNextBubble();
-            expect(
-                book1.getLabel()
-            ).toBe("book 1");
-            let book2 = book1.getDownBubble();
-            expect(
-                book2.getLabel()
-            ).toBe("book 2");
-            await book2.controller().removeDo();
-            expect(
-                TestUtil.hasChildWithLabel(
-                    center,
-                    "Possession"
-                )
-            ).toBeTruthy();
-            await book1.controller().moveUnderParent(otherEdge);
-            otherEdge = TestUtil.getChildWithLabel(
-                center,
-                "other relation"
-            );
-            expect(
-                otherEdge.isGroupRelation()
-            ).toBeTruthy();
-            expect(
-                TestUtil.hasChildWithLabel(
-                    center,
-                    "Possession"
-                )
-            ).toBeFalsy();
-            let book1Rel = TestUtil.getChildWithLabel(
-                otherEdge,
-                "Possession of book 1"
-            );
-            expect(
-                book1Rel.getIdentifiers().length
-            ).toBe(1)
-        });
-
-        it("adds self ref as tag when under a group relation", async () => {
-            let scenario = await new TwoLevelGroupRelationScenario();
-            let center = scenario.getCenterInTree();
-            let group1 = TestUtil.getChildWithLabel(center, "group1");
-            let group2 = TestUtil.getChildWithLabel(group1, "group2");
-            group2.expand();
-            let g22 = TestUtil.getChildWithLabel(group2, "g22");
-            let g23 = TestUtil.getChildWithLabel(group2, "g23");
-            expect(
-                g23.hasIdentification(group2.getIdentification())
-            ).toBeTruthy();
-            expect(
-                g23.hasIdentification(group1.getIdentification())
-            ).toBeTruthy();
-            expect(
-                g23.getIdentifiers().some((tag) => {
-                    return tag.getExternalResourceUri().indexOf(g22.getUri() + "/ref/") > -1;
-                })
-            ).toBeFalsy();
-            await g23.getNextBubble().controller().moveUnderParent(g22);
-            expect(
-                g23.hasIdentification(group2.getIdentification())
-            ).toBeTruthy();
-            expect(
-                g23.hasIdentification(group1.getIdentification())
-            ).toBeTruthy();
-            expect(
-                g23.getIdentifiers().some((tag) => {
-                    return tag.getExternalResourceUri().indexOf(g22.getUri() + "/ref/") > -1;
-                })
-            ).not.toBeFalsy();
         });
     });
     describe("leaveContextDo", function () {

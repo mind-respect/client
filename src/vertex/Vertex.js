@@ -79,24 +79,6 @@ Vertex.prototype.clone = function () {
     return vertex;
 };
 
-Vertex.prototype.getConnectedEdges = function (evenIfCollapsed) {
-    let connected = this.isCenter ? [] : [
-        this.getParentBubble()
-    ];
-    return connected.concat(this.getClosestChildrenInTypes(GraphElementType.getEdgeTypes(), evenIfCollapsed));
-};
-
-Vertex.prototype.buildNbNeighbors = function () {
-    let nbNeighbors = NbNeighbors.withZeros();
-    this.getConnectedEdges(true).forEach((edge) => {
-        let otherFork = edge.getOtherVertex(this);
-        if ((otherFork.isVertex() || otherFork.isGroupRelation()) || this.isMetaGroupVertex()) {
-            nbNeighbors.incrementForShareLevel(otherFork.getShareLevel());
-        }
-    });
-    return nbNeighbors;
-};
-
 Vertex.prototype.getNumberOfChild = function (isLeft) {
     let children = this.getNextChildren(isLeft);
     return children.length ? children.length : this.nbNeighbors.getTotalChildren();

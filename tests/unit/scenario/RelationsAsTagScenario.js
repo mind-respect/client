@@ -24,4 +24,11 @@ RelationAsTagScenario.prototype.getB4InTree = function () {
     return this.getVertexWithLabelInTree("b4");
 };
 
+RelationAsTagScenario.prototype.expandGroupRelation = function (groupRelation) {
+    return this.expandBubbleWithKey(
+        groupRelation,
+        "relationsAsTag.aroundGroupRelation"
+    )
+};
+
 export default RelationAsTagScenario;

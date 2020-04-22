@@ -24,8 +24,11 @@ NbNeighborsRefresherOnSetShareLevel.prototype.prepare = function () {
         //     await graphElement.controller().expand(true, true, true);
         //     graphElement.collapse();
         // }
-        graphElement.getConnectedEdges(true).forEach((edge) => {
-            edge.getIdentifiers().forEach((tag) => {
+        graphElement.getSurround(true).forEach((surround) => {
+            if (!surround.isEdge()) {
+                return;
+            }
+            surround.getIdentifiers().forEach((tag) => {
                 if (!this.tagsToChangeNbNeighbors[tag.getUri()]) {
                     this.tagsToChangeNbNeighbors[tag.getUri()] = {
                         tag: tag,
@@ -33,7 +36,7 @@ NbNeighborsRefresherOnSetShareLevel.prototype.prepare = function () {
                         newShareLevels: []
                     }
                 }
-                this.tagsToChangeNbNeighbors[tag.getUri()].previousShareLevels.push(edge.getShareLevel());
+                this.tagsToChangeNbNeighbors[tag.getUri()].previousShareLevels.push(surround.getShareLevel());
             });
         });
     });
@@ -44,9 +47,12 @@ NbNeighborsRefresherOnSetShareLevel.prototype.execute = function () {
         if (!graphElement.isVertex()) {
             return;
         }
-        graphElement.getConnectedEdges(true).forEach((edge) => {
-            edge.getIdentifiers().forEach((tag) => {
-                this.tagsToChangeNbNeighbors[tag.getUri()].newShareLevels.push(edge.getShareLevel());
+        graphElement.getSurround(true).forEach((surround) => {
+            if (!surround.isEdge()) {
+                return;
+            }
+            surround.getIdentifiers().forEach((tag) => {
+                this.tagsToChangeNbNeighbors[tag.getUri()].newShareLevels.push(surround.getShareLevel());
             });
         });
     });

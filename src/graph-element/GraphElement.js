@@ -10,6 +10,7 @@ import Store from '@/store'
 import Icon from '@/Icon'
 import CurrentSubGraph from "../graph/CurrentSubGraph";
 import ShareLevel from '@/vertex/ShareLevel'
+import NbNeighbors from "../vertex/NbNeighbors";
 
 const controllerGetters = {};
 
@@ -198,14 +199,26 @@ GraphElement.GraphElement.prototype.hasLooserShareLevelThan = function (other) {
     );
 };
 
-GraphElement.GraphElement.prototype.hasIdentifications = function () {
-    return this.getTagsAndSelfIfRelevant().length > 0;
+GraphElement.GraphElement.prototype.getSurround = function (evenIfCollapsed) {
+    let connected = this.isCenter ? [] : [
+        this.getParentBubble()
+    ];
+    return connected.concat(
+        evenIfCollapsed ? this.getNextChildren() : this.getNextChildrenEvenIfCollapsed()
+    );
 };
 
-GraphElement.GraphElement.prototype.getNonRefTags = function () {
-    return this.getIdentifiers().filter((tag) => {
-        return !tag.isRefTag();
+GraphElement.GraphElement.prototype.buildNbNeighbors = function () {
+    let nbNeighbors = NbNeighbors.withZeros();
+    this.getSurround(true).forEach((surround) => {
+        let otherFork = surround.isRelation() ? surround.getOtherVertex(this) : surround;
+        nbNeighbors.incrementForShareLevel(otherFork.getShareLevel());
     });
+    return nbNeighbors;
+};
+
+GraphElement.GraphElement.prototype.hasIdentifications = function () {
+    return this.getTagsAndSelfIfRelevant().length > 0;
 };
 
 
@@ -249,10 +262,6 @@ GraphElement.GraphElement.prototype.getTagsAndSelfIfRelevant = function () {
         return tag.getExternalResourceUri() !== this.getUri()
             || tag.getNbNeighbors().getTotalChildren() > 0;
     });
-};
-
-GraphElement.GraphElement.prototype.hasRelevantTags = function () {
-    return this.getRelevantTags().length > 0;
 };
 
 GraphElement.GraphElement.prototype.getRelevantTags = function () {
@@ -384,26 +393,6 @@ GraphElement.GraphElement.prototype.buildSelfIdentifier = function () {
     return tag;
 };
 
-GraphElement.GraphElement.prototype.buildAdditionalSelfTag = function () {
-    let tag = GraphDisplayer.getTagApi().fromFriendlyResource(
-        this
-    );
-    tag.identificationServerFormat.externalResourceUri = tag.identificationServerFormat.externalResourceUri + "/ref/" + IdUri.uuid();
-    tag.setUri(
-        "/service" + IdUri.tagBaseUri() + "/" + IdUri.uuid()
-    );
-    tag.setLabel(
-        this.getLabel()
-    );
-    tag.setComment(
-        this.getComment()
-    );
-    tag.setShareLevel(
-        this.getShareLevel()
-    );
-    return tag;
-};
-
 GraphElement.GraphElement.prototype.addIdentifications = function (identifications) {
     return identifications.forEach((identifier) => {
         this.addIdentification(
@@ -430,27 +419,6 @@ GraphElement.GraphElement.prototype.addIdentification = function (tag) {
         }
     }
     this.identifiers.push(tag);
-};
-
-GraphElement.GraphElement.prototype.getFirstIdentificationToAGraphElement = function () {
-    let matching = this.getIdentifiersIncludingSelf().filter((identifier) => {
-        return IdUri.isUriOfAGraphElement(identifier.getExternalResourceUri());
-    });
-    return matching.length ? matching[0] : false;
-};
-
-GraphElement.GraphElement.prototype.setSortDate = function (sortDate) {
-    this._graphElementServerFormat.sortDate = sortDate.getTime();
-    this._graphElementServerFormat.moveDate = new Date().getTime();
-};
-
-GraphElement.GraphElement.prototype.getSortDate = function () {
-    if (undefined === this._graphElementServerFormat.sortDate) {
-        return this.getCreationDate();
-    }
-    return new Date(
-        this._graphElementServerFormat.sortDate
-    );
 };
 
 GraphElement.GraphElement.prototype.getIndex = function (parentChildrenIndex) {
@@ -531,15 +499,6 @@ GraphElement.GraphElement.prototype.integrateChildrenIndex = function (secondary
     return hasModified;
 };
 
-GraphElement.GraphElement.prototype.getMoveDate = function () {
-    if (undefined === this._graphElementServerFormat.moveDate) {
-        return this.getCreationDate();
-    }
-    return new Date(
-        this._graphElementServerFormat.moveDate
-    );
-};
-
 GraphElement.GraphElement.prototype.isPristine = function () {
     return this.isLabelEmpty() && !this.hasIdentifications();
 };
@@ -583,30 +542,8 @@ GraphElement.GraphElement.prototype.getIcon = function () {
     return Icon.getForUri(this.getUri());
 };
 
-GraphElement.GraphElement.prototype.showIcon = function () {
-    return !this.isMeta() && !IdUri.isVertexUri(this.getUri())
-};
-
 GraphElement.GraphElement.prototype.isSkeleton = function () {
     return false;
 };
-
-// GraphElement.GraphElement.prototype._buildWikidataLinks = function () {
-//     var promises = [];
-//     this.getIdentifiers().forEach(function (identifier) {
-//         var uri = identifier.getExternalResourceUri();
-//         if (!WikidataUri.isAWikidataUri(uri)) {
-//             return;
-//         }
-//         promises.push(Wikidata.getWikipediaUrlFromWikidataUri(uri));
-//     });
-//     return $.when.apply($, promises).then(function(){
-//         return Array.from(arguments);
-//     });
-// };
-//
-// GraphElement.GraphElement.prototype.getWikipediaLinks = function () {
-//     return this.wikipediaLinksPromise;
-// };
 
 export default GraphElement;

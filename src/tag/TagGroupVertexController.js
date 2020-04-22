@@ -34,8 +34,7 @@ TagGroupVertexController.prototype.addChild = async function () {
     let tagBubble = this.model().getClosestAncestorInTypes([GraphElementType.Meta]);
     addTuple.promise.then(() => {
         triple.edge.controller().addIdentification(
-            tagBubble.getOriginalMeta(),
-            true
+            tagBubble.getOriginalMeta()
         );
     });
     let metaRelation = new TagRelation(triple.destination, tagBubble);
@@ -62,12 +61,13 @@ TagGroupVertexController.prototype.mergeCanDo = function () {
     return false;
 };
 
-TagGroupVertexController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft) {
+TagGroupVertexController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft, destinationShareLevel) {
     return GraphElementController.GraphElementController.prototype.relateToDistantVertexWithUri.call(
         this,
         distantVertexUri,
         index,
         isLeft,
+        destinationShareLevel,
         [this.model().getClosestAncestorInTypes([GraphElementType.Meta]).getOriginalMeta()]
     );
 };

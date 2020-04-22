@@ -3,26 +3,19 @@
  */
 
 import IdUri from '@/IdUri'
-import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import Service from '@/Service'
 import UserService from "@/service/UserService";
 import GroupRelation from '@/group-relation/GroupRelation'
 
 const RelationService = {};
 
-RelationService.updateLabel = function (edge, label) {
-    return FriendlyResourceService.updateLabel(
-        edge,
-        label
-    );
-};
 RelationService.inverse = function (edge) {
     return Service.geApi().put(
         edge.getUri() + "/inverse"
     );
 };
 
-RelationService.createFromSourceAndDestinationUri = function (sourceUri, destinationUri) {
+RelationService.createFromSourceAndDestinationUri = function (sourceUri, destinationUri, sourceShareLevel, destinationShareLevel) {
     let sourceUriFormatted = encodeURIComponent(
         sourceUri
     );
@@ -30,22 +23,26 @@ RelationService.createFromSourceAndDestinationUri = function (sourceUri, destina
         destinationUri
     );
     return Service.api().post(
-        edgesUrl() + '?sourceUri=' + sourceUriFormatted +
-        '&destinationUri=' + destinationUriFormatted
-    ).then((response) => {
+        edgesUrl(), {
+            sourceUri: sourceUriFormatted,
+            destinationUri: destinationUriFormatted,
+            sourceShareLevel: sourceShareLevel,
+            destinationShareLevel: destinationShareLevel
+        }).then((response) => {
         return IdUri.removeDomainNameFromGraphElementUri(
             response.headers.location
         );
     });
 };
 
-RelationService.convertToGroupRelation = function (edgeUri, initialShareLevel, label) {
+RelationService.convertToGroupRelation = function (edgeUri, initialShareLevel, label, note) {
     let newGroupRelationShortId = IdUri.uuid();
     let newGroupRelationUri = "/service" + IdUri.groupRelationBaseUri() + "/" + newGroupRelationShortId;
     let newGroupRelation = GroupRelation.withUri(
         newGroupRelationUri
     );
     newGroupRelation.setLabel(label);
+    newGroupRelation.setComment(note);
     newGroupRelation.setShareLevel(initialShareLevel);
     return {
         optimistic: newGroupRelation,
@@ -54,7 +51,8 @@ RelationService.convertToGroupRelation = function (edgeUri, initialShareLevel, l
             {
                 newGroupRelationShortId: newGroupRelationShortId,
                 initialShareLevel: initialShareLevel,
-                label
+                label: label,
+                note: note
             }
         ).then(() => {
             return newGroupRelation;

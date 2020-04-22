@@ -819,7 +819,7 @@ FriendlyResource.FriendlyResource.prototype.getDescendants = function (toTheLeft
             return children;
         }
         children.push(child);
-        if (child.isLeaf()) {
+        if ((evenIfCollapsed && child.isAbsoluteLeaf()) || (!evenIfCollapsed && child.isLeaf())) {
             return children;
         } else {
             return children.concat(child.getDescendants(toTheLeft, filter, evenIfCollapsed));
@@ -847,6 +847,10 @@ FriendlyResource.FriendlyResource.prototype.visitDescendants = function (visitor
 
 FriendlyResource.FriendlyResource.prototype.isLeaf = function () {
     return this.getNextChildren().length === 0;
+};
+
+FriendlyResource.FriendlyResource.prototype.isAbsoluteLeaf = function () {
+    return this.getNextChildrenEvenIfCollapsed().length === 0;
 };
 
 FriendlyResource.FriendlyResource.prototype.getIndexInTree = function (isToGoAbove) {

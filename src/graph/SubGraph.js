@@ -117,10 +117,12 @@ api.SubGraph.prototype._buildEdges = function () {
         facade.setSourceVertex(
             this.getHavingUri(facade.getSourceVertex().getUri())
         );
-
         facade.setDestinationVertex(
             this.getHavingUri(facade.getDestinationVertex().getUri())
         );
+        if (facade.getSourceVertex() === undefined || facade.getDestinationVertex() === undefined) {
+            return;
+        }
         if (source && destination) {
             this.addEdge(facade);
         }
@@ -350,7 +352,9 @@ api.SubGraph.prototype._buildVertices = function () {
 api.SubGraph.prototype._buildGroupRelations = function (centerUri) {
     this.groupRelations = {};
     Object.values(this.serverFormat.groupRelations).forEach((groupRelation) => {
-        if (groupRelation.sourceForkUri !== centerUri && groupRelation.graphElement.friendlyResource.uri !== centerUri) {
+        let sourceForkUri = decodeURIComponent(groupRelation.sourceForkUri);
+        let groupRelationUri = decodeURIComponent(groupRelation.graphElement.friendlyResource.uri);
+        if (sourceForkUri !== centerUri && groupRelationUri !== centerUri) {
             return;
         }
         let facade = GroupRelation.fromServerFormat(groupRelation);

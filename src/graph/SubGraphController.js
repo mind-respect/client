@@ -111,11 +111,6 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             if (isParentAlreadyOnMap && (child.getUri() === centerFork.getUri() || child.getUri() === centerParentBubble.getUri()) || child.getUri() === centerParentFork.getUri()) {
                 return;
             }
-            // if (child.getParentBubble().getId() !== centerVertex.getId()) {
-            //     return;
-            // }
-            // let edge = child.getFirstEdge();
-            // let child = child.getNumberOfChild() > 1 ? child : edge;
             let endFork = child.isEdge() ? child.getOtherVertex(centerFork) : child;
             let childIndex = childrenIndex[endFork.getUri()] || childrenIndex[endFork.getPatternUri()];
             let addLeft;
@@ -132,7 +127,6 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
                 CurrentSubGraph.get().add(child);
             }
         });
-        // EdgeGrouper.expandGroupRelations(groupRelations);
         let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
         centerFork.isExpanded = true;
         centerFork.isCollapsed = false;

@@ -130,5 +130,6 @@ GroupRelationController.prototype.convertToRelation = async function () {
         edge.controller().setLabel(this.model().getLabel());
     }
     await this.removeDo();
+    return edge;
 }
 export default api;

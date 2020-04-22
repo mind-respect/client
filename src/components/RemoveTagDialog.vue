@@ -65,6 +65,7 @@
     import I18n from '@/I18n'
     import TagRelationController from '@/tag/TagRelationController'
     import KeyboardActions from '@/KeyboardActions'
+    import KeyCode from "keycode-js";
 
     export default {
         name: "RemoveTagDialog",

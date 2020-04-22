@@ -1,7 +1,6 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import IdUri from '@/IdUri'
 import Service from '@/Service'
 import Vertex from '@/vertex/Vertex'
@@ -17,13 +16,6 @@ api.createVertex = function () {
             response.data
         );
     });
-};
-
-api.updateLabel = function (vertex, label) {
-    return FriendlyResourceService.updateLabel(
-        vertex,
-        label
-    );
 };
 
 api.makePrivate = function (vertex) {

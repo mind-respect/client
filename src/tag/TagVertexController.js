@@ -244,8 +244,7 @@ TagVertexController.prototype.addChild = async function () {
         ""
     );
     newVertex.controller().addIdentification(
-        this.model().getOriginalMeta(),
-        true
+        this.model().getOriginalMeta()
     );
     let newEdge = new TagRelation(newVertex, this.model());
     this.model().addChild(
@@ -276,8 +275,7 @@ TagVertexController.prototype.relateToDistantVertexWithUri = function (distantVe
         distantVertex.parentBubble = newEdge;
         distantVertex.parentVertex = this.model();
         distantVertex.controller().addIdentification(
-            this.model().getOriginalMeta(),
-            true
+            this.model().getOriginalMeta()
         );
         this.model().addChild(
             newEdge,

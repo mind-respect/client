@@ -37,6 +37,7 @@ describe("Graph.vue", () => {
     it("appends to group relation when expanding", async () => {
         let scenario = await new GroupRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
+        await scenario.expandPossession(groupRelation);
         groupRelation.collapse();
         expect(
             groupRelation.getNextChildren().length
@@ -67,7 +68,7 @@ describe("Graph.vue", () => {
     it("preserves direction with parent vertex for expanded group relations", async () => {
         let scenario = await new GroupRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
-        groupRelation.expand();
+        await scenario.expandPossession(groupRelation);
         expect(
             scenario.getRelationWithBook1InTree().isInverse()
         ).toBeFalsy();
@@ -159,12 +160,12 @@ describe("Graph.vue", () => {
     it("considers vertices under deep group relations non duplicates when they are not", async ()=>{
         let scenario = await new GroupRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
-        groupRelation.expand();
+        await scenario.expandPossession(groupRelation);
         let deepGroupRelation = TestUtil.getChildWithLabel(
             groupRelation,
             "Possession of book 3"
         );
-        deepGroupRelation.expand();
+        await scenario.expandPossession3(deepGroupRelation);
         let deepVertex = deepGroupRelation.getNextBubble().getNextBubble();
         expect(
             deepVertex.getNbDuplicates()
@@ -358,7 +359,7 @@ describe("Graph.vue", () => {
         expect(
             groupRelation.isGroupRelation()
         ).toBeTruthy();
-        groupRelation.expand();
+        await scenario.expandPossession(groupRelation);
         let book1 = TestUtil.getChildWithLabel(
             groupRelation,
             "Possession of book 1"
@@ -600,7 +601,7 @@ describe("Graph.vue", () => {
         expect(
             region.isGroupRelation()
         ).toBeTruthy();
-        region.expand();
+        await scenario.expandRegion(region);
         expect(
             region.getNumberOfChild()
         ).toBe(2);
@@ -608,7 +609,7 @@ describe("Graph.vue", () => {
             region,
             "sub-region-a"
         );
-        subRegionA.expand();
+        await scenario.expandRegionA(subRegionA);
         expect(
             subRegionA.getNumberOfChild()
         ).toBe(2);
@@ -628,7 +629,7 @@ describe("Graph.vue", () => {
             region,
             "sub-region-b"
         );
-        subRegionB.expand();
+        await scenario.expandRegionB(subRegionB);
         expect(
             subRegionB.getNumberOfChild()
         ).toBe(2);

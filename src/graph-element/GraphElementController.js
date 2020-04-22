@@ -578,9 +578,9 @@ GraphElementController.prototype._moveToExecute = async function (otherEdge, isA
     //     );
     // }
     if (isAbove) {
-        model.moveAbove(otherEdge);
+        await model.moveAbove(otherEdge);
     } else {
-        model.moveBelow(otherEdge);
+        await model.moveBelow(otherEdge);
     }
     otherEdge.getParentFork().refreshChildren(true);
     let parentFork = otherEdge.getParentFork();
@@ -620,10 +620,10 @@ GraphElementController.prototype.addIdentifiersCanDo = function () {
     return this.addIdentificationCanDo();
 };
 
-GraphElementController.prototype.addIdentifiers = function (identifiers, preventMoving) {
+GraphElementController.prototype.addIdentifiers = function (identifiers) {
     let promises = [];
     identifiers.forEach((identifier) => {
-        promises.push(this.addIdentification(identifier, preventMoving));
+        promises.push(this.addIdentification(identifier));
     });
     return Promise.all(promises).then((arraysOfTags) => {
         return [].concat.apply([], arraysOfTags)
@@ -634,20 +634,9 @@ GraphElementController.prototype.addIdentificationCanDo = function () {
     return true;
 };
 
-GraphElementController.prototype.addIdentification = function (tag, preventMoving, force) {
+GraphElementController.prototype.addIdentification = function (tag, force) {
     if (this.model().hasIdentification(tag) && !force) {
         return Promise.resolve([tag])
-    }
-    if (!preventMoving) {
-        let siblingWithSameIdentifier = this.model().getParentFork().getNextChildren().filter((sibling) => {
-            return sibling.hasIdentification(tag) && sibling.getId() !== this.model().getId()
-        });
-        if (siblingWithSameIdentifier.length) {
-            return this.moveUnderParent(siblingWithSameIdentifier[0]).then((groupRelation) => {
-                Selection.setToSingle(groupRelation);
-                return groupRelation.getIdentifiers();
-            });
-        }
     }
     return TagService.add(
         this.model(),
@@ -682,24 +671,29 @@ GraphElementController.prototype.addIdentification = function (tag, preventMovin
     });
 };
 
-GraphElementController.prototype.relateToDistantVertexWithUri = async function (distantVertexUri, index, isLeft, identifiers) {
-    let parentVertex = this.model().isForkType() ? this.model() : this.model().getParentVertex();
+GraphElementController.prototype.relateToDistantVertexWithUri = async function (distantVertexUri, index, isLeft, destinationShareLevel, identifiers) {
+    let parentFork = this.model().isForkType() ? this.model() : this.model().getParentFork();
     let distantVertex = await SubGraphController.withVertex(
         Vertex.withUri(
             distantVertexUri
         )
     ).loadNonCenter();
-    let newEdgeUri = await RelationService.createFromSourceAndDestinationUri(parentVertex.getUri(), distantVertexUri);
+    let newEdgeUri = await RelationService.createFromSourceAndDestinationUri(
+        parentFork.getUri(),
+        distantVertexUri,
+        parentFork.getShareLevel(),
+        destinationShareLevel
+    );
     let newEdge = Relation.withUriAndSourceAndDestinationVertex(
         newEdgeUri,
-        parentVertex,
+        parentFork,
         distantVertex
     );
     if (identifiers) {
-        newEdge.controller().addIdentifiers(identifiers, true);
+        newEdge.controller().addIdentifiers(identifiers);
     }
     distantVertex.parentBubble = newEdge;
-    distantVertex.parentVertex = parentVertex;
+    distantVertex.parentVertex = this.model().isVertexType() ? this.model() : this.model().getParentVertex();
     this.model().addChild(
         newEdge,
         isLeft,
@@ -712,7 +706,7 @@ GraphElementController.prototype.relateToDistantVertexWithUri = async function (
     Selection.setToSingle(distantVertex);
     this.model().refreshChildren();
     GraphElementService.changeChildrenIndex(
-        parentVertex
+        parentFork
     );
 };
 
@@ -777,9 +771,11 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
         if (groupRelation) {
             let children = groupRelation.getNextChildren();
             if (children.length === 1) {
-                await groupRelation.controller().convertToRelation();
+                let edge = await groupRelation.controller().convertToRelation();
+                bubbleToSelect = edge.isForkType() ? edge : edge.getParentFork();
             }
             if (children.length === 0) {
+                bubbleToSelect = groupRelation.getParentFork();
                 await groupRelation.controller().removeDo();
             }
         }
@@ -790,7 +786,7 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
         Selection.removeAll();
     }
     if (this.isSingle()) {
-        GraphElementService.changeChildrenIndex(this.model().getParentVertex());
+        GraphElementService.changeChildrenIndex(this.model().getParentFork());
     }
     Vue.nextTick(() => {
         Store.dispatch("redraw");
@@ -798,7 +794,7 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
 
 };
 
-GraphElementController.prototype.removeTag = async function (tag, preventMoving) {
+GraphElementController.prototype.removeTag = async function (tag) {
     if (!this.model().hasIdentification(tag)) {
         return Promise.resolve();
     }
@@ -806,12 +802,6 @@ GraphElementController.prototype.removeTag = async function (tag, preventMoving)
         tag
     );
     let parentBubble = this.model().getParentBubble();
-    if (!preventMoving && parentBubble.isGroupRelation()) {
-        const groupRelation = parentBubble.getGroupRelationInSequenceWithTag(tag);
-        if (groupRelation) {
-            await this.moveBelow(groupRelation);
-        }
-    }
     return new Promise((resolve) => {
         TagService.remove(
             this.model().getUri(),
@@ -892,12 +882,12 @@ GraphElementController.prototype.setShareLevelDo = async function (shareLevel) {
     );
     nbNeighborsRefresherOnSetShareLevel.prepare();
     graphElementsToUpdate.forEach((bubble) => {
-        if (bubble.isVertex()) {
-            bubble.getConnectedEdges(true).forEach((edge) => {
-                edge.getOtherVertex(bubble).getNbNeighbors().decrementForShareLevel(bubble.getShareLevel());
-                edge.getOtherVertex(bubble).getNbNeighbors().incrementForShareLevel(shareLevel);
-            });
-        }
+        bubble.getSurround(true).forEach((surround) => {
+            let otherFork = surround.isEdge() ? surround.getOtherVertex(bubble) : bubble;
+            otherFork.getNbNeighbors().decrementForShareLevel(bubble.getShareLevel());
+            otherFork.getNbNeighbors().incrementForShareLevel(shareLevel);
+        });
+
         bubble.getIdentifiers().forEach((tag) => {
             tag.getNbNeighbors().decrementForShareLevel(bubble.getShareLevel());
             tag.getNbNeighbors().incrementForShareLevel(shareLevel);

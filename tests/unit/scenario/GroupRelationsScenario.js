@@ -62,5 +62,18 @@ GroupRelationsScenario.prototype.getOtherRelationInTree = function () {
         "other relation"
     );
 };
+GroupRelationsScenario.prototype.expandPossession = function (possession) {
+    return this.expandBubbleWithKey(
+        possession,
+        "groupRelations.aroundPossessionOfBook1"
+    );
+};
+
+GroupRelationsScenario.prototype.expandPossession3 = function (possession) {
+    return this.expandBubbleWithKey(
+        possession,
+        "groupRelations.aroundPossessionOfBook3"
+    );
+};
 
 export default GroupRelationsScenario

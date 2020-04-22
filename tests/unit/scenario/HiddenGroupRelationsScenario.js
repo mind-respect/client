@@ -31,8 +31,11 @@ HiddenGroupRelationsScenario.prototype.expandBubble2 = function (bubble2) {
     let multiple = {};
     let b2Graph = this.getB2SurroundGraph()
     multiple[bubble2.getUri()] = b2Graph;
-    let shirt2 = Scenario.vertexWithLabelInGraph("shirt2", b2Graph);
-    multiple[shirt2.getUri()] = Scenario.getTestData("hiddenGroupRelations.shirt2Graph");
+    let tShirtGroupRelation = Scenario.getGroupRelationWithLabelInGraph(
+        "T-shirt",
+        b2Graph
+    );
+    multiple[tShirtGroupRelation.getUri()] =  Scenario.getTestData("hiddenGroupRelations.tShirtGroupRelationGraph");
     GraphServiceMock.getForCentralBubbleUriMultiple(multiple);
     return bubble2.controller().expand();
 };
@@ -63,6 +66,13 @@ HiddenGroupRelationsScenario.prototype.getBubble1InTree = function () {
 };
 HiddenGroupRelationsScenario.prototype.getBubble2InTree = function () {
     return this.getVertexWithLabelInTree("b2");
+};
+
+HiddenGroupRelationsScenario.prototype.expandTShirtGroupRelation = function (tShirtGroupRelation) {
+    return this.expandBubbleWithKey(
+        tShirtGroupRelation,
+        "hiddenGroupRelations.tShirtGroupRelationGraph"
+    );
 };
 
 export default HiddenGroupRelationsScenario

@@ -19,6 +19,7 @@ import CenterView from '@/views/Center.vue'
 import SubGraph from '@/graph/SubGraph'
 
 import Bubble from '@/components/graph/Bubble.vue'
+import GroupRelation from '@/group-relation/GroupRelation'
 
 const clonedeep = require('lodash.clonedeep')
 const api = {}
@@ -163,6 +164,15 @@ api.Scenario.prototype._getBubbleComponent = function (ancestor, graphElement) {
     return this._getBubbleComponent(ancestor.find(Bubble), graphElement);
 };
 
+api.Scenario.prototype.expandBubbleWithKey = function (bubble, key) {
+    GraphServiceMock.getForCentralBubbleUri(
+        api.getTestData(
+            key
+        )
+    );
+    return bubble.controller().expand(true, true);
+};
+
 api.getTestData = function (key) {
     let splitKey = key.split(/\./),
         data = TestData;
@@ -201,6 +211,14 @@ api.edgeWithLabelInGraph = function (label, graph) {
     })[0];
 };
 
+api.getGroupRelationWithLabelInGraph = function (label, graph) {
+    return api.getGroupRelations(api.formatGraph(graph)).filter((vertex) => {
+        if (vertex.getLabel() === label) {
+            return vertex
+        }
+    })[0];
+};
+
 api.tagWithLabelInGraph = function (label, graph) {
     return api.getGraphElements(graph).reduce((tags, graphElement) => {
         return tags.concat(graphElement.getIdentifiers());
@@ -212,7 +230,8 @@ api.tagWithLabelInGraph = function (label, graph) {
 api.formatGraph = function (graph) {
     return {
         edges: api._areGraphElementsInArray(graph.edges) ? graph.edges : api._convertGraphElementsToArray(graph.edges),
-        vertices: api._areGraphElementsInArray(graph.vertices) ? graph.vertices : api._convertGraphElementsToArray(graph.vertices)
+        vertices: api._areGraphElementsInArray(graph.vertices) ? graph.vertices : api._convertGraphElementsToArray(graph.vertices),
+        groupRelations: api._areGraphElementsInArray(graph.groupRelations) ? graph.groupRelations : api._convertGraphElementsToArray(graph.groupRelations)
     }
 };
 
@@ -220,7 +239,18 @@ api._convertGraphElementsToArray = function (graphElements) {
     return Object.values(graphElements).reduce((graphElementsArray, graphElement) => {
         let isFacadeBuilt = graphElement.getLabel !== undefined;
         if (!isFacadeBuilt) {
-            graphElement = graphElement.vertex ? Vertex.fromServerFormat(graphElement) : Relation.fromServerFormat(graphElement);
+            if (graphElement.sourceForkUri !== undefined) {
+                graphElement = GroupRelation.fromServerFormat(graphElement);
+            } else if (graphElement.isPattern !== undefined) {
+                graphElement = Vertex.fromServerFormat(graphElement);
+            } else {
+                let source = graphElement.sourceVertex || graphElement.sourceGroupRelation;
+                let destination = graphElement.destinationVertex || graphElement.destinationGroupRelation;
+                if (!source || !destination) {
+                    return graphElementsArray;
+                }
+                graphElement = Relation.fromServerFormat(graphElement);
+            }
         }
         if (graphElementsArray[graphElement.getUri()] === undefined) {
             graphElementsArray[graphElement.getUri()] = [];
@@ -244,6 +274,15 @@ api.getVertices = function (graph) {
     return [].concat.apply([], vertices).map((vertexServer) => {
         let isFacadeBuilt = vertexServer.getLabel !== undefined;
         return isFacadeBuilt ? vertexServer : Vertex.fromServerFormat(vertexServer);
+    });
+};
+
+api.getGroupRelations = function (graph) {
+    let groupRelations = Object.values(graph.groupRelations);
+    //use array flat() when node ^11 LTS gets out
+    return [].concat.apply([], groupRelations).map((groupRelation) => {
+        let isFacadeBuilt = groupRelation.getLabel !== undefined;
+        return isFacadeBuilt ? groupRelation : GroupRelation.fromServerFormat(groupRelation);
     });
 };
 

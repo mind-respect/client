@@ -5,7 +5,6 @@ import TestUtil from '../util/TestUtil'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import CreationDateScenario from "../scenario/CreationDateScenario";
-import PublicPrivateScenario from "../scenario/PublicPrivateScenario";
 
 describe("FriendlyResource", () => {
     it("includes label comment and uri when building server format from ui", async () => {
@@ -327,6 +326,7 @@ describe("FriendlyResource", () => {
                 centerBubble,
                 "Possession"
             );
+            await scenario.expandPossession(possessionGroupRelation);
             possessionGroupRelation.collapse();
             expect(
                 possessionGroupRelation.isExpanded
@@ -335,7 +335,7 @@ describe("FriendlyResource", () => {
                 centerBubble,
                 "other relation"
             );
-            otherRelation.moveToParent(
+            await otherRelation.controller().moveUnderParent(
                 possessionGroupRelation
             );
             expect(
@@ -461,7 +461,7 @@ describe("FriendlyResource", () => {
                 centerBubble,
                 "Possession"
             );
-            possessionGroupRelation.expand();
+            await scenario.expandPossession(possessionGroupRelation);
             let possessionRelation = TestUtil.getChildWithLabel(
                 possessionGroupRelation,
                 "Possession of book 1"
@@ -593,18 +593,22 @@ describe("FriendlyResource", () => {
         it("changes direction of children even if collasped", async () => {
             let scenario = await new GroupRelationsScenario();
             let possession = scenario.getPossessionGroupRelation();
-            expect(possession.isToTheLeft()).toBeTruthy();
+            expect(possession.isToTheLeft()).toBeFalsy();
+            await scenario.expandPossession(possession);
             possession.collapse();
             let underCollapse = possession.getNextChildrenEvenIfCollapsed()[0];
-            expect(underCollapse.isToTheLeft()).toBeTruthy();
-            let otherRelation = scenario.getOtherRelationInTree();
-            expect(otherRelation.isToTheLeft()).toBeFalsy();
-            await possession.controller().moveBelow(
-                otherRelation
-            );
-            expect(possession.isToTheLeft()).toBeFalsy();
-            underCollapse = possession.getNextChildrenEvenIfCollapsed()[0];
             expect(underCollapse.isToTheLeft()).toBeFalsy();
+            let otherRelation2 = TestUtil.getChildDeepWithLabel(
+                scenario.getCenterInTree(),
+                "other relation 2"
+            );
+            expect(otherRelation2.isToTheLeft()).toBeTruthy();
+            await possession.controller().moveBelow(
+                otherRelation2
+            );
+            expect(possession.isToTheLeft()).toBeTruthy();
+            underCollapse = possession.getNextChildrenEvenIfCollapsed()[0];
+            expect(underCollapse.isToTheLeft()).toBeTruthy();
         });
     });
     describe("collapse", function () {
@@ -658,6 +662,7 @@ describe("FriendlyResource", () => {
     });
     describe("remove", async () => {
         it("selects above sibling when available after it's removed", async () => {
+            Selection.reset();
             let scenario = await new ThreeScenario();
             let bubble1 = scenario.getBubble1InTree();
             let triple = await bubble1.controller().addChild();
@@ -733,7 +738,7 @@ describe("FriendlyResource", () => {
         it("selects under sibling when available after it's removed even when parent is a group relation", async () => {
             let scenario = await new GroupRelationsScenario();
             let groupRelation = scenario.getPossessionGroupRelation();
-            groupRelation.expand();
+            await scenario.expandPossession(groupRelation);
             await scenario.nextTickPromise();
             let vertexAbove = TestUtil.getChildWithLabel(
                 groupRelation,

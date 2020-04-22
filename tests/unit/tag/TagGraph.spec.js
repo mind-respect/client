@@ -7,7 +7,7 @@ import TestUtil from '../util/TestUtil'
 import Selection from '@/Selection'
 import KeyCode from 'keycode-js';
 import AroundGroup1TwoLevelGroupRelationScenario from "../scenario/AroundGroup1TwoLevelGroupRelationScenario";
-import AroundGroup1ThreeLevelGroupRelationScenario from "../scenario/AroundGroup1ThreeLevelGroupRelationScenario";
+import AroundGroup1TagThreeLevelGroupRelationScenario from "../scenario/AroundGroup1ThreeLevelGroupRelationScenario";
 
 describe("TagGraph", () => {
     it("can get the meta center identifier", async () => {
@@ -270,7 +270,7 @@ describe("TagGraph", () => {
         ).toBe(3);
     });
     it("groups 3 level group relations under a group vertex", async () => {
-        let scenario = await new AroundGroup1ThreeLevelGroupRelationScenario();
+        let scenario = await new AroundGroup1TagThreeLevelGroupRelationScenario();
         let center = scenario.getCenterInTree();
         let groupVertex = TestUtil.getChildDeepWithLabel(
             center,
@@ -308,7 +308,7 @@ describe("TagGraph", () => {
         ).toBeTruthy();
     });
     it("adds group vertex tag when adding child under a group relation", async () => {
-        let scenario = await new AroundGroup1ThreeLevelGroupRelationScenario();
+        let scenario = await new AroundGroup1TagThreeLevelGroupRelationScenario();
         let center = scenario.getCenterInTree();
         let groupVertex = TestUtil.getChildDeepWithLabel(
             center,

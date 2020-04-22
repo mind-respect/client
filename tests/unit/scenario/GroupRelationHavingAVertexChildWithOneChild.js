@@ -1,4 +1,5 @@
 import Scenario from './Scenario'
+import GraphServiceMock from "../mock/GraphServiceMock";
 
 let GroupRelationHavingAVertexChildWithOneChild = function () {
     this.dataKey = "hiddenGroupRelations.b2Graph";
@@ -32,6 +33,14 @@ GroupRelationHavingAVertexChildWithOneChild.prototype.getShirt2VertexUri = funct
     return Scenario.getTestData(
         "hiddenGroupRelations.shirt2BubbleUri"
     );
+};
+
+GroupRelationHavingAVertexChildWithOneChild.prototype.expandTShirtGroupRelation = function (tShirtGroupRelation) {
+    let multiple = {};
+    multiple[tShirtGroupRelation.getUri()] =  Scenario.getTestData("hiddenGroupRelations.tShirtGroupRelationGraph");
+    multiple[this.getShirt2VertexUri()] = this.getShirt2Graph();
+    GraphServiceMock.getForCentralBubbleUriMultiple(multiple);
+    return tShirtGroupRelation.controller().expand();
 };
 
 export default GroupRelationHavingAVertexChildWithOneChild;
