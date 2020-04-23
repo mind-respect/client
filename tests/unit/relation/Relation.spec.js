@@ -5,6 +5,7 @@ import TestUtil from '../util/TestUtil'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import GraphElementType from '@/graph-element/GraphElementType'
 import RelationsAsTagScenario from "../scenario/RelationsAsTagScenario";
+import GraphServiceMock from "../mock/GraphServiceMock";
 
 describe("Relation", () => {
     it("can inverse", async () => {
@@ -64,7 +65,7 @@ describe("Relation", () => {
     it("unshrinks when moved away from group relation", async () => {
         let scenario = await new GroupRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
-        groupRelation.expand();
+        await scenario.expandPossession(groupRelation);
         let relationUnderGroupRelation = TestUtil.getChildWithLabel(
             groupRelation,
             "Possession of book 1"
@@ -88,7 +89,7 @@ describe("Relation", () => {
         let scenario = await new GroupRelationsScenario();
         let centerBubble = scenario.getCenterInTree();
         let groupRelation = scenario.getPossessionGroupRelation();
-        groupRelation.expand();
+        await scenario.expandPossession(groupRelation);
         let relationUnderGroupRelation = groupRelation.getNextBubble().getDownBubble();
         expect(
             relationUnderGroupRelation.isRelation()
@@ -107,6 +108,9 @@ describe("Relation", () => {
         expect(
             relationUnderGroupRelation.isInverse()
         ).toBeTruthy();
+        GraphServiceMock.getForCentralBubbleUri(
+            scenario.getOriginalRelationGraph()
+        );
         await relationUnderGroupRelation.getNextBubble().controller().moveUnderParent(
             otherGroupRelation
         );
@@ -145,13 +149,14 @@ describe("Relation", () => {
         expect(
             TestUtil.hasChildWithLabel(
                 centerBubble,
-                "original some relation"
+                "some relation"
             )
         ).toBeTruthy();
         let groupRelation = TestUtil.getChildWithLabel(
             centerBubble,
-            "original some relation"
+            "some relation"
         );
+        await scenario.expandGroupRelation(groupRelation);
         groupRelation.visitClosestChildVertices(function (vertex) {
             vertex.remove();
         });
@@ -173,15 +178,16 @@ describe("Relation", () => {
 
         let originalSomeRelation = TestUtil.getChildWithLabel(
             centerBubble,
-            "original some relation"
+            "some relation"
         );
         expect(
             originalSomeRelation.isGroupRelation()
         ).toBeTruthy();
         let groupRelation = TestUtil.getChildWithLabel(
             centerBubble,
-            "original some relation"
+            "some relation"
         );
+        await scenario.expandGroupRelation(groupRelation);
         await Promise.all(groupRelation.getClosestChildVertices().map((vertex) => {
             return vertex.controller().moveUnderParent(bubbleNotUnderAGroupRelation);
         }));

@@ -76,4 +76,18 @@ GroupRelationsScenario.prototype.expandPossession3 = function (possession) {
     );
 };
 
+GroupRelationsScenario.prototype.getOriginalRelationGraph = function () {
+    return Scenario.getTestData(
+        "groupRelations.aroundOriginalRelation"
+    );
+};
+
+GroupRelationsScenario.prototype.expandOriginalRelation = function (originalRelation) {
+    return this.expandBubbleWithKey(
+        originalRelation,
+        "groupRelations.aroundOriginalRelation"
+    );
+};
+
+
 export default GroupRelationsScenario
