@@ -189,7 +189,7 @@ GraphElementController.prototype._addTagAsChild = function (tag) {
     CurrentSubGraph.get().add(tagBubble);
     tagBubble.setOriginalMeta(tag);
     let tagRelation = new TagRelation(
-        this.model().isVertexType() ? this.model() : this.model().getParentVertex(),
+        this.model().isForkType() ? this.model() : this.model().getParentFork(),
         tagBubble
     );
     this.model().addChild(
