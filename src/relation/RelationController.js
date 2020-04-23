@@ -152,7 +152,6 @@ RelationController.prototype._convertToGroupRelation = function () {
     let newGroupRelation = response.optimistic;
     newGroupRelation.parentBubble = this.model().getParentBubble();
     newGroupRelation.parentVertex = this.model().getParentVertex();
-    this.model().parentBubble = newGroupRelation;
     this.model().setSourceVertex(newGroupRelation);
     newGroupRelation.addChild(this.model());
     newGroupRelation.isExpanded = true;
