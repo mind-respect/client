@@ -107,7 +107,7 @@ api.fromGraphElement = function (graphElement) {
     let context = "";
     if (graphElement.isVertexType()) {
         context = graphElement.getSurround(true).map((surroundEdge) => {
-            return surroundEdge.isEdge() ? "" : surroundEdge.getOtherVertex(graphElement).getLabel();
+            return surroundEdge.isEdge() ? surroundEdge.getOtherVertex(graphElement).getLabel() : "";
         }).join("{{").substring(0, 110);
     }
     return new SearchResult(
