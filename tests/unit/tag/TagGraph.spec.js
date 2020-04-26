@@ -7,7 +7,6 @@ import TestUtil from '../util/TestUtil'
 import Selection from '@/Selection'
 import KeyCode from 'keycode-js';
 import AroundGroup1TwoLevelGroupRelationScenario from "../scenario/AroundGroup1TwoLevelGroupRelationScenario";
-import AroundGroup1TagThreeLevelGroupRelationScenario from "../scenario/AroundGroup1ThreeLevelGroupRelationScenario";
 
 describe("TagGraph", () => {
     it("can get the meta center identifier", async () => {
@@ -53,19 +52,19 @@ describe("TagGraph", () => {
     it("displays the related bubbles", async () => {
         let scenario = await new AroundEventTagScenario();
         let eventCenter = scenario.getEventBubbleInTree();
+        let event1 = TestUtil.getChildDeepWithLabel(
+            eventCenter,
+            "e1"
+        );
+        expect(
+            event1.isVertex()
+        ).toBeTruthy();
         let event2 = TestUtil.getChildDeepWithLabel(
             eventCenter,
             "e2"
         );
         expect(
             event2.isVertex()
-        ).toBeTruthy();
-        let event3 = TestUtil.getChildDeepWithLabel(
-            eventCenter,
-            "e3"
-        );
-        expect(
-            event3.isVertex()
         ).toBeTruthy();
     });
     it("builds relation of type meta", async () => {
@@ -236,94 +235,6 @@ describe("TagGraph", () => {
                 "e1"
             )
         ).toBeFalsy();
-    });
-    it("groups relations under a group vertex", async () => {
-        let scenario = await new AroundGroup1TwoLevelGroupRelationScenario();
-        let center = scenario.getCenterInTree();
-        let groupVertex = TestUtil.getChildDeepWithLabel(
-            center,
-            "center"
-        );
-        expect(
-            groupVertex.getGraphElementType()
-        ).toBe(GraphElementType.MetaGroupVertex);
-        groupVertex.expand();
-        expect(
-            groupVertex.getNumberOfChild()
-        ).toBe(4);
-        expect(
-            TestUtil.hasChildWithLabel(
-                groupVertex,
-                "group2"
-            )
-        ).toBeTruthy();
-        let group2 = TestUtil.getChildWithLabel(
-            groupVertex,
-            "group2"
-        );
-        expect(
-            group2.getGraphElementType()
-        ).toBe(GraphElementType.GroupRelation);
-        group2.expand();
-        expect(
-            group2.getNumberOfChild()
-        ).toBe(3);
-    });
-    it("groups 3 level group relations under a group vertex", async () => {
-        let scenario = await new AroundGroup1TagThreeLevelGroupRelationScenario();
-        let center = scenario.getCenterInTree();
-        let groupVertex = TestUtil.getChildDeepWithLabel(
-            center,
-            "center"
-        );
-        expect(
-            groupVertex.getGraphElementType()
-        ).toBe(GraphElementType.MetaGroupVertex);
-        groupVertex.expand();
-        expect(
-            TestUtil.hasChildWithLabel(
-                groupVertex,
-                "group3"
-            )
-        ).toBeFalsy();
-        expect(
-            TestUtil.hasChildWithLabel(
-                groupVertex,
-                "group2"
-            )
-        ).toBeTruthy();
-        let group2 = TestUtil.getChildWithLabel(
-            groupVertex,
-            "group2"
-        );
-        expect(
-            group2.getGraphElementType()
-        ).toBe(GraphElementType.GroupRelation);
-        group2.expand();
-        expect(
-            TestUtil.hasChildWithLabel(
-                group2,
-                "group3"
-            )
-        ).toBeTruthy();
-    });
-    it("adds group vertex tag when adding child under a group relation", async () => {
-        let scenario = await new AroundGroup1TagThreeLevelGroupRelationScenario();
-        let center = scenario.getCenterInTree();
-        let groupVertex = TestUtil.getChildDeepWithLabel(
-            center,
-            "center"
-        );
-        groupVertex.expand();
-        let group2 = TestUtil.getChildWithLabel(
-            groupVertex,
-            "group2"
-        );
-        group2.expand();
-        let triple = await group2.controller().addChild();
-        expect(
-            triple.edge.getIdentifiers().length
-        ).toBe(2);
     });
     it("prevents from duplicating when group vertex has a single child", async () => {
         let scenario = await new AroundGroup1TwoLevelGroupRelationScenario();

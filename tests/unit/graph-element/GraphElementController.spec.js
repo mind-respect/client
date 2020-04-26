@@ -97,11 +97,10 @@ describe('GraphElementController', () => {
             expect(
                 event.getGraphElementType()
             ).toBe(GraphElementType.Meta);
-            event.getNumberOfChild();
             await scenario.expandEventTag(event);
             expect(
                 event.getNumberOfChild()
-            ).toBe(6);
+            ).toBe(2);
             let vertexUnderMeta = event.getNextBubble().getNextBubble();
             expect(
                 vertexUnderMeta.getGraphElementType()
@@ -109,7 +108,7 @@ describe('GraphElementController', () => {
             await vertexUnderMeta.controller().removeDo();
             expect(
                 event.getNumberOfChild()
-            ).toBe(5);
+            ).toBe(1);
         });
         it("sets nb neighbors", async () => {
             let scenario = await new ThreeScenario();

@@ -33,12 +33,9 @@ TagRelationController.prototype.remove = function (skipConfirmation) {
 };
 TagRelationController.prototype.removeDo = function () {
     return Promise.all(this.getModelArray().map((metaRelation) => {
-        let metaBubble;
-        if (metaRelation.getParentFork().isMetaGroupVertex()) {
-            metaBubble = metaRelation.getClosestAncestorInTypes([GraphElementType.Meta]);
-        } else {
-            metaBubble = metaRelation.getOtherVertex(metaRelation.getParentFork());
-        }
+        let metaBubble = metaRelation.getNextBubble().isMeta() ?
+            metaRelation.getNextBubble() :
+            metaRelation.getClosestAncestorInTypes([GraphElementType.Meta]);
         let tag = metaBubble.getOriginalMeta();
         let parentBubble = metaRelation.getClosestAncestorInTypes([
             GraphElementType.Vertex,

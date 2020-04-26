@@ -662,7 +662,6 @@ describe("FriendlyResource", () => {
     });
     describe("remove", async () => {
         it("selects above sibling when available after it's removed", async () => {
-            Selection.reset();
             let scenario = await new ThreeScenario();
             let bubble1 = scenario.getBubble1InTree();
             let triple = await bubble1.controller().addChild();
@@ -671,18 +670,11 @@ describe("FriendlyResource", () => {
                 newVertex.getUpBubble().text()
             ).toBe("b2");
             let bubble2 = scenario.getBubble2InTree();
-            Selection.setToSingle(newVertex);
-            expect(
-                Selection.isSelected(bubble2)
-            ).toBeFalsy();
             newVertex.setLabel("new vertex");
-            await newVertex.controller().removeDo();
+            let selectedBubble = await newVertex.controller().removeDo();
             expect(
-                Selection.getSingle().getLabel()
+                selectedBubble.getLabel()
             ).toBe("b2");
-            expect(
-                Selection.isSelected(bubble2)
-            ).toBeTruthy();
         });
         it("selects bubble under when available after it's removed", async () => {
             let scenario = await new ThreeScenario();
@@ -693,27 +685,18 @@ describe("FriendlyResource", () => {
                 newVertex.getUpBubble().getLabel()
             ).toBe("b2");
             let bubble2 = scenario.getBubble2InTree();
-            Selection.setToSingle(bubble2);
+            let selectedBubble = await bubble2.controller().removeDo();
             expect(
-                Selection.isSelected(newVertex)
-            ).toBeFalsy();
-            await bubble2.controller().removeDo();
-            expect(
-                Selection.isSelected(newVertex)
-            ).toBeTruthy();
+                selectedBubble.getId()
+            ).toBe(newVertex.getId())
         });
         it("selects parent bubble when no siblings after it's removed", async () => {
             let scenario = await new ThreeScenario();
-            let bubble1 = scenario.getBubble1InTree();
             let bubble2 = scenario.getBubble2InTree();
-            Selection.setToSingle(bubble2);
+            let selectedBubble = await bubble2.controller().removeDo();
             expect(
-                Selection.isSelected(bubble1)
-            ).toBeFalsy();
-            await bubble2.controller().removeDo();
-            expect(
-                Selection.isSelected(bubble1)
-            ).toBeTruthy();
+                selectedBubble.getLabel()
+            ).toBe("b1")
         });
         it("selects parent bubble when no siblings after it's removed even when there's a tree above", async () => {
             let scenario = await new ThreeScenario();

@@ -791,7 +791,7 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
     Vue.nextTick(() => {
         Store.dispatch("redraw");
     });
-
+    return bubbleToSelect;
 };
 
 GraphElementController.prototype.removeTag = async function (tag) {
