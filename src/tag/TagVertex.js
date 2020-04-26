@@ -81,13 +81,7 @@ TagVertex.prototype.getNumberOfChild = function () {
     if (this.isExpanded) {
         return this.getNextChildren().length;
     }
-    let parentFork = this.getParentFork();
-    if (parentFork.isGroupRelation()) {
-        let nbChild = parentFork.getClosestChildrenOfType(GraphElementType.Relation).length;
-        return this.getOriginalMeta().getNbNeighbors().getTotalChildren() - nbChild;
-    } else {
-        return this.getOriginalMeta().getNbNeighbors().getTotalChildren();
-    }
+    return this.getOriginalMeta().getNbNeighbors().getTotalChildren();
 };
 
 TagVertex.prototype.setBackgroundColor = function (backgroundColor) {

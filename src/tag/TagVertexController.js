@@ -96,7 +96,7 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                         CurrentSubGraph.get().add(edge);
                     }
                     CurrentSubGraph.get().add(
-                        edge.getOtherVertex(vertex)
+                        edge.isGroupRelation() ? edge.getNextBubble() : edge.getOtherVertex(vertex)
                     );
                 });
                 if (vertex.getNumberOfChild() > 1) {
@@ -159,7 +159,7 @@ function buildEdgesGroupedBySourceFork(metaSubGraph, centerVertex) {
             return;
         }
         let sourceFork = subGraph.getHavingUri(
-            child.getSourceVertex().getUri()
+            child.isGroupRelation() ? child.getSourceForkUri() : child.getSourceVertex().getUri()
         );
         if (!edgesBySourceFork[sourceFork.getUri()]) {
             edgesBySourceFork[sourceFork.getUri()] = {
