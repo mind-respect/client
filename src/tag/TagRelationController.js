@@ -27,40 +27,17 @@ TagRelationController.prototype.centerCanDo = function () {
 TagRelationController.prototype.noteCanDo = function () {
     return false;
 };
-TagRelationController.prototype.removeCanDo = function () {
-    return this.isOwned() && this.getModelArray().some((metaRelation) => {
-        return !metaRelation.getParentBubble().isGroupRelation();
-    });
-};
+
 TagRelationController.prototype.remove = function (skipConfirmation) {
     Store.dispatch("setIsRemoveTagFlow", true)
-    // if (skipConfirmation) {
-    //     return doIt.bind(this)();
-    // } else {
-    //     return MetaRelationDeleteMenu.ofMetaRelation(
-    //         this.getUi()
-    //     ).ask().then(doIt.bind(this));
-    // }
-    //
-    // function doIt() {
-    //     var meta = this.getUi().getParentMetaCenter().getModel();
-    //     var graphElementToRemoveIdentifier = this.getModel().hasIdentification(meta) ?
-    //         this.getUi() :
-    //         this.getUi().getSourceVertex();
-    //     graphElementToRemoveIdentifier.getController().removeIdentifier(
-    //         meta
-    //     ).then(function () {
-    //         this.getUi().remove();
-    //     }.bind(this));
-    // }
 };
 TagRelationController.prototype.removeDo = function () {
     return Promise.all(this.getModelArray().map((metaRelation) => {
         let metaBubble;
-        if (metaRelation.getParentVertex().isVertex()) {
-            metaBubble = metaRelation.getOtherVertex(metaRelation.getParentVertex());
-        } else {
+        if (metaRelation.getParentFork().isMetaGroupVertex()) {
             metaBubble = metaRelation.getClosestAncestorInTypes([GraphElementType.Meta]);
+        } else {
+            metaBubble = metaRelation.getOtherVertex(metaRelation.getParentFork());
         }
         let tag = metaBubble.getOriginalMeta();
         let parentBubble = metaRelation.getClosestAncestorInTypes([
@@ -68,7 +45,8 @@ TagRelationController.prototype.removeDo = function () {
             GraphElementType.Edge,
             GraphElementType.Relation,
             GraphElementType.MetaGroupVertex,
-            GraphElementType.Meta
+            GraphElementType.Meta,
+            GraphElementType.GroupRelation
         ]);
         let taggedUri;
         if (parentBubble.isMetaGroupVertex()) {
@@ -80,7 +58,7 @@ TagRelationController.prototype.removeDo = function () {
             }
         } else {
             let taggedBubble;
-            if (parentBubble.isEdge() || parentBubble.isVertex()) {
+            if (parentBubble.isInTypes([GraphElementType.GroupRelation, GraphElementType.Vertex, GraphElementType.Relation])) {
                 taggedBubble = parentBubble;
             } else {
                 taggedBubble = metaRelation.getOtherVertex(parentBubble);

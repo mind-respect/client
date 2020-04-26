@@ -16,9 +16,7 @@ import SubGraphController from '@/graph/SubGraphController'
 import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import GraphElement from '@/graph-element/GraphElement'
-import GroupRelation from '@/group-relation/GroupRelation'
 import Triple from '@/triple/Triple'
-import EdgeGrouper from "../group-relation/EdgeGrouper";
 
 const api = {};
 
@@ -50,8 +48,8 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
             response.data,
             uri
         );
-    }).then((metaSubGraph) => {
-        let centerTag = metaSubGraph.getMetaCenter();
+    }).then((tagSubGraph) => {
+        let centerTag = tagSubGraph.getMetaCenter();
         let centerBubble = this.model();
         if (isParentAlreadyOnMap) {
             centerBubble.setOriginalMeta(centerTag);
@@ -62,21 +60,21 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
             }
             centerBubble.setOriginalMeta(centerTag);
         }
-        let subGraph = metaSubGraph.getSubGraph();
+        let subGraph = tagSubGraph.getSubGraph();
         subGraph.center = centerBubble;
-        let edgesBySourceVertex = buildEdgesGroupedBySourceVertex(metaSubGraph, centerBubble);
+        let edgesBySourceFork = buildEdgesGroupedBySourceFork(tagSubGraph, centerBubble);
         let edges = [];
-        Object.keys(edgesBySourceVertex).forEach((vertexUri) => {
-            let sourceVertexAndEdges = edgesBySourceVertex[vertexUri];
+        Object.keys(edgesBySourceFork).forEach((forkUri) => {
+            let sourceForkAndEdges = edgesBySourceFork[forkUri];
             let child;
-            let vertex = subGraph.getVertexWithUri(
-                sourceVertexAndEdges.sourceVertex.getUri()
+            let vertex = subGraph.getHavingUri(
+                sourceForkAndEdges.sourceFork.getUri()
             );
             let grandParent = centerBubble.getParentVertex();
             if (grandParent && grandParent.isSameUri(vertex)) {
                 return;
             }
-            if (sourceVertexAndEdges.edges.length === 0) {
+            if (sourceForkAndEdges.edges.length === 0) {
                 vertex.getNbNeighbors().incrementForShareLevel(centerBubble.getShareLevel());
                 child = new TagRelation(vertex, centerBubble);
                 edges.push(child);
@@ -90,48 +88,19 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                 child = new TagRelation(vertex, centerBubble);
                 vertex.parentBubble = child;
                 vertex.parentVertex = centerBubble;
+                child.parentVertex = vertex;
                 edges.push(child);
-                let edgeGrouper = EdgeGrouper.forEdgesAndCenterVertex(
-                    sortEdges(sourceVertexAndEdges.edges, vertex), vertex
-                );
-                let groupRelations = edgeGrouper.group(isParentAlreadyOnMap);
-                let groupRelationToDiscard = groupRelations.filter((groupRelation) => {
-                    return groupRelation.getIdentification().getUri() === centerTag.getUri();
-                })[0];
-                if (!groupRelationToDiscard) {
-                    groupRelationToDiscard = GroupRelation.usingIdentification(centerTag);
-                }
-                let immediateRelationsAsGroupRelations = groupRelationToDiscard.getNextChildren().filter((child) => {
-                    return child.isRelation();
-                }).map((relation) => {
-                    let groupRelation = GroupRelation.withTagAndChildren(
-                        centerTag,
-                        [relation]
-                    );
-                    groupRelation.parentVertex = groupRelation.parentBubble = vertex;
-                    return groupRelation;
-                });
-                groupRelations = immediateRelationsAsGroupRelations.concat(groupRelations).filter((groupRelation) => {
-                    return groupRelation.getId() !== groupRelationToDiscard.getId() && (groupRelation.getNumberOfChild() <= 1 || groupRelation.getParentBubble().getId() === groupRelationToDiscard.getId())
-                });
-                edgeGrouper.sortedGroupRelations(groupRelations).forEach((groupRelation) => {
-                    let edgeBetweenGroupAndDestination = groupRelation.getFirstEdge();
-                    let destinationVertex = subGraph.getVertexWithUri(
-                        edgeBetweenGroupAndDestination.getDestinationVertex().getUri()
-                    );
-                    let grandChild = new TagRelation(destinationVertex, vertex);
-                    grandChild.setEdgeUri(
-                        edgeBetweenGroupAndDestination.getUri()
-                    );
-                    let child = groupRelation.getNumberOfChild() > 1 ? groupRelation : grandChild;
-                    vertex.addChild(child);
+                sourceForkAndEdges.edges.forEach((edge) => {
+                    vertex.addChild(edge);
                     if (!preventAddInCurrentGraph) {
-                        CurrentSubGraph.get().add(child);
+                        CurrentSubGraph.get().add(edge);
                     }
+                    CurrentSubGraph.get().add(
+                        edge.getOtherVertex(vertex)
+                    );
                 });
                 if (vertex.getNumberOfChild() > 1) {
                     vertex.expand(true);
-                    EdgeGrouper.expandGroupRelations(groupRelations);
                     vertex.collapse(true);
                 }
             }
@@ -182,51 +151,39 @@ function sortEdges(edges, metaGroupVertex) {
     });
 }
 
-function buildEdgesGroupedBySourceVertex(metaSubGraph, centerVertex) {
-    let edgesBySourceVertex = {};
-    let excludedDestinationVerticesUri = {};
+function buildEdgesGroupedBySourceFork(metaSubGraph, centerVertex) {
+    let edgesBySourceFork = {};
     let subGraph = metaSubGraph.getSubGraph();
-    sortEdges(subGraph.getEdges(), centerVertex).forEach((edge) => {
-        if (!edge.hasIdentification(metaSubGraph.getMetaCenter())) {
+    subGraph.sortedEdgesAndGroupRelations().forEach((child) => {
+        if (!child.hasIdentification(metaSubGraph.getMetaCenter())) {
             return;
         }
-        let sourceVertex = subGraph.getVertexWithUri(
-            edge.getSourceVertex().getUri()
+        let sourceFork = subGraph.getHavingUri(
+            child.getSourceVertex().getUri()
         );
-        if (!edgesBySourceVertex[sourceVertex.getUri()]) {
-            edgesBySourceVertex[sourceVertex.getUri()] = {
-                sourceVertex: sourceVertex,
-                destinationVertex: subGraph.getVertexWithUri(edge.getDestinationVertex().getUri()),
+        if (!edgesBySourceFork[sourceFork.getUri()]) {
+            edgesBySourceFork[sourceFork.getUri()] = {
+                sourceFork: sourceFork,
                 edges: []
             };
         }
-        edgesBySourceVertex[sourceVertex.getUri()].edges.push(
-            edge
+        edgesBySourceFork[sourceFork.getUri()].edges.push(
+            child
         );
-        excludedDestinationVerticesUri[edge.getDestinationVertex().getUri()] = true;
-    });
-    Object.keys(edgesBySourceVertex).forEach((vertexUri) => {
-        let sourceVertexAndEdges = edgesBySourceVertex[vertexUri];
-        let areDestinationVerticesGroupedBySourceVertex = sourceVertexAndEdges.edges.length > 1;
-        if (!areDestinationVerticesGroupedBySourceVertex) {
-            return;
-        }
-        sourceVertexAndEdges.edges.forEach(function (edge) {
-            excludedDestinationVerticesUri[
-                edge.getDestinationVertex().getUri()
-                ] = true;
-        });
     });
     subGraph.getVertices().forEach((vertex) => {
-        let isAVertexNotGroupedBySourceVertex = !edgesBySourceVertex[vertex.getUri()] && !excludedDestinationVerticesUri[vertex.getUri()];
+        if (!vertex.hasIdentification(metaSubGraph.getMetaCenter())) {
+            return;
+        }
+        let isAVertexNotGroupedBySourceVertex = !edgesBySourceFork[vertex.getUri()]
         if (isAVertexNotGroupedBySourceVertex) {
-            edgesBySourceVertex[vertex.getUri()] = {
-                sourceVertex: vertex,
+            edgesBySourceFork[vertex.getUri()] = {
+                sourceFork: vertex,
                 edges: []
             };
         }
     });
-    return edgesBySourceVertex;
+    return edgesBySourceFork;
 }
 
 TagVertexController.prototype.addTagCanDo = function () {

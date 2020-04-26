@@ -7,6 +7,8 @@ import Vertex from '@/vertex/Vertex'
 import GraphElement from '@/graph-element/GraphElement'
 import GroupRelation from '@/group-relation/GroupRelation'
 import GraphElementType from "../graph-element/GraphElementType";
+import IdUri from "../IdUri";
+import Tag from "../tag/Tag";
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -45,12 +47,13 @@ api.withFacadeAndCenterUri = function (serverFacade, centerUri) {
 
 api.SubGraph = function (graph, centerUri, buildFacade) {
     this.otherGraphElements = {};
+    this.isCenterTag = centerUri && IdUri.isMetaUri(centerUri);
     if (buildFacade) {
         this.serverFormat = graph;
         this.tagVertices = [];
         this._buildVertices();
         this._buildGroupRelations(centerUri);
-        this._buildEdges();
+        this._buildEdges(centerUri);
     } else {
         this.edges = graph.edges;
         this.vertices = graph.vertices;
@@ -107,12 +110,11 @@ api.SubGraph.prototype._isEdgeAlreadyAdded = function (edge) {
 
 api.SubGraph.prototype._buildEdges = function () {
     this.edges = {};
+    let tag;
+    if (this.isCenterTag) {
+        tag = Tag.withUri(this.centerUri);
+    }
     Object.values(this.serverFormat.edges).forEach((edge) => {
-        let source = edge.sourceVertex || edge.sourceGroupRelation;
-        let destination = edge.destinationVertex || edge.destinationGroupRelation;
-        if (!source || !destination) {
-            return;
-        }
         let facade = Relation.fromServerFormat(edge);
         facade.setSourceVertex(
             this.getHavingUri(facade.getSourceVertex().getUri())
@@ -120,12 +122,13 @@ api.SubGraph.prototype._buildEdges = function () {
         facade.setDestinationVertex(
             this.getHavingUri(facade.getDestinationVertex().getUri())
         );
-        if (facade.getSourceVertex() === undefined || facade.getDestinationVertex() === undefined) {
-            return;
-        }
-        if (source && destination) {
-            this.addEdge(facade);
-        }
+        // if (facade.getSourceVertex() === undefined || (!this.isCenterTag && facade.getDestinationVertex() === undefined)) {
+        //     return;
+        // }
+        // if (this.isCenterTag && !facade.hasIdentification(tag)) {
+        //     return;
+        // }
+        this.addEdge(facade);
     });
 };
 
@@ -352,11 +355,14 @@ api.SubGraph.prototype._buildVertices = function () {
 api.SubGraph.prototype._buildGroupRelations = function (centerUri) {
     this.groupRelations = {};
     Object.values(this.serverFormat.groupRelations).forEach((groupRelation) => {
-        let sourceForkUri = decodeURIComponent(groupRelation.sourceForkUri);
-        let groupRelationUri = decodeURIComponent(groupRelation.graphElement.friendlyResource.uri);
-        if (sourceForkUri !== centerUri && groupRelationUri !== centerUri) {
-            return;
-        }
+        // if (groupRelation.sourceForkUri === undefined) {
+        //     return;
+        // }
+        // let sourceForkUri = decodeURIComponent(groupRelation.sourceForkUri);
+        // let groupRelationUri = decodeURIComponent(groupRelation.graphElement.friendlyResource.uri);
+        // if (!this.isCenterTag && (sourceForkUri !== centerUri && groupRelationUri !== centerUri)) {
+        //     return;
+        // }
         let facade = GroupRelation.fromServerFormat(groupRelation);
         this.groupRelations[facade.getUri()] = facade;
     });

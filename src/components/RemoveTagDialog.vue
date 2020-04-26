@@ -115,7 +115,7 @@
                         if (nextBubble.isMetaGroupVertex()) {
                             nextBubble.expand();
                             this.bubbles = this.bubbles.concat(nextBubble.getClosestChildVertices());
-                        } else if (!metaRelation.getParentBubble().isGroupRelation()) {
+                        } else {
                             this.bubbles.push(nextBubble);
                         }
                     });
