@@ -38,9 +38,8 @@ SubGraphController.prototype.model = function () {
 };
 
 SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMap, preventAddInCurrentGraph) {
-    if (isCenterOnMap === undefined) {
-        isCenterOnMap = true;
-    }
+    isCenterOnMap = isCenterOnMap || true;
+    isParentAlreadyOnMap = isParentAlreadyOnMap || false;
     return GraphService.getForCentralBubbleUri(
         this.model().getUri()
     ).then((response) => {
@@ -59,6 +58,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
         );
         let centerFromServer = subGraph.getHavingUri(centerUri);
         let centerFork = isParentAlreadyOnMap ? this.model() : centerFromServer;
+        let centerIsMissingSourceFork = false;
         if (isParentAlreadyOnMap) {
             centerFork.setLabel(
                 centerFromServer.getLabel()
@@ -76,6 +76,12 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
                 centerFork.addIdentification(tag);
             });
             if (centerFork.isGroupRelation()) {
+                if (centerFork.getSourceForkUri() === "undefined") {
+                    centerFork.setSourceForkUri(
+                        subGraph.groupRelations[centerFork.getUri()].getSourceForkUri()
+                    );
+                    centerIsMissingSourceFork = true;
+                }
                 subGraph.groupRelations[centerFork.getUri()] = centerFork;
             } else {
                 subGraph.vertices[centerFork.getUri()] = [centerFork];
@@ -100,18 +106,23 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
         }
         let childrenIndex = centerFork.getChildrenIndex();
 
-        // let groupRelations = EdgeGrouper.forEdgesAndCenterVertex(
-        //     subGraph.sortedEdges(), centerVertex
-        // ).group(isParentAlreadyOnMap);
-
         let centerParentBubble = centerFork.getParentBubble();
         let centerParentFork = centerFork.getParentFork();
         let centerVertex = centerFork.isGroupRelation() ? centerFork.getParentVertex() : centerFork;
         subGraph.sortedEdgesAndGroupRelations().forEach((child) => {
-            if (isParentAlreadyOnMap && (child.getUri() === centerFork.getUri() || child.getUri() === centerParentBubble.getUri()) || child.getUri() === centerParentFork.getUri()) {
+            let childHasMissingSourceFork = centerIsMissingSourceFork && child.getUri() === centerFork.getUri();
+            if (!childHasMissingSourceFork && isParentAlreadyOnMap && (child.getUri() === centerFork.getUri() || child.getUri() === centerParentBubble.getUri()) || child.getUri() === centerParentFork.getUri()) {
                 return;
             }
-            let endFork = child.isEdge() ? child.getOtherVertex(centerFork) : child;
+            if (!childHasMissingSourceFork && child.isGroupRelation() && child.getSourceForkUri() !== centerFork.getUri()) {
+                return;
+            }
+            let endFork;
+            if (childHasMissingSourceFork) {
+                endFork = subGraph.getHavingUri(centerFork.getSourceForkUri());
+            } else {
+                endFork = child.isEdge() ? child.getOtherVertex(centerFork) : child;
+            }
             let childIndex = childrenIndex[endFork.getUri()];
             if (!childIndex) {
                 if (endFork.isGroupRelation()) {
@@ -124,10 +135,18 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             if (childIndex !== undefined) {
                 addLeft = childIndex.toTheLeft;
             }
-            centerFork.addChild(
-                child,
-                addLeft
-            );
+            if (childHasMissingSourceFork) {
+                centerFork.addChild(
+                    endFork,
+                    addLeft
+                );
+            } else {
+                centerFork.addChild(
+                    child,
+                    addLeft
+                );
+            }
+
             child.parentVertex = centerVertex;
             child.parentBubble = centerFork;
             if (!preventAddInCurrentGraph) {
