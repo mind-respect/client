@@ -112,7 +112,14 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
                 return;
             }
             let endFork = child.isEdge() ? child.getOtherVertex(centerFork) : child;
-            let childIndex = childrenIndex[endFork.getUri()] || childrenIndex[endFork.getPatternUri()];
+            let childIndex = childrenIndex[endFork.getUri()];
+            if (!childIndex) {
+                if (endFork.isGroupRelation()) {
+                    childIndex = childrenIndex[endFork.getIndexVertexUri()] || childrenIndex[endFork.getPatternUri()];
+                } else {
+                    childIndex = childrenIndex[endFork.getPatternUri()];
+                }
+            }
             let addLeft;
             if (childIndex !== undefined) {
                 addLeft = childIndex.toTheLeft;

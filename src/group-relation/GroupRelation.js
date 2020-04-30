@@ -389,8 +389,14 @@ GroupRelation.prototype.remove = function (preventRemoveDescendants) {
 GroupRelation.prototype.replaceRelatedVertex = function () {
 }
 
-GroupRelation.prototype.getSourceForkUri = function(){
+GroupRelation.prototype.getSourceForkUri = function () {
     return this.groupRelationJsonObject.sourceForkUri;
+};
+
+GroupRelation.prototype.getIndexVertexUri = function () {
+    return decodeURIComponent(
+        this.groupRelationJsonObject.indexVertexUri
+    );
 };
 
 api.GroupRelation = GroupRelation;

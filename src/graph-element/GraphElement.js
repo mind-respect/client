@@ -422,7 +422,14 @@ GraphElement.GraphElement.prototype.addIdentification = function (tag) {
 };
 
 GraphElement.GraphElement.prototype.getIndex = function (parentChildrenIndex) {
-    let indexInfo = parentChildrenIndex[this.getUri()] || parentChildrenIndex[this.getPatternUri()];
+    let indexInfo = parentChildrenIndex[this.getUri()];
+    if (!indexInfo) {
+        if (this.isGroupRelation()) {
+            indexInfo = parentChildrenIndex[this.getIndexVertexUri()] || parentChildrenIndex[this.getPatternUri()];
+        } else {
+            indexInfo = parentChildrenIndex[this.getPatternUri()];
+        }
+    }
     if (!indexInfo) {
         return 9999999;
     }
