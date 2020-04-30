@@ -10,18 +10,18 @@ export default {
 
 function NbNeighborsRefresherOnRemove(graphElements) {
     this.graphElements = graphElements;
-    this.verticesToChangeNbNeighbors = {};
+    this.forksToChangeNbNeighbors = {};
     this.tagsToChangeNbNeighbors = {};
 }
 
 NbNeighborsRefresherOnRemove.prototype.prepare = function () {
     this.graphElements.forEach((graphElement) => {
-        let parentVertex = graphElement.getParentVertex();
-        if (!this.verticesToChangeNbNeighbors[parentVertex.getUri()]) {
-            this.verticesToChangeNbNeighbors[parentVertex.getUri()] = parentVertex;
+        let parentFork = graphElement.getParentFork();
+        if (!this.forksToChangeNbNeighbors[parentFork.getUri()]) {
+            this.forksToChangeNbNeighbors[parentFork.getUri()] = parentFork;
         }
-        if (graphElement.isEdgeType() && (!this.verticesToChangeNbNeighbors[parentVertex.getUri()] || !this.verticesToChangeNbNeighbors[parentVertex.getUri()]._preventRebuildNbNeighbors)) {
-            let otherVertex = graphElement.getOtherVertex(parentVertex);
+        if (graphElement.isEdgeType() && (!this.forksToChangeNbNeighbors[parentFork.getUri()] || !this.forksToChangeNbNeighbors[parentFork.getUri()]._preventRebuildNbNeighbors)) {
+            let otherVertex = graphElement.getOtherVertex(parentFork);
             otherVertex._preventRebuildNbNeighbors = true;
             if (otherVertex.isExpanded) {
                 let nbNeighbors = NbNeighbors.withZeros();
@@ -38,16 +38,16 @@ NbNeighborsRefresherOnRemove.prototype.prepare = function () {
                 });
                 otherVertex.setNbNeighbors(nbNeighbors);
             } else {
-                otherVertex.getNbNeighbors().decrementForShareLevel(parentVertex.getShareLevel());
+                otherVertex.getNbNeighbors().decrementForShareLevel(parentFork.getShareLevel());
             }
-            this.verticesToChangeNbNeighbors[otherVertex.getUri()] = otherVertex;
+            this.forksToChangeNbNeighbors[otherVertex.getUri()] = otherVertex;
         }
         this._setupTagsForGraphElement(graphElement);
-        if (graphElement.isVertex()) {
-            graphElement.getConnectedEdges(true).forEach((edge) => {
-                this._setupTagsForGraphElement(edge);
-            });
-        }
+        graphElement.getSurround(true).forEach((surround) => {
+            if (surround.isRelation()) {
+                this._setupTagsForGraphElement(surround);
+            }
+        });
     });
 };
 
@@ -66,9 +66,9 @@ NbNeighborsRefresherOnRemove.prototype._setupTagsForGraphElement = function (gra
 };
 
 NbNeighborsRefresherOnRemove.prototype.execute = function () {
-    Object.values(this.verticesToChangeNbNeighbors).filter((vertexToChangeNbNeighbors) => {
+    Object.values(this.forksToChangeNbNeighbors).filter((forkToChangeNbNeighbors) => {
         return !this.graphElements.some((removedGraphElement) => {
-            return removedGraphElement.getUri() === vertexToChangeNbNeighbors.getUri();
+            return removedGraphElement.getUri() === forkToChangeNbNeighbors.getUri();
         });
     }).forEach((vertexToChangeNbNeighbors) => {
         if (!vertexToChangeNbNeighbors._preventRebuildNbNeighbors) {

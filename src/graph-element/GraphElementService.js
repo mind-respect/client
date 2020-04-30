@@ -16,16 +16,6 @@ api.setShareLevel = function (shareLevel, graphElement) {
     );
 };
 
-api.setCollectionShareLevel = function (shareLevel, bubbles) {
-    return Service.api().post(
-        UserService.currentUserUri() + '/graph/graphElement/collection/share-level',
-        {
-            shareLevel: shareLevel,
-            graphElementsUri: urisOfGraphElements(bubbles)
-        }
-    );
-};
-
 api.updateNote = function (graphElement) {
     return Service.geApi().post(
         graphElement.getUri() + '/comment',
@@ -54,13 +44,6 @@ api.remove = function (graphElement) {
         graphElement.getUri()
     );
 };
-api.removeCollection = function (graphElements) {
-    return Service.geApi().request({
-        url: graphElements[0].uri().withoutId() + '/collection',
-        method: 'delete',
-        data: api._getGraphElementsUrl(graphElements)
-    });
-};
 
 api.saveColors = function (uri, colors) {
     return Service.geApi().post(
@@ -82,11 +65,5 @@ api._getGraphElementsUrl = function (graphElements) {
         return graphElement.getUri();
     });
 };
-
-function urisOfGraphElements(graphElements) {
-    return graphElements.map(function (graphElement) {
-        return graphElement.getUri();
-    });
-}
 
 export default api;

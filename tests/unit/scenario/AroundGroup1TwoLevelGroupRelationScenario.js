@@ -1,7 +1,7 @@
 import Scenario from './Scenario'
 
 let AroundGroup1TwoLevelGroupRelationScenario = function () {
-    this.dataKey = "twoLevelGroupRelation.aroundGroup1";
+    this.dataKey = "twoLevelGroupRelation.aroundGroup1Tag";
     return this.init();
 };
 

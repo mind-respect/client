@@ -2,7 +2,7 @@ import Mock from './mock/Mock'
 import ThreeScenario from "./scenario/ThreeScenario";
 import Selection from '@/Selection'
 import VertexController from '@/vertex/VertexController'
-import EdgeController from '@/edge/EdgeController'
+import RelationController from '@/relation/RelationController'
 import GraphElementController from '@/graph-element/GraphElementController'
 import TestUtil from './util/TestUtil'
 
@@ -74,7 +74,7 @@ describe("Selection", () => {
             Selection.add(r1);
             Selection.add(r2);
             expect(
-                Selection.controller() instanceof EdgeController.RelationController
+                Selection.controller() instanceof RelationController.RelationController
             ).toBeTruthy();
         });
         it("returns GraphElementController when made of different graph elements", async () => {

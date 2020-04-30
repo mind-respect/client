@@ -1,56 +1,29 @@
-/*
- * Copyright Vincent Blouin under the GPL License version 3
- */
-
-import IdUri from '@/IdUri'
-import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import Service from '@/Service'
-import UserService from "@/service/UserService";
+import IdUri from '@/IdUri'
 
-const api = {};
+const EdgeService = {};
 
-api.updateLabel = function (edge, label) {
-    return FriendlyResourceService.updateLabel(
-        edge,
-        label
-    );
-};
-api.inverse = function (edge) {
+EdgeService.changeSource = function (newSource, edge, oldEndShareLevel, keptEndShareLevel, newEndShareLevel) {
     return Service.geApi().put(
-        edge.getUri() + "/inverse"
-    );
-};
-api.changeSourceVertex = function (sourceVertex, edge) {
-    return Service.geApi().put(
-        edge.getUri() + "/source-vertex/" + IdUri.elementIdFromUri(sourceVertex.getUri())
+        edge.getUri() + "/source/" + IdUri.elementIdFromUri(newSource.getUri()),
+        {
+            forkType: newSource.isGroupRelation() ? "GroupRelation" : "Vertex",
+            oldEndShareLevel: oldEndShareLevel,
+            keptEndShareLevel: keptEndShareLevel,
+            newEndShareLevel: newEndShareLevel
+        }
     )
 };
-api.changeDestinationVertex = function (destinationVertex, edge) {
+EdgeService.changeDestination = function (newDestination, edge, oldEndShareLevel, keptEndShareLevel, newEndShareLevel) {
     return Service.geApi().put(
-        edge.getUri() + "/destination-vertex/" + IdUri.elementIdFromUri(destinationVertex.getUri())
+        edge.getUri() + "/destination/" + IdUri.elementIdFromUri(newDestination.getUri()),
+        {
+            forkType: newDestination.isGroupRelation() ? "GroupRelation" : "Vertex",
+            oldEndShareLevel: oldEndShareLevel,
+            keptEndShareLevel: keptEndShareLevel,
+            newEndShareLevel: newEndShareLevel
+        }
     );
 };
 
-api.createFromSourceAndDestinationUri = function (sourceUri, destinationUri) {
-    let sourceVertexUriFormatted = encodeURIComponent(
-        sourceUri
-    );
-    let destinationVertexUriFormatted = encodeURIComponent(
-        destinationUri
-    );
-    return Service.api().post(
-        edgesUrl() + '?sourceVertexId=' + sourceVertexUriFormatted +
-        '&destinationVertexId=' + destinationVertexUriFormatted
-    ).then((response) => {
-        return IdUri.removeDomainNameFromGraphElementUri(
-            response.headers.location
-        );
-    });
-};
-
-export default api;
-
-function edgesUrl() {
-    return UserService.currentUserUri() + "/graph/edge";
-}
-
+export default EdgeService;

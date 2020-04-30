@@ -5,10 +5,9 @@ import GraphService from '@/graph/GraphService'
 import GraphElementService from '@/graph-element/GraphElementService'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import IdUri from '@/IdUri'
-import Edge from '@/edge/Edge'
+import Relation from '@/relation/Relation'
 import SubGraph from '@/graph/SubGraph'
 import MindMapInfo from '@/MindMapInfo'
-import EdgeGrouper from "../group-relation/EdgeGrouper";
 
 const api = {};
 
@@ -49,7 +48,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
         let centerUri = this.model().getUri();
         let isCenterEdge = IdUri.isEdgeUri(this.model().getUri());
         if (isCenterEdge) {
-            let centerEdge = Edge.fromServerFormat(
+            let centerEdge = Relation.fromServerFormat(
                 serverGraph.edges[this.model().getUri()]
             );
             centerUri = centerEdge.getSourceVertex().getUri();
@@ -58,76 +57,91 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             serverGraph,
             centerUri
         );
-        let centerFromServer = subGraph.getVertexWithUri(centerUri);
-        let centerVertex = isParentAlreadyOnMap ? this.model() : centerFromServer;
+        let centerFromServer = subGraph.getHavingUri(centerUri);
+        let centerFork = isParentAlreadyOnMap ? this.model() : centerFromServer;
         if (isParentAlreadyOnMap) {
-            centerVertex.setLabel(
+            centerFork.setLabel(
                 centerFromServer.getLabel()
             );
-            centerVertex.setComment(
+            centerFork.setComment(
                 centerFromServer.getComment()
             );
-            centerVertex.setBackgroundColor(
+            centerFork.setBackgroundColor(
                 centerFromServer.getBackgroundColor()
             );
-            centerVertex.setFont(
+            centerFork.setFont(
                 centerFromServer.getFont()
             );
             centerFromServer.getIdentifiers().forEach((tag) => {
-                centerVertex.addIdentification(tag);
+                centerFork.addIdentification(tag);
             });
-            subGraph.vertices[centerVertex.getUri()] = [centerVertex];
+            if (centerFork.isGroupRelation()) {
+                subGraph.groupRelations[centerFork.getUri()] = centerFork;
+            } else {
+                subGraph.vertices[centerFork.getUri()] = [centerFork];
+            }
+
         } else {
             if (isCenterOnMap) {
-                centerVertex.makeCenter();
+                centerFork.makeCenter();
             }
             if (!preventAddInCurrentGraph) {
-                CurrentSubGraph.get().add(centerVertex);
+                CurrentSubGraph.get().add(centerFork);
             }
         }
         if (isParentAlreadyOnMap) {
-            let hasModifiedChildrenIndex = centerVertex.integrateChildrenIndex(centerFromServer.getChildrenIndex());
+            let hasModifiedChildrenIndex = centerFork.integrateChildrenIndex(centerFromServer.getChildrenIndex());
             if (hasModifiedChildrenIndex) {
                 GraphElementService.saveChildrenIndex(
-                    centerVertex,
-                    centerVertex.getChildrenIndex()
+                    centerFork,
+                    centerFork.getChildrenIndex()
                 )
             }
         }
-        let childrenIndex = centerVertex.getChildrenIndex();
-        let groupRelations = EdgeGrouper.forEdgesAndCenterVertex(
-            subGraph.sortedEdges(), centerVertex
-        ).group(isParentAlreadyOnMap);
-        groupRelations.forEach((groupRelation) => {
-            if (groupRelation.getParentBubble().getId() !== centerVertex.getId()) {
+        let childrenIndex = centerFork.getChildrenIndex();
+
+        // let groupRelations = EdgeGrouper.forEdgesAndCenterVertex(
+        //     subGraph.sortedEdges(), centerVertex
+        // ).group(isParentAlreadyOnMap);
+
+        let centerParentBubble = centerFork.getParentBubble();
+        let centerParentFork = centerFork.getParentFork();
+        let centerVertex = centerFork.isGroupRelation() ? centerFork.getParentVertex() : centerFork;
+        subGraph.sortedEdgesAndGroupRelations().forEach((child) => {
+            if (isParentAlreadyOnMap && (child.getUri() === centerFork.getUri() || child.getUri() === centerParentBubble.getUri()) || child.getUri() === centerParentFork.getUri()) {
                 return;
             }
-            let edge = groupRelation.getFirstEdge();
-            let child = groupRelation.getNumberOfChild() > 1 ? groupRelation : edge;
-            let endVertex = edge.getOtherVertex(centerVertex);
-            let childIndex = childrenIndex[endVertex.getUri()] || childrenIndex[endVertex.getPatternUri()];
+            let endFork = child.isEdge() ? child.getOtherVertex(centerFork) : child;
+            let childIndex = childrenIndex[endFork.getUri()];
+            if (!childIndex) {
+                if (endFork.isGroupRelation()) {
+                    childIndex = childrenIndex[endFork.getIndexVertexUri()] || childrenIndex[endFork.getPatternUri()];
+                } else {
+                    childIndex = childrenIndex[endFork.getPatternUri()];
+                }
+            }
             let addLeft;
             if (childIndex !== undefined) {
                 addLeft = childIndex.toTheLeft;
             }
-            centerVertex.addChild(
+            centerFork.addChild(
                 child,
                 addLeft
             );
-            child.parentVertex = child.parentBubble = centerVertex;
+            child.parentVertex = centerVertex;
+            child.parentBubble = centerFork;
             if (!preventAddInCurrentGraph) {
                 CurrentSubGraph.get().add(child);
             }
         });
-        EdgeGrouper.expandGroupRelations(groupRelations);
         let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
-        centerVertex.isExpanded = true;
-        centerVertex.isCollapsed = false;
-        return isChildrenIndexBuilt || MindMapInfo.isViewOnly() ? Promise.resolve(centerVertex) :
+        centerFork.isExpanded = true;
+        centerFork.isCollapsed = false;
+        return isChildrenIndexBuilt || MindMapInfo.isViewOnly() ? Promise.resolve(centerFork) :
             GraphElementService.changeChildrenIndex(
-                centerVertex
+                centerFork
             ).then(() => {
-                return centerVertex;
+                return centerFork;
             });
     });
 };

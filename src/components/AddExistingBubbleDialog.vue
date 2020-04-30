@@ -183,7 +183,8 @@
                 await forkToRelate.controller().relateToDistantVertexWithUri(
                     distantUri,
                     closest.edge === undefined ? 0 : closest.edge.getIndexInTree(closest.isAbove),
-                    this.isLeft
+                    this.isLeft,
+                    this.selectedSearchResult.getShareLevel()
                 );
                 this.confirmLoading = false;
                 this.dialog = false;

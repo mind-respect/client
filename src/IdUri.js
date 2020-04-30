@@ -31,16 +31,14 @@ const IdUri = {
             uri
         );
     },
-    isGroupRelationUri: function (uri) {
-        return "" === IdUri.getGraphElementTypeFromUri(
-            uri
-        );
-    },
     vertexBaseUri: function () {
         return UserService.currentUserUri() + "/graph/vertex";
     },
     edgeBaseUri: function () {
         return UserService.currentUserUri() + "/graph/edge";
+    },
+    groupRelationBaseUri: function () {
+        return UserService.currentUserUri() + "/graph/gr";
     },
     tagBaseUri: function () {
         return UserService.currentUserUri() + "/graph/identification";

@@ -182,7 +182,7 @@ describe('VertexController', () => {
         expect(
             groupRelation.isGroupRelation()
         ).toBeTruthy();
-        await groupRelation.expand();
+        await scenario.expandPossession(groupRelation);
         let childBubble = TestUtil.getChildWithLabel(
             groupRelation,
             "Possession of book 1"
@@ -195,32 +195,6 @@ describe('VertexController', () => {
         expect(
             groupRelation.getNumberOfChild()
         ).toBe(numberOfChild + 1);
-    });
-    it("sets identification to the new relation when adding a sibling to the child of group relation", async () => {
-        let scenario = await new GroupRelationsScenario();
-        let groupRelation = scenario.getPossessionGroupRelation();
-        expect(
-            groupRelation.isGroupRelation()
-        ).toBeTruthy();
-        groupRelation.expand();
-        let childBubble = TestUtil.getChildWithLabel(
-            groupRelation,
-            "Possession of book 1"
-        ).getNextBubble();
-        expect(
-            childBubble.isVertex()
-        ).toBeTruthy();
-        let hasVisited = false;
-        await childBubble.controller().addSibling().then(function (triple) {
-            hasVisited = true;
-            let relation = triple.destination.getParentBubble();
-            expect(
-                relation.model().hasIdentifications()
-            ).toBeTruthy();
-        });
-        expect(
-            hasVisited
-        ).toBeTruthy();
     });
     it("does not load the surround graph when expanding a collapsed vertex", async () => {
         let scenario = await new ThreeScenario();
@@ -861,39 +835,6 @@ describe('VertexController', () => {
             expect(
                 groupRelation.getNumberOfChild()
             ).toBe(groupRelationNumberOfChild);
-        });
-        it("removes tags of relations under group relation when moving away from group relation", async () => {
-            let scenario = await new TwoLevelGroupRelationScenario();
-            let center = scenario.getCenterInTree();
-            let group1 = TestUtil.getChildWithLabel(
-                center,
-                "group1"
-            );
-            group1.expand();
-            let group2 = TestUtil.getChildWithLabel(
-                group1,
-                "group2"
-            );
-            group2.expand();
-            let g22 = TestUtil.getChildWithLabel(
-                group2,
-                "g22"
-            );
-            expect(
-                g22.getRelevantTags().length
-            ).toBe(2);
-            let aaaa = TestUtil.getChildWithLabel(
-                center,
-                "r1"
-            ).getNextBubble();
-            await group2.controller().moveUnderParent(aaaa);
-            g22 = TestUtil.getChildWithLabel(
-                group2,
-                "g22"
-            );
-            expect(
-                g22.getRelevantTags().length
-            ).toBe(1);
         });
     });
 });

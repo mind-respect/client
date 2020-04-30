@@ -191,7 +191,7 @@
     import Selection from "@/Selection"
     import TagVertex from '@/tag/TagVertex'
     import Vertex from "@/vertex/Vertex";
-    import Edge from '@/edge/Edge'
+    import Relation from '@/relation/Relation'
     import KeyboardActions from '@/KeyboardActions'
 
     export default {
@@ -367,7 +367,7 @@
                             parentVertex.getUri()
                         );
                         parentVertexCopy.setLabel(parentVertex.getLabel());
-                        let edge = Edge.withUriAndSourceAndDestinationVertex(
+                        let edge = Relation.withUriAndSourceAndDestinationVertex(
                             parentEdge.getUri(),
                             this.mergeBubble,
                             parentVertexCopy
@@ -383,7 +383,7 @@
                             );
                             vertexCopy.setLabel(vertex.getLabel());
                             vertexCopy.addIdentifications(vertex.getIdentifiers());
-                            child = Edge.withUriAndSourceAndDestinationVertex(
+                            child = Relation.withUriAndSourceAndDestinationVertex(
                                 child.getUri(),
                                 this.mergeBubble,
                                 vertexCopy

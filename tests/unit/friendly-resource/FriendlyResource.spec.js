@@ -5,7 +5,6 @@ import TestUtil from '../util/TestUtil'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import CreationDateScenario from "../scenario/CreationDateScenario";
-import PublicPrivateScenario from "../scenario/PublicPrivateScenario";
 
 describe("FriendlyResource", () => {
     it("includes label comment and uri when building server format from ui", async () => {
@@ -327,6 +326,7 @@ describe("FriendlyResource", () => {
                 centerBubble,
                 "Possession"
             );
+            await scenario.expandPossession(possessionGroupRelation);
             possessionGroupRelation.collapse();
             expect(
                 possessionGroupRelation.isExpanded
@@ -335,7 +335,7 @@ describe("FriendlyResource", () => {
                 centerBubble,
                 "other relation"
             );
-            otherRelation.moveToParent(
+            await otherRelation.controller().moveUnderParent(
                 possessionGroupRelation
             );
             expect(
@@ -461,7 +461,7 @@ describe("FriendlyResource", () => {
                 centerBubble,
                 "Possession"
             );
-            possessionGroupRelation.expand();
+            await scenario.expandPossession(possessionGroupRelation);
             let possessionRelation = TestUtil.getChildWithLabel(
                 possessionGroupRelation,
                 "Possession of book 1"
@@ -593,18 +593,22 @@ describe("FriendlyResource", () => {
         it("changes direction of children even if collasped", async () => {
             let scenario = await new GroupRelationsScenario();
             let possession = scenario.getPossessionGroupRelation();
-            expect(possession.isToTheLeft()).toBeTruthy();
+            expect(possession.isToTheLeft()).toBeFalsy();
+            await scenario.expandPossession(possession);
             possession.collapse();
             let underCollapse = possession.getNextChildrenEvenIfCollapsed()[0];
-            expect(underCollapse.isToTheLeft()).toBeTruthy();
-            let otherRelation = scenario.getOtherRelationInTree();
-            expect(otherRelation.isToTheLeft()).toBeFalsy();
-            await possession.controller().moveBelow(
-                otherRelation
-            );
-            expect(possession.isToTheLeft()).toBeFalsy();
-            underCollapse = possession.getNextChildrenEvenIfCollapsed()[0];
             expect(underCollapse.isToTheLeft()).toBeFalsy();
+            let otherRelation2 = TestUtil.getChildDeepWithLabel(
+                scenario.getCenterInTree(),
+                "other relation 2"
+            );
+            expect(otherRelation2.isToTheLeft()).toBeTruthy();
+            await possession.controller().moveBelow(
+                otherRelation2
+            );
+            expect(possession.isToTheLeft()).toBeTruthy();
+            underCollapse = possession.getNextChildrenEvenIfCollapsed()[0];
+            expect(underCollapse.isToTheLeft()).toBeTruthy();
         });
     });
     describe("collapse", function () {
@@ -666,18 +670,11 @@ describe("FriendlyResource", () => {
                 newVertex.getUpBubble().text()
             ).toBe("b2");
             let bubble2 = scenario.getBubble2InTree();
-            Selection.setToSingle(newVertex);
-            expect(
-                Selection.isSelected(bubble2)
-            ).toBeFalsy();
             newVertex.setLabel("new vertex");
-            await newVertex.controller().removeDo();
+            let selectedBubble = await newVertex.controller().removeDo();
             expect(
-                Selection.getSingle().getLabel()
+                selectedBubble.getLabel()
             ).toBe("b2");
-            expect(
-                Selection.isSelected(bubble2)
-            ).toBeTruthy();
         });
         it("selects bubble under when available after it's removed", async () => {
             let scenario = await new ThreeScenario();
@@ -688,27 +685,18 @@ describe("FriendlyResource", () => {
                 newVertex.getUpBubble().getLabel()
             ).toBe("b2");
             let bubble2 = scenario.getBubble2InTree();
-            Selection.setToSingle(bubble2);
+            let selectedBubble = await bubble2.controller().removeDo();
             expect(
-                Selection.isSelected(newVertex)
-            ).toBeFalsy();
-            await bubble2.controller().removeDo();
-            expect(
-                Selection.isSelected(newVertex)
-            ).toBeTruthy();
+                selectedBubble.getId()
+            ).toBe(newVertex.getId())
         });
         it("selects parent bubble when no siblings after it's removed", async () => {
             let scenario = await new ThreeScenario();
-            let bubble1 = scenario.getBubble1InTree();
             let bubble2 = scenario.getBubble2InTree();
-            Selection.setToSingle(bubble2);
+            let selectedBubble = await bubble2.controller().removeDo();
             expect(
-                Selection.isSelected(bubble1)
-            ).toBeFalsy();
-            await bubble2.controller().removeDo();
-            expect(
-                Selection.isSelected(bubble1)
-            ).toBeTruthy();
+                selectedBubble.getLabel()
+            ).toBe("b1")
         });
         it("selects parent bubble when no siblings after it's removed even when there's a tree above", async () => {
             let scenario = await new ThreeScenario();
@@ -733,7 +721,7 @@ describe("FriendlyResource", () => {
         it("selects under sibling when available after it's removed even when parent is a group relation", async () => {
             let scenario = await new GroupRelationsScenario();
             let groupRelation = scenario.getPossessionGroupRelation();
-            groupRelation.expand();
+            await scenario.expandPossession(groupRelation);
             await scenario.nextTickPromise();
             let vertexAbove = TestUtil.getChildWithLabel(
                 groupRelation,

@@ -65,6 +65,7 @@
     import I18n from '@/I18n'
     import TagRelationController from '@/tag/TagRelationController'
     import KeyboardActions from '@/KeyboardActions'
+    import KeyCode from "keycode-js";
 
     export default {
         name: "RemoveTagDialog",
@@ -114,7 +115,7 @@
                         if (nextBubble.isMetaGroupVertex()) {
                             nextBubble.expand();
                             this.bubbles = this.bubbles.concat(nextBubble.getClosestChildVertices());
-                        } else if (!metaRelation.getParentBubble().isGroupRelation()) {
+                        } else {
                             this.bubbles.push(nextBubble);
                         }
                     });

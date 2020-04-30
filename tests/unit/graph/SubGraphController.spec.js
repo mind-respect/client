@@ -37,13 +37,14 @@ describe("SubGraphController", () => {
         expect(
             group1.getNumberOfChild()
         ).toBe(4);
+        await scenario.expandGroup1(group1);
         let group2 = TestUtil.getChildWithLabel(group1, "group2");
-        group2.expand();
+        await scenario.expandGroup2(group2);
         expect(
             group2.getNumberOfChild()
         ).toBe(4);
         let group3 = TestUtil.getChildWithLabel(group2, "group3");
-        group3.expand();
+        await scenario.expandGroup3(group3);
         expect(
             group3.getNumberOfChild()
         ).toBe(3);

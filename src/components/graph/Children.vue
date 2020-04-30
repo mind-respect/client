@@ -135,7 +135,7 @@
                 /*
                 I dont know why but this is only called on collapse
                 */
-                console.log("after")
+                // console.log("after")
                 this.bubble.refreshChildren();
                 return;
             },

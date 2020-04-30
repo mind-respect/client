@@ -8,6 +8,7 @@ import ShareLevel from '@/vertex/ShareLevel'
 import Vertex from '@/vertex/Vertex'
 import Tag from "@/tag/Tag";
 import NbNeighbors from '@/vertex/NbNeighbors'
+import GroupRelation from '@/group-relation/GroupRelation'
 
 const api = {};
 api.fromServerFormatArray = function (searchResultsServerFormat) {
@@ -63,6 +64,19 @@ api.fromServerFormat = function (searchResult) {
                 api._buildMetaSomethingToDistinguish(searchResult),
                 searchResult
             );
+        case GraphElementType.GroupRelation.toLowerCase() : {
+            let groupRelation = GroupRelation.fromGraphElementJsonObject(
+                searchResult.graphElement,
+                searchResult.shareLevel,
+                searchResult.nbNeighbors
+            );
+            return new SearchResult(
+                groupRelation,
+                GraphElementType.GroupRelation,
+                "",
+                searchResult
+            );
+        }
     }
 };
 api._buildMetaSomethingToDistinguish = function (searchResult) {
@@ -92,8 +106,8 @@ api.fromGraphElement = function (graphElement) {
     ].join(", ") : "";
     let context = "";
     if (graphElement.isVertexType()) {
-        context = graphElement.getConnectedEdges(true).map((surroundEdge) => {
-            return surroundEdge.getOtherVertex(graphElement).getLabel();
+        context = graphElement.getSurround(true).map((surroundEdge) => {
+            return surroundEdge.isEdge() ? surroundEdge.getOtherVertex(graphElement).getLabel() : "";
         }).join("{{").substring(0, 110);
     }
     return new SearchResult(

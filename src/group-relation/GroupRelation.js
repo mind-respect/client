@@ -1,57 +1,96 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import GraphElement from '@/graph-element/GraphElement'
 import GraphElementType from '@/graph-element/GraphElementType'
 import Vue from 'vue'
 import Store from '@/store'
 import FriendlyResource from "../friendly-resource/FriendlyResource";
-import IdUri from '@/IdUri'
 import I18n from '@/I18n'
+import NbNeighbors from "../vertex/NbNeighbors";
+import IdUri from "../IdUri";
+import Fork from '@/fork/Fork'
+import CurrentSubGraph from '@/graph/CurrentSubGraph'
 
 const api = {};
 api.EXPAND_UNDER_NB_SIBLINGS = 4;
 api.EXPAND_UNDER_NB_CHILD = 6;
+
 api.withoutAnIdentification = function () {
     return new GroupRelation(undefined);
 };
-api.usingIdentification = function (identification) {
-    if (Array.isArray(identification)) {
-        return new GroupRelation(identification, []);
-    } else {
-        return new GroupRelation([identification], []);
-    }
+api.usingIdentification = function () {
+    let newGroupRelation = api.withUri(
+        "/service" + IdUri.groupRelationBaseUri() + "/" + IdUri.uuid()
+    );
+    newGroupRelation.addIdentification(tag);
+    return newGroupRelation;
 };
 api.usingIdentifiers = function (tags) {
-    return new GroupRelation(tags, []);
+    let newGroupRelation = api.withUri(
+        "/service" + IdUri.groupRelationBaseUri() + "/" + IdUri.uuid()
+    );
+    newGroupRelation.addIdentifications(tags);
+    return newGroupRelation;
 };
 
 api.withTagAndChildren = function (tag, children) {
-    return new GroupRelation([tag], children);
+    let newGroupRelation = api.withUri(
+        "/service" + IdUri.groupRelationBaseUri() + "/" + IdUri.uuid()
+    );
+    newGroupRelation.addIdentification(tag);
+    children.forEach((child) => {
+        newGroupRelation.addChild(child);
+    });
+    return newGroupRelation;
 };
 
-function GroupRelation(tags, children) {
-    this.children = children.map((child) => {
-        child.parentBubble = this;
-        return child;
+api.withUri = function (uri) {
+    return new GroupRelation({
+        graphElement: {
+            friendlyResource: {
+                uri: uri
+            }
+        },
+        nbNeighbors: NbNeighbors.withZeros().toJsonObject()
     });
-    this.childrenCollapsed = null;
-    let tag = tags[0];
-    GraphElement.GraphElement.apply(
-        this
+};
+
+api.fromServerFormat = function (serverFormat) {
+    return new GroupRelation(
+        serverFormat
     );
-    this.init(
-        GraphElement.buildObjectWithUri(
-            IdUri.uuid()
-        )
-    );
-    this.setLabel(tag.getLabel());
-    this.setComment(tag.getComment());
-    this.addIdentifications(tags);
-    this.isExpanded = false;
+};
+api.fromGraphElementJsonObject = function (jsonObject, shareLevel, nbNeighbors) {
+    return new GroupRelation({
+        graphElement: jsonObject,
+        shareLevel: shareLevel || ShareLevel.PRIVATE,
+        nbNeighbors: nbNeighbors || NbNeighbors.withZeros().toJsonObject()
+    });
 }
 
-GroupRelation.prototype = new GraphElement.GraphElement();
+function GroupRelation(jsonObject) {
+    this.groupRelationJsonObject = jsonObject;
+    this.children = [];
+    this.childrenCollapsed = null;
+    this.isExpanded = false;
+    Fork.Fork.apply(
+        this
+    );
+    Fork.Fork.prototype.init.call(
+        this,
+        jsonObject
+    );
+}
+
+GroupRelation.prototype = new Fork.Fork();
+
+GroupRelation.prototype.getNbNeighbors = function () {
+    return this.nbNeighbors;
+};
+
+GroupRelation.prototype.setNbNeighbors = function (nbNeighbors) {
+    return this.nbNeighbors = nbNeighbors;
+};
 
 GroupRelation.prototype.hasFewEnoughBubblesToExpand = function () {
     let parentNbChild = this.getParentBubble().getNumberOfChild(this.isToTheLeft());
@@ -73,20 +112,6 @@ GroupRelation.prototype.removeChild = function (child, isTemporary, avoidRedraw)
         }
     }
     if (!isTemporary) {
-        if (this.children.length === 1) {
-            let parentBubble = this.getParentBubble();
-            let child = this.getNextChildren()[0];
-            parentBubble.replaceChild(
-                this,
-                child
-            );
-            if (child.isLabelEmpty()) {
-                child.controller().setLabel(this.getLabel())
-            }
-        }
-        if (this.children.length === 0) {
-            this.getParentBubble().removeChild(this);
-        }
         this.refreshChildren(avoidRedraw);
     }
 };
@@ -123,9 +148,6 @@ GroupRelation.prototype.getRightBubble = function (bottom) {
     return bottom ? this.children[this.children.length - 1] : this.children[0];
 };
 
-GroupRelation.prototype.isLeaf = function () {
-    return false;
-};
 
 GroupRelation.prototype.getNextChildrenEvenIfCollapsed = function () {
     return this._getNextChildrenCollapsedOrNot(true);
@@ -249,11 +271,12 @@ GroupRelation.prototype.setSourceVertex = function (sourceVertex) {
     });
 };
 
-GroupRelation.prototype.setParentVertex = function (vertex) {
+GroupRelation.prototype.setParentFork = function (fork) {
+    if (!fork.isVertex()) {
+        return
+    }
     this.getClosestChildrenOfType(GraphElementType.Relation).forEach((child) => {
-        child.setParentVertex(
-            vertex
-        )
+        child.parentVertex = fork;
     });
 };
 
@@ -315,10 +338,8 @@ GroupRelation.prototype.getChildGroupRelations = function () {
 
 
 GroupRelation.prototype.getNumberOfChild = function () {
-    if (this.isCollapsed) {
-        return this.childrenCollapsed ? this.childrenCollapsed.length : 0;
-    }
-    return this.children ? this.children.length : 0;
+    let children = this.getNextChildren();
+    return children.length ? children.length : this.nbNeighbors.getTotalChildren();
 };
 
 GroupRelation.prototype.getChip = function () {
@@ -336,31 +357,49 @@ GroupRelation.prototype.getWhenEmptyLabel = function () {
     return I18n.i18next.t("groupRelation:default");
 };
 
-GroupRelation.prototype.setBackgroundColor = function (backgroundColor) {
-    this.getIdentification().setBackgroundColor(backgroundColor);
-};
-
-GroupRelation.prototype.getColors = function () {
-    return this.getIdentification().getColors();
-};
-
-GroupRelation.prototype.getBackgroundColor = function () {
-    return this.getIdentification().getBackgroundColor()
-};
-
 GroupRelation.prototype.setNbNeighbors = function (nbNeighbors) {
-    this.getIdentification().nbNeighbors(nbNeighbors);
+    this.nbNeighbors = nbNeighbors;
 };
 
 GroupRelation.prototype.setShareLevel = function (shareLevel) {
-    return this.getIdentification().setShareLevel(shareLevel);
+    return this.groupRelationJsonObject.shareLevel = shareLevel;
 };
 
 GroupRelation.prototype.getShareLevel = function () {
-    return this.getIdentification().getShareLevel();
+    return this.groupRelationJsonObject.shareLevel.toUpperCase();
 };
 
+GroupRelation.prototype.isInverse = function () {
+    return false;
+}
+
+GroupRelation.prototype.remove = function (preventRemoveDescendants) {
+    if (!preventRemoveDescendants) {
+        this.getDescendantsEvenIfCollapsed().forEach((bubble) => {
+            CurrentSubGraph.get().remove(bubble);
+        });
+        this.getDuplicates().forEach((duplicate) => {
+            duplicate.remove(true);
+        });
+    }
+    CurrentSubGraph.get().remove(this);
+    this.getParentBubble().removeChild(this);
+};
+
+GroupRelation.prototype.replaceRelatedVertex = function () {
+}
+
+GroupRelation.prototype.getSourceForkUri = function () {
+    return this.groupRelationJsonObject.sourceForkUri;
+};
+
+GroupRelation.prototype.getIndexVertexUri = function () {
+    return decodeURIComponent(
+        this.groupRelationJsonObject.indexVertexUri
+    );
+};
 
 api.GroupRelation = GroupRelation;
+
 
 export default api;

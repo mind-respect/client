@@ -12,9 +12,10 @@ api.fromServerFormatAndCenterUri = function (serverFormat, centerUri) {
     );
 };
 api.TagGraph = function (serverFormat, centerUri) {
-    this.subGraph = SubGraph.fromServerFormat(serverFormat);
+    this.subGraph = SubGraph.fromServerFormatAndCenterUri(serverFormat, centerUri);
     this.centerUri = centerUri;
     this.metaCenter = Tag.fromServerFormat(serverFormat.centerTag);
+    this.subGraph.add(this.metaCenter);
 };
 
 api.TagGraph.prototype.getMetaCenter = function () {

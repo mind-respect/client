@@ -1,11 +1,8 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import Triple from '@/triple/Triple'
-import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import IdUri from '@/IdUri'
 import Service from '@/Service'
-import Edge from '@/edge/Edge'
 import Vertex from '@/vertex/Vertex'
 import axios from 'axios'
 
@@ -19,47 +16,6 @@ api.createVertex = function () {
             response.data
         );
     });
-};
-api.addTuple = function (vertex) {
-    let newVertexId = IdUri.uuid();
-    let newEdgeId = IdUri.uuid();
-    let newVertex = Vertex.withUri(
-        "/service" + IdUri.vertexBaseUri() + "/" + newVertexId
-    );
-    let newEdge = Edge.withUriAndSourceAndDestinationVertex(
-        "/service" + IdUri.edgeBaseUri() + "/" + newEdgeId,
-        vertex,
-        newVertex
-    );
-
-    let promise = Service.geApi().post(
-        vertex.getUri(),
-        {
-            vertexId: newVertexId,
-            edgeId: newEdgeId
-        }
-    ).then(function (response) {
-        return Triple.fromEdgeAndSourceAndDestinationVertex(
-            Edge.fromServerFormat(response.data.edge),
-            vertex,
-            Vertex.fromServerFormat(response.data.end_vertex)
-        );
-    });
-    return {
-        optimistic: Triple.fromEdgeAndSourceAndDestinationVertex(
-            newEdge,
-            vertex,
-            newVertex
-        ),
-        promise: promise
-    };
-};
-
-api.updateLabel = function (vertex, label) {
-    return FriendlyResourceService.updateLabel(
-        vertex,
-        label
-    );
 };
 
 api.makePrivate = function (vertex) {

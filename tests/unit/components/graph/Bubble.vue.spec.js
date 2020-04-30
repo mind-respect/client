@@ -109,16 +109,16 @@ describe('Bubble', () => {
         ).getTopMostChildBubble();
         var newVertex = TestUtils.addTriple(bubble2).destinationVertex();
         TestUtils.startDragging(newVertex);
-        var changeSourceVertexSpy = Mock.getSpy(
+        var changeSourceSpy = Mock.getSpy(
             "EdgeService",
-            "changeSourceVertex"
+            "changeSource"
         );
         expect(
-            changeSourceVertexSpy.calls.count()
+            changeSourceSpy.calls.count()
         ).toBe(0);
         TestUtils.drop(bubble1);
         expect(
-            changeSourceVertexSpy.calls.count()
+            changeSourceSpy.calls.count()
         ).toBe(0);
     });
     /*todo*/

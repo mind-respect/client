@@ -148,7 +148,10 @@
                     if (searchText !== this.searchText) {
                         return;
                     }
-                    this.items = results;
+                    this.items = results.map((result) => {
+                        result.disabled = result.original.getGraphElement().isGroupRelation();
+                        return result;
+                    });
                     this.loading = false;
                     this.$refs.loadMore.reset(results.length, searchText);
                     this.$refs.searchCreate.reset(results.length, searchText);

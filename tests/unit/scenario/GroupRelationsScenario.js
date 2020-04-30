@@ -62,5 +62,32 @@ GroupRelationsScenario.prototype.getOtherRelationInTree = function () {
         "other relation"
     );
 };
+GroupRelationsScenario.prototype.expandPossession = function (possession) {
+    return this.expandBubbleWithKey(
+        possession,
+        "groupRelations.aroundPossessionOfBook1"
+    );
+};
+
+GroupRelationsScenario.prototype.expandPossession3 = function (possession) {
+    return this.expandBubbleWithKey(
+        possession,
+        "groupRelations.aroundPossessionOfBook3"
+    );
+};
+
+GroupRelationsScenario.prototype.getOriginalRelationGraph = function () {
+    return Scenario.getTestData(
+        "groupRelations.aroundOriginalRelation"
+    );
+};
+
+GroupRelationsScenario.prototype.expandOriginalRelation = function (originalRelation) {
+    return this.expandBubbleWithKey(
+        originalRelation,
+        "groupRelations.aroundOriginalRelation"
+    );
+};
+
 
 export default GroupRelationsScenario

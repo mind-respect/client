@@ -1,7 +1,7 @@
 import Scenario from './Scenario'
 
 let ThreeLevelDeepGroupRelationScenario = function () {
-    this.dataKey = "threeLevelDeepGroupRelation";
+    this.dataKey = "threeLevelDeepGroupRelation.fastChargingStationGraph";
     return this.init();
 };
 
@@ -13,6 +13,27 @@ ThreeLevelDeepGroupRelationScenario.prototype.getCenter = function () {
 
 ThreeLevelDeepGroupRelationScenario.prototype.getCenterInTree = function () {
     return this.getVertexWithLabelInTree("fast charging station");
+};
+
+ThreeLevelDeepGroupRelationScenario.prototype.expandRegion = function (region) {
+    return this.expandBubbleWithKey(
+        region,
+        "threeLevelDeepGroupRelation.aroundRegion"
+    );
+};
+
+ThreeLevelDeepGroupRelationScenario.prototype.expandRegionA = function (region) {
+    return this.expandBubbleWithKey(
+        region,
+        "threeLevelDeepGroupRelation.aroundSubRegionA"
+    );
+};
+
+ThreeLevelDeepGroupRelationScenario.prototype.expandRegionB = function (region) {
+    return this.expandBubbleWithKey(
+        region,
+        "threeLevelDeepGroupRelation.aroundSubRegionB"
+    );
 };
 
 export default ThreeLevelDeepGroupRelationScenario

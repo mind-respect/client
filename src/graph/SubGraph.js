@@ -2,10 +2,13 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import Edge from '@/edge/Edge'
+import Relation from '@/relation/Relation'
 import Vertex from '@/vertex/Vertex'
 import GraphElement from '@/graph-element/GraphElement'
+import GroupRelation from '@/group-relation/GroupRelation'
 import GraphElementType from "../graph-element/GraphElementType";
+import IdUri from "../IdUri";
+import Tag from "../tag/Tag";
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -27,7 +30,7 @@ api.empty = function () {
         {
             edges: {},
             vertices: {},
-            groupRelations: [],
+            groupRelations: {},
             tags: []
         },
         undefined,
@@ -44,16 +47,17 @@ api.withFacadeAndCenterUri = function (serverFacade, centerUri) {
 
 api.SubGraph = function (graph, centerUri, buildFacade) {
     this.otherGraphElements = {};
+    this.isCenterTag = centerUri && IdUri.isMetaUri(centerUri);
     if (buildFacade) {
         this.serverFormat = graph;
-        this._buildVertices();
-        this._buildEdges();
-        this.groupRelations = [];
         this.tagVertices = [];
+        this._buildVertices();
+        this._buildGroupRelations(centerUri);
+        this._buildEdges(centerUri);
     } else {
         this.edges = graph.edges;
         this.vertices = graph.vertices;
-        this.groupRelations = graph.groupRelations || [];
+        this.groupRelations = graph.groupRelations || {};
         this.tagVertices = graph.tags || [];
     }
     if (centerUri) {
@@ -83,9 +87,7 @@ api.SubGraph.prototype.add = function (graphElement) {
     } else if (graphElement.isVertex()) {
         this.addVertex(graphElement);
     } else if (graphElement.isGroupRelation()) {
-        this.groupRelations.push(
-            graphElement
-        );
+        this.groupRelations[graphElement.getUri()] = graphElement;
         graphElement.getNextChildren().forEach((child) => {
             child.direction = graphElement.direction;
             child.parentVertex = graphElement.parentVertex;
@@ -108,16 +110,26 @@ api.SubGraph.prototype._isEdgeAlreadyAdded = function (edge) {
 
 api.SubGraph.prototype._buildEdges = function () {
     this.edges = {};
+    let tag;
+    if (this.isCenterTag) {
+        tag = Tag.withUri(this.centerUri);
+    }
     Object.values(this.serverFormat.edges).forEach((edge) => {
-        let facade = Edge.fromServerFormat(edge);
+        let facade = Relation.fromServerFormat(edge);
         facade.setSourceVertex(
-            this.getVertexWithUri(facade.getSourceVertex().getUri())
+            this.getHavingUri(facade.getSourceVertex().getUri())
         );
         facade.setDestinationVertex(
-            this.getVertexWithUri(facade.getDestinationVertex().getUri())
+            this.getHavingUri(facade.getDestinationVertex().getUri())
         );
+        // if (facade.getSourceVertex() === undefined || (!this.isCenterTag && facade.getDestinationVertex() === undefined)) {
+        //     return;
+        // }
+        // if (this.isCenterTag && !facade.hasIdentification(tag)) {
+        //     return;
+        // }
         this.addEdge(facade);
-    })
+    });
 };
 
 api.SubGraph.prototype.addVertex = function (vertex) {
@@ -171,15 +183,7 @@ api.SubGraph.prototype.removeTag = function (tag) {
 };
 
 api.SubGraph.prototype.removeGroupRelation = function (groupRelation) {
-    let l = this.groupRelations.length;
-    while (l--) {
-        if (this.groupRelations[l].getId() === groupRelation.getId()) {
-            this.groupRelations.splice(l, 1);
-            groupRelation.getNextChildren().forEach((child) => {
-                this.remove(child)
-            });
-        }
-    }
+    delete this.groupRelations[groupRelation.getUri()];
 };
 
 api.SubGraph.prototype.removeEdge = function (edge) {
@@ -215,15 +219,15 @@ api.SubGraph.prototype.getEdges = function () {
     return [].concat.apply([], edges)
 };
 
-api.SubGraph.prototype.sortedEdges = function () {
-    let centerVertex = this.getCenter();
-    let childrenIndex = centerVertex.getChildrenIndex();
-    return this.getEdges().sort((a, b) => {
-        let vertexA = a.getOtherVertex(centerVertex);
-        let vertexB = b.getOtherVertex(centerVertex);
+api.SubGraph.prototype.sortedEdgesAndGroupRelations = function () {
+    let centerFork = this.getHavingUri(this.centerUri);
+    let childrenIndex = centerFork.getChildrenIndex();
+    return this.getEdges().concat(this.getGroupRelations()).sort((a, b) => {
+        let forkA = a.isEdge() ? a.getOtherVertex(centerFork) : a;
+        let forkB = b.isEdge() ? b.getOtherVertex(centerFork) : b;
         return GraphElement.sortCompare(
-            vertexA,
-            vertexB,
+            forkA,
+            forkB,
             childrenIndex
         );
     });
@@ -235,12 +239,20 @@ api.SubGraph.prototype.getVertices = function () {
     return [].concat.apply([], vertices)
 };
 
+api.SubGraph.prototype.getGroupRelations = function () {
+    return Object.values(this.groupRelations);
+};
+
 api.SubGraph.prototype.getGraphElements = function () {
-    return this.groupRelations.concat(this.getEdges()).concat(this.getVertices()).concat(this.tagVertices);
+    return this.getGroupRelations().concat(this.getEdges()).concat(this.getVertices()).concat(this.tagVertices);
 };
 
 api.SubGraph.prototype.getVertexWithUri = function (uri) {
     return this.vertices[uri][0];
+};
+
+api.SubGraph.prototype.getGroupRelationWithUri = function (uri) {
+    return this.groupRelations[uri];
 };
 
 api.SubGraph.prototype.hasUri = function (uri) {
@@ -256,11 +268,8 @@ api.SubGraph.prototype.getHavingUri = function (uri) {
     if (this.edges[uri] !== undefined) {
         return this.edges[uri][0];
     }
-    let groupRelation = this.groupRelations.filter((groupRelation) => {
-        return groupRelation.getUri() === uri;
-    });
-    if (groupRelation.length) {
-        return groupRelation[0];
+    if (this.groupRelations[uri] !== undefined) {
+        return this.groupRelations[uri];
     }
     let tagVertex = this.tagVertices.filter((tagVertex) => {
         return tagVertex.getUri() === uri;
@@ -324,7 +333,7 @@ api.SubGraph.prototype.getEdgesWithUri = function (uri) {
 };
 
 api.SubGraph.prototype.getGroupRelationWithUiId = function (uiId) {
-    return this.groupRelations.filter((groupRelation) => {
+    return this.getGroupRelations().filter((groupRelation) => {
         return groupRelation.uiId === uiId;
     })[0];
 };
@@ -335,22 +344,6 @@ api.SubGraph.prototype.getTagBubbleWithUiId = function (uiId) {
     })[0];
 };
 
-api.SubGraph.prototype.getCenter = function () {
-    return this.getVertexWithUri(this.centerUri);
-};
-
-api.SubGraph.prototype.getCenterTagIndex = function () {
-    return this.serverFormat.childrenIndexesCenterTag;
-};
-
-api.SubGraph.prototype.getCenterTagColors = function () {
-    return this.serverFormat.colorsCenterTag;
-};
-
-api.SubGraph.prototype.getFontCenterTag = function () {
-    return this.serverFormat.fontCenterTag;
-};
-
 api.SubGraph.prototype._buildVertices = function () {
     this.vertices = {};
     Object.values(this.serverFormat.vertices).forEach((vertex) => {
@@ -359,4 +352,19 @@ api.SubGraph.prototype._buildVertices = function () {
     });
 };
 
+api.SubGraph.prototype._buildGroupRelations = function (centerUri) {
+    this.groupRelations = {};
+    Object.values(this.serverFormat.groupRelations).forEach((groupRelation) => {
+        // if (groupRelation.sourceForkUri === undefined) {
+        //     return;
+        // }
+        // let sourceForkUri = decodeURIComponent(groupRelation.sourceForkUri);
+        // let groupRelationUri = decodeURIComponent(groupRelation.graphElement.friendlyResource.uri);
+        // if (!this.isCenterTag && (sourceForkUri !== centerUri && groupRelationUri !== centerUri)) {
+        //     return;
+        // }
+        let facade = GroupRelation.fromServerFormat(groupRelation);
+        this.groupRelations[facade.getUri()] = facade;
+    });
+};
 export default api;

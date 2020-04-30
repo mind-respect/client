@@ -6,13 +6,11 @@ import GraphElement from '@/graph-element/GraphElement'
 const api = {};
 api.buildWithUri = function (uri) {
     return {
-        vertex: {
-            graphElement: GraphElement.buildObjectWithUri(uri)
-        }
+        graphElement: GraphElement.buildObjectWithUri(uri)
     };
 };
 api.getFriendlyResourceServerObject = function (serverFormat) {
-    return serverFormat.vertex.graphElement.friendlyResource;
+    return serverFormat.graphElement.friendlyResource;
 };
 
 export default api;

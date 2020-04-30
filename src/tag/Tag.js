@@ -323,9 +323,6 @@ Tag.Tag.prototype._applyToAllTags = function (visitor) {
         if (graphElement.isMeta() && graphElement.getOriginalMeta().getUri() === this.getUri()) {
             tag = graphElement.getOriginalMeta();
             visitor(graphElement);
-        } else if (graphElement.isGroupRelation() && graphElement.getIdentification().getUri() === this.getUri()) {
-            tag = graphElement.getIdentification();
-            visitor(graphElement);
         } else {
             tag = graphElement.getIdentifierHavingExternalUri(
                 this.getExternalResourceUri()

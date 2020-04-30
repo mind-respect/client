@@ -2,9 +2,6 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 
-import Vue from "vue";
-import Store from '@/store'
-
 const UiUtils = {};
 let _isChrome;
 

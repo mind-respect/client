@@ -28,6 +28,13 @@ CreationDateScenario.prototype.expandBubble7 = function (bubble7) {
     return bubble7.controller().expand();
 };
 
+CreationDateScenario.prototype.expandTodoGroupRelation = function (todoGroupRelation) {
+    return this.expandBubbleWithKey(
+        todoGroupRelation,
+        "aroundTodoGroupRelation"
+    );
+};
+
 function getSurroundBubble7Graph() {
     return Scenario.getTestData(
         "creationDate.surroundBubble7Graph"

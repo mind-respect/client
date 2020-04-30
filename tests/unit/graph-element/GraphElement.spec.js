@@ -247,6 +247,21 @@ describe("GraphElement", () => {
     it("can get descendants of a bubble where there is a group relation", async () => {
         let scenario = await new GroupRelationsScenario();
         let center = scenario.getCenterInTree();
+        let groupRelation = TestUtil.getChildWithLabel(
+            center,
+            "Possession"
+        );
+        await scenario.expandPossession(groupRelation);
+        let originalRelation = TestUtil.getChildWithLabel(
+            center,
+            "original relation"
+        );
+        await scenario.expandOriginalRelation(originalRelation);
+        let possession3 = TestUtil.getChildWithLabel(
+            groupRelation,
+            "Possession of book 3"
+        );
+        await scenario.expandPossession3(possession3);
         Selection.reset();
         expect(
             Selection.getNbSelectedRelations()
@@ -324,22 +339,6 @@ describe("GraphElement", () => {
                 childrenIndexes.hasOwnProperty(b71.getUri())
             ).toBeTruthy()
         });
-        it("includes child vertices of inverse relations under a group relation", async () => {
-            let scenario = await new GroupRelationsScenario();
-            let parentVertex = scenario.getCenterInTree();
-            let inverseRelation = TestUtil.getChildWithLabel(
-                scenario.getPossessionGroupRelation(),
-                "Possessed by book 2"
-            );
-            expect(
-                inverseRelation.isInverse()
-            ).toBeTruthy();
-            expect(
-                parentVertex.buildChildrenIndex().hasOwnProperty(
-                    inverseRelation.getSourceVertex().getUri()
-                )
-            ).toBeTruthy();
-        });
         it("does not have duplicate indexes when moving a group relation", async () => {
             let scenario = await new GroupRelationsScenario();
             let center = scenario.getCenterInTree();
@@ -353,54 +352,6 @@ describe("GraphElement", () => {
             expect(
                 indexArray.length
             ).toBe(indexAsSet.length)
-        });
-        it("includes child vertices under group relations", async () => {
-            let scenario = await new GroupRelationsScenario();
-            let center = scenario.getCenterInTree();
-            let groupRelation = TestUtil.getChildWithLabel(
-                center,
-                "Possession"
-            );
-            groupRelation.expand();
-            let groupRelationUnder = groupRelation.getNextBubble();
-            groupRelationUnder.expand();
-            let vertexUnderDeepGroupRelation = groupRelationUnder.getNextBubble().getNextBubble();
-            expect(
-                vertexUnderDeepGroupRelation.isVertex()
-            ).toBeTruthy();
-            let vertexUnderGroupRelation = groupRelationUnder.getDownBubble().getNextBubble();
-            expect(
-                vertexUnderGroupRelation.isVertex()
-            ).toBeTruthy();
-            let childrenIndexes = center.buildChildrenIndex();
-            expect(
-                childrenIndexes.hasOwnProperty(vertexUnderGroupRelation.getUri())
-            ).toBeTruthy();
-            expect(
-                childrenIndexes.hasOwnProperty(vertexUnderDeepGroupRelation.getUri())
-            ).toBeTruthy();
-        });
-        it("includes child vertices under collapsed group relations", async () => {
-            let scenario = await new GroupRelationsScenario();
-            let centerVertex = scenario.getCenterInTree();
-            let possession = TestUtil.getChildWithLabel(centerVertex, "Possession");
-            let secondLevelGroupRelation = TestUtil.getChildWithLabel(
-                possession,
-                "Possession of book 3"
-            );
-            possession.collapse();
-            let deepVertex = secondLevelGroupRelation.getNextChildrenEvenIfCollapsed()[0].getDestinationVertex();
-            secondLevelGroupRelation.collapse();
-            expect(
-                secondLevelGroupRelation.isGroupRelation()
-            ).toBeTruthy();
-            let childrenIndexes = centerVertex.buildChildrenIndex();
-            expect(
-                Object.keys(childrenIndexes).length
-            ).toBe(8);
-            expect(
-                childrenIndexes.hasOwnProperty(deepVertex.getUri())
-            ).toBeTruthy()
         });
         it("gives right order for center vertices", async () => {
             let scenario = await new ThreeScenario();
@@ -440,119 +391,6 @@ describe("GraphElement", () => {
             expect(
                 b4Index.index
             ).toBe(2);
-        });
-        it("prevents from setting left right when under a group relation under a non center vertex", async () => {
-            let scenario = await new GroupRelationsScenario();
-            let center = scenario.getCenterInTree();
-            let otherBubble = TestUtil.getChildWithLabel(
-                center,
-                "other relation"
-            ).getNextBubble();
-            let groupRelation = scenario.getPossessionGroupRelation();
-            groupRelation.expand();
-            await groupRelation.controller().moveUnderParent(otherBubble);
-            expect(
-                otherBubble.isToTheLeft()
-            ).toBeFalsy();
-            let book1 = TestUtil.getChildDeepWithLabel(
-                groupRelation,
-                "book 1"
-            );
-            let otherDirectionChildrenIndex = {};
-            otherDirectionChildrenIndex[book1.getUri()] = {
-                index: 0,
-                toTheLeft: true
-            };
-            otherBubble.setChildrenIndex(
-                otherDirectionChildrenIndex
-            );
-            expect(
-                otherBubble.getChildrenIndex()[book1.getUri()].toTheLeft
-            ).toBeTruthy();
-            let builtIndex = otherBubble.buildChildrenIndex();
-            expect(
-                builtIndex[book1.getUri()].toTheLeft
-            ).toBeTruthy();
-        });
-        it("changes direction under group relation when vertex is center", async () => {
-            let scenario = await new GroupRelationsScenario();
-            let center = scenario.getCenterInTree();
-            let groupRelation = scenario.getPossessionGroupRelation();
-            groupRelation.expand();
-            let book1 = TestUtil.getChildDeepWithLabel(
-                groupRelation,
-                "book 1"
-            );
-            let otherDirectionChildrenIndex = {};
-            otherDirectionChildrenIndex[book1.getUri()] = {
-                index: 0,
-                toTheLeft: true
-            };
-            center.setChildrenIndex(
-                otherDirectionChildrenIndex
-            );
-            expect(
-                groupRelation.isToTheLeft()
-            ).toBeTruthy();
-            groupRelation.direction = "right";
-            groupRelation.getDescendants().forEach((descendant) => {
-                descendant.direction = "right";
-            });
-            expect(
-                center.getChildrenIndex()[book1.getUri()].toTheLeft
-            ).toBeTruthy();
-            let builtIndex = center.buildChildrenIndex();
-            expect(
-                builtIndex[book1.getUri()].toTheLeft
-            ).toBeFalsy();
-        });
-        it("changes direction under deep group relation when vertex is center", async () => {
-            let scenario = await new ThreeLevelGroupRelationScenario();
-            let center = scenario.getCenterInTree();
-            let group1 = TestUtil.getChildWithLabel(
-                center,
-                "group1"
-            );
-            group1.expand();
-            let group2 = TestUtil.getChildWithLabel(
-                group1,
-                "group2"
-            );
-            group2.expand();
-            let group3 = TestUtil.getChildWithLabel(
-                group2,
-                "group3"
-            );
-            group3.expand();
-            let jjjj = TestUtil.getChildDeepWithLabel(
-                group3,
-                "jjjj"
-            );
-            group1.direction = "right";
-            group1.getDescendants().forEach((descendant) => {
-                descendant.direction = "right";
-            });
-            expect(
-                group1.isToTheLeft()
-            ).toBeFalsy();
-            let centerChildrenIndex = {};
-            centerChildrenIndex[jjjj.getUri()] = {
-                index: 0,
-                toTheLeft: true
-            };
-            center.setChildrenIndex(
-                centerChildrenIndex
-            );
-            expect(
-                center.getChildrenIndex()[jjjj.getUri()].toTheLeft
-            ).toBeTruthy();
-            expect(
-                jjjj.isToTheLeft()
-            ).toBeFalsy();
-            let builtIndex = center.buildChildrenIndex();
-            expect(
-                builtIndex[jjjj.getUri()].toTheLeft
-            ).toBeFalsy();
         });
     });
 });
