@@ -287,35 +287,6 @@ GroupRelation.prototype.getGroupRelationInSequenceWithTag = function (tag) {
     return groupRelationWithTag.length > 0 ? groupRelationWithTag[0] : false;
 };
 
-GroupRelation.prototype.getIdentifiersAtAnyDepth = function (groupRelationToStop, exclusive) {
-    return Array.prototype.concat.apply([], this.getSerialGroupRelations(
-        groupRelationToStop,
-        exclusive
-    ).map((groupRelation) => {
-        return groupRelation.getIdentifiers()
-    }));
-};
-
-GroupRelation.prototype.getParentSerialGroupRelations = function () {
-    let serialGroupRelations = [];
-    let parentBubble = this.model();
-    do {
-        serialGroupRelations.push(
-            parentBubble
-        );
-        parentBubble = parentBubble.getParentBubble();
-    } while (parentBubble.isGroupRelation());
-    return serialGroupRelations;
-};
-
-GroupRelation.prototype.getParentSerialTags = function () {
-    let groupVertex = this.getClosestAncestorInTypes([GraphElementType.MetaGroupVertex]);
-    let groupVertexTags = groupVertex.isMetaGroupVertex() ? [groupVertex.getParentVertex().getOriginalMeta()] : [];
-    return groupVertexTags.concat(this.getParentSerialGroupRelations().map((groupRelation) => {
-        return groupRelation.getIdentification();
-    }));
-};
-
 GroupRelation.prototype.getSerialGroupRelations = function (groupRelationToStop, exclusive) {
     let groupRelationsAtAnyDepth = [].concat(this);
     if (groupRelationToStop && groupRelationToStop.getUri() === this.getUri()) {

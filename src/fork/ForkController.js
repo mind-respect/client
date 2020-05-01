@@ -24,6 +24,9 @@ ForkController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
     if (avoidExpandChild && !this.model().canExpand()) {
         return Promise.resolve();
     }
+    if (this.model().isMetaGroupVertex()) {
+        this.model().expand();
+    }
     let promise = Promise.resolve();
     if (!avoidShowingLoad) {
         LoadingFlow.enterNoSpinner();
