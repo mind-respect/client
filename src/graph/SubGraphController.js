@@ -72,6 +72,9 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             centerFork.setFont(
                 centerFromServer.getFont()
             );
+            centerFork.setChildrenIndex(
+                centerFromServer.getChildrenIndex()
+            );
             centerFromServer.getIdentifiers().forEach((tag) => {
                 centerFork.addIdentification(tag);
             });
@@ -86,22 +89,19 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             } else {
                 subGraph.vertices[centerFork.getUri()] = [centerFork];
             }
-
-        } else {
-            if (isCenterOnMap) {
-                centerFork.makeCenter();
-            }
-            if (!preventAddInCurrentGraph) {
-                CurrentSubGraph.get().add(centerFork);
-            }
-        }
-        if (isParentAlreadyOnMap) {
             let hasModifiedChildrenIndex = centerFork.integrateChildrenIndex(centerFromServer.getChildrenIndex());
             if (hasModifiedChildrenIndex) {
                 GraphElementService.saveChildrenIndex(
                     centerFork,
                     centerFork.getChildrenIndex()
                 )
+            }
+        } else {
+            if (isCenterOnMap) {
+                centerFork.makeCenter();
+            }
+            if (!preventAddInCurrentGraph) {
+                CurrentSubGraph.get().add(centerFork);
             }
         }
         let childrenIndex = centerFork.getChildrenIndex();
