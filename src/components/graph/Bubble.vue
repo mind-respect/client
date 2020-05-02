@@ -354,9 +354,6 @@
                 }
                 return "";
             },
-            isNextBubbleExpanded: function () {
-                return this.bubble.getNextBubble().isExpanded;
-            },
             isInverse: function () {
                 return this.bubble.isEdge() && this.bubble.isInverse();
             },

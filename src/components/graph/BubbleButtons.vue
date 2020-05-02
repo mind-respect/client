@@ -205,7 +205,7 @@
             },
             copyLabel: function () {
                 this.$copyText(
-                    Selection.getSingle().getLabel()
+                    Selection.getSingle().getLabelHtml().textContent
                 )
             }
         },
