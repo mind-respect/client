@@ -65,7 +65,7 @@
     import I18n from '@/I18n'
     import TagRelationController from '@/tag/TagRelationController'
     import KeyboardActions from '@/KeyboardActions'
-    import KeyCode from "keycode-js";
+    import GraphElementType from "../graph-element/GraphElementType";
 
     export default {
         name: "RemoveTagDialog",
@@ -144,7 +144,7 @@
             remove: async function () {
                 let controller = new TagRelationController.MetaRelationController(
                     this.bubbles.map((vertex) => {
-                        return vertex.getParentBubble();
+                        return vertex.getClosestAncestorInTypes([GraphElementType.MetaRelation])
                     })
                 );
                 await controller.removeDo();

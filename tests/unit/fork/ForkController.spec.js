@@ -6,7 +6,7 @@ describe("ForkController", () => {
     it("expands tag group vertices", async () => {
         let scenario = await new AroundTodoTagScenario();
         let toDoMetaBubble = scenario.getCenterInTree();
-        toDoMetaBubble.controller().expand();
+        await toDoMetaBubble.controller().expand();
         let o1 = TestUtil.getChildDeepWithLabel(
             toDoMetaBubble,
             "o1"

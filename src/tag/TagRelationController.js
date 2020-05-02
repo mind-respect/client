@@ -31,12 +31,13 @@ TagRelationController.prototype.noteCanDo = function () {
 TagRelationController.prototype.remove = function (skipConfirmation) {
     Store.dispatch("setIsRemoveTagFlow", true)
 };
-TagRelationController.prototype.removeDo = function () {
-    return Promise.all(this.getModelArray().map((metaRelation) => {
-        let metaBubble = metaRelation.getNextBubble().isMeta() ?
+TagRelationController.prototype.removeDo = async function () {
+    let taggedBubbles = [];
+    await Promise.all(this.getModelArray().map((metaRelation) => {
+        let tagVertex = metaRelation.getNextBubble().isMeta() ?
             metaRelation.getNextBubble() :
             metaRelation.getClosestAncestorInTypes([GraphElementType.Meta]);
-        let tag = metaBubble.getOriginalMeta();
+        let tag = tagVertex.getOriginalMeta();
         let parentBubble = metaRelation.getClosestAncestorInTypes([
             GraphElementType.Vertex,
             GraphElementType.Edge,
@@ -45,9 +46,8 @@ TagRelationController.prototype.removeDo = function () {
             GraphElementType.Meta,
             GraphElementType.GroupRelation
         ]);
-        let taggedUri;
         if (parentBubble.isMetaGroupVertex()) {
-            taggedUri = metaRelation.getEdgeUri();
+            taggedBubbles.push(metaRelation);
             if (parentBubble.getNumberOfChild() === 1) {
                 parentBubble.remove();
             } else {
@@ -60,15 +60,20 @@ TagRelationController.prototype.removeDo = function () {
             } else {
                 taggedBubble = metaRelation.getOtherVertex(parentBubble);
             }
+            if (taggedBubble.isMetaGroupVertex()) {
+                taggedBubbles = taggedBubble.getNextChildrenEvenIfCollapsed();
+            } else {
+                taggedBubbles.push(taggedBubble);
+            }
+        }
+        return Promise.all(taggedBubbles.map((taggedBubble) => {
             taggedBubble.removeTag(tag);
             taggedBubble.refreshImages();
-            taggedUri = taggedBubble.getUri();
             metaRelation.remove();
-        }
-        return TagService.remove(taggedUri, tag)
-    })).then(() => {
-        Store.dispatch("redraw");
-    });
+            return TagService.remove(taggedBubble.getUri(), tag);
+        }))
+    }));
+    Store.dispatch("redraw");
 };
 TagRelationController.prototype.cutCanDo = function () {
     return false;
