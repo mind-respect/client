@@ -53,13 +53,13 @@ GroupRelationController.prototype.addChildWhenInTransition = function (convertPr
     )
 };
 
-GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveIndex, convertPromise) {
+GroupRelationController.prototype.addChild = async function (index, isToTheLeft, saveIndex, convertPromise) {
     if (saveIndex === undefined) {
         saveIndex = true;
     }
     let parentVertex = this.model().getParentVertex();
     if (this.model().canExpand()) {
-        this.model().expand(true);
+        await this.expand(true, true);
     }
     let addTuple = ForkService.addTuple(
         this.model(),
@@ -94,7 +94,7 @@ GroupRelationController.prototype.addChild = function (index, isToTheLeft, saveI
             triple.destination.focus();
         }
     });
-    return Promise.resolve(triple);
+    return triple;
 };
 
 GroupRelationController.prototype.addSiblingCanDo = function () {
