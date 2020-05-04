@@ -109,7 +109,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
         let centerParentBubble = centerFork.getParentBubble();
         let centerParentFork = centerFork.getParentFork();
         let centerVertex = centerFork.isGroupRelation() ? centerFork.getParentVertex() : centerFork;
-        subGraph.sortedEdgesAndGroupRelations().forEach((child) => {
+        subGraph.sortedEdgesAndGroupRelations(centerFork).forEach((child) => {
             let childHasMissingSourceFork = centerIsMissingSourceFork && child.getUri() === centerFork.getUri();
             if (!childHasMissingSourceFork && isParentAlreadyOnMap && (child.getUri() === centerFork.getUri() || child.getUri() === centerParentBubble.getUri()) || child.getUri() === centerParentFork.getUri()) {
                 return;

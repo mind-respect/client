@@ -219,8 +219,7 @@ api.SubGraph.prototype.getEdges = function () {
     return [].concat.apply([], edges)
 };
 
-api.SubGraph.prototype.sortedEdgesAndGroupRelations = function () {
-    let centerFork = this.getHavingUri(this.centerUri);
+api.SubGraph.prototype.sortedEdgesAndGroupRelations = function (centerFork) {
     let childrenIndex = centerFork.getChildrenIndex();
     return this.getEdges().concat(this.getGroupRelations()).sort((a, b) => {
         let forkA = a.isEdge() ? a.getOtherVertex(centerFork) : a;

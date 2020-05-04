@@ -51,11 +51,11 @@
         },
         data: function () {
             I18n.i18next.addResources("en", "color", {
-                "title": "Define color",
+                "title": "Color",
                 useDefault: "Default color"
             });
             I18n.i18next.addResources("fr", "color", {
-                "title": "Définir la couleur",
+                "title": "Couleur",
                 useDefault: "Couleur par défaut"
             });
             return {
@@ -86,7 +86,7 @@
                     KeyboardActions.enable();
                     this.$store.dispatch("setIsColorFlow", false);
                     this.refreshColor(this.originalColor);
-                }else{
+                } else {
                     KeyboardActions.disable();
                 }
             },

@@ -151,10 +151,10 @@ function sortEdges(edges, metaGroupVertex) {
     });
 }
 
-function buildEdgesGroupedBySourceFork(metaSubGraph, centerVertex) {
+function buildEdgesGroupedBySourceFork(metaSubGraph, centerFork) {
     let edgesBySourceFork = {};
     let subGraph = metaSubGraph.getSubGraph();
-    subGraph.sortedEdgesAndGroupRelations().forEach((child) => {
+    subGraph.sortedEdgesAndGroupRelations(centerFork).forEach((child) => {
         if (!child.hasIdentification(metaSubGraph.getMetaCenter())) {
             return;
         }
