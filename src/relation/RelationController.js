@@ -207,13 +207,15 @@ RelationController.prototype.leaveContextDo = async function () {
     const original = this.model().getDestinationVertex();
     const isRemoveFlow = this.model().getParentVertex().getUri() === original.getUri();
     const newVertex = await VertexService.createVertex();
-    CurrentSubGraph.get().remove(original);
-    CurrentSubGraph.get().add(newVertex);
+    if (!this.model().isInverse()) {
+        CurrentSubGraph.get().remove(original);
+        CurrentSubGraph.get().add(newVertex);
+    }
     const newVertexController = newVertex.controller();
     const addIdentifiersPromise = newVertexController.addIdentifiers(
         original.getIdentifiersIncludingSelf()
     );
-    return Promise.all([
+    await Promise.all([
         newVertexController.setLabel(original.getLabel()),
         newVertexController.setShareLevelDo(original.getShareLevel()),
         addIdentifiersPromise,
@@ -224,19 +226,19 @@ RelationController.prototype.leaveContextDo = async function () {
             this.model().getOtherVertex(original).getShareLevel(),
             newVertex.getShareLevel()
         )
-    ]).then(() => {
-        if (isRemoveFlow) {
-            this.model().getParentVertex().addIdentifications(
-                newVertex.getIdentifiers()
-            );
-            this.model().remove();
-        } else {
-            this.model().setDestinationVertex(newVertex);
-            this.model().refreshChildren();
-            GraphElementService.changeChildrenIndex(this.model().getParentFork());
-        }
-        return newVertex;
-    });
+    ]);
+    if (isRemoveFlow) {
+        this.model().getParentVertex().addIdentifications(
+            newVertex.getIdentifiers()
+        );
+        Selection.setToSingle(this.model().getParentVertex());
+        this.model().remove();
+    } else {
+        this.model().setDestinationVertex(newVertex);
+        this.model().refreshChildren();
+        GraphElementService.changeChildrenIndex(this.model().getParentFork());
+    }
+    return newVertex;
 };
 
 export default api;

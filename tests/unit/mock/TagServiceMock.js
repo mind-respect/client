@@ -1,5 +1,6 @@
 import TestUtil from '../util/TestUtil'
 import TagService from '@/tag/TagService'
+import IdUri from "@/IdUri";
 
 const api = {};
 const spies = {};
@@ -10,13 +11,16 @@ api.applyDefault = function () {
 
 
 api.add = function () {
-    return jest.spyOn(TagService, "add").mockImplementation((graphElement, identification) => {
-        identification.setUri(
+    return jest.spyOn(TagService, "add").mockImplementation((graphElement, tag) => {
+        tag.setUri(
             TestUtil.generateIdentificationUri()
         );
-        identification.getNbNeighbors().nbPrivate++;
+        tag.getNbNeighbors().nbPrivate++;
+        if (IdUri.isUriOfAGraphElement(tag.getExternalResourceUri())) {
+            tag.getNbNeighbors().nbPrivate++;
+        }
         return Promise.resolve(
-            [identification]
+            [tag]
         );
     });
 };

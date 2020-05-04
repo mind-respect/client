@@ -161,10 +161,6 @@ Tag.Tag.prototype.getServerFormat = function () {
     return this.identificationServerFormat;
 };
 
-Tag.Tag.prototype.isRefTag = function () {
-    return this.getExternalResourceUri().indexOf("/ref/") > -1;
-};
-
 Tag.Tag.prototype.makeGeneric = function () {
     this.setRelationExternalResourceUri(
         RELATION_URIS.generic
@@ -177,11 +173,7 @@ Tag.Tag.prototype.makeSameAs = function () {
     );
     return this;
 };
-Tag.Tag.prototype.refersToAGraphElement = function () {
-    return IdUri.isUriOfAGraphElement(
-        this.getExternalResourceUri()
-    );
-};
+
 Tag.Tag.prototype.setRelationExternalResourceUri = function (relationExternalResourceUri) {
     return this.identificationServerFormat.relationExternalResourceUri = relationExternalResourceUri;
 };

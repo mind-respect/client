@@ -6,7 +6,6 @@ import Selection from '@/Selection'
 import Tag from '@/tag/Tag'
 import ShareLevel from "@/vertex/ShareLevel";
 import CreationDateScenario from "../scenario/CreationDateScenario";
-import ThreeLevelGroupRelationScenario from "../scenario/ThreeLevelGroupRelationScenario";
 
 describe("GraphElement", () => {
     describe("addTag", () => {
@@ -33,6 +32,23 @@ describe("GraphElement", () => {
             expect(
                 b2.getRelevantTags().length
             ).toBe(1);
+        });
+        it("add tag to graph element on map sets new tag nb neighbors to 2", async () => {
+            let scenario = await new ThreeScenario();
+            let center = scenario.getCenterInTree();
+            let b2 = TestUtil.getChildDeepWithLabel(
+                center,
+                "b2"
+            );
+            let b3 = TestUtil.getChildDeepWithLabel(
+                center,
+                "b3"
+            );
+            let b3AsTag = Tag.fromFriendlyResource(b3);
+            b2.controller().addIdentification(b3AsTag);
+            expect(
+                b3AsTag.getNbNeighbors().getTotal()
+            ).toBe(2);
         });
     });
 

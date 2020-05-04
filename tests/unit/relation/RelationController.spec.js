@@ -455,10 +455,43 @@ describe("RelationController", () => {
             expect(
                 center.getIdentifiersIncludingSelf()[0].getNbNeighbors().getTotal()
             ).toBe(0);
+            Mock.spies["TagService"].add.mockImplementation((graphElement, tag) => {
+                tag.setUri(
+                    TestUtil.generateIdentificationUri()
+                );
+                tag.getNbNeighbors().nbPrivate++;
+                return Promise.resolve(
+                    [tag]
+                );
+            })
             await relation.controller().leaveContextDo();
             expect(
                 center.getIdentifiersIncludingSelf()[0].getNbNeighbors().getTotal()
             ).toBe(1);
+        });
+        it("prevents remove original and adding new vertex when relation is inverse", async () => {
+            let scenario = await new LeaveContextChoiceAScenario();
+            let center = scenario.getCenterInTree();
+            let techChoice = TestUtil.getChildDeepWithLabel(center, "tech choice");
+            let relation = techChoice.getParentBubble();
+            relation.setLabel("rel label");
+            expect(
+                relation.isInverse()
+            ).toBeTruthy();
+            expect(relation.isEdge()).toBeTruthy();
+            expect(
+                CurrentSubGraph.get().hasUri(center.getUri())
+            ).toBeTruthy();
+            expect(
+                Object.values(CurrentSubGraph.get().getVertices()).length
+            ).toBe(4);
+            await relation.controller().leaveContextDo();
+            expect(
+                CurrentSubGraph.get().hasUri(center.getUri())
+            ).toBeTruthy();
+            expect(
+                Object.values(CurrentSubGraph.get().getVertices()).length
+            ).toBe(3);
         });
         it("adds new vertex in current sub graph", async () => {
             let scenario = await new LeaveContextChoiceAScenario();
