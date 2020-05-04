@@ -266,7 +266,7 @@ GraphElement.GraphElement.prototype.getTagsAndSelfIfRelevant = function () {
 
 GraphElement.GraphElement.prototype.getRelevantTags = function () {
     return this.getIdentifiersIncludingSelf().filter(function (tag) {
-        return tag.getNbNeighbors().getTotalChildren() > 0;
+        return tag.getNbNeighbors().getTotal() > 0;
     });
 };
 
