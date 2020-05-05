@@ -103,6 +103,33 @@ describe("RelationController", () => {
                 newGroupRelation.getNumberOfChild()
             ).toBe(2);
         });
+        it("keeps shown tags under new relation", async () => {
+            let scenario = await new ThreeScenario();
+            let center = scenario.getBubble1InTree();
+            let r1 = TestUtil.getChildWithLabel(
+                center,
+                "r1"
+            );
+            let tag = TestUtil.dummyTag();
+            tag.setLabel("some tag");
+            await r1.controller().addIdentification(tag);
+            await r1.controller().showTags();
+            await r1.controller().addChild();
+            let groupRelation = TestUtil.getChildWithLabel(
+                center,
+                "some tag"
+            );
+            expect(
+                groupRelation.getGraphElementType()
+            ).toBe(GraphElementType.GroupRelation);
+            expect(
+                groupRelation.getNumberOfChild()
+            ).toBe(3);
+            let lastChild = groupRelation.getNextChildren()[groupRelation.getNumberOfChild() - 1];
+            expect(
+                lastChild.getGraphElementType()
+            ).toBe(GraphElementType.MetaRelation);
+        });
     });
 
     //todo

@@ -202,7 +202,7 @@ GraphElementController.prototype.hideTagsCanDo = function () {
     return this.model().areTagsShown;
 };
 
-GraphElementController.prototype.hideTags = function () {
+GraphElementController.prototype.hideTags = async function () {
     let children = this.model().getNextChildren();
     let l = children.length;
     while (l--) {
@@ -213,7 +213,7 @@ GraphElementController.prototype.hideTags = function () {
     }
     this.model().areTagsShown = false;
     Store.dispatch("redraw");
-    return Promise.resolve();
+    await Vue.nextTick();
 };
 
 GraphElementController.prototype.acceptCanDo = function () {
@@ -466,7 +466,7 @@ GraphElementController.prototype.moveBelow = function (otherEdge) {
     );
 };
 
-GraphElementController.prototype.moveAbove = function (otherEdge) {
+GraphElementController.prototype.moveAbove = function (otherEdge, preventAnimation) {
     if (otherEdge.isVertexType()) {
         otherEdge = otherEdge.getParentBubble();
     }
@@ -476,7 +476,8 @@ GraphElementController.prototype.moveAbove = function (otherEdge) {
     return this._moveTo(
         otherEdge,
         true,
-        this.model().getParentFork()
+        this.model().getParentFork(),
+        preventAnimation
     );
 };
 
@@ -536,11 +537,11 @@ GraphElementController.prototype.moveUnderParent = function (parent, forceLeft) 
     );
 };
 
-GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previousParentFork) {
+GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previousParentFork, preventAnimation) {
     let previousIndex = this.model().getIndexInTree();
     let moveToCommand = new Command.forExecuteUndoAndRedo(
         () => {
-            return this._moveToExecute(otherEdge, isAbove, previousParentFork);
+            return this._moveToExecute(otherEdge, isAbove, previousParentFork, preventAnimation);
         },
         () => {
             let childAtIndex = previousParentFork.getChildAtIndex(previousIndex);
@@ -550,7 +551,8 @@ GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previou
             return this._moveToExecute(
                 childAtIndex,
                 true,
-                this.model().getParentVertex()
+                this.model().getParentVertex(),
+                preventAnimation
             );
         },
     );
@@ -559,7 +561,7 @@ GraphElementController.prototype._moveTo = function (otherEdge, isAbove, previou
     );
 };
 
-GraphElementController.prototype._moveToExecute = async function (otherEdge, isAbove, previousParentFork) {
+GraphElementController.prototype._moveToExecute = async function (otherEdge, isAbove, previousParentFork, preventAnimation) {
     let model = this.model();
     let movedEdge = model.isVertexType() ?
         model.getParentBubble() :
@@ -578,9 +580,9 @@ GraphElementController.prototype._moveToExecute = async function (otherEdge, isA
     //     );
     // }
     if (isAbove) {
-        await model.moveAbove(otherEdge);
+        await model.moveAbove(otherEdge, preventAnimation);
     } else {
-        await model.moveBelow(otherEdge);
+        await model.moveBelow(otherEdge, preventAnimation);
     }
     otherEdge.getParentFork().refreshChildren(true);
     let parentFork = otherEdge.getParentFork();
@@ -769,7 +771,9 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
     await Promise.all(Array.from(parentGroupRelationsUri).map(async (groupRelationUri) => {
         let groupRelation = currentSubGraph.getGroupRelationWithUri(groupRelationUri);
         if (groupRelation) {
-            let children = groupRelation.getNextChildren();
+            let children = groupRelation.getNextChildren().filter((child) => {
+                return !child.isMetaRelation();
+            });
             if (children.length === 1) {
                 let edge = await groupRelation.controller().convertToRelation();
                 bubbleToSelect = edge.isForkType() ? edge : edge.getParentFork();

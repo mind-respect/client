@@ -533,7 +533,7 @@ FriendlyResource.FriendlyResource.prototype.getDuplicates = function () {
     return [];
 };
 
-FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble, relation) {
+FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble, relation, preventAnimation) {
     if (this.isForkType() && !this.isGroupRelation()) {
         return this.getParentBubble().moveTo(
             otherBubble,
@@ -571,6 +571,9 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
     this.getDescendantsEvenIfCollapsed().forEach((descendant) => {
         descendant.direction = this.direction;
     });
+    if (preventAnimation) {
+        return;
+    }
     UiUtils.isInAnimation = true;
     await Vue.nextTick();
     await UiUtils.animateGraphElementsWithAnimationData(
@@ -612,16 +615,18 @@ FriendlyResource.FriendlyResource.prototype.moveToParent = function (parent) {
         MoveRelation.Parent
     );
 };
-FriendlyResource.FriendlyResource.prototype.moveAbove = function (newSibling) {
+FriendlyResource.FriendlyResource.prototype.moveAbove = function (newSibling, preventAnimation) {
     return this.moveTo(
         newSibling,
-        MoveRelation.Before
+        MoveRelation.Before,
+        preventAnimation
     );
 };
-FriendlyResource.FriendlyResource.prototype.moveBelow = function (newSibling) {
+FriendlyResource.FriendlyResource.prototype.moveBelow = function (newSibling, preventAnimation) {
     return this.moveTo(
         newSibling,
-        MoveRelation.After
+        MoveRelation.After,
+        preventAnimation
     );
 };
 

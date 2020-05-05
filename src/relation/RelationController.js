@@ -39,7 +39,8 @@ RelationController.prototype.addChildCanDo = function () {
 
 RelationController.prototype.addChild = async function () {
     let previousParentFork = this.model().getParentFork();
-    let convertResponse = this._convertToGroupRelation();
+    let prepareConvertData = this._prepareConvertToGroupRelation();
+    let convertResponse = await this._convertToGroupRelation();
     let newGroupRelation = convertResponse.optimistic;
     Selection.removeAll();
     let triple = await newGroupRelation.controller().addChildWhenInTransition(convertResponse.promise);
@@ -49,6 +50,7 @@ RelationController.prototype.addChild = async function () {
         newGroupRelation
     );
     CurrentSubGraph.get().add(newGroupRelation);
+    this._postConvertToGroupRelation(newGroupRelation, prepareConvertData);
     previousParentFork.refreshChildren(true);
     GraphElementService.changeChildrenIndex(
         newGroupRelation.getParentFork()
@@ -87,7 +89,8 @@ RelationController.prototype.becomeParent = async function (adoptedChild) {
         childParentFork.controller().becomeExParent(adoptedChild, this.model())
     );
     childParentFork.removeChild(adoptedChild, false, true);
-    let convertResponse = this._convertToGroupRelation();
+    let prepareConvertData = this._prepareConvertToGroupRelation();
+    let convertResponse = await this._convertToGroupRelation();
     let newGroupRelation = await convertResponse.promise;
     adoptedChild.setParentFork(newGroupRelation);
     newGroupRelation.addChild(adoptedChild);
@@ -95,68 +98,63 @@ RelationController.prototype.becomeParent = async function (adoptedChild) {
         this.model(),
         newGroupRelation
     );
-    if (adoptedChild.isVertex()) {
-        moveEdge.bind(this)(adoptedChild.getParentBubble());
-    } else {
-        moveEdge.bind(this)(adoptedChild);
-    }
+    let relation = adoptedChild.isVertex() ? adoptedChild.getParentBubble() : adoptedChild;
+    promises.push(
+        relation.controller().replaceParentFork(
+            newGroupRelation,
+            true
+        )
+    );
     previousParentFork.refreshChildren();
     return Promise.all(promises).then(() => {
+        this._postConvertToGroupRelation(newGroupRelation, prepareConvertData);
         CurrentSubGraph.get().add(newGroupRelation);
         newGroupRelation.expand(true);
         GraphElementService.changeChildrenIndex(
-            this.model().getParentFork()
+            newGroupRelation.getParentFork()
+        );
+        GraphElementService.changeChildrenIndex(
+            newGroupRelation
         );
         Selection.setToSingle(newGroupRelation);
         return newGroupRelation;
     });
-
-    async function moveEdge(movedEdge) {
-        let tags = this.model().getIdentifiers();
-        let tagsWithDefinedUri;
-        let lastAddTagsPromise;
-        let relations = movedEdge.isGroupRelation() ?
-            movedEdge.getClosestChildRelations(true) :
-            [movedEdge];
-        promises.push(
-            relations.map(async (relation) => {
-                if (lastAddTagsPromise && !tagsWithDefinedUri) {
-                    tagsWithDefinedUri = await lastAddTagsPromise;
-                }
-                lastAddTagsPromise = relation.controller().addIdentifiers(
-                    tagsWithDefinedUri === undefined ? tags : tagsWithDefinedUri
-                );
-                return Promise.all([
-                    lastAddTagsPromise,
-                    relation.controller().replaceParentFork(
-                        newGroupRelation,
-                        true
-                    )
-                ]);
-            })
-        );
-    }
 };
+
+RelationController.prototype._prepareConvertToGroupRelation = function () {
+    let areTagsShown = this.hideTagsCanDo();
+    if (areTagsShown) {
+        this.hideTags();
+    }
+    return areTagsShown;
+}
 
 RelationController.prototype._convertToGroupRelation = function () {
     let edge = this.model();
-    edge.getIdentifiers().forEach((tag) => {
-        this.model().removeTag(tag);
-    });
     let response = RelationService.convertToGroupRelation(
         edge.getUri(),
         edge.getParentVertex().getShareLevel(),
-        edge.isLabelEmpty() && edge.hasIdentifications() ? edge.getIdentifiers()[0].getLabel() : edge.getLabel(),
-        !edge.hasComment() && edge.hasIdentifications() ? edge.getIdentifiers()[0].getComment() : edge.getComment()
+        edge.hasIdentifications() ? edge.getIdentifiers()[0].getLabel() : edge.getLabel(),
+        edge.hasIdentifications() ? edge.getIdentifiers()[0].getComment() : edge.getComment()
     );
     let newGroupRelation = response.optimistic;
-    newGroupRelation.parentBubble = this.model().getParentBubble();
-    newGroupRelation.parentVertex = this.model().getParentVertex();
-    this.model().setSourceVertex(newGroupRelation);
-    newGroupRelation.addChild(this.model());
+    newGroupRelation.addIdentifications(edge.getIdentifiers());
+    edge.getIdentifiers().forEach((tag) => {
+        edge.removeTag(tag, true);
+    });
+    newGroupRelation.parentBubble = edge.getParentBubble();
+    newGroupRelation.parentVertex = edge.getParentVertex();
+    edge.setSourceVertex(newGroupRelation);
+    newGroupRelation.addChild(edge);
     newGroupRelation.isExpanded = true;
     return response;
 };
+
+RelationController.prototype._postConvertToGroupRelation = async function (newGroupRelation, areTagsShown) {
+    if (areTagsShown) {
+        newGroupRelation.controller().showTags();
+    }
+}
 
 RelationController.prototype.removeCanDo = function () {
     return this.isSingleAndOwned();
