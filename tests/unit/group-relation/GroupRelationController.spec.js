@@ -2,11 +2,8 @@ import Mock from '../mock/Mock'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import ThreeScenario from "../scenario/ThreeScenario";
 import GroupRelationHavingAVertexChildWithOneChild from '../scenario/GroupRelationHavingAVertexChildWithOneChild'
-import GraphServiceMock from '../mock/GraphServiceMock'
 import TestUtil from '../util/TestUtil'
-import TwoLevelGroupRelationScenario from "../scenario/TwoLevelGroupRelationScenario";
-import TagService from "@/tag/TagService";
-import ThreeLevelGroupRelationScenario from "../scenario/ThreeLevelGroupRelationScenario";
+import GraphElementType from "../../../src/graph-element/GraphElementType";
 
 
 describe("GroupRelationController", () => {
@@ -142,6 +139,33 @@ describe("GroupRelationController", () => {
                     "original relation"
                 )
             ).toBeTruthy();
+        });
+    });
+    describe("becomeExParent", function () {
+        it("converts to relation if only one child left", async () => {
+            let scenario = await new ThreeScenario();
+            let center = scenario.getBubble1InTree();
+            let r1 = TestUtil.getChildWithLabel(
+                center,
+                "r1"
+            );
+            await r1.controller().addChild();
+            let groupRelation = TestUtil.getChildWithLabel(
+                center,
+                "r1"
+            );
+            let b2 = groupRelation.getNextBubble().getNextBubble();
+            expect(
+                b2.getLabel()
+            ).toBe("b2");
+            await b2.controller().moveAbove(groupRelation);
+            r1 = TestUtil.getChildWithLabel(
+                center,
+                "r1"
+            );
+            expect(
+                r1.getGraphElementType()
+            ).toBe(GraphElementType.Relation);
         });
     });
 });

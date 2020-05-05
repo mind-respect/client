@@ -85,9 +85,6 @@ RelationController.prototype.becomeParent = async function (adoptedChild) {
     Selection.removeAll();
     let previousParentFork = this.model().getParentFork();
     let childParentFork = adoptedChild.getParentFork();
-    promises.push(
-        childParentFork.controller().becomeExParent(adoptedChild, this.model())
-    );
     childParentFork.removeChild(adoptedChild, false, true);
     let prepareConvertData = this._prepareConvertToGroupRelation();
     let convertResponse = await this._convertToGroupRelation();
@@ -106,7 +103,8 @@ RelationController.prototype.becomeParent = async function (adoptedChild) {
         )
     );
     previousParentFork.refreshChildren();
-    return Promise.all(promises).then(() => {
+    return Promise.all(promises).then(async () => {
+        await childParentFork.controller().becomeExParent(adoptedChild, this.model());
         this._postConvertToGroupRelation(newGroupRelation, prepareConvertData);
         CurrentSubGraph.get().add(newGroupRelation);
         newGroupRelation.expand(true);

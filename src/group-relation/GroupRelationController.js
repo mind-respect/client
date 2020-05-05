@@ -108,6 +108,23 @@ GroupRelationController.prototype.addSibling = function () {
     );
 };
 
+GroupRelationController.prototype.becomeExParent = async function () {
+    let bubbleToSelect;
+    let children = this.model().getNextChildren().filter((child) => {
+        return !child.isMetaRelation();
+    });
+    if (children.length === 1) {
+        let edge = await this.convertToRelation();
+        bubbleToSelect = edge.isForkType() ? edge : edge.getParentFork();
+    }
+    if (children.length === 0) {
+        bubbleToSelect = this.model().getParentFork();
+        await this.removeDo();
+    }
+    GraphElementService.changeChildrenIndex(this.model());
+    return bubbleToSelect;
+};
+
 GroupRelationController.prototype.removeCanDo = function () {
     return this.isOwned();
 };

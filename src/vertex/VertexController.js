@@ -210,29 +210,27 @@ VertexController.prototype.images = function () {
 //
 };
 
-VertexController.prototype.becomeParent = function (child) {
-    let promises = [];
+VertexController.prototype.becomeExParent = async function () {
+    GraphElementService.changeChildrenIndex(this.model());
+}
+
+VertexController.prototype.becomeParent = async function (child) {
     let movedEdge = child.isVertexType() ? child.getParentBubble() : child;
-    if (movedEdge.getParentFork().getUri() !== this.model().getUri()) {
-        promises.push(
-            movedEdge.controller().replaceParentFork(
-                this.model(),
-                true
-            )
-        );
-        promises.push(
-            movedEdge.getParentBubble().controller().becomeExParent(movedEdge, this.model())
-        );
+    if (movedEdge.getParentFork().getUri() === this.model().getUri()) {
+        return;
     }
-    return Promise.all(promises).then(() => {
-        movedEdge.moveToParent(
-            this.model()
-        );
-        this.model().refreshChildren(true);
-        Vue.nextTick(() => {
-            GraphElementService.changeChildrenIndex(this.model());
-        });
-    });
+    let movedEdgeParentBubble = movedEdge.getParentBubble();
+    await movedEdge.controller().replaceParentFork(
+        this.model(),
+        true
+    );
+    movedEdge.moveToParent(
+        this.model()
+    );
+    await movedEdgeParentBubble.controller().becomeExParent(movedEdge);
+    this.model().refreshChildren(true);
+    await Vue.nextTick();
+    GraphElementService.changeChildrenIndex(this.model());
 };
 
 VertexController.prototype.copyCanDo = function () {

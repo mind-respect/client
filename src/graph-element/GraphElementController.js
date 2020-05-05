@@ -568,10 +568,7 @@ GraphElementController.prototype._moveToExecute = async function (otherEdge, isA
         model;
     let promises = [];
     let parentOfOtherBubble = otherEdge.getParentBubble();
-    if (!parentOfOtherBubble.isSameUri(movedEdge.getParentBubble())) {
-        //await and not promises.push so that tags can be removed before they are added;
-        await movedEdge.getParentBubble().controller().becomeExParent(movedEdge, otherEdge);
-    }
+    let previousParentBubble = movedEdge.getParentBubble();
     // if (parentOfOtherBubble.isMeta()) {
     //     return parentOfOtherBubble.controller().becomeParent(
     //         movedEdge,
@@ -594,7 +591,10 @@ GraphElementController.prototype._moveToExecute = async function (otherEdge, isA
             )
         );
     }
-    return Promise.all(promises).then(() => {
+    return Promise.all(promises).then(async () => {
+        if (!parentOfOtherBubble.isSameUri(previousParentBubble)) {
+            await previousParentBubble.controller().becomeExParent(movedEdge, otherEdge);
+        }
         GraphElementService.changeChildrenIndex(
             parentFork
         );
@@ -756,31 +756,22 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
             bubbleToSelect = this.model().getParentFork();
         }
     }
-    let parentGroupRelationsUri = new Set();
+    let parentForksUri = new Set();
     let nbNeighborsRefresherOnRemove = NbNeighborsRefresherOnRemove.withGraphElements(graphElements);
     nbNeighborsRefresherOnRemove.prepare();
     graphElements.forEach((graphElement) => {
         let parentFork = graphElement.getParentFork();
-        if (parentFork.isGroupRelation()) {
-            parentGroupRelationsUri.add(parentFork.getUri());
-        }
+        parentForksUri.add(parentFork.getUri());
         graphElement.remove();
     });
     nbNeighborsRefresherOnRemove.execute();
     let currentSubGraph = CurrentSubGraph.get();
-    await Promise.all(Array.from(parentGroupRelationsUri).map(async (groupRelationUri) => {
-        let groupRelation = currentSubGraph.getGroupRelationWithUri(groupRelationUri);
-        if (groupRelation) {
-            let children = groupRelation.getNextChildren().filter((child) => {
-                return !child.isMetaRelation();
-            });
-            if (children.length === 1) {
-                let edge = await groupRelation.controller().convertToRelation();
-                bubbleToSelect = edge.isForkType() ? edge : edge.getParentFork();
-            }
-            if (children.length === 0) {
-                bubbleToSelect = groupRelation.getParentFork();
-                await groupRelation.controller().removeDo();
+    await Promise.all(Array.from(parentForksUri).map(async (parentForkUri) => {
+        let parentFork = currentSubGraph.getHavingUri(parentForkUri);
+        if (parentFork) {
+            let toSelectFromBecomeEx = await parentFork.controller().becomeExParent();
+            if (toSelectFromBecomeEx) {
+                bubbleToSelect = toSelectFromBecomeEx;
             }
         }
     }));
