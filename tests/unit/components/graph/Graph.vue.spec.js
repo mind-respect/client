@@ -7,6 +7,8 @@ import DistantGraphScenario from "../../scenario/DistantGraphScenario";
 import CreationDateScenario from "../../scenario/CreationDateScenario";
 import ThreeLevelDeepGroupRelationScenario from "../../scenario/ThreeLevelDeepGroupRelationScenario";
 import RelationIn2GroupRelationsScenario from "../../scenario/RelationIn2GroupRelationsScenario";
+import AroundBook1Scenario from "../../scenario/AroundBook1Scenario";
+import GraphElementType from '@/graph-element/GraphElementType'
 
 describe("Graph.vue", () => {
     it("distributes triples evenly to the right and left", async () => {
@@ -125,7 +127,7 @@ describe("Graph.vue", () => {
         });
     });
 
-    describe("connectToDistantVertex", async()=>{
+    describe("connectToDistantVertex", async () => {
         xit("shows child bubbles images of a distant vertex when connecting to a distant vertex", function () {
             connectDistantVertexTest(function (distantBubble) {
                 var connectedBubble = distantBubble.getTopMostChildBubble().getTopMostChildBubble();
@@ -157,7 +159,7 @@ describe("Graph.vue", () => {
         });
     });
 
-    it("considers vertices under deep group relations non duplicates when they are not", async ()=>{
+    it("considers vertices under deep group relations non duplicates when they are not", async () => {
         let scenario = await new GroupRelationsScenario();
         let groupRelation = scenario.getPossessionGroupRelation();
         await scenario.expandPossession(groupRelation);
@@ -645,6 +647,26 @@ describe("Graph.vue", () => {
                 "r4"
             )
         ).toBeTruthy();
+    });
+
+    fit("can expand inverse group relation", async () => {
+        let scenario = await new AroundBook1Scenario();
+        let book1 = scenario.getCenterInTree();
+        expect(
+            book1.getLabel()
+        ).toBe("book 1");
+        let possession = book1.getNextBubble().getNextBubble();
+        expect(
+            possession.getGraphElementType()
+        ).toBe(GraphElementType.GroupRelation);
+        await scenario.expandPossession(possession);
+        let me = TestUtil.getChildDeepWithLabel(
+            possession,
+            "me"
+        );
+        expect(
+            me.getLabel()
+        ).toBe("me");
     });
 
     function getNumberOfHiddenPropertiesContainer(bubble) {

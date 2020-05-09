@@ -219,9 +219,13 @@ api.SubGraph.prototype.getEdges = function () {
     return [].concat.apply([], edges)
 };
 
-api.SubGraph.prototype.sortedEdgesAndGroupRelations = function (centerFork) {
+api.SubGraph.prototype.sortedGraphElements = function (centerFork) {
     let childrenIndex = centerFork.getChildrenIndex();
-    return this.getEdges().concat(this.getGroupRelations()).sort((a, b) => {
+    let children = this.getEdges().concat(this.getGroupRelations());
+    if (centerFork.isGroupRelation()) {
+        children = children.concat(this.getVertices());
+    }
+    return children.sort((a, b) => {
         let forkA = a.isEdge() ? a.getOtherVertex(centerFork) : a;
         let forkB = b.isEdge() ? b.getOtherVertex(centerFork) : b;
         return GraphElement.sortCompare(

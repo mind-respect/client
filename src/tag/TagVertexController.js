@@ -154,7 +154,7 @@ function sortEdges(edges, metaGroupVertex) {
 function buildEdgesGroupedBySourceFork(metaSubGraph, centerFork) {
     let edgesBySourceFork = {};
     let subGraph = metaSubGraph.getSubGraph();
-    subGraph.sortedEdgesAndGroupRelations(centerFork).forEach((child) => {
+    subGraph.sortedGraphElements(centerFork).forEach((child) => {
         if (!child.hasIdentification(metaSubGraph.getMetaCenter())) {
             return;
         }

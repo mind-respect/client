@@ -4,7 +4,8 @@
 
 <template>
     <div v-if="loaded" @dragover="dragOver" @dragleave="dragLeave" @drop="childrenDrop">
-        <div class="vertices-children-container" v-if="!isCenter && bubble.isVertexType()">
+        <div class="vertices-children-container"
+             v-if="!isCenter && bubble.isVertexType()">
             <div v-for="child in bubble.rightBubbles" :class="{
                         'mt-6 mb-6' : bubble.rightBubbles.length === 2,
                         'mt-2 mb-2' : bubble.rightBubbles.length > 2
@@ -49,28 +50,13 @@
 
                 </transition>
             </div>
-            <div v-for="child in bubble.children" :key="child.uiId" v-if="bubble.isRelation()"
-                 :class="{
-                    'mt-6 mb-6' : bubble.children.length === 2,
-                    'mt-2 mb-2' : bubble.children.length > 2
-                 }"
-            >
-                <transition :name="transitionName"
-                            @before-enter="beforeExpandAnimation(child)"
-                            @after-leave="afterExpandAnimation"
-                >
-                    <Bubble :bubble="child"
-                            :direction="direction"
-                    ></Bubble>
-                </transition>
-            </div>
         </div>
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()">
             <div v-for="child in bubble.children" :key="child.uiId"
                  :class="{
-                    'mt-6 mb-6' : bubble.children.length === 2,
-                    'mt-2 mb-2' : bubble.children.length > 2
-                 }"
+                            'mt-6 mb-6' : bubble.children.length === 2,
+                            'mt-2 mb-2' : bubble.children.length > 2
+                         }"
             >
                 <transition :name="transitionName"
                             @before-enter="beforeExpandAnimation(child)"

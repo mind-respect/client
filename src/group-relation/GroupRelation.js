@@ -247,17 +247,15 @@ GroupRelation.prototype.addChild = function (child, isToTheLeft, index) {
         }
         return;
     }
-    let edge = child.isEdge() ?
-        child : child.getParentBubble();
-    edge.parentVertex = this.getParentVertex();
-    edge.parentBubble = this;
+    child.parentVertex = this.getParentVertex();
+    child.parentBubble = this;
     if (index === undefined) {
-        this.children.push(edge);
+        this.children.push(child);
     } else {
         this.children.splice(
             index,
             0,
-            edge
+            child
         );
     }
 };
