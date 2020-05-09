@@ -143,9 +143,6 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             }
 
             if (childHasMissingSourceFork) {
-                if (centerFork.isGroupRelation()) {
-                    console.log("about to add " + child.getLabel())
-                }
                 centerFork.addChild(
                     endFork,
                     addLeft
