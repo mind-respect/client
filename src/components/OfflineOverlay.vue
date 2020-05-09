@@ -29,6 +29,7 @@
     import GraphUi from '@/graph/GraphUi'
 
     let checkConnectivityTimeout;
+    let showOffLineMessageTimeout = null;
 
     export default {
         name: "OfflineOverlay",
@@ -109,11 +110,11 @@
                     this.checkConnectivity();
                 }
             },
-            restoreActions: function(){
+            restoreActions: function () {
                 KeyboardActions.enable();
                 GraphUi.enableDragScroll();
             },
-            disableActions: function(){
+            disableActions: function () {
                 KeyboardActions.disable();
                 GraphUi.disableDragScroll();
             }
@@ -127,12 +128,18 @@
         },
         created: function () {
             window.addEventListener('online', () => {
+                if (showOffLineMessageTimeout !== null) {
+                    clearTimeout(showOffLineMessageTimeout);
+                }
                 this.restoreActions();
                 this.isOnline = true;
             });
             window.addEventListener('offline', () => {
-                this.disableActions();
-                this.isOnline = false;
+                showOffLineMessageTimeout = setTimeout(() => {
+                    showOffLineMessageTimeout = null;
+                    this.disableActions();
+                    this.isOnline = false;
+                }, 1000);
             });
         }
     }
