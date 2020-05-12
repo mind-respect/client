@@ -533,7 +533,7 @@ FriendlyResource.FriendlyResource.prototype.getDuplicates = function () {
     return [];
 };
 
-FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble, relation, preventAnimation) {
+FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble, relation, preventAnimation, forceLeft) {
     if (this.isForkType() && !this.isGroupRelation()) {
         return this.getParentBubble().moveTo(
             otherBubble,
@@ -551,7 +551,7 @@ FriendlyResource.FriendlyResource.prototype.moveTo = async function (otherBubble
         this.setParentFork(
             otherBubble.isForkType() ? otherBubble : otherBubble.getParentFork()
         );
-        otherBubble.addChild(this);
+        otherBubble.addChild(this, forceLeft);
     } else {
         let parentFork = this.getParentFork();
         let otherParentFork = otherBubble.getParentFork();
@@ -609,10 +609,12 @@ FriendlyResource.FriendlyResource.prototype.revertIdentificationIntegration = fu
     });
 };
 
-FriendlyResource.FriendlyResource.prototype.moveToParent = function (parent) {
+FriendlyResource.FriendlyResource.prototype.moveToParent = function (parent, preventAnimation, forceLeft) {
     return this.moveTo(
         parent,
-        MoveRelation.Parent
+        MoveRelation.Parent,
+        preventAnimation,
+        forceLeft
     );
 };
 FriendlyResource.FriendlyResource.prototype.moveAbove = function (newSibling, preventAnimation) {

@@ -214,20 +214,31 @@ VertexController.prototype.becomeExParent = async function () {
     GraphElementService.changeChildrenIndex(this.model());
 }
 
-VertexController.prototype.becomeParent = async function (child) {
+VertexController.prototype.becomeParent = async function (child, preventAnimation, forceLeft) {
     let movedEdge = child.isVertexType() ? child.getParentBubble() : child;
-    if (movedEdge.getParentFork().getUri() === this.model().getUri()) {
+    if (movedEdge.getParentFork().getUri() === this.model().getUri() && (this.model().isCenter && forceLeft !== undefined && forceLeft === child.isToTheLeft())) {
         return;
     }
     let movedEdgeParentBubble = movedEdge.getParentBubble();
-    await movedEdge.controller().replaceParentFork(
-        this.model(),
-        true
-    );
-    movedEdge.moveToParent(
-        this.model()
-    );
-    await movedEdgeParentBubble.controller().becomeExParent(movedEdge);
+    if (movedEdge.getParentFork().getUri() === this.model().getUri()) {
+        movedEdge.moveToParent(
+            this.model(),
+            forceLeft,
+            preventAnimation
+        );
+    }
+    if (movedEdge.getParentFork().getUri() !== this.model().getUri()) {
+        await movedEdge.controller().replaceParentFork(
+            this.model(),
+            true
+        );
+        movedEdge.moveToParent(
+            this.model(),
+            undefined,
+            preventAnimation
+        );
+        await movedEdgeParentBubble.controller().becomeExParent(movedEdge);
+    }
     this.model().refreshChildren(true);
     await Vue.nextTick();
     GraphElementService.changeChildrenIndex(this.model());

@@ -26,7 +26,7 @@ const Dragged = {
         if (parentVertex.isMetaGroupVertex() && Dragged.dragged.getParentVertex().getUri() !== parentVertex.getUri()) {
             return;
         }
-        return Dragged.dragged.controller()[method](closestEdge.edge, isLeft);
+        return Dragged.dragged.controller()[method](closestEdge.edge, false, isLeft);
     },
     getClosestChildEdge: function (x, y, parent, isLeft) {
         let minDistance = 99999999;
