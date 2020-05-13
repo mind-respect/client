@@ -57,8 +57,7 @@ SearchService._searchForAllOwnResources = function (searchText, nbSkip) {
     return Service.api().post(
         UserService.currentUserUri() + "/search/own_all_resource/auto_complete",
         {
-            "searchText": searchText,
-            nbSkip: nbSkip
+            searchText: searchText
         }
     ).then((response) => {
         return formattedOwnResults(response.data)
