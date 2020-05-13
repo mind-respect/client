@@ -1,4 +1,4 @@
-<template>
+    <template>
     <!--    <div>-->
     <!--        <v-btn fab icon v-if="!isFocusFLow" @click="isFocusFLow = true">-->
     <!--            search-->
@@ -155,12 +155,11 @@
                 const results = await SearchService.searchForAllOwnResources(searchText, 0);
                 setTimeout(async () => {
                     this.loading = false;
-                    await this.$nextTick();
-                    this.items = results.map((result) => {
-                        result.disabled = result.original.getGraphElement().isGroupRelation();
-                        return result;
-                    });
-                    console.log(items);
+                    console.log(results);
+                    // this.items = results.map((result) => {
+                    //     result.disabled = result.original.getGraphElement().isGroupRelation();
+                    //     return result;
+                    // });
                     //if not await this.$nextTick(); the search response sometimes stays pending and freezes the search
                     await this.$nextTick();
                     if (this.$refs.loadMore) {
