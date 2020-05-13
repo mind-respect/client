@@ -67,6 +67,8 @@
     import Selection from '@/Selection'
     import CurrentSubGraph from "@/graph/CurrentSubGraph";
 
+    let searchTimeout;
+
     export default {
         name: "Search",
         components: {
@@ -102,7 +104,7 @@
         watch: {
             searchText: function (val) {
                 this.setMenuPosition();
-                val && val !== this.select && this.querySelections(val)
+                val && val !== this.select && this.querySelectionsDebounced(val)
             }
         },
         methods: {
@@ -141,6 +143,12 @@
                 }
                 this.$refs.search.reset();
                 this.$refs.search.blur();
+            },
+            querySelectionsDebounced: function (searchText) {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    this.querySelections(searchText)
+                }, 500)
             },
             querySelections: function (searchText) {
                 this.loading = true;
