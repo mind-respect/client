@@ -150,7 +150,7 @@
                 searchTimeout = setTimeout(() => {
                     this.querySelections(searchText)
                     this.loading = false;
-                }, 1000);
+                }, 500);
             },
             querySelections: async function (searchText) {
                 const results = await SearchService.searchForAllOwnResources(searchText, 0);
@@ -162,6 +162,8 @@
                     result.disabled = result.original.getGraphElement().isGroupRelation();
                     return result;
                 });
+                //if not await this.$nextTick(); the search response sometimes stays pending and freezes the search
+                await this.$nextTick();
                 this.$refs.loadMore.reset(results.length, searchText);
                 this.$refs.searchCreate.reset(results.length, searchText);
             },

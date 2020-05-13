@@ -160,7 +160,8 @@
                 isChangeShareLevelFlow: false,
                 addedTag: null,
                 selectedTagShareLevel: null,
-                confirmChangeTagShareLevelLoading: false
+                confirmChangeTagShareLevelLoading: false,
+                searchTimeout: null
             }
         },
         computed: {
@@ -197,7 +198,7 @@
             },
             search: function (val) {
                 this.setMenuPosition();
-                val && val !== this.select && this.querySelections(val);
+                val && val !== this.select && this.querySelectionsDebounced(val);
             }
         },
         methods: {
@@ -264,33 +265,40 @@
                 this.$refs.tagSearch.reset();
                 this.$refs.tagSearch.blur();
             },
-            querySelections: function (term) {
+            querySelectionsDebounced: function (searchText) {
                 this.searchLoading = true;
-                SearchService.tags(term).then((results) => {
-                    if (term !== this.search) {
-                        return;
-                    }
-                    let nbResults = 0;
-                    this.items = results.map((result) => {
-                        result.disabled = this.bubble.hasTagRelatedToUri(result.uri);
-                        if (!result.disabled && result.original.graphElement && result.original.graphElement.hasTagRelatedToUri) {
-                            result.disabled = result.original.graphElement.hasTagRelatedToUri(
-                                this.bubble.getUri()
-                            );
-                        }
-                        if (!result.disabled) {
-                            nbResults++
-                        }
-                        return result;
-                    });
-                    if (this.$refs.loadMore) {
-                        this.$refs.loadMore.reset(nbResults, this.search);
-                    }
-                    if (this.$refs.searchCreate) {
-                        this.$refs.searchCreate.reset(nbResults, this.search);
-                    }
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(() => {
+                    this.querySelections(searchText)
                     this.searchLoading = false;
+                }, 500);
+            },
+            querySelections: async function (term) {
+                const results = await SearchService.tags(term);
+                if (term !== this.search) {
+                    return;
+                }
+                let nbResults = 0;
+                this.items = results.map((result) => {
+                    result.disabled = this.bubble.hasTagRelatedToUri(result.uri);
+                    if (!result.disabled && result.original.graphElement && result.original.graphElement.hasTagRelatedToUri) {
+                        result.disabled = result.original.graphElement.hasTagRelatedToUri(
+                            this.bubble.getUri()
+                        );
+                    }
+                    if (!result.disabled) {
+                        nbResults++
+                    }
+                    return result;
                 });
+                //if not await this.$nextTick(); the search response sometimes stays pending and freezes the search
+                await this.$nextTick();
+                if (this.$refs.loadMore) {
+                    this.$refs.loadMore.reset(nbResults, this.search);
+                }
+                if (this.$refs.searchCreate) {
+                    this.$refs.searchCreate.reset(nbResults, this.search);
+                }
             },
             loadMore: function (callback) {
                 SearchService.tags(this.search, this.items.filter((item) => {

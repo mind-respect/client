@@ -194,6 +194,8 @@
     import Relation from '@/relation/Relation'
     import KeyboardActions from '@/KeyboardActions'
 
+    let searchTimeout;
+
     export default {
         name: "MergeMenu",
         components: {
@@ -320,22 +322,29 @@
                     }, 100)
                 });
             },
-            querySelections(term) {
+            querySelectionsDebounced: function (searchText) {
                 this.loading = true;
-                let searchFunction = this.bubble.isMeta() ? SearchService.ownTagsOnly : SearchService.ownVertices;
-                searchFunction(term).then((results) => {
-                    if (term !== this.search) {
-                        return;
-                    }
-                    this.searchItems = results.map((result) => {
-                        result.disabled = this.bubble.getUri() === result.uri || (result.isMindRespect && result.original.getGraphElement().isPattern());
-                        return result;
-                    });
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    this.querySelections(searchText)
                     this.loading = false;
-                    if (this.$refs.mergeLoadMore) {
-                        this.$refs.mergeLoadMore.reset(results.length, term);
-                    }
+                }, 500);
+            },
+            async querySelections(term) {
+                let searchFunction = this.bubble.isMeta() ? SearchService.ownTagsOnly : SearchService.ownVertices;
+                const results = await searchFunction(term);
+                if (term !== this.search) {
+                    return;
+                }
+                this.searchItems = results.map((result) => {
+                    result.disabled = this.bubble.getUri() === result.uri || (result.isMindRespect && result.original.getGraphElement().isPattern());
+                    return result;
                 });
+                //if not await this.$nextTick(); the search response sometimes stays pending and freezes the search
+                await this.$nextTick();
+                if (this.$refs.mergeLoadMore) {
+                    this.$refs.mergeLoadMore.reset(results.length, term);
+                }
             },
             loadMore: function (callback) {
                 let searchFunction = this.bubble.isMeta() ? SearchService.ownTagsOnly : SearchService.ownVertices;
