@@ -68,7 +68,7 @@
     import I18n from '@/I18n'
     import GraphElement from '@/graph-element/GraphElement'
     import KeyboardActions from '@/KeyboardActions'
-    import KeyCode from 'keycode-js';
+    import * as KeyCode from 'keycode-js';
 
     export default {
         name: "RemoveDialog",

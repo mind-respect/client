@@ -8,7 +8,7 @@ import MindMapInfo from '@/MindMapInfo'
 import UiUtils from '@/UiUtils'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import Focus from '@/Focus'
-import KeyCode from 'keycode-js';
+import * as KeyCode from 'keycode-js';
 
 
 const KeyboardActions = {

@@ -269,7 +269,7 @@
 <script>
     import Selection from '@/Selection'
     import UiUtils from '@/UiUtils'
-    import KeyCode from 'keycode-js';
+    import * as KeyCode from 'keycode-js';
     import Children from '@/components/graph/Children'
     import ChildNotice from '@/components/graph/ChildNotice'
     import BubbleButtons from '@/components/graph/BubbleButtons'

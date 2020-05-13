@@ -5,7 +5,7 @@ import TagGraph from '@/tag/TagGraph'
 import GraphElementType from '@/graph-element/GraphElementType'
 import TestUtil from '../util/TestUtil'
 import Selection from '@/Selection'
-import KeyCode from 'keycode-js';
+import * as KeyCode from 'keycode-js';
 import AroundGroup1TwoLevelGroupRelationScenario from "../scenario/AroundGroup1TwoLevelGroupRelationScenario";
 
 describe("TagGraph", () => {

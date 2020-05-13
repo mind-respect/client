@@ -62,7 +62,7 @@
     import AppController from '@/AppController'
     import IdUri from '@/IdUri'
     import GraphUi from '@/graph/GraphUi'
-    import KeyCode from 'keycode-js';
+    import * as KeyCode from 'keycode-js';
     import UiUtils from '@/UiUtils'
     import Selection from '@/Selection'
     import CurrentSubGraph from "@/graph/CurrentSubGraph";

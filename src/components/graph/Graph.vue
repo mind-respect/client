@@ -172,7 +172,7 @@
     import GraphUi from '@/graph/GraphUi'
     import VertexSkeleton from '@/vertex/VertexSkeleton'
     import RelationSkeleton from '@/relation/RelationSkeleton'
-    import KeyCode from 'keycode-js';
+    import * as KeyCode from 'keycode-js';
     import UiUtils from '@/UiUtils'
 
     let insideSvgOpacityTransition = false;

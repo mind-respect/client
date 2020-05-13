@@ -2,6 +2,7 @@ import axios from 'axios'
 import WikidataUri from '@/wikidata/WikidataUri'
 import I18n from '@/I18n'
 import Image from '@/image/Image'
+import jsonpAdapter from 'axios-jsonp';
 
 const wikipediaUrlProperty = "P373";
 const WikidataService = {};
