@@ -1,4 +1,4 @@
-    <template>
+<template>
     <!--    <div>-->
     <!--        <v-btn fab icon v-if="!isFocusFLow" @click="isFocusFLow = true">-->
     <!--            search-->
@@ -148,27 +148,22 @@
                 this.loading = true;
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(async () => {
-                    this.querySelections(searchText)
+                    await this.querySelections(searchText);
+                    this.loading = false;
                 }, 500);
             },
             querySelections: async function (searchText) {
                 const results = await SearchService.searchForAllOwnResources(searchText, 0);
-                setTimeout(async () => {
-                    this.loading = false;
-                    console.log(results);
-                    // this.items = results.map((result) => {
-                    //     result.disabled = result.original.getGraphElement().isGroupRelation();
-                    //     return result;
-                    // });
-                    //if not await this.$nextTick(); the search response sometimes stays pending and freezes the search
-                    await this.$nextTick();
-                    if (this.$refs.loadMore) {
-                        this.$refs.loadMore.reset(results.length, searchText);
-                    }
-                    if (this.$refs.searchCreate) {
-                        this.$refs.searchCreate.reset(results.length, searchText);
-                    }
-                }, 50)
+                this.items = results.map((result) => {
+                    result.disabled = result.original.getGraphElement().isGroupRelation();
+                    return result;
+                });
+                if (this.$refs.loadMore) {
+                    this.$refs.loadMore.reset(results.length, searchText);
+                }
+                if (this.$refs.searchCreate) {
+                    this.$refs.searchCreate.reset(results.length, searchText);
+                }
             },
             setMenuPosition: function () {
                 const menu = document.getElementsByClassName('main-search-menu')[0];

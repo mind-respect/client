@@ -119,12 +119,14 @@ GroupRelation.prototype.removeChild = function (child, isTemporary, avoidRedraw)
 GroupRelation.prototype.getGreatestGroupRelationAncestor = function () {
     let greatest = this;
     let parent;
+    let isSameAsParent = false;
     do {
         parent = greatest.getParentBubble();
+        isSameAsParent = parent.getUri() === greatest.getUri();
         if (parent.isGroupRelation()) {
             greatest = parent;
         }
-    } while (parent.isGroupRelation());
+    } while (parent.isGroupRelation() && !isSameAsParent);
     return greatest;
 };
 

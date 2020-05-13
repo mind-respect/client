@@ -268,16 +268,13 @@
             querySelectionsDebounced: function (searchText) {
                 this.searchLoading = true;
                 clearTimeout(this.searchTimeout);
-                this.searchTimeout = setTimeout(() => {
-                    this.querySelections(searchText)
+                this.searchTimeout = setTimeout(async () => {
+                    await this.querySelections(searchText)
                     this.searchLoading = false;
                 }, 500);
             },
             querySelections: async function (term) {
                 const results = await SearchService.tags(term);
-                if (term !== this.search) {
-                    return;
-                }
                 let nbResults = 0;
                 this.items = results.map((result) => {
                     result.disabled = this.bubble.hasTagRelatedToUri(result.uri);
@@ -291,8 +288,6 @@
                     }
                     return result;
                 });
-                //if not await this.$nextTick(); the search response sometimes stays pending and freezes the search
-                await this.$nextTick();
                 if (this.$refs.loadMore) {
                     this.$refs.loadMore.reset(nbResults, this.search);
                 }

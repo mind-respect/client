@@ -325,23 +325,18 @@
             querySelectionsDebounced: function (searchText) {
                 this.loading = true;
                 clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    this.querySelections(searchText)
+                searchTimeout = setTimeout(async () => {
+                    await this.querySelections(searchText)
                     this.loading = false;
                 }, 500);
             },
             async querySelections(term) {
                 let searchFunction = this.bubble.isMeta() ? SearchService.ownTagsOnly : SearchService.ownVertices;
                 const results = await searchFunction(term);
-                if (term !== this.search) {
-                    return;
-                }
                 this.searchItems = results.map((result) => {
                     result.disabled = this.bubble.getUri() === result.uri || (result.isMindRespect && result.original.getGraphElement().isPattern());
                     return result;
                 });
-                //if not await this.$nextTick(); the search response sometimes stays pending and freezes the search
-                await this.$nextTick();
                 if (this.$refs.mergeLoadMore) {
                     this.$refs.mergeLoadMore.reset(results.length, term);
                 }
