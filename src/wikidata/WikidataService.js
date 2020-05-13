@@ -1,7 +1,6 @@
 import axios from 'axios'
 import WikidataUri from '@/wikidata/WikidataUri'
 import I18n from '@/I18n'
-import jsonpAdapter from 'axios-jsonp';
 import Image from '@/image/Image'
 
 const wikipediaUrlProperty = "P373";
@@ -12,8 +11,7 @@ WikidataService.search = function (term) {
         "&format=json&search=" +
         term;
     return axios({
-        url: url,
-        adapter: jsonpAdapter,
+        url: url
     }).then((response) => {
         return response.data.search.map((searchResult) => {
             return {

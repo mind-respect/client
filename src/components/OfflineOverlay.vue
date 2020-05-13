@@ -139,7 +139,7 @@
                     showOffLineMessageTimeout = null;
                     this.disableActions();
                     this.isOnline = false;
-                }, 1000);
+                }, 2000);
             });
         }
     }
