@@ -164,8 +164,12 @@
                 });
                 //if not await this.$nextTick(); the search response sometimes stays pending and freezes the search
                 await this.$nextTick();
-                this.$refs.loadMore.reset(results.length, searchText);
-                this.$refs.searchCreate.reset(results.length, searchText);
+                if (this.$refs.loadMore) {
+                    this.$refs.loadMore.reset(results.length, searchText);
+                }
+                if (this.$refs.searchCreate) {
+                    this.$refs.searchCreate.reset(results.length, searchText);
+                }
             },
             setMenuPosition: function () {
                 const menu = document.getElementsByClassName('main-search-menu')[0];
