@@ -147,26 +147,27 @@
             querySelectionsDebounced: function (searchText) {
                 this.loading = true;
                 clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
+                searchTimeout = setTimeout(async () => {
                     this.querySelections(searchText)
-                    this.loading = false;
                 }, 500);
             },
             querySelections: async function (searchText) {
                 const results = await SearchService.searchForAllOwnResources(searchText, 0);
-                this.items = [];
-                // this.items = results.map((result) => {
-                //     result.disabled = result.original.getGraphElement().isGroupRelation();
-                //     return result;
-                // });
-                //if not await this.$nextTick(); the search response sometimes stays pending and freezes the search
-                await this.$nextTick();
-                if (this.$refs.loadMore) {
-                    this.$refs.loadMore.reset(results.length, searchText);
-                }
-                if (this.$refs.searchCreate) {
-                    this.$refs.searchCreate.reset(results.length, searchText);
-                }
+                setTimeout(async () => {
+                    this.loading = false;
+                    this.items = results.map((result) => {
+                        result.disabled = result.original.getGraphElement().isGroupRelation();
+                        return result;
+                    });
+                    //if not await this.$nextTick(); the search response sometimes stays pending and freezes the search
+                    await this.$nextTick();
+                    if (this.$refs.loadMore) {
+                        this.$refs.loadMore.reset(results.length, searchText);
+                    }
+                    if (this.$refs.searchCreate) {
+                        this.$refs.searchCreate.reset(results.length, searchText);
+                    }
+                }, 50)
             },
             setMenuPosition: function () {
                 const menu = document.getElementsByClassName('main-search-menu')[0];
