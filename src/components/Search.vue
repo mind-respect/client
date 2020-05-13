@@ -154,10 +154,11 @@
             },
             querySelections: async function (searchText) {
                 const results = await SearchService.searchForAllOwnResources(searchText, 0);
-                this.items = results.map((result) => {
-                    result.disabled = result.original.getGraphElement().isGroupRelation();
-                    return result;
-                });
+                this.items = [];
+                // this.items = results.map((result) => {
+                //     result.disabled = result.original.getGraphElement().isGroupRelation();
+                //     return result;
+                // });
                 //if not await this.$nextTick(); the search response sometimes stays pending and freezes the search
                 await this.$nextTick();
                 if (this.$refs.loadMore) {
