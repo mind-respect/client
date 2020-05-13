@@ -12,7 +12,8 @@ WikidataService.search = function (term) {
         "&format=json&search=" +
         term;
     return axios({
-        url: url
+        url: url,
+        adapter: jsonpAdapter
     }).then((response) => {
         return response.data.search.map((searchResult) => {
             return {

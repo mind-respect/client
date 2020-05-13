@@ -145,25 +145,25 @@
                 this.$refs.search.blur();
             },
             querySelectionsDebounced: function (searchText) {
+                this.loading = true;
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(() => {
                     this.querySelections(searchText)
-                }, 500)
-            },
-            querySelections: function (searchText) {
-                this.loading = true;
-                SearchService.searchForAllOwnResources(searchText).then((results) => {
-                    if (searchText !== this.searchText) {
-                        return;
-                    }
-                    this.items = results.map((result) => {
-                        result.disabled = result.original.getGraphElement().isGroupRelation();
-                        return result;
-                    });
                     this.loading = false;
-                    this.$refs.loadMore.reset(results.length, searchText);
-                    this.$refs.searchCreate.reset(results.length, searchText);
+                }, 1000);
+            },
+            querySelections: async function (searchText) {
+                const results = await SearchService.searchForAllOwnResources(searchText, 0);
+                if (searchText !== this.searchText) {
+                    this.items = [];
+                    return;
+                }
+                this.items = results.map((result) => {
+                    result.disabled = result.original.getGraphElement().isGroupRelation();
+                    return result;
                 });
+                this.$refs.loadMore.reset(results.length, searchText);
+                this.$refs.searchCreate.reset(results.length, searchText);
             },
             setMenuPosition: function () {
                 const menu = document.getElementsByClassName('main-search-menu')[0];
