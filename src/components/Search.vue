@@ -154,10 +154,6 @@
             },
             querySelections: async function (searchText) {
                 const results = await SearchService.searchForAllOwnResources(searchText, 0);
-                if (searchText !== this.searchText) {
-                    this.items = [];
-                    return;
-                }
                 this.items = results.map((result) => {
                     result.disabled = result.original.getGraphElement().isGroupRelation();
                     return result;
