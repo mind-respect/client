@@ -184,7 +184,7 @@
                     distantUri,
                     closest.edge === undefined ? 0 : closest.edge.getIndexInTree(closest.isAbove),
                     this.isLeft,
-                    this.selectedSearchResult.getShareLevel()
+                    this.selectedSearchResult.original.getShareLevel()
                 );
                 this.confirmLoading = false;
                 this.dialog = false;

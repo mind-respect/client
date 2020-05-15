@@ -11,6 +11,7 @@ import GraphElementServiceMock from './GraphElementServiceMock'
 import TagServiceMock from './TagServiceMock'
 import UserServiceMock from './UserServiceMock'
 import EdgeServiceMock from './EdgeServiceMock'
+import RelationServiceMock from './RelationServiceMock'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Store from '@/store'
 import MindMapInfo from '@/MindMapInfo'
@@ -105,6 +106,7 @@ api.applyDefault = function () {
     api.spies["VertexService"] = VertexServiceMock.applyDefault();
     api.spies["ForkService"] = ForkServiceMock.applyDefault();
     api.spies["EdgeService"] = EdgeServiceMock.applyDefault();
+    api.spies["RelationService"] = RelationServiceMock.applyDefault();
     api.spies["TagService"] = TagServiceMock.applyDefault();
     api.spies["GraphElementService"] = GraphElementServiceMock.applyDefault();
 };

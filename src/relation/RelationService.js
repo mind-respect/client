@@ -15,24 +15,26 @@ RelationService.inverse = function (edge) {
     );
 };
 
-RelationService.createFromSourceAndDestinationUri = function (sourceUri, destinationUri, sourceShareLevel, destinationShareLevel) {
+RelationService.createFromSourceAndDestinationUri = async function (sourceUri, destinationUri, sourceShareLevel, destinationShareLevel) {
     let sourceUriFormatted = encodeURIComponent(
         sourceUri
     );
     let destinationUriFormatted = encodeURIComponent(
         destinationUri
     );
-    return Service.api().post(
-        edgesUrl(), {
+    const response = await Service.api().post(
+        edgesUrl(),
+        {
             sourceUri: sourceUriFormatted,
             destinationUri: destinationUriFormatted,
             sourceShareLevel: sourceShareLevel,
             destinationShareLevel: destinationShareLevel
-        }).then((response) => {
-        return IdUri.removeDomainNameFromGraphElementUri(
-            response.headers.location
-        );
-    });
+        }
+    );
+    return IdUri.removeDomainNameFromGraphElementUri(
+        response.headers.location
+    );
+
 };
 
 RelationService.convertToGroupRelation = function (edgeUri, initialShareLevel, label, note) {

@@ -19,6 +19,7 @@ import ShareLevel from '@/vertex/ShareLevel'
 import AroundTodoTagScenario from "../scenario/AroundTodoTagScenario";
 import ThreeLevelGroupRelationScenario from "../scenario/ThreeLevelGroupRelationScenario";
 import ForkService from "../../../src/fork/ForkService";
+import api from "../scenario/Scenario";
 
 describe('GraphElementController', () => {
     describe("removeDo", () => {
@@ -848,5 +849,33 @@ describe('GraphElementController', () => {
                 tagNbNeighbors.getFriend()
             ).toBe(1);
         });
+    });
+    describe("relateToDistantVertexWithUri", () => {
+        it("prevents from making related vertex a center", async () => {
+            let singleScenario = await new SingleAndTaggedToEventScenario();
+            let singleUri = singleScenario.getCenterInTree().getUri();
+            let threeScenario = await new ThreeScenario();
+            let center = threeScenario.getCenterInTree();
+            GraphServiceMock.getForCentralBubbleUri(
+                api.getTestData(
+                    "centerTagEventAndTodo.singleTaggedToEvent"
+                )
+            );
+            expect(
+                center.getNumberOfChild()
+            ).toBe(2);
+            let newEdge = await center.controller().relateToDistantVertexWithUri(
+                singleUri,
+                0,
+                true,
+                ShareLevel.PRIVATE
+            );
+            expect(
+                center.getNumberOfChild()
+            ).toBe(3);
+            expect(
+                newEdge.getNextBubble().isCenter
+            ).toBeFalsy();
+        })
     });
 });

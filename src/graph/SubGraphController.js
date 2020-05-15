@@ -38,7 +38,9 @@ SubGraphController.prototype.model = function () {
 };
 
 SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMap, preventAddInCurrentGraph) {
-    isCenterOnMap = isCenterOnMap || true;
+    if (isCenterOnMap === undefined) {
+        isCenterOnMap = true;
+    }
     isParentAlreadyOnMap = isParentAlreadyOnMap || false;
     return GraphService.getForCentralBubbleUri(
         this.model().getUri()

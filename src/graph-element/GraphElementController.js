@@ -710,6 +710,7 @@ GraphElementController.prototype.relateToDistantVertexWithUri = async function (
     GraphElementService.changeChildrenIndex(
         parentFork
     );
+    return newEdge;
 };
 
 GraphElementController.prototype.remove = function (skipConfirmation) {
