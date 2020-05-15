@@ -304,6 +304,10 @@ Tag.Tag.prototype.setComment = function (comment) {
     });
 };
 
+Tag.Tag.prototype.getNextChildren = Tag.Tag.prototype.getNextChildrenEvenIfCollapsed = function () {
+    return [];
+};
+
 Tag.Tag.prototype._applyToAllTags = function (visitor) {
     visitor(this);
     let subGraph = CurrentSubGraph.get();

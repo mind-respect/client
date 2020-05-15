@@ -866,7 +866,7 @@ GraphElementController.prototype.setShareLevelCanDo = function () {
 
 GraphElementController.prototype.setShareLevelDo = async function (shareLevel) {
     let graphElementsToUpdate = this.getUiArray().filter((bubble) => {
-        return bubble.canChangeShareLevel() && !bubble.isGroupRelation() && bubble.getShareLevel() !== shareLevel.toUpperCase()
+        return bubble.canChangeShareLevel() && bubble.getShareLevel() !== shareLevel.toUpperCase()
     });
     if (graphElementsToUpdate.length === 0) {
         return Promise.resolve();
@@ -882,7 +882,6 @@ GraphElementController.prototype.setShareLevelDo = async function (shareLevel) {
             otherFork.getNbNeighbors().decrementForShareLevel(bubble.getShareLevel());
             otherFork.getNbNeighbors().incrementForShareLevel(shareLevel);
         });
-
         bubble.getIdentifiers().forEach((tag) => {
             tag.getNbNeighbors().decrementForShareLevel(bubble.getShareLevel());
             tag.getNbNeighbors().incrementForShareLevel(shareLevel);
