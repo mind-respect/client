@@ -99,6 +99,9 @@
                 </v-card>
             </v-card>
         </v-bottom-sheet>
+        <v-snackbar v-model="tagSuccessSnackbar" color="secondary">
+            {{$t('cohesion:tagged')}}
+        </v-snackbar>
     </div>
 </template>
 
@@ -128,7 +131,8 @@
                 results: [],
                 showLoadMore: true,
                 working: false,
-                nbLoadResults: 0
+                nbLoadResults: 0,
+                tagSuccessSnackbar: false
             }
         },
         mounted: function () {
@@ -136,14 +140,16 @@
                 similarBubble: "Similar bubble",
                 merge: "Merge",
                 tag: "Tag",
-                viewMore: "View more"
+                viewMore: "View more",
+                tagged: "Tag added"
             });
 
             I18n.i18next.addResources("fr", "cohesion", {
                 similarBubble: "Bulles similaires",
                 merge: "Fusionner",
                 tag: "Étiquetter",
-                viewMore: "Voir plus"
+                viewMore: "Voir plus",
+                tagged: "Étiquette ajouté"
             });
         },
         computed: {
@@ -214,6 +220,7 @@
                 }).then(() => {
                     this.loading = false;
                     this.leaveFlow();
+                    this.tagSuccessSnackbar = true;
                     this.$store.dispatch("redraw");
                 })
             },
