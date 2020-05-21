@@ -65,10 +65,10 @@ SearchService._searchForAllOwnResources = function (searchText, nbSkip) {
     });
 };
 
-SearchService._searchForResourcesOnThisMap = function (searchText) {
+SearchService._searchForResourcesOnThisMap = function (searchText, filter) {
     return Promise.resolve(
         CurrentSubGraph.get().getGraphElements().filter((graphElement) => {
-            return !graphElement.isGroupRelation() && graphElement.getLabel().indexOf(searchText) > -1;
+            return (!filter || filter(graphElement)) && !graphElement.isGroupRelation() && graphElement.getLabel().indexOf(searchText) > -1;
         }).map((graphElement) => {
             return SearchService.searchResultFromOnMapGraphElement(graphElement);
         })
@@ -101,6 +101,16 @@ SearchService.searchResultFromOnMapGraphElement = function (graphElement) {
 };
 
 SearchService.ownVertices = function (searchText, nbSkip) {
+    let providers = [
+        SearchService._ownVertices(searchText, nbSkip),
+        SearchService._searchForResourcesOnThisMap(searchText, function (graphElement) {
+            return graphElement.isVertex();
+        })
+    ];
+    return resultsFromProviders(providers, []);
+};
+
+SearchService._ownVertices = function (searchText, nbSkip) {
     return Service.api().post(
         UserService.currentUserUri() + "/search/own_vertices/auto_complete",
         {
@@ -110,7 +120,7 @@ SearchService.ownVertices = function (searchText, nbSkip) {
     ).then((response) => {
         return formattedOwnResults(response.data);
     });
-};
+}
 
 SearchService.ownVerticesAndAllPatterns = function (searchText, nbSkip) {
     let providers = [

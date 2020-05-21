@@ -210,6 +210,12 @@ GraphElement.GraphElement.prototype.getSurround = function (evenIfCollapsed) {
     );
 };
 
+GraphElement.GraphElement.prototype.isAncestor = function (graphElement) {
+    return this.getAncestors().some((ancestor) => {
+        return graphElement.getUri() === ancestor.getUri()
+    });
+};
+
 GraphElement.GraphElement.prototype.buildNbNeighbors = function () {
     let nbNeighbors = NbNeighbors.withZeros();
     this.getSurround(true).forEach((surround) => {

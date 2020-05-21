@@ -9,13 +9,13 @@ import TestUtil from '../util/TestUtil'
 import MindMapInfo from '@/MindMapInfo'
 import Selection from '@/Selection'
 import VertexController from '@/vertex/VertexController'
-import VertexService from '@/vertex/VertexService'
-import TwoLevelGroupRelationScenario from "../scenario/TwoLevelGroupRelationScenario";
 import ShareLevel from '@/vertex/ShareLevel'
 import CurrentSubGraph from "../../../src/graph/CurrentSubGraph";
 import ThreeScenarioB2Center from "../scenario/ThreeScenarioB2Center";
 import Center2MergeTwoChildHavingChildrenScenario from "../scenario/Center2MergeTwoChildHavingChildrenScenario";
 import Center1MergeTwoChildHavingChildrenScenario from "../scenario/Center1MergeTwoChildHavingChildrenScenario";
+import MergeDescendantWithAncestorScenario from "../scenario/MergeDescendantWithAncestorScenario";
+import MergeAncestorWithDescendant from "../scenario/MergeAncestorWithDescendantScenario";
 
 describe('VertexController', () => {
     describe("remove", function () {
@@ -428,11 +428,7 @@ describe('VertexController', () => {
             await parent.controller().addChild().then(function (triple) {
                 newChild = triple.destination;
             });
-            let newChildChild;
-            await newChild.controller().addChild().then(function (triple) {
-                newChildChild = triple.destination;
-            });
-            expect(newChildChild.controller().convertToDistantBubbleWithUriCanDo(
+            expect(newChild.controller().convertToDistantBubbleWithUriCanDo(
                 parent.getUri()
             )).toBeFalsy();
         });
@@ -459,24 +455,6 @@ describe('VertexController', () => {
             let child = parent.getNextBubble().getNextBubble();
             expect(child.controller().convertToDistantBubbleWithUriCanDo(
                 TestUtil.generateVertexUri("not-current-user")
-            )).toBeFalsy();
-        });
-        /*schemas are not supported for now*/
-        xit("can only add a relation to a vertex", async () => {
-            MindMapInfo._setIsViewOnly(false);
-            let singleChildScenario = new SingleChildScenario();
-            let parent = singleChildScenario.getParentInTree();
-            expect(parent.controller().convertToDistantBubbleWithUriCanDo(
-                new Scenarios.getProjectSchema().getCenterBubbleUri()
-            )).toBeFalsy();
-            expect(parent.controller().convertToDistantBubbleWithUriCanDo(
-                new Scenarios.getProjectSchema().getCenterBubbleUri()
-            )).toBeFalsy();
-            expect(parent.controller().convertToDistantBubbleWithUriCanDo(
-                new Scenarios.getKaraokeSchemaGraph().getLocationProperty().getUri()
-            )).toBeFalsy();
-            expect(parent.controller().convertToDistantBubbleWithUriCanDo(
-                TestUtils.generateEdgeUri()
             )).toBeFalsy();
         });
         it("also changes uri of connected edges source and destination vertices", async () => {
@@ -554,33 +532,46 @@ describe('VertexController', () => {
         });
         it("reviews other instances display", async () => {
             let scenario = await new ThreeScenario();
-            let b2 = scenario.getBubble2InTree();
+            let center = scenario.getCenterInTree();
+            let b2 = TestUtil.getChildDeepWithLabel(
+                center,
+                "b2"
+            );
             await scenario.expandBubble2(b2);
-            let triple = await b2.controller().addChild();
-            let newChildOfB2 = triple.destination;
+            let b21 = TestUtil.getChildDeepWithLabel(
+                b2,
+                "b21"
+            );
             GraphServiceMock.getForCentralBubbleUri(
-                scenario.getSubGraphForB3()
+                scenario.getB3SubGraphMergedWithB21()
             );
             let b3 = scenario.getBubble3InTree();
             expect(
                 b3.getNbDuplicates()
             ).toBe(0);
             expect(
-                newChildOfB2.getNbDuplicates()
+                b21.getNbDuplicates()
             ).toBe(0);
             expect(
-                newChildOfB2.controller().convertToDistantBubbleWithUriCanDo(
+                b21.controller().convertToDistantBubbleWithUriCanDo(
                     b3.model().getUri()
                 )
             ).toBeTruthy();
-            await newChildOfB2.controller().convertToDistantBubbleWithUri(
-                b3.model().getUri()
-            );
             expect(
                 b3.getNbDuplicates()
-            ).toBe(1);
+            ).toBe(0);
+            await b21.controller().convertToDistantBubbleWithUri(
+                b3.model().getUri()
+            );
+            let merge = TestUtil.getChildDeepWithLabel(
+                center,
+                "b21 b3"
+            );
             expect(
-                newChildOfB2.getNbDuplicates()
+                merge.getLabel()
+            ).toBe("b21 b3");
+            expect(
+                merge.getNbDuplicates()
             ).toBe(1);
         });
         it("works when the parent vertex is not already on graph and distant vertex uri is on graph", async () => {
@@ -613,20 +604,23 @@ describe('VertexController', () => {
             GraphServiceMock.getForCentralBubbleUri(
                 singleChildScenario.getSubGraphOfB1OnceMergedWithSingleChild()
             );
+            expect(
+                b1.getNbDuplicates()
+            ).toBe(0);
             await singleChild.controller().convertToDistantBubbleWithUri(
                 b1.getUri(),
                 b1
             );
-            b1 = TestUtil.getChildWithLabel(
+            let merge = TestUtil.getChildWithLabel(
                 b2,
                 "r1"
             ).getNextBubble();
             expect(
-                b1.getNbDuplicates()
-            ).toBe(0);
-            expect(
-                b1.getNumberOfChild()
+                merge.getNumberOfChild()
             ).toBe(2);
+            expect(
+                merge.getNbDuplicates()
+            ).toBe(0);
         });
         it("prevents to create false duplicates for existing children", async () => {
             let center2Scenario = await new Center2MergeTwoChildHavingChildrenScenario();
@@ -635,7 +629,8 @@ describe('VertexController', () => {
                 o2.getLabel()
             ).toBe("o2");
             let center1Scenario = await new Center1MergeTwoChildHavingChildrenScenario();
-            let b2 = center1Scenario.getCenterInTree().getNextBubble().getNextBubble();
+            let center1 = center1Scenario.getCenterInTree();
+            let b2 = center1.getNextBubble().getNextBubble();
             await center1Scenario.expandB2(b2);
             GraphServiceMock.getForCentralBubbleUri(
                 center1Scenario.getB2AfterMerge()
@@ -644,7 +639,10 @@ describe('VertexController', () => {
                 b2.getUri(),
                 b2
             );
-            b2 = center1Scenario.getCenterInTree().getNextBubble().getNextBubble();
+            b2 = center1.getNextBubble().getNextBubble();
+            expect(
+                b2.getLabel()
+            ).toBe("o2 b2");
             expect(
                 b2.getNumberOfChild()
             ).toBe(5);
@@ -657,6 +655,81 @@ describe('VertexController', () => {
             ).toBe("b21");
             expect(
                 b21.getNbDuplicates()
+            ).toBe(0);
+        });
+        it("can merge ancestor with descendant", async () => {
+            let scenario = await new MergeAncestorWithDescendant();
+            let center = scenario.getCenterInTree();
+            let a1 = TestUtil.getChildDeepWithLabel(
+                center,
+                "a1"
+            );
+            await scenario.expandA1(a1);
+            let a2 = TestUtil.getChildDeepWithLabel(
+                center,
+                "a2"
+            );
+            await scenario.expandA2(a2);
+            let a21 = TestUtil.getChildDeepWithLabel(
+                a2,
+                "a21"
+            );
+            await scenario.expandA21(a21);
+            GraphServiceMock.getForCentralBubbleUri(
+                scenario.getA21SubGraphAfterMerge()
+            );
+            expect(
+                a21.controller().convertToDistantBubbleWithUriCanDo(
+                    a1.getUri()
+                )
+            ).toBeTruthy();
+            await a1.controller().convertToDistantBubbleWithUri(
+                a21.getUri()
+            );
+            let merge = center.getNextBubble().getNextBubble();
+            expect(
+                merge.getLabel()
+            ).toBe("a1 a21");
+            expect(
+                merge.getNbDuplicates()
+            ).toBe(0)
+        });
+        it("can merge descendant with ancestor", async () => {
+            let scenario = await new MergeDescendantWithAncestorScenario();
+            let center = scenario.getCenterInTree();
+            let a1 = TestUtil.getChildDeepWithLabel(
+                center,
+                "a1"
+            );
+            await scenario.expandA1(a1);
+            let a2 = TestUtil.getChildDeepWithLabel(
+                center,
+                "a2"
+            );
+            await scenario.expandA2(a2);
+            let a21 = TestUtil.getChildDeepWithLabel(
+                a2,
+                "a21"
+            );
+            await scenario.expandA21(a21);
+            GraphServiceMock.getForCentralBubbleUri(
+                scenario.getA1SubGraphAfterMerge()
+            );
+            expect(
+                a21.controller().convertToDistantBubbleWithUriCanDo(
+                    a1.getUri()
+                )
+            ).toBeTruthy();
+            await a21.controller().convertToDistantBubbleWithUri(
+                a1.getUri(),
+                a1
+            );
+            a21 = center.getNextBubble().getNextBubble();
+            expect(
+                a21.getLabel()
+            ).toBe("a21 a1");
+            expect(
+                a21.getNbDuplicates()
             ).toBe(0);
         });
     });
@@ -682,7 +755,6 @@ describe('VertexController', () => {
             singleChildScenario.getB1Uri()
         );
         child = parent.getNextBubble().getNextBubble();
-        TestUtil.logChildren(child);
         expect(
             child.getNumberOfChild()
         ).toBe(4);

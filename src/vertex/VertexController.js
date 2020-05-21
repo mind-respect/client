@@ -261,14 +261,9 @@ VertexController.prototype.convertToDistantBubbleWithUriCanDo = function (distan
         return false;
     }
     let parent = this.getUi().getParentVertex();
-    let grandParent = parent.getParentVertex();
-    if (distantVertexUri === grandParent.getUri()) {
-        return false;
-    }
-    let alreadyChildOfParent = parent.getClosestChildVertices().some((child) => {
-        return child.getUri() === distantVertexUri;
+    return [parent].concat(parent.getClosestChildVertices()).every((child) => {
+        return child.getUri() !== distantVertexUri;
     });
-    return !alreadyChildOfParent;
 };
 
 VertexController.prototype.convertToDistantBubbleWithUri = async function (distantVertexUri, bubbleToReplace, keptColor) {
@@ -276,109 +271,117 @@ VertexController.prototype.convertToDistantBubbleWithUri = async function (dista
         return Promise.reject();
     }
     bubbleToReplace = bubbleToReplace || this.model();
-    let isCenter = this.model().isCenter || bubbleToReplace.isCenter;
-    let beforeMergeLabel = this.model().getLabel();
-    let beforeMergeComment = this.model().getComment();
-    let isFontDefined = this.model().isFontDefined();
-    let mergeService = this.model().isMeta() ? TagVertexService.mergeTo : VertexService.mergeTo;
-    await mergeService(this.model(), distantVertexUri);
-    this.model().loading = true;
-    this.model().resetChildren(true);
-    this.model().expand();
-    let modelUri = this.model().getUri();
-    if (this.model().isMeta()) {
-        CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
-            graphElement.getIdentifiers().forEach((tag) => {
-                if (tag.getUri() === modelUri) {
-                    tag.setUri(distantVertexUri)
-                }
-            });
-        })
+    let beforeConverted = this.model();
+    let converted;
+    let distantVertex = CurrentSubGraph.get().getHavingUri(distantVertexUri);
+    if (distantVertex && this.model().isAncestor(distantVertex)) {
+        converted = distantVertex.clone();
     } else {
-        this.model().getDuplicates().forEach((duplicate) => {
-            duplicate.setUri(distantVertexUri);
-        });
+        converted = this.model().clone();
+        converted.setUri(distantVertexUri);
     }
-    this.model().setUri(distantVertexUri);
-    if (bubbleToReplace.getId() === this.model().getId()) {
-        CurrentSubGraph.get().add(this.model());
+    beforeConverted.resetChildren(true);
+    beforeConverted.expand();
+    let isCenter = beforeConverted.isCenter;
+    let beforeMergeLabel = beforeConverted.getLabel();
+    let beforeMergeComment = beforeConverted.getComment();
+    let isFontDefined = beforeConverted.isFontDefined();
+    let mergeService = beforeConverted.isMeta() ? TagVertexService.mergeTo : VertexService.mergeTo;
+    await mergeService(beforeConverted, distantVertexUri);
+    beforeConverted.loading = true;
+    let uriBefore = beforeConverted.getUri();
+    if (isCenter) {
+        converted.parentBubble = this.model();
+        converted.parentVertex = this.model();
     } else {
-        if (isCenter) {
-            this.model().parentBubble = this.model();
-            this.model().parentVertex = this.model();
-        } else {
-            this.model().parentBubble = bubbleToReplace.getParentBubble();
-            this.model().parentVertex = bubbleToReplace.getParentBubble().parentVertex;
-            bubbleToReplace.getParentBubble().replaceChild(
-                bubbleToReplace,
-                this.model()
-            );
-        }
-        CurrentSubGraph.get().replaceGraphElement(
+        converted.parentBubble = bubbleToReplace.getParentBubble();
+        converted.parentVertex = bubbleToReplace.getParentBubble().parentVertex;
+        bubbleToReplace.getParentBubble().replaceChild(
             bubbleToReplace,
-            this.model()
+            converted
         );
     }
-    let mergedWith = await this.getSubGraphController().loadForParentIsAlreadyOnMap();
+    converted = await converted.controller().getSubGraphController().loadForParentIsAlreadyOnMap();
     let promises = [];
-    if (beforeMergeLabel.toLowerCase().trim() !== mergedWith.getLabel().toLowerCase().trim()) {
-        let concatenatedLabel = beforeMergeLabel + " " + mergedWith.getLabel();
-        if (concatenatedLabel !== mergedWith.getLabel()) {
+    if (beforeMergeLabel.toLowerCase().trim() !== converted.getLabel().toLowerCase().trim()) {
+        let concatenatedLabel = beforeMergeLabel + " " + converted.getLabel();
+        if (concatenatedLabel !== converted.getLabel()) {
             promises.push(
-                this.setLabel(
+                converted.controller().setLabel(
                     concatenatedLabel
                 )
             );
         }
     }
-    if (beforeMergeComment.toLowerCase().trim() !== mergedWith.getComment().toLowerCase().trim()) {
-        let concatenatedComment = beforeMergeComment + " " + mergedWith.getComment();
-        if (concatenatedComment !== mergedWith.getComment()) {
+    if (beforeMergeComment.toLowerCase().trim() !== converted.getComment().toLowerCase().trim()) {
+        let concatenatedComment = beforeMergeComment + " " + converted.getComment();
+        if (concatenatedComment !== converted.getComment()) {
             promises.push(
-                this.noteDo(
+                converted.controller().noteDo(
                     concatenatedComment
                 )
             );
         }
     }
-    if (keptColor && mergedWith.getBackgroundColor() !== keptColor) {
+    if (keptColor && converted.getBackgroundColor() !== keptColor) {
         promises.push(
-            mergedWith.controller().setBackgroundColor(
+            converted.controller().setBackgroundColor(
                 keptColor
             )
         );
     }
-    if (isFontDefined && !mergedWith.isFontDefined()) {
+    if (isFontDefined && !converted.isFontDefined()) {
         promises.push(
             VertexService.saveFont(
-                mergedWith.getUri(),
-                this.model().getFont()
+                converted.getUri(),
+                converted.getFont()
             )
         );
     }
     promises.push(
         GraphElementService.changeChildrenIndex(
-            this.model().getParentVertex()
+            converted.getParentVertex()
         )
     );
-    this.model().loading = false;
-    this.model().refreshChildren();
+    if (beforeConverted.isMeta()) {
+        CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
+            graphElement.getIdentifiers().forEach((tag) => {
+                if (tag.getUri() === uriBefore) {
+                    tag.setUri(distantVertexUri)
+                }
+            });
+        })
+    } else {
+        beforeConverted.getDuplicates().forEach((duplicate) => {
+            if (converted.getId() === duplicate.getId()) {
+                return;
+            }
+            duplicate.setUri(distantVertexUri);
+            duplicate.resetChildren();
+            duplicate.setLabel(converted.getLabel());
+            duplicate.setComment(converted.getComment());
+            duplicate.setBackgroundColor(converted.getBackgroundColor());
+        });
+    }
+    converted.loading = false;
+    converted.refreshChildren();
     if (isCenter) {
         await Promise.all(promises);
-        if (IdUri.getGraphElementUriInUrl() === mergedWith.getUri()) {
+        if (IdUri.getGraphElementUriInUrl() === converted.getUri()) {
             Store.dispatch("centerRefresh");
             return 'isRefreshing';
         } else {
             router.push({
                 name: "Center",
                 params: {
-                    username: mergedWith.uri().getOwner(),
-                    graphElementType: mergedWith.getGraphElementType(),
-                    centerUri: mergedWith.uri().getGraphElementShortId()
+                    username: converted.uri().getOwner(),
+                    graphElementType: converted.getGraphElementType(),
+                    centerUri: converted.uri().getGraphElementShortId()
                 }
             });
         }
     }
+    CurrentSubGraph.get().rebuild();
 };
 
 VertexController.prototype.mergeCanDo = function () {

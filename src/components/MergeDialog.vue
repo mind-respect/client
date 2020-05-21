@@ -171,7 +171,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-btn color="secondary" @click="confirm()" :loading="confirmLoading" :disabled="!mergeBubble">
-                    {{$t('confirm')}}
+                    {{$t('merge:confirm')}}
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn @click="dialog=false">
@@ -193,6 +193,7 @@
     import Vertex from "@/vertex/Vertex";
     import Relation from '@/relation/Relation'
     import KeyboardActions from '@/KeyboardActions'
+    import CurrentSubGraph from "../graph/CurrentSubGraph";
 
     let searchTimeout;
 
@@ -206,7 +207,7 @@
         },
         data: function () {
             I18n.i18next.addResources("en", "merge", {
-                title: 'Merge',
+                title: 'Merge with another bubble',
                 placeholder: "Merge with",
                 result: "Merge result",
                 resultShort: "Result",
@@ -215,10 +216,11 @@
                 color: "Color kept",
                 sameColor: "same color",
                 textAndRelation: "Text and relations",
-                colorDefault: "Default color"
+                colorDefault: "Default color",
+                confirm: 'Merge'
             });
             I18n.i18next.addResources("fr", "merge", {
-                title: 'Fusionner',
+                title: 'Fusionner avec une autre bulle',
                 placeholder: "Fusionner avec",
                 result: "Résultat de la fusion",
                 resultShort: "Résultat",
@@ -227,7 +229,8 @@
                 color: "Couleur conservée",
                 sameColor: "même couleur",
                 textAndRelation: "Texte et relations",
-                colorDefault: "Couleur par défaut"
+                colorDefault: "Couleur par défaut",
+                confirm: 'Fusionner'
             });
             return {
                 loading: false,
@@ -267,22 +270,29 @@
                 this.setMenuPosition();
                 val && val !== this.select && this.querySelections(val)
             },
-            isMergeFlow: function () {
+            isMergeFlow: async function () {
                 if (this.$store.state.isMergeFlow) {
+                    const selected = Selection.getSingle();
+                    this.bubbleAsSearchResult = SearchService.searchResultFromOnMapGraphElement(
+                        selected
+                    );
+                    if (selected.canExpand()) {
+                        await selected.controller().expand(true, true, true);
+                        selected.collapse();
+                    }
                     this.dialog = true;
                     this.mergeBubble = null;
                     this.confirmLoading = false;
                     this.keptUri = this.bubble.getUri();
                     this.keptColor = this.bubble.getBackgroundColor();
                     if (this.$store.state.isMergeFlow === true) {
-                        this.$nextTick(() => {
-                            setTimeout(async () => {
-                                this.search = "";
-                                this.$refs.mergeSearch.reset();
-                                await this.$nextTick();
-                                this.$refs.mergeSearch.$el.querySelector("input").focus();
-                            }, 100)
-                        });
+                        await this.$nextTick();
+                        setTimeout(async () => {
+                            this.search = "";
+                            this.$refs.mergeSearch.reset();
+                            await this.$nextTick();
+                            this.$refs.mergeSearch.$el.querySelector("input").focus();
+                        }, 100)
                     } else {
                         this.selectedSearchResult = this.$store.state.isMergeFlow;
                         this.selectSearchResult();
@@ -296,9 +306,6 @@
                     KeyboardActions.enable();
                     this.$store.dispatch("setIsMergeFlow", false)
                 } else {
-                    this.bubbleAsSearchResult = SearchService.searchResultFromOnMapGraphElement(
-                        Selection.getSingle()
-                    );
                     KeyboardActions.disable();
                 }
                 if (this.$refs.mergeSearch) {

@@ -65,7 +65,7 @@ api.SubGraph = function (graph, centerUri, buildFacade) {
     }
 };
 
-api.SubGraph.prototype.add = function (graphElement) {
+api.SubGraph.prototype.add = function (graphElement, preventAddOthers) {
     if (graphElement.isCenter) {
         graphElement.parentBubble = graphElement.parentVertex = graphElement;
     }
@@ -83,17 +83,21 @@ api.SubGraph.prototype.add = function (graphElement) {
         if (endVertex.getNumberOfChild() === 0) {
             endVertex.isExpanded = true;
         }
-        this.add(endVertex);
+        if (!preventAddOthers) {
+            this.add(endVertex);
+        }
     } else if (graphElement.isVertex()) {
         this.addVertex(graphElement);
     } else if (graphElement.isGroupRelation()) {
         this.groupRelations[graphElement.getUri()] = graphElement;
-        graphElement.getNextChildren().forEach((child) => {
-            child.direction = graphElement.direction;
-            child.parentVertex = graphElement.parentVertex;
-            child.parentBubble = graphElement;
-            this.add(child);
-        })
+        if (!preventAddOthers) {
+            graphElement.getNextChildren().forEach((child) => {
+                child.direction = graphElement.direction;
+                child.parentVertex = graphElement.parentVertex;
+                child.parentBubble = graphElement;
+                this.add(child);
+            })
+        }
     } else {
         this.otherGraphElements[graphElement.getId()] = graphElement;
     }
@@ -168,6 +172,21 @@ api.SubGraph.prototype.remove = function (graphElement) {
     } else if (graphElement.isMeta()) {
         this.removeTag(graphElement);
     }
+};
+
+api.SubGraph.prototype.rebuild = function () {
+    let center = this.center;
+    this._reset();
+    center.getDescendants(undefined, undefined, true).forEach((descendant) => {
+        this.add(descendant, true);
+    });
+};
+
+api.SubGraph.prototype._reset = function () {
+    this.edges = {};
+    this.vertices = {};
+    this.groupRelations = {};
+    this.tags = [];
 };
 
 api.SubGraph.prototype.removeTag = function (tag) {
@@ -289,9 +308,11 @@ api.SubGraph.prototype.replaceGraphElement = function (existingGraphElement, new
     }
     container.forEach((element, index) => {
         if (element.getId() === existingGraphElement.getId()) {
+            console.log(newGraphElement.getLabel())
             container[index] = newGraphElement;
         }
     });
+
 };
 
 api.SubGraph.prototype.getContainerForGraphElementType = function (graphElementType) {

@@ -649,7 +649,7 @@ describe("Graph.vue", () => {
         ).toBeTruthy();
     });
 
-    fit("can expand inverse group relation", async () => {
+    it("can expand inverse group relation", async () => {
         let scenario = await new AroundBook1Scenario();
         let book1 = scenario.getCenterInTree();
         expect(

@@ -141,6 +141,30 @@ api.logDescendants = function (bubble) {
     );
 };
 
+api.logTree = function (bubble) {
+    console.log(
+        bubble.getDescendants().filter((descendant) => {
+            return descendant.isEdge();
+            return descendant;
+        }).map((edge) => {
+            let space = "";
+            let distance = api._getDistance(edge, bubble);
+            while (distance--) {
+                space += " ";
+            }
+            return space + edge.getLabel() + " -> " + edge.getNextBubble().getLabel();
+        })
+    );
+};
+api._getDistance = function (descendant, ancestor) {
+    let distance = 0;
+    while (descendant.getParentVertex().getId() !== ancestor.getId()) {
+        distance++;
+        descendant = descendant.getParentVertex();
+    }
+    return distance;
+};
+
 export default api;
 
 function generateUuid() {

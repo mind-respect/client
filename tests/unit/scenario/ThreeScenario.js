@@ -36,6 +36,14 @@ ThreeScenario.prototype.getSubGraphForB3 = function () {
     );
 };
 
+ThreeScenario.prototype.getB3SubGraphMergedWithB21 = function () {
+    return Scenario.getTestData(
+        "three.b3SubGraphMergedWithB21"
+    );
+};
+
+
+
 ThreeScenario.prototype.getCenter = function () {
     return this.vertexWithLabelInServerGraph("b1");
 };

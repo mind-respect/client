@@ -1,7 +1,5 @@
 import Scenario from './Scenario'
 import GraphServiceMock from "../mock/GraphServiceMock";
-import ThreeScenario from "./ThreeScenario";
-import SingleChildScenario from "./SingleChildScenario";
 
 let Center1MergeTwoChildHavingChildrenScenario = function () {
     this.dataKey = "mergeTwoChildHavingChildren.center1SubGraph";

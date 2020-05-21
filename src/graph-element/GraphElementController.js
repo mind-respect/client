@@ -673,6 +673,12 @@ GraphElementController.prototype.addIdentification = function (tag, force) {
     });
 };
 
+GraphElementController.prototype.relateToDistantVertexWithUriCanDo = function (distantVertexUri) {
+    return this.model().getSurround(true).every((child) => {
+        return child.getUri() !== distantVertexUri && child.getNextBubble().getUri() !== distantVertexUri;
+    });
+};
+
 GraphElementController.prototype.relateToDistantVertexWithUri = async function (distantVertexUri, index, isLeft, destinationShareLevel, identifiers) {
     let parentFork = this.model().isForkType() ? this.model() : this.model().getParentFork();
     let distantVertex = await SubGraphController.withVertex(

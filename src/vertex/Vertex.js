@@ -86,13 +86,14 @@ Vertex.prototype.getNumberOfChild = function (isLeft) {
 
 Vertex.prototype.resetChildren = function () {
     let subGraph = CurrentSubGraph.get();
-    this.getNextChildrenEvenIfCollapsed().forEach((child) => {
+    this.getDescendants(undefined, undefined, true).forEach((child) => {
         subGraph.remove(child);
     });
+    this.isCollapsed = false;
     this.leftBubbles = [];
     this.rightBubbles = [];
-    this.leftBubblesCollapsed = [];
-    this.rightBubblesCollapsed = [];
+    this.leftBubblesCollapsed = null;
+    this.rightBubblesCollapsed = null;
 };
 
 Vertex.prototype.getGraphElementType = function () {
