@@ -835,12 +835,13 @@ FriendlyResource.FriendlyResource.prototype.getDescendants = function (toTheLeft
 };
 
 FriendlyResource.FriendlyResource.prototype.getAncestors = function () {
-    if (this.isCenter) {
+    let parentBubble = this.getParentBubble();
+    if (parentBubble.getUri() === this.getUri()) {
         return [];
     }
     return [
-        this.getParentBubble()
-    ].concat(this.getParentBubble().getAncestors());
+        parentBubble
+    ].concat(parentBubble.getAncestors());
 };
 
 FriendlyResource.FriendlyResource.prototype.visitDescendants = function (visitor) {

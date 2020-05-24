@@ -136,7 +136,8 @@
                 );
             },
             bubbleUrl: function () {
-                return Selection.getSingle().uri().absoluteUrl();
+                let single = Selection.getSingle();
+                return single === undefined ? "" : single.uri().absoluteUrl();
             }
         },
         watch: {

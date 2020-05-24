@@ -177,6 +177,7 @@ api.SubGraph.prototype.remove = function (graphElement) {
 api.SubGraph.prototype.rebuild = function () {
     let center = this.center;
     this._reset();
+    this.add(center, true);
     center.getDescendants(undefined, undefined, true).forEach((descendant) => {
         this.add(descendant, true);
     });

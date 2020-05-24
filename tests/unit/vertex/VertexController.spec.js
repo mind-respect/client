@@ -679,8 +679,8 @@ describe('VertexController', () => {
                 scenario.getA21SubGraphAfterMerge()
             );
             expect(
-                a21.controller().convertToDistantBubbleWithUriCanDo(
-                    a1.getUri()
+                a1.controller().convertToDistantBubbleWithUriCanDo(
+                    a21.getUri()
                 )
             ).toBeTruthy();
             await a1.controller().convertToDistantBubbleWithUri(
@@ -692,7 +692,22 @@ describe('VertexController', () => {
             ).toBe("a1 a21");
             expect(
                 merge.getNbDuplicates()
-            ).toBe(0)
+            ).toBe(0);
+            expect(
+                Selection.getSingle().getLabel()
+            ).toBe("a1 a21");
+            expect(
+                merge.getNumberOfChild()
+            ).toBe(3);
+            expect(
+                merge.getNextChildren().length
+            ).toBe(3);
+            expect(
+                merge.getParentBubble().getLabel()
+            ).toBe("ra1");
+            expect(
+                merge.getParentVertex().getLabel()
+            ).toBe("center");
         });
         it("can merge descendant with ancestor", async () => {
             let scenario = await new MergeDescendantWithAncestorScenario();

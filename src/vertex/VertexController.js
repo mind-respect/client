@@ -270,16 +270,20 @@ VertexController.prototype.convertToDistantBubbleWithUri = async function (dista
     if (!this.convertToDistantBubbleWithUriCanDo(distantVertexUri)) {
         return Promise.reject();
     }
+    await Selection.removeAll();
     bubbleToReplace = bubbleToReplace || this.model();
+    if (bubbleToReplace.isAncestor(this.model())) {
+        bubbleToReplace = CurrentSubGraph.get().getHavingUri(this.model().getUri());
+    }
     let beforeConverted = this.model();
     let converted;
     let distantVertex = CurrentSubGraph.get().getHavingUri(distantVertexUri);
-    if (distantVertex && this.model().isAncestor(distantVertex)) {
+    if (distantVertex) {
         converted = distantVertex.clone();
     } else {
         converted = this.model().clone();
-        converted.setUri(distantVertexUri);
     }
+    converted.setUri(distantVertexUri);
     beforeConverted.resetChildren(true);
     beforeConverted.expand();
     let isCenter = beforeConverted.isCenter;
@@ -295,7 +299,7 @@ VertexController.prototype.convertToDistantBubbleWithUri = async function (dista
         converted.parentVertex = this.model();
     } else {
         converted.parentBubble = bubbleToReplace.getParentBubble();
-        converted.parentVertex = bubbleToReplace.getParentBubble().parentVertex;
+        converted.parentVertex = bubbleToReplace.getParentVertex();
         bubbleToReplace.getParentBubble().replaceChild(
             bubbleToReplace,
             converted
@@ -343,6 +347,11 @@ VertexController.prototype.convertToDistantBubbleWithUri = async function (dista
             converted.getParentVertex()
         )
     );
+    promises.push(
+        GraphElementService.changeChildrenIndex(
+            converted
+        )
+    );
     if (beforeConverted.isMeta()) {
         CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
             graphElement.getIdentifiers().forEach((tag) => {
@@ -371,7 +380,7 @@ VertexController.prototype.convertToDistantBubbleWithUri = async function (dista
             Store.dispatch("centerRefresh");
             return 'isRefreshing';
         } else {
-            router.push({
+            await router.push({
                 name: "Center",
                 params: {
                     username: converted.uri().getOwner(),
@@ -382,6 +391,10 @@ VertexController.prototype.convertToDistantBubbleWithUri = async function (dista
         }
     }
     CurrentSubGraph.get().rebuild();
+    if (CurrentSubGraph.get().component) {
+        CurrentSubGraph.get().component.refreshChildren();
+    }
+    Selection.setToSingle(converted);
 };
 
 VertexController.prototype.mergeCanDo = function () {

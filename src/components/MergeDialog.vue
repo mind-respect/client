@@ -233,6 +233,7 @@
                 confirm: 'Fusionner'
             });
             return {
+                bubble: null,
                 loading: false,
                 selectedSearchResult: null,
                 search: null,
@@ -258,9 +259,6 @@
             isMergeFlow: function () {
                 return this.$store.state.isMergeFlow;
             },
-            bubble: function () {
-                return Selection.getSingle();
-            },
             label: function () {
                 return this.bubble.getLabel();
             }
@@ -272,13 +270,12 @@
             },
             isMergeFlow: async function () {
                 if (this.$store.state.isMergeFlow) {
-                    const selected = Selection.getSingle();
+                    this.bubble = Selection.getSingle();
                     this.bubbleAsSearchResult = SearchService.searchResultFromOnMapGraphElement(
-                        selected
+                        this.bubble
                     );
-                    if (selected.canExpand()) {
-                        await selected.controller().expand(true, true, true);
-                        selected.collapse();
+                    if (this.bubble.canExpand()) {
+                        await this.bubble.controller().expand(true, true, true);
                     }
                     this.dialog = true;
                     this.mergeBubble = null;
@@ -417,7 +414,7 @@
                     this.isSameColor = this.bubble.getBackgroundColor() === this.mergeBubble.getBackgroundColor();
                 });
             },
-            confirm: function () {
+            confirm: async function () {
                 this.confirmLoading = true;
                 let keptBubble;
                 let removedBubble;
@@ -430,18 +427,18 @@
                     removedBubble = this.bubble;
                     keptBubble = this.mergeBubble;
                 }
-                removedBubble.controller().convertToDistantBubbleWithUri(
+                const response = await removedBubble.controller().convertToDistantBubbleWithUri(
                     keptBubble.getUri(),
                     bubbleToReplace,
                     this.keptColor
-                ).then((response) => {
-                    if (response === 'isRefreshing') {
-                        return;
-                    }
-                    this.dialog = false;
-                    this.$refs.mergeSearch.blur();
-                    this.confirmLoading = false;
-                });
+                );
+                if (response === 'isRefreshing') {
+                    return;
+                }
+                this.dialog = false;
+                this.$refs.mergeSearch.blur();
+                this.confirmLoading = false;
+
             },
             filter: function (item, searchText, itemText) {
                 if (!this.bubble.controller().convertToDistantBubbleWithUriCanDo(item.uri)) {

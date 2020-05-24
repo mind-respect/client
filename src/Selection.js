@@ -83,7 +83,7 @@ api.removeAll = function () {
             selected.deselect();
         }
     });
-    Store.dispatch("setSelected", []);
+    return Store.dispatch("setSelected", []);
 };
 
 api.getNbSelectedVertices = function () {
