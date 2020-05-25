@@ -110,6 +110,11 @@ api.fromGraphElement = function (graphElement) {
             return surroundEdge.isEdge() ? surroundEdge.getOtherVertex(graphElement).getLabel() : "";
         }).join("{{").substring(0, 110);
     }
+    /*
+    graphElement = graphElement.clone();
+    to remove children because it can cause stack overflow
+    */
+    graphElement = graphElement.clone();
     return new SearchResult(
         graphElement,
         graphElement.getGraphElementType(),

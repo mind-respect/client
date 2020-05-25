@@ -190,7 +190,7 @@
                 this.hasConfirmToEnterFlow = false;
                 this.isSimilarBubblesNotice = false;
             },
-            merge: function () {
+            merge: async function () {
                 this.leaveFlow();
                 this.$store.dispatch("setIsMergeFlow", this.getSelectedResult());
             },

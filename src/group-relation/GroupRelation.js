@@ -84,6 +84,14 @@ function GroupRelation(jsonObject) {
 
 GroupRelation.prototype = new Fork.Fork();
 
+GroupRelation.prototype.clone = function () {
+    let groupRelation = new GroupRelation(
+        JSON.parse(JSON.stringify(this.groupRelationJsonObject))
+    );
+    groupRelation.uiId = IdUri.uuid();
+    return groupRelation;
+};
+
 GroupRelation.prototype.getNbNeighbors = function () {
     return this.nbNeighbors;
 };

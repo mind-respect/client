@@ -147,6 +147,15 @@ Tag.Tag.prototype.init = function (serverFormat) {
     return this;
 };
 
+Tag.Tag.prototype.clone = function () {
+    let tag = new Tag.Tag();
+    tag.init(
+        JSON.parse(JSON.stringify(this.identificationServerFormat))
+    );
+    tag.uiId = IdUri.uuid();
+    return tag;
+};
+
 Tag.Tag.prototype.getExternalResourceUri = function () {
     return decodeURIComponent(
         this.identificationServerFormat.externalResourceUri
