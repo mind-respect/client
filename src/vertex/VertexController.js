@@ -286,7 +286,7 @@ VertexController.prototype.convertToDistantBubbleWithUri = async function (dista
     converted.setUri(distantVertexUri);
     beforeConverted.resetChildren(true);
     beforeConverted.expand();
-    let isCenter = beforeConverted.isCenter;
+    let isCenter = beforeConverted.isCenter || bubbleToReplace.isCenter;
     let beforeMergeLabel = beforeConverted.getLabel();
     let beforeMergeComment = beforeConverted.getComment();
     let isFontDefined = beforeConverted.isFontDefined();
@@ -305,7 +305,9 @@ VertexController.prototype.convertToDistantBubbleWithUri = async function (dista
             converted
         );
     }
-    converted = await converted.controller().getSubGraphController().loadForParentIsAlreadyOnMap();
+    if (!isCenter) {
+        converted = await converted.controller().getSubGraphController().loadForParentIsAlreadyOnMap();
+    }
     let promises = [];
     if (beforeMergeLabel.toLowerCase().trim() !== converted.getLabel().toLowerCase().trim()) {
         let concatenatedLabel = beforeMergeLabel + " " + converted.getLabel();
@@ -342,16 +344,18 @@ VertexController.prototype.convertToDistantBubbleWithUri = async function (dista
             )
         );
     }
-    promises.push(
-        GraphElementService.changeChildrenIndex(
-            converted.getParentVertex()
-        )
-    );
-    promises.push(
-        GraphElementService.changeChildrenIndex(
-            converted
-        )
-    );
+    if (!isCenter) {
+        promises.push(
+            GraphElementService.changeChildrenIndex(
+                converted.getParentVertex()
+            )
+        );
+        promises.push(
+            GraphElementService.changeChildrenIndex(
+                converted
+            )
+        );
+    }
     if (beforeConverted.isMeta()) {
         CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
             graphElement.getIdentifiers().forEach((tag) => {

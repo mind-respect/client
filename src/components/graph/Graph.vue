@@ -267,6 +267,11 @@
                     ).load();
             } else {
                 let center = this.$route.params.newVertex;
+                /*
+                    this.$route.params.newVertex = undefined
+                    so that when centerRefresh is dispatched it's not considered new vertex
+                */
+                this.$route.params.newVertex = undefined;
                 promise = Promise.resolve(center);
                 CurrentSubGraph.get().add(center);
                 center.makeCenter();
@@ -304,7 +309,7 @@
                         await this.$nextTick();
                         await this.$nextTick();
                         this.strokeColor = Color.EdgeColor;
-                        setTimeout(async() => {
+                        setTimeout(async () => {
                             await this.$store.dispatch("redraw", {fadeIn: true});
                             const timeItTakesToFadeInPlus5 = 505;
                             setTimeout(() => {
@@ -658,7 +663,7 @@
         opacity: 1;
     }
 
-    .expand-child-enter{
+    .expand-child-enter {
         opacity: 0;
         transform: rotateY(50deg);
         transform-origin: top left;
@@ -671,12 +676,12 @@
     }
 
     .expand-child-enter-active,
-    .expand-child-left-enter-active{
+    .expand-child-left-enter-active {
         transition: opacity, transform 200ms ease-out;
     }
 
 
-    .expand-child-left-enter{
+    .expand-child-left-enter {
         opacity: 0;
         transform: rotateY(50deg);
         transform-origin: top right;

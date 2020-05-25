@@ -16,6 +16,8 @@ import Center2MergeTwoChildHavingChildrenScenario from "../scenario/Center2Merge
 import Center1MergeTwoChildHavingChildrenScenario from "../scenario/Center1MergeTwoChildHavingChildrenScenario";
 import MergeDescendantWithAncestorScenario from "../scenario/MergeDescendantWithAncestorScenario";
 import MergeAncestorWithDescendant from "../scenario/MergeAncestorWithDescendantScenario";
+import MergeCentersUrluScenario from "../scenario/MergeCentersUrluScenario";
+import MergeCentersOtoScenario from "../scenario/MergeCentersOtoScenario";
 
 describe('VertexController', () => {
     describe("remove", function () {
@@ -922,6 +924,27 @@ describe('VertexController', () => {
             expect(
                 groupRelation.getNumberOfChild()
             ).toBe(groupRelationNumberOfChild);
+        });
+        it("prevents duplicate child when merge centers", async () => {
+            let urluScenario = await new MergeCentersUrluScenario();
+            let urlu1 = urluScenario.getCenterInTree();
+            let otoScenario = await new MergeCentersOtoScenario();
+            let oto1 = otoScenario.getCenterInTree();
+            GraphServiceMock.getForCentralBubbleUri(
+                otoScenario.getGraphAfterMergeWithUrlu()
+            );
+            await urlu1.controller().convertToDistantBubbleWithUri(
+                oto1.getUri(),
+                oto1
+            );
+            await otoScenario.nextTickPromise();
+            oto1 = CurrentSubGraph.get().center;
+            expect(
+                oto1.getNumberOfChild()
+            ).toBe(4);
+            expect(
+                oto1.getNbDuplicates()
+            ).toBe(0);
         });
     });
 });
