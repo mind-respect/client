@@ -18,6 +18,7 @@ import MergeDescendantWithAncestorScenario from "../scenario/MergeDescendantWith
 import MergeAncestorWithDescendant from "../scenario/MergeAncestorWithDescendantScenario";
 import MergeCentersUrluScenario from "../scenario/MergeCentersUrluScenario";
 import MergeCentersOtoScenario from "../scenario/MergeCentersOtoScenario";
+import GraphElementService from "../../../src/graph-element/GraphElementService";
 
 describe('VertexController', () => {
     describe("remove", function () {
@@ -686,7 +687,8 @@ describe('VertexController', () => {
                 )
             ).toBeTruthy();
             await a1.controller().convertToDistantBubbleWithUri(
-                a21.getUri()
+                a21.getUri(),
+                a1
             );
             let merge = center.getNextBubble().getNextBubble();
             expect(
@@ -739,7 +741,7 @@ describe('VertexController', () => {
             ).toBeTruthy();
             await a21.controller().convertToDistantBubbleWithUri(
                 a1.getUri(),
-                a1
+                a21
             );
             a21 = center.getNextBubble().getNextBubble();
             expect(
@@ -748,6 +750,39 @@ describe('VertexController', () => {
             expect(
                 a21.getNbDuplicates()
             ).toBe(0);
+        });
+        it("changes children index of the parent of distant vertex", async () => {
+            let scenario = await new MergeDescendantWithAncestorScenario();
+            let center = scenario.getCenterInTree();
+            let a1 = TestUtil.getChildDeepWithLabel(
+                center,
+                "a1"
+            );
+            await scenario.expandA1(a1);
+            let a2 = TestUtil.getChildDeepWithLabel(
+                center,
+                "a2"
+            );
+            await scenario.expandA2(a2);
+            let a21 = TestUtil.getChildDeepWithLabel(
+                a2,
+                "a21"
+            );
+            await scenario.expandA21(a21);
+            GraphServiceMock.getForCentralBubbleUri(
+                scenario.getA1SubGraphAfterMerge()
+            );
+            let changeIndexUris = new Set();
+            jest.spyOn(GraphElementService, "changeChildrenIndex").mockImplementation(async (fork) => {
+                changeIndexUris.add(fork.getUri());
+            });
+            await a21.controller().convertToDistantBubbleWithUri(
+                a1.getUri(),
+                a21
+            );
+            expect(
+                changeIndexUris.has(center.getUri())
+            ).toBeTruthy();
         });
     });
     /*

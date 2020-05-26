@@ -280,6 +280,9 @@ VertexController.prototype.convertToDistantBubbleWithUri = async function (dista
     let distantVertex = CurrentSubGraph.get().getHavingUri(distantVertexUri);
     if (distantVertex) {
         converted = distantVertex.clone();
+        if (bubbleToReplace.isAncestor(distantVertex)) {
+            bubbleToReplace = distantVertex;
+        }
     } else {
         converted = this.model().clone();
     }
