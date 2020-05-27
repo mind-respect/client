@@ -23,14 +23,14 @@
                             v-for="bubble in bubbles"
                             :key="bubble.uiId"
                     >
-                        <v-list-item-action>
-                            <v-icon>
-                                label
-                            </v-icon>
-                        </v-list-item-action>
                         <v-list-item-content>
                             <v-list-item-title>
-                                {{bubble.getLabelOrDefault()}}
+                                <v-icon class="mr-2">
+                                    label
+                                </v-icon>
+                                "{{bubble.getLabelOrDefault()}}"
+                                {{$t('toTheBubble')}}
+                                "{{bubble.getParentFork().getLabelOrDefault()}}"
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
@@ -110,8 +110,11 @@
             isRemoveTagFlow: function () {
                 if (this.$store.state.isRemoveTagFlow) {
                     this.bubbles = [];
-                    Selection.getSelectedElements().forEach((metaRelation) => {
-                        let nextBubble = metaRelation.getNextBubble();
+                    Selection.getSelectedElements().forEach((tagRelation) => {
+                        if (tagRelation.isMeta()) {
+                            tagRelation = tagRelation.getParentBubble()
+                        }
+                        let nextBubble = tagRelation.getNextBubble();
                         if (nextBubble.isMetaGroupVertex()) {
                             nextBubble.expand();
                             this.bubbles = this.bubbles.concat(nextBubble.getClosestChildVertices());

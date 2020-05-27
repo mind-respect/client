@@ -255,6 +255,16 @@ TagVertexController.prototype.relateToDistantVertexWithUri = function (distantVe
 TagVertexController.prototype.convertToDistantBubbleWithUriCanDo = function (distantVertexUri) {
     return this.model().getUri() !== distantVertexUri;
 };
+
+TagVertexController.prototype.remove = function (skipConfirmation) {
+    if (!this.model().isCenter && Selection.isSingle() && Selection.isSelected(this.model()) && this.model().getNumberOfChild() > 0) {
+        return this.model().getParentBubble().controller().remove(skipConfirmation);
+    }
+    return VertexController.VertexController.prototype.remove.call(
+        this,
+        skipConfirmation
+    );
+};
 //
 // TagVertexController.prototype.convertToDistantBubbleWithUri = function (distantTagUri) {
 //     if (!this.convertToDistantBubbleWithUriCanDo(distantTagUri)) {

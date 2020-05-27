@@ -104,5 +104,4 @@ TagVertex.prototype.getNbNeighbors = function () {
     return this.getOriginalMeta().getNbNeighbors();
 };
 
-
 export default api;

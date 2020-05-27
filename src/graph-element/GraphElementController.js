@@ -769,6 +769,9 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
     graphElements.forEach((graphElement) => {
         let parentFork = graphElement.getParentFork();
         parentForksUri.add(parentFork.getUri());
+        if (graphElement.isMeta() && !graphElement.isCenter) {
+            graphElement.getParentFork().removeTag(graphElement.getOriginalMeta());
+        }
         graphElement.remove();
     });
     nbNeighborsRefresherOnRemove.execute();

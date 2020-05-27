@@ -138,8 +138,12 @@ describe('GraphElementController', () => {
             let b1 = scenario.getBubble1InTree();
             let nbNeighborsAfterRemoved;
             jest.clearAllMocks();
+            let nbSetNbNeighborsForVertices = 0;
             jest.spyOn(GraphElementService, "setNbNeighbors").mockImplementation(async (graphElement) => {
-                nbNeighborsAfterRemoved = graphElement.getNbNeighbors();
+                if (graphElement.isVertex()) {
+                    nbSetNbNeighborsForVertices++;
+                    nbNeighborsAfterRemoved = graphElement.getNbNeighbors();
+                }
             });
             await new GraphElementController.GraphElementController([
                 TestUtil.getChildWithLabel(
@@ -152,7 +156,7 @@ describe('GraphElementController', () => {
                 ).getNextBubble()
             ]).removeDo();
             expect(
-                GraphElementService.setNbNeighbors.mock.calls.length
+                nbSetNbNeighborsForVertices
             ).toBe(1);
             expect(
                 nbNeighborsAfterRemoved.getTotal()

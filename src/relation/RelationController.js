@@ -155,7 +155,7 @@ RelationController.prototype._postConvertToGroupRelation = async function (newGr
 }
 
 RelationController.prototype.removeCanDo = function () {
-    return this.isSingleAndOwned();
+    return this.isOwned();
 };
 
 RelationController.prototype.reverseToRightCanDo = function () {

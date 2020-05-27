@@ -28,14 +28,16 @@
                             <v-icon v-if="!bubble.canRemove">highlight_off</v-icon>
                         </v-list-item-action>
                         <v-list-item-content>
-                            <v-list-item-title v-if="bubble.isEdge() && bubble.isPristine()">
-                                {{$t('remove:linkBetween')}}
-                                {{bubble.getParentFork().getLabelOrDefault()}}
-                                {{$t('and')}}
-                                {{bubble.getNextBubble().getLabelOrDefault()}}
-                            </v-list-item-title>
-                            <v-list-item-title v-else>
+                            <v-list-item-title>
                                 {{bubble.getLabelOrDefault()}}
+                                <span v-if="bubble.isEdge() && bubble.isPristine()" class="ml-2">
+                                    (
+                                    {{$t('remove:linkBetween')}}
+                                    {{bubble.getParentFork().getLabelOrDefault()}}
+                                    {{$t('and')}}
+                                    {{bubble.getNextBubble().getLabelOrDefault()}}
+                                    )
+                                </span>
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
