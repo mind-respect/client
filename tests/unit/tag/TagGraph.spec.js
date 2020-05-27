@@ -137,6 +137,37 @@ describe("TagGraph", () => {
             TestUtil.hasDeepChildWithLabel(sourceVertexAsGroupRelation, "e2")
         ).toBeTruthy();
     });
+    it("removes group vertex after remove last child", async () => {
+        let scenario = await new AroundTodoTagScenario();
+        let toDoMetaBubble = scenario.getCenterInTree();
+        expect(
+            toDoMetaBubble.getNumberOfChild()
+        ).toBe(2);
+        expect(
+            TestUtil.hasDeepChildWithLabel(
+                toDoMetaBubble,
+                "e1"
+            )
+        ).toBeTruthy();
+        let groupTagVertex = TestUtil.getChildDeepWithLabel(
+            toDoMetaBubble,
+            "e1"
+        );
+        groupTagVertex.expand();
+        groupTagVertex.getNextChildren().forEach(async (child) => {
+            await child.controller().removeDo();
+        });
+        await scenario.nextTickPromise();
+        expect(
+            toDoMetaBubble.getNumberOfChild()
+        ).toBe(1);
+        expect(
+            TestUtil.hasDeepChildWithLabel(
+                toDoMetaBubble,
+                "e1"
+            )
+        ).toBeFalsy();
+    });
     it("prevents group source vertices to be leaves when they are expanded", async () => {
         let scenario = await new AroundTodoTagScenario();
         let toDoMetaBubble = scenario.getCenterInTree();

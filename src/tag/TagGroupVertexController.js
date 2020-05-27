@@ -76,6 +76,12 @@ TagGroupVertexController.prototype.becomeParent = function (child, isLeft, index
     return Promise.resolve();
 };
 
+TagGroupVertexController.prototype.becomeExParent = function () {
+    if (this.model().getNextChildren().length === 0) {
+        this.model().remove();
+    }
+};
+
 api.MetaGroupVertexController = TagGroupVertexController;
 
 export default api;

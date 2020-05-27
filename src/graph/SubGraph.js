@@ -99,7 +99,7 @@ api.SubGraph.prototype.add = function (graphElement, preventAddOthers) {
             })
         }
     } else {
-        this.otherGraphElements[graphElement.getId()] = graphElement;
+        this.addOtherGraphElement(graphElement);
     }
 };
 api.SubGraph.prototype._isEdgeAlreadyAdded = function (edge) {
@@ -162,6 +162,19 @@ api.SubGraph.prototype.addEdge = function (edge) {
     this.edges[edge.getUri()].push(edge);
 };
 
+api.SubGraph.prototype.addOtherGraphElement = function (graphElement) {
+    if (this.otherGraphElements[graphElement.getUri()] === undefined) {
+        this.otherGraphElements[graphElement.getUri()] = [];
+    }
+    let isAlreadyThere = this.otherGraphElements[graphElement.getUri()].some((_graphElement) => {
+        return _graphElement.getId() === graphElement.getId();
+    });
+    if (isAlreadyThere) {
+        return;
+    }
+    this.otherGraphElements[graphElement.getUri()].push(graphElement);
+};
+
 api.SubGraph.prototype.remove = function (graphElement) {
     if (graphElement.isEdge()) {
         this.removeEdge(graphElement);
@@ -171,6 +184,8 @@ api.SubGraph.prototype.remove = function (graphElement) {
         this.removeGroupRelation(graphElement);
     } else if (graphElement.isMeta()) {
         this.removeTag(graphElement);
+    } else {
+        this.removeOtherGraphElement(graphElement);
     }
 };
 
@@ -233,6 +248,20 @@ api.SubGraph.prototype.removeVertex = function (vertex) {
     }
 };
 
+
+api.SubGraph.prototype.removeOtherGraphElement = function (graphElement) {
+    let graphElements = this.otherGraphElements[graphElement.getUri()] || [];
+    let l = graphElements.length;
+    while (l--) {
+        if (graphElements[l].getId() === graphElement.getId()) {
+            graphElements.splice(l, 1);
+        }
+    }
+    if (graphElements.length === 0) {
+        delete this.otherGraphElements[graphElement.getUri()];
+    }
+};
+
 api.SubGraph.prototype.getEdges = function () {
     let edges = Object.values(this.edges);
     //use array flat() when node ^11 LTS gets out
@@ -279,9 +308,12 @@ api.SubGraph.prototype.getGroupRelationWithUri = function (uri) {
 };
 
 api.SubGraph.prototype.hasUri = function (uri) {
-    return this.edges[uri] !== undefined || this.vertices[uri] !== undefined || this.tagVertices.some((tagVertex) => {
-        return tagVertex.getUri() === uri;
-    });
+    return this.edges[uri] !== undefined ||
+        this.vertices[uri] !== undefined ||
+        this.otherGraphElements[uri] !== undefined ||
+        this.tagVertices.some((tagVertex) => {
+            return tagVertex.getUri() === uri;
+        });
 };
 
 api.SubGraph.prototype.getHavingUri = function (uri) {
@@ -293,6 +325,9 @@ api.SubGraph.prototype.getHavingUri = function (uri) {
     }
     if (this.groupRelations[uri] !== undefined) {
         return this.groupRelations[uri];
+    }
+    if (this.otherGraphElements[uri] !== undefined) {
+        return this.otherGraphElements[uri][0];
     }
     let tagVertex = this.tagVertices.filter((tagVertex) => {
         return tagVertex.getUri() === uri;
