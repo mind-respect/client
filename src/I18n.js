@@ -50,7 +50,8 @@ export default {
                         moreResults: "More results",
                         selectAll: "Add all",
                         deselectAll: "Remove all",
-                        robotDoubt: "There is a doubt that you are a robot. If you are human, Im sorry and contact me at vincent.blouin@gmail.com"
+                        robotDoubt: "There is a doubt that you are a robot. If you are human, Im sorry and contact me at vincent.blouin@gmail.com",
+                        and: "and"
                     }
                 },
                 fr: {
@@ -81,7 +82,8 @@ export default {
                         moreResults: "Plus de résultats",
                         selectAll: "Ajouter tout",
                         deselectAll: "Enlever tout",
-                        robotDoubt: "Il y a un doute que vous soyez un robot. Si vous êtes humain, je suis désolé et contactez moi à vincent.blouin@gmail.com"
+                        robotDoubt: "Il y a un doute que vous soyez un robot. Si vous êtes humain, je suis désolé et contactez moi à vincent.blouin@gmail.com",
+                        and: "et"
                     }
                 }
             }

@@ -28,7 +28,13 @@
                             <v-icon v-if="!bubble.canRemove">highlight_off</v-icon>
                         </v-list-item-action>
                         <v-list-item-content>
-                            <v-list-item-title>
+                            <v-list-item-title v-if="bubble.isEdge() && bubble.isPristine()">
+                                {{$t('remove:linkBetween')}}
+                                {{bubble.getParentFork().getLabelOrDefault()}}
+                                {{$t('and')}}
+                                {{bubble.getNextBubble().getLabelOrDefault()}}
+                            </v-list-item-title>
+                            <v-list-item-title v-else>
                                 {{bubble.getLabelOrDefault()}}
                             </v-list-item-title>
                         </v-list-item-content>
@@ -82,7 +88,8 @@
                 confirm: "Remove",
                 multiple_confirm_suffix: "bubbles with the icon",
                 cancel: "Cancel",
-                cannotRemove: "A bubble must no longer have children to be erased. However, you can delete the relationships between the bubbles at any time."
+                cannotRemove: "A bubble must no longer have children to be erased. However, you can delete the relationships between the bubbles at any time.",
+                linkBetween: "The link between"
             });
             I18n.i18next.addResources("fr", "remove", {
                 title_prefix: "Effacer ",
@@ -93,7 +100,8 @@
                 confirm: "Effacer",
                 multiple_confirm_suffix: "les bulles avec l'icône",
                 cancel: "Annuler",
-                cannotRemove: "Une bulle ne doit plus avoir d'enfants pour être effacée. Par contre, vous pouvez en tout temps effacer les relations entre les bulles."
+                cannotRemove: "Une bulle ne doit plus avoir d'enfants pour être effacée. Par contre, vous pouvez en tout temps effacer les relations entre les bulles.",
+                linkBetween: "Le lien entre"
             });
             return {
                 removeDialog: false,
