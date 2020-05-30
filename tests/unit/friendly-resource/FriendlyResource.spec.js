@@ -783,4 +783,24 @@ describe("FriendlyResource", () => {
             ).toBe(1);
         })
     });
+    describe("getNextBottomBubble", () => {
+        it("returns right bubble for group relation at the left", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let center = scenario.getCenterInTree();
+            let groupRelation = scenario.getPossessionGroupRelation();
+            await groupRelation.controller().moveUnderParent(center, true);
+            expect(
+                groupRelation.isToTheLeft()
+            ).toBeTruthy();
+            await scenario.expandPossession(groupRelation);
+            // TestUtil.logTree(groupRelation);
+            let bottomBubble = groupRelation.getNextBottomBubble(true);
+            expect(
+                bottomBubble.getId()
+            ).not.toBe(groupRelation.getId());
+            expect(
+                bottomBubble.getLabel()
+            ).toBe("Possession of book 3");
+        });
+    });
 });

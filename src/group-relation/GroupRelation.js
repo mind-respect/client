@@ -138,12 +138,13 @@ GroupRelation.prototype.getGreatestGroupRelationAncestor = function () {
     return greatest;
 };
 
-GroupRelation.prototype.getLeftBubble = function () {
+GroupRelation.prototype.getLeftBubble = function (bottom) {
     if (this.isToTheLeft()) {
         if (this.isCollapsed || !this.children) {
             return this;
         }
-        return this.children[0];
+        let index = bottom ? this.children.length - 1 : 0;
+        return this.children[index];
     }
     return this.parentBubble;
 };
@@ -155,7 +156,8 @@ GroupRelation.prototype.getRightBubble = function (bottom) {
     if (this.isCollapsed || !this.children) {
         return this;
     }
-    return bottom ? this.children[this.children.length - 1] : this.children[0];
+    let index = bottom ? this.children.length - 1 : 0;
+    return this.children[index];
 };
 
 
