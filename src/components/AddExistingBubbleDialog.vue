@@ -314,7 +314,23 @@
                     CurrentSubGraph.get().center,
                     this.isLeft
                 );
-                this.parent = this.closestData.edge === undefined ? CurrentSubGraph.get().center : this.closestData.edge.getParentFork();
+                return this.enterUsingParentBubble(
+                    (
+                        this.closestData.edge === undefined ?
+                            CurrentSubGraph.get().center :
+                            this.closestData.edge.getParentFork()
+                    ),
+                    isLeft
+                );
+            },
+            enterForCenter: async function () {
+                this.closestData = {};
+                return this.enterUsingParentBubble(
+                    CurrentSubGraph.get().center
+                );
+            },
+            enterUsingParentBubble: async function (parentBubble, isLeft) {
+                this.parent = parentBubble;
                 this.parentAsSearchResult = SearchService.searchResultFromOnMapGraphElement(this.parent);
                 this.bubblesOnMap = CurrentSubGraph.get().getGraphElements().filter((graphElement) => {
                     return graphElement.isForkType();
@@ -322,7 +338,7 @@
                     return SearchService.searchResultFromOnMapGraphElement(graphElement);
                 });
                 this.confirmLoading = false;
-                this.isLeft = isLeft;
+                this.isLeft = isLeft || parentBubble._shouldAddLeft(isLeft);
                 this.dialog = true;
                 await this.$nextTick();
                 this.$refs.existingBubbleAutocomplete.reset();

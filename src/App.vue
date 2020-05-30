@@ -113,6 +113,7 @@
                                      ref="toolBar"
                                      @enterDocsFlow="$refs.docsFlow.enter()"
                                      @enterPatternFlow="patternDialog = true"
+                                     @addExistingChildToCenter="$refs.addExistingBubbleDialogInMenu.enterForCenter()"
                 ></ToolbarGraphButtons>
                 <v-btn text light
                        v-if="$store.state.user === undefined"
@@ -262,7 +263,7 @@
             </v-card>
         </v-dialog>
         <DocsDialog ref="docsFlow"></DocsDialog>
-
+        <AddExistingBubbleDialog ref="addExistingBubbleDialogInMenu"></AddExistingBubbleDialog>
     </v-app>
 </template>
 
@@ -293,7 +294,8 @@
             Search: () => import('@/components/Search'),
             DocsDialog: () => import('@/components/DocsDialog'),
             ListView: () => import('@/components/ListView'),
-            OfflineOverLay: () => import('@/components/OfflineOverlay')
+            OfflineOverLay: () => import('@/components/OfflineOverlay'),
+            AddExistingBubbleDialog: () => import('@/components/AddExistingBubbleDialog')
         },
         data: function () {
             I18n.i18next.addResources("en", "button", {

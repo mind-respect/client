@@ -46,6 +46,15 @@
                 <v-subheader>
                     {{$t('settings:thisMap')}}
                 </v-subheader>
+                <v-list-item
+                        @click="$emit('addExistingChildToCenter')"
+                        :disabled="!isOwner || this.$store.state.isPatternFlow"
+                >
+                    <v-list-item-action>
+                        <v-icon>scatter_plot</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-title>{{$t('graph:addExistingBubble')}}</v-list-item-title>
+                </v-list-item>
                 <v-list-item @click="expandAll" :disabled="!canExpandAll"
                              v-if="isGraphRoute">
                     <v-list-item-action>
@@ -216,6 +225,12 @@
             },
             canExpandAll: function () {
                 return GraphController.expandAllCanDo();
+            },
+            isOwner: function () {
+                if (!this.$store.state.user) {
+                    return false;
+                }
+                return this.$route.params.username === this.$store.state.user.username
             }
         },
         watch: {
