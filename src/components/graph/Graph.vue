@@ -103,36 +103,6 @@
                     </v-list-item-action>
                     <v-list-item-title>{{$t('graph:addExistingBubble')}}</v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="expandAll" :disabled="!canExpandAll">
-                    <v-list-item-action>
-                        <v-icon class="">unfold_more</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{$t('button:expandAll')}}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item @click="selectAllBubbles">
-                    <v-list-item-action>
-                        <v-icon class="">select_all</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{$t('button:selectAllBubbles')}}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item @click="fontPicker" :disabled="!isOwner">
-                    <v-list-item-action>
-                        <v-icon class="">font_download</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{$t('button:fontPicker')}}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
             </v-list>
         </v-menu>
         <RemoveDialog></RemoveDialog>
@@ -359,15 +329,6 @@
             refreshChildren: function () {
                 this.childrenKey = IdUri.uuid();
             },
-            expandAll: function () {
-                GraphController.expandAll();
-            },
-            selectAllBubbles: function () {
-                GraphController.selectAllBubbles();
-            },
-            fontPicker: function () {
-                AppController.fontPicker();
-            },
             contextMenuLeft: function (event) {
                 this.showContextMenu(event, true);
             },
@@ -438,9 +399,6 @@
             },
             arrowHeadLength: function () {
                 return (this.$vuetify.breakpoint.smAndDown ? 4 : 6) * this.$store.state.zoom;
-            },
-            canExpandAll: function () {
-                return GraphController.expandAllCanDo();
             },
             isOwner: function () {
                 if (!this.$store.state.user) {
