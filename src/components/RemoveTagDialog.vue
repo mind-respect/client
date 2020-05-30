@@ -20,17 +20,17 @@
                         {{$t('removeTag:multiple')}}
                     </v-subheader>
                     <v-list-item
-                            v-for="bubble in bubbles"
-                            :key="bubble.uiId"
+                            v-for="tagRelation in tagRelations"
+                            :key="tagRelation.uiId"
                     >
                         <v-list-item-content>
                             <v-list-item-title>
                                 <v-icon class="mr-2">
                                     label
                                 </v-icon>
-                                "{{bubble.getLabelOrDefault()}}"
+                                "{{tagRelation._tagVertex.getOriginalMeta().getLabelOrDefault()}}"
                                 {{$t('toTheBubble')}}
-                                "{{bubble.getParentFork().getLabelOrDefault()}}"
+                                "{{tagRelation._taggedBubble.getLabelOrDefault()}}"
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
@@ -66,6 +66,7 @@
     import TagRelationController from '@/tag/TagRelationController'
     import KeyboardActions from '@/KeyboardActions'
     import GraphElementType from "../graph-element/GraphElementType";
+    import CurrentSubGraph from "../graph/CurrentSubGraph";
 
     export default {
         name: "RemoveTagDialog",
@@ -92,7 +93,7 @@
             });
             return {
                 removeTagDialog: false,
-                bubbles: []
+                tagRelations: []
             }
         },
         mounted: function () {
@@ -103,26 +104,33 @@
                 return this.$store.state.isRemoveTagFlow;
             },
             isMultipleFlow: function () {
-                return this.bubbles.length > 1;
+                return this.tagRelations.length > 1;
             }
         },
         watch: {
             isRemoveTagFlow: function () {
-                if (this.$store.state.isRemoveTagFlow) {
-                    this.bubbles = [];
-                    Selection.getSelectedElements().forEach((tagRelation) => {
-                        if (tagRelation.isMeta()) {
-                            tagRelation = tagRelation.getParentBubble()
-                        }
+                if (this.$store.state.isRemoveTagFlow === false) {
+                    this.removeTagDialog = false;
+                } else {
+                    this.tagRelations = this.$store.state.isRemoveTagFlow === true ?
+                        Selection.getSelectedElements() :
+                        this.$store.state.isRemoveTagFlow.map((tagRelationUri) => {
+                            return CurrentSubGraph.get().getHavingUri(tagRelationUri);
+                        });
+                    let tagRelationsUnderGroupVertex = [];
+                    let l = this.tagRelations.length;
+                    while (l--) {
+                        let tagRelation = this.tagRelations[l];
                         let nextBubble = tagRelation.getNextBubble();
+                        tagRelation._tagVertex = tagRelation.getTagVertex();
+                        tagRelation._taggedBubble = tagRelation.getTaggedBubble();
                         if (nextBubble.isMetaGroupVertex()) {
                             nextBubble.expand();
-                            this.bubbles = this.bubbles.concat(nextBubble.getClosestChildVertices());
-                        } else {
-                            this.bubbles.push(nextBubble);
+                            tagRelationsUnderGroupVertex = tagRelationsUnderGroupVertex.concat(nextBubble.getNextChildren());
+                            this.tagRelations.splice(l, 1);
                         }
-                    });
-
+                    }
+                    this.tagRelations = this.tagRelations.concat(tagRelationsUnderGroupVertex);
                     this.removeTagDialog = true;
                     this.$nextTick(() => {
                         const element = this.$refs.enterRemoveInput;
@@ -130,8 +138,6 @@
                             element.focus()
                         });
                     })
-                } else {
-                    this.removeTagDialog = false;
                 }
             },
             removeTagDialog: function () {
@@ -146,9 +152,7 @@
         methods: {
             remove: async function () {
                 let controller = new TagRelationController.MetaRelationController(
-                    this.bubbles.map((vertex) => {
-                        return vertex.getClosestAncestorInTypes([GraphElementType.MetaRelation])
-                    })
+                    this.tagRelations
                 );
                 await controller.removeDo();
                 this.removeTagDialog = false;

@@ -33,5 +33,17 @@ TagRelation.prototype.focus = function () {
     //do nothing
 };
 
+TagRelation.prototype.getTagVertex = function () {
+    return this.getNextBubble().isMeta() ?
+        this.getNextBubble() :
+        this.getClosestAncestorInTypes([GraphElementType.Meta]);
+};
+
+TagRelation.prototype.getTaggedBubble = function () {
+    return this.getNextBubble().isMeta() ?
+        this.getParentBubble() :
+        this.getNextBubble();
+};
+
 
 export default TagRelation;

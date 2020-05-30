@@ -29,16 +29,19 @@ TagRelationController.prototype.noteCanDo = function () {
 };
 
 TagRelationController.prototype.remove = function (skipConfirmation) {
-    Store.dispatch("setIsRemoveTagFlow", true)
+    if (skipConfirmation) {
+        return this.removeDo();
+    }
+    Store.dispatch("setIsRemoveTagFlow", this.getUiArray().map((tagRelation) => {
+        return tagRelation.getUri();
+    }));
 };
 TagRelationController.prototype.removeDo = async function () {
     let taggedBubbles = [];
-    await Promise.all(this.getModelArray().map((metaRelation) => {
-        let tagVertex = metaRelation.getNextBubble().isMeta() ?
-            metaRelation.getNextBubble() :
-            metaRelation.getClosestAncestorInTypes([GraphElementType.Meta]);
+    await Promise.all(this.getModelArray().map((tagRelation) => {
+        let tagVertex = tagRelation.getTagVertex();
         let tag = tagVertex.getOriginalMeta();
-        let parentBubble = metaRelation.getClosestAncestorInTypes([
+        let parentBubble = tagRelation.getClosestAncestorInTypes([
             GraphElementType.Vertex,
             GraphElementType.Edge,
             GraphElementType.Relation,
@@ -47,18 +50,18 @@ TagRelationController.prototype.removeDo = async function () {
             GraphElementType.GroupRelation
         ]);
         if (parentBubble.isMetaGroupVertex()) {
-            taggedBubbles.push(metaRelation);
+            taggedBubbles.push(tagRelation);
             if (parentBubble.getNumberOfChild() === 1) {
                 parentBubble.remove();
             } else {
-                metaRelation.remove();
+                tagRelation.remove();
             }
         } else {
             let taggedBubble;
             if (parentBubble.isInTypes([GraphElementType.GroupRelation, GraphElementType.Vertex, GraphElementType.Relation])) {
                 taggedBubble = parentBubble;
             } else {
-                taggedBubble = metaRelation.getOtherVertex(parentBubble);
+                taggedBubble = tagRelation.getOtherVertex(parentBubble);
             }
             if (taggedBubble.isMetaGroupVertex()) {
                 taggedBubbles = taggedBubble.getNextChildrenEvenIfCollapsed();
@@ -69,7 +72,7 @@ TagRelationController.prototype.removeDo = async function () {
         return Promise.all(taggedBubbles.map((taggedBubble) => {
             taggedBubble.removeTag(tag);
             taggedBubble.refreshImages();
-            metaRelation.remove();
+            tagRelation.remove();
             return TagService.remove(taggedBubble.getUri(), tag);
         }))
     }));
