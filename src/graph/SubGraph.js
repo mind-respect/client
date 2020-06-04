@@ -9,6 +9,7 @@ import GroupRelation from '@/group-relation/GroupRelation'
 import GraphElementType from "../graph-element/GraphElementType";
 import IdUri from "../IdUri";
 import Tag from "../tag/Tag";
+import Store from '@/store'
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
@@ -70,7 +71,7 @@ api.SubGraph.prototype.add = function (graphElement, preventAddOthers) {
         graphElement.parentBubble = graphElement.parentVertex = graphElement;
     }
     if (graphElement.isMeta()) {
-        this.tagVertices.push(graphElement);
+        this.addTagVertex(graphElement);
     } else if (graphElement.isEdge()) {
         if (this._isEdgeAlreadyAdded(graphElement)) {
             return;
@@ -100,6 +101,9 @@ api.SubGraph.prototype.add = function (graphElement, preventAddOthers) {
         }
     } else {
         this.addOtherGraphElement(graphElement);
+    }
+    if (Store.state.isShowTags) {
+        graphElement.controller().showTags(true, true);
     }
 };
 api.SubGraph.prototype._isEdgeAlreadyAdded = function (edge) {
@@ -147,6 +151,16 @@ api.SubGraph.prototype.addVertex = function (vertex) {
         return;
     }
     this.vertices[vertex.getUri()].push(vertex);
+};
+
+api.SubGraph.prototype.addTagVertex = function (tagVertex) {
+    let isAlreadyThere = this.tagVertices.some((_tagVertex) => {
+        return _tagVertex.getId() === tagVertex.getId();
+    });
+    if (isAlreadyThere) {
+        return;
+    }
+    this.tagVertices.push(tagVertex);
 };
 
 api.SubGraph.prototype.addEdge = function (edge) {
@@ -335,20 +349,6 @@ api.SubGraph.prototype.getHavingUri = function (uri) {
     if (tagVertex.length) {
         return tagVertex[0];
     }
-};
-
-api.SubGraph.prototype.replaceGraphElement = function (existingGraphElement, newGraphElement) {
-    let container = this.getContainerForGraphElementType(existingGraphElement.getGraphElementType());
-    if (!Array.isArray(container)) {
-        container = container[existingGraphElement.getUri()];
-    }
-    container.forEach((element, index) => {
-        if (element.getId() === existingGraphElement.getId()) {
-            console.log(newGraphElement.getLabel())
-            container[index] = newGraphElement;
-        }
-    });
-
 };
 
 api.SubGraph.prototype.getContainerForGraphElementType = function (graphElementType) {

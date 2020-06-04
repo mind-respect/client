@@ -224,7 +224,7 @@
                     }, 100)
                 });
             },
-            selectSearchResult: function () {
+            selectSearchResult: async function () {
                 this.tagLoading = true;
                 let tag = Tag.fromSearchResult(
                     this.selectedSearchResult
@@ -233,21 +233,19 @@
                     return false;
                 }
                 tag.makeGeneric();
-                this.selectedSearchResult.getImageUrl(this.selectedSearchResult).then((imageUrl) => {
-                    if (imageUrl) {
-                        tag.addImage(imageUrl);
-                    }
-                    return this.identify(tag);
-                }).then((tags) => {
-                    this.tagLoading = false;
-                    this.$store.dispatch("redraw");
-                    this.addedTag = tags[0];
-                    this.isChangeShareLevelFlow = this.bubble.isVertexType() && this.bubble.hasLooserShareLevelThan(this.addedTag);
-                    this.selectedTagShareLevel = this.bubble.getShareLevel();
-                    if (!this.isChangeShareLevelFlow) {
-                        this.dialog = false;
-                    }
-                });
+                const imageUrl = await this.selectedSearchResult.getImageUrl(this.selectedSearchResult);
+                if (imageUrl) {
+                    tag.addImage(imageUrl);
+                }
+                const tags = await this.identify(tag);
+                this.tagLoading = false;
+                this.$store.dispatch("redraw");
+                this.addedTag = tags[0];
+                this.isChangeShareLevelFlow = this.bubble.isVertexType() && this.bubble.hasLooserShareLevelThan(this.addedTag);
+                this.selectedTagShareLevel = this.bubble.getShareLevel();
+                if (!this.isChangeShareLevelFlow) {
+                    this.dialog = false;
+                }
                 this.$refs.tagSearch.blur();
                 return tag;
             },

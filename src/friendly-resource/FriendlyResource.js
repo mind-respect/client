@@ -770,6 +770,9 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isFi
     this.isExpanded = true;
     this.isCollapsed = false;
     this.refreshChildren();
+    if (Store.state.isShowTags) {
+        this.controller().showTags();
+    }
     if (avoidCenter !== true) {
         Vue.nextTick(() => {
             setTimeout(() => {

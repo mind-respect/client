@@ -150,7 +150,13 @@ GraphElementController.prototype.showTagsCanDo = function () {
     return (!this.model().areTagsShown || this.model().isCollapsed) && this.isSingle() && this.isOwned() && this.model().getTagsAndSelfIfRelevant().length > 0;
 };
 
-GraphElementController.prototype.showTags = function () {
+GraphElementController.prototype.showTags = function (avoidRedraw, avoidExpand) {
+    if (!this.showTagsCanDo()) {
+        return Promise.resolve();
+    }
+    if (this.model().canExpand() && avoidExpand) {
+        return Promise.resolve();
+    }
     if (this.model().areTagsShown && this.model().isCollapsed) {
         return this.expand(true, true);
     }
@@ -161,7 +167,9 @@ GraphElementController.prototype.showTags = function () {
             this._addTagAsChild(tag);
         });
         this.model().areTagsShown = true;
-        Store.dispatch("redraw");
+        if (!avoidRedraw) {
+            Store.dispatch("redraw");
+        }
     });
 };
 
@@ -186,6 +194,12 @@ GraphElementController.prototype._addTagAsChild = function (tag) {
     let tagBubble = TagVertex.withUri(
         tag.getUri()
     );
+    let isAlreadyAChild = this.model().getNextChildren().some((child) => {
+        return child.getNextBubble().getUri() === tag.getUri();
+    });
+    if (isAlreadyAChild) {
+        return;
+    }
     CurrentSubGraph.get().add(tagBubble);
     tagBubble.setOriginalMeta(tag);
     let tagRelation = new TagRelation(
@@ -202,7 +216,10 @@ GraphElementController.prototype.hideTagsCanDo = function () {
     return this.model().areTagsShown;
 };
 
-GraphElementController.prototype.hideTags = async function () {
+GraphElementController.prototype.hideTags = async function (preventRedraw) {
+    if (!this.hideTagsCanDo()) {
+        return;
+    }
     let children = this.model().getNextChildren();
     let l = children.length;
     while (l--) {
@@ -212,7 +229,9 @@ GraphElementController.prototype.hideTags = async function () {
         }
     }
     this.model().areTagsShown = false;
-    Store.dispatch("redraw");
+    if (!preventRedraw) {
+        Store.dispatch("redraw");
+    }
     await Vue.nextTick();
 };
 

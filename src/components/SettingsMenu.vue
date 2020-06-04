@@ -2,8 +2,8 @@
     <v-menu
             content-class="settings-menu"
             attach="#app"
-            nudge-left="240"
-            max-width="300"
+            nudge-left="300"
+            max-width="400"
             offset-y
             v-if="$store.state.user !== undefined"
             :close-on-content-click="$vuetify.breakpoint.mdAndDown"
@@ -37,6 +37,16 @@
                         <v-list-item-content>
                             <v-list-item-title>
                                 {{$t('settings:documentation')}}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item @click="showTags = !showTags">
+                        <v-list-item-action>
+                            <v-switch :input-value="showTags" color="third"></v-switch>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                {{$t('settings:showTags')}}
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
@@ -177,14 +187,18 @@
                 removePattern: "Remove the pattern",
                 documentation: "Documentation",
                 thisMap: "This map",
-                yourAccount: "Your account"
+                yourAccount: "Your account",
+                showTags: "Show tags by default",
+                preferences: "Preferences"
             });
             I18n.i18next.addResources("fr", "settings", {
                 becomePattern: "Créer un pattern",
                 removePattern: "Enlever le pattern",
                 documentation: "Documentation",
                 thisMap: "Cette carte",
-                yourAccount: "Votre compte"
+                yourAccount: "Votre compte",
+                showTags: "Afficher les étiquettes par défaut",
+                preferences: "Préférences"
             });
             return {
                 backgroundColor: null,
@@ -231,6 +245,20 @@
                     return false;
                 }
                 return this.$route.params.username === this.$store.state.user.username
+            },
+            showTags: {
+                get: function () {
+                    return this.$store.state.isShowTags;
+                },
+                set: function (value) {
+                    if (value) {
+                        GraphController.showAllTags();
+                    }
+                    if (!value) {
+                        GraphController.hideAllTags();
+                    }
+                    this.$store.dispatch("setIsShowTags", value);
+                }
             }
         },
         watch: {

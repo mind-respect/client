@@ -21,7 +21,8 @@ const Store = new Vuex.Store({
                 "sideMenuFlow",
                 "areCentersInGridView",
                 "xsrfToken",
-                "addRelationIncludeAllPatterns"
+                "addRelationIncludeAllPatterns",
+                "isShowTags"
             ]
         })
     ],
@@ -178,6 +179,9 @@ const Store = new Vuex.Store({
         },
         setIsServerNotResponding: function (state, isServerNotResponding) {
             state.isServerNotResponding = isServerNotResponding;
+        },
+        setIsShowTags: function (state, isShowTags) {
+            state.isShowTags = isShowTags;
         }
     },
     actions: {
@@ -279,6 +283,9 @@ const Store = new Vuex.Store({
         },
         setIsServerNotResponding: function (action, isServerNotResponding) {
             action.commit('setIsServerNotResponding', isServerNotResponding);
+        },
+        setIsShowTags: function (action, setIsShowTags) {
+            action.commit('setIsShowTags', setIsShowTags);
         }
     }
 });

@@ -3,6 +3,7 @@
  */
 import MindMapInfo from '@/MindMapInfo'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
+import Store from '@/store'
 
 const api = {};
 api.expandAllCanDo = function () {
@@ -44,6 +45,20 @@ api.isMultiple = function () {
 
 api.isSingle = function () {
     return false;
+};
+
+api.hideAllTags = function () {
+    CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
+        graphElement.controller().hideTags(true);
+    });
+    Store.dispatch("redraw");
+};
+
+api.showAllTags = function () {
+    CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
+        graphElement.controller().showTags(true, true);
+    });
+    Store.dispatch("redraw");
 };
 
 export default api;

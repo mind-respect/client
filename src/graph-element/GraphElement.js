@@ -426,6 +426,11 @@ GraphElement.GraphElement.prototype.addIdentification = function (tag) {
         }
     }
     this.identifiers.push(tag);
+    if (this.areTagsShown) {
+        this.controller()._addTagAsChild(tag);
+    } else if (Store.state.isShowTags) {
+        this.controller().showTags(true, true);
+    }
 };
 
 GraphElement.GraphElement.prototype.getIndex = function (parentChildrenIndex) {
