@@ -6,8 +6,8 @@
             max-width="400"
             offset-y
             v-if="$store.state.user !== undefined"
-            :close-on-content-click="$vuetify.breakpoint.mdAndDown"
-            :value="showSettingsMenu"
+            v-model="showSettingsMenu"
+            :close-on-content-click="false"
     >
         <template v-slot:activator="{ on }">
             <v-btn icon light class="mr-2" v-on="on">
@@ -29,7 +29,7 @@
             </router-link>
             <v-list>
                 <v-list-item-group v-model="selectedItem">
-                    <v-list-item @click="$emit('enterDocsFlow')"
+                    <v-list-item @click="$emit('enterDocsFlow');closeIfMobile();"
                                  v-if="isGraphRoute">
                         <v-list-item-action>
                             <v-icon>book</v-icon>
@@ -57,7 +57,7 @@
                     {{$t('settings:thisMap')}}
                 </v-subheader>
                 <v-list-item
-                        @click="$emit('addExistingChildToCenter')"
+                        @click="$emit('addExistingChildToCenter');closeIfMobile();"
                         :disabled="!isOwner || this.$store.state.isPatternFlow"
                 >
                     <v-list-item-action>
@@ -65,7 +65,7 @@
                     </v-list-item-action>
                     <v-list-item-title>{{$t('graph:addExistingBubble')}}</v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="expandAll" :disabled="!canExpandAll"
+                <v-list-item @click="expandAll();closeIfMobile();" :disabled="!canExpandAll"
                              v-if="isGraphRoute">
                     <v-list-item-action>
                         <v-icon class="">unfold_more</v-icon>
@@ -76,7 +76,7 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item @click="selectAllBubbles" v-if="isGraphRoute">
+                <v-list-item @click="selectAllBubbles();closeIfMobile();" v-if="isGraphRoute">
                     <v-list-item-action>
                         <v-icon class="">select_all</v-icon>
                     </v-list-item-action>
@@ -86,7 +86,7 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item @click="fontPicker" v-if="isGraphRoute" :disabled="$store.state.isViewOnly">
+                <v-list-item @click="fontPicker();closeIfMobile();" v-if="isGraphRoute" :disabled="$store.state.isViewOnly">
                     <v-list-item-action>
                         <v-icon class="">font_download</v-icon>
                     </v-list-item-action>
@@ -96,7 +96,7 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item @click="listAll" v-if="isGraphRoute">
+                <v-list-item @click="listAll();closeIfMobile();" v-if="isGraphRoute">
                     <v-list-item-action>
                         <v-icon class="">list</v-icon>
                     </v-list-item-action>
@@ -106,7 +106,7 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item @click="$emit('enterPatternFlow')"
+                <v-list-item @click="$emit('enterPatternFlow');closeIfMobile();"
                              v-if="isGraphRoute && !$store.state.isPatternFlow && !$store.state.isViewOnly">
                     <v-list-item-action>
                         <v-icon>stars</v-icon>
@@ -117,7 +117,7 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item @click="removePattern"
+                <v-list-item @click="removePattern();closeIfMobile();"
                              v-if="isGraphRoute && $store.state.isPatternFlow && !$store.state.isViewOnly">
                     <v-list-item-action>
                         <v-icon>stars</v-icon>
@@ -133,7 +133,7 @@
                 <v-subheader>
                     {{$t('settings:yourAccount')}}
                 </v-subheader>
-                <v-list-item @click="switchLanguage()">
+                <v-list-item @click="switchLanguage();closeIfMobile();">
                     <v-list-item-action>
                         <v-icon class="">public</v-icon>
                     </v-list-item-action>
@@ -154,7 +154,7 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item @click="logout()">
+                <v-list-item @click="logout();closeIfMobile();">
                     <v-list-item-action>
                         <v-icon>exit_to_app</v-icon>
                     </v-list-item-action>
@@ -209,6 +209,11 @@
         mounted: function () {
         },
         methods: {
+            closeIfMobile: function () {
+                if (this.$vuetify.breakpoint.mdAndDown) {
+                    this.showSettingsMenu = false;
+                }
+            },
             removePattern: function () {
                 AppController.removePattern();
             },
