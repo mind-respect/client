@@ -193,20 +193,15 @@ GroupRelation.prototype.getFirstEdge = function () {
 };
 
 GroupRelation.prototype.expand = async function (avoidCenter, isFirstExpand) {
-    if (!this.canExpand()) {
-        return;
-    }
-    if (this.childrenCollapsed !== null) {
-        this.children = this.childrenCollapsed;
-        this.childrenCollapsed = null;
-    }
-    this.isExpanded = true;
-    this.isCollapsed = false;
     FriendlyResource.FriendlyResource.prototype.expand.call(
         this,
         avoidCenter,
         isFirstExpand
     );
+    if (this.childrenCollapsed !== null) {
+        this.children = this.childrenCollapsed;
+        this.childrenCollapsed = null;
+    }
     await Vue.nextTick();
     Store.dispatch("redraw");
 };
