@@ -29,8 +29,7 @@
             </router-link>
             <v-list>
                 <v-list-item-group v-model="selectedItem">
-                    <v-list-item @click="$emit('enterDocsFlow');closeIfMobile();"
-                                 v-if="isGraphRoute">
+                    <v-list-item @click="$emit('enterDocsFlow');closeIfMobile();">
                         <v-list-item-action>
                             <v-icon>book</v-icon>
                         </v-list-item-action>
