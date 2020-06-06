@@ -101,10 +101,10 @@ export default {
             "openLink": "Ouvrir le lien"
         });
         i18next.addResources("en", "edge", {
-            "default": "relate"
+            "default": "write"
         });
         i18next.addResources("fr", "edge", {
-            "default": "relie"
+            "default": "écris"
         });
         i18next.addResources("en", "tag", {
             "default": "Tag"

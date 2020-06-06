@@ -107,6 +107,14 @@
                     this.color
                 );
                 this.originalColor = this.color;
+                /*
+                refresh parent relation children because
+                in the Bubble component containerBoxShadow is not refreshed immediately
+                */
+                let parentRelation = this.bubble.getParentBubble();
+                if (parentRelation.component) {
+                    parentRelation.refreshChildren();
+                }
                 this.dialog = false;
             },
             refreshColor: function (color) {
