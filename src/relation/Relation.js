@@ -138,6 +138,11 @@ api.Relation.prototype.getWhenEmptyLabel = function () {
 };
 
 api.Relation.prototype.replaceChild = api.Relation.prototype.replaceRelatedVertex = function (relatedVertex, newVertex) {
+    if (relatedVertex.isToTheLeft()) {
+        newVertex.makeLeft();
+    } else {
+        newVertex.makeRight();
+    }
     if (this.getSourceVertex().isSameUri(relatedVertex)) {
         this.setSourceVertex(newVertex);
     } else if (this.getDestinationVertex().isSameUri(relatedVertex)) {
