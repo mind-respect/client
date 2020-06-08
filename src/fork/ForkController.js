@@ -60,7 +60,7 @@ ForkController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
         if (!avoidShowingLoad) {
             await Vue.nextTick();
             //this.model().refreshChildren() for Store.dispatch("redraw") for when expanding a grand children
-            this.model().refreshChildren();
+            this.model().refreshChildren(true);
             LoadingFlow.leave();
         }
     });

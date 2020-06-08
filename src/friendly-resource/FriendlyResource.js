@@ -769,7 +769,6 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isFi
     this.loading = false;
     this.isExpanded = true;
     this.isCollapsed = false;
-    this.refreshChildren();
     if (Store.state.isShowTags) {
         this.controller().showTags();
     }

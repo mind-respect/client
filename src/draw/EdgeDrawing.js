@@ -140,6 +140,9 @@ EdgeDrawing.prototype.drawChildren = function () {
     let lines = "";
     this.children.forEach((child) => {
         let childPosition = this.getMiddleSidePosition(child);
+        if (!childPosition) {
+            return;
+        }
         if (child.isEdge() && child.isInverse()) {
             lines += this.inverseArrowHead(childPosition)
         }
@@ -160,13 +163,13 @@ EdgeDrawing.prototype.drawChildren = function () {
             return lines;
         }
         if (!childPosition) {
-            this.loaded = false;
-            Vue.nextTick(() => {
-                console.warn('drawChildren null child position html redraw');
-                // this.redraw();
-                this.loaded = false;
-                // this.$destroy();
-            });
+            // this.loaded = false;
+            // Vue.nextTick(() => {
+            //     console.warn('drawChildren null child position html redraw');
+            //     // this.redraw();
+            //     this.loaded = false;
+            //     // this.$destroy();
+            // });
             return;
         }
         if (this.bubble.isEdge() && !child.isMetaRelation()) {
@@ -299,16 +302,16 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
     if (bubble.isGroupRelation() || (bubble.isEdge() && bubble.getNumberOfChild() > 1)) {
         yAdjust += 5;
     }
-    if (!element) {
-        this.loaded = false;
-        Vue.nextTick(() => {
-            console.warn('null child bubble html redraw');
-            // this.redraw();
-            this.loaded = false;
-            // this.$destroy();
-        });
-        return;
-    }
+    // if (!element) {
+    //     this.loaded = false;
+    //     Vue.nextTick(() => {
+    //         console.warn('null child bubble html redraw');
+    //         // this.redraw();
+    //         this.loaded = false;
+    //         // this.$destroy();
+    //     });
+    //     return;
+    // }
     let rect = element.getBoundingClientRect();
     position.rect = rect;
     if (isParent) {
