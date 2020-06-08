@@ -18,12 +18,11 @@
                                     <v-list-item-title>
                                         {{$t('share:centralBubble')}}
                                     </v-list-item-title>
-                                    <v-list-item-subtitle v-show="centralBubbleCopied" class="third-color">
-                                        {{$t('share:linkCopied')}}
-                                    </v-list-item-subtitle>
-                                    <v-list-item-subtitle v-show="!centralBubbleCopied" class="white--text">
-                                        {{$t('share:linkCopied')}}
-                                    </v-list-item-subtitle>
+                                    <transition name="fade-transition">
+                                        <v-list-item-subtitle v-show="centralBubbleCopied" class="third-color">
+                                            {{$t('share:linkCopied')}}
+                                        </v-list-item-subtitle>
+                                    </transition>
                                 </v-list-item-content>
                             </v-list-item>
                             <v-list-item @click="copySelectedBubble">
@@ -36,12 +35,11 @@
                                     <v-list-item-title>
                                         {{$t('share:selectedBubble')}}
                                     </v-list-item-title>
-                                    <v-list-item-subtitle v-if="selectedBubbleCopied" class="third-color">
-                                        {{$t('share:linkCopied')}}
-                                    </v-list-item-subtitle>
-                                    <v-list-item-subtitle v-show="!selectedBubbleCopied" class="white--text">
-                                        {{$t('share:linkCopied')}}
-                                    </v-list-item-subtitle>
+                                    <transition name="fade-transition">
+                                        <v-list-item-subtitle v-if="selectedBubbleCopied" class="third-color">
+                                            {{$t('share:linkCopied')}}
+                                        </v-list-item-subtitle>
+                                    </transition>
                                 </v-list-item-content>
                             </v-list-item>
                         </v-list>
