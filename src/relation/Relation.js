@@ -283,8 +283,13 @@ api.Relation.prototype.isShrinked = function (shouldBeWhenNotSelected) {
     return this.isLabelSameAsParentGroupRelation();
 };
 
-api.Relation.prototype.remove = function () {
+api.Relation.prototype.remove = function (preventRemoveDuplicates) {
     CurrentSubGraph.get().remove(this);
+    if (!preventRemoveDuplicates) {
+        this.getDuplicates().forEach((duplicate) => {
+            duplicate.remove(true);
+        });
+    }
     this.getParentBubble().removeChild(this);
 };
 

@@ -20,6 +20,8 @@ import AroundTodoTagScenario from "../scenario/AroundTodoTagScenario";
 import ThreeLevelGroupRelationScenario from "../scenario/ThreeLevelGroupRelationScenario";
 import ForkService from "../../../src/fork/ForkService";
 import api from "../scenario/Scenario";
+import DuplicateScenario from "../scenario/DuplicateScenario";
+import CurrentSubGraph from "../../../src/graph/CurrentSubGraph";
 
 describe('GraphElementController', () => {
     describe("removeDo", () => {
@@ -275,6 +277,54 @@ describe('GraphElementController', () => {
             expect(
                 graphElementsNbNeighborsIsSet[1].getNbNeighbors().getTotal()
             ).toBe(1);
+        });
+        it("removes it's duplicate", async () => {
+            let scenario = await new DuplicateScenario();
+            let center = scenario.getCenterInTree();
+            let a1 = TestUtil.getChildDeepWithLabel(
+                center,
+                "a1"
+            );
+            await scenario.expandA1(a1);
+            let r2 = TestUtil.getChildDeepWithLabel(
+                center,
+                "r2"
+            )
+            let a2 = r2.getNextBubble();
+            await scenario.expandA2(a2);
+            let r13 = TestUtil.getChildWithLabel(
+                a1, "r13"
+            );
+            let a2UnderA1 = r13.getNextBubble();
+            await scenario.expandA2(a2UnderA1);
+            expect(
+                TestUtil.hasChildWithLabel(
+                    a2UnderA1,
+                    "r2"
+                )
+            ).toBeTruthy();
+            expect(
+                a2UnderA1.getNumberOfChild()
+            ).toBe(4);
+            expect(
+                a2UnderA1.getNbDuplicates()
+            ).toBe(1);
+            expect(
+                a2.getNbDuplicates()
+            ).toBe(1);
+            await r2.controller().removeDo();
+            expect(
+                a2UnderA1.getNbDuplicates()
+            ).toBe(0);
+            expect(
+                TestUtil.hasChildWithLabel(
+                    a2UnderA1,
+                    "r2"
+                )
+            ).toBeFalsy();
+            expect(
+                a2UnderA1.getNumberOfChild()
+            ).toBe(3);
         });
         //around tag
         xit("changes nb neighbors of group tag vertex based on the original number of neighbors", async () => {
