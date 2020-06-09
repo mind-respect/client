@@ -116,7 +116,6 @@
                 </v-list>
             </v-card-text>
         </v-card>
-        >
     </div>
 </template>
 

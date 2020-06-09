@@ -191,7 +191,7 @@
                     return false;
                 }
                 return graphElement.getDescendants().every((descendant) => {
-                    return !descendant.isVertexType() || (descendant.selectedToRemove && !descendant.canExpand());
+                    return descendant.isMeta() || !descendant.isVertexType() || (descendant.selectedToRemove && !descendant.canExpand());
                 });
             }
         }
