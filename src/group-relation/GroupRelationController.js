@@ -31,10 +31,6 @@ GroupRelationController.prototype.getSubGraphController = function () {
     return this.subGraphController;
 };
 
-GroupRelationController.prototype.cutCanDo = function () {
-    return false;
-};
-
 GroupRelationController.prototype.addChildCanDo = function () {
     return this.isSingleAndOwned();
 };
