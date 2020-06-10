@@ -405,7 +405,8 @@ VertexController.prototype.convertToDistantBubbleWithUri = async function (dista
 };
 
 VertexController.prototype.mergeCanDo = function () {
-    return this.isSingle() && this.isOwned() && !Store.state.isPatternFlow
+    let nbGraphElements = this.getModelArray().length;
+    return (nbGraphElements === 1 || nbGraphElements === 2) && this.isOwned() && !Store.state.isPatternFlow
 };
 
 VertexController.prototype.merge = function () {

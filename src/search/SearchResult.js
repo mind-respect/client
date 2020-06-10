@@ -144,6 +144,7 @@ api.removedEmptyAndDuplicateRelationsName = function (relationsName) {
 
 function SearchResult(graphElement, graphElementType, somethingToDistinguish, serverFormat) {
     this.graphElement = graphElement;
+    this.uri = graphElement.getUri();
     this.graphElementType = graphElementType;
     this.somethingToDistinguish = somethingToDistinguish;
     this.serverFormat = serverFormat;

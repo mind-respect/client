@@ -193,7 +193,7 @@
     import Vertex from "@/vertex/Vertex";
     import Relation from '@/relation/Relation'
     import KeyboardActions from '@/KeyboardActions'
-    import CurrentSubGraph from "../graph/CurrentSubGraph";
+    import SearchResult from "../search/SearchResult";
 
     let searchTimeout;
 
@@ -282,7 +282,10 @@
                     this.confirmLoading = false;
                     this.keptUri = this.bubble.getUri();
                     this.keptColor = this.bubble.getBackgroundColor();
-                    if (this.$store.state.isMergeFlow === true) {
+                    if (Selection.getNbSelected() === 2) {
+                        this.selectedSearchResult = SearchResult.fromGraphElement(Selection.getSelectedElements()[1]);
+                        this.selectSearchResult();
+                    } else if (this.$store.state.isMergeFlow === true) {
                         await this.$nextTick();
                         setTimeout(async () => {
                             this.search = "";
