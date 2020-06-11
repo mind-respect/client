@@ -50,6 +50,21 @@
 
                 </transition>
             </div>
+            <div v-for="child in bubble.children" :key="child.uiId" v-if="bubble.isRelation()"
+                 :class="{
+                    'mt-6 mb-6' : bubble.children.length === 2,
+                    'mt-2 mb-2' : bubble.children.length > 2
+                 }"
+            >
+                <transition :name="transitionName"
+                            @before-enter="beforeExpandAnimation(child)"
+                            @after-leave="afterExpandAnimation"
+                >
+                    <Bubble :bubble="child"
+                            :direction="direction"
+                    ></Bubble>
+                </transition>
+            </div>
         </div>
         <div class="vertices-children-container" v-if="bubble.isGroupRelation()">
             <div v-for="child in bubble.children" :key="child.uiId"
@@ -70,7 +85,7 @@
         </div>
     </div>
 </template>
-
+-
 <script>
 
     import Dragged from '@/Dragged'
