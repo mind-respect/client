@@ -244,27 +244,29 @@ GroupRelation.prototype.addChild = function (child, isToTheLeft, index) {
             relation.parentVertex = this.parentVertex;
         });
         if (index === undefined) {
-            this.children.push(child);
-        } else {
-            this.children.splice(
-                index,
-                0,
-                child
-            );
+            index = this.areTagsShown ? this.children.filter((child) => {
+                return !child.isMetaRelation();
+            }).length : this.children.length;
         }
-        return;
-    }
-    child.parentVertex = this.getParentVertex();
-    child.parentBubble = this;
-    if (index === undefined) {
-        this.children.push(child);
-    } else {
         this.children.splice(
             index,
             0,
             child
         );
+        return;
     }
+    child.parentVertex = this.getParentVertex();
+    child.parentBubble = this;
+    if (index === undefined) {
+        index = this.areTagsShown ? this.children.filter((child) => {
+            return !child.isMetaRelation();
+        }).length : this.children.length;
+    }
+    this.children.splice(
+        index,
+        0,
+        child
+    );
 };
 
 

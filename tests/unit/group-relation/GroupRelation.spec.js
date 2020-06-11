@@ -6,6 +6,7 @@ import GroupRelation from '@/group-relation/GroupRelation'
 import TestUtil from '../util/TestUtil'
 import Tag from '@/tag/Tag'
 import ConvertVertexToGroupRelationScenario from "../scenario/ConvertVertexToGroupRelationScenario";
+import GraphElementType from "../../../src/graph-element/GraphElementType";
 
 describe("GroupRelation", function () {
     it("can have multiple identifiers", async () => {
@@ -181,6 +182,37 @@ describe("GroupRelation", function () {
         expect(
             true
         ).toBeTruthy();
+    });
+
+    describe("addChild", () => {
+        it("adds before tags", async () => {
+            let scenario = await new GroupRelationsScenario();
+            let groupRelation = scenario.getPossessionGroupRelation();
+            await scenario.expandPossession(groupRelation);
+            expect(
+                groupRelation.getIdentifiers().length
+            ).toBe(1);
+            expect(
+                groupRelation.getNextChildren().length
+            ).toBe(3);
+            await groupRelation.controller().showTags();
+            expect(
+                groupRelation.getNextChildren().length
+            ).toBe(4);
+            let lastChild = groupRelation.getNextChildren()[3].getNextBubble();
+            expect(
+                lastChild.getGraphElementType()
+            ).toBe(GraphElementType.Meta);
+            await groupRelation.controller().addChild();
+            let beforeLastChild = groupRelation.getNextChildren()[3].getNextBubble();
+            lastChild = groupRelation.getNextChildren()[4].getNextBubble();
+            expect(
+                beforeLastChild.getGraphElementType()
+            ).toBe(GraphElementType.Vertex);
+            expect(
+                lastChild.getGraphElementType()
+            ).toBe(GraphElementType.Meta);
+        });
     });
 
     describe("removeChild", () => {

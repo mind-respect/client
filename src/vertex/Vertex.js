@@ -143,11 +143,13 @@ Vertex.prototype.addChild = async function (child, isToTheLeft, index) {
         child.direction = this.direction;
     }
     if (index === undefined) {
-        children.push(child)
+        index = this.areTagsShown ? children.filter((child) => {
+            return !child.isMetaRelation();
+        }).length : children.length;
     } else {
         index = Math.min(index, children.length);
-        children.splice(index, 0, child);
     }
+    children.splice(index, 0, child);
 };
 
 Vertex.prototype.getRightBubble = function (bottom) {

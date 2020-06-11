@@ -161,12 +161,12 @@ GraphElementController.prototype.showTags = function (avoidRedraw, avoidExpand) 
         return this.expand(true, true);
     }
     return this.expand(true, true).then(() => {
+        this.model().areTagsShown = true;
         this.model().getTagsAndSelfIfRelevant().sort((a, b) => {
             return b.getCreationDate() - a.getCreationDate();
         }).forEach((tag) => {
             this._addTagAsChild(tag);
         });
-        this.model().areTagsShown = true;
         if (!avoidRedraw) {
             Store.dispatch("redraw");
         }

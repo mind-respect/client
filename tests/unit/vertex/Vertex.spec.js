@@ -8,6 +8,8 @@ import TestUtil from '../util/TestUtil'
 import CreationDateScenario from "../scenario/CreationDateScenario";
 import CircularityScenario from "../scenario/CircularityScenario";
 import SingleChildScenario from "../scenario/SingleChildScenario";
+import GraphElement from "../../../src/graph-element/GraphElement";
+import GraphElementType from "../../../src/graph-element/GraphElementType";
 
 describe('Vertex', () => {
     beforeEach(() => {
@@ -27,6 +29,28 @@ describe('Vertex', () => {
             expect(
                 bubble1.getNumberOfChild()
             ).toBe(1);
+        });
+    });
+    describe("addChild", () => {
+        it("adds before tags", async () => {
+            let scenario = await new ThreeScenario();
+            let center = scenario.getCenterInTree();
+            let newTriple = await center.controller().addChild();
+            let newVertex = newTriple.getDestinationVertex();
+            newVertex.addIdentification(TestUtil.dummyTag());
+            await newVertex.controller().showTags();
+            expect(
+                newVertex.getNextChildren().length
+            ).toBe(1);
+            await newVertex.controller().addChild();
+            let firstChild = newVertex.getNextChildren()[0].getNextBubble();
+            let secondChild = newVertex.getNextChildren()[1].getNextBubble();
+            expect(
+                firstChild.getGraphElementType()
+            ).toBe(GraphElementType.Vertex);
+            expect(
+                secondChild.getGraphElementType()
+            ).toBe(GraphElementType.Meta);
         });
     });
     it("can visit immediate vertices child", async () => {
@@ -170,4 +194,5 @@ describe('Vertex', () => {
             Selection.getSingle().getUri()
         ).toBe(parent.getUri());
     });
+
 });
