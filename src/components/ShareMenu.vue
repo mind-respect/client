@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-card flat>
-            <v-expansion-panels class="mt-4 mb-4">
+            <v-expansion-panels class="mt-4 mb-4" hover>
                 <v-expansion-panel class="text-left" expand-icon="link">
                     <v-expansion-panel-header class="font-weight-bold" expand-icon="link" disable-icon-rotate>
                         {{$t('share:copyLink')}}
@@ -78,7 +78,7 @@
                             <template v-slot:default="{ active, toggle }">
                                 <v-list-item-action class="">
                                     <v-checkbox
-                                            v-model="active"
+                                               v-model="active"
                                             color="primary"
                                             @click="toggle"
                                             class="mt-3"
@@ -135,16 +135,16 @@
             I18n.i18next.addResources("en", "share", {
                 title: "Share level",
                 copyLink: "Copy link",
-                centralBubble: "Central bubble",
-                selectedBubble: "Selected bubble",
+                centralBubble: "Of the central bubble",
+                selectedBubble: "Of the selected bubble",
                 tags: "Also apply to these labels",
                 linkCopied: "Link copied"
             });
             I18n.i18next.addResources("fr", "share", {
                 title: "Niveau de partage",
                 copyLink: "Copier le lien",
-                centralBubble: "Bulle centrale",
-                selectedBubble: "Bulle sélectionnée",
+                centralBubble: "De la bulle centrale",
+                selectedBubble: "De la bulle sélectionnée",
                 tags: "Appliquer également à ces étiquettes",
                 linkCopied: "Lien copié"
             });

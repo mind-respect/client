@@ -2,6 +2,9 @@
     <v-bottom-sheet v-model="dialog" inset max-width="600" top v-if="dialog" scrollable>
         <v-card>
             <v-card-title>
+                <v-icon class="mr-2">
+                    merge_type
+                </v-icon>
                 {{$t('merge:title')}}
                 <v-spacer></v-spacer>
                 <v-icon
@@ -171,6 +174,9 @@
             </v-card-text>
             <v-card-actions>
                 <v-btn color="secondary" @click="confirm()" :loading="confirmLoading" :disabled="!mergeBubble">
+                    <v-icon class="mr-2">
+                        merge_type
+                    </v-icon>
                     {{$t('merge:confirm')}}
                 </v-btn>
                 <v-spacer></v-spacer>

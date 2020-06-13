@@ -53,7 +53,8 @@ export default {
                         robotDoubt: "There is a doubt that you are a robot. If you are human, Im sorry and contact me at vincent.blouin@gmail.com",
                         and: "and",
                         to: "to",
-                        toTheBubble: "to the bubble"
+                        toTheBubble: "to the bubble",
+                        selectedBubble: "Selected bubble"
                     }
                 },
                 fr: {
@@ -87,7 +88,8 @@ export default {
                         robotDoubt: "Il y a un doute que vous soyez un robot. Si vous êtes humain, je suis désolé et contactez moi à vincent.blouin@gmail.com",
                         and: "et",
                         to: "à",
-                        toTheBubble: "à la bulle"
+                        toTheBubble: "à la bulle",
+                        selectedBubble: "Bulle sélectionnée"
                     }
                 }
             }

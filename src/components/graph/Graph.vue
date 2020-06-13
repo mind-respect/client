@@ -106,17 +106,20 @@
             </v-list>
         </v-menu>
         <RemoveDialog></RemoveDialog>
-        <AddTagDialog></AddTagDialog>
+        <AddTagDialog @tagAdded="tagSuccessSnackbar=true;"></AddTagDialog>
         <MergeDialog></MergeDialog>
         <ColorDialog></ColorDialog>
         <RemoveTagDialog></RemoveTagDialog>
         <DescriptionDialog></DescriptionDialog>
         <FontDialog></FontDialog>
         <ListViewDialog></ListViewDialog>
-        <SimilarBubbles v-if="isOwner"></SimilarBubbles>
+        <SimilarBubbles v-if="isOwner" @tagAdded="tagSuccessSnackbar=true;"></SimilarBubbles>
         <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
         <NewContextDialog></NewContextDialog>
         <BottomMenu></BottomMenu>
+        <v-snackbar v-model="tagSuccessSnackbar" color="secondary">
+            {{$t('graph:tagged')}}
+        </v-snackbar>
     </v-layout>
 </template>
 
@@ -166,10 +169,12 @@
         },
         data: function () {
             I18n.i18next.addResources("en", "graph", {
-                addExistingBubble: "Add an existing bubble"
+                addExistingBubble: "Add an existing bubble",
+                tagged: "Tag added"
             });
             I18n.i18next.addResources("fr", "graph", {
-                addExistingBubble: "Ajouter une bulle existante"
+                addExistingBubble: "Ajouter une bulle existante",
+                tagged: "Étiquette ajouté"
             });
             return {
                 center: null,
@@ -184,7 +189,8 @@
                 isContextMenuLeft: false,
                 backgroundColor: null,
                 childrenKey: IdUri.uuid(),
-                drawnGraphKey: IdUri.uuid()
+                drawnGraphKey: IdUri.uuid(),
+                tagSuccessSnackbar: false
             }
         },
         mounted: async function () {

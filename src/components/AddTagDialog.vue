@@ -2,6 +2,10 @@
     <v-dialog v-model="dialog" v-if="dialog" width="900" top>
         <v-card>
             <v-card-title>
+                <v-icon class="mr-2">
+                    label
+                </v-icon>
+                {{$t('addTag:tag')}}
                 <v-spacer></v-spacer>
                 <v-icon
                         color="third"
@@ -11,63 +15,79 @@
                 </v-icon>
             </v-card-title>
             <v-card-text v-if="!isChangeShareLevelFlow">
-                <v-autocomplete
-                        ref="tagSearch"
-                        v-model="selectedSearchResult"
-                        :items="items"
-                        :search-input.sync="search"
-                        item-value="uri"
-                        item-text="label"
-                        return-object
-                        :menu-props="menuProps"
-                        :loading="searchLoading"
-                        @change="selectSearchResult()"
-                        cache-items
-                        clearable
-                        :no-data-text="$t('noSearchResults')"
-                        :hide-no-data='!search || search.trim() === ""'
-                        @focus="focus"
-                        :placeholder="$t('addTag:title')"
-                        v-show="!bubble || (!bubble.isMeta())"
-                        :disabled="!bubble"
-                >
-                    <template v-slot:prepend-inner>
-                        <img :src="require('@/assets/wikipedia.svg')" width="25">
-                    </template>
-                    <template v-slot:item="{ item }" :attr="searchResultAttrs(item.uri)">
-                        <SearchResultContent :item="item"></SearchResultContent>
-                        <SearchResultAction :item="item"></SearchResultAction>
-                    </template>
-                    <SearchCreate slot="append-item" @create="createTagWithNoRef"
-                                  ref="searchCreate"></SearchCreate>
-                    <SearchLoadMore slot="append-item" @loadMore="loadMore"
-                                    ref="loadMore" v-show="!searchLoading"></SearchLoadMore>
-                    <v-list-item slot="no-data" @click="createTagWithNoRef" v-if="search && search.trim() !== ''"
-                                 v-show="!searchLoading">
-                        <v-list-item-content>
-                            <v-list-item-title>
-                                "{{search}}"
-                            </v-list-item-title>
-                            <v-list-item-subtitle class="">
-                                {{$t('create')}}
-                            </v-list-item-subtitle>
+                <v-expansion-panels class="pt-4" v-model="selectedPanel" multiple hover>
+                    <v-expansion-panel>
+                        <v-expansion-panel-header>{{$t('selectedBubble')}}</v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <v-list>
+                                <v-list-item>
+                                    <SearchResultContent :item="selectedBubbleAsSearchResult"></SearchResultContent>
+                                </v-list-item>
+                            </v-list>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+                <v-list>
+                    <v-list-item class="pl-0 pr-0">
+                        <SearchResultContent :item="selectedSearchResult"
+                                             v-if="hasSelectedTag"></SearchResultContent>
+                        <v-list-item-content v-show="!bubble || (!bubble.isMeta()) && !hasSelectedTag">
+                            <v-autocomplete
+                                    ref="tagSearch"
+                                    v-model="selectedSearchResult"
+                                    :items="items"
+                                    :search-input.sync="search"
+                                    item-value="uri"
+                                    item-text="label"
+                                    return-object
+                                    :menu-props="menuProps"
+                                    :loading="searchLoading"
+                                    @change="selectSearchResult()"
+                                    cache-items
+                                    clearable
+                                    :no-data-text="$t('noSearchResults')"
+                                    :hide-no-data='!search || search.trim() === ""'
+                                    @focus="focus"
+                                    :placeholder="$t('addTag:placeholder')"
+                                    :disabled="!bubble"
+                            >
+                                <template v-slot:prepend-inner>
+                                    <img :src="require('@/assets/wikipedia.svg')" width="25">
+                                </template>
+                                <template v-slot:item="{ item }" :attr="searchResultAttrs(item.uri)">
+                                    <SearchResultContent :item="item"></SearchResultContent>
+                                    <SearchResultAction :item="item"></SearchResultAction>
+                                </template>
+                                <SearchCreate slot="append-item" @create="createTagWithNoRef"
+                                              ref="searchCreate"></SearchCreate>
+                                <SearchLoadMore slot="append-item" @loadMore="loadMore"
+                                                ref="loadMore" v-show="!searchLoading"></SearchLoadMore>
+                                <v-list-item slot="no-data" @click="createTagWithNoRef"
+                                             v-if="search && search.trim() !== ''"
+                                             v-show="!searchLoading">
+                                    <v-list-item-content>
+                                        <v-list-item-title>
+                                            "{{search}}"
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle class="">
+                                            {{$t('create')}}
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-icon>
+                                            add
+                                        </v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+                            </v-autocomplete>
                         </v-list-item-content>
-                        <v-list-item-action>
-                            <v-icon>
-                                add
-                            </v-icon>
-                        </v-list-item-action>
+                        <v-card-actions v-if="hasSelectedTag">
+                            <v-btn icon @click="selectedSearchResult = null;hasSelectedTag = false;">
+                                <v-icon>close</v-icon>
+                            </v-btn>
+                        </v-card-actions>
                     </v-list-item>
-                </v-autocomplete>
-                <div style="height:150px;" class="vh-center">
-                    <v-progress-circular
-                            :size="70"
-                            :width="3"
-                            color="third"
-                            indeterminate
-                            v-show="tagLoading"
-                    ></v-progress-circular>
-                </div>
+                </v-list>
             </v-card-text>
             <v-card-text v-if="isChangeShareLevelFlow">
                 <v-alert type="success">
@@ -91,11 +111,21 @@
                     </v-card-text>
                 </v-card>
             </v-card-text>
-            <v-card-actions v-if="isChangeShareLevelFlow">
+            <v-card-actions>
+                <v-btn color="secondary" @click="confirm()" :loading="tagLoading"
+                       :disabled="selectedSearchResult === null"
+                       v-if="!isChangeShareLevelFlow"
+                >
+                    <v-icon class="mr-2">
+                        label
+                    </v-icon>
+                    {{$t('addTag:tag')}}
+                </v-btn>
                 <v-btn color="secondary"
                        @click="confirmChangeTagShareLevel()"
                        :loading="confirmChangeTagShareLevelLoading"
                        :disabled="confirmChangeTagShareLevelLoading"
+                       v-if="isChangeShareLevelFlow"
                 >
                     {{$t('confirm')}}
                 </v-btn>
@@ -119,6 +149,7 @@
     import SearchResultAction from '@/components/search/SearchResultAction'
     import KeyboardActions from '@/KeyboardActions'
     import ShareLevelSelection from '@/components/ShareLevelSelection'
+    import SearchResult from "../search/SearchResult";
 
     export default {
         name: "AddTagDialog",
@@ -134,18 +165,20 @@
         },
         data: function () {
             I18n.i18next.addResources("en", "addTag", {
-                "title": "Add tag",
-                "shareLevel": "Share level",
+                placeholder: "Tag",
+                shareLevel: "Share level",
                 tagAdded: "Tag added",
                 changeTagShareLevel: "Change the tag sharing level?",
-                changeTagShareLevel1: "The added tag has a stricter sharing level than the selected bubble"
+                changeTagShareLevel1: "The added tag has a stricter sharing level than the selected bubble",
+                tag: "Tag"
             });
             I18n.i18next.addResources("fr", "addTag", {
-                "title": "Ajouter un étiquette",
-                "shareLevel": "Niveau de partage",
+                placeholder: "Étiquette",
+                shareLevel: "Niveau de partage",
                 tagAdded: "Étiquette ajouté",
                 changeTagShareLevel: "Modifier le niveau de partage de l'étiquette ?",
-                changeTagShareLevel1: "L'étiquette ajouté a un niveau de partage plus strict que la bulle sélectionné"
+                changeTagShareLevel1: "L'étiquette ajouté a un niveau de partage plus strict que la bulle sélectionné",
+                tag: "Étiquetter"
             });
             return {
                 search: null,
@@ -161,7 +194,10 @@
                 addedTag: null,
                 selectedTagShareLevel: null,
                 confirmChangeTagShareLevelLoading: false,
-                searchTimeout: null
+                searchTimeout: null,
+                selectedBubbleAsSearchResult: null,
+                selectedPanel: [0],
+                hasSelectedTag: false
             }
         },
         computed: {
@@ -177,7 +213,11 @@
                 if (this.$store.state.isAddTagFlow) {
                     this.isChangeShareLevelFlow = false;
                     this.confirmChangeTagShareLevelLoading = false;
+                    this.selectedSearchResult = null;
                     this.dialog = true;
+                    this.selectedBubbleAsSearchResult = SearchService.searchResultFromOnMapGraphElement(
+                        Selection.getSingle()
+                    );
                     this.$nextTick(() => {
                         setTimeout(() => {
                             this.$refs.tagSearch.reset();
@@ -185,6 +225,7 @@
                         }, 100)
                     });
                 } else {
+                    this.hasSelectedTag = false;
                     this.dialog = false;
                 }
             },
@@ -225,6 +266,10 @@
                 });
             },
             selectSearchResult: async function () {
+                this.$refs.tagSearch.blur();
+                this.hasSelectedTag = true;
+            },
+            confirm: async function () {
                 this.tagLoading = true;
                 let tag = Tag.fromSearchResult(
                     this.selectedSearchResult
@@ -246,7 +291,7 @@
                 if (!this.isChangeShareLevelFlow) {
                     this.dialog = false;
                 }
-                this.$refs.tagSearch.blur();
+                this.$emit("tagAdded");
                 return tag;
             },
             createTagWithNoRef: function () {
