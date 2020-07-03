@@ -1,9 +1,9 @@
 <template>
     <div>
         <v-card flat>
-            <v-expansion-panels class="mt-4 mb-4" hover>
-                <v-expansion-panel class="text-left" expand-icon="link">
-                    <v-expansion-panel-header class="font-weight-bold" expand-icon="link" disable-icon-rotate>
+            <v-expansion-panels class="mt-4 mb-4" hover flat>
+                <v-expansion-panel class="text-left">
+                    <v-expansion-panel-header class="font-weight-bold">
                         {{$t('share:copyLink')}}
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
