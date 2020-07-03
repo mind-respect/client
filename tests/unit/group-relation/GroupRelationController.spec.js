@@ -15,10 +15,10 @@ describe("GroupRelationController", () => {
         ).toBeTruthy();
     });
     describe("addChild", function () {
-        it("makes new child public if parent vertex is public", async () => {
+        it("makes new child public if group relation is public", async () => {
             let scenario = await new GroupRelationsScenario();
             let possessionInTree = scenario.getPossessionGroupRelation();
-            possessionInTree.getParentVertex().makePublic();
+            possessionInTree.makePublic();
             possessionInTree.addIdentification(
                 TestUtil.dummyTag()
             );

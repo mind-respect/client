@@ -53,7 +53,6 @@ GroupRelationController.prototype.addChild = async function (index, isToTheLeft,
     if (saveIndex === undefined) {
         saveIndex = true;
     }
-    let parentVertex = this.model().getParentVertex();
     if (this.model().canExpand()) {
         await this.expand(true, true);
     }
@@ -66,7 +65,7 @@ GroupRelationController.prototype.addChild = async function (index, isToTheLeft,
 
     addTuple.promise.then(() => {
         triple.destination.controller().setShareLevelDo(
-            parentVertex.getShareLevel()
+            this.model().getShareLevel()
         );
     });
     addTuple.promise.catch(() => {
