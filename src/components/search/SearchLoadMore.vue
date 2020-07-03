@@ -1,7 +1,7 @@
 <template>
     <v-list-item @click="click" v-show="nbLastResults !== 0 && searchText !== '' && !isAllLoaded">
         <v-list-item-content v-show="!isAllLoaded && !isLoading">
-            <v-list-item-title class="text-center text-uppercase caption">
+            <v-list-item-title class="text-center text-uppercase text-caption">
                 {{$t('moreResults')}}
             </v-list-item-title>
         </v-list-item-content>

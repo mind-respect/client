@@ -3,11 +3,11 @@
         <v-card color="black" class="white--text" dark>
             <v-card-title class="vh-center">
                 <h3 class="text-center mt-12">
-                    <span class="mr-6 display-2 font-weight-thin white--text">{{level}}</span>
-                    <span class="headline">{{title}}</span>
+                    <span class="mr-6 text-h3 font-weight-thin white--text">{{level}}</span>
+                    <span class="text-h5">{{title}}</span>
                 </h3>
             </v-card-title>
-            <v-card-text class="text-center subtitle-1 pt-6 pb-12">
+            <v-card-text class="text-center text-subtitle-1 pt-6 pb-12">
                 <slot name="description" v-if="$slots['description']"></slot>
             </v-card-text>
         </v-card>

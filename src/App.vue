@@ -68,7 +68,7 @@
                     <v-card :class="{
                         'pa-0' : $vuetify.breakpoint.mdAndDown
                     }">
-                        <v-card-title class="vh-center subtitle-1">
+                        <v-card-title class="vh-center text-subtitle-1">
                             <v-icon class="mr-2">email</v-icon>
                             {{$t('app:recruitContact')}} :
                             <a href="mailto:vincent.blouin@gmail.com" class="ml-2">
@@ -154,13 +154,13 @@
             </v-app-bar>
         </div>
         <SideMenu v-if="isGraphRoute"></SideMenu>
-        <v-content>
+        <v-main>
             <router-view></router-view>
-        </v-content>
+        </v-main>
         <v-dialog v-model="registerDialog" width="900" v-if="registerDialog">
             <v-card>
                 <v-card-title class="pb-0">
-                    <h3 class="title">
+                    <h3 class="text-h6">
                         {{$t('register:title')}}
                         <div class="grey--text">
                             {{$t('register:subtitle')}}
@@ -177,7 +177,7 @@
         <v-dialog v-model="loginDialog" width="900" v-if="loginDialog">
             <v-card>
                 <v-card-title class="pb-0">
-                    <h3 class="title">
+                    <h3 class="text-h6">
                         {{$t('login:title')}}
                     </h3>
                     <v-spacer></v-spacer>
@@ -191,7 +191,7 @@
         <v-dialog v-model="forgotPasswordDialog" width="900" v-if="forgotPasswordDialog">
             <v-card>
                 <v-card-title class="pb-0">
-                    <h3 class="title">
+                    <h3 class="text-h6">
                         {{$t('forgot:title')}}
                     </h3>
                     <v-spacer></v-spacer>
@@ -206,7 +206,7 @@
         <v-dialog v-model="changePasswordDialog" width="900" v-if="changePasswordDialog">
             <v-card>
                 <v-card-title class="pb-0">
-                    <h3 class="title">
+                    <h3 class="text-h6">
                         {{$t('password:title')}}
                     </h3>
                     <v-spacer></v-spacer>
@@ -229,7 +229,7 @@
                         </v-icon>
                     </v-btn>
                 </v-card-title>
-                <v-card-text class="body-1">
+                <v-card-text class="text-body-1">
                     <p>
                         {{$t('app:patternInfo')}}
                     </p>
@@ -611,11 +611,11 @@
     /*
     Trying to avoid white block at bottom with height :100% but it's not really working
     */
-    .v-content {
+    .v-main {
         height: 100%;
     }
 
-    .v-content__wrap {
+    .v-main__wrap {
         height: 100%;
     }
 

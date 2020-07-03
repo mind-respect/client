@@ -74,19 +74,19 @@
                         </v-stepper-step>
                     </v-stepper-header>
                     <v-stepper-content step="1">
-                        <div class="title">
+                        <div class="text-h6">
                             {{$t('guide:titreA')}}
                         </div>
                         <v-layout class="mt-6">
-                            <v-flex xs2 class="font-weight-bold text-left body-1">
+                            <v-flex xs2 class="font-weight-bold text-left text-body-1">
                                 {{$t('guide:icon')}}
                             </v-flex>
-                            <v-flex xs0 lg2 class="text-left body-1">
+                            <v-flex xs0 lg2 class="text-left text-body-1">
                                 <v-icon v-if="$vuetify.breakpoint.lgAndUp">
                                     keyboard
                                 </v-icon>
                             </v-flex>
-                            <v-flex xs10 lg8 class="text-left font-weight-bold body-1">
+                            <v-flex xs10 lg8 class="text-left font-weight-bold text-body-1">
                                 Description
                             </v-flex>
                         </v-layout>
@@ -95,12 +95,12 @@
                                 <v-icon color="third">add</v-icon>
                             </v-flex>
                             <v-flex xs0 lg2></v-flex>
-                            <v-flex xs10 lg8 class="body-1">
+                            <v-flex xs10 lg8 class="text-body-1">
                                 {{$t('guide:A1')}}
                             </v-flex>
                         </v-layout>
                         <v-layout class="mt-6">
-                            <v-flex xs2 class="text-left body-1">
+                            <v-flex xs2 class="text-left text-body-1">
                                 <v-icon>arrow_forward</v-icon>
                             </v-flex>
                             <v-flex xs0 lg2 class="text-left">
@@ -111,7 +111,7 @@
                                     Tab
                                 </span>
                             </v-flex>
-                            <v-flex xs10 lg8 class="body-1">
+                            <v-flex xs10 lg8 class="text-body-1">
                                 {{$t('guide:A2')}}
                             </v-flex>
                         </v-layout>
@@ -119,7 +119,7 @@
                             <v-flex xs2 class="text-left">
                                 <v-icon>arrow_downward</v-icon>
                             </v-flex>
-                            <v-flex xs0 lg2 class="text-left body-1">
+                            <v-flex xs0 lg2 class="text-left text-body-1">
                                 <span v-if="$vuetify.breakpoint.lgAndUp">
                                     <v-icon class="mr-2">
                                         keyboard_return
@@ -127,18 +127,18 @@
                                     Enter
                                 </span>
                             </v-flex>
-                            <v-flex xs10 lg8 class="body-1">
+                            <v-flex xs10 lg8 class="text-body-1">
                                 {{$t('guide:A3')}}
                             </v-flex>
                         </v-layout>
                         <v-layout class="mt-6">
-                            <v-flex xs4 class="text-left body-1">
+                            <v-flex xs4 class="text-left text-body-1">
                                 <v-icon class="mr-4">arrow_right_alt</v-icon>
                                 <v-chip color="secondary">
                                     relation
                                 </v-chip>
                             </v-flex>
-                            <v-flex xs8 class="body-1">
+                            <v-flex xs8 class="text-body-1">
                                 <p>
                                     {{$t('guide:A4')}}
                                 </p>
@@ -150,32 +150,32 @@
                             </v-flex>
                         </v-layout>
                         <!--                        <v-layout class="mt-6">-->
-                        <!--                            <v-flex xs4 class="text-left body-1">-->
+                        <!--                            <v-flex xs4 class="text-left text-body-1">-->
                         <!--                                <v-icon class="mr-4">arrow_right_alt</v-icon>-->
                         <!--                                <v-chip color="secondary">-->
                         <!--                                    {{$t('guide:groupRelation')}}-->
                         <!--                                </v-chip>-->
                         <!--                            </v-flex>-->
-                        <!--                            <v-flex xs8 class="body-1">-->
+                        <!--                            <v-flex xs8 class="text-body-1">-->
                         <!--                                {{$t('guide:groupRelationDesc')}}-->
                         <!--                            </v-flex>-->
                         <!--                        </v-layout>-->
                     </v-stepper-content>
                     <!--STEP 2 Naviguer-->
-                    <v-stepper-content step="2" class="body-1">
-                        <div class="title">
+                    <v-stepper-content step="2" class="text-body-1">
+                        <div class="text-h6">
                             {{$t('guide:titreB')}}
                         </div>
                         <v-layout class="mt-6">
-                            <v-flex xs2 class="font-weight-bold text-left body-1">
+                            <v-flex xs2 class="font-weight-bold text-left text-body-1">
                                 {{$t('guide:icon')}}
                             </v-flex>
-                            <v-flex xs0 lg2 class="text-left body-1">
+                            <v-flex xs0 lg2 class="text-left text-body-1">
                                 <v-icon v-if="$vuetify.breakpoint.lgAndUp">
                                     keyboard
                                 </v-icon>
                             </v-flex>
-                            <v-flex xs10 lg8 class="text-left font-weight-bold body-1">
+                            <v-flex xs10 lg8 class="text-left font-weight-bold text-body-1">
                                 Description
                             </v-flex>
                         </v-layout>
@@ -265,25 +265,25 @@
                         </v-layout>
                     </v-stepper-content>
                     <!--STEP 3 Organiser-->
-                    <v-stepper-content step="3" class="body-1">
-                        <div class="title">
+                    <v-stepper-content step="3" class="text-body-1">
+                        <div class="text-h6">
                             {{$t('guide:titreC')}}
                         </div>
                         <v-layout class="mt-6">
-                            <v-flex xs2 class="font-weight-bold text-left body-1">
+                            <v-flex xs2 class="font-weight-bold text-left text-body-1">
                                 {{$t('guide:icon')}}
                             </v-flex>
-                            <v-flex xs0 lg2 class="text-left body-1">
+                            <v-flex xs0 lg2 class="text-left text-body-1">
                                 <v-icon v-if="$vuetify.breakpoint.lgAndUp">
                                     keyboard
                                 </v-icon>
                             </v-flex>
-                            <v-flex xs10 lg8 class="text-left font-weight-bold body-1">
+                            <v-flex xs10 lg8 class="text-left font-weight-bold text-body-1">
                                 Description
                             </v-flex>
                         </v-layout>
                         <v-layout class="mt-6">
-                            <v-flex xs2 lg4 class="text-left body-1">
+                            <v-flex xs2 lg4 class="text-left text-body-1">
                                 <v-icon v-if="$vuetify.breakpoint.mdAndDown" class="mr-4">touch_app</v-icon>
                                 <span v-if="$vuetify.breakpoint.lgAndUp">
                                     <v-icon>mouse</v-icon>
@@ -303,7 +303,7 @@
                                     </span>
                                 </span>
                             </v-flex>
-                            <v-flex xs10 lg8 class="body-1">
+                            <v-flex xs10 lg8 class="text-body-1">
                                 {{$t('guide:A6')}}
                             </v-flex>
                         </v-layout>
@@ -334,7 +334,7 @@
                             <v-flex xs0 lg2 v-if="$vuetify.breakpoint.lgAndUp">
                                 {{ctrlKey}} + M
                             </v-flex>
-                            <v-flex xs10 lg8 class="body-1">
+                            <v-flex xs10 lg8 class="text-body-1">
                                 {{$t('guide:A5')}}
                             </v-flex>
                         </v-layout>
@@ -351,20 +351,20 @@
                         </v-layout>
                     </v-stepper-content>
                     <!--STEP 4 Préciser-->
-                    <v-stepper-content step="4" class="body-1">
-                        <div class="title">
+                    <v-stepper-content step="4" class="text-body-1">
+                        <div class="text-h6">
                             {{$t('guide:titreD')}}
                         </div>
                         <v-layout class="mt-6">
-                            <v-flex xs2 class="font-weight-bold text-left body-1">
+                            <v-flex xs2 class="font-weight-bold text-left text-body-1">
                                 {{$t('guide:icon')}}
                             </v-flex>
-                            <v-flex xs0 lg2 class="text-left body-1">
+                            <v-flex xs0 lg2 class="text-left text-body-1">
                                 <v-icon v-if="$vuetify.breakpoint.lgAndUp">
                                     keyboard
                                 </v-icon>
                             </v-flex>
-                            <v-flex xs10 lg8 class="text-left font-weight-bold body-1">
+                            <v-flex xs10 lg8 class="text-left font-weight-bold text-body-1">
                                 Description
                             </v-flex>
                         </v-layout>
@@ -393,22 +393,22 @@
                     </v-stepper-content>
                     <!--STEP 5 Décorer-->
                     <v-stepper-content step="5">
-                        <div class="title">
+                        <div class="text-h6">
                             {{$t('guide:titreE')}}
                         </div>
-                        <div class="subtitle-1 font-italic">
+                        <div class="text-subtitle-1 font-italic">
                             {{$t('guide:titreE1')}}
                             <v-icon class="ml-2 mb-1">settings</v-icon>
                         </div>
                         <v-layout class="mt-6">
-                            <v-flex xs2 class="font-weight-bold text-left body-1">
+                            <v-flex xs2 class="font-weight-bold text-left text-body-1">
                                 {{$t('guide:icon')}}
                             </v-flex>
-                            <v-flex xs10 lg8 class="text-left font-weight-bold body-1">
+                            <v-flex xs10 lg8 class="text-left font-weight-bold text-body-1">
                                 Description
                             </v-flex>
                         </v-layout>
-                        <v-layout class="mt-6 body-1">
+                        <v-layout class="mt-6 text-body-1">
                             <v-flex xs2 class="text-left">
                                 <v-icon>font_download</v-icon>
                             </v-flex>
@@ -416,7 +416,7 @@
                                 {{$t('guide:E1')}}
                             </v-flex>
                         </v-layout>
-                        <v-layout class="mt-6 body-1">
+                        <v-layout class="mt-6 text-body-1">
                             <v-flex xs2 class="text-left">
                                 <v-icon>color_lens</v-icon>
                             </v-flex>
@@ -426,20 +426,20 @@
                         </v-layout>
                     </v-stepper-content>
                     <!--STEP 6 Diffuser-->
-                    <v-stepper-content step="6" class="body-1">
-                        <div class="title">
+                    <v-stepper-content step="6" class="text-body-1">
+                        <div class="text-h6">
                             {{$t('guide:titreF')}}
                         </div>
                         <v-layout class="mt-6">
-                            <v-flex xs2 class="font-weight-bold text-left body-1">
+                            <v-flex xs2 class="font-weight-bold text-left text-body-1">
                                 {{$t('guide:icon')}}
                             </v-flex>
-<!--                            <v-flex xs0 lg2 class="text-left body-1">-->
+<!--                            <v-flex xs0 lg2 class="text-left text-body-1">-->
 <!--                                <v-icon v-if="$vuetify.breakpoint.lgAndUp">-->
 <!--                                    keyboard-->
 <!--                                </v-icon>-->
 <!--                            </v-flex>-->
-                            <v-flex xs10 lg10 class="text-left font-weight-bold body-1">
+                            <v-flex xs10 lg10 class="text-left font-weight-bold text-body-1">
                                 Description
                             </v-flex>
                         </v-layout>

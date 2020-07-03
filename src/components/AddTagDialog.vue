@@ -94,7 +94,7 @@
                     {{$t('addTag:tagAdded')}}
                 </v-alert>
                 <v-card>
-                    <v-card-title class="subtitle-1 pb-0">
+                    <v-card-title class="text-subtitle-1 pb-0">
                         {{$t('addTag:changeTagShareLevel1')}}
                     </v-card-title>
                     <v-card-text class="pt-0">
@@ -102,7 +102,7 @@
                     </v-card-text>
                 </v-card>
                 <v-card class="mt-4">
-                    <v-card-title class="subtitle-1 pb-0">
+                    <v-card-title class="text-subtitle-1 pb-0">
                         {{$t('addTag:changeTagShareLevel')}}
                     </v-card-title>
                     <v-card-text>

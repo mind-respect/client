@@ -23,7 +23,7 @@
                 </v-icon>
                 <v-badge v-if="item.isMindRespect && item.original.getGraphElement().isMeta()"
                          :color="item.original.getGraphElement().getChipBackgroundColor()"
-                         overlap bottom class="caption mr-2"
+                         overlap bottom class="text-caption mr-2"
                 >
                     <template v-slot:badge>
                         <span class="font-weight-bold" :class="{

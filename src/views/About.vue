@@ -21,7 +21,7 @@
                 <p class="title mb-0 white--text">
                     {{$t('about:level1Desc1')}}
                 </p>
-                <p class="subtitle-1">
+                <p class="text-subtitle-1">
                     {{$t('about:level1Desc2')}}
                 </p>
             </div>
@@ -47,7 +47,7 @@
                 <p class="title white--text mb-0">
                     {{$t('about:level4Desc1')}}
                 </p>
-                <p class="subtitle-1 mt-0">
+                <p class="text-subtitle-1 mt-0">
                     {{$t('about:level4Desc11')}}
                 </p>
             </div>
@@ -58,9 +58,9 @@
                 <v-list color="primary" three-line dark class="pt-0 mt-0">
                     <v-list-item>
                         <v-list-item-content>
-                            <v-list-item-title class="title">
+                            <v-list-item-title class="text-h6">
                                 {{$t('about:level5Desc1')}}
-                                <v-list-item-subtitle class="subtitle-1">
+                                <v-list-item-subtitle class="text-subtitle-1">
                                     {{$t('about:level5Desc11')}}
                                 </v-list-item-subtitle>
                             </v-list-item-title>
@@ -68,9 +68,9 @@
                     </v-list-item>
                     <v-list-item>
                         <v-list-item-content>
-                            <v-list-item-title class="title">
+                            <v-list-item-title class="text-h6">
                                 {{$t('about:level5Desc2')}}
-                                <v-list-item-subtitle class="subtitle-1">
+                                <v-list-item-subtitle class="text-subtitle-1">
                                     {{$t('about:level5Desc21')}}
                                 </v-list-item-subtitle>
                             </v-list-item-title>
@@ -86,10 +86,10 @@
             <v-flex xs12 md6 class="vh-center">
                 <v-card flat color="secondary" height="100%" class="vh-center">
                     <v-card-title class="text-center white--text vh-center pr-0 pl-0">
-                        <h3 class="display-2 text-center">
+                        <h3 class="text-h3 text-center">
                             {{$t('register:title')}}
                         </h3>
-                        <div class="title">
+                        <div class="text-h6">
                             {{$t('register:subtitle')}}
                         </div>
                     </v-card-title>

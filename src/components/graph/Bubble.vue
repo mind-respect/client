@@ -127,7 +127,7 @@
                                     <BubbleButtons v-show="menuFlow === 'buttons'"
                                                    @refresh="refreshButtons"></BubbleButtons>
                                     <v-card :href="linkMenuHref" target="_blank" v-show="menuFlow === 'link'">
-                                        <v-card-title class="body-1 link-menu">
+                                        <v-card-title class="text-body-1 link-menu">
                                             <v-icon class="mr-2">share</v-icon>
                                             {{$t('vertex:openLink')}}
                                         </v-card-title>
@@ -235,7 +235,7 @@
                                     <BubbleButtons v-show="menuFlow === 'buttons'"
                                                    @refresh="refreshButtons"></BubbleButtons>
                                     <v-card :href="linkMenuHref" target="_blank" v-show="menuFlow === 'link'">
-                                        <v-card-title class="body-1 link-menu">
+                                        <v-card-title class="text-body-1 link-menu">
                                             <v-icon class="mr-2">share</v-icon>
                                             {{$t('vertex:openLink')}}
                                         </v-card-title>

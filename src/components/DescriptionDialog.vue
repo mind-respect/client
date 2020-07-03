@@ -57,10 +57,10 @@
         },
         data: function () {
             I18n.i18next.addResources("en", "desc", {
-                "title": "About"
+                "text-h6": "About"
             });
             I18n.i18next.addResources("fr", "desc", {
-                "title": "À propos de"
+                "text-h6": "À propos de"
             });
             return {
                 dialog: false,

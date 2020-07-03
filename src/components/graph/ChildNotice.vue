@@ -31,7 +31,7 @@
                             'mr-2' : !isLeft,
                             'ml-2' : isLeft
                         }">
-                            <span class="white--text body-2">{{nbChild}}</span>
+                            <span class="white--text text-body-2">{{nbChild}}</span>
                         </v-avatar>
                         <span>{{$t('childNotice:' + tooltipKey)}}</span>
                     </div>

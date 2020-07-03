@@ -21,7 +21,7 @@
             {{shareIcon}}
         </v-icon>
         <small v-if="bubble.isVertex() && bubble.getNbDuplicates() > 0"
-               class="body-2 font-weight-bold nb-duplicates" style="color:#1A237E;">
+               class="text-body-2 font-weight-bold nb-duplicates" style="color:#1A237E;">
             ×{{bubble.getNbDuplicates() + 1}}
         </small>
         <img :src="require('@/assets/wikipedia.svg')" width="20" v-if="this.wikipediaUrl" style="margin-bottom:-6px;">

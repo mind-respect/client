@@ -4,7 +4,7 @@
             'pl-0': $vuetify.breakpoint.smAndDown,
             'pr-0': $vuetify.breakpoint.smAndDown,
         }">
-            <v-card-title class="title">
+            <v-card-title class="text-h6">
                 {{$t('newContext:title')}}
                 <v-spacer></v-spacer>
                 <v-icon
@@ -13,7 +13,7 @@
                 >close
                 </v-icon>
             </v-card-title>
-            <v-card-text class="pt-0 pb-0 body-1" :class="{
+            <v-card-text class="pt-0 pb-0 text-body-1" :class="{
             'pl-0': $vuetify.breakpoint.smAndDown,
             'pr-0': $vuetify.breakpoint.smAndDown,
         }">
@@ -23,17 +23,17 @@
                     </v-card-title>
                     <v-card-text>
                         <v-card>
-                            <v-card-title class="body-1 h-center">
+                            <v-card-title class="text-body-1 h-center">
                                 {{$t('newContext:actualMap')}}
                             </v-card-title>
-                            <v-card-subtitle class="body-2 pb-0 text-center">
+                            <v-card-subtitle class="text-body-2 pb-0 text-center">
                                 {{$t('newContext:where')}}
                                 "{{relation.getParentVertex().getLabelOrDefault()}}"
                                 {{$t('newContext:isTheParent')}}
                             </v-card-subtitle>
                             <v-card-text>
                                 <v-card flat>
-                                    <v-card-text class="body-1 text-center">
+                                    <v-card-text class="text-body-1 text-center">
                                         {{leftVertex.getLabelOrDefault()}}
                                         <NewContextDialogRelation :relation="relation"></NewContextDialogRelation>
                                         {{rightVertex.getLabelOrDefault()}}
@@ -43,17 +43,17 @@
                         </v-card>
                         <v-divider></v-divider>
                         <v-card>
-                            <v-card-title class="body-1 h-center">
+                            <v-card-title class="text-body-1 h-center">
                                 {{$t('newContext:mirrorMap')}}
                             </v-card-title>
-                            <v-card-subtitle class="body-2 pb-0 text-center">
+                            <v-card-subtitle class="text-body-2 pb-0 text-center">
                                 {{$t('newContext:where')}}
                                 "{{relation.getNextBubble().getLabelOrDefault()}}"
                                 {{$t('newContext:isTheParent')}}
                             </v-card-subtitle>
                             <v-card-text>
                                 <v-card flat>
-                                    <v-card-text class="body-1 text-center">
+                                    <v-card-text class="text-body-1 text-center">
                                         {{rightVertex.getLabelOrDefault()}}
                                         <NewContextDialogRelation :relation="relation"
                                                                   :mirror="true"></NewContextDialogRelation>
@@ -70,17 +70,17 @@
                     </v-card-title>
                     <v-card-text>
                         <v-card>
-                            <v-card-title class="body-1 h-center">
+                            <v-card-title class="text-body-1 h-center">
                                 {{$t('newContext:actualMap')}}
                             </v-card-title>
-                            <v-card-subtitle class="body-2 pb-0 text-center">
+                            <v-card-subtitle class="text-body-2 pb-0 text-center">
                                 {{$t('newContext:where')}}
                                 "{{relation.getParentVertex().getLabelOrDefault()}}"
                                 {{$t('newContext:isTheParent')}}
                             </v-card-subtitle>
                             <v-card-text>
                                 <v-card flat>
-                                    <v-card-text class="body-1 text-center">
+                                    <v-card-text class="text-body-1 text-center">
                                         <v-icon class="ml-2" v-if="isDestinationVertex(leftVertex)" small>
                                             label
                                         </v-icon>
@@ -106,17 +106,17 @@
                         </v-card>
                         <v-divider></v-divider>
                         <v-card>
-                            <v-card-title class="body-1 h-center">
+                            <v-card-title class="text-body-1 h-center">
                                 {{$t('newContext:mirrorMap')}}
                             </v-card-title>
-                            <v-card-subtitle class="body-2 pb-0 text-center">
+                            <v-card-subtitle class="text-body-2 pb-0 text-center">
                                 {{$t('newContext:where')}}
                                 "{{relation.getNextBubble().getLabelOrDefault()}}"
                                 {{$t('newContext:isTheParent')}}
                             </v-card-subtitle>
                             <v-card-text>
                                 <v-card flat>
-                                    <v-card-text class="body-1 text-center">
+                                    <v-card-text class="text-body-1 text-center">
                                         <v-icon class="mr-1" v-if="isDestinationVertex(rightVertex)" small>label
                                         </v-icon>
                                         <span :class="{

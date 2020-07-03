@@ -19,7 +19,7 @@
                     <v-card>
                         <v-list-item three-line>
                             <v-list-item-content>
-                                <v-list-item-title class="subtitle-1 mb-1">
+                                <v-list-item-title class="text-subtitle-1 mb-1">
                                     {{bubble.getLabel()}}
                                 </v-list-item-title>
                             </v-list-item-content>
@@ -80,14 +80,14 @@
                     </v-list-item>
                 </v-list>
                 <v-card>
-                    <v-card-title class="subtitle-1" :class="{
+                    <v-card-title class="text-subtitle-1" :class="{
                         'grey--text': mergeBubble === null
                     }">
                         {{$t('merge:result')}}
                     </v-card-title>
                     <v-card-text class="pt-0 pb-0">
                         <v-card flat class="pt-0">
-                            <v-card-title class="subtitle-1">
+                            <v-card-title class="text-subtitle-1">
                                 {{$t('merge:urlKept')}}
                             </v-card-title>
                             <v-card-text class="pt-0 pb-0">
@@ -111,10 +111,10 @@
                     </v-card-text>
                     <v-card-text class="pt-0 pb-0">
                         <v-card flat class="pt-0 pb-0">
-                            <v-card-title class="subtitle-1 pt-0 grey--text" v-if="isSameColor">
+                            <v-card-title class="text-subtitle-1 pt-0 grey--text" v-if="isSameColor">
                                 {{$t('merge:sameColor')}}
                             </v-card-title>
-                            <v-card-title class="subtitle-1 pt-0" v-if="!isSameColor">
+                            <v-card-title class="text-subtitle-1 pt-0" v-if="!isSameColor">
                                 {{$t('merge:color')}}
                             </v-card-title>
                             <v-card-text class="pt-0 pb-0" v-if="!isSameColor">
@@ -162,7 +162,7 @@
                     </v-card-text>
                     <v-card-text class="pt-0" v-if="mergeBubble">
                         <v-card flat class="pt-0">
-                            <v-card-title class="subtitle-1 pb-0 pt-0">
+                            <v-card-title class="text-subtitle-1 pb-0 pt-0">
                                 {{$t('merge:textAndRelation')}}
                             </v-card-title>
                             <ListView :bubble="mergeBubble" :preventExpand="true" :collapse="true"

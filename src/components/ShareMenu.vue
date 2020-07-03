@@ -46,7 +46,7 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
             </v-expansion-panels>
-            <v-card-title class="pt-1 pb-0 subtitle-1 vh-center font-weight-bold">
+            <v-card-title class="pt-1 pb-0 text-subtitle-1 vh-center font-weight-bold">
                 {{$t('share:title')}}
             </v-card-title>
             <v-card flat class="pt-0 pb-0">
@@ -54,7 +54,7 @@
                     <ShareLevelSelection :shareLevel="shareLevel" @update="update"></ShareLevelSelection>
                 </v-card-text>
             </v-card>
-            <v-card-title class="pt-1 pb-0 subtitle-1 text-center grey--text" v-show="tagsByLatest.length">
+            <v-card-title class="pt-1 pb-0 text-subtitle-1 text-center grey--text" v-show="tagsByLatest.length">
                 {{$t('share:tags')}}
             </v-card-title>
             <v-card-actions class="pt-0 pb-0 vh-center" v-show="tagsByLatest.length">

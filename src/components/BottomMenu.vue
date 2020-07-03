@@ -14,7 +14,7 @@
                     @click="usePatternConfirmFlow = true"
                     v-show="!usePatternConfirmFlow"
                     :disabled="usePatternLoading"
-                    class="subtitle-1"
+                    class="text-subtitle-1"
                     v-if="isShowUsePatternButton"
             >
                 <span v-if="isOwner">
@@ -27,7 +27,7 @@
                     stars
                 </v-icon>
             </v-btn>
-            <v-btn text class="subtitle-1" :to="'/user/' + owner" v-if="!isOwner">
+            <v-btn text class="text-subtitle-1" :to="'/user/' + owner" v-if="!isOwner">
                 {{owner}}
                 <v-icon class="">
                     person
@@ -51,7 +51,7 @@
                                     {{$t('bottom:usePattern')}}
                                 </v-badge>
                             </v-card-title>
-                            <v-card-text class="subtitle-1 pl-4 pr-4 text-center pb-0 pt-0">
+                            <v-card-text class="text-subtitle-1 pl-4 pr-4 text-center pb-0 pt-0">
                                 <p>
                                     {{$t('bottom:usePatternInfo1')}}
                                 </p>

@@ -33,7 +33,7 @@
                 <v-avatar class="text-uppercase teal white--text mt-4 mr-2" small v-if="headUsername">
                     {{headUsername.substring(0,2)}}
                 </v-avatar>
-                <span class="body-1 mt-4" v-if="headUsername">
+                <span class="text-body-1 mt-4" v-if="headUsername">
                     {{headUsername}}
                 </span>
                 <v-spacer></v-spacer>
@@ -54,10 +54,10 @@
                     </v-icon>
                     {{$t('userhome:confirmFriend')}}
                 </v-btn>
-                <v-chip v-if="!isOwner && isWaitingFriendship" color="secondary" dark class="subtitle-1 mt-4">
+                <v-chip v-if="!isOwner && isWaitingFriendship" color="secondary" dark class="text-subtitle-1 mt-4">
                     {{$t('userhome:waitingFriend')}}
                 </v-chip>
-                <v-chip v-if="!isOwner && isConfirmedFriend" color="secondary" dark class="subtitle-1 mt-4">
+                <v-chip v-if="!isOwner && isConfirmedFriend" color="secondary" dark class="text-subtitle-1 mt-4">
                     {{$t('userhome:confirmedFriend')}}
                 </v-chip>
             </v-card-title>
@@ -182,7 +182,7 @@
         <v-snackbar
                 v-model="friendShipSuccessSnackbar"
                 color="success"
-                class="vh-center body-1"
+                class="vh-center text-body-1"
         >
             {{$t('userhome:friendshipSuccess')}}
             {{$route.params.username}}
@@ -196,7 +196,7 @@
         <v-snackbar
                 v-model="friendShipErrorSnackbar"
                 color="error"
-                class="vh-center body-1"
+                class="vh-center text-body-1"
         >
             {{$t('userhome:friendshipError')}}
             <v-btn
@@ -237,7 +237,7 @@
                 "removeInfo": "Remove from this list (does not remove the bubble)",
                 "filter": "Filter",
                 "confirmRemove": {
-                    "title": "Remove from centers list",
+                    "text-h6": "Remove from centers list",
                     "really": "Do you really want to remove that?",
                     "info": "This action does not remove the bubble(s). It will still be accessible throught the main search and by it's relations."
                 },
@@ -283,7 +283,7 @@
                 "removeInfo": "Supprimer de cette liste (n'efface pas la bulle)",
                 "filter": "Filtrer",
                 "confirmRemove": {
-                    "title": "Supprimer de la liste des centres",
+                    "text-h6": "Supprimer de la liste des centres",
                     "really": "Voulez-vous vraiment supprimer ça?",
                     "info": "Cette action ne supprime pas la bulle(s). Elle pourra toujours être trouvée par la recherche principale et par ses relations."
                 },
@@ -329,17 +329,17 @@
                         text: this.$t('userhome:center'),
                         align: 'left',
                         value: 'labelSearch',
-                        'class': 'subtitle-1'
+                        'class': 'text-subtitle-1'
                     },
                     {
                         text: this.$t('userhome:context'),
                         value: 'contextSearch',
-                        'class': 'subtitle-1'
+                        'class': 'text-subtitle-1'
                     },
                     {
                         text: this.$t('userhome:lastVisit'),
                         value: '',
-                        'class': 'subtitle-1'
+                        'class': 'text-subtitle-1'
                     }
                 ],
                 loaded: false,

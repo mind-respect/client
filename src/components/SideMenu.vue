@@ -27,7 +27,7 @@
                            class="mt-6 text-center">
                         <v-icon>chevron_right</v-icon>
                     </v-btn>
-                    <v-card-title class="subtitle-1" v-show="$store.state.sideMenuFlow !== false">
+                    <v-card-title class="text-subtitle-1" v-show="$store.state.sideMenuFlow !== false">
                         <div class="grey--text text-left">
                             <v-skeleton-loader
                                     class="mt-4"

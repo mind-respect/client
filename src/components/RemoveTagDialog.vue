@@ -5,7 +5,7 @@
 <template>
     <v-dialog v-model="removeTagDialog" v-if="isRemoveTagFlow" width="600" id="removeTagDialog">
         <v-card>
-            <v-card-title class="title">
+            <v-card-title class="text-h6">
                 {{$t('removeTag:title_prefix')}}
                 <v-spacer></v-spacer>
                 <v-icon

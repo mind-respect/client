@@ -5,7 +5,7 @@
 <template>
     <v-dialog v-model="dialog" width="900">
         <v-card>
-            <v-card-title class="title">
+            <v-card-title class="text-h6">
                 {{$t('font:title')}}
                 <v-spacer></v-spacer>
                 <v-icon
@@ -103,11 +103,11 @@
         name: "FontDialog",
         data: function () {
             I18n.i18next.addResources("en", "font", {
-                "title": "Select a font",
+                "text-h6": "Select a font",
                 "defaultFont": "Use default font"
             });
             I18n.i18next.addResources("fr", "font", {
-                "title": "Sélectionnez une police de caractères",
+                "text-h6": "Sélectionnez une police de caractères",
                 "defaultFont": "Utiliser la police par défaut"
             });
             return {

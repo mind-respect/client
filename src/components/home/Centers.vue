@@ -64,7 +64,7 @@
                                     <v-list-item-content :class="{
                                         'pb-0' :center.tagIndex !== undefined
                                     }">
-                                        <v-list-item-title class="subtitle-1 font-weight-bold pb-4">
+                                        <v-list-item-title class="text-subtitle-1 font-weight-bold pb-4">
                                             <v-badge :color="center.getChipBackgroundColor(true)"
                                                      :inline="!center.isMeta()"
                                                      left

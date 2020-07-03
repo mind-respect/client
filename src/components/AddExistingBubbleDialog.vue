@@ -5,7 +5,7 @@
 <template>
     <v-dialog v-model="dialog" width="900" v-if="dialog">
         <v-card>
-            <v-card-title class="title">
+            <v-card-title class="text-h6">
                 {{$t('existing:addRelationTo')}}
                 <v-spacer></v-spacer>
                 <v-icon
@@ -158,7 +158,7 @@
         },
         data: function () {
             I18n.i18next.addResources("en", "existing", {
-                "title": "Your bubbles",
+                "text-h6": "Your bubbles",
                 "titleWithPatterns": "Your bubbles and the patterns",
                 "includeAllPatterns": "Include patterns of all users",
                 addRelationTo: "Link two bubbles",
@@ -169,7 +169,7 @@
                 cannotRelate: "There can only be one relationship between each bubble"
             });
             I18n.i18next.addResources("fr", "existing", {
-                "title": "Vos bulles",
+                "text-h6": "Vos bulles",
                 "titleWithPatterns": "Vos bulles et les patterns",
                 "includeAllPatterns": "Inclure les patterns de tous les usagers",
                 addRelationTo: "Relier deux bulles",

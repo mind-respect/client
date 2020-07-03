@@ -33,7 +33,7 @@
                         </v-layout>
                     </v-card-text>
                 </v-card>
-                <v-card-text v-if="loaded && Object.keys(friends).length === 0" class="text-center headline grey--text">
+                <v-card-text v-if="loaded && Object.keys(friends).length === 0" class="text-center text-h5 grey--text">
                     {{$t('friends:noFriends')}}
                 </v-card-text>
                 <v-list v-if="loaded && Object.keys(friends).length > 0">

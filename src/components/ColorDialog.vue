@@ -51,11 +51,11 @@
         },
         data: function () {
             I18n.i18next.addResources("en", "color", {
-                "title": "Color",
+                "text-h6": "Color",
                 useDefault: "Default color"
             });
             I18n.i18next.addResources("fr", "color", {
-                "title": "Couleur",
+                "text-h6": "Couleur",
                 useDefault: "Couleur par défaut"
             });
             return {
