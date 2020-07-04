@@ -426,7 +426,8 @@
             setupFriendsCenters: function () {
                 return CenterGraphElementService.getFriendsFeed();
             },
-            go: function ($event, center) {
+            go: async function ($event, center) {
+                LoadingFlow.enter();
                 let nbChild = center.getNbNeighbors().getTotal();
                 let graphElementType = center.uri().getGraphElementType();
                 if (graphElementType === "meta") {
@@ -436,7 +437,7 @@
                     graphElementType = "edge";
                     nbChild = undefined;
                 }
-                this.$router.push({
+                await this.$router.push({
                     name: "Center",
                     params: {
                         username: center.uri().getOwner(),
@@ -446,6 +447,7 @@
                         colors: center.getColors()
                     }
                 });
+                LoadingFlow.leave();
             },
             copyUrl: function (center) {
                 this.$copyText(
