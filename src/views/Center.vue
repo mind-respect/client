@@ -22,18 +22,18 @@
             Graph
         },
         data: function () {
-            //forceUpdate is used in tests
-            return {
-                forceUpdate: ""
-            }
-        },
-        mounted: function () {
             GraphDisplayer.setImplementation(
                 GraphDisplayerFactory.getByName(
                     "relative_tree"
                 )
             );
             GraphElement.initMenuHandlerGetters();
+            //forceUpdate is used in tests
+            return {
+                forceUpdate: ""
+            }
+        },
+        mounted: function () {
             GraphUi.initDragScroll(
                 document.scrollingElement
             );
