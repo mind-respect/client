@@ -183,7 +183,7 @@ VertexController.prototype.convertToGroupRelation = async function () {
     });
 };
 
-VertexController.prototype.addSiblingCanDo = function () {
+VertexController.prototype.addSiblingCanDo = VertexController.prototype.addSiblingUpCanDo = function () {
     return this.isSingleAndOwned() && !this.model().isCenter &&
         !this.getUi().getParentBubble().getParentBubble().isMeta() &&
         !this.model().isPristine();

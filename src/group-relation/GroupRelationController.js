@@ -92,7 +92,7 @@ GroupRelationController.prototype.addChild = async function (index, isToTheLeft,
     return triple;
 };
 
-GroupRelationController.prototype.addSiblingCanDo = function () {
+GroupRelationController.prototype.addSiblingCanDo = GroupRelationController.prototype.addSiblingUpCanDo = function () {
     return this.isSingleAndOwned() && this.model().getParentFork().controller().addChildCanDo();
 };
 

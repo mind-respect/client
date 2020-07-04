@@ -257,5 +257,8 @@ function defineCtrlPlusKeysAndTheirActions() {
     actions[KeyCode.KEY_L] = {
         action: "list"
     };
+    actions[KeyCode.KEY_RETURN] = {
+        action: "addSiblingUp"
+    };
     return actions;
 }

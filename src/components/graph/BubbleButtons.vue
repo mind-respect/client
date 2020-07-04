@@ -68,7 +68,8 @@
                     },
                     {
                         icon: "arrow_upward",
-                        action: "addSiblingUp"
+                        action: "addSiblingUp",
+                        ctrlShortcut: "enter"
                     },
                     {
                         icon: "link",

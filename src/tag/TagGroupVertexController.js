@@ -49,7 +49,7 @@ TagGroupVertexController.prototype.addChild = async function () {
     triple.destination.focus();
 };
 
-TagGroupVertexController.prototype.addSiblingCanDo = function () {
+TagGroupVertexController.prototype.addSiblingCanDo = TagGroupVertexController.prototype.addSiblingUpCanDo = function () {
     return false;
 };
 
