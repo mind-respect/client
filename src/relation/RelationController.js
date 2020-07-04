@@ -64,13 +64,16 @@ RelationController.prototype.addChild = async function () {
 };
 
 RelationController.prototype.addSibling = function () {
-    return this.model().getNextBubble().controller().addSibling().then((triple) => {
-        Vue.nextTick(() => {
-            Selection.setToSingle(
-                triple.edge
-            );
-        })
-    });
+    return this._addSiblingUpOrDown(true);
+};
+
+RelationController.prototype.addSiblingUp = function () {
+    return this._addSiblingUpOrDown(false);
+};
+
+RelationController.prototype._addSiblingUpOrDown = function (isDown) {
+    let nextBubbleController = this.model().getNextBubble().controller();
+    return isDown ? nextBubbleController.addSibling() : nextBubbleController.addSiblingUp();
 };
 
 RelationController.prototype.addSiblingCanDo = function () {

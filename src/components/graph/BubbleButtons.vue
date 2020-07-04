@@ -67,6 +67,10 @@
                         action: "addSibling"
                     },
                     {
+                        icon: "arrow_upward",
+                        action: "addSiblingUp"
+                    },
+                    {
                         icon: "link",
                         badgeImage: "/wikipedia-white.svg",
                         action: "openWikipediaLink"

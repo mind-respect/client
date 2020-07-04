@@ -96,13 +96,6 @@ GroupRelationController.prototype.addSiblingCanDo = function () {
     return this.isSingleAndOwned() && this.model().getParentFork().controller().addChildCanDo();
 };
 
-GroupRelationController.prototype.addSibling = function () {
-    return this.model().getParentFork().controller().addChild(
-        this.model().getIndexInTree() + 1,
-        this.model().isToTheLeft()
-    );
-};
-
 GroupRelationController.prototype.becomeExParent = async function () {
     let bubbleToSelect;
     let children = this.model().getNextChildren().filter((child) => {

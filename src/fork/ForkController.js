@@ -65,3 +65,19 @@ ForkController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
         }
     });
 };
+
+ForkController.prototype.addSibling = function () {
+    return this._addSiblingUpOrDown(true);
+};
+
+ForkController.prototype.addSiblingUp = function () {
+    return this._addSiblingUpOrDown(false);
+};
+
+ForkController.prototype._addSiblingUpOrDown = function (isDown) {
+    let parent = this.model().getParentFork();
+    return parent.controller().addChild(
+        this.model().getIndexInTree() + (isDown ? 1 : 0),
+        this.model().isToTheLeft()
+    );
+};

@@ -189,14 +189,6 @@ VertexController.prototype.addSiblingCanDo = function () {
         !this.model().isPristine();
 };
 
-VertexController.prototype.addSibling = function () {
-    let parent = this.model().getParentFork();
-    return parent.controller().addChild(
-        this.model().getIndexInTree() + 1,
-        this.model().isToTheLeft()
-    );
-};
-
 VertexController.prototype.removeCanDo = function () {
     return this.isOwned();
 };
