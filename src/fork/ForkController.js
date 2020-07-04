@@ -1,6 +1,7 @@
 import GraphElementController from '@/graph-element/GraphElementController'
 import LoadingFlow from '@/LoadingFlow'
 import Vue from "vue";
+import GraphElementService from '@/graph-element/GraphElementService'
 
 export default {
     ForkController: ForkController
@@ -59,6 +60,16 @@ ForkController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
         this.model().expand(avoidCenter, true);
         if (!avoidShowingLoad) {
             await Vue.nextTick();
+            if (this.model().getNumberOfChild() === 0) {
+                /*
+                    in case where nb neighbors count is wrong and expand children button appears but clicking on it does nothing
+                */
+                console.log("wrong nb neighbors. Setting nb neighbors from this.model().buildNbNeighbors()")
+                this.model().setNbNeighbors(
+                    this.model().buildNbNeighbors()
+                );
+                GraphElementService.setNbNeighbors(this.model());
+            }
             //this.model().refreshChildren() for Store.dispatch("redraw") for when expanding a grand children
             this.model().refreshChildren(true);
             LoadingFlow.leave();
