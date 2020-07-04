@@ -138,7 +138,7 @@ EdgeDrawing.prototype.buildArc = function (radius, firstPositive, secondPositive
 
 EdgeDrawing.prototype.drawChildren = function () {
     let lines = "";
-    this.children.forEach((child) => {
+    this.children.some((child) => {
         let childPosition = this.getMiddleSidePosition(child);
         if (!childPosition) {
             return;
@@ -163,14 +163,12 @@ EdgeDrawing.prototype.drawChildren = function () {
             return lines;
         }
         if (!childPosition) {
-            // this.loaded = false;
-            // Vue.nextTick(() => {
-            //     console.warn('drawChildren null child position html redraw');
-            //     // this.redraw();
-            //     this.loaded = false;
-            //     // this.$destroy();
-            // });
-            return;
+            /*
+                exceptionaly force refresh children because obviously they are not in the dom
+            */
+            console.log('drawChildren null child position html redraw forcing component refresh');
+            this.bubble.refreshChildren(false, true);
+            return true;
         }
         if (this.bubble.isEdge() && !child.isMetaRelation()) {
             let position = this.getMiddleSidePosition(this.bubble);
@@ -220,6 +218,7 @@ EdgeDrawing.prototype.drawChildren = function () {
                 }
             }
         }
+        return false;
     });
     return lines;
 };

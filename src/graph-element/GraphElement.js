@@ -278,7 +278,13 @@ GraphElement.GraphElement.prototype.getRelevantTags = function () {
     });
 };
 
-GraphElement.GraphElement.prototype.refreshChildren = function (avoidRedraw) {
+GraphElement.GraphElement.prototype.refreshChildren = function (avoidRedraw, refreshComponent) {
+    if (refreshComponent) {
+        this.childrenKey = IdUri.uuid();
+        if (this.component) {
+            this.component.refreshChildren();
+        }
+    }
     return new Promise((resolve) => {
         if (avoidRedraw === true) {
             resolve();
@@ -292,21 +298,6 @@ GraphElement.GraphElement.prototype.refreshChildren = function (avoidRedraw) {
             }, 250);
         });
     });
-    return;
-    this.childrenKey = IdUri.uuid();
-    if (this.component) {
-        this.component.refreshChildren();
-        if (avoidRedraw === true) {
-            return;
-        }
-        Vue.nextTick(() => {
-            Store.dispatch("redraw");
-            setTimeout(() => {
-                Store.dispatch("redraw");
-            }, 250);
-        });
-        // console.log("component refreshed")
-    }
 };
 
 GraphElement.GraphElement.prototype.hasChildren = function () {
