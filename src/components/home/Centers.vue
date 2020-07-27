@@ -437,7 +437,7 @@
                     graphElementType = "edge";
                     nbChild = undefined;
                 }
-                await this.$router.push({
+                this.$router.push({
                     name: "Center",
                     params: {
                         username: center.uri().getOwner(),
@@ -446,8 +446,9 @@
                         nbChild: nbChild,
                         colors: center.getColors()
                     }
+                }).then(() => {
+                    LoadingFlow.leave();
                 });
-                LoadingFlow.leave();
             },
             copyUrl: function (center) {
                 this.$copyText(

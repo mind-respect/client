@@ -63,13 +63,13 @@
                         }
                     },
                     {
-                        icon: "arrow_downward",
-                        action: "addSibling"
-                    },
-                    {
                         icon: "arrow_upward",
                         action: "addSiblingUp",
                         ctrlShortcut: "enter"
+                    },
+                    {
+                        icon: "arrow_downward",
+                        action: "addSibling"
                     },
                     {
                         icon: "link",
