@@ -931,6 +931,14 @@ GraphElementController.prototype.setShareLevelDo = async function (shareLevel) {
     nbNeighborsRefresherOnSetShareLevel.execute();
 };
 
+GraphElementController.prototype.goToLinkCanDo = function () {
+    return this.isSingle() && this.model().linkMenuHref !== null;
+};
+
+GraphElementController.prototype.goToLink = function () {
+    window.open(this.model().linkMenuHref, '_blank');
+};
+
 GraphElementController.prototype._areAllElementsPublicWithLink = function () {
     return this._areAllElementsInShareLevels([
         ShareLevel.PUBLIC_WITH_LINK

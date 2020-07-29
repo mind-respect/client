@@ -9,7 +9,7 @@
         <span v-for="button in buttons" :key="button.action" :class="{
             'h-center': isInSideMenu
         }">
-            <Button :button="button" :controller="controller" :isInSideMenu="isInSideMenu" v-show="!button.isCustom"
+            <Button :button="button" :controller="controller" :isInSideMenu="isInSideMenu" :hightlight="button.hightlight" :large="button.large" v-show="!button.isCustom"
                     @performed="forceRefresh"></Button>
             <Button :button="button" :isInSideMenu="isInSideMenu" :controller="controller"
                     v-show="button.isCustom && button.action === 'copy'" class="">
@@ -44,6 +44,12 @@
                 menuKey: null,
                 single: null,
                 buttons: [
+                  {
+                    icon: "link",
+                    action: "goToLink",
+                    hightlight: true,
+                    large:false
+                  },
                     {
                         action: "addChild",
                         icon: function () {

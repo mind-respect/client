@@ -299,6 +299,7 @@
         },
         data: function () {
             I18n.i18next.addResources("en", "button", {
+                goToLink: "Go to the clicked link",
                 select: "Hand selector",
                 group: "Merge bubbles into one",
                 addChild: "Add a bubble next to it (tab)",
@@ -352,6 +353,7 @@
                 openWikipediaLink: "Open Wikipedia link"
             });
             I18n.i18next.addResources("fr", "button", {
+                goToLink: "Aller au lien cliqué",
                 select: "Sélection à la main",
                 group: "Créer une bulle à partir de celles sélectionnés",
                 addChild: "Ajouter une bulle à coté (tab)",
