@@ -15,24 +15,24 @@
                 </v-icon>
             </v-card-title>
             <v-card-text v-if="!isChangeShareLevelFlow">
-                <v-expansion-panels class="pt-4" v-model="selectedPanel" multiple hover>
-                    <v-expansion-panel>
-                        <v-expansion-panel-header>{{$t('selectedBubble')}}</v-expansion-panel-header>
-                        <v-expansion-panel-content>
-                            <v-list>
-                                <v-list-item>
-                                    <SearchResultContent :item="selectedBubbleAsSearchResult"></SearchResultContent>
-                                </v-list-item>
-                            </v-list>
-                        </v-expansion-panel-content>
-                    </v-expansion-panel>
-                </v-expansion-panels>
+              <v-list>
+                <v-subheader class="pl-0">
+                  {{$t('selectedBubble')}}
+                </v-subheader>
+                <v-list-item class="pl-0">
+                  <SearchResultContent :item="selectedBubbleAsSearchResult" class="pt-0 mt-0"></SearchResultContent>
+                </v-list-item>
+              </v-list>
                 <v-list>
-                    <v-list-item class="pl-0 pr-0">
+                  <v-subheader class="pl-0">
+                    {{$t('addTag:tagNoun')}}
+                  </v-subheader>
+                    <v-list-item class="pl-0 pr-0 pt-0 mt-0">
                         <SearchResultContent :item="selectedSearchResult"
-                                             v-if="hasSelectedTag"></SearchResultContent>
+                                             v-if="hasSelectedTag" class="pl-0 pr-0 pt-0 mt-0"></SearchResultContent>
                         <v-list-item-content v-show="!bubble || (!bubble.isMeta()) && !hasSelectedTag">
                             <v-autocomplete
+                                class="pl-0 pr-0 pt-0 mt-0"
                                     ref="tagSearch"
                                     v-model="selectedSearchResult"
                                     :items="items"
@@ -165,7 +165,8 @@
         },
         data: function () {
             I18n.i18next.addResources("en", "addTag", {
-                placeholder: "Tag",
+                tagNoun: "Tag",
+                placeholder: "Search a tag",
                 shareLevel: "Share level",
                 tagAdded: "Tag added",
                 changeTagShareLevel: "Change the tag sharing level?",
@@ -173,7 +174,8 @@
                 tag: "Tag"
             });
             I18n.i18next.addResources("fr", "addTag", {
-                placeholder: "Étiquette",
+                tagNoun: "Étiquette",
+                placeholder: "Chercher un étiquette",
                 shareLevel: "Niveau de partage",
                 tagAdded: "Étiquette ajouté",
                 changeTagShareLevel: "Modifier le niveau de partage de l'étiquette ?",
@@ -196,7 +198,7 @@
                 confirmChangeTagShareLevelLoading: false,
                 searchTimeout: null,
                 selectedBubbleAsSearchResult: null,
-                selectedPanel: [0],
+                selectedPanel: [],
                 hasSelectedTag: false
             }
         },
