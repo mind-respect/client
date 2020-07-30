@@ -330,24 +330,32 @@ api.SubGraph.prototype.hasUri = function (uri) {
         });
 };
 
-api.SubGraph.prototype.getHavingUri = function (uri) {
+api.SubGraph.prototype.getArrayHavingUri = function (uri) {
     if (this.vertices[uri] !== undefined) {
-        return this.vertices[uri][0];
+        return this.vertices[uri];
     }
     if (this.edges[uri] !== undefined) {
-        return this.edges[uri][0];
+        return this.edges[uri];
     }
     if (this.groupRelations[uri] !== undefined) {
-        return this.groupRelations[uri];
+        return [this.groupRelations[uri]]
     }
     if (this.otherGraphElements[uri] !== undefined) {
-        return this.otherGraphElements[uri][0];
+        return this.otherGraphElements[uri];
     }
     let tagVertex = this.tagVertices.filter((tagVertex) => {
         return tagVertex.getUri() === uri;
     });
     if (tagVertex.length) {
-        return tagVertex[0];
+        return tagVertex;
+    }
+    return [];
+};
+
+api.SubGraph.prototype.getHavingUri = function (uri) {
+    let array = this.getArrayHavingUri(uri);
+    if (array.length > 0) {
+        return array[0];
     }
 };
 

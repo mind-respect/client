@@ -137,11 +137,15 @@ GraphElementController.prototype.visitOtherInstancesCanDo = function () {
     return false;
 };
 
+GraphElementController.prototype.tagTogetherCanDo = function () {
+    return this.getModelArray().length === 2 && this.isOwned();
+};
+
 GraphElementController.prototype.addTagCanDo = function () {
     return this.isSingle() && this.isOwned();
 };
 
-GraphElementController.prototype.addTag = function () {
+GraphElementController.prototype.tagTogether = GraphElementController.prototype.addTag = function () {
     Store.dispatch("setIsAddTagFlow", true);
     return Promise.resolve();
 };
@@ -678,17 +682,24 @@ GraphElementController.prototype.addIdentification = function (tag, force) {
             this.model().addIdentifications(
                 identifications
             );
-            this.model().refreshImages();
-            this.model().refreshButtons();
-            if (this.model().areTagsShown) {
-                identifications.forEach((tag) => {
-                    this._addTagAsChild(tag);
-                });
-            }
+            CurrentSubGraph.get().getArrayHavingUri(
+                this.model().getUri()
+            ).forEach((graphElement) => {
+                graphElement.addIdentifications(
+                    identifications
+                );
+                graphElement.refreshImages();
+                graphElement.refreshButtons();
+                if (graphElement.areTagsShown) {
+                    identifications.forEach((tag) => {
+                        graphElement.controller()._addTagAsChild(tag);
+                    });
+                }
+            });
             return identifications;
-        })
-    }).catch(() => {
-        this.model().removeTag(tag);
+        }).catch(() => {
+            this.model().removeTag(tag);
+        });
     });
 };
 
