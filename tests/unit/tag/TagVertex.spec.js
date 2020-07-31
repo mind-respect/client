@@ -12,7 +12,7 @@ describe("TagVertex", () => {
             "b3"
         );
         await scenario.expandBubble3(b3);
-        await b3.controller().showTags();
+        await b3.controller().showTags(true, false, true);
         let tagRelation = b3.getClosestChildrenOfType(GraphElementType.MetaRelation)[0];
         expect(
             tagRelation.getGraphElementType()

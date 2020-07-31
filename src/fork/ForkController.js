@@ -2,6 +2,7 @@ import GraphElementController from '@/graph-element/GraphElementController'
 import LoadingFlow from '@/LoadingFlow'
 import Vue from "vue";
 import GraphElementService from '@/graph-element/GraphElementService'
+import GraphElementType from '@/graph-element/GraphElementType'
 
 export default {
     ForkController: ForkController
@@ -42,13 +43,19 @@ ForkController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
                     return true;
                 }
                 let expandChildCalls = [];
-                this.model().getClosestChildVertices().forEach((childVertex) => {
-                    if (childVertex.getNumberOfChild() === 1) {
+                if (this.model().getNumberOfChild() === 1) {
+                    expandChildCalls.push(
+                        this.model().getClosestChildForks()[0].controller().expand(true, true, true)
+                    );
+                } else {
+                    this.model().getClosestChildForks().filter((childFork) => {
+                        return childFork.getNumberOfChild() === 1;
+                    }).forEach((childFork) => {
                         expandChildCalls.push(
-                            childVertex.controller().expand(true, true, true)
+                            childFork.controller().expand(true, true, true)
                         );
-                    }
-                });
+                    });
+                }
                 return Promise.all(expandChildCalls);
             });
         }

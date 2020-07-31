@@ -154,7 +154,7 @@ GraphElementController.prototype.showTagsCanDo = function () {
     return (!this.model().areTagsShown || this.model().isCollapsed) && this.isSingle() && this.isOwned() && this.model().getTagsAndSelfIfRelevant().length > 0;
 };
 
-GraphElementController.prototype.showTags = function (avoidRedraw, avoidExpand) {
+GraphElementController.prototype.showTags = function (avoidRedraw, avoidExpand, avoidExpandTag) {
     if (!this.showTagsCanDo()) {
         return Promise.resolve();
     }
@@ -164,13 +164,19 @@ GraphElementController.prototype.showTags = function (avoidRedraw, avoidExpand) 
     if (this.model().areTagsShown && this.model().isCollapsed) {
         return this.expand(true, true);
     }
-    return this.expand(true, true).then(() => {
+    return this.expand(true, true).then(async () => {
         this.model().areTagsShown = true;
-        this.model().getTagsAndSelfIfRelevant().sort((a, b) => {
+        let tags = this.model().getTagsAndSelfIfRelevant();
+        tags.sort((a, b) => {
             return b.getCreationDate() - a.getCreationDate();
         }).forEach((tag) => {
             this._addTagAsChild(tag);
         });
+        if (!avoidExpandTag && tags.length === 1) {
+            await this.model().getClosestChildrenOfType(
+                GraphElementType.Meta
+            )[0].controller().expand(true, true);
+        }
         if (!avoidRedraw) {
             Store.dispatch("redraw");
         }
@@ -267,12 +273,12 @@ GraphElementController.prototype.expand = function (avoidCenter, avoidExpandChil
         this.model().expand(avoidCenter, true);
         const expandChildCalls = [];
         if (!avoidExpandChild) {
-            this.model().visitClosestChildVertices(function (childVertex) {
-                if (childVertex.getNumberOfChild() === 1) {
-                    expandChildCalls.push(
-                        childVertex.controller().expand(true, true, true)
-                    );
-                }
+            this.model().getClosestChildForks().filter((childFork) => {
+                return childFork.getNumberOfChild() === 1;
+            }).forEach((childFork) => {
+                expandChildCalls.push(
+                    childFork.controller().expand(true, true, true)
+                );
             });
         }
         return Promise.all(expandChildCalls);

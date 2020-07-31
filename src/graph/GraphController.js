@@ -56,7 +56,7 @@ api.hideAllTags = function () {
 
 api.showAllTags = function () {
     CurrentSubGraph.get().getGraphElements().forEach((graphElement) => {
-        graphElement.controller().showTags(true, true);
+        graphElement.controller().showTags(true, true, true);
     });
     Store.dispatch("redraw");
 };

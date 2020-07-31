@@ -420,7 +420,7 @@ GraphElement.GraphElement.prototype.addIdentification = function (tag) {
     if (this.areTagsShown) {
         this.controller()._addTagAsChild(tag);
     } else if (Store.state.isShowTags) {
-        this.controller().showTags(true, true);
+        this.controller().showTags(true, true, true);
     }
 };
 

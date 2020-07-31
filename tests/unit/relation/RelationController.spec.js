@@ -113,7 +113,7 @@ describe("RelationController", () => {
             let tag = TestUtil.dummyTag();
             tag.setLabel("some tag");
             await r1.controller().addIdentification(tag);
-            await r1.controller().showTags();
+            await r1.controller().showTags(true, false, true);
             await r1.controller().addChild();
             let groupRelation = TestUtil.getChildWithLabel(
                 center,

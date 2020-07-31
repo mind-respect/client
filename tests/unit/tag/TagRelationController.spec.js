@@ -25,7 +25,7 @@ describe("TagRelationController", () => {
         it("can when parent is a normal vertex", async () => {
             let scenario = await new SingleAndTaggedToEventScenario();
             let single = scenario.getCenterInTree();
-            await single.controller().showTags();
+            await single.controller().showTags(true, false, true);
             expect(
                 single.getNumberOfChild()
             ).toBe(1);

@@ -22,7 +22,7 @@ ThreeScenarioB2Center.prototype.expandBubble1 = function (bubble1) {
             "three.getGraph"
         )
     );
-    return bubble1.controller().expand();
+    return bubble1.controller().expand(true, true);
 };
 
 export default ThreeScenarioB2Center

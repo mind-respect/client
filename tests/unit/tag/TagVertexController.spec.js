@@ -6,7 +6,7 @@ describe("TagVertexControllerSpec", () => {
         it("has right parent bubble for child meta relation", async () => {
             let scenario = await new SingleAndTaggedToEventScenario();
             let single = scenario.getCenterInTree();
-            await single.controller().showTags();
+            await single.controller().showTags(true, false, true);
             let meta = single.getNextBubble().getNextBubble();
             await scenario.expandEventTag(meta);
             let metaRelation = meta.getNextBubble();
@@ -17,7 +17,7 @@ describe("TagVertexControllerSpec", () => {
         it("has right parent bubble for meta relation", async () => {
             let scenario = await new SingleAndTaggedToEventScenario();
             let single = scenario.getCenterInTree();
-            await single.controller().showTags();
+            await single.controller().showTags(true, false, true);
             let event = single.getNextBubble().getNextBubble();
             expect(
                 event.getParentBubble().getParentBubble().getLabel()

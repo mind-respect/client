@@ -38,7 +38,7 @@ describe('Vertex', () => {
             let newTriple = await center.controller().addChild();
             let newVertex = newTriple.getDestinationVertex();
             newVertex.addIdentification(TestUtil.dummyTag());
-            await newVertex.controller().showTags();
+            await newVertex.controller().showTags(true, false, true);
             expect(
                 newVertex.getNextChildren().length
             ).toBe(1);
@@ -57,7 +57,7 @@ describe('Vertex', () => {
         let hasVisited = false;
         let scenario = await new ThreeScenario();
         let bubble1 = scenario.getCenterBubbleInTree();
-        bubble1.visitClosestChildVertices(function (vertex) {
+        bubble1.getClosestChildVertices().forEach(function (vertex) {
             expect(
                 "b2" === vertex.text() ||
                 "b3" === vertex.text()

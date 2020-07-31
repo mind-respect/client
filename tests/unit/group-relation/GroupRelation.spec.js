@@ -195,7 +195,7 @@ describe("GroupRelation", function () {
             expect(
                 groupRelation.getNextChildren().length
             ).toBe(3);
-            await groupRelation.controller().showTags();
+            await groupRelation.controller().showTags(true, false, true);
             expect(
                 groupRelation.getNextChildren().length
             ).toBe(4);

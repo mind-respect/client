@@ -157,7 +157,7 @@ describe("Relation", () => {
             "some relation"
         );
         await scenario.expandGroupRelation(groupRelation);
-        groupRelation.visitClosestChildVertices(function (vertex) {
+        groupRelation.getClosestChildVertices().forEach(function (vertex) {
             vertex.remove();
         });
         expect(

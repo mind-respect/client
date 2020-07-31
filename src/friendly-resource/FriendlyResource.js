@@ -16,7 +16,6 @@ import UiUtils from '@/UiUtils'
 import Color from '@/Color'
 import colors from 'vuetify/es5/util/colors'
 import KeyboardActions from '@/KeyboardActions'
-import GraphElement from "../graph-element/GraphElement";
 
 const MoveRelation = {
     "Parent": "parent",
@@ -195,13 +194,9 @@ FriendlyResource.FriendlyResource.prototype.isSameBubble = function (bubble) {
 };
 
 FriendlyResource.FriendlyResource.prototype.isBubbleAChild = function (bubble) {
-    let isAChild = false;
-    this.visitDescendants(function (child) {
-        if (child.getId() === bubble.getId()) {
-            isAChild = true;
-        }
+    return this.getDescendants().some((child) => {
+        return child.getId() === bubble.getId();
     });
-    return isAChild;
 };
 
 FriendlyResource.FriendlyResource.prototype.getHtml = function () {
@@ -770,7 +765,7 @@ FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isFi
     this.isExpanded = true;
     this.isCollapsed = false;
     if (Store.state.isShowTags) {
-        this.controller().showTags();
+        this.controller().showTags(false, false, true);
     }
     if (avoidCenter !== true) {
         Vue.nextTick(() => {
@@ -846,15 +841,6 @@ FriendlyResource.FriendlyResource.prototype.getAncestors = function () {
     ].concat(parentBubble.getAncestors());
 };
 
-FriendlyResource.FriendlyResource.prototype.visitDescendants = function (visitor) {
-    this.visitAllImmediateChild(function (child) {
-        visitor(child);
-        return child.visitDescendants(
-            visitor
-        );
-    });
-};
-
 FriendlyResource.FriendlyResource.prototype.isLeaf = function () {
     return this.getNextChildren().length === 0;
 };
@@ -900,27 +886,6 @@ FriendlyResource.FriendlyResource.prototype.getClosestChildVertices = function (
     );
 };
 
-FriendlyResource.FriendlyResource.prototype.visitClosestChildVertices = function (visitor) {
-    this.visitClosestChildOfType(
-        GraphElementType.Vertex,
-        visitor
-    );
-};
-FriendlyResource.FriendlyResource.prototype.visitClosestChildRelations = function (visitor) {
-    this.visitClosestChildOfType(
-        GraphElementType.Relation,
-        visitor
-    );
-};
-
-FriendlyResource.FriendlyResource.prototype.getClosestChildRelations = function (getEventIfCollapsed) {
-    return this.getClosestChildrenOfType(
-        GraphElementType.Relation,
-        getEventIfCollapsed
-    );
-};
-
-
 FriendlyResource.FriendlyResource.prototype.getClosestChildrenOfType = function (type, getEventIfCollapsed) {
     return this.getClosestChildrenInTypes(
         [type],
@@ -928,10 +893,9 @@ FriendlyResource.FriendlyResource.prototype.getClosestChildrenOfType = function 
     );
 };
 
-FriendlyResource.FriendlyResource.prototype.visitClosestChildOfType = function (type, visitor) {
-    return this.visitClosestChildInTypes(
-        [type],
-        visitor
+FriendlyResource.FriendlyResource.prototype.getClosestChildForks = function () {
+    return this.getClosestChildrenInTypes(
+        GraphElementType.Fork
     );
 };
 
@@ -953,27 +917,6 @@ FriendlyResource.FriendlyResource.prototype.getClosestChildrenInTypes = function
         }
         return children;
     }, []);
-};
-
-FriendlyResource.FriendlyResource.prototype.visitClosestChildInTypes = function (types, visitor) {
-    this.visitAllImmediateChild(function (child) {
-        if (child.isInTypes(types)) {
-            return visitor(child);
-        } else {
-            return child.visitClosestChildInTypes(
-                types,
-                visitor
-            );
-        }
-    });
-};
-
-FriendlyResource.FriendlyResource.prototype.visitAllImmediateChild = function (visitor) {
-    this.getNextChildren().filter((child) => {
-        return !child.loading;
-    }).forEach(function (child) {
-        visitor(child);
-    });
 };
 
 FriendlyResource.FriendlyResource.prototype.getDeepestDescendant = function () {

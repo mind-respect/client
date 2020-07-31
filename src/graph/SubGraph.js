@@ -103,7 +103,7 @@ api.SubGraph.prototype.add = function (graphElement, preventAddOthers) {
         this.addOtherGraphElement(graphElement);
     }
     if (Store.state.isShowTags) {
-        graphElement.controller().showTags(true, true);
+        graphElement.controller().showTags(true, true, true);
     }
 };
 api.SubGraph.prototype._isEdgeAlreadyAdded = function (edge) {

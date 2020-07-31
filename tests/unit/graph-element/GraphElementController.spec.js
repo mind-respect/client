@@ -92,7 +92,7 @@ describe('GraphElementController', () => {
         it("can remove a vertex under a meta that is not center", async () => {
             let scenario = await new SingleAndTaggedToEventScenario();
             let single = scenario.getCenterInTree();
-            await single.controller().showTags();
+            await single.controller().showTags(true, false, true);
             let event = single.getNextBubble().getNextBubble();
             expect(
                 event.getLabel()
@@ -779,7 +779,7 @@ describe('GraphElementController', () => {
             expect(
                 center.getNumberOfChild()
             ).toBe(2);
-            await center.controller().showTags();
+            await center.controller().showTags(true, false, true);
             expect(
                 center.getNumberOfChild()
             ).toBe(3);
@@ -794,7 +794,7 @@ describe('GraphElementController', () => {
         it("has the right parent bubble for the meta relation", async () => {
             let scenario = await new SingleAndTaggedToEventScenario();
             let single = scenario.getCenterInTree();
-            await single.controller().showTags();
+            await single.controller().showTags(true, false, true);
             let metaRelation = single.getNextBubble();
             expect(
                 metaRelation.getGraphElementType()
@@ -806,7 +806,7 @@ describe('GraphElementController', () => {
         it("has the right parent bubble for meta", async () => {
             let scenario = await new SingleAndTaggedToEventScenario();
             let single = scenario.getCenterInTree();
-            await single.controller().showTags();
+            await single.controller().showTags(true, false, true);
             let event = single.getNextBubble().getNextBubble();
             expect(
                 event.getParentBubble().getParentBubble().getLabel()

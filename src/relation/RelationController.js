@@ -153,7 +153,7 @@ RelationController.prototype._convertToGroupRelation = function () {
 
 RelationController.prototype._postConvertToGroupRelation = async function (newGroupRelation, areTagsShown) {
     if (areTagsShown) {
-        newGroupRelation.controller().showTags();
+        newGroupRelation.controller().showTags(false, false, true);
     }
 }
 
