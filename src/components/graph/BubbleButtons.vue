@@ -52,6 +52,14 @@ export default {
           large: false
         },
         {
+          action: "enterDuplicateMenu",
+          color: "secondary",
+          class:"font-weight-bold",
+          text: function (bubble) {
+            return "× " + (bubble.getNbDuplicates() + 1);
+          }
+        },
+        {
           action: "addChild",
           icon: function () {
             let single = Selection.getSingle();

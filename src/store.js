@@ -56,7 +56,8 @@ const Store = new Vuex.Store({
         xsrfToken: undefined,
         addRelationIncludeAllPatterns: true,
         isFirstTime: false,
-        isServerNotResponding: false
+        isServerNotResponding: false,
+        isDuplicateFlow: false
     },
     mutations: {
         setUser: function (state, user) {
@@ -168,6 +169,9 @@ const Store = new Vuex.Store({
         setIsColorFlow: function (state, isColorFlow) {
             state.isColorFlow = isColorFlow;
         },
+        setIsDuplicateFlow: function (state, isDuplicateFlow) {
+            state.isDuplicateFlow = isDuplicateFlow;
+        },
         setXsrfToken: function (state, xsrfToken) {
             state.xsrfToken = xsrfToken;
         },
@@ -271,6 +275,9 @@ const Store = new Vuex.Store({
         },
         setIsColorFlow: function (action, isColorFlow) {
             action.commit('setIsColorFlow', isColorFlow);
+        },
+        setIsDuplicateFlow: function (action, isDuplicateFlow) {
+            action.commit('setIsDuplicateFlow', isDuplicateFlow);
         },
         setXsrfToken: function (action, xsrfToken) {
             action.commit('setXsrfToken', xsrfToken);

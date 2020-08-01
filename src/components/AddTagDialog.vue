@@ -23,12 +23,14 @@
             <SearchResultContent :item="selectedBubbleAsSearchResult" class="pt-0 mt-0"></SearchResultContent>
           </v-list-item>
         </v-list>
-        <v-btn text class="pl-0" v-show="canSwap" @click="swap">
-          <v-icon class="mr-2">
-            swap_vert
-          </v-icon>
-          {{ $t('addTag:swap') }}
-        </v-btn>
+        <div class="text-center">
+          <v-btn text class="pl-0" v-show="canSwap" @click="swap">
+            <v-icon class="mr-2">
+              swap_vert
+            </v-icon>
+            {{ $t('addTag:swap') }}
+          </v-btn>
+        </div>
         <v-list>
           <v-subheader class="pl-0">
             {{ $t('addTag:tagNoun') }}
@@ -379,7 +381,6 @@ export default {
       menu.style.top = (autocompleteRect.y + autocompleteRect.height) + "px";
     },
     identify: function (identifier) {
-      debugger;
       return this.selectedBubbleAsSearchResult.original.getGraphElement().controller().addIdentification(
           identifier
       );

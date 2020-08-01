@@ -556,4 +556,8 @@ GraphElement.GraphElement.prototype.isSkeleton = function () {
     return false;
 };
 
+GraphElement.GraphElement.prototype.getNbDuplicates = function () {
+    return 0;
+}
+
 export default GraphElement;

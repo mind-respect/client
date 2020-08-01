@@ -364,7 +364,7 @@ api.SubGraph.prototype.getContainerForGraphElementType = function (graphElementT
         case GraphElementType.Vertex:
             return this.vertices;
         case GraphElementType.Edge:
-            this.edges;
+            return this.edges;
         case GraphElementType.GroupRelation:
             return this.groupRelations;
         case GraphElementType.Meta:
@@ -372,8 +372,17 @@ api.SubGraph.prototype.getContainerForGraphElementType = function (graphElementT
     }
 };
 
-api.SubGraph.prototype.getHavingId = function (id) {
-
+api.SubGraph.prototype.getHavingUriAndId = function (uri, id, graphElementType) {
+    switch (graphElementType) {
+        case GraphElementType.Vertex:
+            return this.getVertexWithUriAndId(uri, id);
+        case GraphElementType.Edge:
+            return this.getEdgeWithUriAndId(uri, id);
+        case GraphElementType.GroupRelation:
+            return this.groupRelations[uri];
+        case GraphElementType.Meta:
+            return this.getTagBubbleWithUiId(id)
+    }
 };
 
 api.SubGraph.prototype.getVertexWithUriAndId = function (uri, id) {

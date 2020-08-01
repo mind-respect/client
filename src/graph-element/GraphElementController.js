@@ -956,6 +956,14 @@ GraphElementController.prototype.goToLink = function () {
     window.open(this.model().linkMenuHref, '_blank');
 };
 
+GraphElementController.prototype.enterDuplicateMenuCanDo = function () {
+    return this.isSingle() && this.model().getNbDuplicates() > 0;
+};
+
+GraphElementController.prototype.enterDuplicateMenu = function () {
+    Store.dispatch("setIsDuplicateFlow", true);
+};
+
 GraphElementController.prototype._areAllElementsPublicWithLink = function () {
     return this._areAllElementsInShareLevels([
         ShareLevel.PUBLIC_WITH_LINK

@@ -299,6 +299,7 @@ export default {
   },
   data: function () {
     I18n.i18next.addResources("en", "button", {
+      enterDuplicateMenu : "See duplicates",
       goToLink: "Go to the clicked link",
       select: "Hand selector",
       group: "Merge bubbles into one",
@@ -354,6 +355,7 @@ export default {
       openWikipediaLink: "Open Wikipedia link"
     });
     I18n.i18next.addResources("fr", "button", {
+      enterDuplicateMenu : "Voir les duplicats",
       goToLink: "Aller au lien cliqué",
       select: "Sélection à la main",
       group: "Créer une bulle à partir de celles sélectionnés",
