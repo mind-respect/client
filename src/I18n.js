@@ -120,23 +120,16 @@ export default {
         i18next.addResources("fr", "groupRelation", {
             "default": "relie"
         });
-        i18next.addResources("en", "childNotice", {
-            "tooltip": "Expand (ctrl+E)",
-            "tooltipForMac": "Expand (⌘+E)"
-        });
         i18next.addResources("fr", "childNotice", {
-            "tooltip": "Expandre (ctrl+E)",
-            "tooltipForMac": "Expandre (⌘+E)"
+            tooltip: "Expandre (ctrl+E)",
+            tooltipForMac: "Expandre (⌘+E)",
+            tooltipCannotExpand: "Duplicat parent déjà ouvert"
         });
 
         i18next.addResources("en", "childNotice", {
             "tooltip": "Expand (ctrl+E)",
-            "tooltipForMac": "Expand (⌘+E)"
-        });
-
-        i18next.addResources("fr", "childNotice", {
-            "tooltip": "Expandre (ctrl+E)",
-            "tooltipForMac": "Expandre (⌘+E)"
+            "tooltipForMac": "Expand (⌘+E)",
+            tooltipCannotExpand: "Duplicate parent already open"
         });
 
         return new VueI18Next(i18next);

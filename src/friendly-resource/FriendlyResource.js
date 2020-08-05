@@ -784,17 +784,27 @@ FriendlyResource.FriendlyResource.prototype.collapse = function (preventScroll, 
     this.isExpanded = false;
     this.isCollapsed = true;
     if (!preventApplyToDescendants) {
-        this.getDescendantsEvenIfCollapsed().forEach((descendant) => {
-            if (descendant.isForkType()) {
-                descendant.collapse(true, true);
-            }
-        });
+        this.collapseDescendants();
     }
     if (!preventScroll) {
         Scroll.centerBubbleForTreeIfApplicable(this);
         this.refreshChildren();
     }
 };
+
+FriendlyResource.FriendlyResource.prototype.collapseDescendants = function () {
+    let subGraph = CurrentSubGraph.get();
+    this.getDescendantsEvenIfCollapsed().forEach((descendant) => {
+        if (descendant.isForkType()) {
+            descendant.collapse(true, true);
+        }
+        subGraph.remove(descendant);
+    });
+    this.getDescendantsEvenIfCollapsed().forEach((descendant) => {
+        descendant.refreshButtons()
+    });
+    this.refreshButtons();
+}
 
 FriendlyResource.FriendlyResource.prototype.canExpandDescendants = function () {
     return this.getDescendants().some((descendant) => {
@@ -833,7 +843,7 @@ FriendlyResource.FriendlyResource.prototype.getDescendants = function (toTheLeft
 
 FriendlyResource.FriendlyResource.prototype.getAncestors = function () {
     let parentBubble = this.getParentBubble();
-    if (parentBubble.getUri() === this.getUri()) {
+    if (parentBubble.getId() === this.getId()) {
         return [];
     }
     return [

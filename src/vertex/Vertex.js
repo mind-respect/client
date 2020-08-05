@@ -189,11 +189,11 @@ Vertex.prototype.undoPattern = function () {
 
 Vertex.prototype.collapse = function (preventScroll, preventApplyToDescendants) {
     if (this.isCenter) {
-        this.getDescendantsEvenIfCollapsed().forEach((descendant) => {
-            if (descendant.isForkType()) {
-                descendant.collapse(true, true);
-            }
-        });
+        FriendlyResource.FriendlyResource.prototype.collapseDescendants.call(
+            this,
+            preventScroll,
+            preventApplyToDescendants
+        );
         this.refreshChildren();
         return;
     }

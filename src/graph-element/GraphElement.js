@@ -212,7 +212,7 @@ GraphElement.GraphElement.prototype.getSurround = function (evenIfCollapsed) {
 
 GraphElement.GraphElement.prototype.isAncestor = function (graphElement) {
     return this.getAncestors().some((ancestor) => {
-        return graphElement.getUri() === ancestor.getUri()
+        return graphElement.getId() === ancestor.getId();
     });
 };
 

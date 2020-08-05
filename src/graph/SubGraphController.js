@@ -58,7 +58,9 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             serverGraph,
             centerUri
         );
-        let centerFromServer = subGraph.getHavingUri(centerUri);
+        let centerFromServer = subGraph.getHavingUri(
+            centerUri
+        );
         let centerFork = isParentAlreadyOnMap ? this.model() : centerFromServer;
         let centerIsMissingSourceFork = false;
         if (isParentAlreadyOnMap) {
@@ -112,7 +114,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
         let centerParentFork = centerFork.getParentFork();
         let centerVertex = centerFork.isGroupRelation() ? centerFork.getParentVertex() : centerFork;
         subGraph.sortedGraphElements(centerFork).forEach((child) => {
-            if (child.getUri() === centerFork.getUri()) {
+            if (child.getUri() === centerFork.getParentBubble().getUri()) {
                 return;
             }
             if (child.isVertex() && (!centerFork.isGroupRelation() || centerFork.getSourceForkUri() !== child.getUri())) {
