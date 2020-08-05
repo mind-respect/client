@@ -395,7 +395,7 @@ GraphElementController.prototype._pasteBubble = function () {
 };
 
 GraphElementController.prototype.moveCompletelyUpCanDo = GraphElementController.prototype.moveCompletelyDownCanDo = GraphElementController.prototype.moveUpOneStepCanDo = GraphElementController.prototype.moveDownOneStepCanDo = function () {
-    return this.isSingle() && this.isOwned() && !this.model().getParentVertex().isMetaGroupVertex();
+    return this.isSingle() && this.isOwned() && !this.model().isCenter && !this.model().getParentVertex().isMetaGroupVertex();
 };
 
 GraphElementController.prototype.moveCompletelyUp = function () {
