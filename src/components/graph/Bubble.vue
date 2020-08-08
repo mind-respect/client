@@ -67,13 +67,15 @@
               <v-menu
                   v-model="showMenu"
                   :value="bubble.isSelected && $store.state.selected.length === 1"
-                  max-width="250"
-                  nudge-width="250"
+                  max-width="275"
+                  nudge-width="275"
                   auto
                   right
                   color="white"
                   offset-y
                   :disabled="isEditFlow"
+                  rounded="xl"
+                  :close-on-click="false"
               >
                 <template v-slot:activator="{ on }">
                   <div
@@ -94,7 +96,7 @@
                       @drop="labelDrop"
                       @contextmenu="rightClick"
                       :draggable="!isCenter && !isEditFlow"
-                      :style="contentBoxShadow()"
+                      :style="inContentStyle"
                   >
                     <InLabelButtons :bubble="bubble" :isLeft="isLeft"
                                     :isCenter="isCenter" :key="inLabelMenuKey"></InLabelButtons>
@@ -123,7 +125,7 @@
                     </v-badge>
                   </div>
                 </template>
-                <div :style="'background-color:' + backgroundColor" class="pt-2">
+                <div :style="menuBackgroundColor" class="pt-2 rounded-xl">
                   <BubbleButtons @refresh="refreshButtons"></BubbleButtons>
                 </div>
               </v-menu>
@@ -170,8 +172,8 @@
               <v-menu
                   v-model="showMenu"
                   :value="bubble.isSelected && $store.state.selected.length === 1"
-                  max-width="250"
-                  :nudge-width="250"
+                  max-width="275"
+                  :nudge-width="275"
                   auto
                   right
                   color="white"
@@ -179,10 +181,12 @@
                   nudge-bottom="15"
                   class="pa-0 ma-0"
                   :open-on-click="false"
+                  :close-on-click="false"
                   allow-overflow
+                  rounded="xl"
               >
                 <template v-slot:activator="{ on }">
-                  <div class="label-container" :style="contentBoxShadow()">
+                  <div class="label-container" :style="inContentStyle">
                     <v-chip :color="chipColor"
                             small
                             @dragover="labelDragEnter"
@@ -224,7 +228,7 @@
                     </v-chip>
                   </div>
                 </template>
-                <div :style="'background-color:' + backgroundColor">
+                <div :style="menuBackgroundColor" class="pt-2 rounded-xl">
                   <BubbleButtons @refresh="refreshButtons"></BubbleButtons>
                 </div>
               </v-menu>
@@ -294,7 +298,6 @@ export default {
       chipColor: null,
       isMetaRelated: null,
       dragOverArrow: null,
-      backgroundColor: Color.bubbleBackground,
       contentKey: IdUri.uuid(),
       childrenKey: IdUri.uuid(),
       inLabelMenuKey: IdUri.uuid(),
@@ -333,6 +336,23 @@ export default {
     this.loaded = true;
   },
   computed: {
+    inContentStyle: function () {
+      const css = this.bubble.getNextChildren().length === 0 ? this.boxShadow(false) : {};
+      css['--selected-bg-color'] = this.$store.state.backgroundColor;
+      return css;
+    },
+    menuBackgroundColor: function(){
+      return {
+        'background-color': this.$store.state.backgroundColor
+      }
+    },
+    containerBoxShadow: function () {
+      let nbChild = this.bubble.getNextChildren().length;
+      if (nbChild > 0) {
+        return this.boxShadow(nbChild > 1);
+      }
+      return {};
+    },
     expandTransitionName: function () {
       if ((this.bubble.isVertexType() || this.bubble.isGroupRelation()) && this.bubble.hasChildren()) {
         return this.bubble.isToTheLeft() ? "expand-child-left" : "expand-child"
@@ -368,14 +388,7 @@ export default {
         return false;
       }
       return this.bubble.isShrinked();
-    },
-    containerBoxShadow: function () {
-      let nbChild = this.bubble.getNextChildren().length;
-      if (nbChild > 0) {
-        return this.boxShadow(nbChild > 1);
-      }
-      return "";
-    },
+    }
   },
   methods: {
     beforeExpandAnimation: async function () {
@@ -411,25 +424,19 @@ export default {
       this.bubble.refreshChildren();
       return;
     },
-    contentBoxShadow: function () {
-      if (this.bubble.getNextChildren().length === 0) {
-        return this.boxShadow(false);
-      }
-      return "";
-    },
     boxShadow: function (isInset) {
       let backgroundColor = this.bubble.resolveBackgroundColor();
       if (this.bubble.isCenter) {
-        Color.refreshBackgroundColor(
-            backgroundColor
-        );
-        return;
+        return {};
       }
       if (backgroundColor === Color.DEFAULT_BACKGROUND_COLOR) {
-        return;
+        return {};
       }
       let xOffset = this.isLeft ? 1 : -1;
-      return "box-shadow:" + (isInset ? "inset " : "") + backgroundColor + " " + xOffset + "px 0px 8px 2px;border-radius:20px;"
+      return {
+        "box-shadow": (isInset ? "inset " : "") + backgroundColor + " " + xOffset + "px 0px 8px 2px",
+        "border-radius": "20px"
+      };
     },
     canExpand: function () {
       return this.bubble.canExpand();
@@ -545,7 +552,7 @@ export default {
             this.bubble
         );
       }
-      if (!isMetaKeyPressed && (isSingleSelected || isLinkClick)) {
+      if (!isMetaKeyPressed && (isSingleSelected || isLinkClick) && !this.showMenu) {
         this.bubble.linkMenuHref = isLinkClick && event.target.href || null;
         setTimeout(() => {
           if (!this.isEditFlow) {
@@ -795,7 +802,6 @@ export default {
 <style scoped lang="scss">
 $edgeSize: calc(1px + 0.1em);
 $metaColor: purple;
-$selectBubbleColor: transparent;
 
 .bubble {
   z-index: 5;
@@ -878,7 +884,7 @@ $selectBubbleColor: transparent;
     $selectedBoxShadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 
     .in-bubble-content {
-      background-color: $selectBubbleColor;
+      background-color: var(--selected-bg-color);
       box-shadow: $selectedBoxShadow;
     }
   }

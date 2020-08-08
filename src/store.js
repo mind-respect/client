@@ -53,6 +53,7 @@ const Store = new Vuex.Store({
         isAddTagFlow: false,
         isMergeFlow: false,
         isColorFlow: false,
+        backgroundColor: "",
         xsrfToken: undefined,
         addRelationIncludeAllPatterns: true,
         isFirstTime: false,
@@ -169,6 +170,9 @@ const Store = new Vuex.Store({
         setIsColorFlow: function (state, isColorFlow) {
             state.isColorFlow = isColorFlow;
         },
+        setBackgroundColor: function (state, backgroundColor) {
+            state.backgroundColor = backgroundColor;
+        },
         setIsDuplicateFlow: function (state, isDuplicateFlow) {
             state.isDuplicateFlow = isDuplicateFlow;
         },
@@ -275,6 +279,9 @@ const Store = new Vuex.Store({
         },
         setIsColorFlow: function (action, isColorFlow) {
             action.commit('setIsColorFlow', isColorFlow);
+        },
+        setBackgroundColor: function (action, backgroundColor) {
+            action.commit('setBackgroundColor', backgroundColor);
         },
         setIsDuplicateFlow: function (action, isDuplicateFlow) {
             action.commit('setIsDuplicateFlow', isDuplicateFlow);

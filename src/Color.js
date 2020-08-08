@@ -2,6 +2,7 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
+import Store from '@/store'
 
 const Color = {
     DEFAULT_BACKGROUND_COLOR: "#1E87AF",
@@ -14,10 +15,10 @@ const Color = {
     getContrast: function (hexcolor) {
         // https://stackoverflow.com/a/11868398
         hexcolor = hexcolor.replace("#", "");
-        let  r = parseInt(hexcolor.substr(0,2),16);
-        let g = parseInt(hexcolor.substr(2,2),16);
-        let b = parseInt(hexcolor.substr(4,2),16);
-        let yiq = ((r*299)+(g*587)+(b*114))/1000;
+        let r = parseInt(hexcolor.substr(0, 2), 16);
+        let g = parseInt(hexcolor.substr(2, 2), 16);
+        let b = parseInt(hexcolor.substr(4, 2), 16);
+        let yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
         return (yiq >= 128) ? 'black' : 'white';
     },
     refreshBackgroundColor: function (backgroundColor) {
@@ -29,6 +30,7 @@ const Color = {
         }
         let hsl = Color.hex2Hsl(backgroundColor);
         Color.bubbleBackground = 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + 96 + '%)';
+        Store.dispatch('setBackgroundColor', Color.bubbleBackground);
     },
     hex2Hsl: function (hex) {
         //https://stackoverflow.com/q/46432335
