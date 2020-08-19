@@ -67,8 +67,8 @@
               <v-menu
                   v-model="showMenu"
                   :value="bubble.isSelected && $store.state.selected.length === 1"
-                  max-width="275"
-                  nudge-width="275"
+                  max-width="335"
+                  nudge-width="335"
                   auto
                   right
                   color="white"
@@ -76,6 +76,8 @@
                   :disabled="isEditFlow"
                   rounded="xl"
                   :close-on-click="false"
+                  allow-overflow
+                  offset-overflow
               >
                 <template v-slot:activator="{ on }">
                   <div

@@ -14,14 +14,18 @@
                     @performed="forceRefresh"></Button>
             <Button :button="button" :isInSideMenu="isInSideMenu" :controller="controller"
                     v-show="button.isCustom && button.action === 'copy'" class="">
-                <v-btn slot="button"
-                       icon
-                       color="primary"
-                       text
-                       @click="copyLabel"
+                <v-btn
+                    slot="button"
+                    icon
+                    color="primary"
+                    text
+                    @click="copyLabel"
+                    class="ma-1"
+                    large
                 >
                     <v-icon>{{ button.icon }}</v-icon>
                 </v-btn>
+
                 <span slot="tooltipContent">
                     {{ $t('button:' + button.action) }}
                 </span>
@@ -156,8 +160,9 @@ export default {
         },
         {
           icon: "content_copy",
+          badgeIcon: "short_text",
           action: "copy",
-          isCustom: true
+          isCustom: true,
         },
         {
           icon: "content_cut",
