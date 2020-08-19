@@ -24,18 +24,12 @@ KeyboardActions.disable = function () {
     window.removeEventListener(
         "keydown", keyDownHandler
     );
-    window.removeEventListener(
-        "paste", pasteHandler
-    );
 };
 
 KeyboardActions.enable = function () {
     KeyboardActions.disable();
     window.addEventListener(
         "keydown", keyDownHandler
-    );
-    window.addEventListener(
-        "paste", pasteHandler
     );
 };
 KeyboardActions.init = function () {
@@ -58,20 +52,6 @@ KeyboardActions.init = function () {
 };
 
 export default KeyboardActions;
-
-function pasteHandler(event) {
-    if (!Selection.isSingle()) {
-        return;
-    }
-    let selectedElement = Selection.getSingle();
-    if (selectedElement.isEditFlow) {
-        return;
-    }
-    event.preventDefault();
-    executeFeature({
-        action: "paste"
-    }, event);
-}
 
 async function keyDownHandler(event) {
     if (KeyboardActions.isExecutingFeature) {
@@ -97,8 +77,7 @@ async function keyDownHandler(event) {
         nonCtrlPlusActions;
     let feature = actionSet[event.which];
     if (feature === undefined) {
-        let isPasting = isCombineKeyPressed && KeyCode.KEY_V && event.which;
-        if (!isPasting && event.which !== KeyboardActions._ctrlKeyNumber && Selection.isSingle()) {
+        if (event.which !== KeyboardActions._ctrlKeyNumber && Selection.isSingle()) {
             let selectedElement = Selection.getSingle();
             if (MindMapInfo.isViewOnly()) {
                 Store.dispatch("failedToEdit");
@@ -259,6 +238,9 @@ function defineCtrlPlusKeysAndTheirActions() {
     };
     actions[KeyCode.KEY_RETURN] = {
         action: "addSiblingUp"
+    };
+    actions[KeyCode.KEY_V] = {
+        action: "pasteText"
     };
     return actions;
 }

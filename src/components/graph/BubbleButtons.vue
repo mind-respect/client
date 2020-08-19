@@ -54,7 +54,7 @@ export default {
         {
           action: "enterDuplicateMenu",
           color: "secondary",
-          class:"font-weight-bold",
+          class: "font-weight-bold",
           text: function (bubble) {
             return "× " + (bubble.getNbDuplicates() + 1);
           }
@@ -167,7 +167,13 @@ export default {
         {
           icon: "content_paste",
           action: "paste",
-          ctrlShortcut: "V"
+          badgeIcon: "scatter_plot"
+        },
+        {
+          icon: "content_paste",
+          action: "pasteText",
+          ctrlShortcut: "V",
+          badgeIcon: "short_text"
         },
         {
           icon: "navigate_next",

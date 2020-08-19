@@ -354,44 +354,43 @@ GraphElementController.prototype.cut = function () {
     bubbleCutClipboard = this.model();
 };
 
+GraphElementController.prototype.pasteTextCanDo = function () {
+    return this.isSingleAndOwned() && !MindMapInfo.isViewOnly() && navigator.clipboard.readText !== undefined;
+};
+
+GraphElementController.prototype.pasteText = async function () {
+    const copiedText = await navigator.clipboard.readText();
+    const newLabel = this.model().getLabel() + " " + copiedText;
+    this.model().setLabel(
+        newLabel
+    );
+    this.model().focus();
+    await this.setLabel(
+        newLabel
+    );
+    return Store.dispatch("redraw");
+};
+
 GraphElementController.prototype.pasteCanDo = function () {
     return this.isSingleAndOwned() && !MindMapInfo.isViewOnly() && bubbleCutClipboard !== undefined;
 };
 
-GraphElementController.prototype.paste = function (event) {
-    document.execCommand('paste')
+GraphElementController.prototype.paste = function () {
     if (bubbleCutClipboard === undefined) {
-        this._pasteText(event);
-    } else {
-        this._pasteBubble();
+        return
     }
+    return this._pasteBubble();
 };
 
-GraphElementController.prototype._pasteText = function (event) {
-    let clipText = '';
-    if (window.clipboardData) {
-        clipText = window.clipboardData.getData('Text');
-    } else if (typeof event === 'object' && event.clipboardData) {
-        clipText = event.clipboardData.getData('text/plain');
-    }
-    let separator = "" === this.model().getLabel().trim() ?
-        "" : " ";
-    this.setLabel(
-        this.model().getLabel() + separator + clipText
-    );
-    Vue.nextTick(() => {
-        this.model().focus();
-    });
-};
-
-GraphElementController.prototype._pasteBubble = function () {
+GraphElementController.prototype._pasteBubble = async function () {
     if (!bubbleCutClipboard.controller()._canMoveUnderParent(this.model())) {
         return;
     }
-    bubbleCutClipboard.controller().moveUnderParent(
+    const result = await bubbleCutClipboard.controller().moveUnderParent(
         this.model()
     );
     bubbleCutClipboard = undefined;
+    return result;
 };
 
 GraphElementController.prototype.moveCompletelyUpCanDo = GraphElementController.prototype.moveCompletelyDownCanDo = GraphElementController.prototype.moveUpOneStepCanDo = GraphElementController.prototype.moveDownOneStepCanDo = function () {
