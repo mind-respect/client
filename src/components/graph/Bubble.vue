@@ -25,7 +25,7 @@
               </Children>
             </transition>
             <ChildNotice :bubble="bubble"
-                         v-if="canExpand() && !canShowChildren()"></ChildNotice>
+                         v-if="canExpand() && !canShowChildren()" @expandClick="showMenu=false"></ChildNotice>
           </div>
         </div>
         <div class='bubble-container v-center'
@@ -76,8 +76,6 @@
                   :disabled="isEditFlow"
                   rounded="xl"
                   :close-on-click="false"
-                  allow-overflow
-                  offset-overflow
               >
                 <template v-slot:activator="{ on }">
                   <div
@@ -184,7 +182,6 @@
                   class="pa-0 ma-0"
                   :open-on-click="false"
                   :close-on-click="false"
-                  allow-overflow
                   rounded="xl"
               >
                 <template v-slot:activator="{ on }">
@@ -250,7 +247,7 @@
             </transition>
 
             <ChildNotice :bubble="bubble"
-                         v-if="canExpand() && !canShowChildren()"></ChildNotice>
+                         v-if="canExpand() && !canShowChildren()" @expandClick="showMenu=false"></ChildNotice>
           </div>
         </div>
       </v-flex>
@@ -343,7 +340,7 @@ export default {
       css['--selected-bg-color'] = this.$store.state.backgroundColor;
       return css;
     },
-    menuBackgroundColor: function(){
+    menuBackgroundColor: function () {
       return {
         'background-color': this.$store.state.backgroundColor
       }
@@ -527,7 +524,7 @@ export default {
         return;
       }
       Selection.setToSingle(this.bubble).then(() => {
-        this.showMenu = true;
+        this.showMenu = !this.showMenu;
       });
     },
     click: async function (event) {
@@ -883,7 +880,7 @@ $metaColor: purple;
 
   &.selected {
     z-index: 12;
-    $selectedBoxShadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    $selectedBoxShadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
 
     .in-bubble-content {
       background-color: var(--selected-bg-color);

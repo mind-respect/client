@@ -78,6 +78,7 @@ export default {
   },
   methods: {
     click: async function () {
+      this.$emit("expandClick");
       this.bubble.getDuplicates().forEach((duplicate) => {
         duplicate.collapse();
       });
@@ -89,7 +90,6 @@ export default {
       * because setToSingle scrolls to bubble and expand to and sometimes 2 scrolls to bubble would be called
       */
       await this.bubble.controller().expand(false, false);
-      this.$emit("expanded");
       this.loading = this.bubble.loading = false;
     }
   }
