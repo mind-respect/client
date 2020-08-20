@@ -194,7 +194,7 @@ export default {
       backgroundColor: null,
       childrenKey: IdUri.uuid(),
       drawnGraphKey: IdUri.uuid(),
-      tagSuccessSnackbar: true
+      tagSuccessSnackbar: false
     }
   },
   mounted: async function () {
