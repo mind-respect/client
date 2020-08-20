@@ -677,9 +677,6 @@
                 if (this.dialog === false) {
                     GraphUi.enableDragScroll();
                     KeyboardActions.enable();
-                    if (this.$store.state.isFirstTime) {
-                        this.$store.dispatch("setIsFirstTime", false);
-                    }
                 } else {
                     GraphUi.disableDragScroll();
                     KeyboardActions.disable();

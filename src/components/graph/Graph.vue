@@ -118,8 +118,10 @@
     <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
     <NewContextDialog></NewContextDialog>
     <BottomMenu></BottomMenu>
-    <v-snackbar v-model="tagSuccessSnackbar" color="secondary">
-      {{ $t('graph:tagged') }}
+    <v-snackbar v-model="tagSuccessSnackbar" color="secondary" dark>
+      <p class="subtitle-1 vh-center">
+        {{ $t('graph:tagged') }}
+      </p>
     </v-snackbar>
   </v-layout>
 </template>
@@ -192,7 +194,7 @@ export default {
       backgroundColor: null,
       childrenKey: IdUri.uuid(),
       drawnGraphKey: IdUri.uuid(),
-      tagSuccessSnackbar: false
+      tagSuccessSnackbar: true
     }
   },
   mounted: async function () {
@@ -280,7 +282,6 @@ export default {
           if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
             center.focus();
           }
-          // Scroll.centerElement(this.center.getHtml());
           Scroll.goToGraphElement(this.center, true).then(async () => {
             await this.$nextTick();
             this.showLoading = false;
@@ -290,8 +291,8 @@ export default {
             setTimeout(async () => {
               await this.$store.dispatch("redraw", {fadeIn: true});
               const timeItTakesToFadeInPlus5 = 505;
-              setTimeout(() => {
-                this.$store.dispatch("redraw");
+              setTimeout(async () => {
+                await this.$store.dispatch("redraw");
               }, timeItTakesToFadeInPlus5);
             }, 10);
           });

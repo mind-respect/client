@@ -264,6 +264,26 @@
     </v-dialog>
     <DocsDialog ref="docsFlow"></DocsDialog>
     <AddExistingBubbleDialog ref="addExistingBubbleDialogInMenu"></AddExistingBubbleDialog>
+    <v-snackbar v-model="firstTimeSnackbar" color="secondary" timeout="-1" multi-line>
+      <v-card flat class="body-1 transparent pl-0 pr-0">
+        <v-card-title>
+          <v-btn
+              dark
+              text
+              @click="$refs.docsFlow.enter()"
+              class="pl-0 pr-0"
+          >
+            <v-icon class="mr-2">book</v-icon>
+            {{ $t('app:firstTime2') }}
+          </v-btn>
+          <v-spacer class="pl-6 pr-6"></v-spacer>
+          <v-icon @click="firstTimeSnackbar = false; $store.dispatch('setIsFirstTime', false);">close</v-icon>
+        </v-card-title>
+        <v-card-text class="subtitle-1 font-weight-bold">
+          {{ $t('app:firstTime') }}
+        </v-card-text>
+      </v-card>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -299,7 +319,7 @@ export default {
   },
   data: function () {
     I18n.i18next.addResources("en", "button", {
-      enterDuplicateMenu : "See duplicates",
+      enterDuplicateMenu: "See duplicates",
       goToLink: "Go to the clicked link",
       select: "Hand selector",
       group: "Merge bubbles into one",
@@ -356,7 +376,7 @@ export default {
       openWikipediaLink: "Open Wikipedia link"
     });
     I18n.i18next.addResources("fr", "button", {
-      enterDuplicateMenu : "Voir les duplicats",
+      enterDuplicateMenu: "Voir les duplicats",
       goToLink: "Aller au lien cliqué",
       select: "Sélection à la main",
       group: "Créer une bulle à partir de celles sélectionnés",
@@ -422,7 +442,9 @@ export default {
       thisMap: "this map",
       recruits: "Recruits",
       recruitVideo: "https://www.youtube.com/embed/XTHBs3qsuxo?cc_load_policy=1&hl=en",
-      recruitContact: "Contact me"
+      recruitContact: "Contact me",
+      firstTime : "Welcome to mindrespect.com",
+      firstTime2: "see documentation"
     });
 
     I18n.i18next.addResources("fr", "app", {
@@ -434,7 +456,9 @@ export default {
       thisMap: "cette carte",
       recruits: "Recrute",
       recruitVideo: "https://www.youtube.com/embed/XTHBs3qsuxo?cc_load_policy=0&hl=fr",
-      recruitContact: "Contactez-moi"
+      recruitContact: "Contactez-moi",
+      firstTime : "Bienvenue sur mindrespect.com",
+      firstTime2: "consultez la documentation"
     });
     return {
       clipped: false,
@@ -449,7 +473,8 @@ export default {
       showSearch: this.$vuetify.breakpoint.mdAndUp,
       patternDialog: false,
       makePatternLoading: false,
-      showRecruitMenu: false
+      showRecruitMenu: false,
+      firstTimeSnackbar: false
     };
   },
   methods: {
@@ -547,7 +572,7 @@ export default {
       if (this.$route.name === "Center") {
         KeyboardActions.enable();
         if (this.$store.state.isFirstTime) {
-          this.$refs.docsFlow.enter();
+          this.firstTimeSnackbar = true;
         }
       } else {
         KeyboardActions.disable();

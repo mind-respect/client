@@ -22,7 +22,8 @@ const Store = new Vuex.Store({
                 "areCentersInGridView",
                 "xsrfToken",
                 "addRelationIncludeAllPatterns",
-                "isShowTags"
+                "isShowTags",
+                "isFirstTime"
             ]
         })
     ],
