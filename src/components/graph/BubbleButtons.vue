@@ -160,13 +160,13 @@ export default {
         },
         {
           icon: "content_copy",
-          badgeIcon: "short_text",
           action: "copy",
           isCustom: true,
         },
         {
           icon: "content_cut",
           action: "cut",
+          badgeIcon: "scatter_plot",
           ctrlShortcut: "X"
         },
         {
