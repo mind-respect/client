@@ -458,7 +458,7 @@ export default {
       recruitVideo: "https://www.youtube.com/embed/XTHBs3qsuxo?cc_load_policy=0&hl=fr",
       recruitContact: "Contactez-moi",
       firstTime : "Bienvenue sur mindrespect.com",
-      firstTime2: "consultez la documentation"
+      firstTime2: "consulter la documentation"
     });
     return {
       clipped: false,
