@@ -8,35 +8,36 @@ const Dragged = {
         }
         event.stopPropagation();
         event.preventDefault();
-        let closestEdge = Dragged.getClosestChildEdge(
+        let closestChild = Dragged.getClosestChild(
             event.pageX,
             event.pageY,
             parent,
             isLeft
         );
-        let method = closestEdge.isAbove ? "moveAbove" : "moveBelow";
-        if (!closestEdge.edge) {
+        let method = closestChild.isAbove ? "moveAbove" : "moveBelow";
+        if (!closestChild.child) {
             method = "moveUnderParent";
-            closestEdge.edge = parent;
+            closestChild.child = parent;
         }
-        let parentVertex = closestEdge.edge.getParentVertex();
+        let parentVertex = closestChild.child.getParentVertex();
         if (parentVertex.isMeta() && !Dragged.dragged.getParentVertex().isMeta()) {
             return;
         }
         if (parentVertex.isMetaGroupVertex() && Dragged.dragged.getParentVertex().getUri() !== parentVertex.getUri()) {
             return;
         }
-        return Dragged.dragged.controller()[method](closestEdge.edge, false, isLeft);
+        return Dragged.dragged.controller()[method](closestChild.child, false, isLeft);
     },
-    getClosestChildEdge: function (x, y, parent, isLeft) {
+    getClosestChild: function (x, y, parent, isLeft) {
         let minDistance = 99999999;
-        let closestChildEdge;
+        let closestChild;
         let isAbove = false;
 
         parent.getDescendants(isLeft, (descendant) => {
             return !Dragged.dragged || descendant.getId() !== Dragged.dragged.getId();
-        }).forEach((childEdge) => {
-            let position = childEdge.getHtml().getBoundingClientRect();
+        }).forEach((child) => {
+            child = child.getShownBubble();
+            let position = child.getHtml().getBoundingClientRect();
             let xPosition = (position.left + position.right) / 2 + document.scrollingElement.scrollLeft;
             let yPosition = (position.top + position.bottom) / 2 + document.scrollingElement.scrollTop;
             let xDistance = x - xPosition;
@@ -44,12 +45,12 @@ const Dragged = {
             let distance = Math.hypot(xDistance, yDistance);
             if (Math.abs(distance) < Math.abs(minDistance)) {
                 minDistance = distance;
-                closestChildEdge = childEdge.isVertexType() ? childEdge.getParentBubble() : childEdge;
+                closestChild = !child.isVertexType() || child.isParentRelationLess() ? child : child.getParentBubble();
                 isAbove = yDistance < 0;
             }
         });
         return {
-            edge: closestChildEdge,
+            child: closestChild,
             isAbove: isAbove
         }
     }

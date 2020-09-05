@@ -154,25 +154,34 @@ Vertex.prototype.addChild = async function (child, isToTheLeft, index) {
 
 Vertex.prototype.getRightBubble = function (bottom) {
     let index = bottom ? this.rightBubbles.length - 1 : 0;
+    let rightBubble;
     if (this.isCenter) {
-        return this.rightBubbles[index];
+        rightBubble = this.rightBubbles[index];
     }
     if (this.isToTheLeft()) {
-        return this.parentBubble;
+        return this.getShownParentBubble();
+    } else {
+        rightBubble = this.rightBubbles[index];
     }
-    return this.rightBubbles[index];
+    if (rightBubble) {
+        return rightBubble.getShownBubble()
+    }
 };
 
 Vertex.prototype.getLeftBubble = function (bottom) {
+    let leftBubble;
     if (this.isCenter) {
         let index = bottom ? this.leftBubbles.length - 1 : 0;
-        return this.leftBubbles[index];
-    }
-    if (this.isToTheLeft()) {
+        leftBubble = this.leftBubbles[index];
+    } else if (this.isToTheLeft()) {
         let index = bottom ? this.rightBubbles.length - 1 : 0;
-        return this.rightBubbles[index];
+        leftBubble = this.rightBubbles[index];
+    } else {
+        return this.getShownParentBubble();
     }
-    return this.getParentBubble();
+    if (leftBubble) {
+        return leftBubble.getShownBubble();
+    }
 };
 
 Vertex.prototype.isPattern = function () {
@@ -322,6 +331,18 @@ Vertex.prototype.isMeta = function () {
     return this.getGraphElementType() === GraphElementType.Meta;
 };
 
+
+Vertex.prototype.getShownParentBubble = function () {
+    const parentBubble = this.getParentBubble();
+    if (!parentBubble.shouldShow()) {
+        return parentBubble.getParentBubble();
+    }
+    return parentBubble;
+};
+
+Vertex.prototype.isParentRelationLess = function () {
+    return !this.getShownParentBubble().isEdgeType();
+};
 
 api.Vertex = Vertex;
 

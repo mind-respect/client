@@ -82,6 +82,10 @@ TagRelationController.prototype.cutCanDo = function () {
     return false;
 };
 
+TagRelationController.prototype.pasteTextCanDo = function () {
+    return false;
+};
+
 TagRelationController.prototype.addTagCanDo = function () {
     return false;
 };

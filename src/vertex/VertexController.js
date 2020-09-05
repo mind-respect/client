@@ -410,6 +410,20 @@ VertexController.prototype.getSubGraphController = function () {
     return this.subGraphController;
 };
 
+VertexController.prototype.focusRelationCanDo = function () {
+    return this.isSingleAndOwned() && !this.model().isCenter;
+};
+
+VertexController.prototype.focusRelation = async function () {
+    const relation = this.model().getParentBubble();
+    relation.focusRelation = true;
+    this.model().getParentVertex().refreshChildren(false, true);
+    await Vue.nextTick();
+    Selection.setToSingle(relation);
+    relation.focus();
+};
+
+
 api.VertexController = VertexController;
 
 export default api;

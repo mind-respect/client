@@ -93,7 +93,7 @@ ForkController.prototype.addSiblingUp = function () {
 };
 
 ForkController.prototype._addSiblingUpOrDown = function (isDown) {
-    let parent = this.model().getParentFork();
+    let parent = this.model().getShownParentBubble();
     return parent.controller().addChild(
         this.model().getIndexInTree() + (isDown ? 1 : 0),
         this.model().isToTheLeft()

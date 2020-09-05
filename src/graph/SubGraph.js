@@ -189,6 +189,16 @@ api.SubGraph.prototype.addOtherGraphElement = function (graphElement) {
     this.otherGraphElements[graphElement.getUri()].push(graphElement);
 };
 
+api.SubGraph.prototype.getOtherGraphElementsWithUri = function (uri) {
+    return this.otherGraphElements[uri] || [];
+};
+
+api.SubGraph.prototype.getOtherGraphElementsWithUriAndId = function (uri, id) {
+    return this.getOtherGraphElementsWithUri(uri).filter((graphElement) => {
+        return graphElement.getId() === id;
+    })[0];
+};
+
 api.SubGraph.prototype.remove = function (graphElement) {
     if (graphElement.isEdge()) {
         this.removeEdge(graphElement);
@@ -373,15 +383,21 @@ api.SubGraph.prototype.getContainerForGraphElementType = function (graphElementT
 };
 
 api.SubGraph.prototype.getHavingUriAndId = function (uri, id, graphElementType) {
+    if (GraphElementType.isEdgeType(graphElementType)) {
+        return this.getEdgeWithUriAndId(
+            uri,
+            id
+        );
+    }
     switch (graphElementType) {
         case GraphElementType.Vertex:
             return this.getVertexWithUriAndId(uri, id);
-        case GraphElementType.Edge:
-            return this.getEdgeWithUriAndId(uri, id);
         case GraphElementType.GroupRelation:
             return this.groupRelations[uri];
         case GraphElementType.Meta:
             return this.getTagBubbleWithUiId(id)
+        default:
+            return this.getOtherGraphElementsWithUriAndId(uri, id);
     }
 };
 

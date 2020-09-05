@@ -289,10 +289,6 @@ FriendlyResource.FriendlyResource.prototype.isCenterBubble = function () {
     return this.isCenter;
 };
 
-FriendlyResource.FriendlyResource.prototype.getParentBubble = function () {
-    return this.parentBubble || this;
-};
-
 FriendlyResource.FriendlyResource.prototype.getComment = function () {
     return this._friendlyResourceServerFormat.comment.trim();
 };
@@ -643,7 +639,7 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
     while (!forkBubble.isCenter && (forkBubbleNbChild < 2 || (isDown && (childBubbleIndex + 1) === forkBubbleNbChild) || (!isDown && childBubbleIndex === 0))) {
         distance++;
         childBubble = forkBubble;
-        forkBubble = forkBubble.getParentBubble();
+        forkBubble = forkBubble.getShownParentBubble();
         forkBubbleNbChild = forkBubble.getNextChildren(this.isToTheLeft()).length;
         childBubbleIndex = Math.max(
             forkBubble.getChildIndex(childBubble),
@@ -661,6 +657,7 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
         Math.max(indexInForkBubble + indexAdjust, 0),
         this.isToTheLeft()
     );
+    bubbleAround = bubbleAround.getShownBubble()
     distance--;
     while (distance > 0) {
         distance--;
@@ -690,7 +687,7 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
             bubbleAround = isDown ? closestEdges[0] : closestEdges[closestEdges.length - 1];
         }
     }
-    return bubbleAround;
+    return bubbleAround.getShownBubble();
 };
 
 FriendlyResource.FriendlyResource.prototype.replaceChild = function (existingChild, newChild) {

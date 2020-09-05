@@ -53,7 +53,7 @@ KeyboardActions.init = function () {
 
 export default KeyboardActions;
 
-async function keyDownHandler(event) {
+function keyDownHandler(event) {
     if (KeyboardActions.isExecutingFeature) {
         return;
     }
@@ -95,12 +95,13 @@ async function keyDownHandler(event) {
         feature = [feature];
     }
     KeyboardActions.isExecutingFeature = true;
-    await Promise.all(
+    Promise.all(
         feature.map(function (feature) {
             return executeFeature(feature);
         })
-    );
-    KeyboardActions.isExecutingFeature = false;
+    ).then(() => {
+        KeyboardActions.isExecutingFeature = false;
+    });
 
     function isThereASpecialKeyPressed() {
         return event.altKey || (event.metaKey && !UiUtils.isMacintosh()) || (event.ctrlKey && UiUtils.isMacintosh());

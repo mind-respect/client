@@ -64,6 +64,24 @@ export default {
           }
         },
         {
+          action: "focusRelation",
+          icon: function () {
+            let single = Selection.getSingle();
+            if (!single) {
+              return "";
+            }
+            if (single.isCenter) {
+              return single.leftBubbles.length < single.rightBubbles.length ?
+                  "arrow_forward" :
+                  "arrow_back";
+            } else {
+              return single.isToTheLeft() ?
+                  "arrow_forward" :
+                  "arrow_back";
+            }
+          }
+        },
+        {
           action: "addChild",
           icon: function () {
             let single = Selection.getSingle();

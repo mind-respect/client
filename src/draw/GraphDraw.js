@@ -15,7 +15,11 @@ GraphDraw.prototype.build = function () {
         let edgeDrawing = new EdgeDrawing(this.bubble, false, this.arrowHeadLength);
         path += edgeDrawing.build();
     }
-    this.bubble.getNextChildren().forEach((child) => {
+    this.bubble.getNextChildren().map((child) => {
+        return child.getShownBubble();
+    }).filter((child) => {
+        return child.draw;
+    }).forEach((child) => {
         let graphDraw = new GraphDraw(child, this.arrowHeadLength);
         path += graphDraw.build();
     });

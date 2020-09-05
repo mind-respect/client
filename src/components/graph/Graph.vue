@@ -24,7 +24,7 @@
                           @before-enter="beforeExpandAnimation(leftBubble)"
               >
                 <Bubble
-                    :bubble="leftBubble"
+                    :bubble="leftBubble.getShownBubble()"
                     direction="left"
                 ></Bubble>
               </transition>
@@ -57,7 +57,7 @@
                           @before-enter="beforeExpandAnimation(rightBubble)"
               >
                 <Bubble
-                    :bubble="rightBubble"
+                    :bubble="rightBubble.getShownBubble()"
                     direction="right"
                 ></Bubble>
               </transition>

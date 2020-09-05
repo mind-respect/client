@@ -308,7 +308,7 @@
                 this.x = x;
                 this.y = y;
                 this.searchText = "";
-                this.closestData = Dragged.getClosestChildEdge(
+                this.closestData = Dragged.getClosestChild(
                     this.x + document.scrollingElement.scrollLeft,
                     this.y + document.scrollingElement.scrollTop,
                     CurrentSubGraph.get().center,
@@ -316,9 +316,9 @@
                 );
                 return this.enterUsingParentBubble(
                     (
-                        this.closestData.edge === undefined ?
+                        this.closestData.child === undefined ?
                             CurrentSubGraph.get().center :
-                            this.closestData.edge.getParentFork()
+                            this.closestData.child.getParentFork()
                     ),
                     isLeft
                 );

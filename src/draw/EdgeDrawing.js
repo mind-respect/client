@@ -44,7 +44,9 @@ EdgeDrawing.prototype.redraw = function () {
     this.bubbleRect = element.getBoundingClientRect();
     this.topPosition = this.topPositionCalculate();
     this.bottomPosition = this.bottomPositionCalculate();
-    this.children = this.bubble.getNextChildren(this.isLeft).filter((child) => {
+    this.children = this.bubble.getNextChildren(this.isLeft).map((child) => {
+        return child.getShownBubble();
+    }).filter((child) => {
         return child.draw;
     });
     if (this.children.length > 1) {
@@ -311,6 +313,9 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
     //     });
     //     return;
     // }
+    if (element == undefined) {
+        debugger;
+    }
     let rect = element.getBoundingClientRect();
     position.rect = rect;
     if (isParent) {
@@ -320,7 +325,10 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
     }
     position.x += document.scrollingElement.scrollLeft;
     position.x = Math.round(position.x);
-    position.y = rect.top - (rect.height / 2) - 23 + document.scrollingElement.scrollTop;
+    if (bubble.isEdgeType() || bubble.isGroupRelation()) {
+        yAdjust += -23;
+    }
+    position.y = rect.top - (rect.height / 2) + document.scrollingElement.scrollTop;
     position.y += yAdjust;
     position.y = Math.round(position.y);
 

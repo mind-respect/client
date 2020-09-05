@@ -117,6 +117,9 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             if (child.getUri() === centerFork.getParentBubble().getUri()) {
                 return;
             }
+            if (child.isRelation() && child.getOtherVertex(centerVertex).getUri() === centerParentFork.getUri()) {
+                return;
+            }
             if (child.isVertex() && (!centerFork.isGroupRelation() || centerFork.getSourceForkUri() !== child.getUri())) {
                 return;
             }

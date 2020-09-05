@@ -82,6 +82,10 @@ TagGroupVertexController.prototype.becomeExParent = function () {
     }
 };
 
+TagGroupVertexController.prototype.focusRelationCanDo = function () {
+    return false;
+};
+
 api.MetaGroupVertexController = TagGroupVertexController;
 
 export default api;

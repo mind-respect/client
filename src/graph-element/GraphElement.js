@@ -558,6 +558,22 @@ GraphElement.GraphElement.prototype.isSkeleton = function () {
 
 GraphElement.GraphElement.prototype.getNbDuplicates = function () {
     return 0;
-}
+};
+
+GraphElement.GraphElement.prototype.isParentRelationLess = function () {
+    return false;
+};
+
+GraphElement.GraphElement.prototype.getShownBubble = function () {
+    return this;
+};
+
+GraphElement.GraphElement.prototype.getShownParentBubble = GraphElement.GraphElement.prototype.getParentBubble = function () {
+    return this.parentBubble || this;
+};
+
+GraphElement.GraphElement.prototype.shouldShow = function () {
+    return true;
+};
 
 export default GraphElement;

@@ -45,5 +45,8 @@ TagRelation.prototype.getTaggedBubble = function () {
         this.getNextBubble();
 };
 
+TagRelation.prototype.shouldShow = function () {
+    return true;
+}
 
 export default TagRelation;

@@ -264,25 +264,21 @@
     </v-dialog>
     <DocsDialog ref="docsFlow"></DocsDialog>
     <AddExistingBubbleDialog ref="addExistingBubbleDialogInMenu"></AddExistingBubbleDialog>
-    <v-snackbar v-model="firstTimeSnackbar" color="secondary" timeout="-1" multi-line>
-      <v-card flat class="body-1 transparent pl-0 pr-0">
-        <v-card-title>
-          <v-btn
-              dark
-              text
-              @click="$refs.docsFlow.enter()"
-              class="pl-0 pr-0"
-          >
-            <v-icon class="mr-2">book</v-icon>
-            {{ $t('app:firstTime2') }}
-          </v-btn>
-          <v-spacer class="pl-6 pr-6"></v-spacer>
-          <v-icon @click="firstTimeSnackbar = false; $store.dispatch('setIsFirstTime', false);">close</v-icon>
-        </v-card-title>
-        <v-card-text class="subtitle-1 font-weight-bold">
-          {{ $t('app:firstTime') }}
-        </v-card-text>
-      </v-card>
+    <v-snackbar v-model="firstTimeSnackbar" color="secondary" timeout="-1">
+      <v-toolbar color="transparent" dense elevation="0">
+        <span class="text-body-1" v-if="$vuetify.breakpoint.mdAndUp">{{ $t('app:firstTime') }}</span>
+        <v-divider vertical class="mx-4" color="white" v-if="$vuetify.breakpoint.mdAndUp"></v-divider>
+        <v-btn
+            dark
+            text
+            @click="$refs.docsFlow.enter()"
+            class="pl-0 pr-0"
+        >
+          <v-icon class="mr-2">book</v-icon>
+          {{ $t('app:firstTime2') }}
+        </v-btn>
+        <v-icon class="ml-8" @click="firstTimeSnackbar = false; $store.dispatch('setIsFirstTime', false);">close</v-icon>
+      </v-toolbar>
     </v-snackbar>
   </v-app>
 </template>
@@ -337,7 +333,7 @@ export default {
       "center": "Center bubble",
       "note": "Note",
       "images": "Add images",
-      "cut": "Cut",
+      "cut": "Cut bubble",
       "paste": "Paste the cut bubble",
       pasteText: "Paste text",
       "selectTree": "Select tree",
@@ -394,7 +390,7 @@ export default {
       "center": "Centrer la bulle",
       "note": "Note",
       "images": "Ajouter des images",
-      "cut": "Couper",
+      "cut": "Couper la bulle",
       "paste": "Coller la bulle coupée",
       pasteText: "Coller texte",
       "selectTree": "Sélectionner l'arbre",

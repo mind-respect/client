@@ -304,4 +304,18 @@ api.Relation.prototype.canExpand = function () {
     return false;
 };
 
+api.Relation.prototype.getShownBubble = function () {
+    return this.shouldShow() ? this : this.getNextBubble();
+};
+
+api.Relation.prototype.shouldShow = function () {
+    return !this.isPristine() || this.focusRelation;
+}
+
+api.Relation.prototype.isPristine = function () {
+    return GraphElement.GraphElement.prototype.isPristine.call(
+        this,
+    ) && !this.isInverse();
+};
+
 export default api;

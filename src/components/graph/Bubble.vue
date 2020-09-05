@@ -7,7 +7,9 @@
     <v-layout
         :class="{
         'vertex-tree-container': !isCenter,
-        'bubble-container': isCenter
+        'bubble-container': isCenter,
+        'pl-4': !isCenter && !isLeft && isParentRelationLess,
+        'pr-4': !isCenter && isLeft && isParentRelationLess
     }" :id="containerId">
       <v-flex grow class="v-center drop-relative-container" :style="containerBoxShadow">
         <v-spacer v-if="isLeft"></v-spacer>
@@ -387,6 +389,9 @@ export default {
         return false;
       }
       return this.bubble.isShrinked();
+    },
+    isParentRelationLess: function () {
+      return this.bubble.isVertexType() && this.bubble.isParentRelationLess();
     }
   },
   methods: {
@@ -643,6 +648,7 @@ export default {
           bubbleContainer.style.position = 'inherit';
         }
       }
+      this.bubble.focusRelation = false;
       this.isEditFlow = false;
       this.bubble.isEditFlow = false;
       let labelHtml = this.bubble.getLabelHtml();
