@@ -355,7 +355,7 @@ GraphElementController.prototype.cut = function () {
 };
 
 GraphElementController.prototype.pasteTextCanDo = function () {
-    return this.isSingleAndOwned() && !MindMapInfo.isViewOnly() && navigator.clipboard.readText !== undefined;
+    return this.isSingleAndOwned() && !MindMapInfo.isViewOnly() && navigator.clipboard  && navigator.clipboard.readText !== undefined;
 };
 
 GraphElementController.prototype.pasteText = async function () {

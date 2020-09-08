@@ -158,7 +158,7 @@ describe("FriendlyResource", () => {
             let topBubbleUnderB2 = underB2.getNextBubble().getNextBubble();
             let bubbleAbove = topBubbleUnderB2.getUpBubble();
             expect(
-                bubbleAbove.isSameBubble(bottomBubbleUnderB2)
+                bubbleAbove.isSameBubble(bottomBubbleUnderB2.getParentVertex())
             ).toBeTruthy();
         });
     });

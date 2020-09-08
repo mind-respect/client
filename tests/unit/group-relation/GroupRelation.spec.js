@@ -226,8 +226,10 @@ describe("GroupRelation", function () {
                 "b2"
             );
             await b2.getNextBubble().controller().removeDo();
+            let relation1= b2.getNextBubble();
+            let relation2= relation1.getDownBubble().getParentBubble();
             expect(
-                b2.getNextBubble().getDownBubble().getLabel()
+                relation2.getLabel()
             ).toBe("");
             await b2.getNextBubble().controller().removeDo();
             expect(TestUtil.hasChildWithLabel(

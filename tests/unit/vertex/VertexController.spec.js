@@ -101,7 +101,7 @@ describe('VertexController', () => {
         let scenario = await new ThreeScenario();
         let bubble1 = scenario.getBubble1InTree();
         let numberOfChild = bubble1.getNumberOfChild();
-        let someChild = bubble1.getNextBubble().getNextBubble();
+        let someChild = bubble1.getNextBubble().getParentBubble();
         await someChild.controller().addSibling();
         expect(
             bubble1.getNumberOfChild()
@@ -186,15 +186,17 @@ describe('VertexController', () => {
             groupRelation.isGroupRelation()
         ).toBeTruthy();
         await scenario.expandPossession(groupRelation);
-        let childBubble = TestUtil.getChildWithLabel(
+        let childRelation = TestUtil.getChildWithLabel(
             groupRelation,
             "Possession of book 1"
-        ).getNextBubble();
+        );
+        childRelation.setLabel(groupRelation.getLabel());
+        let childVertex = childRelation.getNextBubble();
         expect(
-            childBubble.isVertex()
+            childVertex.isVertex()
         ).toBeTruthy();
         let numberOfChild = groupRelation.getNumberOfChild();
-        await childBubble.controller().addSibling();
+        await childVertex.controller().addSibling();
         expect(
             groupRelation.getNumberOfChild()
         ).toBe(numberOfChild + 1);
@@ -868,13 +870,15 @@ describe('VertexController', () => {
         it("increments the number of connected edges of the parent model", async function () {
             let scenario = await new ThreeScenario();
             let b1 = scenario.getBubble1InTree();
-            let childVertex = b1.getNextBubble().getNextBubble();
+            let relation = b1.getNextBubble();
+            relation.setLabel("");
+            let childVertex = relation.getNextBubble();
             expect(
                 b1.model().getNumberOfChild()
             ).toBe(2);
             await childVertex.controller().addSibling();
             expect(
-                b1.model().getNumberOfChild()
+                b1.getNumberOfChild()
             ).toBe(3);
         });
     });

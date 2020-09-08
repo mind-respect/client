@@ -395,7 +395,7 @@ describe("RelationController", () => {
         it("can become parent of one of its descendant", async () => {
             let scenario = await new ConvertVertexToGroupRelationScenario();
             let center = scenario.getCenterInTree();
-            let relation = center.getNextBubble();
+            let relation = center.getNextBubble().getParentBubble();
             expect(
                 relation.isEdge()
             ).toBeTruthy();

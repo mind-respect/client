@@ -309,7 +309,7 @@ api.Relation.prototype.getShownBubble = function () {
 };
 
 api.Relation.prototype.shouldShow = function () {
-    return Store.state.isShowRelations || (!this.isPristine() || this.focusRelation);
+    return Store.state.isShowRelations || ((!this.isPristine() && !this.isLabelSameAsParentGroupRelation()) || this.focusRelation);
 }
 
 api.Relation.prototype.isPristine = function () {

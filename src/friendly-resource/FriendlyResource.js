@@ -657,6 +657,9 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
         Math.max(indexInForkBubble + indexAdjust, 0),
         this.isToTheLeft()
     );
+    if(!bubbleAround){
+        return this;
+    }
     bubbleAround = bubbleAround.getShownBubble()
     distance--;
     while (distance > 0) {
