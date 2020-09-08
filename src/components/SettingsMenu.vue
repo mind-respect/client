@@ -49,6 +49,16 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item @click="showRelations = !showRelations">
+            <v-list-item-action>
+              <v-switch :input-value="showRelations" color="third"></v-switch>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ $t('settings:showRelations') }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </v-list-item-group>
       </v-list>
       <v-list subheader v-if="isGraphRoute">
@@ -189,6 +199,7 @@ export default {
       thisMap: "This map",
       yourAccount: "Your account",
       showTags: "Show tags by default",
+      showRelations: "Show relations by default",
       preferences: "Preferences"
     });
     I18n.i18next.addResources("fr", "settings", {
@@ -198,6 +209,7 @@ export default {
       thisMap: "Cette carte",
       yourAccount: "Votre compte",
       showTags: "Afficher les étiquettes par défaut",
+      showRelations: "Afficher les relations par défaut",
       preferences: "Préférences"
     });
     return {
@@ -263,6 +275,14 @@ export default {
           GraphController.hideAllTags();
         }
         this.$store.dispatch("setIsShowTags", value);
+      }
+    },
+    showRelations: {
+      get: function () {
+        return this.$store.state.isShowRelations;
+      },
+      set: function (value) {
+        this.$store.dispatch("setIsShowRelations", value);
       }
     }
   }

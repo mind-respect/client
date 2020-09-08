@@ -61,4 +61,5 @@ api.showAllTags = function () {
     Store.dispatch("redraw");
 };
 
+
 export default api;

@@ -23,6 +23,7 @@ const Store = new Vuex.Store({
                 "xsrfToken",
                 "addRelationIncludeAllPatterns",
                 "isShowTags",
+                "isShowRelations",
                 "isFirstTime"
             ]
         })
@@ -59,7 +60,9 @@ const Store = new Vuex.Store({
         addRelationIncludeAllPatterns: true,
         isFirstTime: false,
         isServerNotResponding: false,
-        isDuplicateFlow: false
+        isDuplicateFlow: false,
+        isShowTags: false,
+        isShowRelations: false
     },
     mutations: {
         setUser: function (state, user) {
@@ -191,6 +194,9 @@ const Store = new Vuex.Store({
         },
         setIsShowTags: function (state, isShowTags) {
             state.isShowTags = isShowTags;
+        },
+        setIsShowRelations: function (state, isShowRelations) {
+            state.isShowRelations = isShowRelations;
         }
     },
     actions: {
@@ -301,6 +307,9 @@ const Store = new Vuex.Store({
         },
         setIsShowTags: function (action, setIsShowTags) {
             action.commit('setIsShowTags', setIsShowTags);
+        },
+        setIsShowRelations: function (action, setIsShowRelations) {
+            action.commit('setIsShowRelations', setIsShowRelations);
         }
     }
 });
