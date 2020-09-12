@@ -121,8 +121,8 @@ EdgeDrawing.prototype.topBottomLineAtRight = function () {
     return lines
 };
 EdgeDrawing.prototype.isChildInBetween = function (childPosition) {
-    if (!this.bubble.isVertexType() || !this.bubble.isGroupRelation()) {
-        return;
+    if (this.bubble.isEdgeType()) {
+        return true;
     }
     let tallest, smallest;
     if (this.bubblePosition.rect.height > childPosition.rect.height) {
