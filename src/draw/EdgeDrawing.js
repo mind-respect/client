@@ -120,8 +120,8 @@ EdgeDrawing.prototype.topBottomLineAtRight = function () {
     lines += "H " + this.highestPosition.x;
     return lines
 };
-EdgeDrawing.prototype.isChildInBetween = function (childPosition, label) {
-    if (!this.bubble.isVertexType() && !this.bubble.isGroupRelation()) {
+EdgeDrawing.prototype.isChildInBetween = function (childPosition) {
+    if (!this.bubble.isVertexType() || !this.bubble.isGroupRelation()) {
         return;
     }
     let tallest, smallest;
@@ -197,7 +197,7 @@ EdgeDrawing.prototype.drawChildren = function () {
                 );
             }
         }
-        let isChildInBetween = this.isChildInBetween(childPosition, child.getLabel());
+        let isChildInBetween = this.isChildInBetween(childPosition);
         if (this.children.length === 1 && this.bubble.isVertexType()) {
             let smallest = this.bubblePosition.rect.height > childPosition.rect.height ? childPosition : this.bubblePosition;
             let startX = this.bubblePosition.x;
