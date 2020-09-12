@@ -313,9 +313,6 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
     //     });
     //     return;
     // }
-    if (element == undefined) {
-        debugger;
-    }
     let rect = element.getBoundingClientRect();
     position.rect = rect;
     if (isParent) {
@@ -328,7 +325,10 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
     if (bubble.isEdgeType() || bubble.isGroupRelation()) {
         yAdjust += -23;
     }
-    position.y = rect.top - (rect.height / 2) + document.scrollingElement.scrollTop;
+    if (rect.height < 45) {
+        yAdjust -= rect.height / 2 + 5;
+    }
+    position.y = rect.top + document.scrollingElement.scrollTop;
     position.y += yAdjust;
     position.y = Math.round(position.y);
 
