@@ -198,7 +198,7 @@ EdgeDrawing.prototype.drawChildren = function () {
             }
         }
         let isChildInBetween = this.isChildInBetween(childPosition, child.getLabel());
-        if (this.children.length === 1 && child.isVertexType()) {
+        if (this.children.length === 1 && this.bubble.isVertexType()) {
             let smallest = this.bubblePosition.rect.height > childPosition.rect.height ? childPosition : this.bubblePosition;
             let startX = this.bubblePosition.x;
             let startY = smallest.y;
