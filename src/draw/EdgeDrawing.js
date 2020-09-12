@@ -140,7 +140,7 @@ EdgeDrawing.prototype.buildArc = function (radius, firstPositive, secondPositive
 
 EdgeDrawing.prototype.drawChildren = function () {
     let lines = "";
-    this.children.some((child) => {
+    this.children.forEach((child) => {
         let childPosition = this.getMiddleSidePosition(child);
         if (!childPosition) {
             return;
@@ -297,12 +297,9 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
         }
     }
     yAdjust += this.zoomAdjust;
-    if (bubble.isVertex() && bubble.getParentBubble().isEdge() && bubble.getParentBubble().getNumberOfChild() > 1) {
-        yAdjust += 15;
-    }
-    if (bubble.isGroupRelation() || (bubble.isEdge() && bubble.getNumberOfChild() > 1)) {
-        yAdjust += 5;
-    }
+    // if (bubble.isVertex() && bubble.getParentBubble().isEdge() && bubble.getParentBubble().getNumberOfChild() > 1) {
+    //     yAdjust += 15;
+    // }
     // if (!element) {
     //     this.loaded = false;
     //     Vue.nextTick(() => {
@@ -322,13 +319,19 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
     }
     position.x += document.scrollingElement.scrollLeft;
     position.x = Math.round(position.x);
+    if (bubble.isGroupRelation() || (bubble.isEdge() && bubble.getNumberOfChild() > 1)) {
+        yAdjust += 7;
+    }
     if (bubble.isEdgeType() || bubble.isGroupRelation()) {
         yAdjust += -23;
+    } else {
+        yAdjust -= 7;
     }
+    let top = rect.top;
     if (rect.height < 45) {
-        yAdjust -= rect.height / 2 + 5;
+        yAdjust -= rect.height / 2;
     }
-    position.y = rect.top + document.scrollingElement.scrollTop;
+    position.y = top + document.scrollingElement.scrollTop;
     position.y += yAdjust;
     position.y = Math.round(position.y);
 
