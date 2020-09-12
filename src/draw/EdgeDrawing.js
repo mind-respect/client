@@ -41,13 +41,13 @@ EdgeDrawing.prototype.redraw = function () {
         return false;
     }
     this.zoomAdjust = Math.round((Store.state.zoom - 1) * 10);
-    this.bubbleRect = element.getBoundingClientRect();
+    this.bubblePosition = this.getMiddleSidePosition(this.bubble, true);
     this.topPosition = this.topPositionCalculate();
     this.bottomPosition = this.bottomPositionCalculate();
     this.children = this.bubble.getNextChildren(this.isLeft).map((child) => {
         return child.getShownBubble();
     }).filter((child) => {
-        return child.draw;
+        return child.draw && child.getShownBubble().draw;
     });
     if (this.children.length > 1) {
         this.highestChild = this.children[0];
@@ -120,15 +120,28 @@ EdgeDrawing.prototype.topBottomLineAtRight = function () {
     lines += "H " + this.highestPosition.x;
     return lines
 };
-EdgeDrawing.prototype.isChildInBetween = function (childPosition) {
-    return (this.bubble.isVertexType() || this.bubble.isGroupRelation()) && this.bubbleRect.top < childPosition.rect.bottom && this.bubbleRect.bottom > childPosition.rect.top;
+EdgeDrawing.prototype.isChildInBetween = function (childPosition, label) {
+    if (!this.bubble.isVertexType() && !this.bubble.isGroupRelation()) {
+        return;
+    }
+    let tallest, smallest;
+    if (this.bubblePosition.rect.height > childPosition.rect.height) {
+        tallest = this.bubblePosition;
+        smallest = childPosition;
+    } else {
+        tallest = childPosition;
+        smallest = this.bubblePosition;
+    }
+    let isFullyInBetween = tallest.rect.top < smallest.rect.bottom && tallest.rect.bottom > smallest.rect.top;
+    return isFullyInBetween && (!this.bubble.isGroupRelation() || (!(tallest.rect.top < smallest.middleY) && !(tallest.rect.bottom > smallest.middleY)));
+// || (!(tallest.rect.top < smallest.middleY) && !(tallest.rect.bottom > smallest.middleY))
 };
 
 EdgeDrawing.prototype.topDistanceWithChild = function (childPosition) {
-    return Math.abs(this.bubbleRect.top - childPosition.rect.bottom)
+    return Math.abs(this.bubblePosition.rect.top - childPosition.rect.bottom)
 };
 EdgeDrawing.prototype.bottomDistanceWithChild = function (childPosition) {
-    return Math.abs(this.bubbleRect.bottom - childPosition.rect.top)
+    return Math.abs(this.bubblePosition.rect.bottom - childPosition.rect.top)
 };
 
 EdgeDrawing.prototype.buildArc = function (radius, firstPositive, secondPositive) {
@@ -173,22 +186,26 @@ EdgeDrawing.prototype.drawChildren = function () {
             return true;
         }
         if (this.bubble.isEdge() && !child.isMetaRelation()) {
-            let position = this.getMiddleSidePosition(this.bubble);
-            lines += "M " + position.x + " " + position.y + " ";
+            lines += "M " + this.bubblePosition.x + " " + this.bubblePosition.y + " ";
             lines += "H " + (childPosition.x);
             let childXPosition = childPosition.x;
             if (!this.bubble.isInverse()) {
                 lines += this.arrowHead(
-                    position.x,
+                    this.bubblePosition.x,
                     childXPosition,
-                    position.y
+                    this.bubblePosition.y
                 );
             }
         }
-        let isChildInBetween = this.isChildInBetween(childPosition);
-        let position = this.getMiddleSidePosition(this.bubble, true);
-        if (isChildInBetween || this.children.length === 1) {
-            let startX = position.x;
+        let isChildInBetween = this.isChildInBetween(childPosition, child.getLabel());
+        if (this.children.length === 1) {
+            let smallest = this.bubblePosition.rect.height > childPosition.rect.height ? childPosition : this.bubblePosition;
+            let startX = this.bubblePosition.x;
+            let startY = smallest.y;
+            lines += "M " + startX + " " + startY + " ";
+            lines += "L " + childPosition.x + " " + smallest.y;
+        } else if (isChildInBetween) {
+            let startX = this.bubblePosition.x;
             let startY = childPosition.y;
             lines += "M " + startX + " " + startY + " ";
             lines += "L " + childPosition.x + " " + childPosition.y;
@@ -229,7 +246,7 @@ EdgeDrawing.prototype.arrowHead = function (startX, endX, y) {
     let lines = "";
 
     let middleXAdjust = endX - startX;
-    middleXAdjust += this.isLeft ? this.bubbleRect.width * -1 : this.bubbleRect.width;
+    middleXAdjust += this.isLeft ? this.bubblePosition.rect.width * -1 : this.bubblePosition.rect.width;
     middleXAdjust /= 2;
     middleXAdjust += this.isLeft ? this.arrowHeadLength * -1 : this.arrowHeadLength;
     let middleX = startX + middleXAdjust;
@@ -284,7 +301,8 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
     let position = {
         x: 0,
         y: 0,
-        rect: null
+        rect: null,
+        middleY: 0
     };
     let yAdjust = 0;
     let element = isParent ? bubble.getHtml() : this.getBubbleElement(bubble);
@@ -334,7 +352,7 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
     position.y = top + document.scrollingElement.scrollTop;
     position.y += yAdjust;
     position.y = Math.round(position.y);
-
+    position.middleY = position.y - document.scrollingElement.scrollTop;
     return position;
 };
 
@@ -344,9 +362,9 @@ EdgeDrawing.prototype.topPositionCalculate = function () {
         x: 0,
         y: 0
     };
-    position.x = this.isLeft ? this.bubbleRect.left : this.bubbleRect.right;
+    position.x = this.isLeft ? this.bubblePosition.rect.left : this.bubblePosition.rect.right;
     position.x += document.scrollingElement.scrollLeft;
-    let isSmall = (this.bubbleRect.width - standardInnerMargin * 2) < standardInnerMargin;
+    let isSmall = (this.bubblePosition.rect.width - standardInnerMargin * 2) < standardInnerMargin;
     let innerMargin = isSmall ? smallInnerMargin : standardInnerMargin;
     let xAdjust = this.isLeft ? innerMargin : innerMargin * -1;
     position.x += xAdjust;
@@ -357,7 +375,7 @@ EdgeDrawing.prototype.topPositionCalculate = function () {
     } else {
         yAdjust = this.isLeft ? -24 : -45;
     }
-    position.y = this.bubbleRect.top + yAdjust + document.scrollingElement.scrollTop;
+    position.y = this.bubblePosition.rect.top + yAdjust + document.scrollingElement.scrollTop;
     return position;
 };
 
@@ -366,13 +384,13 @@ EdgeDrawing.prototype.bottomPositionCalculate = function () {
         x: 0,
         y: 0
     };
-    position.x = this.bubbleRect.x + document.scrollingElement.scrollLeft;
-    let isSmall = (this.bubbleRect.width - standardInnerMargin * 2) < standardInnerMargin;
+    position.x = this.bubblePosition.rect.x + document.scrollingElement.scrollLeft;
+    let isSmall = (this.bubblePosition.rect.width - standardInnerMargin * 2) < standardInnerMargin;
     let innerMargin = isSmall ? smallInnerMargin : standardInnerMargin;
     if (this.isLowestInBetween) {
         innerMargin = 10;
     }
-    let xAdjust = this.isLeft ? innerMargin : this.bubbleRect.width - innerMargin;
+    let xAdjust = this.isLeft ? innerMargin : this.bubblePosition.rect.width - innerMargin;
     position.x += xAdjust;
     position.x = Math.round(position.x);
     let yAdjust;
@@ -381,7 +399,7 @@ EdgeDrawing.prototype.bottomPositionCalculate = function () {
     } else {
         yAdjust = this.isLeft ? -43 : -63;
     }
-    position.y = Math.round(this.bubbleRect.bottom + yAdjust + document.scrollingElement.scrollTop);
+    position.y = Math.round(this.bubblePosition.rect.bottom + yAdjust + document.scrollingElement.scrollTop);
     return position;
 };
 
