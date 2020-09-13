@@ -183,10 +183,8 @@
 import AppController from '@/AppController'
 import GraphController from '@/graph/GraphController'
 import AuthenticateService from "@/service/AuthenticateService";
-import CurrentSubGraph from '@/graph/CurrentSubGraph'
-import GraphElementService from '@/graph-element/GraphElementService'
-import Color from '@/Color'
 import I18n from '@/I18n'
+import Store from "@/store";
 
 export default {
   name: "SettingsMenu",
@@ -281,8 +279,9 @@ export default {
       get: function () {
         return this.$store.state.isShowRelations;
       },
-      set: function (value) {
-        this.$store.dispatch("setIsShowRelations", value);
+      set: async function (value) {
+        await this.$store.dispatch("setIsShowRelations", value);
+        Store.dispatch("redraw");
       }
     }
   }
