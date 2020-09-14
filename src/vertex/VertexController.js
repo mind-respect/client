@@ -416,8 +416,9 @@ VertexController.prototype.focusRelationCanDo = function () {
 
 VertexController.prototype.focusRelation = async function () {
     const relation = this.model().getParentBubble();
+    relation.refreshContent();
     relation.focusRelation = true;
-    this.model().getParentVertex().refreshChildren(false, true);
+    this.model().getParentVertex().refreshChildren(false);
     await Vue.nextTick();
     Selection.setToSingle(relation);
     relation.focus();

@@ -15,7 +15,7 @@
                 <transition :name="transitionName"
                             @before-enter="beforeExpandAnimation(child)" @after-leave="afterExpandAnimation"
                 >
-                    <Bubble :bubble="child.getShownBubble()"
+                    <Bubble :bubble="child"
                             :direction="direction"
                     ></Bubble>
                 </transition>
@@ -77,7 +77,7 @@
                             @before-enter="beforeExpandAnimation(child)"
                             @after-leave="afterExpandAnimation"
                 >
-                    <Bubble :bubble="child.getShownBubble()"
+                    <Bubble :bubble="child"
                             :direction="direction"
                     ></Bubble>
                 </transition>

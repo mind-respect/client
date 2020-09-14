@@ -140,101 +140,102 @@
                @drop="rightDrop"
                style="right:0;">
           </div>
-          <v-layout
-              v-if="(bubble.isEdge() || bubble.isGroupRelation())"
-              class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0 "
-              :key="contentKey"
-              :class="{
-                            'selected' : bubble.isSelected,
-                            'reverse': isLeft && !isCenter
-                                }">
-            <div class="image_container"></div>
-            <div class="in-bubble-content vh-center"
-                 @click="click"
-                 @mouseup="mouseup"
-                 @dblclick="dblclick"
-                 @mousedown="mouseDown"
-                 @dragstart="dragStart"
-                 @dragend="dragEnd"
-                 @contextmenu="rightClick"
-                 :draggable="!isEditFlow"
-                 :class="{
-                                'pl-12 pr-1': bubble.isEdge() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
-                                'pl-1 pr-12': bubble.isEdge() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
-                                'pl-6': (bubble.isGroupRelation() && !isLeft),
-                                'pr-6': (bubble.isGroupRelation() && isLeft)
-                             }"
-            >
-              <!--                            <v-skeleton-loader type="button"-->
-              <!--                                               v-if="bubble.isEdge() && bubble.isSkeleton()"-->
-              <!--                                               width="20"-->
-              <!--                                               height="20"-->
-              <!--                                               class="bubble-label"-->
-              <!--                            ></v-skeleton-loader>-->
-              <v-menu
-                  v-model="showMenu"
-                  :value="bubble.isSelected && $store.state.selected.length === 1"
-                  max-width="275"
-                  :nudge-width="275"
-                  auto
-                  right
-                  color="white"
-                  offset-y
-                  nudge-bottom="15"
-                  class="pa-0 ma-0"
-                  :open-on-click="false"
-                  :close-on-click="false"
-                  rounded="xl"
+          <div :key="contentKey" v-if="bubble.isEdge() || bubble.isGroupRelation()">
+            <v-layout
+                v-if="bubble.shouldShow()"
+                class="bubble relation graph-element relative pt-0 pb-0 mt-0 mb-0 "
+                :class="{
+                              'selected' : bubble.isSelected,
+                              'reverse': isLeft && !isCenter
+                                  }">
+              <div class="image_container"></div>
+              <div class="in-bubble-content vh-center"
+                   @click="click"
+                   @mouseup="mouseup"
+                   @dblclick="dblclick"
+                   @mousedown="mouseDown"
+                   @dragstart="dragStart"
+                   @dragend="dragEnd"
+                   @contextmenu="rightClick"
+                   :draggable="!isEditFlow"
+                   :class="{
+                                  'pl-12 pr-1': bubble.isEdge() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
+                                  'pl-1 pr-12': bubble.isEdge() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
+                                  'pl-6': (bubble.isGroupRelation() && !isLeft),
+                                  'pr-6': (bubble.isGroupRelation() && isLeft)
+                               }"
               >
-                <template v-slot:activator="{ on }">
-                  <div class="label-container" :style="inContentStyle">
-                    <v-chip :color="chipColor"
-                            small
-                            @dragover="labelDragEnter"
-                            @dragleave="labelDragLeave"
-                            @drop="labelDrop"
-                            :input-value="bubble.isSelected || isLabelDragOver"
-                            class="pt-0 pb-0 mt-0 mb-0 ma-0 pl-2 pr-2 label-chip vh-center"
-                            transition="none"
-                            :class="{
-                                                    'reverse': isLeft,
-                                                    'elevation-5': bubble.isSelected,
-                                                     'is-inverse' : isInverse,
-                                                     'is-shrinked' : isShrinked,
-                                                     'empty-edge' : bubble.isEdge() && !isEditFlow && bubble.isLabelEmpty()
-                                                }"
-                    >
-                      <InLabelButtons :bubble="bubble" :isLeft="isLeft" :isCenter="isCenter"
-                                      class="vh-center"
-                                      v-if="!isShrinked && !bubble.isLabelEmpty()"
-                                      :key="inLabelMenuKey"></InLabelButtons>
-                      <div class="bubble-label white--text"
-                           @blur="leaveEditFlow"
-                           :data-placeholder="relationPlaceholder()"
-                           @focus="focus"
-                           @paste="paste"
-                           v-show="!isShrinked"
-                           v-if="!bubble.isMetaRelation()"
-                           v-text="label()"
-                           @keydown="keydown"
-                           :style="labelFont"
-                           :class="{
-                                                        'unselectable' : !isEditFlow
-                                                    }"
-                      ></div>
-                      <v-icon v-if="bubble.isMetaRelation()" color="white" small
-                              class="bubble-label unselectable meta-relation-icon"
-                              v-show="!isShrinked">label
-                      </v-icon>
-                    </v-chip>
+                <!--                            <v-skeleton-loader type="button"-->
+                <!--                                               v-if="bubble.isEdge() && bubble.isSkeleton()"-->
+                <!--                                               width="20"-->
+                <!--                                               height="20"-->
+                <!--                                               class="bubble-label"-->
+                <!--                            ></v-skeleton-loader>-->
+                <v-menu
+                    v-model="showMenu"
+                    :value="bubble.isSelected && $store.state.selected.length === 1"
+                    max-width="275"
+                    :nudge-width="275"
+                    auto
+                    right
+                    color="white"
+                    offset-y
+                    nudge-bottom="15"
+                    class="pa-0 ma-0"
+                    :open-on-click="false"
+                    :close-on-click="false"
+                    rounded="xl"
+                >
+                  <template v-slot:activator="{ on }">
+                    <div class="label-container" :style="inContentStyle">
+                      <v-chip :color="chipColor"
+                              small
+                              @dragover="labelDragEnter"
+                              @dragleave="labelDragLeave"
+                              @drop="labelDrop"
+                              :input-value="bubble.isSelected || isLabelDragOver"
+                              class="pt-0 pb-0 mt-0 mb-0 ma-0 pl-2 pr-2 label-chip vh-center"
+                              transition="none"
+                              :class="{
+                                                      'reverse': isLeft,
+                                                      'elevation-5': bubble.isSelected,
+                                                       'is-inverse' : isInverse,
+                                                       'is-shrinked' : isShrinked,
+                                                       'empty-edge' : bubble.isEdge() && !isEditFlow && bubble.isLabelEmpty()
+                                                  }"
+                      >
+                        <InLabelButtons :bubble="bubble" :isLeft="isLeft" :isCenter="isCenter"
+                                        class="vh-center"
+                                        v-if="!isShrinked && !bubble.isLabelEmpty()"
+                                        :key="inLabelMenuKey"></InLabelButtons>
+                        <div class="bubble-label white--text"
+                             @blur="leaveEditFlow"
+                             :data-placeholder="relationPlaceholder()"
+                             @focus="focus"
+                             @paste="paste"
+                             v-show="!isShrinked"
+                             v-if="!bubble.isMetaRelation()"
+                             v-text="label()"
+                             @keydown="keydown"
+                             :style="labelFont"
+                             :class="{
+                                                          'unselectable' : !isEditFlow
+                                                      }"
+                        ></div>
+                        <v-icon v-if="bubble.isMetaRelation()" color="white" small
+                                class="bubble-label unselectable meta-relation-icon"
+                                v-show="!isShrinked">label
+                        </v-icon>
+                      </v-chip>
+                    </div>
+                  </template>
+                  <div :style="menuBackgroundColor" class="pt-2 rounded-xl">
+                    <BubbleButtons @refresh="refreshButtons"></BubbleButtons>
                   </div>
-                </template>
-                <div :style="menuBackgroundColor" class="pt-2 rounded-xl">
-                  <BubbleButtons @refresh="refreshButtons"></BubbleButtons>
-                </div>
-              </v-menu>
-            </div>
-          </v-layout>
+                </v-menu>
+              </div>
+            </v-layout>
+          </div>
         </div>
         <div :key="childrenKey" v-if="!isLeft && !isCenter">
           <div :key="bubble.childrenKey">
