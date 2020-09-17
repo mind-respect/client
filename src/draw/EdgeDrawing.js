@@ -128,7 +128,7 @@ EdgeDrawing.prototype.isChildInBetween = function (childPosition) {
         return false;
     }
     // console.log(label + " " + childPosition.middleY + " " + " " +  (this.bubblePosition.rect.top) + " " + (this.bubblePosition.rect.top + this.bubblePosition.rect.height));
-    return (this.bubblePosition.rect.top - 50) < childPosition.middleY && (this.bubblePosition.rect.top + this.bubblePosition.rect.height - 30) > childPosition.middleY;
+    return (this.bubblePosition.rect.top - 51) < childPosition.middleY && (this.bubblePosition.rect.top + this.bubblePosition.rect.height - 30) > childPosition.middleY;
 };
 
 EdgeDrawing.prototype.topDistanceWithChild = function (childPosition) {

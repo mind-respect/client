@@ -223,7 +223,7 @@ FriendlyResource.FriendlyResource.prototype.focus = function (event) {
         KeyboardActions.disable();
         GraphUi.disableDragScroll();
         let interval;
-        if (!focus.bind(this)()) {
+        if (!focus.bind(this)({ preventScroll: true })) {
             interval = setInterval(focus.bind(this), 100);
         }
 

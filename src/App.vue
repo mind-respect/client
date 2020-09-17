@@ -264,7 +264,7 @@
     </v-dialog>
     <DocsDialog ref="docsFlow"></DocsDialog>
     <AddExistingBubbleDialog ref="addExistingBubbleDialogInMenu"></AddExistingBubbleDialog>
-    <v-snackbar v-model="firstTimeSnackbar" color="secondary" timeout="-1">
+    <v-snackbar v-model="firstTimeSnackbar" color="secondary" timeout="-1" app >
       <v-toolbar color="transparent" dense elevation="0">
         <span class="text-body-1" v-if="$vuetify.breakpoint.mdAndUp">{{ $t('app:firstTime') }}</span>
         <v-divider vertical class="mx-4" color="white" v-if="$vuetify.breakpoint.mdAndUp"></v-divider>

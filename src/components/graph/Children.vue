@@ -17,6 +17,7 @@
                 >
                     <Bubble :bubble="child"
                             :direction="direction"
+                            :nbSiblings="bubble.rightBubbles.length - 1"
                     ></Bubble>
                 </transition>
             </div>
@@ -35,6 +36,7 @@
                     <Bubble
                             :bubble="bubble._sourceVertex"
                             :direction="direction"
+                            :nbSiblings="nbSiblings"
                     ></Bubble>
                 </transition>
                 <transition
@@ -46,6 +48,7 @@
                     <Bubble
                             :bubble="bubble._destinationVertex"
                             :direction="direction"
+                            :nbSiblings="nbSiblings"
                     ></Bubble>
 
                 </transition>
@@ -62,6 +65,7 @@
                 >
                     <Bubble :bubble="child"
                             :direction="direction"
+                            :nbSiblings="bubble.children.length - 1"
                     ></Bubble>
                 </transition>
             </div>
@@ -79,6 +83,7 @@
                 >
                     <Bubble :bubble="child"
                             :direction="direction"
+                            :nbSiblings="bubble.children.length - 1"
                     ></Bubble>
                 </transition>
             </div>
@@ -95,7 +100,8 @@
         name: "Children",
         props: [
             'bubble',
-            'direction'
+            'direction',
+            'nbSiblings'
         ],
         components: {
             Bubble: () => import('@/components/graph/Bubble')

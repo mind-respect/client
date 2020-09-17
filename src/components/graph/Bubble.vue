@@ -8,8 +8,10 @@
         :class="{
         'vertex-tree-container': !isCenter,
         'bubble-container': isCenter,
-        'pl-4': !isCenter && !isLeft && isParentRelationLess,
-        'pr-4': !isCenter && isLeft && isParentRelationLess
+        'pl-4': (nbSiblings === 0  || $vuetify.breakpoint.mdAndUp) && !isCenter && !isLeft && isParentRelationLess,
+        'pr-4': (nbSiblings === 0  || $vuetify.breakpoint.mdAndUp) && !isCenter && isLeft && isParentRelationLess,
+        'pl-0': (nbSiblings > 0 && $vuetify.breakpoint.smAndDown) && !isCenter && !isLeft && isParentRelationLess,
+        'pr-0': (nbSiblings > 0 && $vuetify.breakpoint.smAndDown) && !isCenter && isLeft && isParentRelationLess
     }" :id="containerId">
       <v-flex grow class="v-center drop-relative-container" :style="containerBoxShadow">
         <v-spacer v-if="isLeft"></v-spacer>
@@ -23,6 +25,7 @@
                   direction="left"
                   v-if="!bubble.isCollapsed && canShowChildren()"
                   ref="leftChildren"
+                  :nbSiblings="nbSiblings"
               >
               </Children>
             </transition>
@@ -102,7 +105,6 @@
                   >
                     <InLabelButtons :bubble="bubble" :isLeft="isLeft"
                                     :isCenter="isCenter" :key="inLabelMenuKey"></InLabelButtons>
-
                     <v-badge color="third" :left="isLeft"
                              :value="bubble.isMeta() || (isCenter && $store.state.isPatternFlow)">
                       <template v-slot:badge>
@@ -115,7 +117,7 @@
                           @blur="leaveEditFlow"
                           :data-placeholder="$t('vertex:default')"
                           v-html="label()"
-                          @focus="focus"
+                          @focus="focus({ preventScroll: true })"
                           @keydown="keydown"
                           @paste="paste"
                           :style="labelFont"
@@ -211,7 +213,7 @@
                         <div class="bubble-label white--text"
                              @blur="leaveEditFlow"
                              :data-placeholder="relationPlaceholder()"
-                             @focus="focus"
+                             @focus="focus({ preventScroll: true })"
                              @paste="paste"
                              v-show="!isShrinked"
                              v-if="!bubble.isMetaRelation()"
@@ -245,7 +247,9 @@
             >
               <Children :bubble="bubble"
                         v-if="!bubble.isCollapsed && canShowChildren()"
-                        direction="right">
+                        direction="right"
+                        :nbSiblings="nbSiblings"
+              >
               </Children>
             </transition>
 
@@ -283,7 +287,8 @@ export default {
   name: "Bubble",
   props: [
     'bubble',
-    'direction'
+    'direction',
+    'nbSiblings'
   ],
   components: {
     InLabelButtons,

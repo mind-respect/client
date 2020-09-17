@@ -26,6 +26,7 @@
                 <Bubble
                     :bubble="leftBubble"
                     direction="left"
+                    :nbSiblings="center.leftBubbles.length - 1"
                 ></Bubble>
               </transition>
             </v-flex>
@@ -37,6 +38,7 @@
               direction="center"
               v-if="center !== null"
               class="center-component"
+              :nbSiblings="0"
           ></Bubble>
           <div id="temp-center" v-if="center === null">
             <v-progress-circular indeterminate color="third" size="75"
@@ -59,6 +61,7 @@
                 <Bubble
                     :bubble="rightBubble"
                     direction="right"
+                    :nbSiblings="center.rightBubbles.length - 1"
                 ></Bubble>
               </transition>
             </v-flex>

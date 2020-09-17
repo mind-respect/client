@@ -32,7 +32,7 @@ export default {
             so the focus event is not triggered and this causes problems
          */
         element.blur();
-        element.focus();
+        element.focus({ preventScroll: true });
         if (element.innerHTML.trim() === "") {
             return;
         }
