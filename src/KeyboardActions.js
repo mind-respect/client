@@ -197,6 +197,9 @@ function defineCtrlPlusKeysAndTheirActions() {
     actions[KeyCode.KEY_H] = {
         action: "collapse"
     };
+    actions[KeyCode.KEY_I] = {
+        action: "focusRelation"
+    };
     actions[KeyCode.KEY_X] = {
         action: "cut"
     };

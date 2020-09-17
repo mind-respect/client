@@ -102,7 +102,8 @@ export default {
         {
           icon: "edit",
           action: "focusRelation",
-          badgeIcon: "arrow_right_alt"
+          badgeIcon: "arrow_right_alt",
+          ctrlShortcut: "I"
         },
         {
           icon: "unfold_more",
