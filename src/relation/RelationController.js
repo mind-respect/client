@@ -74,7 +74,7 @@ RelationController.prototype.addSiblingUp = function () {
 
 RelationController.prototype._addSiblingUpOrDown = function (isDown) {
     let nextBubbleController = this.model().getNextBubble().controller();
-    return isDown ? nextBubbleController.addSibling() : nextBubbleController.addSiblingUp();
+    return isDown ? nextBubbleController.addSibling(true) : nextBubbleController.addSiblingUp(true);
 };
 
 RelationController.prototype.addSiblingCanDo = RelationController.prototype.addSiblingUpCanDo =  function () {

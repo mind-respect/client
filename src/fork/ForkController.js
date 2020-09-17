@@ -84,17 +84,17 @@ ForkController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
     });
 };
 
-ForkController.prototype.addSibling = function () {
-    return this._addSiblingUpOrDown(true);
+ForkController.prototype.addSibling = function (forceUnderParentFork) {
+    return this._addSiblingUpOrDown(true, forceUnderParentFork);
 };
 
-ForkController.prototype.addSiblingUp = function () {
-    return this._addSiblingUpOrDown(false);
+ForkController.prototype.addSiblingUp = function (forceUnderParentFork) {
+    return this._addSiblingUpOrDown(false, forceUnderParentFork);
 };
 
-ForkController.prototype._addSiblingUpOrDown = function (isDown) {
+ForkController.prototype._addSiblingUpOrDown = function (isDown, forceUnderParentFork) {
     let parent = this.model().getParentBubble();
-    if (parent.isRelation() && (parent.isPristine() || parent.isLabelSameAsParentGroupRelation())) {
+    if (forceUnderParentFork || (parent.isRelation() && (parent.isPristine() || parent.isLabelSameAsParentGroupRelation()))) {
         parent = parent.getParentBubble();
     }
     return parent.controller().addChild(
