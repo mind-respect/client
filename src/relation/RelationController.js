@@ -59,6 +59,7 @@ RelationController.prototype.addChild = async function () {
         newGroupRelation
     );
     Selection.setToSingle(triple.destination);
+    triple.destination.isNewBubble = true;
     triple.destination.focus();
     return triple;
 };

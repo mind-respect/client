@@ -64,6 +64,7 @@ VertexController.prototype.addChild = function (index, isToTheLeft) {
                 this.model()
             );
             Selection.setToSingle(triple.destination);
+            triple.destination.isNewBubble = true;
             triple.destination.focus();
         });
         if (ShareLevel.PRIVATE === this.model().model().getShareLevel()) {
@@ -421,6 +422,7 @@ VertexController.prototype.focusRelation = async function () {
     this.model().getParentVertex().refreshChildren(false);
     await Vue.nextTick();
     Selection.setToSingle(relation);
+    relation.isNewBubble = true;
     relation.focus();
 };
 

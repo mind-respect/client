@@ -86,6 +86,7 @@ GroupRelationController.prototype.addChild = async function (index, isToTheLeft,
         );
         if (saveIndex) {
             Selection.setToSingle(triple.destination);
+            triple.destination.isNewBubble = true;
             triple.destination.focus();
         }
     });
