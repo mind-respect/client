@@ -161,11 +161,13 @@
                    @contextmenu="rightClick"
                    :draggable="!isEditFlow"
                    :class="{
-                                  'pl-12 pr-1': bubble.isEdge() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
-                                  'pl-1 pr-12': bubble.isEdge() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
-                                  'pl-6': (bubble.isGroupRelation() && !isLeft),
-                                  'pr-6': (bubble.isGroupRelation() && isLeft)
-                               }"
+                      'pl-12 pr-1': bubble.isEdge() && ( (isLeft && !isInverse) || (!isLeft && isInverse)),
+                      'pl-1 pr-12': bubble.isEdge() && ( (isLeft && isInverse) || (!isLeft && !isInverse)),
+                      'pl-4': (nbSiblings === 0  || $vuetify.breakpoint.mdAndUp) && !isLeft && bubble.isGroupRelation(),
+                      'pr-4': (nbSiblings === 0  || $vuetify.breakpoint.mdAndUp) && isLeft && bubble.isGroupRelation(),
+                      'pl-1': (nbSiblings > 0 && $vuetify.breakpoint.smAndDown) && !isLeft && bubble.isGroupRelation(),
+                      'pr-1': (nbSiblings > 0 && $vuetify.breakpoint.smAndDown) && isLeft && bubble.isGroupRelation()
+                   }"
               >
                 <!--                            <v-skeleton-loader type="button"-->
                 <!--                                               v-if="bubble.isEdge() && bubble.isSkeleton()"-->
