@@ -104,3 +104,12 @@ ForkController.prototype._addSiblingUpOrDown = function (isDown, forceUnderParen
         this.model().isToTheLeft()
     );
 };
+
+ForkController.prototype.addParentCanDo = function () {
+    return this.isSingleAndOwned() && !this.model().isCenter;
+}
+
+ForkController.prototype.addParent = async function () {
+    const triple = await this.addSibling();
+    await this.moveUnderParent(triple.destination);
+};

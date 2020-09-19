@@ -90,19 +90,19 @@ export default {
           icon: "arrow_downward",
           action: "addSibling"
         },
-        {
-          action: "addParent",
-          icon: function () {
-            let single = Selection.getSingle();
-            if (!single || single.isCenter) {
-              return "";
-            }
-
-            return single.isToTheLeft() ?
-                "arrow_forward" :
-                "arrow_back";
-          }
-        },
+        // {
+        //   action: "addParent",
+        //   icon: function () {
+        //     let single = Selection.getSingle();
+        //     if (!single || single.isCenter) {
+        //       return "";
+        //     }
+        //
+        //     return single.isToTheLeft() ?
+        //         "arrow_forward" :
+        //         "arrow_back";
+        //   }
+        // },
         {
           icon: "link",
           badgeImage: "/wikipedia-white.svg",
