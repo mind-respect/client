@@ -223,7 +223,7 @@ FriendlyResource.FriendlyResource.prototype.focus = function (event) {
         KeyboardActions.disable();
         GraphUi.disableDragScroll();
         let interval;
-        if (!focus.bind(this)({ preventScroll: true })) {
+        if (!focus.bind(this)({preventScroll: true})) {
             interval = setInterval(focus.bind(this), 100);
         }
 
@@ -639,7 +639,7 @@ FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDow
         Math.max(indexInForkBubble + indexAdjust, 0),
         this.isToTheLeft()
     );
-    if(!bubbleAround){
+    if (!bubbleAround) {
         return this;
     }
     bubbleAround = bubbleAround.getShownBubble()
@@ -739,9 +739,19 @@ FriendlyResource.FriendlyResource.prototype._getNextBubble = function (bottom, i
     return nextBubble;
 };
 
+FriendlyResource.FriendlyResource.prototype._reinsertDescendantsInSubGraph = function () {
+    let subGraph = CurrentSubGraph.get();
+    this.getDescendantsEvenIfCollapsed().forEach((descendant) => {
+        subGraph.add(descendant);
+    });
+}
+
 FriendlyResource.FriendlyResource.prototype.expand = function (avoidCenter, isFirstExpand) {
     if (!isFirstExpand && !this.isCenter && !this.canExpand()) {
         return;
+    }
+    if (!isFirstExpand) {
+        this._reinsertDescendantsInSubGraph();
     }
     this.loading = false;
     this.isExpanded = true;

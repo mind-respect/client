@@ -5,6 +5,7 @@ import TestUtil from '../util/TestUtil'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
 import CreationDateScenario from "../scenario/CreationDateScenario";
+import CurrentSubGraph from "@/graph/CurrentSubGraph";
 
 describe("FriendlyResource", () => {
     it("includes label comment and uri when building server format from ui", async () => {
@@ -612,6 +613,25 @@ describe("FriendlyResource", () => {
         });
     });
     describe("collapse", function () {
+        it("removes collapsed elements from subgraph", async () => {
+            let scenario = await new ThreeScenario();
+            let b3 = scenario.getBubble3InTree();
+            await scenario.expandBubble3(b3);
+            let b4 = TestUtil.getChildDeepWithLabel(
+                b3,
+                "b4"
+            );
+            expect(
+                b4.getLabel()
+            ).toBe("b4");
+            expect(
+                CurrentSubGraph.get().hasUri(b4.getUri())
+            ).toBeTruthy();
+            b3.collapse();
+            expect(
+                CurrentSubGraph.get().hasUri(b4.getUri())
+            ).toBeFalsy();
+        });
         xit("displays the hidden relations container after collapse", async () => {
             let scenario = await new ThreeScenario();
             let b2 = scenario.getBubble2InTree();
@@ -658,6 +678,31 @@ describe("FriendlyResource", () => {
             expect(
                 groupRelation.isExpanded()
             ).toBeFalsy();
+        });
+    });
+    describe("expand", () => {
+        it("inserts collapsed elements back in subgraph", async () => {
+            let scenario = await new ThreeScenario();
+            let b3 = scenario.getBubble3InTree();
+            await scenario.expandBubble3(b3);
+            let b4 = TestUtil.getChildDeepWithLabel(
+                b3,
+                "b4"
+            );
+            expect(
+                b4.getLabel()
+            ).toBe("b4");
+            expect(
+                CurrentSubGraph.get().hasUri(b4.getUri())
+            ).toBeTruthy();
+            b3.collapse();
+            expect(
+                CurrentSubGraph.get().hasUri(b4.getUri())
+            ).toBeFalsy();
+            b3.expand();
+            expect(
+                CurrentSubGraph.get().hasUri(b4.getUri())
+            ).toBeTruthy();
         });
     });
     describe("remove", async () => {
