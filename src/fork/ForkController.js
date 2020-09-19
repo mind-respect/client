@@ -30,6 +30,7 @@ ForkController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
         this.model().expand();
     }
     let promise = Promise.resolve();
+    let isFirstExpand = false;
     if (!avoidShowingLoad) {
         LoadingFlow.enterNoSpinner();
     }
@@ -38,6 +39,7 @@ ForkController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
     this.model().beforeExpand();
     if (!this.model().isExpanded) {
         if (!this.model().isCollapsed) {
+            isFirstExpand = true;
             promise = this.getSubGraphController().loadForParentIsAlreadyOnMap().then(() => {
                 if (avoidExpandChild) {
                     return true;
@@ -64,7 +66,7 @@ ForkController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
         promise = avoidExpandChild ? Promise.resolve() : this.expandDescendantsIfApplicable();
     }
     return promise.then(async () => {
-        this.model().expand(avoidCenter, true);
+        this.model().expand(avoidCenter, isFirstExpand);
         if (!avoidShowingLoad) {
             await Vue.nextTick();
             if (this.model().getNumberOfChild() === 0) {
