@@ -439,29 +439,11 @@ FriendlyResource.FriendlyResource.prototype.makeRight = function () {
 
 FriendlyResource.FriendlyResource.prototype.beforeExpand = function () {
     this.loading = true;
-    this.defineScrollPosition();
     // this.draw = false
     // Vue.nextTick(function () {
     // Store.dispatch("redraw")
     // }.bind(this))
 };
-
-FriendlyResource.FriendlyResource.prototype.defineScrollPosition = function () {
-    let html = this.getHtml();
-    if (!html) {
-        return;
-    }
-    this.scrollRect = html.getBoundingClientRect();
-};
-
-FriendlyResource.FriendlyResource.prototype.isScrollPositionDefined = function () {
-    return this.scrollRect !== undefined;
-};
-
-FriendlyResource.FriendlyResource.prototype.resetScrollPosition = function () {
-    delete this.scrollRect;
-};
-
 
 FriendlyResource.FriendlyResource.prototype.isInTypes = function (types) {
     return types.indexOf(this.getGraphElementType()) > -1;

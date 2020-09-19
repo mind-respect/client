@@ -309,7 +309,6 @@ GraphElementController.prototype.collapseCanDo = function () {
 };
 
 GraphElementController.prototype.collapse = function () {
-    this.model().defineScrollPosition();
     this.model().collapse();
 };
 
