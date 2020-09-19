@@ -704,7 +704,7 @@ export default {
         });
       }
       await this.$nextTick();
-      if (this.bubble.isNewBubble) {
+      if (this.bubble.isNewBubble && this.$vuetify.breakpoint.smAndDown) {
         this.bubble.isNewBubble = false;
         this.showMenu = true;
       }
