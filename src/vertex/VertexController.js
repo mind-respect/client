@@ -216,8 +216,8 @@ VertexController.prototype.becomeParent = async function (child, preventAnimatio
     if (movedEdge.getParentFork().getUri() === this.model().getUri()) {
         movedEdge.moveToParent(
             this.model(),
-            forceLeft,
-            preventAnimation
+            preventAnimation,
+            forceLeft
         );
     }
     if (movedEdge.getParentFork().getUri() !== this.model().getUri()) {
@@ -227,8 +227,8 @@ VertexController.prototype.becomeParent = async function (child, preventAnimatio
         );
         movedEdge.moveToParent(
             this.model(),
-            undefined,
-            preventAnimation
+            preventAnimation,
+            forceLeft
         );
         await movedEdgeParentBubble.controller().becomeExParent(movedEdge);
     }

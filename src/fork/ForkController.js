@@ -2,7 +2,9 @@ import GraphElementController from '@/graph-element/GraphElementController'
 import LoadingFlow from '@/LoadingFlow'
 import Vue from "vue";
 import GraphElementService from '@/graph-element/GraphElementService'
-import GraphElementType from '@/graph-element/GraphElementType'
+import Selection from '@/Selection'
+import ForkService from "@/fork/ForkService";
+import CurrentSubGraph from "@/graph/CurrentSubGraph";
 
 export default {
     ForkController: ForkController
@@ -106,10 +108,25 @@ ForkController.prototype._addSiblingUpOrDown = function (isDown, forceUnderParen
 };
 
 ForkController.prototype.addParentCanDo = function () {
-    return this.isSingleAndOwned() && !this.model().isCenter;
+    return this.isSingleAndOwned() && !this.model().isCenter && !this.model().getParentBubble().isMetaRelation()
 }
 
 ForkController.prototype.addParent = async function () {
-    const triple = await this.addSibling();
-    await this.moveUnderParent(triple.destination);
+    let parentFork = this.model().getParentFork();
+    let addTuple = ForkService.addTuple(
+        parentFork
+    );
+    let triple = addTuple.optimistic;
+    parentFork.addChild(
+        triple.edge,
+        this.model().isToTheLeft(),
+        this.model().getIndexInTree()
+    );
+    CurrentSubGraph.get().add(triple.edge);
+    await addTuple.promise;
+    await triple.destination.controller().becomeParent(this.model(), true, this.model().isToTheLeft())
+    Selection.setToSingle(triple.destination);
+    await Vue.nextTick();
+    triple.destination.isNewBubble = true;
+    triple.destination.focus();
 };

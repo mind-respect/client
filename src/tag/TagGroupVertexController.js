@@ -82,9 +82,9 @@ TagGroupVertexController.prototype.becomeExParent = function () {
     }
 };
 
-TagGroupVertexController.prototype.focusRelationCanDo = function () {
+TagGroupVertexController.prototype.addParentCanDo = function () {
     return false;
-};
+}
 
 api.MetaGroupVertexController = TagGroupVertexController;
 

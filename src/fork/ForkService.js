@@ -20,27 +20,29 @@ ForkService.addTuple = function (fork, afterPromise) {
         newVertex
     );
     afterPromise = afterPromise || Promise.resolve();
-    let promise = afterPromise.then(async () => {
-        let response = await Service.geApi().post(
-            fork.getUri(),
-            {
-                vertexId: newVertexId,
-                edgeId: newEdgeId
-            }
-        );
-        return Triple.fromEdgeAndSourceAndDestinationVertex(
-            Relation.fromServerFormat(response.data.edge),
-            fork,
-            Vertex.fromServerFormat(response.data.end_vertex)
-        );
-    });
     return {
         optimistic: Triple.fromEdgeAndSourceAndDestinationVertex(
             newEdge,
             fork,
             newVertex
         ),
-        promise: promise
+        promise: new Promise(async (resolve) => {
+            await afterPromise;
+            let response = await Service.geApi().post(
+                fork.getUri(),
+                {
+                    vertexId: newVertexId,
+                    edgeId: newEdgeId
+                }
+            );
+            resolve(
+                Triple.fromEdgeAndSourceAndDestinationVertex(
+                    Relation.fromServerFormat(response.data.edge),
+                    fork,
+                    Vertex.fromServerFormat(response.data.end_vertex)
+                )
+            );
+        })
     };
 };
 

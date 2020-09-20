@@ -424,13 +424,14 @@ GraphElement.GraphElement.prototype.addIdentification = function (tag) {
     }
 };
 
-GraphElement.GraphElement.prototype.getIndex = function (parentChildrenIndex) {
-    let indexInfo = parentChildrenIndex[this.getUri()];
+GraphElement.GraphElement.prototype.getIndex = function (parentForkChildrenIndexArray) {
+    parentForkChildrenIndexArray = parentForkChildrenIndexArray || this.getParentFork().getChildrenIndex();
+    let indexInfo = parentForkChildrenIndexArray[this.getUri()];
     if (!indexInfo) {
         if (this.isGroupRelation()) {
-            indexInfo = parentChildrenIndex[this.getIndexVertexUri()] || parentChildrenIndex[this.getPatternUri()];
+            indexInfo = parentForkChildrenIndexArray[this.getIndexVertexUri()] || parentForkChildrenIndexArray[this.getPatternUri()];
         } else {
-            indexInfo = parentChildrenIndex[this.getPatternUri()];
+            indexInfo = parentForkChildrenIndexArray[this.getPatternUri()];
         }
     }
     if (!indexInfo) {

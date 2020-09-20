@@ -354,7 +354,7 @@ GraphElementController.prototype.cut = function () {
 };
 
 GraphElementController.prototype.pasteTextCanDo = function () {
-    return this.isSingleAndOwned() && !MindMapInfo.isViewOnly() && navigator.clipboard  && navigator.clipboard.readText !== undefined;
+    return this.isSingleAndOwned() && !MindMapInfo.isViewOnly() && navigator.clipboard && navigator.clipboard.readText !== undefined;
 };
 
 GraphElementController.prototype.pasteText = async function () {
@@ -479,7 +479,7 @@ GraphElementController.prototype._canMoveAboveOrUnder = function (otherEdge) {
     return !graphElementToCompare.isSameUri(otherEdge);
 };
 
-GraphElementController.prototype.moveBelow = function (otherEdge) {
+GraphElementController.prototype.moveBelow = function (otherEdge, preventAnimation) {
     if (otherEdge.isVertexType()) {
         otherEdge = otherEdge.getParentBubble();
     }
@@ -489,7 +489,8 @@ GraphElementController.prototype.moveBelow = function (otherEdge) {
     return this._moveTo(
         otherEdge,
         false,
-        this.model().getParentFork()
+        this.model().getParentFork(),
+        preventAnimation
     );
 };
 
@@ -530,7 +531,7 @@ GraphElementController.prototype._canMoveUnderParent = function (parent, forceLe
     return true;
 };
 
-GraphElementController.prototype.becomeParent = function (child) {
+GraphElementController.prototype.becomeParent = function (child, preventAnimation) {
     return this.expand(true, true).then(() => {
         let children = this.model().getNextChildren();
         /*
@@ -538,7 +539,7 @@ GraphElementController.prototype.becomeParent = function (child) {
             but this function 'becomeParent' is overriden for these types of bubbles
         */
         let lastChild = children[children.length - 1];
-        return child.controller().moveBelow(lastChild);
+        return child.controller().moveBelow(lastChild, preventAnimation);
     });
 };
 
@@ -546,14 +547,14 @@ GraphElementController.prototype.moveUnderParent = function (parent, forceLeft) 
     if (!this._canMoveUnderParent(parent, forceLeft)) {
         return Promise.resolve();
     }
-    let previousParent;
+    let previousFork;
     let moveUnderParentCommand = new Command.forExecuteUndoAndRedo(
         () => {
-            previousParent = this.model().getParentVertex();
-            return parent.controller().becomeParent(this.model(), forceLeft);
+            previousFork = this.model().getParentFork();
+            return parent.controller().becomeParent(this.model(), undefined, forceLeft);
         },
         () => {
-            return previousParent.controller().becomeParent(this.model());
+            return previousFork.controller().becomeParent(this.model());
         },
         () => {
             return parent.controller().becomeParent(this.model());

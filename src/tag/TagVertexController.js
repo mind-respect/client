@@ -265,6 +265,11 @@ TagVertexController.prototype.remove = function (skipConfirmation) {
         skipConfirmation
     );
 };
+
+TagVertexController.prototype.addParentCanDo = function () {
+    return false;
+}
+
 //
 // TagVertexController.prototype.convertToDistantBubbleWithUri = function (distantTagUri) {
 //     if (!this.convertToDistantBubbleWithUriCanDo(distantTagUri)) {
