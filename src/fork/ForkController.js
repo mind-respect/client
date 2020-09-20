@@ -123,10 +123,21 @@ ForkController.prototype.addParent = async function () {
         this.model().getIndexInTree()
     );
     CurrentSubGraph.get().add(triple.edge);
+    let movedEdge = this.model().isVertexType() ? this.model().getParentBubble() : this.model();
+    movedEdge.moveToParent(
+        triple.destination,
+        true,
+        this.model().isToTheLeft()
+    );
     await addTuple.promise;
-    await triple.destination.controller().becomeParent(this.model(), true, this.model().isToTheLeft())
+    movedEdge.controller().replaceParentFork(
+        triple.destination,
+        true
+    );
+    movedEdge.getParentBubble().controller().becomeExParent(movedEdge);
     Selection.setToSingle(triple.destination);
-    await Vue.nextTick();
     triple.destination.isNewBubble = true;
     triple.destination.focus();
+    GraphElementService.changeChildrenIndex(triple.source);
+    GraphElementService.changeChildrenIndex(triple.destination);
 };
