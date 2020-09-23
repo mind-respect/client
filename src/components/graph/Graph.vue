@@ -250,6 +250,7 @@ export default {
           ).load();
     } else {
       let center = this.$route.params.newVertex;
+      center.isNewBubble = true
       /*
           this.$route.params.newVertex = undefined
           so that when centerRefresh is dispatched it's not considered new vertex
