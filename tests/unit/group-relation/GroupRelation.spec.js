@@ -7,6 +7,7 @@ import TestUtil from '../util/TestUtil'
 import Tag from '@/tag/Tag'
 import ConvertVertexToGroupRelationScenario from "../scenario/ConvertVertexToGroupRelationScenario";
 import GraphElementType from "../../../src/graph-element/GraphElementType";
+import GroupRelationAsChildScenario from "../scenario/GroupRelationAsChildScenario";
 
 describe("GroupRelation", function () {
     it("can have multiple identifiers", async () => {
@@ -226,8 +227,8 @@ describe("GroupRelation", function () {
                 "b2"
             );
             await b2.getNextBubble().controller().removeDo();
-            let relation1= b2.getNextBubble();
-            let relation2= relation1.getDownBubble().getParentBubble();
+            let relation1 = b2.getNextBubble();
+            let relation2 = relation1.getDownBubble().getParentBubble();
             expect(
                 relation2.getLabel()
             ).toBe("");
@@ -244,5 +245,24 @@ describe("GroupRelation", function () {
                 b2.isEdge()
             ).toBeTruthy();
         })
-    })
+    });
+    fit("does not duplicate source vertex when center is one of the child of the group relation", async () => {
+        let scenario = await new GroupRelationAsChildScenario();
+        let center = await scenario.getCenterInTree();
+        let rCenter = center.getNextBubble();
+        expect(
+            rCenter.getLabel()
+        ).toBe("rc1");
+        let groupRelation = rCenter.getNextBubble();
+        expect(
+            groupRelation.getGraphElementType()
+        ).toBe(GraphElementType.GroupRelation);
+        expect(
+            groupRelation.getParentBubble().getLabel()
+        ).toBe("rc1");
+        await scenario.expandGroupRelation(groupRelation);
+        expect(
+            groupRelation.getNumberOfChild()
+        ).toBe(3)
+    });
 });

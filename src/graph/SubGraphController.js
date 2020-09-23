@@ -113,6 +113,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
         let centerParentBubble = centerFork.getParentBubble();
         let centerParentFork = centerFork.getParentFork();
         let centerVertex = centerFork.isGroupRelation() ? centerFork.getParentVertex() : centerFork;
+        const addedUris = new Set();
         subGraph.sortedGraphElements(centerFork).forEach((child) => {
             if (child.getUri() === centerFork.getParentBubble().getUri()) {
                 return;
@@ -130,6 +131,7 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             if (!childHasMissingSourceFork && child.isGroupRelation() && child.getSourceForkUri() !== centerFork.getUri()) {
                 return;
             }
+
             let endFork;
             if (childHasMissingSourceFork) {
                 endFork = subGraph.getHavingUri(centerFork.getSourceForkUri());
@@ -150,11 +152,19 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             }
 
             if (childHasMissingSourceFork) {
+                if (addedUris.has(endFork.getUri())) {
+                    return;
+                }
+                addedUris.add(endFork.getUri())
                 centerFork.addChild(
                     endFork,
                     addLeft
                 );
             } else {
+                if (addedUris.has(child.getUri())) {
+                    return;
+                }
+                addedUris.add(child.getUri())
                 child.parentVertex = centerVertex;
                 child.parentBubble = centerFork;
                 centerFork.addChild(
