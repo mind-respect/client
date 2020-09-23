@@ -44,10 +44,8 @@ EdgeDrawing.prototype.redraw = function () {
     this.bubblePosition = this.getMiddleSidePosition(this.bubble, true);
     this.topPosition = this.topPositionCalculate();
     this.bottomPosition = this.bottomPositionCalculate();
-    this.children = this.bubble.getNextChildren(this.isLeft).map((child) => {
-        return child.getShownBubble();
-    }).filter((child) => {
-        return child.draw && child.getShownBubble().draw;
+    this.children = this.bubble.getNextChildren(this.isLeft).filter((child) => {
+        return child.draw;
     });
     if (this.children.length > 1) {
         this.highestChild = this.children[0];
@@ -161,7 +159,7 @@ EdgeDrawing.prototype.drawChildren = function () {
             this.bubble.refreshChildren(false, true);
             return true;
         }
-        if (child.isEdge() && child.isInverse()) {
+        if (child.isEdge() && child.isInverse() && child.shouldShow()) {
             lines += this.inverseArrowHead(childPosition)
         }
         if (this.bubble.isEdge() && !child.isMetaRelation()) {
@@ -169,7 +167,7 @@ EdgeDrawing.prototype.drawChildren = function () {
             lines += "M " + position.x + " " + position.y + " ";
             lines += "H " + (childPosition.x);
             // console.log(this.bubble.getLabel() + " " + position.x + "," + this.bubblePosition.y + " " + childPosition.x);
-            if (!this.bubble.isInverse()) {
+            if (!this.bubble.isInverse() && this.bubble.shouldShow()) {
                 lines += this.arrowHead(
                     position.x,
                     childPosition.x,
@@ -263,7 +261,9 @@ EdgeDrawing.prototype.inverseArrowHead = function (childPosition) {
 
 EdgeDrawing.prototype.getBubbleElement = function (bubble) {
     if (bubble.isEdge()) {
-        if (bubble.isShrinked() || bubble.getNumberOfChild() > 1) {
+        if (!bubble.shouldShow()) {
+            return bubble.getHtml().querySelectorAll('.draw-anchor-point')[0];
+        } else if (bubble.isShrinked() || bubble.getNumberOfChild() > 1) {
             return bubble.getChip();
         } else {
             return bubble.getLabelHtml();
@@ -322,7 +322,9 @@ EdgeDrawing.prototype.getMiddleSidePosition = function (bubble, isParent) {
     if (bubble.isGroupRelation() || (bubble.isEdge() && bubble.getNumberOfChild() > 1)) {
         yAdjust += 7;
     }
-    if (bubble.isEdgeType() || bubble.isGroupRelation()) {
+    if (!bubble.shouldShow()) {
+        yAdjust += -30;
+    } else if (bubble.isEdgeType() || bubble.isGroupRelation()) {
         yAdjust += -23;
     } else {
         yAdjust -= 7;

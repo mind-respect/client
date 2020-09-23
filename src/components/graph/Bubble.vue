@@ -44,6 +44,7 @@
                     }"
              :id="bubble.uiId"
         >
+          <div v-if="bubble.isRelation() && !bubble.shouldShow()" class="draw-anchor-point"></div>
           <div class="vertex-left-right-drop"
                v-if="(isCenter && bubble.leftBubbles.length === 0 ) || (!isCenter && isLeaf && isLeft)"
                @dragover="leftRightDragEnter"
