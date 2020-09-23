@@ -122,9 +122,6 @@ EdgeDrawing.prototype.isChildInBetween = function (childPosition) {
     if (this.bubble.isEdgeType()) {
         return true;
     }
-    if (this.bubble.isGroupRelation()) {
-        return false;
-    }
     // console.log(label + " " + childPosition.middleY + " " + " " +  (this.bubblePosition.rect.top) + " " + (this.bubblePosition.rect.top + this.bubblePosition.rect.height));
     return (this.bubblePosition.rect.top - 51) < childPosition.middleY && (this.bubblePosition.rect.top + this.bubblePosition.rect.height - 30) > childPosition.middleY;
 };
@@ -145,7 +142,6 @@ EdgeDrawing.prototype.buildArc = function (radius, firstPositive, secondPositive
 
 EdgeDrawing.prototype.drawChildren = function () {
     let lines = "";
-    let nonParentPosition = this.getMiddleSidePosition(this.bubble, true);
     this.children.forEach((child) => {
         let childPosition = this.getMiddleSidePosition(child);
         if (!childPosition) {
