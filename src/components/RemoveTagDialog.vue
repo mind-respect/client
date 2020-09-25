@@ -122,7 +122,6 @@ export default {
         while (l--) {
           let tagRelation = this.tagRelations[l];
           let nextBubble = tagRelation.getNextBubble();
-          debugger;
           tagRelation._tagVertex = tagRelation.getTagVertex();
           tagRelation._taggedBubble = tagRelation.getTaggedBubble();
           if (nextBubble.isMetaGroupVertex()) {
