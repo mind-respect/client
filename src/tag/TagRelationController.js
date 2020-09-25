@@ -76,6 +76,11 @@ TagRelationController.prototype.removeDo = async function () {
             return TagService.remove(taggedBubble.getUri(), tag);
         }))
     }));
+    taggedBubbles.forEach((taggedBubble) => {
+        if (taggedBubble.getTagsAndSelfIfRelevant().length === 0) {
+            taggedBubble.controller().hideTags();
+        }
+    });
     Store.dispatch("redraw");
 };
 TagRelationController.prototype.cutCanDo = function () {

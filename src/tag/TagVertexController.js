@@ -266,6 +266,15 @@ TagVertexController.prototype.remove = function (skipConfirmation) {
     );
 };
 
+TagVertexController.prototype.removeDo = function () {
+    if (this.model().isCenter) {
+        return VertexController.VertexController.prototype.removeDo.call(
+            this
+        );
+    }
+    return this.model().getParentBubble().controller().removeDo();
+};
+
 TagVertexController.prototype.addParentCanDo = function () {
     return false;
 }
