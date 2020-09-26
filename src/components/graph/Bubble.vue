@@ -657,7 +657,6 @@ export default {
           bubbleContainer.style.position = 'inherit';
         }
       }
-      this.bubble.focusRelation = false;
       this.isEditFlow = false;
       this.bubble.isEditFlow = false;
       let labelHtml = this.bubble.getLabelHtml();

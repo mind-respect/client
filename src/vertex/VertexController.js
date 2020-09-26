@@ -416,16 +416,30 @@ VertexController.prototype.focusRelationCanDo = function () {
 };
 
 VertexController.prototype.focusRelation = async function () {
+    const relation = await this._displayRelation();
+    relation.isNewBubble = true;
+    relation.focus();
+};
+
+VertexController.prototype._displayRelation = async function () {
     const relation = this.model().getParentBubble();
     relation.refreshContent();
     relation.focusRelation = true;
     this.model().getParentVertex().refreshChildren(false);
     await Vue.nextTick();
     Selection.setToSingle(relation);
-    relation.isNewBubble = true;
-    relation.focus();
-};
+    return relation;
+}
 
+VertexController.prototype.removeRelationCanDo = function () {
+    const parentBubble = this.model().getParentBubble();
+    return parentBubble.isRelation() && parentBubble.controller().removeCanDo();
+}
+
+VertexController.prototype.removeRelation = async function () {
+    const relation = await this._displayRelation()
+    return relation.controller().remove();
+};
 
 api.VertexController = VertexController;
 

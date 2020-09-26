@@ -264,7 +264,7 @@
     </v-dialog>
     <DocsDialog ref="docsFlow"></DocsDialog>
     <AddExistingBubbleDialog ref="addExistingBubbleDialogInMenu"></AddExistingBubbleDialog>
-    <v-snackbar v-model="firstTimeSnackbar" color="secondary" timeout="-1" app >
+    <v-snackbar v-model="firstTimeSnackbar" color="secondary" timeout="-1" app>
       <v-toolbar color="transparent" dense elevation="0">
         <span class="text-body-1" v-if="$vuetify.breakpoint.mdAndUp">{{ $t('app:firstTime') }}</span>
         <v-divider vertical class="mx-4" color="white" v-if="$vuetify.breakpoint.mdAndUp"></v-divider>
@@ -277,7 +277,8 @@
           <v-icon class="mr-2">book</v-icon>
           {{ $t('app:firstTime2') }}
         </v-btn>
-        <v-icon class="ml-8" @click="firstTimeSnackbar = false; $store.dispatch('setIsFirstTime', false);">close</v-icon>
+        <v-icon class="ml-8" @click="firstTimeSnackbar = false; $store.dispatch('setIsFirstTime', false);">close
+        </v-icon>
       </v-toolbar>
     </v-snackbar>
   </v-app>
@@ -341,10 +342,11 @@ export default {
       makePrivate: "Make private",
       makePublic: "Make public",
       remove: "Delete (del)",
+      removeRelation: "Delete the link with the bubble at the back",
       accept: "Accept",
       addSibling: "Add bubble under (enter)",
       addSiblingUp: "Add bubble above",
-      addParent : "Add a bubble at the back",
+      addParent: "Add a bubble at the back",
       zoomIn: "Zoom in",
       zoomOut: "Zoom out",
       expandAll: "Expand all",
@@ -400,10 +402,11 @@ export default {
       makePrivate: "Rendre privé",
       makePublic: "Rendre public",
       remove: "Effacer (suppr)",
+      removeRelation: "Effacer le lien avec la bulle en arrière",
       accept: "Accepter",
       addSibling: "Ajouter une bulle en dessous (enter)",
       addSiblingUp: "Ajouter une bulle au dessus",
-      addParent : "Ajouter une bulle en arrière",
+      addParent: "Ajouter une bulle en arrière",
       zoomIn: "Zoom intérieur",
       zoomOut: "Zoom extérieur",
       expandAll: "Expandre tout",
@@ -443,7 +446,7 @@ export default {
       recruits: "Recruits",
       recruitVideo: "https://www.youtube.com/embed/XTHBs3qsuxo?cc_load_policy=1&hl=en",
       recruitContact: "Contact me",
-      firstTime : "Welcome to mindrespect.com",
+      firstTime: "Welcome to mindrespect.com",
       firstTime2: "see documentation"
     });
 
@@ -457,7 +460,7 @@ export default {
       recruits: "Recrute",
       recruitVideo: "https://www.youtube.com/embed/XTHBs3qsuxo?cc_load_policy=0&hl=fr",
       recruitContact: "Contactez-moi",
-      firstTime : "Bienvenue sur mindrespect.com",
+      firstTime: "Bienvenue sur mindrespect.com",
       firstTime2: "consulter la documentation"
     });
     return {

@@ -318,4 +318,13 @@ api.Relation.prototype.isPristine = function () {
     ) && !this.isInverse();
 };
 
+api.Relation.prototype.deselect = function () {
+    FriendlyResource.FriendlyResource.prototype.deselect.call(this);
+    this.focusRelation = false;
+    if (!this.shouldShow()) {
+        this.refreshContent();
+        this.refreshChildren();
+    }
+}
+
 export default api;

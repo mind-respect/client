@@ -245,6 +245,11 @@ export default {
           action: "remove"
         },
         {
+          icon: "delete",
+          badgeIcon: "arrow_right_alt",
+          action: "removeRelation"
+        },
+        {
           icon: "fa-lightbulb-o",
           action: "suggestions"
         }
