@@ -432,6 +432,9 @@ VertexController.prototype._displayRelation = async function () {
 }
 
 VertexController.prototype.removeRelationCanDo = function () {
+    if (!this.isSingle()) {
+        return false;
+    }
     const parentBubble = this.model().getParentBubble();
     return parentBubble.isRelation() && parentBubble.controller().removeCanDo();
 }
