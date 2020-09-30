@@ -67,51 +67,6 @@ describe("TagGraph", () => {
             event2.isVertex()
         ).toBeTruthy();
     });
-    it("builds relation of type meta", async () => {
-        let scenario = await new AroundEventTagScenario();
-        let eventBubble = scenario.getEventBubbleInTree();
-        let relation = eventBubble.getNextBubble();
-        expect(
-            relation.getGraphElementType()
-        ).toBe(GraphElementType.MetaRelation);
-    });
-    //cant make test
-    it("prevents from editing relations of type meta", async () => {
-        let scenario = await new AroundEventTagScenario();
-        let eventBubble = scenario.getEventBubbleInTree();
-        let tagRelation = eventBubble.getNextBubble();
-        Selection.setToSingle(
-            tagRelation
-        );
-        expect(
-            tagRelation.getLabel()
-        ).toBe("");
-        TestUtil.pressKey("l");
-        TestUtil.pressKeyCode(KeyCode.KEY_RETURN);
-        await scenario.nextTickPromise(1);
-        expect(
-            tagRelation.getLabel()
-        ).toBe("");
-    });
-    it("inverts the meta relations", async () => {
-        let scenario = await new AroundEventTagScenario();
-        let eventMetaBubble = scenario.getEventBubbleInTree();
-        let tagRelation = eventMetaBubble.getNextBubble();
-        let eventBubble = tagRelation.getNextBubble();
-        expect(
-            tagRelation.isInverse()
-        ).toBeTruthy();
-        expect(
-            tagRelation.getSourceVertex().getUri()
-        ).toBe(
-            eventBubble.getUri()
-        );
-        expect(
-            tagRelation.getDestinationVertex().getUri()
-        ).toBe(
-            eventMetaBubble.getUri()
-        );
-    });
     it("groups tagged edges by source vertex", async () => {
         let scenario = await new AroundTodoTagScenario();
         let toDoMetaBubble = scenario.getCenterInTree();

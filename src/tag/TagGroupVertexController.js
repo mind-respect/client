@@ -7,7 +7,6 @@ import Vue from "vue";
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
 import GraphElementController from '@/graph-element/GraphElementController'
 import Selection from '@/Selection'
-import TagRelation from '@/tag/TagRelation'
 import GraphElementType from '@/graph-element/GraphElementType'
 import ForkService from "../fork/ForkService";
 
@@ -37,13 +36,13 @@ TagGroupVertexController.prototype.addChild = async function () {
             tagBubble.getOriginalMeta()
         );
     });
-    let metaRelation = new TagRelation(triple.destination, tagBubble);
-    metaRelation.setEdgeUri(triple.edge.getUri());
+    // let metaRelation = new TagRelation(triple.destination, tagBubble);
+    // metaRelation.setEdgeUri(triple.edge.getUri());
     this.model().addChild(
-        metaRelation
+        triple.edge
     );
     this.model().refreshChildren(true);
-    CurrentSubGraph.get().add(metaRelation);
+    CurrentSubGraph.get().add(triple.edge);
     await Vue.nextTick();
     Selection.setToSingle(triple.destination);
     triple.destination.focus();

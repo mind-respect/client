@@ -128,7 +128,7 @@ describe("RelationController", () => {
             let lastChild = groupRelation.getNextChildren()[groupRelation.getNumberOfChild() - 1];
             expect(
                 lastChild.getGraphElementType()
-            ).toBe(GraphElementType.MetaRelation);
+            ).toBe(GraphElementType.Meta);
         });
     });
 

@@ -245,7 +245,7 @@ GroupRelation.prototype.addChild = function (child, isToTheLeft, index) {
         });
         if (index === undefined) {
             index = this.areTagsShown ? this.children.filter((child) => {
-                return !child.isMetaRelation();
+                return !child.isMeta();
             }).length : this.children.length;
         }
         this.children.splice(
@@ -259,7 +259,7 @@ GroupRelation.prototype.addChild = function (child, isToTheLeft, index) {
     child.parentBubble = this;
     if (index === undefined) {
         index = this.areTagsShown ? this.children.filter((child) => {
-            return !child.isMetaRelation();
+            return !child.isMeta();
         }).length : this.children.length;
     }
     this.children.splice(

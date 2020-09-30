@@ -74,7 +74,6 @@ GraphElement.initMenuHandlerGetters = function () {
     controllerGetters[GraphElementType.Relation] = GraphDisplayer.getRelationMenuHandler;
     controllerGetters[GraphElementType.GroupRelation] = GraphDisplayer.getGroupRelationMenuHandler;
     controllerGetters[GraphElementType.Meta] = GraphDisplayer.getMetaController;
-    controllerGetters[GraphElementType.MetaRelation] = GraphDisplayer.getMetaRelationController;
     controllerGetters[GraphElementType.MetaGroupVertex] = GraphDisplayer.getMetaGroupVertexController;
     controllerGetters[GraphElementType.VertexSkeleton] = function () {
         return {
@@ -376,6 +375,9 @@ GraphElement.GraphElement.prototype.hasTagRelatedToUri = function (uri) {
     });
 };
 
+GraphElement.GraphElement.prototype.getTagVertex = function () {
+    return this.getClosestAncestorInTypes([GraphElementType.Meta]);
+};
 
 GraphElement.GraphElement.prototype.buildSelfIdentifier = function () {
     let tag = GraphDisplayer.getTagApi().fromFriendlyResource(

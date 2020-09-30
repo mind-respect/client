@@ -108,8 +108,8 @@ ForkController.prototype._addSiblingUpOrDown = function (isDown, forceUnderParen
 };
 
 ForkController.prototype.addParentCanDo = function () {
-    return this.isSingleAndOwned() && !this.model().isCenter && !this.model().getParentBubble().isMetaRelation()
-}
+    return this.isSingleAndOwned() && !this.model().isCenter && !this.model().getParentBubble().isMeta();
+};
 
 ForkController.prototype.addParent = async function () {
     let parentFork = this.model().getParentFork();

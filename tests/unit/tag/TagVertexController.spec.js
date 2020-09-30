@@ -3,17 +3,6 @@ import SingleAndTaggedToEventScenario from '../scenario/SingleAndTaggedToEventSc
 
 describe("TagVertexControllerSpec", () => {
     describe("expand", () => {
-        it("has right parent bubble for child meta relation", async () => {
-            let scenario = await new SingleAndTaggedToEventScenario();
-            let single = scenario.getCenterInTree();
-            await single.controller().showTags(true, false, true);
-            let meta = single.getNextBubble().getNextBubble();
-            await scenario.expandEventTag(meta);
-            let metaRelation = meta.getNextBubble();
-            expect(
-                metaRelation.getParentBubble().getLabel()
-            ).toBe("Event")
-        });
         it("has right parent bubble for meta relation", async () => {
             let scenario = await new SingleAndTaggedToEventScenario();
             let single = scenario.getCenterInTree();

@@ -20,17 +20,17 @@
             {{ $t('removeTag:multiple') }}
           </v-subheader>
           <v-list-item
-              v-for="tagRelation in tagRelations"
-              :key="tagRelation.uiId"
+              v-for="tagInfo in tagsInfo"
+              :key="tagInfo.taggedBubble.uiId"
           >
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon class="mr-2">
                   label
                 </v-icon>
-                "{{ tagRelation._tagVertex.getOriginalMeta().getLabelOrDefault() }}"
+                "{{ tagInfo.tagVertex.getOriginalMeta().getLabelOrDefault() }}"
                 {{ $t('toTheBubble') }}
-                "{{ tagRelation._taggedBubble.getLabelOrDefault() }}"
+                "{{ tagInfo.taggedBubble.getLabelOrDefault() }}"
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -63,9 +63,7 @@
 <script>
 import Selection from '@/Selection'
 import I18n from '@/I18n'
-import TagRelationController from '@/tag/TagRelationController'
 import KeyboardActions from '@/KeyboardActions'
-import GraphElementType from "../graph-element/GraphElementType";
 import CurrentSubGraph from "../graph/CurrentSubGraph";
 
 export default {
@@ -93,7 +91,7 @@ export default {
     });
     return {
       removeTagDialog: false,
-      tagRelations: []
+      tagsInfo: []
     }
   },
   mounted: function () {
@@ -104,45 +102,31 @@ export default {
       return this.$store.state.isRemoveTagFlow;
     },
     isMultipleFlow: function () {
-      return this.tagRelations.length > 1;
+      return this.tagsInfo.length > 1;
     }
   },
   watch: {
     isRemoveTagFlow: function () {
       if (this.$store.state.isRemoveTagFlow === false) {
         this.removeTagDialog = false;
-      } else {
-        this.tagRelations = this.$store.state.isRemoveTagFlow === true ?
-            Selection.getSelectedElements() :
-            this.$store.state.isRemoveTagFlow.map((tagRelationUri) => {
-              return CurrentSubGraph.get().getHavingUri(tagRelationUri);
-            });
-        let tagRelationsUnderGroupVertex = [];
-        let l = this.tagRelations.length;
-        while (l--) {
-          let tagRelation = this.tagRelations[l];
-          let nextBubble = tagRelation.getNextBubble();
-          tagRelation._tagVertex = tagRelation.getTagVertex();
-          tagRelation._taggedBubble = tagRelation.getTaggedBubble();
-          if (nextBubble.isMetaGroupVertex()) {
-            nextBubble.expand();
-            tagRelationsUnderGroupVertex = tagRelationsUnderGroupVertex.concat(
-                nextBubble.getNextChildren().map((child) => {
-                  return child.isMetaRelation() ? child : tagRelation
-                })
-            );
-            this.tagRelations.splice(l, 1);
-          }
-        }
-        this.tagRelations = this.tagRelations.concat(tagRelationsUnderGroupVertex);
-        this.removeTagDialog = true;
-        this.$nextTick(() => {
-          const element = this.$refs.enterRemoveInput;
-          this.$nextTick(() => {
-            element.focus()
-          });
-        })
+        return;
       }
+      const bubbles = this.$store.state.isRemoveTagFlow === true ?
+          Selection.getSelectedElements() :
+          this.$store.state.isRemoveTagFlow.map((bubbleUri) => {
+            return CurrentSubGraph.get().getHavingUri(bubbleUri);
+          });
+      this.tagsInfo = [];
+      bubbles.forEach((bubble) => {
+        this._addTagInfoFromBubble(bubble);
+      });
+      this.removeTagDialog = true;
+      this.$nextTick(() => {
+        const element = this.$refs.enterRemoveInput;
+        this.$nextTick(() => {
+          element.focus()
+        });
+      })
     },
     removeTagDialog: function () {
       if (this.removeTagDialog === false) {
@@ -155,11 +139,35 @@ export default {
   },
   methods: {
     remove: async function () {
-      let controller = new TagRelationController.MetaRelationController(
-          this.tagRelations
+      await Promise.all(
+          this.tagsInfo.map((tagInfo) => {
+            return tagInfo.original.controller().removeTagFromTaggedBubbleAndTagVertex(
+                tagInfo
+            );
+          })
       );
-      await controller.removeDo();
       this.removeTagDialog = false;
+    },
+    _addTagInfoFromBubble: function (bubble) {
+      if (bubble.isMetaGroupVertex()) {
+        bubble.expand();
+        return bubble.getNextChildren().forEach((child) => {
+          this._addTagInfoFromBubble(child);
+        });
+      }
+      let tagVertex, taggedBubble;
+      if (bubble.isMeta()) {
+        tagVertex = bubble;
+        taggedBubble = bubble.getParentVertex();
+      } else {
+        tagVertex = bubble.getTagVertex();
+        taggedBubble = bubble;
+      }
+      this.tagsInfo.push({
+        taggedBubble: taggedBubble,
+        tagVertex: tagVertex,
+        original: bubble
+      });
     }
   }
 }

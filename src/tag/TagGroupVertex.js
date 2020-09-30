@@ -22,4 +22,16 @@ TagGroupVertex.prototype.getGraphElementType = function () {
     return GraphElementType.MetaGroupVertex;
 };
 
+TagGroupVertex.prototype.removeChild = function (child, isTemporary, avoidRedraw) {
+    Vertex.Vertex.prototype.removeChild.call(
+        this,
+        child,
+        isTemporary,
+        avoidRedraw
+    );
+    if (this.getNumberOfChild() === 0) {
+        this.remove();
+    }
+};
+
 export default TagGroupVertex;

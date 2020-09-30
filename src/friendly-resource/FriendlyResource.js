@@ -366,10 +366,6 @@ FriendlyResource.FriendlyResource.prototype.isMeta = function () {
     return this.type.isMeta();
 };
 
-FriendlyResource.FriendlyResource.prototype.isMetaRelation = function () {
-    return this.type.isMetaRelation();
-};
-
 FriendlyResource.FriendlyResource.prototype.isMetaGroupVertex = function () {
     return this.type.isMetaGroupVertex();
 };

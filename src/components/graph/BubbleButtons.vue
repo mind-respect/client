@@ -49,6 +49,11 @@ export default {
       single: null,
       buttons: [
         {
+          icon: "delete",
+          badgeIcon: "label",
+          action: "removeTagFlow"
+        },
+        {
           icon: "link",
           action: "goToLink",
           hightlight: true,

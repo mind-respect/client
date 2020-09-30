@@ -144,7 +144,7 @@ Vertex.prototype.addChild = async function (child, isToTheLeft, index) {
     }
     if (index === undefined) {
         index = this.areTagsShown ? children.filter((child) => {
-            return !child.isMetaRelation();
+            return !child.isMeta();
         }).length : children.length;
     } else {
         index = Math.min(index, children.length);
@@ -290,7 +290,12 @@ Vertex.prototype.remove = function (preventRemoveDescendants) {
         });
     }
     CurrentSubGraph.get().remove(this);
-    this.getParentBubble().remove(true);
+    const parentBubble = this.getParentBubble();
+    if (parentBubble.isEdgeType()) {
+        parentBubble.remove(true);
+    } else {
+        parentBubble.removeChild(this);
+    }
 };
 
 Vertex.prototype.removeChild = function (child, isTemporary, avoidRedraw) {

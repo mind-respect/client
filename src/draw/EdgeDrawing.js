@@ -158,7 +158,7 @@ EdgeDrawing.prototype.drawChildren = function () {
         if (child.isEdge() && child.isInverse() && child.shouldShow()) {
             lines += this.inverseArrowHead(childPosition)
         }
-        if (this.bubble.isEdge() && !child.isMetaRelation()) {
+        if (this.bubble.isEdge()) {
             let position = this.getMiddleSidePosition(this.bubble);
             lines += "M " + position.x + " " + position.y + " ";
             lines += "H " + (childPosition.x);

@@ -316,6 +316,7 @@ export default {
   },
   data: function () {
     I18n.i18next.addResources("en", "button", {
+      removeTagFlow: "Remove tag",
       enterDuplicateMenu: "See duplicates",
       goToLink: "Go to the clicked link",
       select: "Hand selector",
@@ -351,7 +352,6 @@ export default {
       zoomOut: "Zoom out",
       expandAll: "Expand all",
       selectAllBubbles: "Select all",
-      visitOtherInstances: "See where this bubble is also found on this map",
       collapse: "Hide tree",
       collapseOthers: "Hide other trees",
       expand: "Expand",
@@ -376,6 +376,7 @@ export default {
       openWikipediaLink: "Open Wikipedia link"
     });
     I18n.i18next.addResources("fr", "button", {
+      removeTagFlow: "Enlever l'étiquette",
       enterDuplicateMenu: "Voir les duplicats",
       goToLink: "Aller au lien cliqué",
       select: "Sélection à la main",
@@ -411,7 +412,6 @@ export default {
       zoomOut: "Zoom extérieur",
       expandAll: "Expandre tout",
       selectAllBubbles: "Sélectionner tout",
-      visitOtherInstances: "Voir où cette bulle se trouve également sur cette carte",
       collapse: "Cacher l'arbre",
       collapseOthers: "Cacher les autres arbres",
       expand: "Expandre",

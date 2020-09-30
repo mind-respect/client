@@ -7,7 +7,6 @@ const api = {
     "Relation": "relation",
     "GroupRelation": "groupRelation",
     "Meta": "meta",
-    "MetaRelation": "meta_relation",
     "MetaGroupVertex": "meta_group_vertex",
     "VertexSkeleton" : "vertexSkeleton",
     "RelationSkeleton" : "relationSkeleton",
@@ -26,7 +25,6 @@ api.GraphElementType = function (type) {
     this._isVertexType = api.isVertexType(type);
     this._isEdgeType = api.isEdgeType(type);
     this._isMeta = api.isMeta(type);
-    this._isMetaRelation = api.isMetaRelation(type);
     this._isMetaGroupVertex = api.isMetaGroupVertex(type);
 };
 
@@ -56,10 +54,6 @@ api.GraphElementType.prototype.isEdgeType = function () {
 
 api.GraphElementType.prototype.isMeta = function () {
     return this._isMeta;
-};
-
-api.GraphElementType.prototype.isMetaRelation = function () {
-    return this._isMetaRelation;
 };
 
 api.GraphElementType.prototype.isMetaGroupVertex = function () {
@@ -92,10 +86,6 @@ api.isMeta = function (type) {
     return api.Meta === type;
 };
 
-api.isMetaRelation = function (type) {
-    return api.MetaRelation === type;
-};
-
 api.isMetaGroupVertex = function (type) {
     return api.MetaGroupVertex === type;
 };
@@ -121,7 +111,6 @@ api.getVertexTypes = function () {
 api.getEdgeTypes = function () {
     return [
         api.Relation,
-        api.MetaRelation,
         api.RelationSkeleton
     ];
 };

@@ -219,7 +219,6 @@
                              @focus="focus({ preventScroll: true })"
                              @paste="paste"
                              v-show="!isShrinked"
-                             v-if="!bubble.isMetaRelation()"
                              v-text="label()"
                              @keydown="keydown"
                              :style="labelFont"
@@ -227,10 +226,6 @@
                                                           'unselectable' : !isEditFlow
                                                       }"
                         ></div>
-                        <v-icon v-if="bubble.isMetaRelation()" color="white" small
-                                class="bubble-label unselectable meta-relation-icon"
-                                v-show="!isShrinked">label
-                        </v-icon>
                       </v-chip>
                     </div>
                   </template>
@@ -333,7 +328,7 @@ export default {
     if (this.bubble.isSkeleton()) {
       this.chipColor = Color.SkeletonColor;
     } else {
-      this.chipColor = this.bubble.isMetaRelation() ? "third" : "secondary";
+      this.chipColor = "secondary";
     }
     this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
     this.isLeft = this.direction === "left";
@@ -581,7 +576,7 @@ export default {
     dblclick: function (event) {
       event.stopPropagation();
       this.showMenu = false;
-      if (MindMapInfo.isViewOnly() || this.bubble.isEditFlow || this.bubble.isMetaRelation()) {
+      if (MindMapInfo.isViewOnly() || this.bubble.isEditFlow) {
         this.$store.dispatch("failedToEdit");
         return;
       }

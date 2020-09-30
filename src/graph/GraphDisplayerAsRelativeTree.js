@@ -9,7 +9,6 @@ import GraphController from '@/graph/GraphController'
 import AppController from '@/AppController'
 import MetaController from '@/tag/TagVertexController'
 import GraphElementController from '@/graph-element/GraphElementController'
-import MetaRelationController from '@/tag/TagRelationController'
 import MetaGroupVertexController from '@/tag/TagGroupVertexController'
 import Tag from "@/tag/Tag";
 
@@ -39,10 +38,6 @@ api.getAppController = function () {
 };
 api.getMetaController = function () {
     return MetaController;
-};
-
-api.getMetaRelationController = function () {
-    return MetaRelationController;
 };
 
 api.getMetaGroupVertexController = function () {

@@ -16,7 +16,6 @@ import RelationService from '@/relation/RelationService'
 import Vertex from '@/vertex/Vertex'
 import Relation from '@/relation/Relation'
 import SubGraphController from '@/graph/SubGraphController'
-import TagRelation from "@/tag/TagRelation";
 import TagVertex from "@/tag/TagVertex";
 import Scroll from "../Scroll";
 import ShareLevel from '@/vertex/ShareLevel'
@@ -133,21 +132,17 @@ GraphElementController.prototype.center = function () {
     );
 };
 
-GraphElementController.prototype.visitOtherInstancesCanDo = function () {
-    return false;
-};
-
 GraphElementController.prototype.tagTogetherCanDo = function () {
     return this.getModelArray().length === 2 && this.isOwned();
-};
-
-GraphElementController.prototype.addTagCanDo = function () {
-    return this.isSingle() && this.isOwned();
 };
 
 GraphElementController.prototype.tagTogether = GraphElementController.prototype.addTag = function () {
     Store.dispatch("setIsAddTagFlow", true);
     return Promise.resolve();
+};
+
+GraphElementController.prototype.addTagCanDo = function () {
+    return this.isSingle() && this.isOwned();
 };
 
 GraphElementController.prototype.showTagsCanDo = function () {
@@ -212,14 +207,9 @@ GraphElementController.prototype._addTagAsChild = function (tag) {
     }
     CurrentSubGraph.get().add(tagBubble);
     tagBubble.setOriginalMeta(tag);
-    let tagRelation = new TagRelation(
-        this.model().isForkType() ? this.model() : this.model().getParentFork(),
+    this.model().addChild(
         tagBubble
     );
-    this.model().addChild(
-        tagRelation
-    );
-    CurrentSubGraph.get().add(tagRelation);
 };
 
 GraphElementController.prototype.hideTagsCanDo = function () {
@@ -229,14 +219,6 @@ GraphElementController.prototype.hideTagsCanDo = function () {
 GraphElementController.prototype.hideTags = async function (preventRedraw) {
     if (!this.hideTagsCanDo()) {
         return;
-    }
-    let children = this.model().getNextChildren();
-    let l = children.length;
-    while (l--) {
-        let child = children[l];
-        if (child.isMetaRelation()) {
-            child.remove();
-        }
     }
     this.model().areTagsShown = false;
     if (!preventRedraw) {
@@ -841,7 +823,6 @@ GraphElementController.prototype.removeTag = async function (tag) {
     this.model().removeTag(
         tag
     );
-    let parentBubble = this.model().getParentBubble();
     return new Promise((resolve) => {
         TagService.remove(
             this.model().getUri(),
@@ -855,13 +836,15 @@ GraphElementController.prototype.removeTag = async function (tag) {
             this.model().refreshButtons();
             if (this.model().areTagsShown === true) {
                 this.model().getNextChildren().forEach((child) => {
-                    if (child.isMetaRelation()) {
-                        let meta = child.getNextBubble();
-                        if (meta.getOriginalMeta().getExternalResourceUri() === tag.getExternalResourceUri()) {
+                    if (child.isMeta()) {
+                        if (child.getOriginalMeta().getExternalResourceUri() === tag.getExternalResourceUri()) {
                             child.remove();
                         }
                     }
                 });
+            }
+            if (this.model().getTagsAndSelfIfRelevant().length === 0) {
+                this.model().controller().hideTags();
             }
         });
     });
@@ -961,6 +944,33 @@ GraphElementController.prototype.enterDuplicateMenuCanDo = function () {
 
 GraphElementController.prototype.enterDuplicateMenu = function () {
     Store.dispatch("setIsDuplicateFlow", true);
+};
+
+GraphElementController.prototype.removeTagFlowCanDo = function () {
+    return this.getUiArray().every((fork) => {
+        let parentBubble = fork.getParentBubble();
+        return !fork.isCenter && (fork.isMeta() || parentBubble.isMeta() || parentBubble.isMetaGroupVertex());
+    });
+};
+
+GraphElementController.prototype.removeTagFlow = async function (skipConfirmation) {
+    if (skipConfirmation) {
+        return this.removeDo();
+    }
+    Store.dispatch("setIsRemoveTagFlow", this.getUiArray().map((tagged) => {
+        return tagged.getUri();
+    }));
+};
+
+GraphElementController.prototype.removeTagFromTaggedBubbleAndTagVertex = async function (tagInfo) {
+    await tagInfo.taggedBubble.controller().removeTag(
+        tagInfo.tagVertex.getOriginalMeta()
+    );
+    if (this.model().isMeta()) {
+        this.model().remove();
+    } else {
+        tagInfo.taggedBubble.remove();
+    }
 };
 
 GraphElementController.prototype._areAllElementsPublicWithLink = function () {

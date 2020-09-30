@@ -100,7 +100,7 @@ GroupRelationController.prototype.addSiblingCanDo = GroupRelationController.prot
 GroupRelationController.prototype.becomeExParent = async function () {
     let bubbleToSelect;
     let children = this.model().getNextChildren().filter((child) => {
-        return !child.isMetaRelation();
+        return !child.isMeta();
     });
     if (children.length === 1) {
         let edge = await this.convertToRelation();

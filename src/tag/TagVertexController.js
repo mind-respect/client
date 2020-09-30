@@ -5,7 +5,6 @@
 import VertexController from '@/vertex/VertexController'
 import GraphService from '@/graph/GraphService'
 import TagGraph from '@/tag/TagGraph'
-import TagRelation from '@/tag/TagRelation'
 import TagGroupVertex from '@/tag/TagGroupVertex'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import VertexService from '@/vertex/VertexService'
@@ -16,7 +15,6 @@ import SubGraphController from '@/graph/SubGraphController'
 import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import GraphElement from '@/graph-element/GraphElement'
-import Triple from '@/triple/Triple'
 
 const api = {};
 
@@ -63,7 +61,7 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
         let subGraph = tagSubGraph.getSubGraph();
         subGraph.center = centerBubble;
         let edgesBySourceFork = buildEdgesGroupedBySourceFork(tagSubGraph, centerBubble);
-        let edges = [];
+        let children = [];
         Object.keys(edgesBySourceFork).forEach((forkUri) => {
             let sourceForkAndEdges = edgesBySourceFork[forkUri];
             let child;
@@ -76,8 +74,8 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
             }
             if (sourceForkAndEdges.edges.length === 0) {
                 vertex.getNbNeighbors().incrementForShareLevel(centerBubble.getShareLevel());
-                child = new TagRelation(vertex, centerBubble);
-                edges.push(child);
+                vertex.parentBubble = vertex.parentVertex = centerBubble;
+                children.push(vertex);
             } else {
                 vertex = new TagGroupVertex(
                     vertex
@@ -85,11 +83,9 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
                 if (!preventAddInCurrentGraph) {
                     CurrentSubGraph.get().add(vertex);
                 }
-                child = new TagRelation(vertex, centerBubble);
-                vertex.parentBubble = child;
+                vertex.parentBubble = centerBubble;
                 vertex.parentVertex = centerBubble;
-                child.parentVertex = vertex;
-                edges.push(child);
+                children.push(vertex);
                 sourceForkAndEdges.edges.forEach((edge) => {
                     vertex.addChild(edge);
                     if (!preventAddInCurrentGraph) {
@@ -106,19 +102,19 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
             }
         });
         let childrenIndex = centerBubble.getChildrenIndex();
-        sortEdges(edges, centerBubble).forEach((edge) => {
-            let endVertex = edge.getOtherVertex(centerBubble);
+        sortChildren(children, centerBubble).forEach((child) => {
+            let endVertex = child.isVertexType() ? child : child.getOtherVertex(centerBubble);
             let childIndex = childrenIndex[endVertex.getUri()] || childrenIndex[endVertex.getPatternUri()];
             let addLeft;
             if (childIndex !== undefined) {
                 addLeft = childIndex.toTheLeft;
             }
             centerBubble.addChild(
-                edge,
+                child,
                 addLeft
             );
             if (!preventAddInCurrentGraph) {
-                CurrentSubGraph.get().add(edge);
+                CurrentSubGraph.get().add(child);
             }
         });
         if (!subGraph.serverFormat.childrenIndexesCenterTag) {
@@ -138,11 +134,11 @@ TagVertexController.prototype.openWikipediaLink = function () {
     window.open(this.model().wikipediaUrl, '_blank').focus();
 };
 
-function sortEdges(edges, metaGroupVertex) {
+function sortChildren(children, metaGroupVertex) {
     let childrenIndex = metaGroupVertex.getChildrenIndex();
-    return edges.sort((a, b) => {
-        let vertexA = a.getOtherVertex(metaGroupVertex);
-        let vertexB = b.getOtherVertex(metaGroupVertex);
+    return children.sort((a, b) => {
+        let vertexA = a.isVertexType() ? a : a.getOtherVertex(metaGroupVertex);
+        let vertexB = b.isVertexType() ? b : b.getOtherVertex(metaGroupVertex);
         return GraphElement.sortCompare(
             vertexA,
             vertexB,
@@ -203,23 +199,17 @@ TagVertexController.prototype.addChild = async function () {
     newVertex.controller().addIdentification(
         this.model().getOriginalMeta()
     );
-    let newEdge = new TagRelation(newVertex, this.model());
     this.model().addChild(
-        newEdge
+        newVertex
     );
-    CurrentSubGraph.get().add(newEdge);
+    CurrentSubGraph.get().add(newVertex);
     this.model().refreshChildren(true);
     await Vue.nextTick();
     GraphElementService.changeChildrenIndex(
         this.model()
     );
-    let triple = Triple.fromEdgeAndSourceAndDestinationVertex(
-        newEdge,
-        this.model(),
-        newVertex
-    );
-    Selection.setToSingle(triple.destination);
-    triple.destination.focus();
+    Selection.setToSingle(newVertex);
+    newVertex.focus();
 };
 
 TagVertexController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft) {
@@ -227,28 +217,25 @@ TagVertexController.prototype.relateToDistantVertexWithUri = function (distantVe
         Vertex.withUri(
             distantVertexUri
         )
-    ).loadNonCenter().then((distantVertex) => {
-        let newEdge = new TagRelation(distantVertex, this.model());
-        distantVertex.parentBubble = newEdge;
-        distantVertex.parentVertex = this.model();
+    ).loadNonCenter().then(async (distantVertex) => {
+        distantVertex.parentBubble = distantVertex.parentVertex = this.model();
         distantVertex.controller().addIdentification(
             this.model().getOriginalMeta()
         );
         this.model().addChild(
-            newEdge,
+            distantVertex,
             isLeft,
             index
         );
         CurrentSubGraph.get().add(
-            newEdge
+            distantVertex
         );
         this.model().refreshChildren();
-        Vue.nextTick(() => {
-            Selection.setToSingle(distantVertex);
-            // GraphElementService.changeChildrenIndex(
-            //     this.model()
-            // );
-        });
+        await Vue.nextTick()
+        Selection.setToSingle(distantVertex);
+        // GraphElementService.changeChildrenIndex(
+        //     this.model()
+        // );
     });
 };
 
@@ -272,7 +259,10 @@ TagVertexController.prototype.removeDo = function () {
             this
         );
     }
-    return this.model().getParentBubble().controller().removeDo();
+    return this.removeTagFromTaggedBubbleAndTagVertex({
+        taggedBubble: this.model().getParentBubble(),
+        tagVertex: this.model()
+    });
 };
 
 TagVertexController.prototype.addParentCanDo = function () {
