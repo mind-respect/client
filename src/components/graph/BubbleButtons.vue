@@ -20,7 +20,6 @@
                     color="primary"
                     text
                     @click="copyLabel"
-                    class="ma-1"
                     large
                 >
                     <v-icon>{{ button.icon }}</v-icon>

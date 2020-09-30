@@ -16,7 +16,7 @@
             <template v-slot:activator="{ on }">
                 <span v-on="on">
                     <v-badge
-                        color="third" class="button-menu-badge" :overlap="true"
+                        color="third" class="button-menu-badge ma-1" overlap
                         :value="button.badge !== undefined || button.badgeIcon !== undefined || button.badgeImage !== undefined"
                     >
                         <template v-slot:badge>
@@ -29,7 +29,6 @@
                             v-else
                             icon
                             large
-                            class="ma-1"
                             :color="color"
                             @click="performAction(button, $event)"
                             :disabled="button.disableNotHide && !canDo(button)"
