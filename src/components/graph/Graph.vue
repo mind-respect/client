@@ -411,7 +411,7 @@ export default {
       return (this.$vuetify.breakpoint.mdAndDown ? 1 : 2) * this.$store.state.zoom;
     },
     arrowHeadLength: function () {
-      return (this.$vuetify.breakpoint.smAndDown ? 4 : 6) * this.$store.state.zoom;
+      return 6 * this.$store.state.zoom;
     },
     isOwner: function () {
       if (!this.$store.state.user) {
