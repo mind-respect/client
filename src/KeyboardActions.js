@@ -77,7 +77,7 @@ function keyDownHandler(event) {
         nonCtrlPlusActions;
     let feature = actionSet[event.which];
     if (feature === undefined) {
-        if (event.which !== KeyboardActions._ctrlKeyNumber && Selection.isSingle()) {
+        if (!isCombineKeyPressed && Selection.isSingle()) {
             let selectedElement = Selection.getSingle();
             if (MindMapInfo.isViewOnly()) {
                 Store.dispatch("failedToEdit");
