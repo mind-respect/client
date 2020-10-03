@@ -264,6 +264,18 @@ GraphElement.GraphElement.prototype.getIdentifiersIncludingSelf = function (prev
     return identifiers;
 };
 
+GraphElement.GraphElement.prototype.getTagChildren = function () {
+    const parentVertex = this.getParentVertex();
+    return this.getTagsAndSelfIfRelevant().filter((tag)=>{
+        return parentVertex.getUri() !== tag.getUri();
+    });
+};
+
+GraphElement.GraphElement.prototype.getNbTagChildren = function () {
+    const nbTags = this.getTagsAndSelfIfRelevant().length;
+    return this.getParentVertex().isMeta() ? nbTags - 1 : nbTags;
+};
+
 GraphElement.GraphElement.prototype.getTagsAndSelfIfRelevant = function () {
     return this.identifiers.filter((tag) => {
         return tag.getExternalResourceUri() !== this.getUri()

@@ -164,7 +164,7 @@ export default {
           action: "showTags",
           ctrlShortcut: "G",
           badge: function (bubble) {
-            return bubble.getTagsAndSelfIfRelevant().length;
+            return bubble.getNbTagChildren();
           }
         },
         {

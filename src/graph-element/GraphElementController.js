@@ -146,7 +146,7 @@ GraphElementController.prototype.addTagCanDo = function () {
 };
 
 GraphElementController.prototype.showTagsCanDo = function () {
-    return (!this.model().areTagsShown || this.model().isCollapsed) && this.isSingle() && this.isOwned() && this.model().getTagsAndSelfIfRelevant().length > 0;
+    return (!this.model().areTagsShown || this.model().isCollapsed) && this.isSingle() && this.isOwned() && this.model().getNbTagChildren() > 0;
 };
 
 GraphElementController.prototype.showTags = function (avoidRedraw, avoidExpand, avoidExpandTag) {
@@ -161,7 +161,7 @@ GraphElementController.prototype.showTags = function (avoidRedraw, avoidExpand, 
     }
     return this.expand(true, true).then(async () => {
         this.model().areTagsShown = true;
-        let tags = this.model().getTagsAndSelfIfRelevant();
+        let tags = this.model().getTagChildren();
         tags.sort((a, b) => {
             return b.getCreationDate() - a.getCreationDate();
         }).forEach((tag) => {
@@ -843,7 +843,7 @@ GraphElementController.prototype.removeTag = async function (tag) {
                     }
                 });
             }
-            if (this.model().getTagsAndSelfIfRelevant().length === 0) {
+            if (this.model().getNbTagChildren() === 0) {
                 this.model().controller().hideTags();
             }
         });
