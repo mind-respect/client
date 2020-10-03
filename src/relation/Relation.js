@@ -123,16 +123,6 @@ api.Relation.prototype.getGraphElementType = function () {
     return GraphElementType.Relation;
 };
 
-api.Relation.prototype.updateSourceOrDestination = function (vertex) {
-    if (this.getSourceVertex().isSameUri(vertex)) {
-        this.setSourceVertex(vertex);
-    } else if (this.getDestinationVertex().isSameUri(vertex)) {
-        this.setDestinationVertex(vertex);
-    } else {
-        console.warn("trying to update non related source or destination vertex to " + this.getLabel())
-    }
-};
-
 api.Relation.prototype.getWhenEmptyLabel = function () {
     return I18n.i18next.t("edge:default");
 };

@@ -130,6 +130,27 @@ describe("RelationController", () => {
                 lastChild.getGraphElementType()
             ).toBe(GraphElementType.Meta);
         });
+        it("can when is inverse", async () => {
+            let threeBubblesScenario = await new ThreeScenario();
+            let bubble1 = threeBubblesScenario.getBubble1InTree();
+            let r1 = TestUtil.getChildWithLabel(
+                bubble1,
+                "r1"
+            );
+            await r1.controller().reverse();
+            await r1.controller().addChild();
+            r1 = TestUtil.getChildWithLabel(
+                bubble1,
+                "r1"
+            );
+            expect(
+                r1.getGraphElementType()
+            ).toBe(GraphElementType.GroupRelation);
+            let b2 = r1.getNextBubble().getNextBubble();
+            expect(
+                b2.getLabel()
+            ).toBe("b2");
+        });
     });
 
     //todo

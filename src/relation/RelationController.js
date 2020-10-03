@@ -77,7 +77,7 @@ RelationController.prototype._addSiblingUpOrDown = function (isDown) {
     return isDown ? nextBubbleController.addSibling(true) : nextBubbleController.addSiblingUp(true);
 };
 
-RelationController.prototype.addSiblingCanDo = RelationController.prototype.addSiblingUpCanDo =  function () {
+RelationController.prototype.addSiblingCanDo = RelationController.prototype.addSiblingUpCanDo = function () {
     return this.isSingle() && this.model().getNextBubble().controller().addSiblingCanDo();
 };
 
@@ -146,7 +146,11 @@ RelationController.prototype._convertToGroupRelation = function () {
     });
     newGroupRelation.parentBubble = edge.getParentBubble();
     newGroupRelation.parentVertex = edge.getParentVertex();
-    edge.setSourceVertex(newGroupRelation);
+    if (edge.isInverse()) {
+        edge.setDestinationVertex(newGroupRelation);
+    } else {
+        edge.setSourceVertex(newGroupRelation);
+    }
     newGroupRelation.addChild(edge);
     newGroupRelation.isExpanded = true;
     return response;
