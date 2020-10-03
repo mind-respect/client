@@ -35,6 +35,7 @@ CenterGraphElement.prototype.init = function (serverFormat) {
         this,
         this.centerGraphElementServerFormat.graphElement
     );
+    this.splitContext = this.getContext().split('{{');
     return this;
 };
 

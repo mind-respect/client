@@ -149,6 +149,7 @@ function SearchResult(graphElement, graphElementType, somethingToDistinguish, se
     this.somethingToDistinguish = somethingToDistinguish;
     this.serverFormat = serverFormat;
     this.context = this.serverFormat.context || "";
+    this.splitContext = this.context.split('{{');
     this.nbNeighbors = serverFormat.nbNeighbors ? NbNeighbors.fromServerFormat(
         serverFormat.nbNeighbors
     ) : NbNeighbors.withZeros();
