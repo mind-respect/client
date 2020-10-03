@@ -105,10 +105,8 @@
                         {{ $t('centers:noRelations') }}
                       </span>
                       <div v-else v-for="(value, index) in center.splitContext"
-                           class="d-inline">
+                           class="around-list-item">
                         {{ value }}
-                        <v-divider vertical class="mx-1" color="gray" style="height:15px;"
-                                   v-if="index !== center.splitContext.length - 1"></v-divider>
                       </div>
                     </v-list-item-subtitle>
                     <v-list-item-subtitle

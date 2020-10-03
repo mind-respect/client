@@ -743,6 +743,23 @@ horizontal-center
   padding: 6px;
 }
 
+.around-list-item {
+  overflow: hidden;
+  float: left;
+  max-width: 50%;
+  padding-left: 5px;
+  /*text-overflow: ellipsis;*/
+}
+
+.around-list-item::after {
+  content: " | ";
+  color: gray;
+}
+
+.around-list-item:not(empty):last-of-type::after {
+  content: "";
+}
+
 *.unselectable {
   -moz-user-select: -moz-none;
   -khtml-user-select: none;

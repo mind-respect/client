@@ -49,13 +49,11 @@
                 {{ item.description }}
             </span>
       <span v-else>
-            <span v-if="item.original.getGraphElementType() === 'vertex'" class="around-list">
+            <span v-if="item.original.getGraphElementType() === 'vertex'">
                 <span v-if="item.original.context === ''" class="vh-center">{{ $t('centers:noRelations') }}</span>
-                <span v-else v-for="(context, index) in item.original.splitContext">
+                <div v-else v-for="(context, index) in item.original.splitContext" class="around-list-item">
                   {{ context }}
-                  <v-divider vertical class="mx-1" color="gray" style="height:15px;"
-                             v-if="index !== item.original.splitContext.length - 1"></v-divider>
-                </span>
+                </div>
             </span>
             <span v-else>
                 {{ item.original.somethingToDistinguish }}
