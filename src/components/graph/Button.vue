@@ -4,55 +4,71 @@
 
 <template>
     <span v-if="button.disableNotHide || canDo(button)">
-        <v-tooltip
-            open-delay="0"
-            close-delay="0"
-            bottom
-            allow-overflow
-            :attach="attach"
-            max-width="400"
-            :content-class="contentClass"
-        >
-            <template v-slot:activator="{ on }">
-                <span v-on="on">
-                    <v-badge
-                        color="third" class="button-menu-badge ma-1" overlap
-                        :value="button.badge !== undefined || button.badgeIcon !== undefined || button.badgeImage !== undefined"
-                    >
-                        <template v-slot:badge>
-                            <span v-html="getBadge()" v-if="button.badge"></span>
-                            <v-icon dark v-if="button.badgeIcon">{{ button.badgeIcon }}</v-icon>
-                            <img v-if="button.badgeImage" :src="button.badgeImage" width="15">
-                        </template>
-                        <slot name="button" v-if="$slots.button"></slot>
-                        <v-btn
-                            v-else
-                            icon
-                            large
-                            :color="color"
-                            @click="performAction(button, $event)"
-                            :disabled="button.disableNotHide && !canDo(button)"
-                            :class="button.class"
-                        >
-                            <v-icon :class="button.iconClass" :large="hightlight" v-if="button.icon">
-                                {{ getIcon(button) }}
-                            </v-icon>
-                            <img v-if="button.image" :src="button.image" width="30">
-                            <span v-if="button.text">
-                              {{ button.text(controller.model()) }}
-                            </span>
-                        </v-btn>
-                    </v-badge>
-                </span>
-            </template>
-            <slot name="tooltipContent" v-if="$slots.tooltipContent"></slot>
-            <span v-else>
-                    {{ $t('button:' + button.action) }}
-                    <span v-if="button.ctrlShortcut">
-                        ({{ ctrlKey }}+<span v-html="button.ctrlShortcut"></span>)
-                    </span>
-                </span>
-        </v-tooltip>
+      <v-menu
+          offset-y
+          v-model="menu"
+          :attach="attach"
+          :content-class="contentClass"
+          auto
+          right
+          dense
+          rounded="xl"
+      >
+        <template v-slot:activator="{ menu, menuAttrs }">
+          <v-tooltip
+              open-delay="0"
+              close-delay="0"
+              bottom
+              allow-overflow
+              :attach="attach"
+              max-width="400"
+              :content-class="contentClass"
+          >
+              <template v-slot:activator="{ on }">
+                  <span v-on="on"
+                        v-bind="on">
+                      <v-badge
+                          color="third" class="button-menu-badge ma-1" overlap
+                          :value="button.badge !== undefined || button.badgeIcon !== undefined || button.badgeImage !== undefined"
+                      >
+                          <template v-slot:badge>
+                              <span v-html="getBadge()" v-if="button.badge"></span>
+                              <v-icon dark v-if="button.badgeIcon">{{ button.badgeIcon }}</v-icon>
+                              <img v-if="button.badgeImage" :src="button.badgeImage" width="15">
+                          </template>
+                          <slot name="button" v-if="$slots.button"></slot>
+                          <v-btn
+                              v-else
+                              icon
+                              large
+                              :color="color"
+                              @click="performAction(button, $event)"
+                              :disabled="button.disableNotHide && !canDo(button)"
+                              :class="button.class"
+                          >
+                              <v-icon :class="button.iconClass" :large="hightlight" v-if="button.icon">
+                                  {{ getIcon(button) }}
+                              </v-icon>
+                              <img v-if="button.image" :src="button.image" width="30">
+                              <span v-if="button.text">
+                                {{ button.text(controller.model()) }}
+                              </span>
+                          </v-btn>
+                      </v-badge>
+                  </span>
+              </template>
+              <slot name="tooltipContent" v-if="$slots.tooltipContent"></slot>
+              <span v-else>
+                      {{ $t('button:' + button.action) }}
+                      <span v-if="button.ctrlShortcut">
+                          ({{ ctrlKey }}+<span v-html="button.ctrlShortcut"></span>)
+                      </span>
+                  </span>
+          </v-tooltip>
+        </template>
+        <ButtonMenu v-if="button.menu" :menu="button.menu" @performed="$emit('performed')" :isInSideMenu="isInSideMenu"
+                    :controller="controller"></ButtonMenu>
+      </v-menu>
     </span>
 </template>
 
@@ -63,10 +79,14 @@ let isExecutingFeature = false;
 export default {
   name: "Button",
   props: ['button', 'hightlight', 'isInTopMenu', 'isInSideMenu', 'buttonIndex', 'controller'],
+  components: {
+    ButtonMenu: () => import('@/components/graph/ButtonMenu')
+  },
   data: function () {
     return {
       ctrlKey: UiUtils.isMacintosh() ? "⌘" : "ctrl",
-      color: "primary"
+      color: "primary",
+      menu: false
     };
   },
   mounted: function () {
@@ -103,6 +123,10 @@ export default {
           ) : this.button.badge;
     },
     performAction: function (button) {
+      if (button.menu) {
+        this.menu = true;
+        return;
+      }
       if (isExecutingFeature) {
         return Promise.resolve();
       }
@@ -121,7 +145,7 @@ export default {
     },
     canDo: function (button) {
       let controller = this.getController(button);
-      if (!this.canActionBePossiblyMade(button.action, controller)) {
+      if (!button.menu && !this.canActionBePossiblyMade(button.action, controller)) {
         return false;
       }
       let methodToCheckIfActionCanBePerformedForElements = controller[

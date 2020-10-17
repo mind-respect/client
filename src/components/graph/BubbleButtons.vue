@@ -68,44 +68,51 @@ export default {
           }
         },
         {
-          action: "addChild",
-          icon: function () {
-            let single = Selection.getSingle();
-            if (!single) {
-              return "";
-            }
-            if (single.isCenter) {
-              return single.leftBubbles.length < single.rightBubbles.length ?
-                  "arrow_back" :
-                  "arrow_forward";
-            } else {
-              return single.isToTheLeft() ?
-                  "arrow_back" :
-                  "arrow_forward"
-            }
-          }
-        },
-        {
-          icon: "arrow_upward",
-          action: "addSiblingUp",
-          ctrlShortcut: "enter"
-        },
-        {
-          icon: "arrow_downward",
-          action: "addSibling"
-        },
-        {
-          action: "addParent",
-          icon: function () {
-            let single = Selection.getSingle();
-            if (!single || single.isCenter) {
-              return "";
-            }
+          action: "addBubbleMenu",
+          icon: "add_circle_outline",
+          menu: [
+            {
+              action: "addChild",
+              disableNotHide: true,
+              icon: function () {
+                let single = Selection.getSingle();
+                if (!single) {
+                  return "";
+                }
+                if (single.isCenter) {
+                  return single.leftBubbles.length < single.rightBubbles.length ?
+                      "arrow_back" :
+                      "arrow_forward";
+                } else {
+                  return single.isToTheLeft() ?
+                      "arrow_back" :
+                      "arrow_forward"
+                }
+              }
+            },
+            {
+              icon: "arrow_upward",
+              action: "addSiblingUp",
+              ctrlShortcut: "enter",
+            },
+            {
+              icon: "arrow_downward",
+              action: "addSibling",
+            },
+            {
+              action: "addParent",
+              icon: function () {
+                let single = Selection.getSingle();
+                if (!single || single.isCenter) {
+                  return "arrow_back";
+                }
 
-            return single.isToTheLeft() ?
-                "arrow_forward" :
-                "arrow_back";
-          }
+                return single.isToTheLeft() ?
+                    "arrow_forward" :
+                    "arrow_back";
+              }
+            }
+          ]
         },
         {
           icon: "link",

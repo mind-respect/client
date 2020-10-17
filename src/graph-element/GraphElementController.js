@@ -105,6 +105,10 @@ GraphElementController.prototype.focus = function () {
     this.model().focus();
 };
 
+GraphElementController.prototype.addBubbleMenuCanDo = function () {
+    return this.isSingleAndOwned();
+};
+
 GraphElementController.prototype.travelLeft = function () {
     this.model().travelLeft();
 };

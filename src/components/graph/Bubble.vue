@@ -82,6 +82,7 @@
                   :disabled="isEditFlow"
                   rounded="xl"
                   :close-on-click="false"
+                  :close-on-content-click="false"
               >
                 <template v-slot:activator="{ on }">
                   <div
