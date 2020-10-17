@@ -10,8 +10,6 @@
           :attach="attach"
           :content-class="contentClass"
           auto
-          right
-          dense
           rounded="xl"
           :top="!isInSideMenu"
           :nudge-top="menuNudgeTop"
