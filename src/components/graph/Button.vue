@@ -13,6 +13,8 @@
           right
           dense
           rounded="xl"
+          :top="!isInSideMenu"
+          :nudge-top="menuNudgeTop"
       >
         <template v-slot:activator="{ menu, menuAttrs }">
           <v-tooltip
@@ -86,7 +88,8 @@ export default {
     return {
       ctrlKey: UiUtils.isMacintosh() ? "⌘" : "ctrl",
       color: "primary",
-      menu: false
+      menu: false,
+      menuNudgeTop: this.isInSideMenu ? 0 : 20
     };
   },
   mounted: function () {
@@ -96,6 +99,7 @@ export default {
     if (this.button.color) {
       this.color = this.button.color;
     }
+
   },
   computed: {
     contentClass: function () {
