@@ -29,6 +29,7 @@
                       <v-badge
                           color="third" class="button-menu-badge ma-1" overlap
                           :value="button.badge !== undefined || button.badgeIcon !== undefined || button.badgeImage !== undefined"
+                          :offset-x="badgeOffsetX" :offset-y="badgeOffsetY"
                       >
                           <template v-slot:badge>
                               <span v-html="getBadge()" v-if="button.badge"></span>
@@ -89,7 +90,9 @@ export default {
       ctrlKey: UiUtils.isMacintosh() ? "⌘" : "ctrl",
       color: "primary",
       menu: false,
-      menuNudgeTop: this.isInSideMenu ? 0 : 20
+      menuNudgeTop: this.isInSideMenu ? 0 : 20,
+      badgeOffsetX: this.isInTopMenu ? 18 : 12,
+      badgeOffsetY: this.isInTopMenu ? 20 : 12
     };
   },
   mounted: function () {

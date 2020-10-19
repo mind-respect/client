@@ -21,7 +21,7 @@
     </v-btn>
     <Button :button="zoomOutButton" v-if="isGraphRoute" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
     <Button :button="zoomInButton" v-if="isGraphRoute" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
-    <Button :button="createVertexButton" :hightlight="true"
+    <Button :button="createVertexButton"
             v-if="$store.state.user" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
     <SettingsMenu v-show="!isSearchFlow" @enterDocsFlow="$emit('enterDocsFlow')"
                   @enterPatternFlow="$emit('enterPatternFlow')"
@@ -70,7 +70,8 @@ export default {
       },
       createVertexButton: {
         action: "createVertex",
-        icon: "add",
+        icon: "filter_center_focus",
+        badgeIcon: "add",
         controller: AppController
       }
     }

@@ -187,7 +187,6 @@
                     color="white"
                     offset-y
                     nudge-bottom="15"
-                    class="pa-0 ma-0"
                     :close-on-click="false"
                     :close-on-content-click="false"
                     rounded="xl"
