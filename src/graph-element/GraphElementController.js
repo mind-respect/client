@@ -240,7 +240,18 @@ GraphElementController.prototype.hideTags = async function (preventRedraw) {
     if (!this.hideTagsCanDo()) {
         return;
     }
-    this.model().areTagsShown = false;
+    const model = this.model();
+    model.areTagsShown = false;
+    const children = model.getNextChildren();
+    let childIndex = children.length;
+    while (childIndex--) {
+        const child = children[childIndex];
+        if (child.isMeta()) {
+            model.removeChild(
+                child
+            );
+        }
+    }
     if (!preventRedraw) {
         Store.dispatch("redraw");
     }
