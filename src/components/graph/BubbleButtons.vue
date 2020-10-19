@@ -142,6 +142,16 @@ export default {
           ]
         },
         {
+          icon: "unfold_more",
+          action: "expand",
+          ctrlShortcut: "E"
+        },
+        {
+          icon: "unfold_less",
+          action: "collapse",
+          ctrlShortcut: "H"
+        },
+        {
           action: "moveBubbleMenu",
           icon: "open_with",
           menu: [
@@ -170,14 +180,9 @@ export default {
           ]
         },
         {
-          icon: "unfold_more",
-          action: "expand",
-          ctrlShortcut: "E"
-        },
-        {
-          icon: "unfold_less",
-          action: "collapse",
-          ctrlShortcut: "H"
+          icon: "note",
+          action: "note",
+          ctrlShortcut: "D"
         },
         {
           icon: "all_out",
@@ -187,11 +192,6 @@ export default {
           action: "center",
           icon: "filter_center_focus",
           ctrlShortcut: "0"
-        },
-        {
-          icon: "note",
-          action: "note",
-          ctrlShortcut: "D"
         },
         {
           icon: "photo",
