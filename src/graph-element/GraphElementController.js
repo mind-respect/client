@@ -109,6 +109,10 @@ GraphElementController.prototype.addBubbleMenuCanDo = function () {
     return this.isSingleAndOwned();
 };
 
+GraphElementController.prototype.moveBubbleMenuCanDo = function () {
+    return !this.model().isCenter && this.isSingleAndOwned();
+}
+
 GraphElementController.prototype.travelLeft = function () {
     this.model().travelLeft();
 };

@@ -130,6 +130,34 @@ export default {
           ctrlShortcut: "I"
         },
         {
+          action: "moveBubbleMenu",
+          icon: "open_with",
+          menu: [
+            {
+              icon: "double_arrow",
+              iconClass: "rotate-270",
+              action: "moveCompletelyUp",
+              shortcut: "pg up"
+            },
+            {
+              icon: "expand_less",
+              action: "moveUpOneStep",
+              ctrlShortcut: "↑"
+            },
+            {
+              icon: "expand_more",
+              action: "moveDownOneStep",
+              ctrlShortcut: "↓"
+            },
+            {
+              icon: "double_arrow",
+              iconClass: "rotate-90",
+              action: "moveCompletelyDown",
+              shortcut: "pg down"
+            }
+          ]
+        },
+        {
           icon: "unfold_more",
           action: "expand",
           ctrlShortcut: "E"

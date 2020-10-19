@@ -63,6 +63,9 @@
                       <span v-if="button.ctrlShortcut">
                           ({{ ctrlKey }}+<span v-html="button.ctrlShortcut"></span>)
                       </span>
+                      <span v-if="button.shortcut">
+                          (<span v-text="button.shortcut"></span>)
+                      </span>
                   </span>
           </v-tooltip>
         </template>

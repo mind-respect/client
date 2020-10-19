@@ -325,6 +325,11 @@ export default {
       addBubbleMenu: "Add a bubble",
       addChild: "Add a bubble next to it (tab)",
       focus: "Write",
+      moveBubbleMenu: "Move",
+      moveCompletelyUp: "Move completely up",
+      moveUpOneStep: "Move up",
+      moveDownOneStep: "Move down",
+      moveCompletelyDown: "Move completely down",
       addTag: "Add tag",
       tagTogether: "Label one to the other",
       showTags: "Show tags",
@@ -386,6 +391,11 @@ export default {
       addBubbleMenu: "Ajouter une bulle",
       addChild: "Ajouter une bulle à coté (tab)",
       focus: "Écrire",
+      moveBubbleMenu: "Déplacer",
+      moveCompletelyUp: "Déplacer complètement en haut",
+      moveUpOneStep: "Déplacer vers le haut",
+      moveDownOneStep: "Déplacer vers le bas",
+      moveCompletelyDown: "Déplacer complètement en bas",
       addTag: "Ajouter étiquette",
       tagTogether: "Étiquetter l'un à l'autre",
       showTags: "Montrer les étiquettes",
@@ -797,6 +807,21 @@ vuetifyjs wrong component css order fixes
 
 .grecaptcha-badge {
   visibility: hidden;
+}
+
+.rotate-90 {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.rotate-270 {
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  transform: rotate(270deg);
 }
 
 </style>
