@@ -69,7 +69,7 @@
             item-value="uri"
             item-text="label"
             :menu-props="menuProps"
-            :placeholder="includeAllPatterns ? $t('existing:titleWithPatterns'): $t('existing:title')"
+            :placeholder="includeAllPatterns ? $t('existing:titleWithPatterns'): $t('existing:placeholder')"
             @change="chooseItem"
             cache-items
             return-object
@@ -160,8 +160,9 @@ export default {
   data: function () {
     I18n.i18next.addResources("en", "existing", {
       "text-h6": "Your bubbles",
-      "titleWithPatterns": "Your bubbles and the patterns",
-      "includeAllPatterns": "Include patterns of all users",
+      placeholder: "Your bubbles",
+      titleWithPatterns: "Your bubbles and the patterns",
+      includeAllPatterns: "Include patterns of all users",
       addRelationTo: "Link two bubbles",
       bubblesOnMap: "Your bubbles on this map",
       parent: "Parent",
@@ -171,8 +172,9 @@ export default {
     });
     I18n.i18next.addResources("fr", "existing", {
       "text-h6": "Vos bulles",
-      "titleWithPatterns": "Vos bulles et les patterns",
-      "includeAllPatterns": "Inclure les patterns de tous les usagers",
+      placeholder: "Vos bulles",
+      titleWithPatterns: "Vos bulles et les patterns",
+      includeAllPatterns: "Inclure les patterns de tous les usagers",
       addRelationTo: "Relier deux bulles",
       bubblesOnMap: "Vos bulles sur cette carte",
       parent: "Parent",
