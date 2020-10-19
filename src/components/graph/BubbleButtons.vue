@@ -111,6 +111,8 @@ export default {
                     "arrow_forward" :
                     "arrow_back";
               }
+            },{
+              icon: "scatter_plot"
             }
           ]
         },

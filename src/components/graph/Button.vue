@@ -8,11 +8,10 @@
           offset-y
           v-model="menu"
           :attach="attach"
-          :content-class="contentClass"
-          auto
           rounded="xl"
           :top="!isInSideMenu"
           :nudge-top="menuNudgeTop"
+          :content-class="menuContentClass"
       >
         <template v-slot:activator="{ menu, menuAttrs }">
           <v-tooltip
@@ -113,6 +112,13 @@ export default {
       }
       return "bubble-menu-tooltip"
     },
+    menuContentClass: function () {
+      let menuContentClass = this.contentClass;
+      if (this.isInSideMenu) {
+        menuContentClass += " button-menu";
+      }
+      return menuContentClass;
+    },
     isInMainMenu: function () {
       return this.isInTopMenu || this.isInSideMenu;
     },
@@ -199,6 +205,10 @@ export default {
 .bubble-menu-tooltip {
   white-space: nowrap;
   margin-top: 10px;
+}
+
+.button-menu {
+  position: fixed;
 }
 
 </style>
