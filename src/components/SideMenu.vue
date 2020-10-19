@@ -98,6 +98,7 @@
                                 <ShareMenu @focus="focus"
                                            @blur="blur"
                                            v-if="shareCanDo || !selected"
+                                           :key="$store.state.shareRefresh + 'shareMenu'"
                                 ></ShareMenu>
                             </v-tab-item>
                         </v-tabs-items>
