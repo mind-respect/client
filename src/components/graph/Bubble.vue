@@ -188,8 +188,8 @@
                     offset-y
                     nudge-bottom="15"
                     class="pa-0 ma-0"
-                    :open-on-click="false"
                     :close-on-click="false"
+                    :close-on-content-click="false"
                     rounded="xl"
                 >
                   <template v-slot:activator="{ on }">

@@ -359,7 +359,12 @@ export default {
         return SearchService.searchResultFromOnMapGraphElement(graphElement);
       });
       this.confirmLoading = false;
-      this.isLeft = isLeft || parentBubble._shouldAddLeft(isLeft);
+      this.isLeft = isLeft;
+      if (parentBubble.isCenter) {
+        this.isLeft = parentBubble._shouldAddLeft(isLeft);
+      } else {
+        this.isLeft = parentBubble.isToTheLeft();
+      }
       this.dialog = true;
       await this.$nextTick();
       this.$refs.existingBubbleAutocomplete.reset();
