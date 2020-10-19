@@ -113,7 +113,7 @@
                              ref="toolBar"
                              @enterDocsFlow="$refs.docsFlow.enter()"
                              @enterPatternFlow="patternDialog = true"
-                             @addExistingChildToCenter="$refs.addExistingBubbleDialogInMenu.enterForCenter()"
+                             @addExistingChildToCenter="$store.dispatch('setAddExistingToParent', true)"
         ></ToolbarGraphButtons>
         <v-btn text light
                v-if="$store.state.user === undefined"
@@ -263,7 +263,6 @@
       </v-card>
     </v-dialog>
     <DocsDialog ref="docsFlow"></DocsDialog>
-    <AddExistingBubbleDialog ref="addExistingBubbleDialogInMenu"></AddExistingBubbleDialog>
     <v-snackbar v-model="firstTimeSnackbar" color="secondary" timeout="-1" app>
       <v-toolbar color="transparent" dense elevation="0">
         <span class="text-body-1" v-if="$vuetify.breakpoint.mdAndUp">{{ $t('app:firstTime') }}</span>
@@ -311,8 +310,7 @@ export default {
     Search: () => import('@/components/Search'),
     DocsDialog: () => import('@/components/DocsDialog'),
     ListView: () => import('@/components/ListView'),
-    OfflineOverLay: () => import('@/components/OfflineOverlay'),
-    AddExistingBubbleDialog: () => import('@/components/AddExistingBubbleDialog')
+    OfflineOverLay: () => import('@/components/OfflineOverlay')
   },
   data: function () {
     I18n.i18next.addResources("en", "button", {
@@ -324,7 +322,8 @@ export default {
       focusRelation: "Edit relation",
       addBubbleMenu: "Add a bubble",
       addChild: "Add a bubble next to it (tab)",
-      editMenu:"Write",
+      addExistingToParentFlow: "Link to an existing bubble",
+      editMenu: "Write",
       focus: "Write",
       focusDirectly: "Write",
       moveBubbleMenu: "Move",
@@ -392,7 +391,8 @@ export default {
       focusRelation: "Éditer la relation",
       addBubbleMenu: "Ajouter une bulle",
       addChild: "Ajouter une bulle à coté (tab)",
-      editMenu:"Écrire",
+      addExistingToParentFlow: "Relier à une bulle existante",
+      editMenu: "Écrire",
       focus: "Écrire",
       focusDirectly: "Écrire",
       moveBubbleMenu: "Déplacer",
@@ -820,6 +820,7 @@ vuetifyjs wrong component css order fixes
   -o-transform: rotate(90deg);
   transform: rotate(90deg);
 }
+
 .rotate-270 {
   -webkit-transform: rotate(270deg);
   -moz-transform: rotate(270deg);

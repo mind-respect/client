@@ -5,6 +5,7 @@ import GraphElementService from '@/graph-element/GraphElementService'
 import Selection from '@/Selection'
 import ForkService from "@/fork/ForkService";
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
+import Store from '@/store'
 
 export default {
     ForkController: ForkController
@@ -140,4 +141,17 @@ ForkController.prototype.addParent = async function () {
     triple.destination.focus();
     GraphElementService.changeChildrenIndex(triple.source);
     GraphElementService.changeChildrenIndex(triple.destination);
+};
+
+ForkController.prototype.addExistingToParentFlowCanDo = function () {
+    return this.isSingleAndOwned();
+};
+
+ForkController.prototype.addExistingToParentFlow = function () {
+    const model = this.model();
+    return Store.dispatch("setAddExistingToParent", {
+        uri: model.getUri(),
+        id: model.getId(),
+        graphElementType: model.getGraphElementType()
+    });
 };

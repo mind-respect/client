@@ -62,7 +62,8 @@ const Store = new Vuex.Store({
         isServerNotResponding: false,
         isDuplicateFlow: false,
         isShowTags: false,
-        isShowRelations: false
+        isShowRelations: false,
+        addExistingToParent: false
     },
     mutations: {
         setUser: function (state, user) {
@@ -197,7 +198,11 @@ const Store = new Vuex.Store({
         },
         setIsShowRelations: function (state, isShowRelations) {
             state.isShowRelations = isShowRelations;
+        },
+        setAddExistingToParent: function (state, parentId) {
+            state.addExistingToParent = parentId;
         }
+
     },
     actions: {
         setUser: function (action, user) {
@@ -310,6 +315,9 @@ const Store = new Vuex.Store({
         },
         setIsShowRelations: function (action, setIsShowRelations) {
             action.commit('setIsShowRelations', setIsShowRelations);
+        },
+        setAddExistingToParent: function (action, parentId) {
+            action.commit('setAddExistingToParent', parentId);
         }
     }
 });

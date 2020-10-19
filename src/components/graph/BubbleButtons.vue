@@ -112,7 +112,8 @@ export default {
                     "arrow_back";
               }
             },{
-              icon: "scatter_plot"
+              icon: "scatter_plot",
+              action: "addExistingToParentFlow"
             }
           ]
         },
