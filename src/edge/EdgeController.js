@@ -50,4 +50,5 @@ EdgeController.prototype.replaceParentFork = async function (newParentFork, prev
         // newParentVertex.addChild(this.getModel());
     }
 };
+
 export default EdgeController;

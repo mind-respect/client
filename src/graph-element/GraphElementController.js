@@ -97,6 +97,18 @@ GraphElementController.prototype.noteDo = function (note) {
     });
 };
 
+GraphElementController.prototype.editMenuCanDo = function () {
+    return this.isSingleAndOwned() && this.model().isVertexType() && !this.model().isCenter;
+};
+
+GraphElementController.prototype.focusDirectlyCanDo = function () {
+    return this.isSingleAndOwned() && (this.model().isEdgeType() || this.model().isCenter);
+};
+
+GraphElementController.prototype.focusDirectly = function () {
+    return this.focus();
+};
+
 GraphElementController.prototype.focusCanDo = function () {
     return this.isOwned() && this.isSingle();
 };

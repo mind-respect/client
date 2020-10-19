@@ -121,13 +121,22 @@ export default {
         },
         {
           icon: "edit",
-          action: "focus"
+          action: "focusDirectly"
         },
         {
           icon: "edit",
-          action: "focusRelation",
-          badgeIcon: "arrow_right_alt",
-          ctrlShortcut: "I"
+          action: "editMenu",
+          menu: [
+            {
+              icon: "text_fields",
+              action: "focus"
+            },
+            {
+              icon: "arrow_right_alt",
+              action: "focusRelation",
+              ctrlShortcut: "I"
+            },
+          ]
         },
         {
           action: "moveBubbleMenu",
