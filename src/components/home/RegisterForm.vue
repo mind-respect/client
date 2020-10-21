@@ -36,6 +36,7 @@
                         :rules="[Rules.required]"
                         maxlength="30"
                         required
+                        v-on:keyup.enter="register"
                 ></v-text-field>
                 <v-text-field
                         v-model="newUser.email"
@@ -43,6 +44,7 @@
                         :label="$t('register:email')"
                         :rules="[Rules.required, Rules.email]"
                         required
+                        v-on:keyup.enter="register"
                 ></v-text-field>
                 <v-text-field
                         v-model="newUser.password"
@@ -51,6 +53,7 @@
                         :rules="[Rules.min8Char]"
                         required
                         type="password"
+                        v-on:keyup.enter="register"
                 ></v-text-field>
                 <v-alert type="warning">
                     {{$t('register:warning')}}

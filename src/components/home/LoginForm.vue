@@ -18,6 +18,7 @@
                             :label="$t('login:email')"
                             :rules="[Rules.required]"
                             required
+                            v-on:keyup.enter="login"
                     ></v-text-field>
                     <v-text-field
                             v-model="user.password"
@@ -25,6 +26,7 @@
                             required
                             :label="$t('login:password')"
                             type="password"
+                            v-on:keyup.enter="login"
                     ></v-text-field>
                 </v-form>
             </v-card-text>
