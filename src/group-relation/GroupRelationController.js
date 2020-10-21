@@ -40,9 +40,9 @@ GroupRelationController.prototype.centerCanDo = function () {
     return false;
 };
 
-GroupRelationController.prototype.addChildWhenInTransition = function (convertPromise) {
+GroupRelationController.prototype.addChildWhenInTransition = function (convertPromise, index) {
     return this.addChild(
-        undefined,
+        index,
         undefined,
         false,
         convertPromise

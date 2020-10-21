@@ -37,13 +37,14 @@ RelationController.prototype.addChildCanDo = function () {
     return this.isSingleAndOwned();
 };
 
-RelationController.prototype.addChild = async function () {
+RelationController.prototype.addChild = async function (index) {
+
     let previousParentFork = this.model().getParentFork();
     let prepareConvertData = this._prepareConvertToGroupRelation();
     let convertResponse = await this._convertToGroupRelation();
     let newGroupRelation = convertResponse.optimistic;
     Selection.removeAll();
-    let triple = await newGroupRelation.controller().addChildWhenInTransition(convertResponse.promise);
+    let triple = await newGroupRelation.controller().addChildWhenInTransition(convertResponse.promise, index);
     this.setLabel("");
     previousParentFork.replaceChild(
         this.model(),

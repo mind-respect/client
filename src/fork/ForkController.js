@@ -102,8 +102,9 @@ ForkController.prototype._addSiblingUpOrDown = function (isDown, forceUnderParen
     if (forceUnderParentFork || (parent.isRelation() && (parent.isPristine() || parent.isLabelSameAsParentGroupRelation()))) {
         parent = parent.getParentBubble();
     }
+    const indexInTree = parent.isRelation() && parent.shouldShow() ? 0 : this.model().getIndexInTree();
     return parent.controller().addChild(
-        this.model().getIndexInTree() + (isDown ? 1 : 0),
+        indexInTree + (isDown ? 1 : 0),
         this.model().isToTheLeft()
     );
 };
