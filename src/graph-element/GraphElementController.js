@@ -1004,6 +1004,14 @@ GraphElementController.prototype.removeTagFromTaggedBubbleAndTagVertex = async f
     }
 };
 
+GraphElementController.prototype.viewAsListCanDo = function () {
+    return Selection.isContinuous();
+};
+
+GraphElementController.prototype.viewAsList = function () {
+    Store.dispatch("setIsListViewFlow", true);
+};
+
 GraphElementController.prototype._areAllElementsPublicWithLink = function () {
     return this._areAllElementsInShareLevels([
         ShareLevel.PUBLIC_WITH_LINK

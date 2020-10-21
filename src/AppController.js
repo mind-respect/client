@@ -99,10 +99,6 @@ api.removePattern = function () {
     );
 };
 
-api.listAll = function () {
-    Store.dispatch("setIsListViewFlow", true);
-};
-
 api.isMultiple = function () {
     return false;
 };

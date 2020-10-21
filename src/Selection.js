@@ -10,8 +10,10 @@ import GraphElement from '@/graph-element/GraphElement'
 import Vue from 'vue'
 
 const api = {};
-
+let isContinuous = false;
+let rootOfSelectedTree = undefined;
 api.reset = function () {
+    isContinuous = false;
     Store.dispatch("setSelected", []);
 };
 
@@ -36,6 +38,7 @@ api.setToSingle = function (graphElement, scroll) {
         Store.dispatch("setSelected", [
             api._storeFormat(graphElement)
         ]);
+        isContinuous = defineIsContinuous();
         Vue.nextTick(() => {
             if (!graphElement.loading && scroll) {
                 Vue.nextTick(() => {
@@ -60,6 +63,7 @@ api.add = function (graphElement) {
         "addSelected",
         api._storeFormat(graphElement)
     );
+    isContinuous = defineIsContinuous();
 };
 
 api.setSelected = function (graphElements) {
@@ -70,11 +74,13 @@ api.setSelected = function (graphElements) {
             return api._storeFormat(graphElement);
         })
     );
+    isContinuous = defineIsContinuous();
 };
 
 api.remove = function (toDeselect) {
     toDeselect.deselect();
     Store.dispatch("removeSelected", api._storeFormat(toDeselect));
+    isContinuous = defineIsContinuous();
 };
 
 api.removeAll = function () {
@@ -83,7 +89,9 @@ api.removeAll = function () {
             selected.deselect();
         }
     });
-    return Store.dispatch("setSelected", []);
+    const promise = Store.dispatch("setSelected", []);
+    isContinuous = defineIsContinuous();
+    return promise;
 };
 
 api.getNbSelectedVertices = function () {
@@ -133,6 +141,14 @@ api.controller = function () {
     );
 };
 
+api.isContinuous = function () {
+    return isContinuous;
+};
+
+api.getRootOfSelectedTree = function () {
+    return rootOfSelectedTree;
+};
+
 api._storeFormat = function (graphElement) {
     return {
         type: graphElement.getGraphElementType(),
@@ -147,3 +163,23 @@ function centerBubbleIfApplicable(bubble) {
     return Scroll.centerBubbleIfApplicable(bubble);
 }
 
+function defineIsContinuous() {
+    rootOfSelectedTree = undefined;
+    return api.getSelectedBubbles().every((bubble) => {
+        if (!bubble.isForkType()) {
+            return false;
+        }
+        const parentFork = bubble.getParentFork();
+        if (parentFork.isSelected) {
+            if (bubble.isCenter) {
+                rootOfSelectedTree = bubble;
+            }
+            return true;
+        } else if (rootOfSelectedTree === undefined) {
+            rootOfSelectedTree = bubble;
+            return true;
+        } else {
+            return false;
+        }
+    });
+};

@@ -107,16 +107,6 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item @click="listAll();closeIfMobile();" v-if="isGraphRoute">
-          <v-list-item-action>
-            <v-icon class="">list</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ $t('button:listAll') }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
         <v-list-item @click="$emit('enterPatternFlow');closeIfMobile();"
                      v-if="isGraphRoute && !$store.state.isPatternFlow && !$store.state.isViewOnly">
           <v-list-item-action>
@@ -237,9 +227,6 @@ export default {
     },
     fontPicker: function () {
       AppController.fontPicker();
-    },
-    listAll: function () {
-      AppController.listAll();
     },
     switchLanguage: function () {
       let newLocale = this.$store.state.locale === "en" ? "fr" : "en";

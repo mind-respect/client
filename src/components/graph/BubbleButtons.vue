@@ -111,7 +111,7 @@ export default {
                     "arrow_forward" :
                     "arrow_back";
               }
-            },{
+            }, {
               icon: "scatter_plot",
               action: "addExistingToParentFlow"
             }
@@ -272,6 +272,10 @@ export default {
           icon: "select_all",
           action: "selectTree",
           ctrlShortcut: "A"
+        },
+        {
+          icon: "list",
+          action: "viewAsList"
         },
         {
           icon: "arrow_right_alt",

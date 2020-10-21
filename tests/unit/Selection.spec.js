@@ -5,6 +5,8 @@ import VertexController from '@/vertex/VertexController'
 import RelationController from '@/relation/RelationController'
 import GraphElementController from '@/graph-element/GraphElementController'
 import TestUtil from './util/TestUtil'
+import GroupRelationsScenario from "./scenario/GroupRelationsScenario";
+import GraphElementType from '@/graph-element/GraphElementType'
 
 describe("Selection", () => {
     it("can tell if only one vertex is selected", async () => {
@@ -89,6 +91,62 @@ describe("Selection", () => {
             expect(
                 Selection.controller() instanceof GraphElementController.GraphElementController
             ).toBeTruthy();
+        });
+    });
+    describe("isContinuous", () => {
+        it('returns true if continuous', async () => {
+            let scenario = await new ThreeScenario();
+            let b3 = scenario.getBubble3InTree();
+            await scenario.expandBubble3(b3);
+            Selection.setToSingle(b3);
+            b3.getClosestChildVertices().forEach((child) => {
+                Selection.add(child);
+            });
+            expect(
+                Selection.getNbSelected()
+            ).toBe(3);
+            expect(Selection.isContinuous()).toBeTruthy();
+        });
+        it('returns false if not continuous', async () => {
+            let scenario = await new ThreeScenario();
+            let b3 = scenario.getBubble3InTree();
+            await scenario.expandBubble3(b3);
+            Selection.setToSingle(b3);
+            b3.getClosestChildVertices().forEach((child) => {
+                Selection.add(child);
+            });
+            Selection.add(scenario.getBubble2InTree());
+            expect(
+                Selection.getNbSelected()
+            ).toBe(4);
+            expect(Selection.isContinuous()).toBeFalsy();
+        });
+        it('works with group relation in the mix', async () => {
+            let scenario = await new GroupRelationsScenario();
+            let center = scenario.getCenterInTree();
+            let groupRelation = TestUtil.getChildWithLabel(
+                center,
+                "Possession"
+            );
+            expect(
+                groupRelation.getGraphElementType()
+            ).toBe(GraphElementType.GroupRelation);
+            Selection.setToSingle(center);
+            Selection.add(groupRelation);
+            expect(Selection.isContinuous()).toBeTruthy();
+            await scenario.expandPossession(groupRelation);
+            Selection.setToSingle(center);
+            Selection.add(groupRelation);
+            expect(Selection.isContinuous()).toBeTruthy();
+            let vertexUnderGroupRelation = groupRelation.getNextBubble().getNextBubble();
+            expect(
+                vertexUnderGroupRelation.getGraphElementType()
+            ).toBe(GraphElementType.Vertex);
+            Selection.add(vertexUnderGroupRelation);
+            expect(
+                Selection.getNbSelected()
+            ).toBe(3);
+            expect(Selection.isContinuous()).toBeTruthy();
         });
     });
 });
