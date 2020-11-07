@@ -881,7 +881,7 @@ GraphElementController.prototype.removeTag = async function (tag) {
     });
 };
 GraphElementController.prototype.selectTreeCanDo = function () {
-    return this.isSingleAndOwned() && !this.model().isLeaf();
+    return this.isSingle() && !this.model().isLeaf();
 };
 
 GraphElementController.prototype.selectTree = function () {
@@ -1010,6 +1010,14 @@ GraphElementController.prototype.viewAsListCanDo = function () {
 
 GraphElementController.prototype.viewAsList = function () {
     Store.dispatch("setIsListViewFlow", true);
+};
+
+GraphElementController.prototype.copyTreeCanDo = function () {
+    return false;
+    // return MindMapInfo.isViewOnly() && Selection.isContinuous() && Selection.getNbSelected() > 1;
+};
+
+GraphElementController.prototype.copyTree = function () {
 };
 
 GraphElementController.prototype._areAllElementsPublicWithLink = function () {

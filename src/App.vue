@@ -381,7 +381,8 @@ export default {
       close: "Close",
       leaveContext: "Split into 2 cards that share a tag",
       setColor: "Set color",
-      openWikipediaLink: "Open Wikipedia link"
+      openWikipediaLink: "Open Wikipedia link",
+      copyTree: "Copy tree"
     });
     I18n.i18next.addResources("fr", "button", {
       removeTagFlow: "Enlever l'étiquette",
@@ -451,7 +452,8 @@ export default {
       close: "Fermer",
       leaveContext: "Séparer en 2 cartes qui partagent un étiquette",
       setColor: "Définir la couleur",
-      openWikipediaLink: "Ouvrir le lien wikipedia"
+      openWikipediaLink: "Ouvrir le lien wikipedia",
+      copyTree: "Copier l'arbre"
     });
 
     I18n.i18next.addResources("en", "app", {

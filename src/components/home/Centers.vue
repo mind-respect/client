@@ -221,7 +221,7 @@
     </v-snackbar>
     <v-icon color="white" large style="position:fixed;right:40px;z-index:0;"
             ref="deleteIcon" v-show="isSwiping">
-      delete
+      delete_sweep
     </v-icon>
   </v-card>
 </template>

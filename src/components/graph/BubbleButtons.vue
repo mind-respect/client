@@ -230,6 +230,11 @@ export default {
         },
         {
           icon: "content_copy",
+          badgeIcon: "bubble_chart",
+          action: "copyTree"
+        },
+        {
+          icon: "content_copy",
           action: "copy",
           isCustom: true,
         },

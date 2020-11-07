@@ -115,7 +115,7 @@
                     id="buttonsDrawer"
                     color="white"
             >
-                <BubbleButtons :isInSideMenu="true" @refresh="buttonRefresh"></BubbleButtons>
+                <BubbleButtons :isInSideMenu="true" @refresh="buttonRefresh" class="pt-2"></BubbleButtons>
             </v-navigation-drawer>
         </v-layout>
     </v-navigation-drawer>
