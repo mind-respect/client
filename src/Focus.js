@@ -32,7 +32,7 @@ export default {
             so the focus event is not triggered and this causes problems
          */
         element.blur();
-        element.focus({ preventScroll: true });
+        element.focus({preventScroll: true});
         if (element.innerHTML.trim() === "") {
             return;
         }
@@ -40,6 +40,16 @@ export default {
         window.setTimeout(function () {
             selectRange(caretRange);
         }, 10);
+    },
+    getCaretPosition: function (editableEl) {
+        const sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+            const range = window.getSelection().getRangeAt(0);
+            const preCaretRange = range.cloneRange();
+            preCaretRange.selectNodeContents(editableEl);
+            preCaretRange.setEnd(range.endContainer, range.endOffset);
+            return preCaretRange.toString().length;
+        }
     }
 }
 

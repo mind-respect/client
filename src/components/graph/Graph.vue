@@ -337,7 +337,7 @@ export default {
       }, 275);
     },
     mousedown: function () {
-      GraphUi.enableDragScroll();
+      // GraphUi.enableDragScroll();
     },
     refreshChildren: function () {
       this.childrenKey = IdUri.uuid();
@@ -374,6 +374,9 @@ export default {
       Dragged.handleDrop(event, this.center, false);
     },
     preventUndesirableDragging: function (event) {
+      if (event.target.tagName === undefined) {
+        return;
+      }
       if (!event.target.classList.contains("in-bubble-content")) {
         console.warn("unwanted dragged occurred on " + event.target);
         event.preventDefault();

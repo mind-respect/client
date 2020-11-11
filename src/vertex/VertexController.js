@@ -41,8 +41,8 @@ function VertexController(vertices) {
 
 VertexController.prototype = new ForkController.ForkController();
 
-VertexController.prototype.addChildCanDo = function () {
-    return this.isSingleAndOwned() && !this.model().isPristine();
+VertexController.prototype.addChildCanDo = function (labelText) {
+    return this.isSingleAndOwned() && !this.model().isPristine(labelText);
 };
 
 VertexController.prototype.addChild = function (index, isToTheLeft) {
@@ -184,14 +184,10 @@ VertexController.prototype.convertToGroupRelation = async function () {
     });
 };
 
-VertexController.prototype.addSiblingCanDo = VertexController.prototype.addSiblingUpCanDo = function () {
-    return this.isSingleAndOwned() && !this.model().isCenter &&
+VertexController.prototype.addSiblingCanDo = VertexController.prototype.addSiblingUpCanDo = function (labelText) {
+    return this.isSingleAndOwned() &&
         !this.getUi().getParentBubble().getParentBubble().isMeta() &&
-        !this.model().isPristine();
-};
-
-VertexController.prototype.removeCanDo = function () {
-    return this.isOwned();
+        !this.model().isPristine(labelText);
 };
 
 VertexController.prototype.imagesCanDo = function () {

@@ -627,7 +627,7 @@ export default {
       });
     },
     keydown: function (event) {
-      if (this.isEditFlow && [KeyCode.KEY_RETURN, KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {
+      if (this.isEditFlow && [KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {
         event.preventDefault();
         event.stopPropagation();
         this.bubble.getLabelHtml().blur();
@@ -660,7 +660,8 @@ export default {
       * Not removingHtml from labelHtml.innerHTML because sometimes user,
       * may want to write html or something in his/her bubble.
       */
-      let text = labelHtml.innerHTML;
+      let text = this.bubble.innerHtmlBeforeBlur || labelHtml.innerHTML;
+      delete this.bubble['innerHtmlBeforeBlur'];
       /*
       * await this.$nextTick(); to prevent unwanted scrolling after leaving edit flow
       */
@@ -716,12 +717,20 @@ export default {
         event.preventDefault();
         return;
       }
+      if (event.target.tagName === undefined) {
+        Dragged.dragged = undefined;
+        event.preventDefault();
+        return;
+      }
       event.target.style.opacity = .5;
       event.dataTransfer.setData('Text', "dummy data for dragging to work in Firefox");
       Dragged.dragged = this.bubble;
       GraphUi.disableDragScroll();
     },
     dragEnd: function (event) {
+      if (event.target.tagName === undefined) {
+        return;
+      }
       event.preventDefault();
       event.target.style.opacity = 1;
       GraphUi.enableDragScroll();
@@ -733,6 +742,9 @@ export default {
       called on drag over to enable drop handler to trigger
       I don't know why !
        */
+      if (Dragged.dragged === undefined) {
+        return;
+      }
       event.preventDefault();
       event.stopPropagation();
       if (this.isLabelDragOver === true) {
@@ -759,7 +771,9 @@ export default {
     ,
     labelDrop: function (event, forceLeft) {
       // console.log("label drop");
-      // debugger;
+      if (Dragged.dragged === undefined) {
+        return;
+      }
       event.preventDefault();
       event.stopPropagation();
       GraphUi.enableDragScroll();

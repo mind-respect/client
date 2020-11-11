@@ -78,8 +78,8 @@ RelationController.prototype._addSiblingUpOrDown = function (isDown) {
     return isDown ? nextBubbleController.addSibling(true) : nextBubbleController.addSiblingUp(true);
 };
 
-RelationController.prototype.addSiblingCanDo = RelationController.prototype.addSiblingUpCanDo = function () {
-    return this.isSingle() && this.model().getNextBubble().controller().addSiblingCanDo();
+RelationController.prototype.addSiblingCanDo = RelationController.prototype.addSiblingUpCanDo = function (labelText) {
+    return this.isSingle() && this.model().getNextBubble().controller().addSiblingCanDo(labelText);
 };
 
 RelationController.prototype.becomeParent = async function (adoptedChild) {
@@ -162,10 +162,6 @@ RelationController.prototype._postConvertToGroupRelation = async function (newGr
         newGroupRelation.controller().showTags(false, false, true);
     }
 }
-
-RelationController.prototype.removeCanDo = function () {
-    return this.isOwned();
-};
 
 RelationController.prototype.reverseToRightCanDo = function () {
     if (!this.isSingleAndOwned()) {

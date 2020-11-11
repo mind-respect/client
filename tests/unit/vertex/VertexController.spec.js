@@ -64,17 +64,15 @@ describe('VertexController', () => {
         });
     });
     describe("addSiblingCanDo", function () {
-        it("cannot add sibling if center bubble", async () => {
+        it("add sibling to center bubble adds child", async () => {
             let scenario = await new ThreeScenario();
             let bubble1 = scenario.getBubble1InTree();
-            let someChild = bubble1.getNextBubble().getNextBubble();
             MindMapInfo._setIsViewOnly(false);
+            let nbChildren = bubble1.getNumberOfChild();
+            await bubble1.controller().addSibling();
             expect(
-                someChild.controller().addSiblingCanDo()
-            ).toBeTruthy();
-            expect(
-                bubble1.controller().addSiblingCanDo()
-            ).toBeFalsy();
+                bubble1.getNumberOfChild()
+            ).toBe(nbChildren + 1);
         });
         it("returns false if vertex is pristine", async () => {
             MindMapInfo._setIsViewOnly(false);

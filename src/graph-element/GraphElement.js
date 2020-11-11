@@ -266,7 +266,7 @@ GraphElement.GraphElement.prototype.getIdentifiersIncludingSelf = function (prev
 
 GraphElement.GraphElement.prototype.getTagChildren = function () {
     const parentVertex = this.getParentVertex();
-    return this.getTagsAndSelfIfRelevant().filter((tag)=>{
+    return this.getTagsAndSelfIfRelevant().filter((tag) => {
         return parentVertex.getUri() !== tag.getUri();
     });
 };
@@ -524,8 +524,12 @@ GraphElement.GraphElement.prototype.integrateChildrenIndex = function (secondary
     return hasModified;
 };
 
-GraphElement.GraphElement.prototype.isPristine = function () {
-    return this.isLabelEmpty() && !this.hasIdentifications();
+GraphElement.GraphElement.prototype.canSkipRemoveConfirmation = function (labelText) {
+    return this.isPristine(labelText) && this.getNumberOfChild() === 0;
+};
+
+GraphElement.GraphElement.prototype.isPristine = function (labelText) {
+    return this.isLabelEmpty(labelText) && !this.hasIdentifications();
 };
 
 

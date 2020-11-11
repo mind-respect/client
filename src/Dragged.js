@@ -1,6 +1,9 @@
 const Dragged = {
     dragged: null,
     handleDrop: function (event, parent, isLeft) {
+        if (Dragged.dragged === undefined) {
+            return;
+        }
         if (parent.isDragOver) {
             return Dragged.dragged.controller().moveUnderParent(
                 parent

@@ -281,8 +281,9 @@ FriendlyResource.FriendlyResource.prototype.getLabelOrDefault = function () {
         this.getLabel();
 };
 
-FriendlyResource.FriendlyResource.prototype.isLabelEmpty = function () {
-    return this.getLabel().trim() === "";
+FriendlyResource.FriendlyResource.prototype.isLabelEmpty = function (labelText) {
+    labelText = labelText === undefined ? this.getLabel() : labelText;
+    return labelText.trim() === "";
 };
 
 FriendlyResource.FriendlyResource.prototype.isCenterBubble = function () {
@@ -468,16 +469,27 @@ FriendlyResource.FriendlyResource.prototype.getDownBubble = function (isForTrave
     return this._getUpOrDownBubble(true, isForTravel);
 };
 
-FriendlyResource.FriendlyResource.prototype.getNextSibling = function () {
-    let downBubble = this.getDownBubble();
-    let upBubble = this.getUpBubble();
-    if (downBubble && !downBubble.isCenter && !downBubble.isSameBubble(this) && downBubble.getParentFork().isSame(this.getParentFork())) {
-        return downBubble;
-    } else if (upBubble && !upBubble.isCenter && !upBubble.isSameBubble(this) && upBubble.getParentFork().isSame(this.getParentFork())) {
-        return upBubble;
+FriendlyResource.FriendlyResource.prototype.getNextSibling = function (favorUpBubble) {
+    let favoredSibling, otherSibling;
+    if (favorUpBubble) {
+        favoredSibling = this.getUpBubble();
+        otherSibling = this.getDownBubble();
     } else {
-        return this.getParentFork();
+        favoredSibling = this.getDownBubble();
+        otherSibling = this.getUpBubble();
     }
+    let parentFork = this.getParentFork();
+    if (this._canBeNextSibling(favoredSibling, parentFork)) {
+        return favoredSibling;
+    } else if (this._canBeNextSibling(otherSibling, parentFork)) {
+        return otherSibling
+    } else {
+        return parentFork;
+    }
+};
+
+FriendlyResource.FriendlyResource.prototype._canBeNextSibling = function (sibling, parentFork) {
+    return sibling && !sibling.isCenter && !sibling.isSameBubble(this) && sibling.getParentFork().isSame(parentFork);
 };
 
 FriendlyResource.FriendlyResource.prototype.canExpand = function () {

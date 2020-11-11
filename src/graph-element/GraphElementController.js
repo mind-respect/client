@@ -767,12 +767,24 @@ GraphElementController.prototype.relateToDistantVertexWithUri = async function (
     return newEdge;
 };
 
+GraphElementController.prototype.removeWithoutConfirmationCanDo = function (labelText) {
+    return this.isSingleAndOwned() && this.model().canSkipRemoveConfirmation(labelText);
+};
+
+GraphElementController.prototype.removeWithoutConfirmation = function () {
+    return this.remove(true);
+};
+
+GraphElementController.prototype.removeCanDo = function () {
+    return this.isOwned();
+};
+
 GraphElementController.prototype.remove = function (skipConfirmation) {
     if (skipConfirmation === true) {
         return this.removeDo();
     }
     let selectedIsPristine = this.getUiArray().every((graphElement) => {
-        return graphElement.isPristine() && (graphElement.getNumberOfChild() === 0);
+        return graphElement.canSkipRemoveConfirmation();
     });
     if (selectedIsPristine) {
         return this.removeDo();
@@ -806,7 +818,7 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
     }
     let bubbleToSelect;
     if (this.isSingle() && !skipSelect) {
-        bubbleToSelect = this.model().getNextSibling();
+        bubbleToSelect = this.model().getNextSibling(true);
         if (bubbleToSelect.isSameUri(this.model())) {
             bubbleToSelect = this.model().getParentFork();
         }

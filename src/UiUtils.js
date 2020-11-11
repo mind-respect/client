@@ -64,6 +64,11 @@ UiUtils.animateGraphElementsWithAnimationData = async function (graphElements, f
                     return;
                 }
                 const firstBox = firstBoxes[graphElement.getId()];
+                if (firstBox === undefined) {
+                    console.log("error lastbox undefined in UiUtils");
+                    resolve();
+                    return;
+                }
                 const lastBox = html.getBoundingClientRect();
                 const deltaX = firstBox.left - lastBox.left;
                 const deltaY = firstBox.top - lastBox.top;

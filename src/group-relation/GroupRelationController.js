@@ -93,8 +93,8 @@ GroupRelationController.prototype.addChild = async function (index, isToTheLeft,
     return triple;
 };
 
-GroupRelationController.prototype.addSiblingCanDo = GroupRelationController.prototype.addSiblingUpCanDo = function () {
-    return this.isSingleAndOwned() && this.model().getParentFork().controller().addChildCanDo();
+GroupRelationController.prototype.addSiblingCanDo = GroupRelationController.prototype.addSiblingUpCanDo = function (labelText) {
+    return this.isSingleAndOwned() && this.model().getParentFork().controller().addChildCanDo(labelText);
 };
 
 GroupRelationController.prototype.becomeExParent = async function () {
@@ -112,10 +112,6 @@ GroupRelationController.prototype.becomeExParent = async function () {
     }
     GraphElementService.changeChildrenIndex(this.model());
     return bubbleToSelect;
-};
-
-GroupRelationController.prototype.removeCanDo = function () {
-    return this.isOwned();
 };
 
 GroupRelationController.prototype.replaceParentFork = function (newParentFork, preventChangingInModel) {
