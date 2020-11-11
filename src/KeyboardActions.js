@@ -124,7 +124,7 @@ async function executeFeature(feature, event, isEdiFlow) {
                 }
             }
         }
-        single.innerHtmlBeforeBlur = event.target.innerHTML;
+        single.setLabel(event.target.innerHTML);
         single.blur();
     }
     event.preventDefault();
@@ -144,7 +144,7 @@ async function executeFeature(feature, event, isEdiFlow) {
         }
         return Promise.resolve();
     }
-    return controller[action](event);
+    return controller[action]();
 }
 
 function defineNonCtrlPlusKeysAndTheirActions() {
@@ -236,7 +236,8 @@ function defineCtrlPlusKeysAndTheirActions() {
         action: "collapse"
     };
     actions[KeyCode.KEY_I] = {
-        action: "focusRelation"
+        action: "focusRelation",
+        editMode: true
     };
     actions[KeyCode.KEY_X] = {
         action: "cut"

@@ -102,7 +102,7 @@ GraphElementController.prototype.editMenuCanDo = function () {
 };
 
 GraphElementController.prototype.focusDirectlyCanDo = function () {
-    return this.isSingleAndOwned() && (this.model().isEdgeType() || this.model().isCenter);
+    return this.isSingleAndOwned() && (this.model().isEdgeType() || this.model().isGroupRelation() || this.model().isCenter);
 };
 
 GraphElementController.prototype.focusDirectly = function () {

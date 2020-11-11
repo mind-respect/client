@@ -660,8 +660,7 @@ export default {
       * Not removingHtml from labelHtml.innerHTML because sometimes user,
       * may want to write html or something in his/her bubble.
       */
-      let text = this.bubble.innerHtmlBeforeBlur || labelHtml.innerHTML;
-      delete this.bubble['innerHtmlBeforeBlur'];
+      let text = labelHtml.innerHTML;
       /*
       * await this.$nextTick(); to prevent unwanted scrolling after leaving edit flow
       */
