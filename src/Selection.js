@@ -42,7 +42,9 @@ api.setToSingle = function (graphElement, scroll) {
         Vue.nextTick(() => {
             if (!graphElement.loading && scroll) {
                 Vue.nextTick(() => {
-                    centerBubbleIfApplicable(graphElement).then(resolve)
+                    setTimeout(()=>{
+                        centerBubbleIfApplicable(graphElement).then(resolve)
+                    }, 1)
                 });
             } else {
                 resolve();
