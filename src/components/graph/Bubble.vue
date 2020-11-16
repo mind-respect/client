@@ -627,7 +627,7 @@ export default {
       });
     },
     keydown: function (event) {
-      if (this.isEditFlow && [KeyCode.KEY_ESCAPE].indexOf(event.keyCode) > -1) {
+      if (this.isEditFlow && KeyCode.KEY_ESCAPE === event.keyCode || (KeyCode.KEY_RETURN === event.keyCode && this.$vuetify.breakpoint.mdAndDown)) {
         event.preventDefault();
         event.stopPropagation();
         this.bubble.getLabelHtml().blur();
