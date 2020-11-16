@@ -58,6 +58,7 @@
     import SearchResultContent from '@/components/search/SearchResultContent'
     import SearchResultAction from '@/components/search/SearchResultAction'
     import I18n from '@/I18n'
+    import KeyboardActions from '@/KeyboardActions'
     import SearchService from '@/search/SearchService'
     import AppController from '@/AppController'
     import IdUri from '@/IdUri'
@@ -110,6 +111,7 @@
         methods: {
             focus: function () {
                 GraphUi.disableDragScroll();
+                KeyboardActions.disable();
                 this.$nextTick(async () => {
                     await this.$nextTick();
                     await this.$nextTick();
@@ -121,6 +123,7 @@
             },
             blur: function () {
                 GraphUi.enableDragScroll();
+                KeyboardActions.enable();
                 this.$emit('leaveSearchFlow')
             },
             selectSearchResult: function () {
