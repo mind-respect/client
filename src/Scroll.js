@@ -159,15 +159,12 @@ const Scroll = {
     centerBubbleForTreeOrNotIfApplicable: async function (bubble, isForTree) {
         await Vue.nextTick();
         if (bubble.isEditFlow) {
-            console.log("a")
             return Promise.resolve();
         }
         let labelHtml = bubble.getLabelHtml();
         if ((isForTree && !Scroll.isBubbleTreeFullyOnScreen(bubble)) || (labelHtml && labelHtml.style.display !== "none" && !Scroll.isElementFullyOnScreen(labelHtml))) {
-            console.log("b")
             return Scroll.goToGraphElement(bubble)
         } else {
-            console.log("c")
             return Promise.resolve();
         }
     }
