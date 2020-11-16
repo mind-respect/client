@@ -17,9 +17,9 @@ let cancelGraphElementScroll;
 
 const Scroll = {
     goToGraphElement: function (bubble, noAnimation) {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             if (cancelGraphElementScroll) {
-                cancelGraphElementScroll();
+                await cancelGraphElementScroll();
             }
             let onlyScrollLeft = false;
             let element = bubble.getLabelHtml();
@@ -51,6 +51,14 @@ const Scroll = {
                     // scrolling started
                 },
                 onCancel: function () {
+                    /*
+                    scrolling because sometimes it would juste not scroll at all
+                    if remove test thouroughly
+                    * */
+                    Scroll.centerElement(
+                        element,
+                        offset
+                    );
                     resolve();
                 },
                 x: true,
@@ -61,6 +69,7 @@ const Scroll = {
             } else {
                 options.onDone = function (element) {
                     options.onDone = function () {
+                        cancelGraphElementScroll = undefined;
                         resolve();
                     };
                     options.x = false;
@@ -150,12 +159,15 @@ const Scroll = {
     centerBubbleForTreeOrNotIfApplicable: async function (bubble, isForTree) {
         await Vue.nextTick();
         if (bubble.isEditFlow) {
+            console.log("a")
             return Promise.resolve();
         }
         let labelHtml = bubble.getLabelHtml();
         if ((isForTree && !Scroll.isBubbleTreeFullyOnScreen(bubble)) || (labelHtml && labelHtml.style.display !== "none" && !Scroll.isElementFullyOnScreen(labelHtml))) {
+            console.log("b")
             return Scroll.goToGraphElement(bubble)
         } else {
+            console.log("c")
             return Promise.resolve();
         }
     }
