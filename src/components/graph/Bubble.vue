@@ -351,7 +351,7 @@ export default {
     },
     menuBackgroundColor: function () {
       return {
-        'background-color': this.$store.state.backgroundColor + " !important;"
+        'background-color': this.$store.state.backgroundColor
       }
     },
     containerBoxShadow: function () {
