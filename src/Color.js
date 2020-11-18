@@ -8,6 +8,7 @@ const Color = {
     DEFAULT_BACKGROUND_COLOR: "#FFFFFF",
     EdgeColor: "#757575",
     LightGray: "#BDBDBD",
+    LighterGray: "#E0E0E0",
     SkeletonColor: "#e8e8e8",
     getBackgroundColorForColor: function (color) {
         var hsl = Color.hex2Hsl(color);

@@ -276,6 +276,7 @@ import MindMapInfo from '@/MindMapInfo'
 import linkifyStr from 'linkifyjs/string'
 import InLabelButtons from "@/components/graph/bubble/InLabelButtons";
 import Dragged from '@/Dragged'
+import Colors from "@/Color";
 
 let bubbleContainer;
 let bubbleContainerClone;
@@ -329,7 +330,7 @@ export default {
     if (this.bubble.isSkeleton()) {
       this.chipColor = Color.SkeletonColor;
     } else {
-      this.chipColor = "black";
+      this.chipColor = Colors.EdgeColor;
     }
     this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
     this.isLeft = this.direction === "left";
