@@ -159,7 +159,7 @@ export default {
   },
   data: function () {
     I18n.i18next.addResources("en", "existing", {
-      "text-h6": "Your bubbles",
+      title: "Your bubbles",
       placeholder: "Your bubbles",
       titleWithPatterns: "Your bubbles and the patterns",
       includeAllPatterns: "Include patterns of all users",
@@ -171,7 +171,7 @@ export default {
       cannotRelate: "There can only be one relationship between each bubble"
     });
     I18n.i18next.addResources("fr", "existing", {
-      "text-h6": "Vos bulles",
+      title: "Vos bulles",
       placeholder: "Vos bulles",
       titleWithPatterns: "Vos bulles et les patterns",
       includeAllPatterns: "Inclure les patterns de tous les usagers",

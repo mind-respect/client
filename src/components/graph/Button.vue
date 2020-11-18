@@ -81,7 +81,7 @@ import UiUtils from '@/UiUtils'
 let isExecutingFeature = false;
 export default {
   name: "Button",
-  props: ['button', 'hightlight', 'isInTopMenu', 'isInSideMenu', 'buttonIndex', 'controller'],
+  props: ['button', 'hightlight', 'isInTopMenu', 'isInSideMenu', 'buttonIndex', 'controller', 'isMenuButton'],
   components: {
     ButtonMenu: () => import('@/components/graph/ButtonMenu')
   },
@@ -96,11 +96,14 @@ export default {
     };
   },
   mounted: function () {
-    if (this.hightlight) {
-      this.color = "third";
-    }
     if (this.button.color) {
       this.color = this.button.color;
+    } else if (this.isMenuButton) {
+      this.color = "black";
+    } else if (this.hightlight) {
+      this.color = "third";
+    } else if (this.isInSideMenu) {
+      this.color = "white";
     }
 
   },

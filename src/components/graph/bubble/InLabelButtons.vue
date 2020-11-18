@@ -32,6 +32,7 @@
 import ShareLevel from '@/vertex/ShareLevel'
 import WikidataUri from '@/wikidata/WikidataUri'
 import WikidataService from '@/wikidata/WikidataService'
+import Color from "@/Color";
 
 export default {
   name: "InLabelButtons",
@@ -44,7 +45,7 @@ export default {
     }
   },
   mounted: function () {
-    this.color = this.bubble.isVertexType() ? "secondary" : "white";
+    this.color = this.bubble.isVertexType() ? "#757575" : Color.LightGray;
     if (this.bubble.isMeta()) {
       if (this.bubble.wikipediaUrl) {
         this.wikipediaUrl = this.bubble.wikipediaUrl;

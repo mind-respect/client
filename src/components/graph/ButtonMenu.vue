@@ -1,7 +1,7 @@
 <template>
   <div :style="menuBackgroundColor" class="vh-center">
     <Button v-for="menuButton in menu" :button="menuButton" :controller="controller" :isInSideMenu="isInSideMenu"
-            :hightlight="menuButton.hightlight" :large="menuButton.large" v-show="!menuButton.isCustom"
+            :hightlight="menuButton.hightlight" :large="menuButton.large" :isMenuButton="true" v-show="!menuButton.isCustom"
             @performed="$emit('performed')"></Button>
   </div>
 </template>

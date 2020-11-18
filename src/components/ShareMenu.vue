@@ -1,13 +1,13 @@
 <template>
     <div>
-        <v-card flat>
-            <v-expansion-panels class="mt-4 mb-4" hover flat>
+        <v-card flat color="transparent" style="background-color:transparent">
+            <v-expansion-panels class="mt-4 mb-4" hover flat color="transparent">
                 <v-expansion-panel class="text-left">
                     <v-expansion-panel-header class="font-weight-bold">
                         {{$t('share:copyLink')}}
                     </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                        <v-list>
+                    <v-expansion-panel-content color="transparent">
+                        <v-list color="transparent">
                             <v-list-item @click="copyCentralUrl">
                                 <v-list-item-icon>
                                     <v-icon>

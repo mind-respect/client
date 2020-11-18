@@ -17,7 +17,7 @@
                 <v-btn
                     slot="button"
                     icon
-                    color="primary"
+                    :color="isInSideMenu ? 'white' : 'primary'"
                     text
                     @click="copyLabel"
                     large

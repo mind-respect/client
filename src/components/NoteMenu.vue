@@ -2,7 +2,7 @@
     <v-card flat @click="$store.dispatch('setIsDescriptionFlow', true)" hover
             :key="$store.state.noteRefresh + 'noteMenu'" :disabled="!bubble">
         <v-card-title class="pt-4 pb-0 text-subtitle-1">
-            <span class="pt-0 grey--text text-body-1 text-center" v-show="bubble && bubble.getComment() === ''">
+            <span class="pt-0 grey-lighten-1 text-body-1 text-center" v-show="bubble && bubble.getComment() === ''">
                 {{$t('noteMenu:noNote')}}
             </span>
         </v-card-title>

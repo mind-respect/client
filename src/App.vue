@@ -833,5 +833,9 @@ vuetifyjs wrong component css order fixes
   transform: rotate(270deg);
 }
 
+.grey-lighten-1 {
+  color: #BDBDBD;
+}
+
 </style>
 

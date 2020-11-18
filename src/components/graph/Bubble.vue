@@ -195,6 +195,7 @@
                     <div class="label-container" :style="inContentStyle">
                       <v-chip :color="chipColor"
                               small
+                              dark
                               @dragover="labelDragEnter"
                               @dragleave="labelDragLeave"
                               @drop="labelDrop"
@@ -328,7 +329,7 @@ export default {
     if (this.bubble.isSkeleton()) {
       this.chipColor = Color.SkeletonColor;
     } else {
-      this.chipColor = "secondary";
+      this.chipColor = "black";
     }
     this.isCenter = this.bubble.isCenter !== undefined && this.bubble.isCenter;
     this.isLeft = this.direction === "left";

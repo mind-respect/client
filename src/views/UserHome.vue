@@ -237,7 +237,7 @@
                 "removeInfo": "Remove from this list (does not remove the bubble)",
                 "filter": "Filter",
                 "confirmRemove": {
-                    "text-h6": "Remove from centers list",
+                    "title": "Remove from centers list",
                     "really": "Do you really want to remove that?",
                     "info": "This action does not remove the bubble(s). It will still be accessible throught the main search and by it's relations."
                 },
@@ -283,7 +283,7 @@
                 "removeInfo": "Supprimer de cette liste (n'efface pas la bulle)",
                 "filter": "Filtrer",
                 "confirmRemove": {
-                    "text-h6": "Supprimer de la liste des centres",
+                    "title": "Supprimer de la liste des centres",
                     "really": "Voulez-vous vraiment supprimer ça?",
                     "info": "Cette action ne supprime pas la bulle(s). Elle pourra toujours être trouvée par la recherche principale et par ses relations."
                 },
