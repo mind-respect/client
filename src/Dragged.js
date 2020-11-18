@@ -69,7 +69,7 @@ const Dragged = {
             if (Math.abs(distance) < Math.abs(minDistance)) {
                 minDistance = distance;
                 closestChild = !child.isVertexType() || child.isParentRelationLess() ? child : child.getParentBubble();
-                isAbove = yDistance < 0;
+                isAbove = y - bottomPosition < 0;
             }
         });
         return {
