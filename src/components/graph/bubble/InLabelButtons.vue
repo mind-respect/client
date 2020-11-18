@@ -45,7 +45,7 @@ export default {
     }
   },
   mounted: function () {
-    this.color = this.bubble.isVertexType() ? "#757575" : Color.LighterGray;
+    this.color = Color.EdgeColor;
     if (this.bubble.isMeta()) {
       if (this.bubble.wikipediaUrl) {
         this.wikipediaUrl = this.bubble.wikipediaUrl;
