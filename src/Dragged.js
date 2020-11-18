@@ -4,11 +4,7 @@ const Dragged = {
         if (Dragged.dragged === undefined) {
             return;
         }
-        if (parent.isDragOver) {
-            return Dragged.dragged.controller().moveUnderParent(
-                parent
-            );
-        }
+        Dragged.dragged.isDropHandled = true;
         event.stopPropagation();
         event.preventDefault();
         let closestChild = Dragged.getClosestChild(

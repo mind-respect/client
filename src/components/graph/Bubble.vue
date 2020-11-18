@@ -736,6 +736,14 @@ export default {
       event.preventDefault();
       event.target.style.opacity = 1;
       GraphUi.enableDragScroll();
+      if (!Selection.isSelected(this.bubble)) {
+        Selection.setToSingle(this.bubble);
+      }
+      if (!Dragged.dragged.isDropHandled) {
+        // console.log("drag end drop handled");
+        Dragged.handleDrop(event, CurrentSubGraph.get().center);
+      }
+      Dragged.dragged.isDropHandled = false;
     },
     labelDragEnter: function (event) {
       // console.log("dragover " + this.bubble.getLabel());
@@ -752,7 +760,6 @@ export default {
       if (this.isLabelDragOver === true) {
         return;
       }
-      this.bubble.isDragOver = true;
       let dragged = Dragged.dragged;
       let shouldSetToDragOver = dragged !== undefined &&
           dragged.getUri() !== this.bubble.getUri();
@@ -766,7 +773,6 @@ export default {
     }
     ,
     labelDragLeave: function (event) {
-      this.bubble.isDragOver = false;
       this.isLabelDragOver = false;
       // console.log("label drag leave");
     }
@@ -776,6 +782,7 @@ export default {
       if (Dragged.dragged === undefined) {
         return;
       }
+      Dragged.dragged.isDropHandled = true;
       event.preventDefault();
       event.stopPropagation();
       GraphUi.enableDragScroll();

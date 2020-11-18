@@ -368,9 +368,11 @@ export default {
       // console.log("over center")
     },
     childrenDropLeft: function (event) {
+      // console.log("graph drop left ")
       Dragged.handleDrop(event, this.center, true);
     },
     childrenDropRight: function (event) {
+      // console.log("graph drop right ")
       Dragged.handleDrop(event, this.center, false);
     },
     preventUndesirableDragging: function (event) {
