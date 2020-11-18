@@ -192,10 +192,11 @@
                     rounded="xl"
                 >
                   <template v-slot:activator="{ on }">
-                    <div class="label-container" :style="inContentStyle">
+                    <div :style="inContentStyle">
                       <v-chip :color="chipColor"
                               small
-                              dark
+                              outlined
+                              :style="'color:' + $store.state.backgroundColor"
                               @dragover="labelDragEnter"
                               @dragleave="labelDragLeave"
                               @drop="labelDrop"
@@ -214,7 +215,7 @@
                                         class="vh-center"
                                         v-if="!isShrinked && !bubble.isLabelEmpty()"
                                         :key="inLabelMenuKey"></InLabelButtons>
-                        <div class="bubble-label white--text"
+                        <div class="bubble-label black--text"
                              @blur="leaveEditFlow"
                              :data-placeholder="relationPlaceholder()"
                              @focus="focus({ preventScroll: true })"
@@ -350,7 +351,7 @@ export default {
     },
     menuBackgroundColor: function () {
       return {
-        'background-color': this.$store.state.backgroundColor
+        'background-color': this.$store.state.backgroundColor + " !important;"
       }
     },
     containerBoxShadow: function () {
@@ -1086,5 +1087,13 @@ $metaColor: purple;
   */
   margin-top: 2px;
   margin-bottom: 2px;
+}
+
+.label-chip {
+  cursor: move;
+
+  &.v-chip.v-chip--outlined.v-chip.v-chip {
+    background-color: currentColor !important;
+  }
 }
 </style>
