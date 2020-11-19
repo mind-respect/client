@@ -931,16 +931,6 @@ $metaColor: purple;
   }
 }
 
-.relation.bubble {
-  &.selected {
-    .bubble-label {
-      &:empty:after {
-        color: white;
-      }
-    }
-  }
-}
-
 .bubble-size {
   font-size: 18px !important;
 }
