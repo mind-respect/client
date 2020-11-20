@@ -98,6 +98,9 @@ ForkController.prototype.addSiblingUp = function (forceUnderParentFork) {
 };
 
 ForkController.prototype._addSiblingUpOrDown = function (isDown, forceUnderParentFork) {
+    if (this.model().isCenter) {
+        return this.addChild();
+    }
     let parent = this.model().getParentBubble();
     if (forceUnderParentFork || (parent.isRelation() && (parent.isPristine() || parent.isLabelSameAsParentGroupRelation()))) {
         parent = parent.getParentBubble();
