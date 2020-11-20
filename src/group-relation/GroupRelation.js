@@ -144,20 +144,20 @@ GroupRelation.prototype.getLeftBubble = function (bottom) {
             return this;
         }
         let index = bottom ? this.children.length - 1 : 0;
-        return this.children[index];
+        return this.children[index].getShownBubble();
     }
-    return this.parentBubble;
+    return this.getShownParentBubble();
 };
 
 GroupRelation.prototype.getRightBubble = function (bottom) {
     if (this.isToTheLeft()) {
-        return this.parentBubble;
+        return this.getShownParentBubble();
     }
     if (this.isCollapsed || !this.children) {
         return this;
     }
     let index = bottom ? this.children.length - 1 : 0;
-    return this.children[index];
+    return this.children[index].getShownBubble()
 };
 
 
