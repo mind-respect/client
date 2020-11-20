@@ -81,7 +81,7 @@
                   offset-y
                   :disabled="isEditFlow"
                   rounded="xl"
-                  :close-on-click="false"
+                  :close-on-click="true"
                   :close-on-content-click="false"
               >
                 <template v-slot:activator="{ on }">
@@ -187,7 +187,7 @@
                     color="white"
                     offset-y
                     nudge-bottom="15"
-                    :close-on-click="false"
+                    :close-on-click="true"
                     :close-on-content-click="false"
                     rounded="xl"
                 >
