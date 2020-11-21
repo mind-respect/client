@@ -207,6 +207,9 @@ GroupRelation.prototype.expand = async function (avoidCenter, isFirstExpand) {
 };
 
 GroupRelation.prototype.collapse = function (preventScroll, preventApplyToDescendants) {
+    if (!this.isExpanded) {
+        return;
+    }
     this.isExpanded = false;
     this.isCollapsed = true;
     if (this.children != null) {
