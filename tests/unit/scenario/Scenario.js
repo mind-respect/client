@@ -39,7 +39,6 @@ api.wrapper = mount(App, {
     i18n: vueI18nExt,
 });
 
-api.treeBuilder = new TreeBuilder(api.wrapper)
 
 api.Scenario = function () {
 };

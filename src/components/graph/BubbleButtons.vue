@@ -229,6 +229,11 @@ export default {
           action: "setShareLevel"
         },
         {
+          icon: "select_all",
+          action: "selectTree",
+          ctrlShortcut: "A"
+        },
+        {
           icon: "content_copy",
           badgeIcon: "bubble_chart",
           action: "copyTree"
@@ -272,11 +277,6 @@ export default {
         {
           icon: "fa-expand",
           action: "subElements"
-        },
-        {
-          icon: "select_all",
-          action: "selectTree",
-          ctrlShortcut: "A"
         },
         {
           icon: "list",

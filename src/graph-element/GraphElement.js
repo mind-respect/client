@@ -595,4 +595,14 @@ GraphElement.GraphElement.prototype.shouldShow = function () {
     return true;
 };
 
+GraphElement.GraphElement.prototype.buildPasteTree = function (clone, mapOfNewUris) {
+    clone.setUri(mapOfNewUris[clone.getUri()]);
+    clone.clonedChildren.forEach((childClone) => {
+        childClone = childClone.buildPasteTree(childClone, mapOfNewUris);
+        clone.addChild(childClone);
+    });
+    return clone;
+};
+
+
 export default GraphElement;

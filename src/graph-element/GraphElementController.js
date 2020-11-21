@@ -11,6 +11,7 @@ import Store from '@/store'
 import router from '@/router'
 import Vue from 'vue'
 import TagService from '@/tag/TagService'
+import Tag from '@/tag/Tag'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import RelationService from '@/relation/RelationService'
 import Vertex from '@/vertex/Vertex'
@@ -23,9 +24,10 @@ import NbNeighborsRefresherOnRemove from "./NbNeighborsRefresherOnRemove";
 import NbNeighborsRefresherOnSetShareLevel from './NbNeighborsRefresherOnSetShareLevel'
 import LoadingFlow from "../LoadingFlow";
 import ForkService from "../fork/ForkService";
+import TreeCopierService from "@/TreeCopierService";
 
 const api = {};
-let bubbleCutClipboard;
+let clipboard = {};
 
 api.GraphElementController = GraphElementController;
 
@@ -356,14 +358,16 @@ GraphElementController.prototype.collapseOthers = function () {
 
 GraphElementController.prototype.cutCanDo = function () {
     return this.isSingleAndOwned() && !this.model().isCenterBubble() && (
-        undefined === bubbleCutClipboard || !this.model().isSameBubble(
-            bubbleCutClipboard
+        clipboard.tree || !this.model().isSameBubble(
+            clipboard.bubble
         )
     );
 };
 
 GraphElementController.prototype.cut = function () {
-    bubbleCutClipboard = this.model();
+    clipboard = {
+        bubble: this.model()
+    };
 };
 
 GraphElementController.prototype.pasteTextCanDo = function () {
@@ -384,24 +388,43 @@ GraphElementController.prototype.pasteText = async function () {
 };
 
 GraphElementController.prototype.pasteCanDo = function () {
-    return this.isSingleAndOwned() && !MindMapInfo.isViewOnly() && bubbleCutClipboard !== undefined;
+    return this.isSingleAndOwned() && !MindMapInfo.isViewOnly() && (clipboard.tree || clipboard.bubble);
 };
 
 GraphElementController.prototype.paste = function () {
-    if (bubbleCutClipboard === undefined) {
+    if (clipboard === undefined) {
         return
     }
-    return this._pasteBubble();
+    if (clipboard.tree) {
+        return this._pasteTree();
+    } else {
+        return this._pasteBubble();
+    }
 };
 
+GraphElementController.prototype._pasteTree = async function () {
+    await this.expand(true, true);
+    const response = await TreeCopierService.copyForSelf(clipboard.tree);
+    const mapOfNewUris = response.data;
+    const rootCopy = await this.model().pasteCloneWithTree(clipboard.rootCloneWithTree, mapOfNewUris);
+    await this.relateToDistantVertexWithUri(
+        rootCopy.getUri(),
+        this.model().getNumberOfChild(),
+        undefined,
+        this.model().getShareLevel(),
+        [],
+        rootCopy
+    );
+}
+
 GraphElementController.prototype._pasteBubble = async function () {
-    if (!bubbleCutClipboard.controller()._canMoveUnderParent(this.model())) {
+    if (!clipboard.bubble.controller()._canMoveUnderParent(this.model())) {
         return;
     }
-    const result = await bubbleCutClipboard.controller().moveUnderParent(
+    const result = await clipboard.bubble.controller().moveUnderParent(
         this.model()
     );
-    bubbleCutClipboard = undefined;
+    clipboard = {};
     return result;
 };
 
@@ -727,9 +750,9 @@ GraphElementController.prototype.relateToDistantVertexWithUriCanDo = function (d
     });
 };
 
-GraphElementController.prototype.relateToDistantVertexWithUri = async function (distantVertexUri, index, isLeft, destinationShareLevel, identifiers) {
+GraphElementController.prototype.relateToDistantVertexWithUri = async function (distantVertexUri, index, isLeft, destinationShareLevel, identifiers, distantVertex) {
     let parentFork = this.model().isForkType() ? this.model() : this.model().getParentFork();
-    let distantVertex = await SubGraphController.withVertex(
+    distantVertex = distantVertex || await SubGraphController.withVertex(
         Vertex.withUri(
             distantVertexUri
         )
@@ -1025,17 +1048,34 @@ GraphElementController.prototype.viewAsList = function () {
 };
 
 GraphElementController.prototype.copyTreeCanDo = function () {
-    return false;
-    // return MindMapInfo.isViewOnly() && Selection.isContinuous() && Selection.getNbSelected() > 1;
-};
-
-GraphElementController.prototype.copyTree = function () {
+    return Selection.isContinuous() && Selection.getNbSelected() > 1;
 };
 
 GraphElementController.prototype._areAllElementsPublicWithLink = function () {
     return this._areAllElementsInShareLevels([
         ShareLevel.PUBLIC_WITH_LINK
     ]);
+};
+
+GraphElementController.prototype.copyTree = function () {
+    const rootBubble = Selection.getRootOfSelectedTree();
+    const urisOfGraphElements = Selection.getSelectedBubbles().reduce((urisOfGraphElements, bubble) => {
+        if (bubble.getUri() !== rootBubble.getUri() && bubble.getParentBubble().isEdgeType()) {
+            urisOfGraphElements.push(bubble.getParentBubble().getUri());
+        }
+        urisOfGraphElements.push(bubble.getUri());
+        return urisOfGraphElements;
+    }, []);
+    debugger;
+    clipboard = {
+        tree: {
+            rootUri: rootBubble.getUri(),
+            urisOfGraphElements: urisOfGraphElements,
+            rootAsTag: Tag.fromFriendlyResource(Selection.getRootOfSelectedTree()).getJsonFormat()
+        },
+        treeRoot: Selection.getRootOfSelectedTree().clone(),
+        rootCloneWithTree: rootBubble.cloneWithTree()
+    };
 };
 
 GraphElementController.prototype._areAllElementsPublic = function () {
