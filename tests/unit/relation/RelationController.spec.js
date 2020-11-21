@@ -439,7 +439,7 @@ describe("RelationController", () => {
             expect(
                 groupRelation.getNumberOfChild()
             ).toBe(2);
-            b2 = groupRelation.getNextBubble().getNextBubble();
+            b2 = groupRelation.getNextBubble();
             expect(
                 b2.getLabel()
             ).toBe("b2");

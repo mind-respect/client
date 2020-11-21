@@ -732,15 +732,15 @@ FriendlyResource.FriendlyResource.prototype.getNextBottomBubble = function (isLe
     return this._getNextBubble(true, isLeft);
 };
 
-FriendlyResource.FriendlyResource.prototype.getNextBubble = function (isLeft) {
-    return this._getNextBubble(false, isLeft);
+FriendlyResource.FriendlyResource.prototype.getNextBubble = function (isLeft, getEvenIfNotShown) {
+    return this._getNextBubble(false, isLeft, getEvenIfNotShown);
 };
 
-FriendlyResource.FriendlyResource.prototype._getNextBubble = function (bottom, isLeft) {
+FriendlyResource.FriendlyResource.prototype._getNextBubble = function (bottom, isLeft, getEvenIfNotShown) {
     if (isLeft === undefined) {
         isLeft = this.isToTheLeft();
     }
-    let nextBubble = isLeft ? this.getLeftBubble(bottom) : this.getRightBubble(bottom);
+    let nextBubble = isLeft ? this.getLeftBubble(bottom, getEvenIfNotShown) : this.getRightBubble(bottom, getEvenIfNotShown);
     if (!nextBubble) {
         return this;
     }

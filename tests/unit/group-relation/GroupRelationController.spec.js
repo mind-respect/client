@@ -154,7 +154,7 @@ describe("GroupRelationController", () => {
                 center,
                 "r1"
             );
-            let b2 = groupRelation.getNextBubble().getNextBubble();
+            let b2 = groupRelation.getNextBubble();
             expect(
                 b2.getLabel()
             ).toBe("b2");

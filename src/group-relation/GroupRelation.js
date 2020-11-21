@@ -138,26 +138,31 @@ GroupRelation.prototype.getGreatestGroupRelationAncestor = function () {
     return greatest;
 };
 
-GroupRelation.prototype.getLeftBubble = function (bottom) {
+GroupRelation.prototype.getLeftBubble = function (bottom, getEvenIfNotShown) {
     if (this.isToTheLeft()) {
         if (this.isCollapsed || !this.children) {
             return this;
         }
         let index = bottom ? this.children.length - 1 : 0;
-        return this.children[index].getShownBubble();
+        const childAtIndex = this.children[index];
+        return getEvenIfNotShown ? childAtIndex : childAtIndex.getShownBubble();
     }
-    return this.getShownParentBubble();
+    return getEvenIfNotShown ? this.getParentBubble() : this.getShownParentBubble();
 };
 
-GroupRelation.prototype.getRightBubble = function (bottom) {
+GroupRelation.prototype.getRightBubble = function (bottom, getEvenIfNotShown) {
     if (this.isToTheLeft()) {
-        return this.getShownParentBubble();
+        return getEvenIfNotShown ? this.getParentBubble() : this.getShownParentBubble();
     }
     if (this.isCollapsed || !this.children) {
         return this;
     }
     let index = bottom ? this.children.length - 1 : 0;
-    return this.children[index].getShownBubble()
+
+    const childAtIndex = this.children[index];
+    if (childAtIndex) {
+        return getEvenIfNotShown ? childAtIndex : childAtIndex.getShownBubble();
+    }
 };
 
 

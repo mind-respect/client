@@ -126,7 +126,7 @@ GroupRelationController.prototype.getEdgeController = function () {
 };
 
 GroupRelationController.prototype.convertToRelation = async function () {
-    let edge = this.model().getNextBubble();
+    let edge = this.model().getNextBubble(undefined, true);
     await edge.controller().moveAbove(this.model(), true);
     if (edge.isLabelEmpty()) {
         edge.controller().setLabel(this.model().getLabel());
