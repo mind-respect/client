@@ -147,7 +147,7 @@ export default {
       return;
     },
     childrenDrop: function (event) {
-      console.log("children drop ")
+      // console.log("children drop ")
       Dragged.handleDrop(event, this.bubble.getParentFork(), this.bubble.isToTheLeft());
     },
     dragOver: function (event) {

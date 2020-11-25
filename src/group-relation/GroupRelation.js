@@ -88,6 +88,7 @@ GroupRelation.prototype.clone = function () {
     let groupRelation = new GroupRelation(
         JSON.parse(JSON.stringify(this.groupRelationJsonObject))
     );
+    this.cloneTags(groupRelation);
     groupRelation.uiId = IdUri.uuid();
     return groupRelation;
 };

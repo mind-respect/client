@@ -77,6 +77,7 @@ Vertex.prototype.clone = function () {
     vertex.init(
         JSON.parse(JSON.stringify(this._vertexServerFormat))
     );
+    this.cloneTags(vertex);
     vertex.uiId = IdUri.uuid();
     return vertex;
 };

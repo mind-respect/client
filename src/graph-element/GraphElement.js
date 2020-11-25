@@ -289,6 +289,12 @@ GraphElement.GraphElement.prototype.getRelevantTags = function () {
     });
 };
 
+GraphElement.GraphElement.prototype.cloneTags = function (assignTo) {
+    assignTo.identifiers = this.identifiers.map((tag) => {
+        return tag.clone();
+    });
+};
+
 GraphElement.GraphElement.prototype.refreshChildren = function (avoidRedraw, refreshComponent) {
     if (refreshComponent) {
         this.childrenKey = IdUri.uuid();

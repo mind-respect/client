@@ -101,6 +101,7 @@ api.Relation.prototype.clone = function () {
         this.getSourceVertex(),
         this.getDestinationVertex()
     );
+    this.cloneTags(edge);
     return edge;
 };
 
