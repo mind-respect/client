@@ -605,9 +605,8 @@ GraphElement.GraphElement.prototype.buildPasteTree = function (clone, mapOfNewUr
         if (clone.isEdgeType()) {
             clone.setDestinationVertex(childClone);
             clone.setSourceVertex(parent);
-            clone.parentVertex = clone;
+            clone.parentVertex = parent.isGroupRelation() ? parent.getParentVertex() : parent;
         } else {
-            clone.parentVertex = clone.getParentVertex();
             clone.addChild(childClone);
         }
         CurrentSubGraph.get().add(childClone);

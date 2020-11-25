@@ -404,17 +404,28 @@ GraphElementController.prototype.paste = function () {
 
 GraphElementController.prototype._pasteTree = async function () {
     await this.expand(true, true);
-    const response = await TreeCopierService.copyForSelf(clipboard.tree);
+    LoadingFlow.enter();
+    const response = await TreeCopierService.copyForSelf(
+        clipboard.tree,
+        clipboard.rootCloneWithTree,
+        this.model()
+    );
     const mapOfNewUris = response.data;
     const rootCopy = await this.model().pasteCloneWithTree(clipboard.rootCloneWithTree, mapOfNewUris);
-    await this.relateToDistantVertexWithUri(
-        rootCopy.getUri(),
-        this.model().getNumberOfChild(),
-        undefined,
-        this.model().getShareLevel(),
-        [],
-        rootCopy
-    );
+    if (rootCopy.isGroupRelation()) {
+        await rootCopy.controller().replaceParentFork(this.model());
+        this.model().addChild(rootCopy);
+    } else {
+        await this.relateToDistantVertexWithUri(
+            rootCopy.getUri(),
+            this.model().getNumberOfChild(),
+            undefined,
+            this.model().getShareLevel(),
+            [],
+            rootCopy
+        );
+    }
+    LoadingFlow.leave();
 }
 
 GraphElementController.prototype._pasteBubble = async function () {
