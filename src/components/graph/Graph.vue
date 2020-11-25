@@ -337,7 +337,7 @@ export default {
       }, 275);
     },
     mousedown: function () {
-      // GraphUi.enableDragScroll();
+      GraphUi.enableDragScroll();
     },
     refreshChildren: function () {
       this.childrenKey = IdUri.uuid();
