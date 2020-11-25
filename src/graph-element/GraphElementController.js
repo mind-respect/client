@@ -1064,7 +1064,7 @@ GraphElementController.prototype.viewAsList = function () {
 };
 
 GraphElementController.prototype.copyTreeCanDo = function () {
-    return Selection.isContinuous() && Selection.getNbSelected() > 1;
+    return Selection.isContinuous();
 };
 
 GraphElementController.prototype._areAllElementsPublicWithLink = function () {
@@ -1075,21 +1075,23 @@ GraphElementController.prototype._areAllElementsPublicWithLink = function () {
 
 GraphElementController.prototype.copyTree = function () {
     const rootBubble = Selection.getRootOfSelectedTree();
-    const urisOfGraphElements = Selection.getSelectedBubbles().reduce((urisOfGraphElements, bubble) => {
+    const graphElementsToCopy = Selection.isSingle() ?
+        [rootBubble].concat(rootBubble.getDescendants()) : Selection.getSelectedBubbles();
+    const urisOfGraphElements = graphElementsToCopy.reduce((urisOfGraphElements, bubble) => {
         if (bubble.getUri() !== rootBubble.getUri() && bubble.getParentBubble().isEdgeType()) {
-            urisOfGraphElements.push(bubble.getParentBubble().getUri());
+            urisOfGraphElements.add(bubble.getParentBubble().getUri());
         }
-        urisOfGraphElements.push(bubble.getUri());
+        urisOfGraphElements.add(bubble.getUri());
         return urisOfGraphElements;
-    }, []);
+    }, new Set());
     clipboard = {
         tree: {
             rootUri: rootBubble.getUri(),
-            urisOfGraphElements: urisOfGraphElements,
+            urisOfGraphElements: Array.from(urisOfGraphElements),
             rootAsTag: Tag.fromFriendlyResource(Selection.getRootOfSelectedTree()).getJsonFormat()
         },
         treeRoot: Selection.getRootOfSelectedTree().clone(),
-        rootCloneWithTree: rootBubble.cloneWithTree()
+        rootCloneWithTree: rootBubble.cloneWithTree(urisOfGraphElements)
     };
 };
 

@@ -614,15 +614,15 @@ GraphElement.GraphElement.prototype.buildPasteTree = function (clone, mapOfNewUr
     return clone;
 };
 
-GraphElement.GraphElement.prototype.cloneWithTree = function () {
+GraphElement.GraphElement.prototype.cloneWithTree = function (urisOfGraphElements) {
     const clone = this.clone();
     if (this.canExpand() || this.isLeaf()) {
         clone.clonedChildren = [];
     } else {
         clone.clonedChildren = this.getNextChildren().filter((child) => {
-            return child.isEdgeType() || child.isSelected;
+            return (child.isEdgeType() && urisOfGraphElements.has(child.getOtherVertex(clone).getUri())) || urisOfGraphElements.has(child.getUri());
         }).map((child) => {
-            return child.cloneWithTree();
+            return child.cloneWithTree(urisOfGraphElements);
         });
     }
     return clone;
