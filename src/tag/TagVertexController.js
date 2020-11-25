@@ -104,7 +104,7 @@ TagVertexController.prototype.loadGraph = function (isParentAlreadyOnMap, preven
         let childrenIndex = centerBubble.getChildrenIndex();
         sortChildren(children, centerBubble).forEach((child) => {
             let endVertex = child.isVertexType() ? child : child.getOtherVertex(centerBubble);
-            let childIndex = childrenIndex[endVertex.getUri()] || childrenIndex[endVertex.getPatternUri()];
+            let childIndex = childrenIndex[endVertex.getUri()] || childrenIndex[endVertex.getCopiedFromUri()];
             let addLeft;
             if (childIndex !== undefined) {
                 addLeft = childIndex.toTheLeft;

@@ -1066,7 +1066,6 @@ GraphElementController.prototype.copyTree = function () {
         urisOfGraphElements.push(bubble.getUri());
         return urisOfGraphElements;
     }, []);
-    debugger;
     clipboard = {
         tree: {
             rootUri: rootBubble.getUri(),

@@ -77,22 +77,9 @@ Fork.prototype.setNbNeighbors = function (nbNeighbors) {
     return this.nbNeighbors = nbNeighbors;
 };
 
-Fork.prototype.cloneWithTree = function () {
-    const clone = this.clone();
-    if (this.canExpand() || this.isLeaf()) {
-        clone.clonedChildren = [];
-    } else {
-        clone.clonedChildren = this.getNextChildren().filter((child) => {
-            return child.isSelected;
-        }).map((child) => {
-            return child.cloneWithTree();
-        });
-    }
-    return clone;
-};
 
 Fork.prototype.pasteCloneWithTree = function (rootClone, mapOfNewUris) {
-    return this.buildPasteTree(rootClone, mapOfNewUris);
+    return this.buildPasteTree(rootClone, mapOfNewUris, rootClone);
 };
 
 

@@ -141,9 +141,9 @@ SubGraphController.prototype.load = function (isParentAlreadyOnMap, isCenterOnMa
             let childIndex = childrenIndex[endFork.getUri()];
             if (!childIndex) {
                 if (endFork.isGroupRelation()) {
-                    childIndex = childrenIndex[endFork.getIndexVertexUri()] || childrenIndex[endFork.getPatternUri()];
+                    childIndex = childrenIndex[endFork.getIndexVertexUri()] || childrenIndex[endFork.getCopiedFromUri()];
                 } else {
-                    childIndex = childrenIndex[endFork.getPatternUri()];
+                    childIndex = childrenIndex[endFork.getCopiedFromUri()];
                 }
             }
             let addLeft;

@@ -25,7 +25,7 @@
                 height="44"
                 width="223"
                 alt="mindrespect.com"
-                v-if="$vuetify.breakpoint.lgAndUp"
+                v-if="$vuetify.breakpoint.lgAndUp && !isGraphRoute"
             ></v-img>
             <v-img
                 :src="require('@/assets/MR.png')"

@@ -443,9 +443,9 @@ GraphElement.GraphElement.prototype.getIndex = function (parentForkChildrenIndex
     let indexInfo = parentForkChildrenIndexArray[this.getUri()];
     if (!indexInfo) {
         if (this.isGroupRelation()) {
-            indexInfo = parentForkChildrenIndexArray[this.getIndexVertexUri()] || parentForkChildrenIndexArray[this.getPatternUri()];
+            indexInfo = parentForkChildrenIndexArray[this.getIndexVertexUri()] || parentForkChildrenIndexArray[this.getCopiedFromUri()];
         } else {
-            indexInfo = parentForkChildrenIndexArray[this.getPatternUri()];
+            indexInfo = parentForkChildrenIndexArray[this.getCopiedFromUri()];
         }
     }
     if (!indexInfo) {
@@ -454,9 +454,9 @@ GraphElement.GraphElement.prototype.getIndex = function (parentForkChildrenIndex
     return indexInfo.index;
 };
 
-GraphElement.GraphElement.prototype.getPatternUri = function () {
+GraphElement.GraphElement.prototype.getCopiedFromUri = function () {
     return decodeURIComponent(
-        this._graphElementServerFormat.patternUri
+        this._graphElementServerFormat.copiedFromUri
     );
 };
 
@@ -595,12 +595,37 @@ GraphElement.GraphElement.prototype.shouldShow = function () {
     return true;
 };
 
-GraphElement.GraphElement.prototype.buildPasteTree = function (clone, mapOfNewUris) {
+GraphElement.GraphElement.prototype.buildPasteTree = function (clone, mapOfNewUris, parent) {
     clone.setUri(mapOfNewUris[clone.getUri()]);
+    clone.isExpanded = true;
+    clone.isCollapsed = false;
+    clone.parentBubble = parent;
     clone.clonedChildren.forEach((childClone) => {
-        childClone = childClone.buildPasteTree(childClone, mapOfNewUris);
-        clone.addChild(childClone);
+        childClone = childClone.buildPasteTree(childClone, mapOfNewUris, clone);
+        if (clone.isEdgeType()) {
+            clone.setDestinationVertex(childClone);
+            clone.setSourceVertex(parent);
+            clone.parentVertex = clone;
+        } else {
+            clone.parentVertex = clone.getParentVertex();
+            clone.addChild(childClone);
+        }
+        CurrentSubGraph.get().add(childClone);
     });
+    return clone;
+};
+
+GraphElement.GraphElement.prototype.cloneWithTree = function () {
+    const clone = this.clone();
+    if (this.canExpand() || this.isLeaf()) {
+        clone.clonedChildren = [];
+    } else {
+        clone.clonedChildren = this.getNextChildren().filter((child) => {
+            return child.isEdgeType() || child.isSelected;
+        }).map((child) => {
+            return child.cloneWithTree();
+        });
+    }
     return clone;
 };
 
