@@ -425,6 +425,11 @@ GraphElementController.prototype._pasteTree = async function () {
             rootCopy
         );
     }
+    [rootCopy].concat(rootCopy.getDescendants()).forEach((fork) => {
+        if (fork.isForkType()) {
+            GraphElementService.changeChildrenIndex(fork)
+        }
+    });
     LoadingFlow.leave();
 }
 
