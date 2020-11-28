@@ -218,7 +218,7 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-dialog v-if="patternDialog" v-model="patternDialog" width="600">
+    <v-dialog v-if="patternDialog" v-model="patternDialog" width="600" :fullscreen="$vuetify.breakpoint.smAndDown">
       <v-card>
         <v-card-title>
           {{ $t('areYouSure') }}

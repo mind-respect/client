@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <v-dialog v-model="dialog" width="900">
+    <v-dialog v-model="dialog" width="900" :fullscreen="$vuetify.breakpoint.smAndDown">
         <v-card>
             <v-card-title class="text-h6">
                 {{$t('font:title')}}

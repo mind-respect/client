@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" v-if="dialog" width="900" top>
+  <v-dialog v-model="dialog" v-if="dialog" width="900" top :fullscreen="$vuetify.breakpoint.smAndDown">
     <v-card>
       <v-card-title>
         <v-icon class="mr-2">

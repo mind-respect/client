@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" v-if="dialog" width="900" top>
+  <v-dialog v-model="dialog" v-if="dialog" width="900" top :fullscreen="$vuetify.breakpoint.smAndDown">
     <v-card>
       <v-card-title class="">
         <!--        {{ $t('duplicate:title') }}-->

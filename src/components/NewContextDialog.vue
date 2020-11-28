@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" v-if="isNewContextFlow && dialog" width="900" id="removeDialog">
+    <v-dialog v-model="dialog" v-if="isNewContextFlow && dialog" width="900" id="removeDialog" :fullscreen="$vuetify.breakpoint.smAndDown">
         <v-card :class="{
             'pl-0': $vuetify.breakpoint.smAndDown,
             'pr-0': $vuetify.breakpoint.smAndDown,

@@ -3,7 +3,7 @@
   -->
 
 <template>
-  <v-dialog v-model="removeTagDialog" v-if="isRemoveTagFlow" width="600" id="removeTagDialog">
+  <v-dialog v-model="removeTagDialog" v-if="isRemoveTagFlow" width="600" id="removeTagDialog" :fullscreen="$vuetify.breakpoint.smAndDown">
     <v-card>
       <v-card-title class="text-h6">
         {{ $t('removeTag:title_prefix') }}

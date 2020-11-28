@@ -3,7 +3,7 @@
   -->
 
 <template>
-    <v-dialog v-model="dialog" v-if="isDescriptionFlow" width="900" persistent>
+    <v-dialog v-model="dialog" v-if="isDescriptionFlow" width="900" persistent :fullscreen="$vuetify.breakpoint.smAndDown">
         <v-card>
             <v-card-text class="pt-8" style="color:inherit" v-if="!$store.state.isViewOnly">
                 <vue-editor

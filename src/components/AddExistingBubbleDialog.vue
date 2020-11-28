@@ -3,7 +3,7 @@
   -->
 
 <template>
-  <v-dialog v-model="dialog" width="900" v-if="dialog">
+  <v-dialog v-model="dialog" width="900" v-if="dialog" :fullscreen="$vuetify.breakpoint.smAndDown">
     <v-card>
       <v-card-title class="text-h6">
         {{ $t('existing:addRelationTo') }}
