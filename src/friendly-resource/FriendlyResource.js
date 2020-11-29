@@ -613,6 +613,14 @@ FriendlyResource.FriendlyResource.prototype.moveBelow = function (newSibling, pr
     );
 };
 
+FriendlyResource.FriendlyResource.prototype.getOwner = function () {
+    return IdUri.getOwnerFromUri(this.getUri());
+};
+
+FriendlyResource.FriendlyResource.prototype.isOwner = function () {
+    return Store.state.user && IdUri.getOwnerFromUri(this.getUri()) === Store.state.user.username;
+};
+
 FriendlyResource.FriendlyResource.prototype._getUpOrDownBubble = function (isDown, isForTravel) {
     if (this.isCenter) {
         return this;

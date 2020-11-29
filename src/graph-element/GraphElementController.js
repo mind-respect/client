@@ -25,6 +25,7 @@ import NbNeighborsRefresherOnSetShareLevel from './NbNeighborsRefresherOnSetShar
 import LoadingFlow from "../LoadingFlow";
 import ForkService from "../fork/ForkService";
 import TreeCopierService from "@/TreeCopierService";
+import CenterGraphElementService from "@/center/CenterGraphElementService";
 
 const api = {};
 let clipboard = {};
@@ -387,6 +388,7 @@ GraphElementController.prototype.pasteText = async function () {
     return Store.dispatch("redraw");
 };
 
+
 GraphElementController.prototype.pasteCanDo = function () {
     return this.isSingleAndOwned() && !MindMapInfo.isViewOnly() && (clipboard.tree || clipboard.bubble);
 };
@@ -402,12 +404,43 @@ GraphElementController.prototype.paste = function () {
     }
 };
 
+GraphElementController.prototype.copyAndRelateTreeOfOtherUser = async function (otherUsername) {
+    const response = await TreeCopierService.copy(
+        clipboard.tree,
+        this.model(),
+        otherUsername
+    );
+    const mapOfNewUris = response.data;
+    const newRootUri = mapOfNewUris[clipboard.tree.rootUri];
+    await RelationService.createFromSourceAndDestinationUri(
+        this.model().getUri(),
+        newRootUri,
+        ShareLevel.PRIVATE,
+        ShareLevel.PRIVATE
+    )
+    clipboard = {};
+};
+
+GraphElementController.prototype.copyTreeOfOtherUserAsNewCenter = async function (otherUsername) {
+    const response = await TreeCopierService.copy(
+        clipboard.tree,
+        this.model(),
+        otherUsername
+    );
+    const mapOfNewUris = response.data;
+    const newRootUri = mapOfNewUris[clipboard.tree.rootUri];
+    await CenterGraphElementService.makeCenterWithUriAndLastCenterDate(
+        newRootUri,
+        new Date().getTime()
+    )
+    clipboard = {};
+};
+
 GraphElementController.prototype._pasteTree = async function () {
     await this.expand(true, true);
     LoadingFlow.enter();
-    const response = await TreeCopierService.copyForSelf(
+    const response = await TreeCopierService.copy(
         clipboard.tree,
-        clipboard.rootCloneWithTree,
         this.model()
     );
     const mapOfNewUris = response.data;
@@ -430,6 +463,7 @@ GraphElementController.prototype._pasteTree = async function () {
             GraphElementService.changeChildrenIndex(fork)
         }
     });
+    clipboard = {};
     LoadingFlow.leave();
 }
 
@@ -1089,10 +1123,13 @@ GraphElementController.prototype.copyTree = function () {
             rootUri: rootBubble.getUri(),
             urisOfGraphElements: Array.from(urisOfGraphElements),
             rootAsTag: Tag.fromFriendlyResource(Selection.getRootOfSelectedTree()).getJsonFormat()
-        },
-        treeRoot: Selection.getRootOfSelectedTree().clone(),
-        rootCloneWithTree: rootBubble.cloneWithTree(urisOfGraphElements)
+        }
     };
+    if (MindMapInfo.isViewOnly()) {
+        return Store.dispatch("isCopyTreeFlow", true);
+    }
+    clipboard.treeRoot = Selection.getRootOfSelectedTree().clone();
+    clipboard.rootCloneWithTree = rootBubble.cloneWithTree(urisOfGraphElements);
 };
 
 GraphElementController.prototype._areAllElementsPublic = function () {

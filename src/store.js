@@ -52,6 +52,7 @@ const Store = new Vuex.Store({
         failedToEdit: Math.random(),
         userHomeSelectedCenter: null,
         isNewContextFlow: false,
+        isCopyTreeFlow: false,
         isAddTagFlow: false,
         isMergeFlow: false,
         isColorFlow: false,
@@ -165,6 +166,9 @@ const Store = new Vuex.Store({
         },
         isNewContextFlow: function (state, isNewContextFlow) {
             state.isNewContextFlow = isNewContextFlow;
+        },
+        isCopyTreeFlow: function (state, isCopyTreeFlow) {
+            state.isCopyTreeFlow = isCopyTreeFlow;
         },
         setIsAddTagFlow: function (state, isAddTagFlow) {
             state.isAddTagFlow = isAddTagFlow;
@@ -282,6 +286,9 @@ const Store = new Vuex.Store({
         },
         isNewContextFlow: function (action, isNewContextFlow) {
             action.commit('isNewContextFlow', isNewContextFlow);
+        },
+        isCopyTreeFlow: function (action, isCopyTreeFlow) {
+            action.commit('isCopyTreeFlow', isCopyTreeFlow);
         },
         setIsAddTagFlow: function (action, isAddTagFlow) {
             action.commit('setIsAddTagFlow', isAddTagFlow);

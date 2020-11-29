@@ -26,6 +26,11 @@ const IdUri = {
             uri
         );
     },
+    isGroupRelationUri: function (uri) {
+        return GraphElementType.GroupRelation === IdUri.getGraphElementTypeFromUri(
+            uri
+        );
+    },
     isMetaUri: function (uri) {
         return GraphElementType.Meta === IdUri.getGraphElementTypeFromUri(
             uri

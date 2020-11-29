@@ -71,7 +71,7 @@ export default {
         return Service.geApi().post(
             centerUri + "/center",
             {
-                lastCenterDate: lastCenterDateTime
+                    lastCenterDate: lastCenterDateTime
             }
         );
     },

@@ -120,6 +120,7 @@
     <SimilarBubbles v-if="isOwner" @tagAdded="tagSuccessSnackbar=true;"></SimilarBubbles>
     <AddExistingBubbleDialog ref="addExistingBubbleDialog"></AddExistingBubbleDialog>
     <NewContextDialog></NewContextDialog>
+    <CopyTreeOfOtherDialog></CopyTreeOfOtherDialog>
     <BottomMenu></BottomMenu>
     <v-snackbar v-model="tagSuccessSnackbar" color="secondary" dark>
       <p class="subtitle-1 vh-center">
@@ -172,7 +173,8 @@ export default {
     MergeDialog: () => import('@/components/MergeDialog'),
     ColorDialog: () => import('@/components/ColorDialog'),
     BottomMenu: () => import('@/components/BottomMenu'),
-    DuplicateDialog: () => import('@/components/DuplicateDialog')
+    DuplicateDialog: () => import('@/components/DuplicateDialog'),
+    CopyTreeOfOtherDialog: () => import('@/components/CopyTreeOfOtherDialog')
   },
   data: function () {
     I18n.i18next.addResources("en", "graph", {

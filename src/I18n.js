@@ -54,7 +54,9 @@ export default {
                         and: "and",
                         to: "to",
                         toTheBubble: "to the bubble",
-                        selectedBubble: "Selected bubble"
+                        selectedBubble: "Selected bubble",
+                        noRelations: 'no relations',
+                        done: "Done"
                     }
                 },
                 fr: {
@@ -89,7 +91,9 @@ export default {
                         and: "et",
                         to: "à",
                         toTheBubble: "à la bulle",
-                        selectedBubble: "Bulle sélectionnée"
+                        selectedBubble: "Bulle sélectionnée",
+                        noRelations: 'pas de relations',
+                        done: "Terminé"
                     }
                 }
             }

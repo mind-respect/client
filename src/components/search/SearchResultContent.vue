@@ -50,7 +50,7 @@
             </span>
       <span v-else>
             <span v-if="item.original.getGraphElementType() === 'vertex'">
-                <span v-if="item.original.context === ''" class="vh-center">{{ $t('centers:noRelations') }}</span>
+                <span v-if="item.original.context === ''" class="vh-center">{{ $t('noRelations') }}</span>
                 <div v-else v-for="(context, index) in item.original.splitContext" class="around-list-item">
                   {{ context }}
                 </div>

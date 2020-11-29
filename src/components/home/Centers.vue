@@ -102,7 +102,7 @@
                     </v-list-item-title>
                     <v-list-item-subtitle class="mt-1">
                       <span v-if='center.getContext() === ""' class="vh-center">
-                        {{ $t('centers:noRelations') }}
+                        {{ $t('noRelations') }}
                       </span>
                       <div v-else v-for="(value, index) in center.splitContext"
                            class="around-list-item">
@@ -255,12 +255,10 @@ export default {
   },
   data: function () {
     I18n.i18next.addResources("en", "centers", {
-      removedCenter: 'Removed from the list of centers',
-      noRelations: 'no relations'
+      removedCenter: 'Removed from the list of centers'
     });
     I18n.i18next.addResources("fr", "centers", {
-      removedCenter: 'Enlevé de la liste des centres',
-      noRelations: 'pas de relations'
+      removedCenter: 'Enlevé de la liste des centres'
     });
     return {
       loaded: false,
