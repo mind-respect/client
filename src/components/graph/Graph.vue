@@ -148,12 +148,12 @@ import GraphElement from "@/graph-element/GraphElement";
 import GraphDraw from '@/draw/GraphDraw'
 import Dragged from '@/Dragged'
 import I18n from '@/I18n'
-import GraphController from '@/graph/GraphController'
 import GraphUi from '@/graph/GraphUi'
 import VertexSkeleton from '@/vertex/VertexSkeleton'
 import RelationSkeleton from '@/relation/RelationSkeleton'
 import * as KeyCode from 'keycode-js';
 import UiUtils from '@/UiUtils'
+import KeyboardActions from "@/KeyboardActions";
 
 let insideSvgOpacityTransition = false;
 
@@ -293,6 +293,8 @@ export default {
             this.showLoading = false;
             await this.$nextTick();
             await this.$nextTick();
+            KeyboardActions.enable();
+            GraphUi.enableDragScroll();
             this.strokeColor = Color.EdgeColor;
             setTimeout(async () => {
               await this.$store.dispatch("redraw", {fadeIn: true});
