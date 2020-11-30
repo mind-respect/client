@@ -10,19 +10,13 @@
         >close
         </v-icon>
       </v-card-title>
-      <v-card-text class="pt-0 text-body-1" v-if="relateSuccess">
-        <v-alert
-            dense
-            text
-            type="success"
-        >
-          {{ $t('copyTree:relateSuccess') }}
-        </v-alert>
+      <v-card-text class="text-body-1 text-center pt-10" v-if="copySuccess">
+        <v-btn color="secondary" :to="treeLink">
+          <v-icon class="mr-2">link</v-icon>
+          {{ $t('copyTree:visitNewTree') }}
+        </v-btn>
       </v-card-text>
-      <v-card-text class="pt-0 text-body-1" v-if="newCenterSuccess">
-
-      </v-card-text>
-      <v-card-text class="pt-0 text-body-1" v-if="!relateSuccess && !newCenterSuccess">
+      <v-card-text class="pt-0 text-body-1" v-if="!copySuccess">
         <v-list>
           <v-list-item-group
               v-model="action"
@@ -83,7 +77,7 @@
                 </v-card-actions>
               </v-list-item>
             </v-list-item-group>
-            <v-list-item>
+            <v-list-item :disabled="isRootGroupRelation">
               <template v-slot:default="{ active }">
                 <v-list-item-action>
                   <v-checkbox :input-value="active"></v-checkbox>
@@ -103,12 +97,12 @@
         <v-btn color="secondary" class="ml-4" @click="confirm"
                :loading="isLoading"
                :disabled="isLoading || action === null || (action === 0 && this.copyRelateBubble === null)"
-               v-if="!this.relateSuccess && !this.newCenterSuccess"
+               v-if="!this.copySuccess"
         >
           {{ $t('confirm') }}
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn color="primary" @click="dialog = false" text class="mr-4" v-if="relateSuccess || newCenterSuccess">
+        <v-btn color="primary" @click="dialog = false" text class="mr-4" v-if="copySuccess">
           {{ $t('done') }}
         </v-btn>
         <v-btn color="primary" @click="dialog = false" text class="mr-4" v-else>
@@ -127,6 +121,7 @@ import SearchResultContent from '@/components/search/SearchResultContent'
 import SearchResultAction from '@/components/search/SearchResultAction'
 import SearchService from "@/search/SearchService";
 import IdUri from "@/IdUri";
+import GraphElementController from '@/graph-element/GraphElementController'
 
 export default {
   name: "CopyTreeOfOtherDialog",
@@ -141,16 +136,17 @@ export default {
       newCenter: "Add as new center",
       relateToYourBubble: "Relate to one of your bubble",
       placeholder: "Relate with",
-      relateSuccess: "Votre bulle a été reliée",
-      parentBubbleToNewTree: "Parent bubble to new copied tree"
+      parentBubbleToNewTree: "Parent bubble to new copied tree",
+      visitNewTree: "Visiter le nouvel arbre créé"
     });
     I18n.i18next.addResources("fr", "copyTree", {
       title: "Copier l'arbre dans votre carte",
       newCenter: "Ajouter comme nouveau centre",
       relateToYourBubble: "Relier à l'une de vos bulle",
       placeholder: "Relier avec",
-      relateSuccess: "Votre bulle a été reliée",
-      parentBubbleToNewTree: "Bulle parente à l'arbre copié"
+      parentBubbleToNewTree: "Bulle parente à l'arbre copié",
+      visitNewTree: "Visiter le nouvel arbre créé"
+
     });
     return {
       dialog: false,
@@ -164,8 +160,9 @@ export default {
       },
       copyRelateBubble: null,
       copyRelateBubbleAsSearchResult: null,
-      relateSuccess: true,
-      newCenterSuccess: true
+      copySuccess: false,
+      treeLink: null,
+      isRootGroupRelation: false
     };
   },
   mounted: function () {
@@ -178,12 +175,14 @@ export default {
         await this.copyRelateBubble.controller().copyAndRelateTreeOfOtherUser(
             IdUri.currentUsernameInUrl()
         );
-        this.relateSuccess = true;
+        this.treeLink = IdUri.htmlUrlForBubbleUri(this.copyRelateBubble.getUri());
       } else {
-        await this.copyRelateBubble.controller().copyTreeOfOtherUserAsNewCenter(
+        const newRootUri = await GraphElementController.copyTreeOfOtherUserAsNewCenter(
             IdUri.currentUsernameInUrl()
         );
+        this.treeLink = IdUri.htmlUrlForBubbleUri(newRootUri);
       }
+      this.copySuccess = true;
       this.isLoading = false;
     },
     selectSearchResult: async function () {
@@ -193,16 +192,9 @@ export default {
       }
       this.copyRelateBubble = this.copyRelateBubbleAsSearchResult.original.getGraphElement();
       await this.$nextTick();
-      this.action = 0;
-      // this.mergeBubbleAsSearchResult = SearchService.searchResultFromOnMapGraphElement(
-      //     this.mergeBubble
-      // );
     },
     focusSearch: async function () {
       await this.$nextTick();
-      if (this.action !== 0) {
-        return;
-      }
       this.copyRelateBubble = null;
       this.copyRelateBubbleAsSearchResult = null;
       await this.$nextTick();
@@ -281,8 +273,10 @@ export default {
         this.$store.dispatch("isCopyTreeFlow", false)
       } else {
         this.action = null;
-        this.relateSuccess = false;
-        this.newCenterSuccess = false;
+        this.copySuccess = false;
+        this.isRootGroupRelation = IdUri.isGroupRelationUri(
+            GraphElementController.getClipboard().tree.rootUri
+        );
         KeyboardActions.disable();
       }
     }

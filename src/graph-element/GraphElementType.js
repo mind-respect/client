@@ -8,8 +8,8 @@ const api = {
     "GroupRelation": "groupRelation",
     "Meta": "meta",
     "MetaGroupVertex": "meta_group_vertex",
-    "VertexSkeleton" : "vertexSkeleton",
-    "RelationSkeleton" : "relationSkeleton",
+    "VertexSkeleton": "vertexSkeleton",
+    "RelationSkeleton": "relationSkeleton",
 };
 
 api.Fork = [
@@ -96,6 +96,8 @@ api.fromString = function (type) {
             return api.Relation;
         case "identification" :
             return api.Meta;
+        case "gr" :
+            return api.GroupRelation;
         default:
             return type;
     }

@@ -38,6 +38,26 @@ function GraphElementController(graphElements) {
     }
 }
 
+api.copyTreeOfOtherUserAsNewCenter = async function (otherUsername) {
+    const response = await TreeCopierService.copy(
+        clipboard.tree,
+        undefined,
+        otherUsername
+    );
+    const mapOfNewUris = response.data;
+    const newRootUri = mapOfNewUris[clipboard.tree.rootUri];
+    CenterGraphElementService.makeCenterWithUriAndLastCenterDate(
+        newRootUri,
+        new Date().getTime()
+    )
+    clipboard = {};
+    return newRootUri;
+};
+
+api.getClipboard = function () {
+    return clipboard;
+}
+
 GraphElementController.prototype.init = function (graphElements) {
     if (graphElements instanceof Array && graphElements.length === 1) {
         graphElements = graphElements[0];
@@ -417,21 +437,6 @@ GraphElementController.prototype.copyAndRelateTreeOfOtherUser = async function (
         newRootUri,
         ShareLevel.PRIVATE,
         ShareLevel.PRIVATE
-    )
-    clipboard = {};
-};
-
-GraphElementController.prototype.copyTreeOfOtherUserAsNewCenter = async function (otherUsername) {
-    const response = await TreeCopierService.copy(
-        clipboard.tree,
-        this.model(),
-        otherUsername
-    );
-    const mapOfNewUris = response.data;
-    const newRootUri = mapOfNewUris[clipboard.tree.rootUri];
-    await CenterGraphElementService.makeCenterWithUriAndLastCenterDate(
-        newRootUri,
-        new Date().getTime()
     )
     clipboard = {};
 };
