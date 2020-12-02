@@ -215,6 +215,10 @@ GraphElement.GraphElement.prototype.isAncestor = function (graphElement) {
     });
 };
 
+GraphElement.GraphElement.prototype.rebuildNbNeighbors = function () {
+    this.setNbNeighbors(this.buildNbNeighbors());
+};
+
 GraphElement.GraphElement.prototype.buildNbNeighbors = function () {
     let nbNeighbors = NbNeighbors.withZeros();
     this.getSurround(true).forEach((surround) => {

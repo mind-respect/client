@@ -263,20 +263,19 @@
       </v-card>
     </v-dialog>
     <DocsDialog ref="docsFlow"></DocsDialog>
-    <v-snackbar v-model="firstTimeSnackbar" color="secondary" timeout="-1" app>
+    <v-snackbar v-model="firstTimeSnackbar" color="primary" timeout="-1" app outlined>
       <v-toolbar color="transparent" dense elevation="0">
-        <span class="text-body-1" v-if="$vuetify.breakpoint.mdAndUp">{{ $t('app:firstTime') }}</span>
-        <v-divider vertical class="mx-4" color="white" v-if="$vuetify.breakpoint.mdAndUp"></v-divider>
+        <span class="text-body-1 secondary-color" v-if="$vuetify.breakpoint.mdAndUp">{{ $t('app:firstTime') }}</span>
+        <v-divider vertical class="mx-4" color="secondary" v-if="$vuetify.breakpoint.mdAndUp"></v-divider>
         <v-btn
-            dark
             text
             @click="$refs.docsFlow.enter()"
-            class="pl-0 pr-0"
+            class="pl-0 pr-0 secondary-color"
         >
           <v-icon class="mr-2">book</v-icon>
           {{ $t('app:firstTime2') }}
         </v-btn>
-        <v-icon class="ml-8" @click="firstTimeSnackbar = false; $store.dispatch('setIsFirstTime', false);">close
+        <v-icon class="ml-8" color="secondary" @click="firstTimeSnackbar = false; $store.dispatch('setIsFirstTime', false);">close
         </v-icon>
       </v-toolbar>
     </v-snackbar>

@@ -48,7 +48,12 @@ ForkController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
                     return true;
                 }
                 let expandChildCalls = [];
-                if (this.model().getNumberOfChild() === 1) {
+                this.model().rebuildNbNeighbors();
+                const nbChildren = this.model().getNumberOfChild();
+                if (nbChildren === 0) {
+                    GraphElementService.setNbNeighbors(this.model());
+                    Store.dispatch("setNoChildAfterExpand", true);
+                } else if (nbChildren === 1) {
                     expandChildCalls.push(
                         this.model().getClosestChildForks()[0].controller().expand(true, true, true)
                     );
@@ -72,16 +77,6 @@ ForkController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
         this.model().expand(avoidCenter, isFirstExpand);
         if (!avoidShowingLoad) {
             await Vue.nextTick();
-            if (this.model().getNumberOfChild() === 0) {
-                /*
-                    in case where nb neighbors count is wrong and expand children button appears but clicking on it does nothing
-                */
-                console.log("wrong nb neighbors. Setting nb neighbors from this.model().buildNbNeighbors()")
-                this.model().setNbNeighbors(
-                    this.model().buildNbNeighbors()
-                );
-                GraphElementService.setNbNeighbors(this.model());
-            }
             //this.model().refreshChildren() for Store.dispatch("redraw") for when expanding a grand children
             this.model().refreshChildren(true);
             LoadingFlow.leave();

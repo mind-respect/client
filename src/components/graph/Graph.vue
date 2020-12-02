@@ -127,6 +127,11 @@
         {{ $t('graph:tagged') }}
       </p>
     </v-snackbar>
+    <v-snackbar v-model="noChildSnackbar" color="secondary" dark timeout="7000" app>
+      <p class="subtitle-1 vh-center">
+        {{ $t('graph:noChildren') }}
+      </p>
+    </v-snackbar>
   </v-layout>
 </template>
 
@@ -179,11 +184,13 @@ export default {
   data: function () {
     I18n.i18next.addResources("en", "graph", {
       addExistingBubble: "Add an existing bubble",
-      tagged: "Tag added"
+      tagged: "Tag added",
+      noChildren: "There were no children for this bubble after all."
     });
     I18n.i18next.addResources("fr", "graph", {
       addExistingBubble: "Ajouter une bulle existante",
-      tagged: "Étiquette ajouté"
+      tagged: "Étiquette ajouté",
+      noChildren: "Il n'y avait pas d'enfants à cette bulle finalement."
     });
     return {
       center: null,
@@ -199,7 +206,8 @@ export default {
       backgroundColor: null,
       childrenKey: IdUri.uuid(),
       drawnGraphKey: IdUri.uuid(),
-      tagSuccessSnackbar: false
+      tagSuccessSnackbar: false,
+      noChildSnackbar: false
     }
   },
   mounted: async function () {
@@ -435,6 +443,9 @@ export default {
       return "transform: scale(" +
           this.$store.state.zoom + "," +
           this.$store.state.zoom + ")";
+    },
+    noChildAfterExpand: function () {
+      return this.$store.state.noChildAfterExpand;
     }
   },
   watch: {
@@ -475,6 +486,12 @@ export default {
           });
         }
       });
+    },
+    noChildAfterExpand: function () {
+      if (this.$store.state.noChildAfterExpand) {
+        this.noChildSnackbar = true;
+        this.$store.dispatch("setNoChildAfterExpand", false);
+      }
     }
   }
 }

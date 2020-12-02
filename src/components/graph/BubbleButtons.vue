@@ -235,13 +235,13 @@ export default {
         },
         {
           icon: "content_copy",
-          badgeIcon: "bubble_chart",
-          action: "copyTree"
+          action: "copy",
+          isCustom: true,
         },
         {
           icon: "content_copy",
-          action: "copy",
-          isCustom: true,
+          badgeIcon: "bubble_chart",
+          action: "copyTree"
         },
         {
           icon: "content_cut",
@@ -251,14 +251,14 @@ export default {
         },
         {
           icon: "content_paste",
-          action: "paste",
-          badgeIcon: "scatter_plot"
-        },
-        {
-          icon: "content_paste",
           action: "pasteText",
           ctrlShortcut: "V",
           badgeIcon: "short_text"
+        },
+        {
+          icon: "content_paste",
+          action: "paste",
+          badgeIcon: "scatter_plot"
         },
         {
           icon: "navigate_next",
