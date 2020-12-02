@@ -78,8 +78,8 @@ Fork.prototype.setNbNeighbors = function (nbNeighbors) {
 };
 
 
-Fork.prototype.pasteCloneWithTree = function (rootClone, mapOfNewUris) {
-    return this.buildPasteTree(rootClone, mapOfNewUris, rootClone);
+Fork.prototype.pasteCloneWithTree = function (mapOfNewUris) {
+    return this.buildPasteTree(mapOfNewUris);
 };
 
 

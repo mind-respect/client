@@ -449,7 +449,7 @@ GraphElementController.prototype._pasteTree = async function () {
         this.model()
     );
     const mapOfNewUris = response.data;
-    const rootCopy = await this.model().pasteCloneWithTree(clipboard.rootCloneWithTree, mapOfNewUris);
+    const rootCopy = clipboard.rootCloneWithTree.pasteCloneWithTree(mapOfNewUris);
     if (rootCopy.isGroupRelation()) {
         await rootCopy.controller().replaceParentFork(this.model());
         this.model().addChild(rootCopy);
@@ -468,7 +468,6 @@ GraphElementController.prototype._pasteTree = async function () {
             GraphElementService.changeChildrenIndex(fork)
         }
     });
-    clipboard = {};
     LoadingFlow.leave();
 }
 
@@ -1133,7 +1132,6 @@ GraphElementController.prototype.copyTree = function () {
     if (MindMapInfo.isViewOnly()) {
         return Store.dispatch("isCopyTreeFlow", true);
     }
-    clipboard.treeRoot = Selection.getRootOfSelectedTree().clone();
     clipboard.rootCloneWithTree = rootBubble.cloneWithTree(urisOfGraphElements);
 };
 

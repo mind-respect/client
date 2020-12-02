@@ -152,7 +152,7 @@ Tag.Tag.prototype.clone = function () {
     tag.init(
         JSON.parse(JSON.stringify(this.identificationServerFormat))
     );
-    tag.uiId = IdUri.uuid();
+    tag.rebuildId();
     return tag;
 };
 

@@ -605,23 +605,27 @@ GraphElement.GraphElement.prototype.shouldShow = function () {
     return true;
 };
 
-GraphElement.GraphElement.prototype.buildPasteTree = function (clone, mapOfNewUris, parent) {
-    clone.setUri(mapOfNewUris[clone.getUri()]);
-    clone.isExpanded = true;
-    clone.isCollapsed = false;
-    clone.parentBubble = parent;
-    clone.clonedChildren.forEach((childClone) => {
-        childClone = childClone.buildPasteTree(childClone, mapOfNewUris, clone);
-        if (clone.isEdgeType()) {
-            clone.setDestinationVertex(childClone);
-            clone.setSourceVertex(parent);
-            clone.parentVertex = parent.isGroupRelation() ? parent.getParentVertex() : parent;
+GraphElement.GraphElement.prototype.buildPasteTree = function (mapOfNewUris, parent) {
+    const cloneCopy = this.clone();
+    cloneCopy.setUri(mapOfNewUris[this.getUri()]);
+    cloneCopy.isExpanded = true;
+    cloneCopy.isCollapsed = false;
+    if (!parent) {
+        parent = this;
+    }
+    cloneCopy.parentBubble = parent;
+    this.clonedChildren.forEach((childClone) => {
+        childClone = childClone.buildPasteTree(mapOfNewUris, cloneCopy);
+        if (cloneCopy.isEdgeType()) {
+            cloneCopy.setDestinationVertex(childClone);
+            cloneCopy.setSourceVertex(parent);
+            cloneCopy.parentVertex = parent.isGroupRelation() ? parent.getParentVertex() : parent;
         } else {
-            clone.addChild(childClone);
+            cloneCopy.addChild(childClone);
         }
         CurrentSubGraph.get().add(childClone);
     });
-    return clone;
+    return cloneCopy;
 };
 
 GraphElement.GraphElement.prototype.cloneWithTree = function (urisOfGraphElements) {
@@ -630,7 +634,7 @@ GraphElement.GraphElement.prototype.cloneWithTree = function (urisOfGraphElement
         clone.clonedChildren = [];
     } else {
         clone.clonedChildren = this.getNextChildren().filter((child) => {
-            return (child.isEdgeType() && urisOfGraphElements.has(child.getOtherVertex(clone).getUri())) || urisOfGraphElements.has(child.getUri());
+            return urisOfGraphElements.has(child.getUri()) || (child.isEdgeType() && urisOfGraphElements.has(child.getOtherVertex(clone).getUri()));
         }).map((child) => {
             return child.cloneWithTree(urisOfGraphElements);
         });

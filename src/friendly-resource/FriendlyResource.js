@@ -182,6 +182,10 @@ FriendlyResource.FriendlyResource.prototype.getId = function () {
     return this.uiId;
 };
 
+FriendlyResource.FriendlyResource.prototype.rebuildId = function () {
+    return this.uiId = IdUri.uuid();
+};
+
 FriendlyResource.FriendlyResource.prototype.isSameUri = function (bubble) {
     return this.getUri() === bubble.getUri();
 };
@@ -1040,7 +1044,7 @@ FriendlyResource.FriendlyResource.prototype.init = function (friendlyResourceSer
     if (friendlyResourceServerFormat.label === undefined) {
         this._friendlyResourceServerFormat.label = "";
     }
-    this.uiId = IdUri.uuid();
+    this.rebuildId();
     this.uriFacade = new IdUri.IdUri(
         this.getUri()
     );
