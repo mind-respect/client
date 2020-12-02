@@ -92,6 +92,26 @@
             </v-list-item>
           </v-list-item-group>
         </v-list>
+        <v-row class="">
+          <v-col cols="12" class="col-md-9 col-lg-7">
+            <v-expansion-panels class="" hover color="transparent">
+              <v-expansion-panel class="">
+                <v-expansion-panel-header class="text-body-1" disable-icon-rotate>
+                  {{ $t('copyTree:shareLevel') }}
+                  <template v-slot:actions>
+                    <v-icon color="third">
+                      {{ shareLevelIcon }}
+                    </v-icon>
+                  </template>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content color="transparent">
+                  <ShareLevelSelection class="mt-4" :shareLevel="shareLevel"
+                                       @update="updateShareLevel"></ShareLevelSelection>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-card-actions>
         <v-btn color="secondary" class="ml-4" @click="confirm"
@@ -122,10 +142,13 @@ import SearchResultAction from '@/components/search/SearchResultAction'
 import SearchService from "@/search/SearchService";
 import IdUri from "@/IdUri";
 import GraphElementController from '@/graph-element/GraphElementController'
+import ShareLevelSelection from '@/components/ShareLevelSelection'
+import ShareLevel from "@/vertex/ShareLevel";
 
 export default {
   name: "CopyTreeOfOtherDialog",
   components: {
+    ShareLevelSelection,
     SearchLoadMore,
     SearchResultContent,
     SearchResultAction
@@ -137,7 +160,8 @@ export default {
       relateToYourBubble: "Relate to one of your bubble",
       placeholder: "Relate with",
       parentBubbleToNewTree: "Parent bubble to new copied tree",
-      visitNewTree: "Visiter le nouvel arbre créé"
+      visitNewTree: "Visiter le nouvel arbre créé",
+      shareLevel: "Sharing level of your copied bubbles"
     });
     I18n.i18next.addResources("fr", "copyTree", {
       title: "Copier l'arbre dans votre carte",
@@ -145,7 +169,8 @@ export default {
       relateToYourBubble: "Relier à l'une de vos bulle",
       placeholder: "Relier avec",
       parentBubbleToNewTree: "Bulle parente à l'arbre copié",
-      visitNewTree: "Visiter le nouvel arbre créé"
+      visitNewTree: "Visiter le nouvel arbre créé",
+      shareLevel: "Niveau de partage de vos bulles copiées"
 
     });
     return {
@@ -162,23 +187,29 @@ export default {
       copyRelateBubbleAsSearchResult: null,
       copySuccess: false,
       treeLink: null,
-      isRootGroupRelation: false
+      isRootGroupRelation: false,
+      shareLevel: ShareLevel.PRIVATE
     };
   },
   mounted: function () {
     this.$store.dispatch("isCopyTreeFlow", false);
   },
   methods: {
+    updateShareLevel: function (newShareLevel) {
+      this.shareLevel = newShareLevel;
+    },
     confirm: async function () {
       this.isLoading = true;
       if (this.action === 0) {
         await this.copyRelateBubble.controller().copyAndRelateTreeOfOtherUser(
-            IdUri.currentUsernameInUrl()
+            IdUri.currentUsernameInUrl(),
+            this.shareLevel
         );
         this.treeLink = IdUri.htmlUrlForBubbleUri(this.copyRelateBubble.getUri());
       } else {
         const newRootUri = await GraphElementController.copyTreeOfOtherUserAsNewCenter(
-            IdUri.currentUsernameInUrl()
+            IdUri.currentUsernameInUrl(),
+            this.shareLevel
         );
         this.treeLink = IdUri.htmlUrlForBubbleUri(newRootUri);
       }
@@ -253,6 +284,9 @@ export default {
     }
   },
   computed: {
+    shareLevelIcon: function () {
+      return ShareLevel.getIcon(this.shareLevel);
+    },
     isCopyTreeFlow: function () {
       return this.$store.state.isCopyTreeFlow;
     }

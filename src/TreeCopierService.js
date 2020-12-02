@@ -3,9 +3,10 @@ import UserService from "@/service/UserService";
 import IdUri from '@/IdUri'
 
 export default {
-    copy: async function (tree, parentBubble, otherUsername) {
+    copy: async function (tree, parentBubble, otherUsername, shareLevel) {
         const data = {
-            copiedTree: tree
+            copiedTree: tree,
+            shareLevel: shareLevel
         };
         if (IdUri.isGroupRelationUri(tree.rootUri)) {
             data.parentUri = parentBubble.getUri();

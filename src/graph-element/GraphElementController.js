@@ -38,11 +38,12 @@ function GraphElementController(graphElements) {
     }
 }
 
-api.copyTreeOfOtherUserAsNewCenter = async function (otherUsername) {
+api.copyTreeOfOtherUserAsNewCenter = async function (otherUsername, shareLevel) {
     const response = await TreeCopierService.copy(
         clipboard.tree,
         undefined,
-        otherUsername
+        otherUsername,
+        shareLevel
     );
     const mapOfNewUris = response.data;
     const newRootUri = mapOfNewUris[clipboard.tree.rootUri];
@@ -424,11 +425,12 @@ GraphElementController.prototype.paste = function () {
     }
 };
 
-GraphElementController.prototype.copyAndRelateTreeOfOtherUser = async function (otherUsername) {
+GraphElementController.prototype.copyAndRelateTreeOfOtherUser = async function (otherUsername, shareLevel) {
     const response = await TreeCopierService.copy(
         clipboard.tree,
         this.model(),
-        otherUsername
+        otherUsername,
+        shareLevel
     );
     const mapOfNewUris = response.data;
     const newRootUri = mapOfNewUris[clipboard.tree.rootUri];
@@ -436,7 +438,7 @@ GraphElementController.prototype.copyAndRelateTreeOfOtherUser = async function (
         this.model().getUri(),
         newRootUri,
         ShareLevel.PRIVATE,
-        ShareLevel.PRIVATE
+        shareLevel
     )
     clipboard = {};
 };
