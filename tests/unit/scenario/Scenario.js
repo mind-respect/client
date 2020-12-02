@@ -1,5 +1,4 @@
 import GraphServiceMock from '../mock/GraphServiceMock'
-import TreeBuilder from '../util/TreeBuilder'
 import TestData from '../util/js-test-data-client-side.json';
 import App from '@/App.vue'
 import {createLocalVue, mount} from '@vue/test-utils'
