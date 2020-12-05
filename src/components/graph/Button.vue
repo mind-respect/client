@@ -33,7 +33,7 @@
                       >
                           <template v-slot:badge>
                               <span v-html="getBadge()" v-if="button.badge"></span>
-                              <v-icon dark v-if="button.badgeIcon">{{ button.badgeIcon }}</v-icon>
+                              <v-icon dark v-if="button.badgeIcon" :class="button.badgeIconClass">{{ button.badgeIcon }}</v-icon>
                               <img v-if="button.badgeImage" :src="button.badgeImage" width="15">
                           </template>
                           <slot name="button" v-if="$slots.button"></slot>
@@ -46,7 +46,7 @@
                               :disabled="button.disableNotHide && !canDo(button)"
                               :class="button.class"
                           >
-                              <v-icon :class="button.iconClass" :large="hightlight" v-if="button.icon">
+                              <v-icon :class="getIconClass()" :large="hightlight" v-if="button.icon">
                                   {{ getIcon(button) }}
                               </v-icon>
                               <img v-if="button.image" :src="button.image" width="30">
@@ -136,8 +136,14 @@ export default {
     getBadge: function () {
       return typeof this.button.badge === "function" ?
           this.button.badge(
-              this.controller.model()
+              this.controller.getUiArray()
           ) : this.button.badge;
+    },
+    getIconClass: function(){
+      return typeof this.button.iconClass === "function" ?
+          this.button.iconClass(
+              this.controller.getUiArray()
+          ) : this.button.iconClass;
     },
     performAction: function (button) {
       if (button.menu) {

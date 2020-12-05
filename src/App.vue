@@ -275,7 +275,8 @@
           <v-icon class="mr-2">book</v-icon>
           {{ $t('app:firstTime2') }}
         </v-btn>
-        <v-icon class="ml-8" color="secondary" @click="firstTimeSnackbar = false; $store.dispatch('setIsFirstTime', false);">close
+        <v-icon class="ml-8" color="secondary"
+                @click="firstTimeSnackbar = false; $store.dispatch('setIsFirstTime', false);">close
         </v-icon>
       </v-toolbar>
     </v-snackbar>
@@ -365,6 +366,7 @@ export default {
       wikidataOn: "Activate autocompletion from Wikidata",
       wikidataOff: "Deactivate autocompletion from Wikidata",
       copy: "Copy text",
+      copyMenuBtn: "Copy",
       undo: "Undo",
       redo: "Redo",
       changeBackgroundColor: "Background color",
@@ -381,7 +383,7 @@ export default {
       leaveContext: "Split into 2 cards that share a tag",
       setColor: "Set color",
       openWikipediaLink: "Open Wikipedia link",
-      copyTree: "Copy tree"
+      copyTree: "Copy visible tree"
     });
     I18n.i18next.addResources("fr", "button", {
       removeTagFlow: "Enlever l'étiquette",
@@ -413,7 +415,7 @@ export default {
       center: "Centrer la bulle",
       note: "Note",
       images: "Ajouter des images",
-      cut: "Couper la bulle",
+      cut: "Couper l'arbre",
       paste: "Coller l'arbre",
       pasteText: "Coller texte",
       selectTree: "Sélectionner l'arbre",
@@ -435,7 +437,8 @@ export default {
       expand: "Expandre",
       wikidataOn: "Activer l'autocompletion de Wikidata",
       wikidataOff: "Désactiver l'autocompletion de Wikidata",
-      copy: "Copier texte",
+      copy: "Copier le texte",
+      copyMenuBtn: "Copier",
       undo: "Annuller",
       redo: "Refaire",
       changeBackgroundColor: "Couleur de fond",
@@ -452,7 +455,7 @@ export default {
       leaveContext: "Séparer en 2 cartes qui partagent un étiquette",
       setColor: "Définir la couleur",
       openWikipediaLink: "Ouvrir le lien wikipedia",
-      copyTree: "Copier l'arbre"
+      copyTree: "Copier l'arbre visible"
     });
 
     I18n.i18next.addResources("en", "app", {
@@ -822,6 +825,14 @@ vuetifyjs wrong component css order fixes
   -ms-transform: rotate(90deg);
   -o-transform: rotate(90deg);
   transform: rotate(90deg);
+}
+
+.rotate-180 {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .rotate-270 {

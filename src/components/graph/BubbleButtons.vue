@@ -63,8 +63,8 @@ export default {
           action: "enterDuplicateMenu",
           color: "secondary",
           class: "font-weight-bold",
-          text: function (bubble) {
-            return "× " + (bubble.getNbDuplicates() + 1);
+          text: function (bubbles) {
+            return "× " + (bubbles[0].getNbDuplicates() + 1);
           }
         },
         {
@@ -74,8 +74,8 @@ export default {
             {
               action: "addChild",
               disableNotHide: true,
-              icon: function () {
-                let single = Selection.getSingle();
+              icon: function (bubbles) {
+                let single = bubbles[0]
                 if (!single) {
                   return "";
                 }
@@ -101,8 +101,8 @@ export default {
             },
             {
               action: "addParent",
-              icon: function () {
-                let single = Selection.getSingle();
+              icon: function (bubbles) {
+                let single = bubbles[0];
                 if (!single || single.isCenter) {
                   return "arrow_back";
                 }
@@ -131,7 +131,7 @@ export default {
           action: "editMenu",
           menu: [
             {
-              icon: "text_fields",
+              icon: "short_text",
               action: "focus"
             },
             {
@@ -210,8 +210,8 @@ export default {
           icon: "label",
           action: "showTags",
           ctrlShortcut: "G",
-          badge: function (bubble) {
-            return bubble.getNbTagChildren();
+          badge: function (bubbles) {
+            return bubbles[0].getNbTagChildren();
           }
         },
         {
@@ -235,18 +235,27 @@ export default {
         },
         {
           icon: "content_copy",
-          action: "copy",
-          isCustom: true,
-        },
-        {
-          icon: "content_copy",
-          badgeIcon: "bubble_chart",
-          action: "copyTree"
+          action: "copyMenuBtn",
+          menu: [
+            {
+              icon: "short_text",
+              action: "copy",
+              isCustom: true,
+            },
+            {
+              icon: "device_hub",
+              action: "copyTree",
+              iconClass: function (bubbles) {
+                return bubbles[0].isToTheLeft() ? "rotate-90" : "rotate-270"
+              }
+            }
+          ]
         },
         {
           icon: "content_cut",
           action: "cut",
-          badgeIcon: "scatter_plot",
+          badgeIcon: "device_hub",
+          badgeIconClass: "rotate-270",
           ctrlShortcut: "X"
         },
         {
@@ -258,7 +267,8 @@ export default {
         {
           icon: "content_paste",
           action: "paste",
-          badgeIcon: "scatter_plot"
+          badgeIcon: "device_hub",
+          badgeIconClass: "rotate-270"
         },
         {
           icon: "navigate_next",
