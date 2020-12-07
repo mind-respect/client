@@ -121,6 +121,10 @@ GraphElementController.prototype.noteDo = function (note) {
     });
 };
 
+GraphElementController.prototype.copyMenuBtnCanDo = function () {
+    return this.isSingle() || this.copyTreeCanDo();
+};
+
 GraphElementController.prototype.editMenuCanDo = function () {
     return this.isSingleAndOwned() && this.model().isVertexType() && !this.model().isCenter;
 };

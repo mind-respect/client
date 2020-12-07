@@ -42,7 +42,7 @@ api.setToSingle = function (graphElement, scroll) {
         Vue.nextTick(() => {
             if (!graphElement.loading && scroll) {
                 Vue.nextTick(() => {
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         centerBubbleIfApplicable(graphElement).then(resolve)
                     }, 1)
                 });
@@ -168,8 +168,10 @@ function centerBubbleIfApplicable(bubble) {
 function defineIsContinuous() {
     rootOfSelectedTree = undefined;
     return api.getSelectedBubbles().every((bubble) => {
-        if (!bubble.isForkType()) {
-            return false;
+        if (bubble.isRelation()) {
+            return bubble.getSourceVertex().isSelected &&
+                bubble.getSourceVertex().isSelected &&
+                bubble.getParentFork().isSelected;
         }
         const parentFork = bubble.getParentFork();
         if (parentFork.isSelected) {
