@@ -617,8 +617,14 @@ GraphElement.GraphElement.prototype.buildPasteTree = function (mapOfNewUris, par
     this.clonedChildren.forEach((childClone) => {
         childClone = childClone.buildPasteTree(mapOfNewUris, cloneCopy);
         if (cloneCopy.isEdgeType()) {
-            cloneCopy.setDestinationVertex(childClone);
-            cloneCopy.setSourceVertex(parent);
+            const isInverse = parent.getUri() === mapOfNewUris[cloneCopy.getDestinationVertex().getUri()];
+            if (isInverse) {
+                cloneCopy.setDestinationVertex(parent);
+                cloneCopy.setSourceVertex(childClone);
+            } else {
+                cloneCopy.setDestinationVertex(childClone);
+                cloneCopy.setSourceVertex(parent);
+            }
             cloneCopy.parentVertex = parent.isGroupRelation() ? parent.getParentVertex() : parent;
         } else {
             cloneCopy.addChild(childClone);
