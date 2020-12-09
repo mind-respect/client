@@ -194,7 +194,7 @@ export default {
     },
     getIcon: function (button) {
       return typeof button.icon === "function" ?
-          button.icon() :
+          button.icon(this.controller.getUiArray()) :
           button.icon;
     }
   }
