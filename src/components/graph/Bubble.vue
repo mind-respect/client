@@ -546,6 +546,7 @@ export default {
         this.showMenu = false;
         return;
       }
+      this.$store.dispatch("setEditMode", null);
       const isSingleSelected = Selection.isSingle() && this.bubble.isSelected;
       const isMetaKeyPressed = UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey;
       const isLinkClick = event.target.tagName === "A";

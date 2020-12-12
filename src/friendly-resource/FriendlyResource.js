@@ -219,7 +219,7 @@ FriendlyResource.FriendlyResource.prototype.getLabelHtml = function () {
     }
 };
 
-FriendlyResource.FriendlyResource.prototype.focus = function (event) {
+FriendlyResource.FriendlyResource.prototype.focus = function (event, position) {
     return new Promise((resolve) => {
         /*
             KeyboardActions.disable(); because problems happened when adding sibling and then pressing spacebar really quickly
@@ -244,7 +244,9 @@ FriendlyResource.FriendlyResource.prototype.focus = function (event) {
                 this.preventLeaveEditFlow = true;
                 if (event) {
                     this.lastEvent = event;
-                    Focus.focusAtPosition(event, labelHtml);
+                    Focus.focusAtPositionFromClick(event, labelHtml);
+                } else if (position !== undefined && position <= this.text().length) {
+                    Focus.focusAtPosition(labelHtml, position);
                 } else {
                     Focus.focusEnd(labelHtml);
                 }
@@ -255,10 +257,16 @@ FriendlyResource.FriendlyResource.prototype.focus = function (event) {
         }
     });
 };
+FriendlyResource.FriendlyResource.prototype.focusAtPosition = function (position) {
+    return this.focus(undefined, position);
+};
+FriendlyResource.FriendlyResource.prototype.focusEnd = function () {
+    return this.focus();
+};
 
 FriendlyResource.FriendlyResource.prototype.refocus = function () {
     if (this.lastEvent) {
-        Focus.focusAtPosition(this.lastEvent, this.getLabelHtml());
+        Focus.focusAtPositionFromClick(this.lastEvent, this.getLabelHtml());
     }
     this.lastEvent = false;
 };
@@ -450,20 +458,28 @@ FriendlyResource.FriendlyResource.prototype.isInTypes = function (types) {
     return types.indexOf(this.getGraphElementType()) > -1;
 };
 
-FriendlyResource.FriendlyResource.prototype.travelLeft = function () {
-    Selection.setToSingle(this.getLeftBubble(), true)
+FriendlyResource.FriendlyResource.prototype.travelLeft = async function () {
+    const leftBubble = this.getLeftBubble();
+    await Selection.setToSingle(leftBubble, true);
+    return leftBubble;
 };
 
-FriendlyResource.FriendlyResource.prototype.travelRight = function () {
-    Selection.setToSingle(this.getRightBubble(), true)
+FriendlyResource.FriendlyResource.prototype.travelRight = async function () {
+    const rightBubble = this.getRightBubble();
+    await Selection.setToSingle(rightBubble, true);
+    return rightBubble;
 };
 
-FriendlyResource.FriendlyResource.prototype.travelDown = function () {
-    Selection.setToSingle(this.getDownBubble(true), true)
+FriendlyResource.FriendlyResource.prototype.travelDown = async function () {
+    const downBubble = this.getDownBubble(true);
+    await Selection.setToSingle(downBubble, true)
+    return downBubble;
 };
 
-FriendlyResource.FriendlyResource.prototype.travelUp = function () {
-    Selection.setToSingle(this.getUpBubble(true), true)
+FriendlyResource.FriendlyResource.prototype.travelUp = async function () {
+    const upBubble = this.getUpBubble(true);
+    await Selection.setToSingle(upBubble, true)
+    return upBubble;
 };
 
 FriendlyResource.FriendlyResource.prototype.getUpBubble = function (isForTravel) {

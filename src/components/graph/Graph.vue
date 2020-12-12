@@ -211,6 +211,7 @@ export default {
     }
   },
   mounted: async function () {
+    this.$store.dispatch("setEditMode", null);
     this.showLoading = true;
     CurrentSubGraph.set(SubGraph.empty());
     Selection.reset();
@@ -350,6 +351,7 @@ export default {
     },
     mousedown: function () {
       GraphUi.enableDragScroll();
+      this.$store.dispatch("setEditMode", null);
     },
     refreshChildren: function () {
       this.childrenKey = IdUri.uuid();

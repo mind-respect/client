@@ -25,7 +25,15 @@ export default {
             textRange.select();
         }
     },
-    focusAtPosition: function (event, element) {
+    focusAtPosition: function (element, position) {
+        const range = document.createRange();
+        range.setStart(element.firstChild, position);
+        range.setEnd(element.firstChild, position);
+        window.setTimeout(function () {
+            selectRange(range);
+        }, 10);
+    },
+    focusAtPositionFromClick: function (event, element) {
         /*
             calling blur before focus because somehow sometimes in firefox,
             the element is blurred but not really
@@ -50,6 +58,28 @@ export default {
             preCaretRange.setEnd(range.endContainer, range.endOffset);
             return preCaretRange.toString().length;
         }
+    },
+    getCaretOffset: function(element){
+        var caretOffset = 0;
+
+        if (window.getSelection) {
+            var range = window.getSelection().getRangeAt(0);
+            var preCaretRange = range.cloneRange();
+            preCaretRange.selectNodeContents(element);
+            preCaretRange.setEnd(range.endContainer, range.endOffset);
+            caretOffset = preCaretRange.toString().length;
+        }
+
+        else if (document.selection && document.selection.type != "Control") {
+            var textRange = document.selection.createRange();
+            var preCaretTextRange = document.body.createTextRange();
+            preCaretTextRange.moveToElementText(element);
+            preCaretTextRange.setEndPoint("EndToEnd", textRange);
+            caretOffset = preCaretTextRange.text.length;
+        }
+
+        return caretOffset;
+
     }
 }
 

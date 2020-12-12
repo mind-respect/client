@@ -124,11 +124,20 @@ async function executeFeature(feature, event, isEdiFlow) {
                 }
             }
         }
-        single.setLabel(event.target.innerHTML);
-        single.blur();
+        if (editModeHandler.additionalAction) {
+            editModeHandler.additionalAction(single, event);
+        }
+        if (!editModeHandler.preventBlur) {
+            event.preventDefault();
+            event.stopPropagation();
+            single.setLabel(event.target.innerHTML);
+            single.blur();
+        }
+    } else {
+        event.preventDefault();
+        event.stopPropagation();
     }
-    event.preventDefault();
-    event.stopPropagation();
+
     if (feature.isForAppController) {
         controller = GraphDisplayer.getAppController();
     } else {
@@ -166,13 +175,19 @@ function defineNonCtrlPlusKeysAndTheirActions() {
     actions[KeyCode.KEY_LEFT] = {
         action: "travelLeft",
         editMode: {
-            atBeginning: true
+            atBeginning: true,
+            additionalAction: function () {
+                Store.dispatch("setEditMode", "atEnd");
+            }
         }
     };
     actions[KeyCode.KEY_RIGHT] = {
         action: "travelRight",
         editMode: {
-            atEnd: true
+            atEnd: true,
+            additionalAction: function () {
+                Store.dispatch("setEditMode", "atBeginning");
+            }
         }
     };
     actions[KeyCode.KEY_UP] = {
@@ -180,6 +195,9 @@ function defineNonCtrlPlusKeysAndTheirActions() {
         editMode: {
             except: function (graphElement) {
                 return graphElement.getUpBubble().getId() === graphElement.getId();
+            },
+            additionalAction: function (graphElement, event) {
+                Store.dispatch("setEditMode", Focus.getCaretOffset(event.target));
             }
         }
     };
@@ -188,6 +206,9 @@ function defineNonCtrlPlusKeysAndTheirActions() {
         editMode: {
             except: function (graphElement) {
                 return graphElement.getDownBubble().getId() === graphElement.getId();
+            },
+            additionalAction: function (graphElement, event) {
+                Store.dispatch("setEditMode", Focus.getCaretPosition(event.target));
             }
         }
     };
@@ -264,7 +285,10 @@ function defineCtrlPlusKeysAndTheirActions() {
         isForAppController: true
     };
     actions[KeyCode.KEY_UP] = {
-        action: "moveUpOneStep"
+        action: "moveUpOneStep",
+        editMode: {
+            preventBlur: true
+        }
     };
     actions[KeyCode.KEY_DOWN] = {
         action: "moveDownOneStep"

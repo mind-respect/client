@@ -155,21 +155,38 @@ GraphElementController.prototype.moveBubbleMenuCanDo = function () {
 
 
 GraphElementController.prototype.travelLeft = function () {
-    this.model().travelLeft();
+    return this.travel("travelLeft");
 };
 
-GraphElementController.prototype.travelRight = function () {
-    this.model().travelRight();
+GraphElementController.prototype.travelRight = async function () {
+    return this.travel("travelRight");
 };
 
-GraphElementController.prototype.travelUp = function () {
-    this.model().travelUp();
+GraphElementController.prototype.travelUp = async function () {
+    return this.travel("travelUp");
 };
 
-GraphElementController.prototype.travelDown = function () {
-    this.model().travelDown();
+GraphElementController.prototype.travelDown = async function () {
+    return this.travel("travelDown");
 };
 
+GraphElementController.prototype.travel = async function (travelMethod) {
+    const travelPromise = this.model()[travelMethod]();
+    const surroundBubble = await travelPromise;
+    if (!surroundBubble || surroundBubble.getId() === this.model().getId()) {
+        return;
+    }
+    switch (Store.state.editMode) {
+        case "atEnd":
+            return surroundBubble.focusEnd()
+        case "atBeginning" :
+            return surroundBubble.focusAtPosition(0)
+        case null :
+            return;
+        default:
+            return surroundBubble.focusAtPosition(Store.state.editMode)
+    }
+}
 
 GraphElementController.prototype.centerCanDo = function () {
     return this.isSingle() && !this.model().isCenterBubble() && (!Store.state.isPatternFlow || this.model().isMeta());

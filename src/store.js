@@ -65,7 +65,8 @@ const Store = new Vuex.Store({
         isShowTags: false,
         isShowRelations: false,
         addExistingToParent: false,
-        noChildAfterExpand: false
+        noChildAfterExpand: false,
+        editMode: false
     },
     mutations: {
         setUser: function (state, user) {
@@ -209,6 +210,9 @@ const Store = new Vuex.Store({
         },
         setNoChildAfterExpand: function (state, noChildAfterExpand) {
             state.noChildAfterExpand = noChildAfterExpand;
+        },
+        setEditMode: function(state, editMode){
+            state.editMode = editMode;
         }
     },
     actions: {
@@ -331,6 +335,9 @@ const Store = new Vuex.Store({
         },
         setNoChildAfterExpand: function (action, noChildAfterExpand) {
             action.commit('setNoChildAfterExpand', noChildAfterExpand);
+        },
+        setEditMode: function(action, editMode){
+            action.commit('setEditMode', editMode);
         }
     }
 });
