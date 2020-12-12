@@ -127,12 +127,10 @@ async function executeFeature(feature, event, isEdiFlow) {
         if (editModeHandler.additionalAction) {
             editModeHandler.additionalAction(single, event);
         }
-        if (!editModeHandler.preventBlur) {
-            event.preventDefault();
-            event.stopPropagation();
-            single.setLabel(event.target.innerHTML);
-            single.blur();
-        }
+        event.preventDefault();
+        event.stopPropagation();
+        single.setLabel(event.target.innerHTML);
+        single.blur();
     } else {
         event.preventDefault();
         event.stopPropagation();
@@ -284,14 +282,23 @@ function defineCtrlPlusKeysAndTheirActions() {
         action: "zoomOut",
         isForAppController: true
     };
+    const moveOrDownAdditionalAction = function (single, event) {
+        const caretPosition = Focus.getCaretPosition(event.target);
+        setTimeout(() => {
+            single.focusAtPosition(caretPosition);
+        }, 500);
+    };
     actions[KeyCode.KEY_UP] = {
         action: "moveUpOneStep",
         editMode: {
-            preventBlur: true
+            additionalAction: moveOrDownAdditionalAction
         }
     };
     actions[KeyCode.KEY_DOWN] = {
-        action: "moveDownOneStep"
+        action: "moveDownOneStep",
+        editMode: {
+            additionalAction: moveOrDownAdditionalAction
+        }
     };
     actions[KeyCode.KEY_M] = {
         action: "merge"
