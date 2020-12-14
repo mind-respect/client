@@ -188,15 +188,19 @@ function defineNonCtrlPlusKeysAndTheirActions() {
             }
         }
     };
+    const travelUpOrDownAdditionalAction = function (single, event) {
+        const caretPosition = Focus.getCaretOffset(event.target);
+        const isAtEnd = caretPosition === event.target.innerText.length;
+        Store.dispatch("setEditMode", isAtEnd ? "atEnd" : caretPosition);
+    };
+
     actions[KeyCode.KEY_UP] = {
         action: "travelUp",
         editMode: {
             except: function (graphElement) {
                 return graphElement.getUpBubble().getId() === graphElement.getId();
             },
-            additionalAction: function (graphElement, event) {
-                Store.dispatch("setEditMode", Focus.getCaretOffset(event.target));
-            }
+            additionalAction: travelUpOrDownAdditionalAction
         }
     };
     actions[KeyCode.KEY_DOWN] = {
@@ -205,9 +209,7 @@ function defineNonCtrlPlusKeysAndTheirActions() {
             except: function (graphElement) {
                 return graphElement.getDownBubble().getId() === graphElement.getId();
             },
-            additionalAction: function (graphElement, event) {
-                Store.dispatch("setEditMode", Focus.getCaretPosition(event.target));
-            }
+            additionalAction: travelUpOrDownAdditionalAction
         }
     };
     actions[KeyCode.KEY_RETURN] = {
@@ -282,7 +284,7 @@ function defineCtrlPlusKeysAndTheirActions() {
         action: "zoomOut",
         isForAppController: true
     };
-    const moveOrDownAdditionalAction = function (single, event) {
+    const moveUpOrDownAdditionalAction = function (single, event) {
         const caretPosition = Focus.getCaretPosition(event.target);
         setTimeout(() => {
             single.focusAtPosition(caretPosition);
@@ -291,13 +293,13 @@ function defineCtrlPlusKeysAndTheirActions() {
     actions[KeyCode.KEY_UP] = {
         action: "moveUpOneStep",
         editMode: {
-            additionalAction: moveOrDownAdditionalAction
+            additionalAction: moveUpOrDownAdditionalAction
         }
     };
     actions[KeyCode.KEY_DOWN] = {
         action: "moveDownOneStep",
         editMode: {
-            additionalAction: moveOrDownAdditionalAction
+            additionalAction: moveUpOrDownAdditionalAction
         }
     };
     actions[KeyCode.KEY_M] = {
