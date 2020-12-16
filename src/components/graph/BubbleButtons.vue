@@ -144,12 +144,14 @@ export default {
         {
           icon: "unfold_more",
           action: "expand",
-          ctrlShortcut: "E"
+          ctrlShortcut: "E",
+          disableNotHide: true
         },
         {
           icon: "unfold_less",
           action: "collapse",
-          ctrlShortcut: "H"
+          ctrlShortcut: "H",
+          disableNotHide: true
         },
         {
           action: "moveBubbleMenu",
