@@ -1157,6 +1157,11 @@ GraphElementController.prototype.copyTree = function () {
         return Store.dispatch("isCopyTreeFlow", true);
     }
     clipboard.rootCloneWithTree = rootBubble.cloneWithTree(urisOfGraphElements);
+    Store.dispatch("setInfoMessage", {
+        text: 'treeCopied',
+        close: true,
+        time: 5000
+    });
 };
 
 GraphElementController.prototype._areAllElementsPublic = function () {

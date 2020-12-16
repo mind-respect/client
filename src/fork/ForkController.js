@@ -52,7 +52,9 @@ ForkController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
                 const nbChildren = this.model().getNumberOfChild();
                 if (nbChildren === 0) {
                     GraphElementService.setNbNeighbors(this.model());
-                    Store.dispatch("setNoChildAfterExpand", true);
+                    Store.dispatch("setInfoMessage", {
+                        'text': 'noChildren'
+                    });
                 } else if (nbChildren === 1) {
                     expandChildCalls.push(
                         this.model().getClosestChildForks()[0].controller().expand(true, true, true)

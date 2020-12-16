@@ -65,7 +65,7 @@ const Store = new Vuex.Store({
         isShowTags: false,
         isShowRelations: false,
         addExistingToParent: false,
-        noChildAfterExpand: false,
+        infoMessage: null,
         editMode: false
     },
     mutations: {
@@ -208,8 +208,8 @@ const Store = new Vuex.Store({
         setAddExistingToParent: function (state, parentId) {
             state.addExistingToParent = parentId;
         },
-        setNoChildAfterExpand: function (state, noChildAfterExpand) {
-            state.noChildAfterExpand = noChildAfterExpand;
+        setInfoMessage: function (state, infoMessage) {
+            state.infoMessage = infoMessage;
         },
         setEditMode: function(state, editMode){
             state.editMode = editMode;
@@ -333,8 +333,8 @@ const Store = new Vuex.Store({
         setAddExistingToParent: function (action, parentId) {
             action.commit('setAddExistingToParent', parentId);
         },
-        setNoChildAfterExpand: function (action, noChildAfterExpand) {
-            action.commit('setNoChildAfterExpand', noChildAfterExpand);
+        setInfoMessage: function (action, infoMessage) {
+            action.commit('setInfoMessage', infoMessage);
         },
         setEditMode: function(action, editMode){
             action.commit('setEditMode', editMode);

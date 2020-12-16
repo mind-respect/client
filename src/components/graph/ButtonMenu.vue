@@ -30,6 +30,7 @@
 
 <script>
 import Selection from "@/Selection";
+import Store from "@/store";
 
 export default {
   name: "ButtonMenu",
@@ -55,7 +56,12 @@ export default {
     copyLabel: function () {
       this.$copyText(
           Selection.getSingle().getLabelHtml().textContent
-      )
+      );
+      this.$store.dispatch("setInfoMessage", {
+        text: 'textCopied',
+        close: true,
+        time: 3000
+      });
     }
   }
 }

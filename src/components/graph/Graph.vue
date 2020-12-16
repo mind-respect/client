@@ -127,10 +127,24 @@
         {{ $t('graph:tagged') }}
       </p>
     </v-snackbar>
-    <v-snackbar v-model="noChildSnackbar" color="secondary" dark timeout="7000" app>
-      <p class="subtitle-1 vh-center">
-        {{ $t('graph:noChildren') }}
-      </p>
+    <v-snackbar v-model="infoMessageSnackbar" v-if="infoMessageSnackbar" color="secondary" dark
+                :timeout="infoMessageValue.time" app>
+      <span class="subtitle-1 vh-center">
+        {{ $t('graph:' + infoMessageValue.text) }}
+      </span>
+      <template v-slot:action="{ attrs }" v-if="infoMessageValue.close">
+        <v-btn
+            color="white"
+            icon
+            v-bind="attrs"
+            @click="infoMessageSnackbar = false"
+            small
+        >
+          <v-icon small>
+            close
+          </v-icon>
+        </v-btn>
+      </template>
     </v-snackbar>
   </v-layout>
 </template>
@@ -185,12 +199,16 @@ export default {
     I18n.i18next.addResources("en", "graph", {
       addExistingBubble: "Add an existing bubble",
       tagged: "Tag added",
-      noChildren: "There were no children for this bubble after all."
+      noChildren: "There were no children for this bubble after all.",
+      textCopied: "Text copied",
+      treeCopied: "Tree copied"
     });
     I18n.i18next.addResources("fr", "graph", {
       addExistingBubble: "Ajouter une bulle existante",
       tagged: "Étiquette ajouté",
-      noChildren: "Il n'y avait pas d'enfants à cette bulle finalement."
+      noChildren: "Il n'y avait pas d'enfants à cette bulle finalement.",
+      textCopied: "Texte copié",
+      treeCopied: "Arbre copié"
     });
     return {
       center: null,
@@ -207,7 +225,8 @@ export default {
       childrenKey: IdUri.uuid(),
       drawnGraphKey: IdUri.uuid(),
       tagSuccessSnackbar: false,
-      noChildSnackbar: false
+      infoMessageSnackbar: false,
+      infoMessageValue: {}
     }
   },
   mounted: async function () {
@@ -446,8 +465,8 @@ export default {
           this.$store.state.zoom + "," +
           this.$store.state.zoom + ")";
     },
-    noChildAfterExpand: function () {
-      return this.$store.state.noChildAfterExpand;
+    infoMessage: function () {
+      return this.$store.state.infoMessage;
     }
   },
   watch: {
@@ -489,10 +508,12 @@ export default {
         }
       });
     },
-    noChildAfterExpand: function () {
-      if (this.$store.state.noChildAfterExpand) {
-        this.noChildSnackbar = true;
-        this.$store.dispatch("setNoChildAfterExpand", false);
+    infoMessage: function () {
+      if (this.$store.state.infoMessage !== null) {
+        this.infoMessageSnackbar = true;
+        this.infoMessageValue = JSON.parse( JSON.stringify( this.$store.state.infoMessage ) );
+        this.infoMessageValue.time = this.infoMessageValue.time || 7000;
+        this.$store.dispatch("setInfoMessage", null);
       }
     }
   }
