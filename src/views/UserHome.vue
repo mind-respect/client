@@ -30,7 +30,7 @@
                     {{$t('userhome:toGrid')}}
                 </v-tooltip>
                 <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
-                <v-avatar class="text-uppercase teal white--text mt-4 mr-2" small v-if="headUsername">
+                <v-avatar color="secondary" class="text-uppercase white--text mt-4 mr-2" small v-if="headUsername">
                     {{headUsername.substring(0,2)}}
                 </v-avatar>
                 <span class="text-body-1 mt-4" v-if="headUsername">
@@ -64,8 +64,8 @@
             <v-card-text class="pa-0">
                 <v-tabs
                         v-model="tabMenu"
-                        background-color="secondary"
-                        slider-color="third"
+                        background-color="third"
+                        slider-color="secondary"
                         grow
                         dark
                         :icons-and-text="$vuetify.breakpoint.smAndDown"
@@ -131,9 +131,9 @@
                             <v-tabs
                                     v-model="friendsTabMenu"
                                     grow
-                                    slider-color="secondary"
+                                    slider-color="third"
                                     slider-size="2"
-                                    color="secondary"
+                                    color="third"
                                     :icons-and-text="$vuetify.breakpoint.smAndDown"
                                     v-if="isOwner && headUsername"
                             >

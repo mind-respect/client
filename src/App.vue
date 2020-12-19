@@ -847,5 +847,10 @@ vuetifyjs wrong component css order fixes
   color: #BDBDBD;
 }
 
+.third-text {
+  color: white !important;
+  font-weight:bold;
+}
+
 </style>
 

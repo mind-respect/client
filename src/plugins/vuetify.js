@@ -10,13 +10,13 @@ export default new Vuetify({
         iconfont: 'md',
     },
     theme: {
-        dark:false,
-        themes:{
-            light:{
+        dark: false,
+        themes: {
+            light: {
                 primary: '#000000',
                 secondary: colors.indigo.darken4,
                 secondaryLight: colors.indigo.lighten2,
-                third: '#1a7e76',
+                third: colors.blueGrey.darken2,
                 thirdLight: '#27cec0',
                 grey: colors.grey.darken1,
                 red: colors.red.lighten2,
@@ -27,7 +27,7 @@ export default new Vuetify({
                 warning: '#ffbb33',
                 edgeColor: '#3A87AD'
             },
-            dark:{
+            dark: {
                 primary: '#FFFFFF',
                 secondary: colors.indigo.darken4,
                 secondaryLight: colors.indigo.lighten2,

@@ -27,13 +27,14 @@
                   <span v-on="on"
                         v-bind="on">
                       <v-badge
-                          color="third" class="button-menu-badge ma-1" overlap
+                          :color="badgeColor" class="button-menu-badge ma-1" overlap
                           :value="button.badge !== undefined || button.badgeIcon !== undefined || button.badgeImage !== undefined"
                           :offset-x="badgeOffsetX" :offset-y="badgeOffsetY"
                       >
                           <template v-slot:badge>
                               <span v-html="getBadge()" v-if="button.badge"></span>
-                              <v-icon dark v-if="button.badgeIcon" :class="button.badgeIconClass">{{ button.badgeIcon }}</v-icon>
+                              <v-icon class="third-text" v-if="button.badgeIcon"
+                                      :class="button.badgeIconClass">{{ button.badgeIcon }}</v-icon>
                               <img v-if="button.badgeImage" :src="button.badgeImage" width="15">
                           </template>
                           <slot name="button" v-if="$slots.button"></slot>
@@ -92,7 +93,8 @@ export default {
       menu: false,
       menuNudgeTop: this.isInSideMenu ? 0 : 20,
       badgeOffsetX: this.isInTopMenu ? 18 : 12,
-      badgeOffsetY: this.isInTopMenu ? 20 : 12
+      badgeOffsetY: this.isInTopMenu ? 20 : 12,
+      badgeColor: 'third'
     };
   },
   mounted: function () {
@@ -105,7 +107,9 @@ export default {
     } else if (this.isInSideMenu) {
       this.color = "white";
     }
-
+    if (this.isInTopMenu) {
+      this.badgeColor = 'secondary';
+    }
   },
   computed: {
     contentClass: function () {
@@ -139,7 +143,7 @@ export default {
               this.controller.getUiArray()
           ) : this.button.badge;
     },
-    getIconClass: function(){
+    getIconClass: function () {
       return typeof this.button.iconClass === "function" ?
           this.button.iconClass(
               this.controller.getUiArray()

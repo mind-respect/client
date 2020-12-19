@@ -20,14 +20,14 @@
                     <template v-slot:activator="{ on }">
                         <div class="vh-center" style="height:100%;" v-on="on">
                             <v-btn icon @click="click" :disabled="!canExpand">
-                                <v-icon color="secondary" class="ma-0 pa-0">unfold_more</v-icon>
+                                <v-icon color="third" class="ma-0 pa-0">unfold_more</v-icon>
                             </v-btn>
                         </div>
                     </template>
                     <div style="white-space: nowrap;" :class="{
                         'reverse': isLeft
                     }">
-                        <v-avatar color="secondary" size="18" :left="isLeft" style="height:100%;" :class="{
+                        <v-avatar color="third" size="18" :left="isLeft" style="height:100%;" :class="{
                             'mr-2' : !isLeft,
                             'ml-2' : isLeft
                         }">
