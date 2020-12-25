@@ -25,6 +25,7 @@
             v-if="$store.state.user" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
     <v-menu
         offset-y
+        left
         v-if="$store.state.user !== undefined && isUserHomeRoute"
         v-model="showNotificationsMenu"
         :close-on-content-click="false"
@@ -39,7 +40,7 @@
       </template>
       <v-list>
         <v-list-item v-for="notification in notifications">
-          {{ notification}}
+          {{ notification.watchLabel}}
         </v-list-item>
       </v-list>
     </v-menu>
