@@ -23,6 +23,27 @@
     <Button :button="zoomInButton" v-if="isGraphRoute" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
     <Button :button="createVertexButton"
             v-if="$store.state.user" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
+    <v-menu
+        offset-y
+        v-if="$store.state.user !== undefined && isUserHomeRoute"
+        v-model="showNotificationsMenu"
+        :close-on-content-click="false"
+        z-index="14"
+    >
+      <template v-slot:activator="{ on }">
+        <v-btn icon color="secondary" v-on="on" v-show="!isSearchFlow">
+          <v-icon>
+            notifications
+          </v-icon>
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item v-for="notification in notifications">
+          {{ notification}}
+        </v-list-item>
+      </v-list>
+    </v-menu>
+
     <SettingsMenu v-show="!isSearchFlow" @enterDocsFlow="$emit('enterDocsFlow')"
                   @enterPatternFlow="$emit('enterPatternFlow')"
                   @addExistingChildToCenter="$emit('addExistingChildToCenter')" ref="settingsMenu"></SettingsMenu>
@@ -31,6 +52,7 @@
 
 <script>
 import AppController from '@/AppController'
+import NotificationService from "@/NotificationService";
 
 export default {
   name: "ToolbarGraphButtons",
@@ -41,6 +63,8 @@ export default {
   data: function () {
     return {
       isSearchFlow: false,
+      notifications: [],
+      showNotificationsMenu: false,
       undoButton: {
         action: "undo",
         icon: "undo",
@@ -76,6 +100,9 @@ export default {
       }
     }
   },
+  mounted: async function () {
+    this.notifications = await NotificationService.get();
+  },
   methods: {
     enterSearchFlow: function () {
       this.isSearchFlow = true;
@@ -88,6 +115,9 @@ export default {
   computed: {
     isGraphRoute: function () {
       return this.$route.name === "Center"
+    },
+    isUserHomeRoute: function () {
+      return this.$route.name === "UserHome"
     }
   }
 }

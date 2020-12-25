@@ -60,7 +60,7 @@
                 movie
               </v-icon>
               <v-btn text color="secondary" v-else>
-                <v-icon class="mr-2" v-if="$vuetify.breakpoint.lgAndUp">person</v-icon>
+                <v-icon class="mr-2" v-if="$vuetify.breakpoint.mdAndUp">person</v-icon>
                 {{ $t('app:recruits') }} !
               </v-btn>
             </div>
@@ -561,9 +561,7 @@ export default {
       return this.$route.name.indexOf('UserHome') > -1;
     },
     showOnlyMovieIconInRecruit: function () {
-      return this.$vuetify.breakpoint.mdAndDown && [
-        'home', 'welcome', 'register', 'login'
-      ].indexOf(this.$route.name) > -1;
+      return this.$vuetify.breakpoint.smAndDown;
     }
   },
   mounted: function () {

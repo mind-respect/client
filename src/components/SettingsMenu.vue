@@ -13,7 +13,7 @@
     <!--z-index="14" to be above bubble menu-->
     <template v-slot:activator="{ on }">
       <v-btn icon light class="mr-2" v-on="on">
-        <v-icon>
+        <v-icon color="primary">
           menu
         </v-icon>
       </v-btn>
