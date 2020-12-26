@@ -23,28 +23,7 @@
     <Button :button="zoomInButton" v-if="isGraphRoute" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
     <Button :button="createVertexButton"
             v-if="$store.state.user" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
-    <v-menu
-        offset-y
-        left
-        v-if="$store.state.user !== undefined && isUserHomeRoute"
-        v-model="showNotificationsMenu"
-        :close-on-content-click="false"
-        z-index="14"
-    >
-      <template v-slot:activator="{ on }">
-        <v-btn icon color="secondary" v-on="on" v-show="!isSearchFlow">
-          <v-icon>
-            notifications
-          </v-icon>
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item v-for="notification in notifications">
-          {{ notification.watchLabel}}
-        </v-list-item>
-      </v-list>
-    </v-menu>
-
+    <NotificationsMenu :isSearchFlow="isSearchFlow"></NotificationsMenu>
     <SettingsMenu v-show="!isSearchFlow" @enterDocsFlow="$emit('enterDocsFlow')"
                   @enterPatternFlow="$emit('enterPatternFlow')"
                   @addExistingChildToCenter="$emit('addExistingChildToCenter')" ref="settingsMenu"></SettingsMenu>
@@ -53,19 +32,17 @@
 
 <script>
 import AppController from '@/AppController'
-import NotificationService from "@/NotificationService";
 
 export default {
   name: "ToolbarGraphButtons",
   components: {
     SettingsMenu: () => import('@/components/SettingsMenu'),
+    NotificationsMenu: () => import('@/components/NotificationsMenu'),
     Button: () => import('@/components/graph/Button')
   },
   data: function () {
     return {
       isSearchFlow: false,
-      notifications: [],
-      showNotificationsMenu: false,
       undoButton: {
         action: "undo",
         icon: "undo",
@@ -100,9 +77,6 @@ export default {
         controller: AppController
       }
     }
-  },
-  mounted: async function () {
-    this.notifications = await NotificationService.get();
   },
   methods: {
     enterSearchFlow: function () {
