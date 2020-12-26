@@ -77,7 +77,8 @@ const Store = new Vuex.Store({
                     status: user.status,
                     user_name: user.user_name,
                     username: user.user_name,
-                    locale: user.locale
+                    locale: user.locale,
+                    consultNotificationsDate: user.consultNotificationsDate
                 };
             } else {
                 state.user = undefined;

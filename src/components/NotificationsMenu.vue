@@ -14,7 +14,7 @@
           overlap
           offset-x="20" offset-y="22"
       >
-        <v-btn icon color="secondary" v-on="on" v-show="!isSearchFlow">
+        <v-btn icon color="secondary" v-on="on" v-show="!isSearchFlow" @click="updateUserConsultNotificationsDate">
           <v-icon>
             notifications
           </v-icon>
@@ -47,6 +47,7 @@
 import I18n from '@/I18n'
 import IdUri from "@/IdUri";
 import NotificationService from "@/NotificationService";
+import UserService from "@/service/UserService";
 
 export default {
   name: "NotificationsMenu",
@@ -68,7 +69,7 @@ export default {
     return {
       notifications: [],
       showNotificationsMenu: false,
-      notificationsColor: "third",
+      notificationsColor: "transparent",
       nbUnreadNotifications: ""
     }
   },
@@ -76,7 +77,7 @@ export default {
     this.notifications = this.formatNotifications(
         await NotificationService.get(0)
     );
-
+    this.refreshNbUnreadNotifications(this.$store.state.user.consultNotificationsDate || new Date(0))
   },
   methods: {
     formatNotifications: function (notifications) {
@@ -86,6 +87,20 @@ export default {
         notification.rootUrl = IdUri.htmlUrlForBubbleUri(notification.rootUri);
         return notification;
       });
+    },
+    updateUserConsultNotificationsDate: async function () {
+      this.refreshNbUnreadNotifications(
+          await UserService.updateConsultNotificationsDate()
+      )
+    },
+    refreshNbUnreadNotifications: function (consultNotificationsDate) {
+      this.nbUnreadNotifications = this.notifications.reduce(function (nbUnread, notification) {
+        if (new Date(notification.creationDate) > consultNotificationsDate) {
+          return nbUnread + 1;
+        }
+        return nbUnread;
+      }, 0);
+      this.notificationsColor = this.nbUnreadNotifications === 0 ? "transparent" : "third";
     }
   },
   computed: {

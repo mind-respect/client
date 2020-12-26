@@ -48,7 +48,13 @@ const UserService = {
             {
                 "searchText": searchText
             }
-        )
+        );
+    },
+    updateConsultNotificationsDate: async function () {
+        const response = await Service.api().post(
+            UserService.currentUserUri() + "/consultNotificationDate"
+        );
+        return response.data.consultNotificationsDate;
     }
 };
 export default UserService
