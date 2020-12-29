@@ -95,9 +95,14 @@ export default {
     },
     refreshNbUnreadNotifications: function (consultNotificationsDate) {
       this.nbUnreadNotifications = this.notifications.reduce(function (nbUnread, notification) {
+        console.log("a")
+        console.log("creation " + new Date(notification.creationDate));
+        console.log("consultNotificationsDate " + consultNotificationsDate);
         if (new Date(notification.creationDate) > consultNotificationsDate) {
+          console.log("b")
           return nbUnread + 1;
         }
+        console.log("c")
         return nbUnread;
       }, 0);
       this.notificationsColor = this.nbUnreadNotifications === 0 ? "transparent" : "third";
