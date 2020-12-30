@@ -9,8 +9,8 @@
   >
     <template v-slot:activator="{ on }">
       <v-badge
-          color="secondary"
-          :content="2"
+          :color="notificationsColor"
+          :content="nbUnreadNotifications"
           overlap
           offset-x="20" offset-y="22"
       >
