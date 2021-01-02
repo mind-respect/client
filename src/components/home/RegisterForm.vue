@@ -166,7 +166,7 @@
                 usernameAlreadyRegistered: "Username already taken",
                 invalidUsername: "Username is invalid, it can only contain letters, numbers, underscores and hyphens",
                 usernameTooLong: "Username can't exceed 30 characters",
-                warning: "The application is under development and for the moment is only optimized for the latest versions of Firefox or Chrome."
+                warning: "The application is under development and for the moment is only optimized for the latest versions of Chrome."
             });
             I18n.i18next.addResources("fr", "register", {
                 title: "Utilisez MindRespect.com",
@@ -179,7 +179,7 @@
                 usernameAlreadyRegistered: "Usager est déjà pris",
                 invalidUsername: "Le nom d'usager est invalide, il peut contenir des lettres, des nombres, des soulignements (underscores) et des traits d'union",
                 usernameTooLong: "Le nom d'usager ne peut excéder 30 caractères",
-                warning: "L'application est en développement et pour l'instant n'est optimisé que pour les dernières versions de Firefox ou Chrome"
+                warning: "L'application est en développement et pour l'instant n'est optimisé que pour les dernières versions de Chrome"
             });
             return {
                 Rules: Rules,
