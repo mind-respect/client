@@ -96,9 +96,9 @@ export default {
     refreshNbUnreadNotifications: function (consultNotificationsDate) {
       this.nbUnreadNotifications = this.notifications.reduce(function (nbUnread, notification) {
         console.log("a")
-        console.log("creation " + new Date(notification.creationDate));
+        console.log("creation " + notification.creationDate);
         console.log("consultNotificationsDate " + consultNotificationsDate);
-        if (new Date(notification.creationDate) > consultNotificationsDate) {
+        if (new Date(notification.creationDate).getTime() > consultNotificationsDate.getTime()) {
           console.log("b")
           return nbUnread + 1;
         }
