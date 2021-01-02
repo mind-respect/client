@@ -8,7 +8,7 @@
     <!--            <v-icon>help</v-icon>-->
     <!--        </v-btn>-->
     <v-btn :to="'/user/' + $store.state.user.username"
-           v-if="$store.state.user && $route.name.indexOf('UserHome') === -1" text exact
+           v-if="$store.state.user && $route.name !== null && $route.name.indexOf('UserHome') === -1" text exact
            :icon="$vuetify.breakpoint.mdAndDown" :isInTopMenu="true" v-show="!isSearchFlow">
       <v-icon :class="{
                     'mr-2' : $vuetify.breakpoint.lgAndUp
