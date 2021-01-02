@@ -98,7 +98,7 @@ export default {
         console.log("a")
         console.log("creation " + notification.creationDate);
         console.log("consultNotificationsDate " + consultNotificationsDate);
-        if (new Date(notification.creationDate).getTime() > consultNotificationsDate.getTime()) {
+        if (new Date(notification.creationDate) > new Date(consultNotificationsDate)) {
           console.log("b")
           return nbUnread + 1;
         }
