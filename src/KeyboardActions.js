@@ -323,5 +323,9 @@ function defineCtrlPlusKeysAndTheirActions() {
 }
 
 function _isEdiFlow() {
-    return Selection.isSingle() && Selection.getSingle().isEditFlow;
+    if (!Selection.isSingle()) {
+        return false;
+    }
+    const single = Selection.getSingle();
+    return single && single.isEditFlow;
 }

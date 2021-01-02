@@ -235,6 +235,7 @@ FriendlyResource.FriendlyResource.prototype.focus = function (event, position) {
             setTimeout(() => {
                 let labelHtml = this.getLabelHtml();
                 if (!labelHtml) {
+                    KeyboardActions.enable();
                     return false;
                 }
                 if (interval) {
