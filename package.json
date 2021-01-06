@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@panter/vue-i18next": "^0.15.2",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "axios-jsonp": "^1.0.4",
     "date-fns": "^2.15.0",
     "i18next": "^19.5.4",
