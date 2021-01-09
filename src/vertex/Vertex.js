@@ -313,6 +313,10 @@ Vertex.prototype.removeChild = function (child, isTemporary, avoidRedraw) {
     }
 };
 
+Vertex.prototype.isRelatedToForkUri = function (forkUri) {
+    return this.parentGroupRelationUri === undefined || this.parentGroupRelationUri === forkUri;
+};
+
 api.getWhenEmptyLabel = function () {
     return I18n.i18next.t("vertex:default");
 };

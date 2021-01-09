@@ -18,6 +18,7 @@ import MindMapInfo from '@/MindMapInfo'
 import UiUtils from '@/UiUtils'
 import Scroll from '@/Scroll'
 import Breakpoint from '@/Breakpoint'
+import NotificationService from "@/NotificationService";
 
 const crypto = require('crypto');
 
@@ -73,6 +74,9 @@ api.applyDefault = function () {
     });
     jest.spyOn(MindMapInfo, "defineIsViewOnly").mockImplementation(() => {
         return false;
+    });
+    jest.spyOn(NotificationService, "get").mockImplementation(() => {
+        return [];
     });
     jest.spyOn(axios, "create").mockImplementation(() => {
         return {

@@ -3,8 +3,9 @@ import ThreeScenario from "../scenario/ThreeScenario";
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import ThreeLevelGroupRelationScenario from "../scenario/ThreeLevelGroupRelationScenario";
 import TestUtil from "../util/TestUtil";
+import DeepGraphScenario from "../scenario/DeepGraphScenario";
 
-describe("SubGraphController", () => {
+describe("SubGraphLoader", () => {
     it("keeps the id of the parent vertex when it exists", async () => {
         let scenario = await new ThreeScenario();
         let b2 = scenario.getBubble2InTree();
@@ -48,5 +49,11 @@ describe("SubGraphController", () => {
         expect(
             group3.getNumberOfChild()
         ).toBe(3);
+    });
+    it("can initialize using a deep graph, with more than one depth", async () => {
+        let scenario = await new DeepGraphScenario();
+        let center = scenario.getCenterInTree();
+        TestUtil.logChildren(center);
+        expect(center.getNumberOfChild()).toBe(2);
     });
 });

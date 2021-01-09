@@ -116,30 +116,6 @@ api.SubGraph.prototype._isEdgeAlreadyAdded = function (edge) {
     });
 };
 
-api.SubGraph.prototype._buildEdges = function () {
-    this.edges = {};
-    let tag;
-    if (this.isCenterTag) {
-        tag = Tag.withUri(this.centerUri);
-    }
-    Object.values(this.serverFormat.edges).forEach((edge) => {
-        let facade = Relation.fromServerFormat(edge);
-        facade.setSourceVertex(
-            this.getHavingUri(facade.getSourceVertex().getUri())
-        );
-        facade.setDestinationVertex(
-            this.getHavingUri(facade.getDestinationVertex().getUri())
-        );
-        // if (facade.getSourceVertex() === undefined || (!this.isCenterTag && facade.getDestinationVertex() === undefined)) {
-        //     return;
-        // }
-        // if (this.isCenterTag && !facade.hasIdentification(tag)) {
-        //     return;
-        // }
-        this.addEdge(facade);
-    });
-};
-
 api.SubGraph.prototype.addVertex = function (vertex) {
     if (this.vertices[vertex.getUri()] === undefined) {
         this.vertices[vertex.getUri()] = [];
@@ -437,11 +413,39 @@ api.SubGraph.prototype.getTagBubbleWithUiId = function (uiId) {
     })[0];
 };
 
+api.SubGraph.prototype.toServerFormat = function () {
+    return this.getGraphElements().reduce
+};
+
 api.SubGraph.prototype._buildVertices = function () {
     this.vertices = {};
     Object.values(this.serverFormat.vertices).forEach((vertex) => {
         let facade = Vertex.fromServerFormat(vertex);
         this.addVertex(facade);
+    });
+};
+
+api.SubGraph.prototype._buildEdges = function () {
+    this.edges = {};
+    let tag;
+    if (this.isCenterTag) {
+        tag = Tag.withUri(this.centerUri);
+    }
+    Object.values(this.serverFormat.edges).forEach((edge) => {
+        let facade = Relation.fromServerFormat(edge);
+        facade.setSourceVertex(
+            this.getHavingUri(facade.getSourceVertex().getUri())
+        );
+        facade.setDestinationVertex(
+            this.getHavingUri(facade.getDestinationVertex().getUri())
+        );
+        // if (facade.getSourceVertex() === undefined || (!this.isCenterTag && facade.getDestinationVertex() === undefined)) {
+        //     return;
+        // }
+        // if (this.isCenterTag && !facade.hasIdentification(tag)) {
+        //     return;
+        // }
+        this.addEdge(facade);
     });
 };
 

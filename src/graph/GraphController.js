@@ -20,7 +20,7 @@ api.expandAllCanDo = function () {
 };
 
 api.expandAll = function () {
-    CurrentSubGraph.get().center.controller().expand();
+    return CurrentSubGraph.get().center.controller().expand();
 };
 
 api.compareCanDo = function () {

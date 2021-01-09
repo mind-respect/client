@@ -117,7 +117,8 @@ api.fontPicker = function () {
 
 api.refreshFont = function (justChanged) {
     return new Promise((resolve) => {
-        let font = CurrentSubGraph.get().center.getFont();
+        const center = CurrentSubGraph.get().center;
+        let font = center ? center.getFont() : GraphElement.DEFAULT_FONT;
         if (!justChanged && GraphElement.DEFAULT_FONT.family === font.family) {
             resolve();
             return;

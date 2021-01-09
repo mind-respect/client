@@ -64,6 +64,9 @@ export default {
           color: "secondary",
           class: "font-weight-bold",
           text: function (bubbles) {
+            if (bubbles[0] === undefined) {
+              return "";
+            }
             return "× " + (bubbles[0].getNbDuplicates() + 1);
           }
         },

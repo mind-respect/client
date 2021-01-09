@@ -8,7 +8,7 @@ import GraphElementService from '@/graph-element/GraphElementService'
 import IdUri from '@/IdUri'
 import GraphElementType from '@/graph-element/GraphElementType'
 import ShareLevel from '@/vertex/ShareLevel'
-import SubGraphController from '@/graph/SubGraphController'
+import SubGraphLoader from '@/graph/SubGraphLoader'
 import LoadingFlow from '@/LoadingFlow'
 import TagVertexService from '@/tag/TagVertexService'
 import Vue from 'vue'
@@ -34,7 +34,7 @@ function VertexController(vertices) {
         this,
         this.vertices
     );
-    this.subGraphController = SubGraphController.withVertices(
+    this.SubGraphLoader = SubGraphLoader.withCenters(
         this.vertices
     );
 }
@@ -298,7 +298,7 @@ VertexController.prototype.convertToDistantBubbleWithUri = async function (dista
         );
     }
     if (!isCenter) {
-        converted = await converted.controller().getSubGraphController().loadForParentIsAlreadyOnMap();
+        converted = await converted.controller().getSubGraphLoader().loadForParentIsAlreadyOnMap();
     }
     let promises = [];
     if (beforeMergeLabel.toLowerCase().trim() !== converted.getLabel().toLowerCase().trim()) {
@@ -403,8 +403,8 @@ VertexController.prototype.merge = function () {
     return Promise.resolve();
 };
 
-VertexController.prototype.getSubGraphController = function () {
-    return this.subGraphController;
+VertexController.prototype.getSubGraphLoader = function () {
+    return SubGraphLoader.withCenter(this.model());
 };
 
 VertexController.prototype.focusRelationCanDo = function () {

@@ -963,14 +963,14 @@ describe('VertexController', () => {
             ).toBe(groupRelationNumberOfChild);
         });
         it("prevents duplicate child when merge centers", async () => {
-            let urluScenario = await new MergeCentersUrluScenario();
-            let urlu1 = urluScenario.getCenterInTree();
+            let mergeScenario = await new MergeCentersUrluScenario();
+            let center = mergeScenario.getCenterInTree();
             let otoScenario = await new MergeCentersOtoScenario();
             let oto1 = otoScenario.getCenterInTree();
             GraphServiceMock.getForCentralBubbleUri(
                 otoScenario.getGraphAfterMergeWithUrlu()
             );
-            await urlu1.controller().convertToDistantBubbleWithUri(
+            await center.controller().convertToDistantBubbleWithUri(
                 oto1.getUri(),
                 oto1
             );

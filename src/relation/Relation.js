@@ -198,6 +198,11 @@ api.Relation.prototype.getOtherVertex = function (vertex) {
         this.getDestinationVertex() : this.getSourceVertex();
 };
 
+api.Relation.prototype.isRelatedToForkUri = function (forkUri) {
+    return this.getSourceVertex().getUri() === forkUri ||
+        this.getDestinationVertex().getUri() === forkUri;
+};
+
 api.Relation.prototype.getNextBubble = function () {
     return this.isInverse() ?
         this.getSourceVertex() :

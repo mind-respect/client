@@ -147,7 +147,6 @@ import PatternService from "@/pattern/PatternService";
 import Dragged from '@/Dragged'
 import KeyboardActions from '@/KeyboardActions'
 import ListView from "./ListView";
-import Store from "@/store";
 
 export default {
   name: "AddExistingBubbleDialog",

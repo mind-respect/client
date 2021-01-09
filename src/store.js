@@ -24,7 +24,8 @@ const Store = new Vuex.Store({
                 "addRelationIncludeAllPatterns",
                 "isShowTags",
                 "isShowRelations",
-                "isFirstTime"
+                "isFirstTime",
+                "cache"
             ]
         })
     ],
@@ -66,7 +67,8 @@ const Store = new Vuex.Store({
         isShowRelations: false,
         addExistingToParent: false,
         infoMessage: null,
-        editMode: false
+        editMode: false,
+        cache: {}
     },
     mutations: {
         setUser: function (state, user) {
@@ -212,8 +214,11 @@ const Store = new Vuex.Store({
         setInfoMessage: function (state, infoMessage) {
             state.infoMessage = infoMessage;
         },
-        setEditMode: function(state, editMode){
+        setEditMode: function (state, editMode) {
             state.editMode = editMode;
+        },
+        setCache: function (state, cache) {
+            state.cache = cache;
         }
     },
     actions: {
@@ -337,8 +342,11 @@ const Store = new Vuex.Store({
         setInfoMessage: function (action, infoMessage) {
             action.commit('setInfoMessage', infoMessage);
         },
-        setEditMode: function(action, editMode){
+        setEditMode: function (action, editMode) {
             action.commit('setEditMode', editMode);
+        },
+        setCache: function (action, cache) {
+            action.commit('setCache', cache);
         }
     }
 });

@@ -8,7 +8,7 @@ import Vue from 'vue'
 import CurrentSubGraph from "../graph/CurrentSubGraph";
 import ForkService from "../fork/ForkService";
 import ForkController from "../fork/ForkController";
-import SubGraphController from '@/graph/SubGraphController'
+import SubGraphLoader from '@/graph/SubGraphLoader'
 import EdgeController from '@/edge/EdgeController'
 
 const api = {};
@@ -20,15 +20,15 @@ function GroupRelationController(groupRelationUi) {
         this,
         this.groupRelationsUi
     );
-    this.subGraphController = SubGraphController.withVertices(
+    this.SubGraphLoader = SubGraphLoader.withCenters(
         this.groupRelationsUi
     );
 }
 
 GroupRelationController.prototype = new ForkController.ForkController();
 
-GroupRelationController.prototype.getSubGraphController = function () {
-    return this.subGraphController;
+GroupRelationController.prototype.getSubGraphLoader = function () {
+    return SubGraphLoader.withCenter(this.model());
 };
 
 GroupRelationController.prototype.addChildCanDo = function () {

@@ -43,7 +43,7 @@ ForkController.prototype.expand = function (avoidCenter, avoidExpandChild, avoid
     if (!this.model().isExpanded) {
         if (!this.model().isCollapsed) {
             isFirstExpand = true;
-            promise = this.getSubGraphController().loadForParentIsAlreadyOnMap().then(() => {
+            promise = this.getSubGraphLoader().loadForParentIsAlreadyOnMap().then(() => {
                 if (avoidExpandChild) {
                     return true;
                 }

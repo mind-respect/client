@@ -4,6 +4,10 @@
 /*
  inspired by http://blog.overnetcity.com/2014/11/18/undo-redo-angularjs-command-pattern/
  */
+
+import Store from "@/store";
+import CurrentSubGraph from "@/graph/CurrentSubGraph";
+
 const api = {};
 let undos = [],
     redos = [];
@@ -42,6 +46,9 @@ api.executeCommand = function (command) {
     return command.execute().then(function (data) {
         undos.push(command);
         // api._reviewButtonsVisibility();
+        // Store.dispatch("setCache", {
+        //     center: CurrentSubGraph.get().center
+        // });
         return data;
     });
 };

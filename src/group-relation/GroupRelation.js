@@ -384,6 +384,10 @@ GroupRelation.prototype.getSourceForkUri = function () {
     return decodeURIComponent(this.groupRelationJsonObject.sourceForkUri);
 };
 
+GroupRelation.prototype.isRelatedToForkUri = function (forkUri) {
+    return this.getSourceForkUri() === forkUri;
+}
+
 GroupRelation.prototype.getIndexVertexUri = function () {
     return decodeURIComponent(
         this.groupRelationJsonObject.indexVertexUri

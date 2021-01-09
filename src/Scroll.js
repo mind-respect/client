@@ -2,7 +2,6 @@
  * Copyright Vincent Blouin GNU General Public License v3.0
  */
 import VueScrollTo from 'vue-scrollto'
-import router from '@/router'
 import Vue from 'vue'
 import SideMenu from '@/SideMenu'
 import Breakpoint from '@/Breakpoint'

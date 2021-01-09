@@ -25,7 +25,11 @@ const Color = {
     },
     refreshBackgroundColor: function (backgroundColor) {
         let center = CurrentSubGraph.get().center;
-        backgroundColor = backgroundColor || center.resolveBackgroundColor();
+        if (!backgroundColor && !center) {
+            backgroundColor = Color.DEFAULT_BACKGROUND_COLOR
+        } else {
+            backgroundColor = backgroundColor || center.resolveBackgroundColor();
+        }
         let drawnGraph = document.getElementById("drawn_graph");
         if (drawnGraph) {
             drawnGraph.style.background = "radial-gradient(rgba(0, 0, 0, 0) 15%, " + backgroundColor + " 100%"

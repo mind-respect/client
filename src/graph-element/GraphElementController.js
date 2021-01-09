@@ -16,7 +16,7 @@ import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import RelationService from '@/relation/RelationService'
 import Vertex from '@/vertex/Vertex'
 import Relation from '@/relation/Relation'
-import SubGraphController from '@/graph/SubGraphController'
+import SubGraphLoader from '@/graph/SubGraphLoader'
 import TagVertex from "@/tag/TagVertex";
 import Scroll from "../Scroll";
 import ShareLevel from '@/vertex/ShareLevel'
@@ -830,7 +830,7 @@ GraphElementController.prototype.relateToDistantVertexWithUriCanDo = function (d
 
 GraphElementController.prototype.relateToDistantVertexWithUri = async function (distantVertexUri, index, isLeft, destinationShareLevel, identifiers, distantVertex) {
     let parentFork = this.model().isForkType() ? this.model() : this.model().getParentFork();
-    distantVertex = distantVertex || await SubGraphController.withVertex(
+    distantVertex = distantVertex || await SubGraphLoader.withCenter(
         Vertex.withUri(
             distantVertexUri
         )

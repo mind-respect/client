@@ -375,7 +375,7 @@ export default {
       let center = this.bubble.isMeta() ?
           TagVertex.withUri(this.selectedSearchResult.uri) :
           Vertex.withUri(this.selectedSearchResult.uri);
-      center.controller().getSubGraphController().loadForParentIsAlreadyOnMap(true).then((mergeWith) => {
+      center.controller().getSubGraphLoader().loadForParentIsAlreadyOnMap(true).then((mergeWith) => {
         this.mergeBubble = mergeWith;
         if (!this.bubble.isCenter) {
           let parentEdge = this.bubble.getParentBubble();

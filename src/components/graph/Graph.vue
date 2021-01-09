@@ -154,7 +154,7 @@ import MindMapInfo from '@/MindMapInfo'
 import IdUri from '@/IdUri'
 import Bubble from '@/components/graph/Bubble'
 import Selection from '@/Selection'
-import SubGraphController from '@/graph/SubGraphController'
+import SubGraphLoader from '@/graph/SubGraphLoader'
 import TagVertex from '@/tag/TagVertex'
 import Color from '@/Color'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
@@ -275,7 +275,7 @@ export default {
       let center = IdUri.isMetaUri(centerUri) ? TagVertex.withUri(centerUri) : GraphElement.withUri(centerUri);
       promise = center.isMeta() ?
           TagVertexController.withMeta(center).loadGraph() :
-          SubGraphController.withVertex(
+          SubGraphLoader.withCenter(
               center
           ).load();
     } else {
@@ -344,7 +344,6 @@ export default {
     window.addEventListener('keydown', this.disableSpacebarScroll);
   },
   beforeDestroy: function () {
-    CurrentSubGraph.set(SubGraph.empty());
     Selection.reset();
     window.removeEventListener('resize', this.handleResize);
     window.removeEventListener('keydown', this.disableSpacebarScroll);
@@ -511,7 +510,7 @@ export default {
     infoMessage: function () {
       if (this.$store.state.infoMessage !== null) {
         this.infoMessageSnackbar = true;
-        this.infoMessageValue = JSON.parse( JSON.stringify( this.$store.state.infoMessage ) );
+        this.infoMessageValue = JSON.parse(JSON.stringify(this.$store.state.infoMessage));
         this.infoMessageValue.time = this.infoMessageValue.time || 7000;
         this.$store.dispatch("setInfoMessage", null);
       }

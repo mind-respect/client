@@ -11,7 +11,7 @@ import VertexService from '@/vertex/VertexService'
 import Vertex from '@/vertex/Vertex'
 import Vue from 'vue'
 import Selection from '@/Selection'
-import SubGraphController from '@/graph/SubGraphController'
+import SubGraphLoader from '@/graph/SubGraphLoader'
 import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
 import GraphElement from '@/graph-element/GraphElement'
@@ -213,7 +213,7 @@ TagVertexController.prototype.addChild = async function () {
 };
 
 TagVertexController.prototype.relateToDistantVertexWithUri = function (distantVertexUri, index, isLeft) {
-    SubGraphController.withVertex(
+    SubGraphLoader.withCenter(
         Vertex.withUri(
             distantVertexUri
         )
@@ -303,7 +303,7 @@ TagVertexController.prototype.becomeParent = function (child, isLeft, index) {
 
 };
 
-TagVertexController.prototype.getSubGraphController = function () {
+TagVertexController.prototype.getSubGraphLoader = function () {
     return this;
 };
 

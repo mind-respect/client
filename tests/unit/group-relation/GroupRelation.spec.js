@@ -246,7 +246,7 @@ describe("GroupRelation", function () {
             ).toBeTruthy();
         })
     });
-    fit("does not duplicate source vertex when center is one of the child of the group relation", async () => {
+    it("does not duplicate source vertex when center is one of the child of the group relation", async () => {
         let scenario = await new GroupRelationAsChildScenario();
         let center = await scenario.getCenterInTree();
         let rCenter = center.getNextBubble();

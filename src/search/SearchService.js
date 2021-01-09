@@ -7,6 +7,7 @@ import UserService from '@/service/UserService'
 import Service from '@/Service'
 import SearchResult from '@/search/SearchResult'
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
+import router from '@/router'
 
 const SearchService = {};
 SearchService.tags = function (term, nbSkip) {
@@ -37,7 +38,7 @@ SearchService.searchForAllOwnResources = function (searchText, nbSkip, prioritiz
     let providers = [
         SearchService._searchForAllOwnResources(searchText, nbSkip)
     ];
-    if (!nbSkip && CurrentSubGraph.get()) {
+    if (!nbSkip && router.name === "Center") {
         providers.push(
             SearchService._searchForResourcesOnThisMap(searchText)
         );
