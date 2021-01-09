@@ -27,11 +27,11 @@ function SubGraphLoader(center) {
 
 api.SubGraphLoader = SubGraphLoader;
 
-SubGraphLoader.prototype.loadForParentIsAlreadyOnMap = function (preventAddInCurrentGraph) {
+SubGraphLoader.prototype.loadForParentIsAlreadyOnMap = function (preventAddInCurrentGraph, serverGraph) {
     this.isParentAlreadyOnMap = true;
     this.isCenterOnMap = false;
     this.preventAddInCurrentGraph = preventAddInCurrentGraph;
-    return this.load();
+    return this.load(serverGraph);
 };
 
 SubGraphLoader.prototype.loadNonCenter = function () {
@@ -50,7 +50,7 @@ SubGraphLoader.prototype.load = async function (serverGraph) {
     }
     return this._buildCenterForkUsingGraphAndCenter(serverGraph);
 };
-SubGraphLoader.prototype._buildCenterForkUsingGraphAndCenter = function (serverGraph) {
+SubGraphLoader.prototype._buildCenterForkUsingGraphAndCenter = async function (serverGraph) {
     let centerUri = this.center.getUri();
     let isCenterEdge = IdUri.isEdgeUri(this.center.getUri());
     if (isCenterEdge) {
@@ -119,8 +119,18 @@ SubGraphLoader.prototype._buildCenterForkUsingGraphAndCenter = function (serverG
     let centerParentFork = centerFork.getParentFork();
     let centerVertex = centerFork.isGroupRelation() ? centerFork.getParentVertex() : centerFork;
     const addedUris = new Set();
+    const nonRelatedUris = new Set();
     subGraph.sortedGraphElements(centerFork).forEach((child) => {
         if (!child.isRelatedToForkUri(centerFork.getUri())) {
+            let nonRelatedUri;
+            if (child.isRelation()) {
+                nonRelatedUri = child.getOtherVertex(centerFork).getUri();
+            } else if (child.isGroupRelation()) {
+                nonRelatedUri = child.getSourceForkUri();
+            } else {
+                nonRelatedUri = child.parentGroupRelationUri;
+            }
+            nonRelatedUris.add(nonRelatedUri);
             return;
         }
         if (child.getUri() === centerFork.getParentBubble().getUri()) {
@@ -187,6 +197,11 @@ SubGraphLoader.prototype._buildCenterForkUsingGraphAndCenter = function (serverG
     let isChildrenIndexBuilt = Object.keys(childrenIndex).length > 0;
     centerFork.isExpanded = true;
     centerFork.isCollapsed = false;
+    await centerFork.getExpandableDescendants().map(async (expandable) => {
+        if (nonRelatedUris.has(expandable.getUri())) {
+            await api.withCenter(expandable).loadForParentIsAlreadyOnMap(false, serverGraph);
+        }
+    });
     return isChildrenIndexBuilt || MindMapInfo.isViewOnly() ? Promise.resolve(centerFork) :
         GraphElementService.changeChildrenIndex(
             centerFork

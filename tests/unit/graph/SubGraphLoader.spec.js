@@ -50,10 +50,20 @@ describe("SubGraphLoader", () => {
             group3.getNumberOfChild()
         ).toBe(3);
     });
-    it("can initialize using a deep graph, with more than one depth", async () => {
+    it("has right number of children around center when initialized using a deep graph", async () => {
         let scenario = await new DeepGraphScenario();
         let center = scenario.getCenterInTree();
-        TestUtil.logChildren(center);
         expect(center.getNumberOfChild()).toBe(2);
+    });
+    it("displays deep graph elements when initialized with a deep graph", async () => {
+        let scenario = await new DeepGraphScenario();
+        let center = scenario.getCenterInTree();
+        const b2 = TestUtil.getChildDeepWithLabel(
+            center,
+            "b2"
+        );
+        expect(
+            b2.getNextChildren().length
+        ).toBe(2);
     });
 });
