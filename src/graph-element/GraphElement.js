@@ -45,7 +45,8 @@ const GraphElement = {
             ),
             identifications: GraphDisplayer.getTagApi().getServerFormatArrayFromFacadeArray(
                 graphElementUi.model().getIdentifiers()
-            )
+            ),
+            childrenIndex: graphElementUi.getChildrenIndex()
         }
     },
     withUri: function (uri) {

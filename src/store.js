@@ -217,8 +217,8 @@ const Store = new Vuex.Store({
         setEditMode: function (state, editMode) {
             state.editMode = editMode;
         },
-        setCache: function (state, cache) {
-            state.cache = cache;
+        saveGraph: function (state, graph) {
+            state.cache[graph.centerUri] = graph;
         }
     },
     actions: {
@@ -345,8 +345,8 @@ const Store = new Vuex.Store({
         setEditMode: function (action, editMode) {
             action.commit('setEditMode', editMode);
         },
-        setCache: function (action, cache) {
-            action.commit('setCache', cache);
+        saveGraph: function (action, graph) {
+            action.commit('saveGraph', graph);
         }
     }
 });

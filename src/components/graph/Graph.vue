@@ -226,7 +226,8 @@ export default {
       drawnGraphKey: IdUri.uuid(),
       tagSuccessSnackbar: false,
       infoMessageSnackbar: false,
-      infoMessageValue: {}
+      infoMessageValue: {},
+      saveStateInterval: null
     }
   },
   mounted: async function () {
@@ -271,13 +272,17 @@ export default {
       });
     }
     let promise;
+    let cacheGraph;
+    if (this.$store.state.cache[centerUri] && process.env.NODE_ENV !== "test") {
+      cacheGraph = JSON.parse(JSON.stringify(this.$store.state.cache[centerUri]));
+    }
     if (this.$route.params.newVertex === undefined) {
       let center = IdUri.isMetaUri(centerUri) ? TagVertex.withUri(centerUri) : GraphElement.withUri(centerUri);
       promise = center.isMeta() ?
           TagVertexController.withMeta(center).loadGraph() :
           SubGraphLoader.withCenter(
               center
-          ).load();
+          ).load(cacheGraph);
     } else {
       let center = this.$route.params.newVertex;
       center.isNewBubble = true
@@ -342,13 +347,26 @@ export default {
   created: function () {
     window.addEventListener('resize', this.handleResize);
     window.addEventListener('keydown', this.disableSpacebarScroll);
+    window.addEventListener('beforeunload', () => {
+      CurrentSubGraph.get().saveState();
+    }, false);
+    if(process.env.NODE_ENV !== "test"){
+      this.startSaveStateInterval();
+    }
   },
   beforeDestroy: function () {
     Selection.reset();
     window.removeEventListener('resize', this.handleResize);
     window.removeEventListener('keydown', this.disableSpacebarScroll);
+    clearInterval(this.saveStateInterval);
+    // window.removeEventListener('onbeforeunload', this.saveState)
   },
   methods: {
+    startSaveStateInterval: function () {
+      this.saveStateInterval = setInterval(() => {
+        CurrentSubGraph.get().saveState();
+      }, 10000)
+    },
     beforeExpandAnimation: async function (child) {
       if (UiUtils.isInAnimation || this.showLoading) {
         return;

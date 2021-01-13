@@ -46,7 +46,9 @@ api.buildServerFormatFromUi = function (vertexUi) {
         graphElement: GraphElement.buildServerFormatFromUi(
             vertexUi
         ),
-        nbNeighbors: vertexUi.buildNbNeighbors().toJsonObject()
+        shareLevel: vertexUi.getShareLevel(),
+        isPattern: vertexUi.isPattern(),
+        nbNeighbors: vertexUi.getNbNeighbors().toJsonObject()
     };
 };
 
@@ -186,7 +188,7 @@ Vertex.prototype.getLeftBubble = function (bottom) {
 };
 
 Vertex.prototype.isPattern = function () {
-    return this._vertexServerFormat.isPattern;
+    return this._vertexServerFormat.isPattern || false;
 };
 
 Vertex.prototype.makePattern = function () {

@@ -46,9 +46,7 @@ api.executeCommand = function (command) {
     return command.execute().then(function (data) {
         undos.push(command);
         // api._reviewButtonsVisibility();
-        // Store.dispatch("setCache", {
-        //     center: CurrentSubGraph.get().center
-        // });
+        CurrentSubGraph.get().saveState();
         return data;
     });
 };

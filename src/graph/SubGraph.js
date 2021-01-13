@@ -413,8 +413,30 @@ api.SubGraph.prototype.getTagBubbleWithUiId = function (uiId) {
     })[0];
 };
 
+api.SubGraph.prototype.saveState = function () {
+    return Store.dispatch("saveGraph", this.toServerFormat());
+};
+
 api.SubGraph.prototype.toServerFormat = function () {
-    return this.getGraphElements().reduce
+    return this.getGraphElements().reduce((subGraph, graphElement) => {
+        if (graphElement.isVertex()) {
+            const parentBubble = graphElement.getParentBubble();
+            if (parentBubble.isGroupRelation()) {
+                graphElement.parentGroupRelationUri = parentBubble.getUri();
+            }
+            subGraph.vertices[graphElement.getUri()] = Vertex.buildServerFormatFromUi(graphElement)
+        } else if (graphElement.isRelation()) {
+            subGraph.edges[graphElement.getUri()] = Relation.buildServerFormatFromUi(graphElement)
+        } else if (graphElement.isGroupRelation()) {
+            subGraph.groupRelations[graphElement.getUri()] = GroupRelation.buildServerFormatFromUi(graphElement)
+        }
+        return subGraph;
+    }, {
+        centerUri: this.center.getUri(),
+        vertices: {},
+        edges: {},
+        groupRelations: {}
+    })
 };
 
 api.SubGraph.prototype._buildVertices = function () {

@@ -10,6 +10,7 @@ import NbNeighbors from "../vertex/NbNeighbors";
 import IdUri from "../IdUri";
 import Fork from '@/fork/Fork'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
+import GraphElement from "@/graph-element/GraphElement";
 
 const api = {};
 api.EXPAND_UNDER_NB_SIBLINGS = 4;
@@ -66,7 +67,17 @@ api.fromGraphElementJsonObject = function (jsonObject, shareLevel, nbNeighbors) 
         shareLevel: shareLevel || ShareLevel.PRIVATE,
         nbNeighbors: nbNeighbors || NbNeighbors.withZeros().toJsonObject()
     });
-}
+};
+api.buildServerFormatFromUi = function (groupRelationUi) {
+    return {
+        graphElement: GraphElement.buildServerFormatFromUi(
+            groupRelationUi
+        ),
+        sourceForkUri: groupRelationUi.getParentBubble().getUri(),
+        shareLevel: groupRelationUi.getShareLevel(),
+        nbNeighbors: groupRelationUi.getNbNeighbors().toJsonObject()
+    };
+};
 
 function GroupRelation(jsonObject) {
     this.groupRelationJsonObject = jsonObject;
