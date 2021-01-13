@@ -219,6 +219,9 @@ const Store = new Vuex.Store({
         },
         saveGraph: function (state, graph) {
             state.cache[graph.centerUri] = graph;
+        },
+        invalidateGraphCache: function (state, graph) {
+            state.cache[graph.centerUri] = false;
         }
     },
     actions: {
@@ -347,6 +350,9 @@ const Store = new Vuex.Store({
         },
         saveGraph: function (action, graph) {
             action.commit('saveGraph', graph);
+        },
+        invalidateGraphCache: function (action, graph) {
+            action.commit('invalidateGraphCache', graph);
         }
     }
 });

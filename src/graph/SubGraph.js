@@ -417,6 +417,12 @@ api.SubGraph.prototype.saveState = function () {
     return Store.dispatch("saveGraph", this.toServerFormat());
 };
 
+api.SubGraph.prototype.invalidateCache = function () {
+    return Store.dispatch("invalidateGraphCache", {
+        centerUri: this.center.getUri()
+    });
+};
+
 api.SubGraph.prototype.toServerFormat = function () {
     return this.getGraphElements().reduce((subGraph, graphElement) => {
         if (graphElement.isVertex()) {

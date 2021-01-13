@@ -166,6 +166,22 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-subheader>
+          {{ $t('settings:debugging') }}
+        </v-subheader>
+        <v-list-item @click="invalidateCacheAndRestart">
+          <v-list-item-action>
+            <v-icon class="">public</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ $t('settings:invalidateCache') }}
+            </v-list-item-title>
+            <v-list-item-subtitle>
+              {{ $t('settings:invalidateCacheReload') }}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </div>
   </v-menu>
@@ -177,6 +193,7 @@ import GraphController from '@/graph/GraphController'
 import AuthenticateService from "@/service/AuthenticateService";
 import I18n from '@/I18n'
 import Store from "@/store";
+import CurrentSubGraph from "@/graph/CurrentSubGraph";
 
 export default {
   name: "SettingsMenu",
@@ -188,6 +205,9 @@ export default {
       documentation: "Documentation",
       thisMap: "This map",
       yourAccount: "Your account",
+      debugging: "Debugging",
+      invalidateCache: "Invalidate cache",
+      invalidateCacheReload: "And reload the map",
       showTags: "Show tags by default",
       showRelations: "Show relations by default",
       preferences: "Preferences"
@@ -198,6 +218,9 @@ export default {
       documentation: "Documentation",
       thisMap: "Cette carte",
       yourAccount: "Votre compte",
+      debugging: "Déboggage",
+      invalidateCache: "Invalider la cache",
+      invalidateCacheReload: "Et recharger la carte",
       showTags: "Afficher les étiquettes par défaut",
       showRelations: "Afficher les relations par défaut",
       preferences: "Préférences"
@@ -211,6 +234,10 @@ export default {
   mounted: function () {
   },
   methods: {
+    invalidateCacheAndRestart: function(){
+      CurrentSubGraph.get().invalidateCache();
+      Store.dispatch("centerRefresh");
+    },
     closeIfMobile: function () {
       if (this.$vuetify.breakpoint.mdAndDown) {
         this.showSettingsMenu = false;
