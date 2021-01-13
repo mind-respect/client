@@ -171,7 +171,7 @@
         </v-subheader>
         <v-list-item @click="invalidateCacheAndRestart">
           <v-list-item-action>
-            <v-icon class="">public</v-icon>
+            <v-icon class="">cached</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>
