@@ -322,7 +322,10 @@ export default {
           }
           if (cacheGraph && cacheGraph.selected && cacheGraph.selected.length) {
             cacheGraph.selected.forEach((selected) => {
-              Selection.add(CurrentSubGraph.get().getHavingUri(selected.uri))
+              const graphElement = CurrentSubGraph.get().getHavingUri(selected.uri);
+              if (graphElement) {
+                Selection.add(graphElement);
+              }
             });
           } else {
             Selection.setToSingle(this.center);
@@ -472,7 +475,7 @@ export default {
       return this.showLoading ? "" : "expand-child-left";
     },
     strokeWidth: function () {
-      return (this.$vuetify.breakpoint.mdAndDown ? 1 : 2) * this.$store.state.zoom;
+      return (this.$vuetify.breakpoint.mdAndDown ? 1 : 1) * this.$store.state.zoom;
     },
     arrowHeadLength: function () {
       return 6 * this.$store.state.zoom;
