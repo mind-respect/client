@@ -314,29 +314,38 @@ export default {
           await this.$nextTick();
           await Scroll.goToGraphElement(this.center, true);
           Color.refreshBackgroundColor();
-          Selection.setToSingle(this.center);
           this.$store.dispatch("setIsPatternFlow", this.center.isPattern());
           await AppController.refreshFont();
           await this.$nextTick();
           if (center.getNumberOfChild() === 0 && center.isLabelEmpty()) {
             center.focus();
           }
-          Scroll.goToGraphElement(this.center, true).then(async () => {
-            await this.$nextTick();
-            this.showLoading = false;
-            await this.$nextTick();
-            await this.$nextTick();
-            KeyboardActions.enable();
-            GraphUi.enableDragScroll();
-            this.strokeColor = Color.EdgeColor;
+          if (cacheGraph && cacheGraph.selected && cacheGraph.selected.length) {
+            cacheGraph.selected.forEach((selected) => {
+              Selection.add(CurrentSubGraph.get().getHavingUri(selected.uri))
+            });
+            if (cacheGraph.scroll) {
+              document.scrollingElement.scrollLeft = cacheGraph.scroll.x;
+              document.scrollingElement.scrollTop = cacheGraph.scroll.y;
+            }
+          } else {
+            Selection.setToSingle(this.center);
+            await Scroll.goToGraphElement(this.center, true);
+          }
+          await this.$nextTick();
+          this.showLoading = false;
+          await this.$nextTick();
+          await this.$nextTick();
+          KeyboardActions.enable();
+          GraphUi.enableDragScroll();
+          this.strokeColor = Color.EdgeColor;
+          setTimeout(async () => {
+            await this.$store.dispatch("redraw", {fadeIn: true});
+            const timeItTakesToFadeInPlus5 = 505;
             setTimeout(async () => {
-              await this.$store.dispatch("redraw", {fadeIn: true});
-              const timeItTakesToFadeInPlus5 = 505;
-              setTimeout(async () => {
-                await this.$store.dispatch("redraw");
-              }, timeItTakesToFadeInPlus5);
-            }, 10);
-          });
+              await this.$store.dispatch("redraw");
+            }, timeItTakesToFadeInPlus5);
+          }, 10);
           CurrentSubGraph.get().component = this;
         }
     ).catch((error) => {
@@ -350,7 +359,7 @@ export default {
     window.addEventListener('beforeunload', () => {
       CurrentSubGraph.get().saveState();
     }, false);
-    if(process.env.NODE_ENV !== "test"){
+    if (process.env.NODE_ENV !== "test") {
       this.startSaveStateInterval();
     }
   },

@@ -48,7 +48,7 @@ api.buildServerFormatFromUi = function (vertexUi) {
         ),
         shareLevel: vertexUi.getShareLevel(),
         isPattern: vertexUi.isPattern(),
-        nbNeighbors: vertexUi.canExpand() ? vertexUi.getNbNeighbors().toJsonObject() : vertexUi.buildNbNeighbors().toJsonObject()
+        nbNeighbors: vertexUi.canExpand() ? vertexUi.getNbNeighbors().toJsonObject() : vertexUi.buildNbNeighbors(true).toJsonObject()
     };
 };
 

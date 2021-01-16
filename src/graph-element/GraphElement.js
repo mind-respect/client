@@ -220,10 +220,10 @@ GraphElement.GraphElement.prototype.rebuildNbNeighbors = function () {
     this.setNbNeighbors(this.buildNbNeighbors());
 };
 
-GraphElement.GraphElement.prototype.buildNbNeighbors = function () {
+GraphElement.GraphElement.prototype.buildNbNeighbors = function (excludeTags) {
     let nbNeighbors = NbNeighbors.withZeros();
     this.getSurround(true).filter((graphElement) => {
-        return !graphElement.isMeta();
+        return !excludeTags || !graphElement.isMeta();
     }).forEach((surround) => {
         let otherFork = surround.isRelation() ? surround.getOtherVertex(this) : surround;
         nbNeighbors.incrementForShareLevel(otherFork.getShareLevel());

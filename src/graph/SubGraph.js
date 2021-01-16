@@ -414,7 +414,15 @@ api.SubGraph.prototype.getTagBubbleWithUiId = function (uiId) {
 };
 
 api.SubGraph.prototype.saveState = function () {
-    return Store.dispatch("saveGraph", this.toServerFormat());
+    const saveState = this.toServerFormat();
+    saveState.selected = Store.state.selected;
+    if (document.scrollingElement) {
+        saveState.scroll = {
+            x: document.scrollingElement.scrollLeft,
+            y: document.scrollingElement.scrollTop
+        };
+    }
+    return Store.dispatch("saveGraph", saveState);
 };
 
 api.SubGraph.prototype.invalidateCache = function () {
