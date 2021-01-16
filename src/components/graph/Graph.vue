@@ -324,10 +324,6 @@ export default {
             cacheGraph.selected.forEach((selected) => {
               Selection.add(CurrentSubGraph.get().getHavingUri(selected.uri))
             });
-            if (cacheGraph.scroll) {
-              document.scrollingElement.scrollLeft = cacheGraph.scroll.x;
-              document.scrollingElement.scrollTop = cacheGraph.scroll.y;
-            }
           } else {
             Selection.setToSingle(this.center);
             await Scroll.goToGraphElement(this.center, true);
@@ -336,6 +332,10 @@ export default {
           this.showLoading = false;
           await this.$nextTick();
           await this.$nextTick();
+          if (cacheGraph && cacheGraph.scroll) {
+            document.scrollingElement.scrollLeft = cacheGraph.scroll.x;
+            document.scrollingElement.scrollTop = cacheGraph.scroll.y;
+          }
           KeyboardActions.enable();
           GraphUi.enableDragScroll();
           this.strokeColor = Color.EdgeColor;
