@@ -332,14 +332,14 @@ export default {
           this.showLoading = false;
           await this.$nextTick();
           await this.$nextTick();
-          if (cacheGraph && cacheGraph.scroll) {
-            document.scrollingElement.scrollLeft = cacheGraph.scroll.x;
-            document.scrollingElement.scrollTop = cacheGraph.scroll.y;
-          }
           KeyboardActions.enable();
           GraphUi.enableDragScroll();
           this.strokeColor = Color.EdgeColor;
           setTimeout(async () => {
+            if (cacheGraph && cacheGraph.scroll) {
+              document.scrollingElement.scrollLeft = cacheGraph.scroll.x;
+              document.scrollingElement.scrollTop = cacheGraph.scroll.y;
+            }
             await this.$store.dispatch("redraw", {fadeIn: true});
             const timeItTakesToFadeInPlus5 = 505;
             setTimeout(async () => {
