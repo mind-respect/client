@@ -41,14 +41,14 @@ api.buildServerFormatFromUri = function (uri) {
         nbNeighbors: NbNeighbors.withZeros().toJsonObject()
     };
 };
-api.buildServerFormatFromUi = function (vertexUi) {
+api.buildServerFormatFromModel = function (vertex) {
     return {
-        graphElement: GraphElement.buildServerFormatFromUi(
-            vertexUi
+        graphElement: GraphElement.buildServerFormatFromModel(
+            vertex
         ),
-        shareLevel: vertexUi.getShareLevel(),
-        isPattern: vertexUi.isPattern(),
-        nbNeighbors: vertexUi.canExpand() ? vertexUi.getNbNeighbors().toJsonObject() : vertexUi.buildNbNeighbors(true).toJsonObject()
+        shareLevel: vertex.getShareLevel(),
+        isPattern: vertex.isPattern(),
+        nbNeighbors: vertex.canExpand() ? vertex.getNbNeighbors().toJsonObject() : vertex.buildNbNeighbors(true).toJsonObject()
     };
 };
 

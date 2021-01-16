@@ -438,11 +438,11 @@ api.SubGraph.prototype.toServerFormat = function () {
             if (parentBubble.isGroupRelation()) {
                 graphElement.parentGroupRelationUri = parentBubble.getUri();
             }
-            subGraph.vertices[graphElement.getUri()] = Vertex.buildServerFormatFromUi(graphElement)
+            subGraph.vertices[graphElement.getUri()] = Vertex.buildServerFormatFromModel(graphElement)
         } else if (graphElement.isRelation()) {
-            subGraph.edges[graphElement.getUri()] = Relation.buildServerFormatFromUi(graphElement)
+            subGraph.edges[graphElement.getUri()] = Relation.buildServerFormatFromModel(graphElement)
         } else if (graphElement.isGroupRelation()) {
-            subGraph.groupRelations[graphElement.getUri()] = GroupRelation.buildServerFormatFromUi(graphElement)
+            subGraph.groupRelations[graphElement.getUri()] = GroupRelation.buildServerFormatFromModel(graphElement)
         }
         return subGraph;
     }, {

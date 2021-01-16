@@ -12,7 +12,7 @@ describe("FriendlyResource", () => {
         let scenario = await new ThreeScenario();
         let bubble1 = scenario.getBubble1InTree();
         bubble1.setComment("some comment");
-        let serverFormat = FriendlyResource.buildServerFormatFromUi(
+        let serverFormat = FriendlyResource.buildServerFormatFromModel(
             bubble1
         );
         let facade = FriendlyResource.fromServerFormat(

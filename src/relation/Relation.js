@@ -51,16 +51,16 @@ api.buildObjectWithUriOfSelfSourceAndDestinationVertex = function (uri, sourceVe
         )
     };
 };
-api.buildServerFormatFromUi = function (edgeUi) {
+api.buildServerFormatFromModel = function (relation) {
     return {
-        graphElement: GraphElement.buildServerFormatFromUi(
-            edgeUi
+        graphElement: GraphElement.buildServerFormatFromModel(
+            relation
         ),
         sourceVertex: VertexServerFormatBuilder.buildWithUri(
-            edgeUi.getSourceVertex().getUri()
+            relation.getSourceVertex().getUri()
         ),
         destinationVertex: VertexServerFormatBuilder.buildWithUri(
-            edgeUi.getDestinationVertex().getUri()
+            relation.getDestinationVertex().getUri()
         )
     };
 };

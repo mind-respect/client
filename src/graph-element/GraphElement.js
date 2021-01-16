@@ -38,15 +38,17 @@ const GraphElement = {
             serverFormat
         );
     },
-    buildServerFormatFromUi: function (graphElementUi) {
+    buildServerFormatFromModel: function (graphElement) {
         return {
-            friendlyResource: FriendlyResource.buildServerFormatFromUi(
-                graphElementUi
+            friendlyResource: FriendlyResource.buildServerFormatFromModel(
+                graphElement
             ),
             identifications: GraphDisplayer.getTagApi().getServerFormatArrayFromFacadeArray(
-                graphElementUi.model().getIdentifiers()
+                graphElement.model().getIdentifiers()
             ),
-            childrenIndex: graphElementUi.getChildrenIndex()
+            childrenIndex: graphElement.getChildrenIndex(),
+            font: graphElement._graphElementServerFormat.font,
+            copiedFromUri: graphElement._graphElementServerFormat.copiedFromUri
         }
     },
     withUri: function (uri) {

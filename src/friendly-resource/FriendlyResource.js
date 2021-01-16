@@ -41,11 +41,15 @@ const FriendlyResource = {
             label: ""
         };
     },
-    buildServerFormatFromUi: function (friendlyResourceUi) {
+    buildServerFormatFromModel: function (friendlyResource) {
         return {
-            uri: friendlyResourceUi.getUri(),
-            label: friendlyResourceUi.text(),
-            comment: friendlyResourceUi.model().getComment()
+            uri: friendlyResource.getUri(),
+            label: friendlyResource.text(),
+            comment: friendlyResource.model().getComment(),
+            images: friendlyResource._friendlyResourceServerFormat.images,
+            creationDate: friendlyResource._friendlyResourceServerFormat.creationDate,
+            lastModificationDate: friendlyResource._friendlyResourceServerFormat.lastModificationDate,
+            colors: JSON.parse(JSON.stringify(friendlyResource._friendlyResourceServerFormat.colors))
         };
     },
     buildObjectWithUriAndLabel: function (uri, label) {

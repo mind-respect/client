@@ -68,14 +68,15 @@ api.fromGraphElementJsonObject = function (jsonObject, shareLevel, nbNeighbors) 
         nbNeighbors: nbNeighbors || NbNeighbors.withZeros().toJsonObject()
     });
 };
-api.buildServerFormatFromUi = function (groupRelationUi) {
+api.buildServerFormatFromModel = function (groupRelation) {
     return {
-        graphElement: GraphElement.buildServerFormatFromUi(
-            groupRelationUi
+        graphElement: GraphElement.buildServerFormatFromModel(
+            groupRelation
         ),
-        sourceForkUri: groupRelationUi.getParentBubble().getUri(),
-        shareLevel: groupRelationUi.getShareLevel(),
-        nbNeighbors: groupRelationUi.canExpand() ? groupRelationUi.getNbNeighbors().toJsonObject() : groupRelationUi.buildNbNeighbors(true).toJsonObject()
+        sourceForkUri: groupRelation.getParentBubble().getUri(),
+        shareLevel: groupRelation.getShareLevel(),
+        nbNeighbors: groupRelation.canExpand() ? groupRelation.getNbNeighbors().toJsonObject() : groupRelation.buildNbNeighbors(true).toJsonObject(),
+        indexVertexUri: groupRelation.groupRelationJsonObject.indexVertexUri
     };
 };
 
