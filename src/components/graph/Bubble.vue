@@ -673,9 +673,11 @@ export default {
       if (labelHtml.innerHTML !== this.bubble.getLabel()) {
         labelHtml.innerHTML = this.bubble.getLabel();
       }
-      this.bubble.controller().setLabel(
-          text
-      );
+      if (!this.bubble.isDeleted) {
+        this.bubble.controller().setLabel(
+            text
+        );
+      }
       if (this.isCenter) {
         document.title = this.bubble.getTextOrDefault() + " | MindRespect";
       }

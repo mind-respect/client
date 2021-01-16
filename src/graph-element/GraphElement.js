@@ -222,7 +222,9 @@ GraphElement.GraphElement.prototype.rebuildNbNeighbors = function () {
 
 GraphElement.GraphElement.prototype.buildNbNeighbors = function () {
     let nbNeighbors = NbNeighbors.withZeros();
-    this.getSurround(true).forEach((surround) => {
+    this.getSurround(true).filter((graphElement) => {
+        return !graphElement.isMeta();
+    }).forEach((surround) => {
         let otherFork = surround.isRelation() ? surround.getOtherVertex(this) : surround;
         nbNeighbors.incrementForShareLevel(otherFork.getShareLevel());
     });

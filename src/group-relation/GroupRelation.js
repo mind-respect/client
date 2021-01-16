@@ -75,7 +75,7 @@ api.buildServerFormatFromUi = function (groupRelationUi) {
         ),
         sourceForkUri: groupRelationUi.getParentBubble().getUri(),
         shareLevel: groupRelationUi.getShareLevel(),
-        nbNeighbors: groupRelationUi.getNbNeighbors().toJsonObject()
+        nbNeighbors: groupRelationUi.canExpand() ? groupRelationUi.getNbNeighbors().toJsonObject() : groupRelationUi.buildNbNeighbors().toJsonObject()
     };
 };
 

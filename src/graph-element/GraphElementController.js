@@ -900,6 +900,9 @@ GraphElementController.prototype.removeDo = async function (skipSelect) {
     if (graphElements.length === 0) {
         return Promise.resolve();
     }
+    graphElements.forEach((graphElement) => {
+        graphElement.isDeleted = true;
+    });
     await this.isSingle() ?
         GraphElementService.remove(
             this.model()
