@@ -20,7 +20,8 @@ export default {
         await Service.api().delete("/users/session");
         await Promise.all([
             Store.dispatch('setUser', undefined),
-            Store.dispatch('setXsrfToken', undefined)
+            Store.dispatch('setXsrfToken', undefined),
+            Store.dispatch('setCache', {}),
         ]);
     }
 };
