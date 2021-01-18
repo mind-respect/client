@@ -359,8 +359,16 @@ export default {
   created: function () {
     window.addEventListener('resize', this.handleResize);
     window.addEventListener('keydown', this.disableSpacebarScroll);
-    window.addEventListener('beforeunload', () => {
-      CurrentSubGraph.get().saveState();
+    window.addEventListener('beforeunload', async () => {
+      if (Selection.isSingle()) {
+        const single = Selection.getSingle();
+        if (single && single.isEditFlow) {
+          single.controller().setLabel(
+              single.htmlWhileEditing
+          );
+        }
+      }
+      await CurrentSubGraph.get().saveState();
     }, false);
     if (process.env.NODE_ENV !== "test") {
       this.startSaveStateInterval();

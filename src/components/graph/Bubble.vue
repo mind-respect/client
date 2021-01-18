@@ -631,6 +631,7 @@ export default {
       });
     },
     keydown: function (event) {
+      this.bubble.htmlWhileEditing = event.target.innerHTML;
       if (this.isEditFlow && (KeyCode.KEY_ESCAPE === event.keyCode || (KeyCode.KEY_RETURN === event.keyCode && this.$vuetify.breakpoint.mdAndDown))) {
         event.preventDefault();
         event.stopPropagation();
