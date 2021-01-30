@@ -36,6 +36,7 @@ const Service = {
                 if (Store.state.user && Store.state.user.username === IdUri.currentUsernameInUrl()) {
                     await Store.dispatch('setUser', undefined);
                     await Store.dispatch('setXsrfToken', undefined);
+                    await Store.dispatch('emptyAllCache');
                 }
                 if (loginPages.indexOf(window.location.pathname) === -1) {
                     window.location.href = '/'

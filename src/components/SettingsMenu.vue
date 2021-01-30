@@ -1,23 +1,19 @@
 <template>
-  <v-menu
+  <v-navigation-drawer
       content-class="settings-menu"
-      attach="#app"
-      nudge-left="300"
+      stateless
+      touchless
+      fixed
       max-width="400"
+      width="350"
       offset-y
       v-if="$store.state.user !== undefined"
-      v-model="showSettingsMenu"
       :close-on-content-click="false"
       z-index="14"
+      right
+      style="z-index:15;display:inherit;margin-top:44px;"
+      v-model="showSettingsMenu"
   >
-    <!--z-index="14" to be above bubble menu-->
-    <template v-slot:activator="{ on }">
-      <v-btn icon light class="mr-2" v-on="on">
-        <v-icon color="primary">
-          menu
-        </v-icon>
-      </v-btn>
-    </template>
     <div style="background-color:white" class="pt-2">
       <router-link to="/welcome">
         <img
@@ -130,7 +126,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-list subheader :dense="$vuetify.breakpoint.mdAndDown">
+      <v-list subheader :dense="$vuetify.breakpoint.mdAndDown" class="overflow-y-auto">
         <v-subheader>
           {{ $t('settings:yourAccount') }}
         </v-subheader>
@@ -166,10 +162,10 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-subheader>
+        <v-subheader v-if="isGraphRoute">
           {{ $t('settings:debugging') }}
         </v-subheader>
-        <v-list-item @click="invalidateCacheAndRestart">
+        <v-list-item @click="invalidateCacheAndRestart" v-if="isGraphRoute">
           <v-list-item-action>
             <v-icon class="">cached</v-icon>
           </v-list-item-action>
@@ -184,7 +180,7 @@
         </v-list-item>
       </v-list>
     </div>
-  </v-menu>
+  </v-navigation-drawer>
 </template>
 
 <script>
@@ -234,7 +230,10 @@ export default {
   mounted: function () {
   },
   methods: {
-    invalidateCacheAndRestart: function(){
+    toggle: function () {
+      this.showSettingsMenu = !this.showSettingsMenu;
+    },
+    invalidateCacheAndRestart: function () {
       CurrentSubGraph.get().invalidateCache();
       Store.dispatch("centerRefresh");
     },
@@ -306,8 +305,4 @@ export default {
 
 <style>
 
-.settings-menu {
-  position: fixed !important;
-  right: 0;
-}
 </style>

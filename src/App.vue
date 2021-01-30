@@ -113,6 +113,7 @@
                              ref="toolBar"
                              @enterDocsFlow="$refs.docsFlow.enter()"
                              @enterPatternFlow="patternDialog = true"
+                             @toggleSettingsMenu="$refs.settingsMenu.toggle()"
                              @addExistingChildToCenter="$store.dispatch('setAddExistingToParent', true)"
         ></ToolbarGraphButtons>
         <v-btn text light
@@ -157,6 +158,9 @@
     <v-main>
       <router-view></router-view>
     </v-main>
+    <SettingsMenu v-show="!showSearch" @enterDocsFlow="$refs.docsFlow.enter()"
+                  @enterPatternFlow="patternDialog = true"
+                  @addExistingChildToCenter="$store.dispatch('setAddExistingToParent', true)" ref="settingsMenu"></SettingsMenu>
     <v-dialog v-model="registerDialog" width="900" v-if="registerDialog"
               @click:outside="abortFlow('register')">
       <v-card>
@@ -305,6 +309,7 @@ Vue.use(VueClipboard);
 export default {
   components: {
     ToolbarGraphButtons: () => import('@/components/ToolbarGraphButtons'),
+    SettingsMenu: () => import('@/components/SettingsMenu'),
     SideMenu,
     RegisterForm: () => import('@/components/home/RegisterForm'),
     LoginForm: () => import('@/components/home/LoginForm'),

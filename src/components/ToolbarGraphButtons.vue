@@ -24,9 +24,9 @@
     <Button :button="createVertexButton"
             v-if="$store.state.user" :isInTopMenu="true" v-show="!isSearchFlow"></Button>
     <NotificationsMenu :isSearchFlow="isSearchFlow"></NotificationsMenu>
-    <SettingsMenu v-show="!isSearchFlow" @enterDocsFlow="$emit('enterDocsFlow')"
-                  @enterPatternFlow="$emit('enterPatternFlow')"
-                  @addExistingChildToCenter="$emit('addExistingChildToCenter')" ref="settingsMenu"></SettingsMenu>
+    <v-btn icon @click="$emit('toggleSettingsMenu')">
+      <v-icon>menu</v-icon>
+    </v-btn>
   </div>
 </template>
 
@@ -36,7 +36,6 @@ import AppController from '@/AppController'
 export default {
   name: "ToolbarGraphButtons",
   components: {
-    SettingsMenu: () => import('@/components/SettingsMenu'),
     NotificationsMenu: () => import('@/components/NotificationsMenu'),
     Button: () => import('@/components/graph/Button')
   },
