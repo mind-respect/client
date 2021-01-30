@@ -301,6 +301,18 @@ export default {
         Store.dispatch("redraw");
       }
     }
+  },
+  watch: {
+    showSettingsMenu: function () {
+      if (this.$vuetify.breakpoint.mdAndUp) {
+        return;
+      }
+      if (this.showSettingsMenu) {
+        GraphUi.disableDragScroll();
+      } else {
+        GraphUi.enableDragScroll();
+      }
+    }
   }
 }
 </script>
