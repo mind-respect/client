@@ -327,6 +327,7 @@ export default {
                 Selection.add(graphElement);
               }
             });
+
           } else {
             Selection.setToSingle(this.center);
             await Scroll.goToGraphElement(this.center, true);
@@ -339,9 +340,11 @@ export default {
           GraphUi.enableDragScroll();
           this.strokeColor = Color.EdgeColor;
           setTimeout(async () => {
-            if (cacheGraph && cacheGraph.scroll) {
+            if (cacheGraph && cacheGraph.scroll && (cacheGraph.scroll.x === 0 && cacheGraph.scroll.y === 0)) {
               document.scrollingElement.scrollLeft = cacheGraph.scroll.x;
               document.scrollingElement.scrollTop = cacheGraph.scroll.y;
+            } else {
+              await Scroll.goToGraphElement(this.center, true);
             }
             await this.$store.dispatch("redraw", {fadeIn: true});
             const timeItTakesToFadeInPlus5 = 505;
