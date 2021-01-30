@@ -333,7 +333,6 @@ export default {
             await Scroll.goToGraphElement(this.center, true);
           }
           await this.$nextTick();
-          this.showLoading = false;
           await this.$nextTick();
           await this.$nextTick();
           KeyboardActions.enable();
@@ -346,6 +345,7 @@ export default {
             } else {
               await Scroll.goToGraphElement(this.center, true);
             }
+            this.showLoading = false;
             await this.$store.dispatch("redraw", {fadeIn: true});
             const timeItTakesToFadeInPlus5 = 505;
             setTimeout(async () => {
