@@ -157,7 +157,8 @@
     <v-main>
       <router-view></router-view>
     </v-main>
-    <v-dialog v-model="registerDialog" width="900" v-if="registerDialog">
+    <v-dialog v-model="registerDialog" width="900" v-if="registerDialog"
+              @click:outside="abortFlow('register')">
       <v-card>
         <v-card-title class="pb-0">
           <h3 class="text-h6">
@@ -167,35 +168,36 @@
             </div>
           </h3>
           <v-spacer></v-spacer>
-          <v-icon @click="registerDialog = false">close</v-icon>
+          <v-icon @click="abortFlow('register')">close</v-icon>
         </v-card-title>
         <v-card-text class="pa-0">
-          <RegisterForm @flow-is-done="registerDialog = false" ref="registerForm"></RegisterForm>
+          <RegisterForm @flow-completed="registerDialog = false" ref="registerForm"></RegisterForm>
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="loginDialog" width="900" v-if="loginDialog">
+    <v-dialog v-model="loginDialog" width="900" v-if="loginDialog" @click:outside="abortFlow('login')">
       <v-card>
         <v-card-title class="pb-0">
           <h3 class="text-h6">
             {{ $t('login:title') }}
           </h3>
           <v-spacer></v-spacer>
-          <v-icon @click="loginDialog = false">close</v-icon>
+          <v-icon @click="abortFlow('login')">close</v-icon>
         </v-card-title>
         <v-card-text class="pa-0">
           <LoginForm @flow-is-done="loginDialog = false" ref="loginForm"></LoginForm>
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="forgotPasswordDialog" width="900" v-if="forgotPasswordDialog">
+    <v-dialog v-model="forgotPasswordDialog" width="900" v-if="forgotPasswordDialog"
+              @click:outside="abortFlow( 'forgotPassword')">
       <v-card>
         <v-card-title class="pb-0">
           <h3 class="text-h6">
             {{ $t('forgot:title') }}
           </h3>
           <v-spacer></v-spacer>
-          <v-icon @click="forgotPasswordDialog = false">close</v-icon>
+          <v-icon @click="abortFlow('forgotPassword')">close</v-icon>
         </v-card-title>
         <v-card-text>
           <ForgotPasswordForm @flow-is-done="forgotPasswordDialog = false"
@@ -203,14 +205,15 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="changePasswordDialog" width="900" v-if="changePasswordDialog">
+    <v-dialog v-model="changePasswordDialog" width="900" v-if="changePasswordDialog"
+              @click:outside="abortFlow('changePassword')">
       <v-card>
         <v-card-title class="pb-0">
           <h3 class="text-h6">
             {{ $t('password:title') }}
           </h3>
           <v-spacer></v-spacer>
-          <v-icon @click="changePasswordDialog = false">close</v-icon>
+          <v-icon @click="abortFlow('changePassword')">close</v-icon>
         </v-card-title>
         <v-card-text>
           <ChangePasswordForm @flow-is-done="changePasswordDialog = false"
@@ -503,10 +506,34 @@ export default {
     };
   },
   methods: {
+    changeUrlToFlowIfApplicable: function (flow) {
+      const dialogValue = this[flow + 'Dialog'];
+      if (!dialogValue || !this.shouldChangeRouteForAuthDialog(flow)) {
+        return;
+      }
+      this.$router.push({
+        name: flow
+      });
+    },
+    shouldChangeRouteForAuthDialog: function (routeToReach) {
+      /*
+      * next two commented lines could be used later
+      * if we make it possible to login or register while being on a page that is not the home, welcome page etc
+      * */
+      // const routes = ['home', 'welcome', 'register', 'login', 'forgotPassword', 'changePassword'];
+      // const isOnHomeRoute = routes.indexOf(this.$router.history.current.name) > -1;
+      return true && this.$router.history.current.name !== routeToReach;
+    },
     copyUserHomeSelectedCenterUrl: function () {
       this.$copyText(
           this.$store.state.userHomeSelectedCenter.uri().absoluteUrl()
       )
+    },
+    abortFlow: function (flow) {
+      this[flow + 'Dialog'] = false;
+      if (flow === this.$router.history.current.name) {
+        this.$router.push('welcome')
+      }
     },
     becomeAPattern: function () {
       this.makePatternLoading = true;
@@ -602,52 +629,16 @@ export default {
       }
     },
     loginDialog: function () {
-      if (this.loginDialog) {
-        if (!this.isLoginUrl()) {
-          this.$router.push({
-            name: "login"
-          });
-        }
-        return;
-      }
-      this.$router.push({
-        name: "home"
-      });
+      this.changeUrlToFlowIfApplicable('login');
     },
     registerDialog: function () {
-      if (this.registerDialog) {
-        this.$router.push({
-          name: "register"
-        });
-        return;
-      }
-      this.$router.push({
-        name: "home"
-      });
+      this.changeUrlToFlowIfApplicable('register');
     },
     forgotPasswordDialog: function () {
-      if (this.forgotPasswordDialog) {
-        this.$router.push({
-          name: "forgot-password"
-        });
-        return;
-      }
-      this.$router.push({
-        name: "home"
-      });
+      this.changeUrlToFlowIfApplicable('forgotPassword');
     },
     changePasswordDialog: function () {
-      if (this.changePasswordDialog) {
-        // Vue.nextTick(function () {
-        //     console.log(this.$refs)
-        //     debugger;
-        //     // this.$refs.changePasswordForm.enter();
-        // }.bind(this))
-        return;
-      }
-      this.$router.push({
-        name: "home"
-      });
+      this.changeUrlToFlowIfApplicable('changePassword');
     }
   }
 }

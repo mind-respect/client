@@ -3,7 +3,8 @@
   -->
 
 <template>
-  <v-dialog v-model="removeTagDialog" v-if="isRemoveTagFlow" width="600" id="removeTagDialog" :fullscreen="$vuetify.breakpoint.smAndDown">
+  <v-dialog v-model="removeTagDialog" v-if="isRemoveTagFlow" width="600" id="removeTagDialog"
+            :fullscreen="$vuetify.breakpoint.smAndDown">
     <v-card>
       <v-card-title class="text-h6">
         {{ $t('removeTag:title_prefix') }}
@@ -37,16 +38,14 @@
         </v-list>
       </v-card-text>
       <v-card-actions>
-        <form>
-          <input type="text" ref="enterRemoveInput" autofocus style="width:0">
-          <v-btn color="secondary" class="ml-2" @click="remove">
-            <v-icon class="mr-2">delete</v-icon>
-            {{ $t('removeTag:confirm') }}
-            <span v-if="isMultipleFlow" class="ml-2">
+        <input type="text" ref="enterRemoveInput" autofocus style="width:0">
+        <v-btn color="secondary" class="ml-2" @click="remove">
+          <v-icon class="mr-2">delete</v-icon>
+          {{ $t('removeTag:confirm') }}
+          <span v-if="isMultipleFlow" class="ml-2">
                             {{ $t('removeTag:multiple_confirm_suffix') }}
                         </span>
-          </v-btn>
-        </form>
+        </v-btn>
         <v-spacer></v-spacer>
         <v-btn
             text

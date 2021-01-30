@@ -27,6 +27,7 @@
                             :label="$t('login:password')"
                             type="password"
                             v-on:keyup.enter="login"
+                            autocomplete="on"
                     ></v-text-field>
                 </v-form>
             </v-card-text>

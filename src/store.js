@@ -222,6 +222,9 @@ const Store = new Vuex.Store({
         },
         invalidateGraphCache: function (state, graph) {
             state.cache[graph.centerUri] = false;
+        },
+        emptyAllCache: function (state) {
+            state.cache = {};
         }
     },
     actions: {
@@ -353,7 +356,10 @@ const Store = new Vuex.Store({
         },
         invalidateGraphCache: function (action, graph) {
             action.commit('invalidateGraphCache', graph);
-        }
+        },
+        emptyAllCache: function (action) {
+            action.commit('emptyAllCache');
+        },
     }
 });
 

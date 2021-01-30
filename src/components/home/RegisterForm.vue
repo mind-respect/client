@@ -53,6 +53,7 @@
                         :rules="[Rules.min8Char]"
                         required
                         type="password"
+                        autocomplete="off"
                         v-on:keyup.enter="register"
                 ></v-text-field>
                 <v-alert type="warning">
@@ -106,7 +107,7 @@
                 let recaptchaToken = await this.$recaptcha("register");
                 AuthenticateService.register(this.newUser, recaptchaToken).then((response) => {
                     this.$store.dispatch('setUser', response.data);
-                    this.$emit('flow-is-done');
+                    this.$emit('flow-completed');
                     Vue.nextTick(() => {
                         this.$router.push({
                             name: 'PatternsUserHome'

@@ -21,7 +21,7 @@ export default {
         await Promise.all([
             Store.dispatch('setUser', undefined),
             Store.dispatch('setXsrfToken', undefined),
-            Store.dispatch('setCache', {}),
+            Store.dispatch('emptyAllCache'),
         ]);
     }
 };
