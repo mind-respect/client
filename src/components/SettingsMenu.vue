@@ -6,6 +6,7 @@
       fixed
       max-width="400"
       width="350"
+      height="90%"
       offset-y
       v-if="$store.state.user !== undefined"
       :close-on-content-click="false"
@@ -190,6 +191,7 @@ import AuthenticateService from "@/service/AuthenticateService";
 import I18n from '@/I18n'
 import Store from "@/store";
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
+import GraphUi from '@/graph/GraphUi'
 
 export default {
   name: "SettingsMenu",
