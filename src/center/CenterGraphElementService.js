@@ -68,10 +68,14 @@ export default {
     },
 
     makeCenterWithUriAndLastCenterDate: function (centerUri, lastCenterDateTime) {
+        if (!lastCenterDateTime) {
+            const lastCenterDate = new Date();
+            lastCenterDateTime = lastCenterDate.getTime() + (lastCenterDate.getTimezoneOffset() * 60000);
+        }
         return Service.geApi().post(
             centerUri + "/center",
             {
-                    lastCenterDate: lastCenterDateTime
+                lastCenterDate: lastCenterDateTime
             }
         );
     },

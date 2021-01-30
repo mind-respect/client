@@ -173,6 +173,7 @@ import RelationSkeleton from '@/relation/RelationSkeleton'
 import * as KeyCode from 'keycode-js';
 import UiUtils from '@/UiUtils'
 import KeyboardActions from "@/KeyboardActions";
+import CenterGraphElementService from "@/center/CenterGraphElementService";
 
 let insideSvgOpacityTransition = false;
 
@@ -309,6 +310,11 @@ export default {
           let center = _center;
           document.title = center.getTextOrDefault() + " | MindRespect";
           this.center = center;
+          if(cacheGraph){
+            CenterGraphElementService.makeCenterWithUriAndLastCenterDate(
+                this.center.getUri()
+            );
+          }
           await this.$store.dispatch("redraw", {fadeOut: true});
           this.handleResize();
           await this.$nextTick();
