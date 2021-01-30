@@ -388,7 +388,7 @@ export default {
     startSaveStateInterval: function () {
       this.saveStateInterval = setInterval(() => {
         CurrentSubGraph.get().saveState();
-      }, 10000)
+      }, 30000)
     },
     beforeExpandAnimation: async function (child) {
       if (UiUtils.isInAnimation || this.showLoading) {

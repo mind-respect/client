@@ -96,6 +96,7 @@ GraphElementController.prototype.setLabel = function (newLabel) {
         duplicate.setLabel(newLabel)
     });
     Store.dispatch("labelRefresh");
+    CurrentSubGraph.get().saveState();
     return FriendlyResourceService.updateLabel(
         this.model(),
         newLabel
