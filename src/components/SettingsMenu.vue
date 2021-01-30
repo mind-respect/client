@@ -29,7 +29,7 @@
             v-if="isGraphRoute && $vuetify.breakpoint.width <= 320"
         >
       </router-link>
-      <v-list>
+      <v-list :dense="$vuetify.breakpoint.mdAndDown">
         <v-list-item-group v-model="selectedItem">
           <v-list-item @click="$emit('enterDocsFlow');closeIfMobile();">
             <v-list-item-action>
@@ -63,7 +63,7 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
-      <v-list subheader v-if="isGraphRoute">
+      <v-list subheader v-if="isGraphRoute" :dense="$vuetify.breakpoint.mdAndDown">
         <v-subheader>
           {{ $t('settings:thisMap') }}
         </v-subheader>
@@ -130,7 +130,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-list subheader>
+      <v-list subheader :dense="$vuetify.breakpoint.mdAndDown">
         <v-subheader>
           {{ $t('settings:yourAccount') }}
         </v-subheader>
