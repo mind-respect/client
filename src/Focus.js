@@ -27,8 +27,9 @@ export default {
     },
     focusAtPosition: function (element, position) {
         const range = document.createRange();
-        range.setStart(element.firstChild, position);
-        range.setEnd(element.firstChild, position);
+        element = element.firstChild === null ? element : element.firstChild;
+        range.setStart(element, position);
+        range.setEnd(element, position);
         window.setTimeout(function () {
             selectRange(range);
         }, 10);
@@ -59,7 +60,7 @@ export default {
             return preCaretRange.toString().length;
         }
     },
-    getCaretOffset: function(element){
+    getCaretOffset: function (element) {
         var caretOffset = 0;
 
         if (window.getSelection) {
@@ -68,9 +69,7 @@ export default {
             preCaretRange.selectNodeContents(element);
             preCaretRange.setEnd(range.endContainer, range.endOffset);
             caretOffset = preCaretRange.toString().length;
-        }
-
-        else if (document.selection && document.selection.type != "Control") {
+        } else if (document.selection && document.selection.type != "Control") {
             var textRange = document.selection.createRange();
             var preCaretTextRange = document.body.createTextRange();
             preCaretTextRange.moveToElementText(element);
