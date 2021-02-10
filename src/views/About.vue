@@ -1,83 +1,167 @@
 <template>
   <div>
-          <banner></banner>
-<!--    <v-layout-->
-<!--        align-center-->
-<!--        column-->
-<!--        justify-center-->
-<!--    >-->
-<!--      <v-card flat class="pt-12" max-width="815">-->
-<!--        <v-card-title class="pt-0 pb-0 vh-center">-->
-<!--          &lt;!&ndash;            <h1 class="text-h2  font-weight-light mt-6 text-center" style="">&ndash;&gt;-->
-<!--          &lt;!&ndash;              Work on your personal <span style="white-space: nowrap">knowledge</span> graph&ndash;&gt;-->
-<!--          &lt;!&ndash;            </h1>&ndash;&gt;-->
-<!--          <h1 class="text-h2  font-weight-light mt-6 text-center" style="line-height: 1.4">-->
-<!--            Take notes directly in your-->
-<!--            <span style="white-space: nowrap">-->
-<!--                visual-->
-<!--              </span>-->
-<!--            <span style="white-space: nowrap">-->
-<!--                graph-->
-<!--              </span>-->
-<!--          </h1>-->
-<!--        </v-card-title>-->
-<!--        <v-card-title class="vh-center">-->
-<!--          &lt;!&ndash;            <h4 class="text-h6 font-weight-bold text-center">&ndash;&gt;-->
-<!--          &lt;!&ndash;              In mindrespect.com, the graph is not just an analogy or a view only feature. Your notes, tags, relationships it's a first class feature becomes a reality and it becomes more intuitive to create links between ideas, to merge them, to restructure them, in short to make them evolve.&ndash;&gt;-->
-<!--          &lt;!&ndash;            </h4>&ndash;&gt;-->
-<!--          &lt;!&ndash;            <h4 class="text-h6 font-weight-regular text-justify">&ndash;&gt;-->
-<!--          &lt;!&ndash;              Benefit from the power of the underlying graph database that allows you to create links between your ideas, to merge them, to restructure them, in short to make them evolve.&ndash;&gt;-->
-<!--          &lt;!&ndash;            </h4>&ndash;&gt;-->
-<!--          <h4 class="text-h6 font-weight-regular text-center" style="line-height: 2;">-->
-<!--            Atomic, networkable, reusable and ever evolving notes-->
-<!--&lt;!&ndash;            in the spirit of the <a&ndash;&gt;-->
-<!--&lt;!&ndash;              href="https://en.wikipedia.org/wiki/Zettelkasten">Zettelkasten method</a>&ndash;&gt;-->
-<!--          </h4>-->
-<!--        </v-card-title>-->
-<!--      </v-card>-->
-<!--    </v-layout>-->
-<!--    <v-row class="vh-center">-->
-<!--      <v-col cols="6">-->
-<!--        <h4>Fonctionalités</h4>-->
-<!--        <v-list>-->
-<!--          <v-list-item>-->
-<!--            <v-list-item-title>-->
-<!--              Any node can become the center node so there are no absolutes there too-->
-<!--            </v-list-item-title>-->
-<!--          </v-list-item>-->
-<!--          <v-list-item>-->
-<!--            <v-list-item-title>-->
-<!--              The share level is granular, at the node level-->
-<!--            </v-list-item-title>-->
-<!--          </v-list-item>-->
-<!--          <v-list-item>-->
-<!--            <v-list-item-title>-->
-<!--              You can copy the shared trees of other users into your own graph, edit them and you will be notified when they make changes-->
-<!--            </v-list-item-title>-->
-<!--          </v-list-item>-->
-<!--          <v-list-item>-->
-<!--            <v-list-item-title>-->
-<!--              You can name the relations between nodes, use tags and view all nodes that share the same tag-->
-<!--            </v-list-item-title>-->
-<!--          </v-list-item>-->
-<!--          <v-list-item>-->
-<!--            <v-list-item-title>-->
-<!--              You can create, use and share your templates (called patterns)-->
-<!--            </v-list-item-title>-->
-<!--          </v-list-item>-->
-<!--          <v-list-item>-->
-<!--            <v-list-item-title>-->
-<!--              You can merge two nodes and all their relationships when you find two concepts that are the same or wanna merge them together-->
-<!--            </v-list-item-title>-->
-<!--          </v-list-item>-->
-<!--          <v-list-item>-->
-<!--            <v-list-item-title>-->
-<!--              You can view as list, change the color and font etc-->
-<!--            </v-list-item-title>-->
-<!--          </v-list-item>-->
-<!--        </v-list>-->
-<!--      </v-col>-->
-<!--    </v-row>-->
+    <!--          <banner></banner>-->
+    <v-layout
+        align-center
+        column
+        justify-center
+    >
+      <v-card flat class="pt-12" max-width="815">
+        <v-card-title class="pt-0 pb-0 vh-center">
+          <!--            <h1 class="text-h2  font-weight-light mt-6 text-center" style="">-->
+          <!--              Work on your personal <span style="white-space: nowrap">knowledge</span> graph-->
+          <!--            </h1>-->
+          <h1 class="text-h2  font-weight-light mt-6 text-center" style="line-height: 1.4">
+            Take notes directly in your
+            <span style="white-space: nowrap">
+                visual
+              </span>
+            <span style="white-space: nowrap">
+                graph
+              </span>
+          </h1>
+        </v-card-title>
+        <v-card-title class="vh-center">
+          <!--            <h4 class="text-h6 font-weight-bold text-center">-->
+          <!--              In mindrespect.com, the graph is not just an analogy or a view only feature. Your notes, tags, relationships it's a first class feature becomes a reality and it becomes more intuitive to create links between ideas, to merge them, to restructure them, in short to make them evolve.-->
+          <!--            </h4>-->
+          <!--            <h4 class="text-h6 font-weight-regular text-justify">-->
+          <!--              Benefit from the power of the underlying graph database that allows you to create links between your ideas, to merge them, to restructure them, in short to make them evolve.-->
+          <!--            </h4>-->
+          <h4 class="text-h6 font-weight-regular text-justify" style="line-height: 2;">
+            Graph database powers elegant mindmap for notes that are atomic, networked, reusable and ever evolving.
+            <!--            Notes that are atomic, networkable, reusable and ever evolving-->
+            <!--            in the spirit of the <a-->
+            <!--              href="https://en.wikipedia.org/wiki/Zettelkasten">Zettelkasten method</a>-->
+          </h4>
+        </v-card-title>
+      </v-card>
+    </v-layout>
+    <v-row class="pt-8 pb-8">
+      <v-col cols="12" class="vh-center">
+        <v-btn @click="$router.push('register')" color="third" dark>Get started for free</v-btn>
+      </v-col>
+    </v-row>
+    <v-row class="mt-8 vh-center">
+      <v-col cols="6" class="pa-0">
+        <v-card width="930" height="494" color="blue" tile>
+          <v-img
+              :src="require('@/assets/about/features/mindmap.gif')"
+          ></v-img>
+        </v-card>
+      </v-col>
+      <!--      <v-col cols="6" class="pa-0 vh-center">-->
+      <!--        <v-card flat color="secondary" tile height="100%" width="100%" class="vh-center">-->
+      <!--          <v-card flat color="transparent" dark>-->
+      <!--            <v-card-title class="text-center white&#45;&#45;text vh-center pr-0 pl-0">-->
+      <!--              {{ $t('about:mindmapTitle') }}-->
+      <!--            </v-card-title>-->
+      <!--            <v-card-subtitle class="text-center">-->
+      <!--              {{ $t('about:mindmap') }}-->
+      <!--            </v-card-subtitle>-->
+      <!--          </v-card>-->
+      <!--        </v-card>-->
+      <!--      </v-col>-->
+    </v-row>
+    <v-row class="vh-center mt-12">
+      <v-col cols="7">
+        <v-card dark color="black" class="text-h6 font-weight-regular pa-12">
+          <v-row class="vh-center">
+            <v-col cols="8">
+              <h2 class="text-center mb-8">
+                <span class="first-letter-font first-letter-title">F</span>eatures
+              </h2>
+              <p>
+                <span class="first-letter-font">M</span>indrespect's interface is a mindmap and it includes many
+                features of these kind of tools.
+              </p>
+              <p class="mt-10">
+                <span class="first-letter-font">B</span>ut underneath, it runs on a graph database. So you can link to
+                any other node in any other
+                mindmap.
+              </p>
+              <p class="mt-10">
+                <span class="first-letter-font">T</span>his of course acts like a bi-directional link since you can
+                access your related nodes from any center.
+                Any bubble can also become the center.
+              </p>
+              <p class="mt-10">
+                <span class="first-letter-font">S</span>ometimes you don't wanna link to a node but only reference it
+                and that is why you can rather tag a
+                bubble.
+              </p>
+              <p class="mt-10">
+                <span class="first-letter-font">Y</span>ou will most probably end up with duplicate thoughts in your
+                graph and you may want to merge them to
+                stay clean
+                and have all of their surround nodes be together.
+              </p>
+              <p class="mt-10">
+                <span class="first-letter-font">A</span>lso, to avoid duplicates, when you're done editing a bubble, you
+                will be invited to tag or merge with
+                similar nodes.
+              </p>
+              <p class="mt-10">
+                <span class="first-letter-font">Y</span>ou can pick and choose which nodes you share and which you keep
+                private.
+                So you can express yourself freely, for yourself and then choose exactly which nodes you want to share.
+                Others will only see the nodes that you shared.
+              </p>
+              <p class="mt-10">
+                <span class="first-letter-font">Y</span>ou can also copy the knowledge trees of other users and
+                integrate them into your own personal knowledge
+                graph.
+                You will be notified when they make changes and choose what modifications you accept.
+              </p>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+    <!--    <v-row class="vh-center">-->
+    <!--      <v-col cols="6">-->
+    <!--        <h4>Fonctionalités</h4>-->
+    <!--        <v-list>-->
+    <!--          <v-list-item>-->
+    <!--            <v-list-item-title>-->
+    <!--              Any node can become the center node so there are no absolutes there too-->
+    <!--            </v-list-item-title>-->
+    <!--          </v-list-item>-->
+    <!--          <v-list-item>-->
+    <!--            <v-list-item-title>-->
+    <!--              The share level is granular, at the node level-->
+    <!--            </v-list-item-title>-->
+    <!--          </v-list-item>-->
+    <!--          <v-list-item>-->
+    <!--            <v-list-item-title>-->
+    <!--              You can copy the shared trees of other users into your own graph, edit them and you will be notified when-->
+    <!--              they make changes-->
+    <!--            </v-list-item-title>-->
+    <!--          </v-list-item>-->
+    <!--          <v-list-item>-->
+    <!--            <v-list-item-title>-->
+    <!--              You can name the relations between nodes, use tags and view all nodes that share the same tag-->
+    <!--            </v-list-item-title>-->
+    <!--          </v-list-item>-->
+    <!--          <v-list-item>-->
+    <!--            <v-list-item-title>-->
+    <!--              You can create, use and share your templates (called patterns)-->
+    <!--            </v-list-item-title>-->
+    <!--          </v-list-item>-->
+    <!--          <v-list-item>-->
+    <!--            <v-list-item-title>-->
+    <!--              You can merge two nodes and all their relationships when you find two concepts that are the same or wanna-->
+    <!--              merge them together-->
+    <!--            </v-list-item-title>-->
+    <!--          </v-list-item>-->
+    <!--          <v-list-item>-->
+    <!--            <v-list-item-title>-->
+    <!--              You can view as list, change the color and font etc-->
+    <!--            </v-list-item-title>-->
+    <!--          </v-list-item>-->
+    <!--        </v-list>-->
+    <!--      </v-col>-->
+    <!--    </v-row>-->
     <v-layout
         class="mb-12 mt-12 vh-center"
     >
@@ -161,7 +245,7 @@
     </Level>
     <v-layout wrap class="" v-if="!$store.state.user">
       <v-flex xs12 md6 class="vh-center">
-        <v-card flat color="secondary" height="100%" class="vh-center">
+        <v-card flat color="secondary" height="100%" class="vh-center" tile>
           <v-card-title class="text-center white--text vh-center pr-0 pl-0">
             <h3 class="text-h3 text-center">
               {{ $t('register:title') }}
@@ -202,6 +286,8 @@ export default {
   components: {Banner, Level, RegisterForm},
   data: function () {
     I18n.i18next.addResources("en", "about", {
+      mindmapTitle: "Mindmap interface",
+      mindmap: "Elegancy, funness and feeling of exploration are included",
       whatYouDo: 'What do you do when you have a new idea?',
       level1Title: "You don't write down your idea",
       level1Desc1: "A new idea is like a small stream in your brain.",
@@ -223,6 +309,7 @@ export default {
       level6Title: "Like your mind, you act in a coherent and conscious way"
     });
     I18n.i18next.addResources("fr", "about", {
+      mindmap: "mindrespect.com's interface is a mindmap and you got many features of such tools",
       whatYouDo: 'Que faites vous lorsque vous avez une nouvelle idée ?',
       level1Title: "Vous ne notez pas votre idée",
       level1Desc1: "Une nouvelle idée est telle un petit canal dans votre cerveau.",
@@ -281,5 +368,17 @@ export default {
 }
 </script>
 
-<style>
+<style scoped lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+.first-letter-font {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2rem !important;
+  font-weight: bold;
+  margin-right: 5px;
+
+  &.first-letter-title {
+    font-size: 3rem !important;
+  }
+}
 </style>

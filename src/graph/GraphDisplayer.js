@@ -1,9 +1,9 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
+import DoNothingGraphDisplayer from "@/graph/DoNothingGraphDisplayer";
 
-
-let _implementation;
+let _implementation = DoNothingGraphDisplayer;
 const api = {};
 api.setImplementation = function (implementation) {
     _implementation = implementation;

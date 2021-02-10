@@ -160,7 +160,8 @@
     </v-main>
     <SettingsMenu v-show="!showSearch" @enterDocsFlow="$refs.docsFlow.enter()"
                   @enterPatternFlow="patternDialog = true"
-                  @addExistingChildToCenter="$store.dispatch('setAddExistingToParent', true)" ref="settingsMenu"></SettingsMenu>
+                  @addExistingChildToCenter="$store.dispatch('setAddExistingToParent', true)"
+                  ref="settingsMenu"></SettingsMenu>
     <v-dialog v-model="registerDialog" width="900" v-if="registerDialog"
               @click:outside="abortFlow('register')">
       <v-card>
@@ -849,6 +850,10 @@ vuetifyjs wrong component css order fixes
 .bold-link {
   text-decoration: none;
   font-weight: bold;
+}
+
+.v-card__title {
+  word-break: inherit !important;
 }
 
 </style>
