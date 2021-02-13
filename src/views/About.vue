@@ -12,13 +12,7 @@
           <!--              Work on your personal <span style="white-space: nowrap">knowledge</span> graph-->
           <!--            </h1>-->
           <h1 class="text-h2  font-weight-light mt-6 text-center" style="line-height: 1.4">
-            Take notes directly in your
-            <span style="white-space: nowrap">
-                visual
-              </span>
-            <span style="white-space: nowrap">
-                graph
-              </span>
+            Take notes directly in your visual graph
           </h1>
         </v-card-title>
         <v-card-title class="vh-center">
@@ -43,8 +37,8 @@
       </v-col>
     </v-row>
     <v-row class="mt-8 vh-center">
-      <v-col cols="6" class="pa-0">
-        <v-card width="930" height="494" color="blue" tile>
+      <v-col cols="12" md="6" class="pa-0">
+        <v-card width="930" tile>
           <v-img
               :src="require('@/assets/about/features/mindmap.gif')"
           ></v-img>
@@ -64,10 +58,16 @@
       <!--      </v-col>-->
     </v-row>
     <v-row class="vh-center mt-12">
-      <v-col cols="7">
-        <v-card dark color="black" class="text-h6 font-weight-regular pa-12">
+      <v-col cols=12 md="7">
+        <v-card dark color="black" class="text-h6 font-weight-regular pt-12" :class="{
+          'pa-12': $vuetify.breakpoint.mdAndUp,
+          'pl-2 pr-2': $vuetify.breakpoint.smAndDown
+        }">
           <v-row class="vh-center">
-            <v-col cols="8">
+            <v-col cols="12" md="8" :class="{
+              'text-center': $vuetify.breakpoint.smAndDown,
+              'text-justify': $vuetify.breakpoint.mdAndUp
+            }">
               <h2 class="text-center mb-8">
                 <span class="first-letter-font first-letter-title">F</span>eatures
               </h2>
@@ -102,7 +102,8 @@
                 similar nodes.
               </p>
               <p class="mt-10">
-                <span class="first-letter-font">Y</span>ou can pick and choose which nodes you share and which you keep
+                <span class="first-letter-font">O</span>ther than that, you can pick and choose which nodes you share
+                and which you keep
                 private.
                 So you can express yourself freely, for yourself and then choose exactly which nodes you want to share.
                 Others will only see the nodes that you shared.
@@ -286,6 +287,7 @@ export default {
   components: {Banner, Level, RegisterForm},
   data: function () {
     I18n.i18next.addResources("en", "about", {
+      title1: "",
       mindmapTitle: "Mindmap interface",
       mindmap: "Elegancy, funness and feeling of exploration are included",
       whatYouDo: 'What do you do when you have a new idea?',
@@ -380,5 +382,9 @@ export default {
   &.first-letter-title {
     font-size: 3rem !important;
   }
+}
+
+.v-card__title {
+  word-break: inherit !important;
 }
 </style>
