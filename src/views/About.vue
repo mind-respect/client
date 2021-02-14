@@ -12,7 +12,7 @@
           <!--              Work on your personal <span style="white-space: nowrap">knowledge</span> graph-->
           <!--            </h1>-->
           <h1 class="text-h2  font-weight-light mt-6 text-center" style="line-height: 1.4">
-            Take notes directly in your visual graph
+            {{ $t('about:title1') }}
           </h1>
         </v-card-title>
         <v-card-title class="vh-center">
@@ -23,7 +23,7 @@
           <!--              Benefit from the power of the underlying graph database that allows you to create links between your ideas, to merge them, to restructure them, in short to make them evolve.-->
           <!--            </h4>-->
           <h4 class="text-h6 font-weight-regular text-justify" style="line-height: 2;">
-            Graph database powers elegant mindmap for notes that are atomic, networked, reusable and ever evolving.
+            {{ $t('about:slogan') }}
             <!--            Notes that are atomic, networkable, reusable and ever evolving-->
             <!--            in the spirit of the <a-->
             <!--              href="https://en.wikipedia.org/wiki/Zettelkasten">Zettelkasten method</a>-->
@@ -31,14 +31,14 @@
         </v-card-title>
       </v-card>
     </v-layout>
-    <v-row class="pt-8 pb-8">
+    <v-row class="pt-8 pb-8" v-if="$store.state.user === undefined">
       <v-col cols="12" class="vh-center">
-        <v-btn @click="$router.push('register')" color="third" dark>Get started for free</v-btn>
+        <v-btn @click="$router.push('register')" color="third" dark>{{ $t('about:useItForFree') }}</v-btn>
       </v-col>
     </v-row>
     <v-row class="mt-8 vh-center">
       <v-col cols="12" md="6" class="pa-0">
-        <v-card width="930" tile>
+        <v-card width="930" elevation="16">
           <v-img
               :src="require('@/assets/about/features/mindmap.gif')"
           ></v-img>
@@ -69,50 +69,51 @@
               'text-justify': $vuetify.breakpoint.mdAndUp
             }">
               <h2 class="text-center mb-8">
-                <span class="first-letter-font first-letter-title">F</span>eatures
+                <span class="first-letter-font first-letter-title">{{ $t('about:features').charAt(0) }}</span>{{
+                  $t('about:features').substr(1)
+                }}
               </h2>
               <p>
-                <span class="first-letter-font">M</span>indrespect's interface is a mindmap and it includes many
-                features of these kind of tools.
+                <span class="first-letter-font first-letter-title">{{ $t('about:mindmapFeature').charAt(0) }}</span>{{
+                  $t('about:mindmapFeature').substr(1)
+                }}
               </p>
               <p class="mt-10">
-                <span class="first-letter-font">B</span>ut underneath, it runs on a graph database. So you can link to
-                any other node in any other
-                mindmap.
+                <span class="first-letter-font first-letter-title">{{ $t('about:graphFeature').charAt(0) }}</span>{{
+                  $t('about:graphFeature').substr(1)
+                }}
               </p>
               <p class="mt-10">
-                <span class="first-letter-font">T</span>his of course acts like a bi-directional link since you can
-                access your related nodes from any center.
-                Any bubble can also become the center.
+                <span class="first-letter-font first-letter-title">{{
+                    $t('about:biDirectionalFeature').charAt(0)
+                  }}</span>{{
+                  $t('about:biDirectionalFeature').substr(1)
+                }}
               </p>
               <p class="mt-10">
-                <span class="first-letter-font">S</span>ometimes you don't wanna link to a node but only reference it
-                and that is why you can rather tag a
-                bubble.
+                <span class="first-letter-font first-letter-title">{{ $t('about:tagFeature').charAt(0) }}</span>{{
+                  $t('about:tagFeature').substr(1)
+                }}
               </p>
               <p class="mt-10">
-                <span class="first-letter-font">Y</span>ou will most probably end up with duplicate thoughts in your
-                graph and you may want to merge them to
-                stay clean
-                and have all of their surround nodes be together.
+                <span class="first-letter-font first-letter-title">{{ $t('about:mergeFeature').charAt(0) }}</span>{{
+                  $t('about:mergeFeature').substr(1)
+                }}
               </p>
               <p class="mt-10">
-                <span class="first-letter-font">A</span>lso, to avoid duplicates, when you're done editing a bubble, you
-                will be invited to tag or merge with
-                similar nodes.
+                <span class="first-letter-font first-letter-title">{{ $t('about:similarFeature').charAt(0) }}</span>{{
+                  $t('about:similarFeature').substr(1)
+                }}
               </p>
               <p class="mt-10">
-                <span class="first-letter-font">O</span>ther than that, you can pick and choose which nodes you share
-                and which you keep
-                private.
-                So you can express yourself freely, for yourself and then choose exactly which nodes you want to share.
-                Others will only see the nodes that you shared.
+                <span class="first-letter-font first-letter-title">{{ $t('about:shareFeature').charAt(0) }}</span>{{
+                  $t('about:shareFeature').substr(1)
+                }}
               </p>
               <p class="mt-10">
-                <span class="first-letter-font">Y</span>ou can also copy the knowledge trees of other users and
-                integrate them into your own personal knowledge
-                graph.
-                You will be notified when they make changes and choose what modifications you accept.
+                <span class="first-letter-font first-letter-title">{{ $t('about:copyTreeFeature').charAt(0) }}</span>{{
+                  $t('about:copyTreeFeature').substr(1)
+                }}
               </p>
             </v-col>
           </v-row>
@@ -287,7 +288,18 @@ export default {
   components: {Banner, Level, RegisterForm},
   data: function () {
     I18n.i18next.addResources("en", "about", {
-      title1: "",
+      title1: "Take notes directly in your visual graph",
+      useItForFree: "Use for free",
+      slogan: "An elegant mindmap powered by a graph database for notes that are atomic, networked, reusable and ever evolving.",
+      features: "Features",
+      mindmapFeature: "Mindrespect's interface is a mindmap and it includes many features of these kind of tools.",
+      graphFeature: "But like in a graph, you can link to any other node in any other mindmap.",
+      biDirectionalFeature: "This of course acts like a bi-directional link since you can access your related nodes from any center. Any bubble can also become the center !",
+      tagFeature: "Sometimes you don't wanna link to a node but only reference it and that is why you can rather tag a bubble.",
+      mergeFeature: "You will most probably end up with duplicate thoughts in your graph and you may want to merge them to stay clean and have all of their surround nodes be together.",
+      similarFeature: "Also, to avoid duplicates, when you're done editing a bubble, you will be invited to tag or merge with similar nodes.",
+      shareFeature: "In addition, you can pick and choose which nodes you share and which you keep private. So you can express yourself freely, for yourself and then choose exactly which nodes you want to share. Others will only see the nodes that you shared.",
+      copyTreeFeature: "You can also copy the knowledge trees of other users and integrate them into your own personal knowledge graph. You will be notified when they make changes and choose what modifications you accept.",
       mindmapTitle: "Mindmap interface",
       mindmap: "Elegancy, funness and feeling of exploration are included",
       whatYouDo: 'What do you do when you have a new idea?',
@@ -311,7 +323,18 @@ export default {
       level6Title: "Like your mind, you act in a coherent and conscious way"
     });
     I18n.i18next.addResources("fr", "about", {
-      mindmap: "mindrespect.com's interface is a mindmap and you got many features of such tools",
+      title1: "Prenez des notes directement dans votre graphe",
+      useItForFree: "Utilisez gratuitement",
+      slogan: "Une mindmap élégante, propulsée par une base de donnée en graphe pour des notes atomiques, réseautées, réutilisables et en constante évolution.",
+      features: "Fonctionnalités",
+      mindmapFeature: "L'interface de Mindrespect est une mindmap et comporte plusieurs fonctionnalités de ce genre d'outils.",
+      graphFeature: "Mais comme dans un graphe, vous pouvez lier une bulle à n'importe quel autre noeud appartenant à n'importe quelle autre de vos mindmaps.",
+      biDirectionalFeature: "Cela bien sûr agit comme un lien bi-directionnel puisque vous pouvez accéder à vos noeuds reliés à partir de n'importe quel centre. Aussi, n'importe quelle bulle peut devenir le centre !",
+      tagFeature: "Parfois, vous ne voulez pas lier à un noeud mais seulement y faire référence et c'est pourquoi vous pouvez plutôt étiquetter à une bulle.",
+      mergeFeature: "Vous allez fort probablement vous retrouvez avec des notes dupliquées dans votre graphe et vous allez vouloir les fusionner pour rester propre et avoir toutes les bulles environnantes se retrouver ensemble.",
+      similarFeature: "Aussi, pour éviter les duplicats après avoir terminé l'édition d'une bulle, vous serez invité à étiquetter ou fusionner avec des noeuds similaires.",
+      shareFeature: "En outre, vous pouvez choisir quelles bulles vous partagez et lesquelles vous maintenez privées. Vous pouvez alors vous exprimer librement, pour vous même et ensuite choisir exactement quels noeuds vous voulez partager. Les autres ne vont voir que les bulles que vous avez partagés.",
+      copyTreeFeature: "Vous pouvez aussi copier les arbres de connaissance d'autres usagers et les intégrer dans votre graphe de connaissance personnel. Vous serez avisé lorsqu'ils apporteront des changements et vous pourrez choisir lesquels vous accepter d'intégrer ou non.",
       whatYouDo: 'Que faites vous lorsque vous avez une nouvelle idée ?',
       level1Title: "Vous ne notez pas votre idée",
       level1Desc1: "Une nouvelle idée est telle un petit canal dans votre cerveau.",
