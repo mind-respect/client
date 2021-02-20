@@ -68,7 +68,7 @@
           <v-list>
             <v-list-item href="mailto:vincent.blouin@gmail.com">
               <v-list-item-action>
-                <v-icon class="mr-2">email</v-icon>
+                <v-icon class="mr-2" color="secondary">email</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>
@@ -78,7 +78,7 @@
             </v-list-item>
             <v-list-item href="https://www.facebook.com/mindrespectapp">
               <v-list-item-action>
-                <v-icon class="mr-2">facebook</v-icon>
+                <v-icon class="mr-2" color="secondary">facebook</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>
