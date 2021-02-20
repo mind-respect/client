@@ -115,6 +115,11 @@
                   $t('about:copyTreeFeature').substr(1)
                 }}
               </p>
+              <p class="mt-10">
+                <span class="first-letter-font first-letter-title">{{ $t('about:templateFeature').charAt(0) }}</span>{{
+                  $t('about:templateFeature').substr(1)
+                }}
+              </p>
             </v-col>
           </v-row>
         </v-card>
@@ -300,6 +305,7 @@ export default {
       similarFeature: "Also, to avoid duplicates, when you're done editing a bubble, you will be invited to tag or merge with similar nodes.",
       shareFeature: "In addition, you can pick and choose which nodes you share and which you keep private. So you can express yourself freely, for yourself and then choose exactly which nodes you want to share. Others will only see the nodes that you shared.",
       copyTreeFeature: "You can also copy the knowledge trees of other users and integrate them into your own personal knowledge graph. You will be notified when they make changes and choose what modifications you accept.",
+      templateFeature: "Finally, the Templates let you identify thought patterns and reuse them to solve similar problems.",
       mindmapTitle: "Mindmap interface",
       mindmap: "Elegancy, funness and feeling of exploration are included",
       whatYouDo: 'What do you do when you have a new idea?',
@@ -335,6 +341,7 @@ export default {
       similarFeature: "Aussi, pour éviter les duplicats après avoir terminé l'édition d'une bulle, vous serez invité à étiquetter ou fusionner avec des noeuds similaires.",
       shareFeature: "En outre, vous pouvez choisir quelles bulles vous partagez et lesquelles vous maintenez privées. Vous pouvez alors vous exprimer librement, pour vous même et ensuite choisir exactement quels noeuds vous voulez partager. Les autres ne vont voir que les bulles que vous avez partagés.",
       copyTreeFeature: "Vous pouvez aussi copier les arbres de connaissance d'autres usagers et les intégrer dans votre graphe de connaissance personnel. Vous serez avisé lorsqu'ils apporteront des changements et vous pourrez choisir lesquels vous accepter d'intégrer ou non.",
+      templateFeature: "Finalement les Modèles vous laisse identifier des patterns de pensées pour les réutiliser afin de résoudre des problèmes similaires",
       whatYouDo: 'Que faites vous lorsque vous avez une nouvelle idée ?',
       level1Title: "Vous ne notez pas votre idée",
       level1Desc1: "Une nouvelle idée est telle un petit canal dans votre cerveau.",
