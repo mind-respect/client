@@ -57,33 +57,55 @@
                       class="ml-3"
                       v-on="on"
                       color="secondary">
-                movie
+                contact_mail
               </v-icon>
-              <v-btn text color="secondary" v-else>
-                <v-icon class="mr-2" v-if="$vuetify.breakpoint.mdAndUp">person</v-icon>
-                {{ $t('app:recruits') }} !
+              <v-btn text color="secondary" v-else small>
+                <v-icon class="mr-2" v-if="$vuetify.breakpoint.mdAndUp">contact_mail</v-icon>
+                {{ $t('app:contact') }}
               </v-btn>
             </div>
           </template>
-          <v-card :class="{
-                        'pa-0' : $vuetify.breakpoint.mdAndDown
-                    }">
-            <v-card-title class="vh-center text-subtitle-1">
-              <v-icon class="mr-2">email</v-icon>
-              {{ $t('app:recruitContact') }} :
-              <a href="mailto:vincent.blouin@gmail.com" class="ml-2">
-                vincent.blouin@gmail.com
-              </a>
-            </v-card-title>
-            <v-card-text :class="{
-                        'pa-0' : $vuetify.breakpoint.mdAndDown
-                    }">
-              <iframe :width="$vuetify.breakpoint.mdAndDown ? $vuetify.breakpoint.getClientWidth() : 560"
-                      height="315" :src="$t('app:recruitVideo')" frameborder="0"
-                      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                      allowfullscreen></iframe>
-            </v-card-text>
-          </v-card>
+          <v-list>
+            <v-list-item href="mailto:vincent.blouin@gmail.com">
+              <v-list-item-action>
+                <v-icon class="mr-2">email</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>
+                  vincent.blouin@gmail.com
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item href="https://www.facebook.com/mindrespectapp">
+              <v-list-item-action>
+                <v-icon class="mr-2">facebook</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>
+                  /mindrespectapp
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+<!--          <v-card :class="{-->
+<!--                        'pa-0' : $vuetify.breakpoint.mdAndDown-->
+<!--                    }">-->
+<!--            <v-card-title class="vh-center text-subtitle-1">-->
+<!--              <v-icon class="mr-2">email</v-icon>-->
+<!--              {{ $t('app:recruitContact') }} :-->
+<!--              <a href="mailto:vincent.blouin@gmail.com" class="ml-2">-->
+<!--                vincent.blouin@gmail.com-->
+<!--              </a>-->
+<!--            </v-card-title>-->
+<!--            <v-card-text :class="{-->
+<!--                        'pa-0' : $vuetify.breakpoint.mdAndDown-->
+<!--                    }">-->
+<!--              <iframe :width="$vuetify.breakpoint.mdAndDown ? $vuetify.breakpoint.getClientWidth() : 560"-->
+<!--                      height="315" :src="$t('app:recruitVideo')" frameborder="0"-->
+<!--                      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"-->
+<!--                      allowfullscreen></iframe>-->
+<!--            </v-card-text>-->
+<!--          </v-card>-->
         </v-menu>
         <v-spacer></v-spacer>
         <v-btn icon v-show="showSearch && $vuetify.breakpoint.smAndDown" @click="leaveSearchFlow">
@@ -474,7 +496,7 @@ export default {
       patternInfo3: "Check that this map only contains bubbles and tags that you want to share.",
       on: "On",
       thisMap: "this map",
-      recruits: "Recruits",
+      contact: "Contact",
       recruitVideo: "https://www.youtube.com/embed/XTHBs3qsuxo?cc_load_policy=1&hl=en",
       recruitContact: "Contact me",
       firstTime: "Welcome to mindrespect.com",
@@ -488,7 +510,7 @@ export default {
       patternInfo3: "Vérifiez que cette carte ne contient que des bulles et étiquettes que vous voulez partager.",
       on: "Sur",
       thisMap: "cette carte",
-      recruits: "Recrute",
+      contact: "Contact",
       recruitVideo: "https://www.youtube.com/embed/XTHBs3qsuxo?cc_load_policy=0&hl=fr",
       recruitContact: "Contactez-moi",
       firstTime: "Bienvenue sur mindrespect.com",
