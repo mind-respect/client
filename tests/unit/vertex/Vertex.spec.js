@@ -2,7 +2,7 @@ import Mock from '../mock/Mock'
 import ThreeScenario from "../scenario/ThreeScenario";
 import AroundEventTagScenario from "../scenario/AroundEventTagScenario"
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario"
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 import Selection from '@/Selection'
 import TestUtil from '../util/TestUtil'
 import CreationDateScenario from "../scenario/CreationDateScenario";
@@ -17,7 +17,7 @@ describe('Vertex', () => {
     });
     describe("remove", function () {
         it("removes connected edges when removing a vertex", async () => {
-            MindMapInfo._setIsViewOnly(false);
+            State._setIsViewOnly(false);
             let threeBubbles = await new ThreeScenario();
             let bubble1 = threeBubbles.getBubble1InTree(),
                 r1 = threeBubbles.getRelation1InTree();

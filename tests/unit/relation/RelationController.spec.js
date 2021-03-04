@@ -1,6 +1,6 @@
 import Mock from '../mock/Mock'
 import ThreeScenario from "../scenario/ThreeScenario";
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 import RelationController from '@/relation/RelationController'
 import TestUtil from '../util/TestUtil'
 import GroupRelationsScenario from "../scenario/GroupRelationsScenario";
@@ -19,8 +19,8 @@ describe("RelationController", () => {
             let bubble1 = threeBubblesScenario.getBubble1InTree();
             let numberOfChild = bubble1.getNumberOfChild();
             let relation1 = bubble1.getNextBubble();
-            MindMapInfo.setIsAnonymous(false);
-            MindMapInfo._setIsViewOnly(false);
+            State.setIsAnonymous(false);
+            State._setIsViewOnly(false);
             await new RelationController.RelationController(
                 relation1
             ).removeDo();
@@ -180,7 +180,7 @@ describe("RelationController", () => {
                 anotherRelationToTheSameBubble
             )
         ).toBeFalsy();
-        MindMapInfo._setIsViewOnly(false);
+        State._setIsViewOnly(false);
         new RelationController.RelationController(
             aRelationToSameBubble
         ).remove(true);
@@ -227,7 +227,7 @@ describe("RelationController", () => {
                 sameRelation
             )
         ).toBeFalsy();
-        MindMapInfo._setIsViewOnly(false);
+        State._setIsViewOnly(false);
         new RelationController.RelationController(
             aRelation
         ).remove(true);

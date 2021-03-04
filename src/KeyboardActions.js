@@ -4,12 +4,11 @@
 
 import Store from '@/store'
 import Selection from '@/Selection'
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 import UiUtils from '@/UiUtils'
 import GraphDisplayer from '@/graph/GraphDisplayer'
 import Focus from '@/Focus'
 import * as KeyCode from 'keycode-js';
-
 
 const KeyboardActions = {
     isExecutingFeature: false
@@ -43,6 +42,9 @@ KeyboardActions.init = function () {
             if (redrawTimeout) {
                 clearTimeout(redrawTimeout);
             }
+            // event.preventDefault();
+            // const controller = GraphDisplayer.getAppController()
+            // controller.zoom();
             redrawTimeout = setTimeout(() => {
                 Store.dispatch("redraw");
             }, 100)
@@ -69,7 +71,7 @@ function keyDownHandler(event) {
     if (feature === undefined) {
         if (!isCombineKeyPressed && Selection.isSingle()) {
             let selectedElement = Selection.getSingle();
-            if (MindMapInfo.isViewOnly()) {
+            if (State   .isViewOnly()) {
                 Store.dispatch("failedToEdit");
             } else if (selectedElement.controller().focusCanDo()) {
                 if (isEdiFlow) {
@@ -146,7 +148,7 @@ async function executeFeature(feature, event, isEdiFlow) {
     }
     let canDoValidator = controller[action + "CanDo"];
     if (canDoValidator !== undefined && !canDoValidator.call(controller, event.target.innerText)) {
-        if (action === "focus" && MindMapInfo.isViewOnly()) {
+        if (action === "focus" && State.isViewOnly()) {
             Store.dispatch("failedToEdit");
         }
         return Promise.resolve();

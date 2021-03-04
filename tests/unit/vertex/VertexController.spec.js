@@ -6,7 +6,7 @@ import SingleChildScenario from '../scenario/SingleChildScenario'
 import AutomaticExpandScenario from "../scenario/AutomaticExpandScenario";
 import ConvertVertexToGroupRelationScenario from '../scenario/ConvertVertexToGroupRelationScenario'
 import TestUtil from '../util/TestUtil'
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 import Selection from '@/Selection'
 import VertexController from '@/vertex/VertexController'
 import ShareLevel from '@/vertex/ShareLevel'
@@ -67,7 +67,7 @@ describe('VertexController', () => {
         it("add sibling to center bubble adds child", async () => {
             let scenario = await new ThreeScenario();
             let bubble1 = scenario.getBubble1InTree();
-            MindMapInfo._setIsViewOnly(false);
+            State._setIsViewOnly(false);
             let nbChildren = bubble1.getNumberOfChild();
             await bubble1.controller().addSibling();
             expect(
@@ -75,7 +75,7 @@ describe('VertexController', () => {
             ).toBe(nbChildren + 1);
         });
         it("returns false if vertex is pristine", async () => {
-            MindMapInfo._setIsViewOnly(false);
+            State._setIsViewOnly(false);
             let scenario = await new ThreeScenario();
             let centerBubble = scenario.getBubble1InTree();
             let b2 = TestUtil.getChildWithLabel(
@@ -107,7 +107,7 @@ describe('VertexController', () => {
     });
     describe("addChildCanDo", function () {
         it("returns false if vertex is pristine", async () => {
-            MindMapInfo._setIsViewOnly(false);
+            State._setIsViewOnly(false);
             let scenario = await new ThreeScenario();
             let centerBubble = scenario.getBubble1InTree();
             let b2 = TestUtil.getChildWithLabel(
@@ -368,7 +368,7 @@ describe('VertexController', () => {
     });
     describe("convertToDistantBubbleWithUri", function () {
         it("can convert vertex to a distant vertex connected to the current parent vertex", async () => {
-            MindMapInfo._setIsViewOnly(false);
+            State._setIsViewOnly(false);
             let singleChildScenario = await new SingleChildScenario();
             let parent = singleChildScenario.getParentInTree();
             GraphServiceMock.getForCentralBubbleUri(
@@ -388,7 +388,7 @@ describe('VertexController', () => {
             ).toBe(singleChildScenario.getB1Uri());
         });
         it("cannot add a relation to existing child", async () => {
-            MindMapInfo._setIsViewOnly(false);
+            State._setIsViewOnly(false);
             let singleChildScenario = await new SingleChildScenario();
             let parent = singleChildScenario.getParentInTree();
             GraphServiceMock.getForCentralBubbleUri(
@@ -417,7 +417,7 @@ describe('VertexController', () => {
             });
         });
         it("cannot add a relation to existing parent", async () => {
-            MindMapInfo._setIsViewOnly(false);
+            State._setIsViewOnly(false);
             let singleChildScenario = await new SingleChildScenario();
             let parent = singleChildScenario.getParentInTree();
             let getForCentralBubbleUriSpy = GraphServiceMock.getForCentralBubbleUri(
@@ -436,7 +436,7 @@ describe('VertexController', () => {
             )).toBeFalsy();
         });
         it("cannot add a relation to self", async () => {
-            MindMapInfo._setIsViewOnly(false);
+            State._setIsViewOnly(false);
             let singleChildScenario = await new SingleChildScenario();
             let parent = singleChildScenario.getParentInTree();
             let child = parent.getNextBubble().getNextBubble();
@@ -452,7 +452,7 @@ describe('VertexController', () => {
             )).toBeFalsy();
         });
         it("cannot add a relation to a non owned vertex", async () => {
-            MindMapInfo._setIsViewOnly(false);
+            State._setIsViewOnly(false);
             let singleChildScenario = await new SingleChildScenario();
             let parent = singleChildScenario.getParentInTree();
             let child = parent.getNextBubble().getNextBubble();

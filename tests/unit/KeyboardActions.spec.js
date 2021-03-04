@@ -2,7 +2,7 @@ import Mock from './mock/Mock'
 import ThreeScenario from "./scenario/ThreeScenario";
 import Selection from '@/Selection'
 import TestUtil from './util/TestUtil'
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 import Command from '@/Command'
 import AppController from '@/AppController'
 
@@ -90,7 +90,7 @@ describe("KeyboardActions", () => {
                 bubble1.isInEditMode
             ).toBeTruthy();
         }, 0);
-        MindMapInfo._setIsViewOnly(true);
+        State._setIsViewOnly(true);
         bubble1.blur();
         TestUtil.pressKey("a");
         setTimeout(() => {

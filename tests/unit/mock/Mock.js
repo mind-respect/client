@@ -14,7 +14,7 @@ import EdgeServiceMock from './EdgeServiceMock'
 import RelationServiceMock from './RelationServiceMock'
 import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import Store from '@/store'
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 import UiUtils from '@/UiUtils'
 import Scroll from '@/Scroll'
 import Breakpoint from '@/Breakpoint'
@@ -57,7 +57,7 @@ api.applyDefault = function () {
         lgAndUp: false
     });
     Store.dispatch("setIsViewOnly", true);
-    jest.spyOn(MindMapInfo, "isViewOnly").mockImplementation(() => {
+    jest.spyOn(State, "isViewOnly").mockImplementation(() => {
         return false;
     });
     jest.spyOn(UiUtils, "getCenterOffsetCoordinates").mockImplementation(() => {
@@ -72,7 +72,7 @@ api.applyDefault = function () {
     jest.spyOn(Scroll, "centerElement").mockImplementation(() => {
         return;
     });
-    jest.spyOn(MindMapInfo, "defineIsViewOnly").mockImplementation(() => {
+    jest.spyOn(State, "defineIsViewOnly").mockImplementation(() => {
         return false;
     });
     jest.spyOn(NotificationService, "get").mockImplementation(() => {

@@ -4,7 +4,7 @@
 import GraphElementType from '@/graph-element/GraphElementType'
 import GraphElementService from '@/graph-element/GraphElementService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 import Command from '@/Command'
 import Selection from '@/Selection'
 import Store from '@/store'
@@ -416,7 +416,7 @@ GraphElementController.prototype.cut = function () {
 };
 
 GraphElementController.prototype.pasteTextCanDo = function () {
-    return this.isSingleAndOwned() && !MindMapInfo.isViewOnly() && navigator.clipboard && navigator.clipboard.readText !== undefined;
+    return this.isSingleAndOwned() && !State.isViewOnly() && navigator.clipboard && navigator.clipboard.readText !== undefined;
 };
 
 GraphElementController.prototype.pasteText = async function () {
@@ -434,7 +434,7 @@ GraphElementController.prototype.pasteText = async function () {
 
 
 GraphElementController.prototype.pasteCanDo = function () {
-    return this.isSingleAndOwned() && !MindMapInfo.isViewOnly() && (clipboard.tree || clipboard.bubble);
+    return this.isSingleAndOwned() && !State.isViewOnly() && (clipboard.tree || clipboard.bubble);
 };
 
 GraphElementController.prototype.paste = function () {
@@ -1020,7 +1020,7 @@ GraphElementController.prototype.isMultiple = function () {
     return !this.isSingle();
 };
 GraphElementController.prototype.isOwned = function () {
-    return !MindMapInfo.isViewOnly();
+    return !State.isViewOnly();
 };
 
 GraphElementController.prototype.deselect = function () {
@@ -1157,7 +1157,7 @@ GraphElementController.prototype.copyTree = function () {
             rootAsTag: Tag.fromFriendlyResource(Selection.getRootOfSelectedTree()).getJsonFormat()
         }
     };
-    if (MindMapInfo.isViewOnly()) {
+    if (State.isViewOnly()) {
         return Store.dispatch("isCopyTreeFlow", true);
     }
     clipboard.rootCloneWithTree = rootBubble.cloneWithTree(urisOfGraphElements);

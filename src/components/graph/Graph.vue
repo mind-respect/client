@@ -150,7 +150,7 @@
 </template>
 
 <script>
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 import IdUri from '@/IdUri'
 import Bubble from '@/components/graph/Bubble'
 import Selection from '@/Selection'
@@ -236,8 +236,8 @@ export default {
     this.showLoading = true;
     CurrentSubGraph.set(SubGraph.empty());
     Selection.reset();
-    let centerUri = MindMapInfo.getCenterBubbleUri();
-    MindMapInfo.defineIsViewOnly(true);
+    let centerUri = State.getCenterBubbleUri();
+    State.defineIsViewOnly(true);
     let app = document.getElementById("app");
     if (app) {
       app.classList.add("mind-map");
@@ -310,7 +310,7 @@ export default {
           let center = _center;
           document.title = center.getTextOrDefault() + " | MindRespect";
           this.center = center;
-          if(cacheGraph){
+          if (cacheGraph) {
             CenterGraphElementService.makeCenterWithUriAndLastCenterDate(
                 this.center.getUri()
             );
@@ -492,7 +492,10 @@ export default {
       return this.showLoading ? "" : "expand-child-left";
     },
     strokeWidth: function () {
-      return (this.$vuetify.breakpoint.mdAndDown ? 1 : 1) * this.$store.state.zoom;
+      return Math.max(
+          (this.$vuetify.breakpoint.mdAndDown ? 1 : 1) * this.$store.state.zoom,
+          1
+      );
     },
     arrowHeadLength: function () {
       return 6 * this.$store.state.zoom;

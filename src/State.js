@@ -5,6 +5,7 @@ import IdUri from '@/IdUri'
 import UserService from '@/service/UserService'
 import FriendService from '@/friend/FriendService'
 import Store from '@/store'
+import Router from 'vue-router'
 
 const api = {};
 let _isViewOnly,
@@ -67,6 +68,9 @@ api.setIsAnonymous = function (isAnonymous) {
 };
 api.isAnonymous = function () {
     return _isAnonymous;
+};
+api.isGraphFlow = function () {
+    return Router.name === 'Center';
 };
 api._setIsViewOnly = function (isViewOnly) {
     _isViewOnly = isViewOnly;

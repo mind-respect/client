@@ -7,7 +7,7 @@ import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import IdUri from '@/IdUri'
 import Relation from '@/relation/Relation'
 import SubGraph from '@/graph/SubGraph'
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 
 const api = {};
 
@@ -202,7 +202,7 @@ SubGraphLoader.prototype._buildCenterForkUsingGraphAndCenter = async function (s
             await api.withCenter(expandable).loadForParentIsAlreadyOnMap(false, serverGraph);
         }
     });
-    return isChildrenIndexBuilt || MindMapInfo.isViewOnly() ? Promise.resolve(centerFork) :
+    return isChildrenIndexBuilt || State.isViewOnly() ? Promise.resolve(centerFork) :
         GraphElementService.changeChildrenIndex(
             centerFork
         ).then(() => {

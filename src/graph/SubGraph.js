@@ -422,6 +422,7 @@ api.SubGraph.prototype.saveState = function () {
             y: document.scrollingElement.scrollTop
         };
     }
+    saveState.date = new Date().toLocaleString("en-US", {timeZone: "America/New_York"})
     return Store.dispatch("saveGraph", saveState);
 };
 

@@ -4,7 +4,7 @@ import CircularityScenario from "../../scenario/CircularityScenario";
 describe('Bubble', () => {
     /*No suggestions for now*/
     xit("waits for suggestion to be integrated before handling autocomplete select", function () {
-        MindMapInfo._setIsViewOnly(false);
+        State._setIsViewOnly(false);
         var searchProvider = UserMapAutocompleteProvider.toFetchOnlyCurrentUserVerticesAndSchemas(),
             projectSearchResult = searchProvider.formatResults(
                 new Scenarios.getSearchResultsForProject().get(),
@@ -76,7 +76,7 @@ describe('Bubble', () => {
     });
     /*todo*/
     xit("cant drag and drop a vertex onto itself", function () {
-        MindMapInfo._setIsViewOnly(false);
+        State._setIsViewOnly(false);
         var bubble1 = new Scenarios.threeBubblesGraph().getBubble1InTree();
         var bubble2 = TestUtils.getChildWithLabel(
             bubble1,
@@ -101,7 +101,7 @@ describe('Bubble', () => {
     /*todo*/
     xit("disables drags and drops when for anonymous user", function () {
         var scenario = new Scenarios.threeBubblesGraph();
-        MindMapInfo._setIsViewOnly(true);
+        State._setIsViewOnly(true);
         var bubble1 = scenario.getBubble1InTree();
         var bubble2 = TestUtils.getChildWithLabel(
             bubble1,

@@ -1,7 +1,7 @@
 /*
  * Copyright Vincent Blouin under the GPL License version 3
  */
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import Store from '@/store'
 
@@ -24,7 +24,7 @@ api.expandAll = function () {
 };
 
 api.compareCanDo = function () {
-    return !MindMapInfo.isViewOnly();
+    return !State.isViewOnly();
 };
 
 // api.compare = function () {

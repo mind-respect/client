@@ -563,7 +563,7 @@ describe("Graph.vue", () => {
     }
 
     xit("does not add suggestions if its view only", function () {
-        MindMapInfo._setIsViewOnly(true);
+        State._setIsViewOnly(true);
         var centerBubble = new Scenarios.oneBubbleHavingSuggestionsGraph().getVertexUi();
         expect(
             centerBubble.hasChildren()

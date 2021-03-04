@@ -11,7 +11,7 @@ import Relation from '@/relation/Relation'
 import Vuetify from 'vuetify'
 import I18n from '@/I18n'
 import Vue from 'vue'
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import IdUri from '@/IdUri'
 import CenterView from '@/views/Center.vue'
@@ -43,7 +43,7 @@ api.Scenario = function () {
 };
 
 api.Scenario.prototype.init = async function () {
-    MindMapInfo._setIsViewOnly(false);
+    State._setIsViewOnly(false);
     this.graph = this.getGraph();
     let center = this.getCenter();
     // console.log(this.graph.vertices[center.getUri()]);

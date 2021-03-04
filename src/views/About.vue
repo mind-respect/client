@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!isTesting">
     <!--          <banner></banner>-->
     <v-layout
         align-center
@@ -396,6 +396,11 @@ export default {
     } else {
       document.scrollingElement.scrollTop = 0;
     }
+  },
+  computed:{
+    isTesting: function () {
+      return process.env.NODE_ENV === "test";
+    },
   }
 }
 </script>

@@ -273,7 +273,7 @@ import GraphUi from '@/graph/GraphUi'
 import IdUri from '@/IdUri'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import Color from '@/Color'
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 import linkifyStr from 'linkifyjs/string'
 import InLabelButtons from "@/components/graph/bubble/InLabelButtons";
 import Dragged from '@/Dragged'
@@ -580,7 +580,7 @@ export default {
     dblclick: function (event) {
       event.stopPropagation();
       this.showMenu = false;
-      if (MindMapInfo.isViewOnly() || this.bubble.isEditFlow) {
+      if (State.isViewOnly() || this.bubble.isEditFlow) {
         this.$store.dispatch("failedToEdit");
         return;
       }
@@ -719,7 +719,7 @@ export default {
       GraphUi.disableDragScroll();
     },
     dragStart: function (event) {
-      if (MindMapInfo.isViewOnly()) {
+      if (State.isViewOnly()) {
         event.preventDefault();
         return;
       }

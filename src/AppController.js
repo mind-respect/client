@@ -5,7 +5,7 @@
 import Command from '@/Command'
 import VertexService from '@/vertex/VertexService'
 import FriendlyResourceService from '@/friendly-resource/FriendlyResourceService'
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 import GraphElement from '@/graph-element/GraphElement'
 import Store from '@/store'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
@@ -108,7 +108,7 @@ api.isSingle = function () {
 };
 
 api.fontPickerCanDo = function () {
-    return !MindMapInfo.isViewOnly();
+    return !State.isViewOnly();
 };
 
 api.fontPicker = function () {

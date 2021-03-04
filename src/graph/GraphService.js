@@ -2,7 +2,7 @@
  * Copyright Vincent Blouin under the GPL License version 3
  */
 import IdUri from '@/IdUri'
-import MindMapInfo from '@/MindMapInfo'
+import State from '@/State'
 import Service from '@/Service'
 
 const api = {};
@@ -20,9 +20,9 @@ api.getForCentralBubbleUri = function (centralBubbleUri) {
 //     });
 // };
 api.graphUriForCentralBubbleUri = function (centralBubbleUri) {
-    if (!MindMapInfo.isAnonymous() && IdUri.isGraphElementUriOwnedByCurrentUser(centralBubbleUri)) {
+    if (!State.isAnonymous() && IdUri.isGraphElementUriOwnedByCurrentUser(centralBubbleUri)) {
         var uri = centralBubbleUri + "/surround_graph";
-        if (MindMapInfo.getCenterBubbleUri() === centralBubbleUri) {
+        if (State.getCenterBubbleUri() === centralBubbleUri) {
             uri += "?center=true";
         }
         return uri;
