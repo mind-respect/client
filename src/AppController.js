@@ -34,9 +34,11 @@ api.zoomIn = function () {
     )
 };
 api.zoomOut = function () {
-    api.zoom(
-        -0.1
-    )
+    if (api.zoomOutCanDo()) {
+        api.zoom(
+            -0.1
+        );
+    }
 };
 api.zoomOutCanDo = function () {
     return Store.state.zoom >= 0.7;

@@ -32,23 +32,27 @@ KeyboardActions.enable = function () {
     );
 };
 KeyboardActions.init = function () {
-    document.addEventListener('mousewheel', wheelZoomHandle, false);
-    document.addEventListener('DOMMouseScroll', wheelZoomHandle, false);
-    let redrawTimeout;
+    document.addEventListener('mousewheel', wheelZoomHandle, {passive: false});
+    // document.addEventListener('DOMMouseScroll', wheelZoomHandle, { passive: false});
+    let redrawTimeout = null;
 
     function wheelZoomHandle(event) {
         let isCtrl = UiUtils.isMacintosh() ? event.metaKey : event.ctrlKey;
         if (isCtrl) {
-            if (redrawTimeout) {
-                clearTimeout(redrawTimeout);
+            event.preventDefault();
+            if (redrawTimeout !== null) {
+                return;
             }
-            // event.preventDefault();
-            // const controller = GraphDisplayer.getAppController()
-            // controller.zoom();
-            redrawTimeout = setTimeout(() => {
+            redrawTimeout = setTimeout(async () => {
+                const controller = GraphDisplayer.getAppController()
+                if (event.deltaY < 0) {
+                    controller.zoomIn();
+                } else if (event.deltaY > 0) {
+                    controller.zoomOut();
+                }
                 Store.dispatch("redraw");
-            }, 100)
-
+                redrawTimeout = null;
+            }, 10)
         }
     }
 };
@@ -71,7 +75,7 @@ function keyDownHandler(event) {
     if (feature === undefined) {
         if (!isCombineKeyPressed && Selection.isSingle()) {
             let selectedElement = Selection.getSingle();
-            if (State   .isViewOnly()) {
+            if (State.isViewOnly()) {
                 Store.dispatch("failedToEdit");
             } else if (selectedElement.controller().focusCanDo()) {
                 if (isEdiFlow) {
