@@ -274,9 +274,9 @@ export default {
     }
     let promise;
     let cacheGraph;
-    if (this.$store.state.cache[centerUri] && process.env.NODE_ENV !== "test") {
-      cacheGraph = JSON.parse(JSON.stringify(this.$store.state.cache[centerUri]));
-    }
+    // if (this.$store.state.cache[centerUri] && process.env.NODE_ENV !== "test") {
+    //   cacheGraph = JSON.parse(JSON.stringify(this.$store.state.cache[centerUri]));
+    // }
     if (this.$route.params.newVertex === undefined) {
       let center = IdUri.isMetaUri(centerUri) ? TagVertex.withUri(centerUri) : GraphElement.withUri(centerUri);
       promise = center.isMeta() ?
