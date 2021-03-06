@@ -226,10 +226,12 @@ function defineNonCtrlPlusKeysAndTheirActions() {
         action: "focus"
     };
     actions[KeyCode.KEY_PAGE_UP] = {
-        action: "moveCompletelyUp"
+        action: "moveCompletelyUp",
+        editMode: true
     };
     actions[KeyCode.KEY_PAGE_DOWN] = {
-        action: "moveCompletelyDown"
+        action: "moveCompletelyDown",
+        editMode: true
     };
     return actions;
 }
