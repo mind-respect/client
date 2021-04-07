@@ -163,6 +163,19 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-subheader v-if="!isGraphRoute">
+          {{ $t('settings:exportHeader') }}
+        </v-subheader>
+        <v-list-item @click="exportToMd();closeIfMobile();" v-if="!isGraphRoute">
+          <v-list-item-action>
+            <v-icon>download</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ $t('settings:exportToMd') }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-subheader v-if="isGraphRoute">
           {{ $t('settings:debugging') }}
         </v-subheader>
@@ -192,6 +205,7 @@ import I18n from '@/I18n'
 import Store from "@/store";
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
 import GraphUi from '@/graph/GraphUi'
+import ExportService from "@/service/ExportService";
 
 export default {
   name: "SettingsMenu",
@@ -208,7 +222,9 @@ export default {
       invalidateCacheReload: "And reload the map",
       showTags: "Show tags by default",
       showRelations: "Show relations by default",
-      preferences: "Preferences"
+      preferences: "Preferences",
+      exportHeader: "Export all of your notes",
+      exportToMd: " To Markdown files"
     });
     I18n.i18next.addResources("fr", "settings", {
       becomePattern: "Créer un pattern",
@@ -221,7 +237,10 @@ export default {
       invalidateCacheReload: "Et recharger la carte",
       showTags: "Afficher les étiquettes par défaut",
       showRelations: "Afficher les relations par défaut",
-      preferences: "Préférences"
+      preferences: "Préférences",
+      exportHeader: "Exporter toutes vos notes",
+      exportToMd: "En fichiers Markdown"
+
     });
     return {
       backgroundColor: null,
@@ -232,6 +251,9 @@ export default {
   mounted: function () {
   },
   methods: {
+    exportToMd: function () {
+      ExportService.exportToMd();
+    },
     toggle: function () {
       this.showSettingsMenu = !this.showSettingsMenu;
     },
