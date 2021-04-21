@@ -206,6 +206,7 @@ import Store from "@/store";
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
 import GraphUi from '@/graph/GraphUi'
 import ExportService from "@/service/ExportService";
+import LoadingFlow from "@/LoadingFlow";
 
 export default {
   name: "SettingsMenu",
@@ -251,8 +252,10 @@ export default {
   mounted: function () {
   },
   methods: {
-    exportToMd: function () {
-      ExportService.exportToMd();
+    exportToMd: async function () {
+      LoadingFlow.enter();
+      await ExportService.exportToMd();
+      LoadingFlow.leave();
     },
     toggle: function () {
       this.showSettingsMenu = !this.showSettingsMenu;

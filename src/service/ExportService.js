@@ -8,7 +8,7 @@ import axios from 'axios'
 
 export default {
     exportToMd: function () {
-        axios({
+        return axios({
             url: Service.baseUrl() + UserService.currentUserUri() + "/export-to-md",
             method: 'POST',
             responseType: 'blob', // important
