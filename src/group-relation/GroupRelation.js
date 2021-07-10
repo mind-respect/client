@@ -158,6 +158,9 @@ GroupRelation.prototype.getLeftBubble = function (bottom, getEvenIfNotShown) {
         }
         let index = bottom ? this.children.length - 1 : 0;
         const childAtIndex = this.children[index];
+        if (!childAtIndex) {
+            return this;
+        }
         return getEvenIfNotShown ? childAtIndex : childAtIndex.getShownBubble();
     }
     return getEvenIfNotShown ? this.getParentBubble() : this.getShownParentBubble();
