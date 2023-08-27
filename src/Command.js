@@ -5,7 +5,6 @@
  inspired by http://blog.overnetcity.com/2014/11/18/undo-redo-angularjs-command-pattern/
  */
 
-import Store from "@/store";
 import CurrentSubGraph from "@/graph/CurrentSubGraph";
 
 const api = {};

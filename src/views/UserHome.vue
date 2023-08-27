@@ -7,7 +7,7 @@
     <v-card flat class="pa-0">
       <v-card-title v-if="$vuetify.breakpoint.mdAndUp || !isOwner" class="pt-0">
         <v-tooltip v-if="$store.state.areCentersInGridView && $vuetify.breakpoint.mdAndUp" right>
-          <template v-slot:activator="{ on }">
+          <template v-slot:activator="{}">
             <v-btn text icon @click="$store.dispatch('setAreCentersInGridView', false)"
                    class="mt-4">
               <v-icon large>
@@ -18,7 +18,7 @@
           {{ $t('userhome:toList') }}
         </v-tooltip>
         <v-tooltip v-if="!$store.state.areCentersInGridView && $vuetify.breakpoint.mdAndUp" right>
-          <template v-slot:activator="{ on }">
+          <template v-slot:activator="{}">
             <v-btn text icon
                    @click="$store.dispatch('setAreCentersInGridView', true)"
                    class="mt-4">
@@ -219,7 +219,7 @@ import GraphDisplayer from '@/graph/GraphDisplayer'
 import GraphDisplayerFactory from '@/graph/GraphDisplayerFactory'
 import CurrentSubGraph from "../graph/CurrentSubGraph";
 
-const WHEN_OWNER_ONLY_TAB_MENUS = [2, 3];
+// const WHEN_OWNER_ONLY_TAB_MENUS = [2, 3];
 
 export default {
   name: "CentersList",
@@ -482,6 +482,7 @@ export default {
       if (this.$store.state.user) {
         return this.$store.state.user.username;
       }
+      return "";
     },
     isTesting: function () {
       return process.env.NODE_ENV === "test";

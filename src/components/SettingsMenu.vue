@@ -292,7 +292,7 @@ export default {
   },
   computed: {
     isGraphRoute: function () {
-      return this.$route.name === "Center"
+      return this.$route.name === "CenterPage"
     },
     canExpandAll: function () {
       return GraphController.expandAllCanDo();

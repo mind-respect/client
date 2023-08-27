@@ -71,7 +71,7 @@ api.createVertex = function (label, isPattern, isPublic, avoidRedirect) {
         return promise.then(() => {
             if (avoidRedirect !== true) {
                 router.push({
-                    name: "Center",
+                    name: "CenterPage",
                     params: {
                         username: newVertex.uri().getOwner(),
                         graphElementType: newVertex.uri().getGraphElementType(),

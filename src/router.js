@@ -13,7 +13,7 @@ const router = new Router({
                 name: 'home',
                 component: () => {
                     if (Store.state.user === undefined || Store.state.user === null) {
-                        return import('./views/About.vue');
+                        return import('./views/AboutPage.vue');
                     }
                     router.replace({
                         name: "UserHome",
@@ -27,32 +27,32 @@ const router = new Router({
             {
                 path: '/welcome',
                 name: 'welcome',
-                component: () => import('./views/About.vue')
+                component: () => import('./views/AboutPage.vue')
             },
             {
                 path: '/register',
                 name: 'register',
-                component: () => import('./views/About.vue')
+                component: () => import('./views/AboutPage.vue')
             },
             {
                 path: '/login',
                 name: 'login',
-                component: () => import('./views/About.vue')
+                component: () => import('./views/AboutPage.vue')
             },
             {
                 path: '/login/requestUser/:requestUsername/destinationUser/:destinationUsername/confirmToken/:confirmToken',
                 name: 'LoginFriendshipConfirm',
-                component: () => import('./views/About.vue')
+                component: () => import('./views/AboutPage.vue')
             },
             {
                 path: '/forgot-password',
                 name: 'forgotPassword',
-                component: () => import('./views/About.vue')
+                component: () => import('./views/AboutPage.vue')
             },
             {
                 path: '/email/:email/token/:changePasswordToken',
                 name: 'changePassword',
-                component: () => import('./views/About.vue')
+                component: () => import('./views/AboutPage.vue')
             },
             {
                 path: '/about',
@@ -60,7 +60,7 @@ const router = new Router({
                 // route level code-splitting
                 // this generates a separate chunk (about.[hash].js) for this route
                 // which is lazy-loaded when the route is visited.
-                component: () => import('./views/About.vue')
+                component: () => import('./views/AboutPage.vue')
             },
             {
                 path: '/user/:username',
@@ -89,8 +89,8 @@ const router = new Router({
             },
             {
                 path: '/user/:username/graph/:graphElementType/:centerUri',
-                name: "Center",
-                component: () => import('./views/Center.vue')
+                name: "CenterPage",
+                component: () => import('./views/CenterPage.vue')
             }
         ]
     })

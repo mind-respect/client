@@ -610,7 +610,7 @@ export default {
   },
   computed: {
     isGraphRoute: function () {
-      return this.$route.name === "Center";
+      return this.$route.name === "CenterPage";
     },
     isUserHomeRoute: function () {
       return this.$route.name.indexOf('UserHome') > -1;
@@ -647,7 +647,7 @@ export default {
     },
     '$route.name': function () {
       this.showDialogFromRoute();
-      if (this.$route.name === "Center") {
+      if (this.$route.name === "CenterPage") {
         KeyboardActions.enable();
         if (this.$store.state.isFirstTime) {
           this.firstTimeSnackbar = true;

@@ -377,7 +377,7 @@ VertexController.prototype.convertToDistantBubbleWithUri = async function (dista
             return 'isRefreshing';
         } else {
             await router.push({
-                name: "Center",
+                name: "CenterPage",
                 params: {
                     username: converted.uri().getOwner(),
                     graphElementType: converted.getGraphElementType(),

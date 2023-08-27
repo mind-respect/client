@@ -38,7 +38,7 @@ SearchService.searchForAllOwnResources = function (searchText, nbSkip, prioritiz
     let providers = [
         SearchService._searchForAllOwnResources(searchText, nbSkip)
     ];
-    if (!nbSkip && router.name === "Center") {
+    if (!nbSkip && router.name === "CenterPage") {
         providers.push(
             SearchService._searchForResourcesOnThisMap(searchText)
         );

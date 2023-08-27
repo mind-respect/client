@@ -440,7 +440,7 @@ export default {
         nbChild = undefined;
       }
       this.$router.push({
-        name: "Center",
+        name: "CenterPage",
         params: {
           username: center.uri().getOwner(),
           graphElementType: graphElementType,

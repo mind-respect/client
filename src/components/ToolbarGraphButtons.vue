@@ -88,7 +88,7 @@ export default {
   },
   computed: {
     isGraphRoute: function () {
-      return this.$route.name === "Center"
+      return this.$route.name === "CenterPage"
     },
     isUserHomeRoute: function () {
       return this.$route.name === "UserHome"

@@ -17,7 +17,7 @@
     import GraphElement from '@/graph-element/GraphElement'
 
     export default {
-        name: "Center",
+        name: "CenterPage",
         components: {
             Graph
         },
@@ -46,7 +46,7 @@
         },
         computed: {
             graphCenterUri: function () {
-                if (this.$route.name !== 'Center') {
+                if (this.$route.name !== 'CenterPage') {
                     return;
                 }
                 return this.$route.params.centerUri + this.forceUpdate

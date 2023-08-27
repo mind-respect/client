@@ -70,7 +70,7 @@ api.isAnonymous = function () {
     return _isAnonymous;
 };
 api.isGraphFlow = function () {
-    return Router.name === 'Center';
+    return Router.name === 'CenterPage';
 };
 api._setIsViewOnly = function (isViewOnly) {
     _isViewOnly = isViewOnly;

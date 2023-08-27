@@ -14,7 +14,7 @@ import Vue from 'vue'
 import State from '@/State'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import IdUri from '@/IdUri'
-import CenterView from '@/views/Center.vue'
+import CenterView from '@/views/CenterPage.vue'
 import SubGraph from '@/graph/SubGraph'
 
 import Bubble from '@/components/graph/Bubble.vue'

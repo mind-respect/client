@@ -10,7 +10,6 @@ import FriendlyResource from '@/friendly-resource/FriendlyResource'
 import CurrentSubGraph from '@/graph/CurrentSubGraph'
 import NbNeighbors from './NbNeighbors'
 import Fork from '@/fork/Fork'
-import IdUri from "../IdUri";
 
 const api = {};
 api.fromServerFormat = function (serverFormat) {
